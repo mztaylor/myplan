@@ -1,0 +1,23 @@
+#view_div {
+	margin:0 auto;
+	padding: 10px;
+	max-width: 1140px;
+}
+
+.myplan .breadcrumbs, .myplan #viewpage_div, .myplan #viewheader_div  {
+	margin: 0;
+	padding: 0;
+}
+
+.myplan .summary {
+	max-width: none;
+}
+
+#mystuff_panel_div, #course_search_results_list_div {
+	border:solid 1px #ccc;
+	min-height: 300px;
+}
+
+#mystuff_panel_div { 
+	margin: 0 -1px; 
+}
