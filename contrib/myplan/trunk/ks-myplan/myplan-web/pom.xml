@@ -46,8 +46,8 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.kuali.myplan.krad</groupId>
-			<artifactId>myplan-demo-ui</artifactId>
+			<groupId>org.kuali.student.myplan</groupId>
+			<artifactId>myplan-ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

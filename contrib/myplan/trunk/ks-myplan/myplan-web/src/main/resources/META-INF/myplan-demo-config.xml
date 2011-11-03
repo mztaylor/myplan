@@ -20,8 +20,8 @@
     <param name="module.name">myplan-ui</param>
     
     <!-- Rice URLS -->
-    <param name="ks.rice.personLookup.serviceAddress">http://localhost:8081/myplan-embedded-dev/kr/lookup.do</param>
-	<param name="ks.rice.actionList.serviceAddress">http://localhost:8081/myplan-embedded-dev/kew/ActionList.do</param>
+    <param name="ks.rice.personLookup.serviceAddress">http://localhost:8080/myplan-embedded-dev/kr/lookup.do</param>
+	<param name="ks.rice.actionList.serviceAddress">http://localhost:8080/myplan-embedded-dev/kew/ActionList.do</param>
 
     <param name="css.files" override="true">${css.files},ks-myplan/css/course.css</param>
     <param name="javascript.files" override="true">${javascript.files}</param>
