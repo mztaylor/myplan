@@ -1,204 +1,240 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	<!-- Copyright 2007-2009 The Kuali Foundation Licensed under the Educational 
-		Community License, Version 2.0 (the "License"); you may not use this file 
-		except in compliance with the License. You may obtain a copy of the License 
-		at http://www.opensource.org/licenses/ecl2.php Unless required by applicable 
-		law or agreed to in writing, software distributed under the License is distributed 
-		on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-		express or implied. See the License for the specific language governing permissions 
-		and limitations under the License. -->
+    <!-- Copyright 2007-2009 The Kuali Foundation Licensed under the Educational
+         Community License, Version 2.0 (the "License"); you may not use this file
+         except in compliance with the License. You may obtain a copy of the License
+         at http://www.opensource.org/licenses/ecl2.php Unless required by applicable
+         law or agreed to in writing, software distributed under the License is distributed
+         on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+         express or implied. See the License for the specific language governing permissions
+         and limitations under the License. -->
 
-	<bean id="myplan_course_search_view" parent="KSFormView">
-		<property name="id" value="courseSearchView" />
-		<property name="title" value="Find Courses" />
-		<property name="singlePageView" value="true" />
-		<property name="styleClasses" value="myplan" />
-		<!-- <property name="viewHelperServiceClassName" value="org.kuali.student.enrollment.class2.registration.service.RegistrationViewHelperServiceImpl" 
-			/> -->
-		<property name="page">
-			<bean parent="Page" />
-		</property>
-		<property name="items">
-			<list>
-				<ref bean="course_search_grid_layout" />
-			</list>
-		</property>
-		<property name="footer">
-			<bean parent="Footer" />
-		</property>
-		<!-- <property name="formClass" value="org.kuali.student.enrollment.class2.registration.form.RegistrationForm" 
-			/> -->
-	</bean>
+    <bean id="myplan_course_search_view" parent="KSFormView">
+        <property name="id" value="courseSearchView"/>
+        <property name="title" value="Find Courses"/>
+        <property name="singlePageView" value="true"/>
+        <property name="styleClasses" value="myplan"/>
+        <!-- <property name="viewHelperServiceClassName" value="org.kuali.student.enrollment.class2.registration.service.RegistrationViewHelperServiceImpl"
+              /> -->
+        <property name="page">
+            <bean parent="Page"/>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="course_search_grid_layout"/>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="Footer"/>
+        </property>
+        <property name="formClass" value="edu.uw.myplan.trng.course.form.CourseSearchForm" />
+    </bean>
 
-	<!-- Layout for Course Search -->
-	<bean id="course_search_grid_layout" parent="Group" p:layoutManager.orientation="HORIZONTAL">
-		<property name="accordion.render" value="false" />
-		<property name="styleClasses" value="" />
-		<property name="items">
-			<list>
-				<ref bean="course_search_panel" />
-				<ref bean="mystuff_panel" />
-			</list>
-		</property>
-	</bean>
+    <!-- Layout for Course Search -->
+    <bean id="course_search_grid_layout" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_panel"/>
+                <ref bean="mystuff_panel"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Course Search Functions and Results -->
-	<bean id="course_search_panel" parent="Group">
-		<property name="accordion.render" value="false" />
-		<property name="styleClasses" value="" />
-		<property name="items">
-			<list>
-				<ref bean="course_search_functions" />
-				<ref bean="course_search_results_panel" />
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Course Search Functions and Results -->
+    <bean id="course_search_panel" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_functions"/>
+                <ref bean="course_search_results_panel"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for MyStuff Panel TBD -->
-	<bean id="mystuff_panel" parent="Group">
-		<property name="accordion.render" value="false" />
-		<property name="styleClasses" value="" />
-		<property name="items">
-			<list>
-				<!-- MYSTUFF - TBD -->
-			</list>
-		</property>
-	</bean>
+    <!-- Group for MyStuff Panel TBD -->
+    <bean id="mystuff_panel" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <!-- MYSTUFF - TBD -->
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Fields Container -->
-	<bean id="course_search_functions" parent="Group">
-		<property name="summary"
-			value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable" />
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<ref bean="course_search_fields" />
-				<ref bean="course_search_params" />
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Search Fields Container -->
+    <bean id="course_search_functions" parent="Group">
+        <property name="summary"
+                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_fields"/>
+                <ref bean="course_search_params"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Input Fields -->
-	<bean id="course_search_fields" parent="FieldGroup">
-		<property name="group.layoutManager.orientation" value="HORIZONTAL" />
-		<property name="items">
-			<list>
-				<bean parent="AttributeField_Form" p:propertyName="courseCode"
-					p:label="Search courses" p:labelPlacement="LEFT"
-					p:labelField.renderColon="false">
-					<property name="control">
-						<bean parent="TextControl" p:size="20" />
-					</property>
-				</bean>
-				<bean parent="AttributeField_Form" p:propertyName="courseCode"
-					p:label="in" p:labelPlacement="LEFT" p:labelField.renderColon="false">
-					<property name="control">
-						<bean parent="SelectControl">
-							<property name="options">
-								<list>
-									<bean parent="KeyLabelPair" p:key="1" p:value="All" />
-									<bean parent="KeyLabelPair" p:key="2" p:value="Course Title" />
-									<bean parent="KeyLabelPair" p:key="3"
-										p:value="Course Title and description" />
-								</list>
-							</property>
-						</bean>
-					</property>
+    <!-- Group for Search Input Fields -->
+    <bean id="course_search_fields" parent="FieldGroup">
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField_Form" p:propertyName="searchQuery"
+                      p:label="Search courses" p:labelPlacement="LEFT"
+                      p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="TextControl" p:size="20"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField_Form" p:propertyName="searchTerm"
+                      p:label="in" p:labelPlacement="LEFT" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="SelectControl">
+                            <property name="options">
+                                <list>
+                                    <bean parent="KeyLabelPair" p:key="1" p:value="All"/>
+                                    <bean parent="KeyLabelPair" p:key="2" p:value="Course Title"/>
+                                    <bean parent="KeyLabelPair" p:key="3"
+                                          p:value="Course Title and description"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
 
-					<!-- <property name="optionsFinder"> <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.SubjectAreaKeyValues"/> 
-						</property> -->
-				</bean>
-				<bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-					p:actionLabel="Go" p:jumpToIdAfterSubmit="TOP" />
+                    <!-- <property name="optionsFinder"> <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.SubjectAreaKeyValues"/>
+                             </property> -->
+                </bean>
+                <bean parent="ActionField" p:methodToCall="searchForCourses"
+                      p:actionLabel="Go" p:jumpToIdAfterSubmit="TOP"/>
 
-			</list>
-		</property>
-	</bean>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Input Parameters -->
-	<bean id="course_search_params" parent="FieldGroup">
-		<property name="group.layoutManager.orientation" value="HORIZONTAL" />
-		<property name="items">
-			<list>
-				<bean parent="AttributeField_Form" p:propertyName="campusBothell"
-					p:label="Bothell campus" p:labelPlacement="RIGHT">
-					<property name="control">
-						<bean parent="CheckboxControl" />
-					</property>
-				</bean>
-				<bean parent="AttributeField_Form" p:propertyName="campusSeattle"
-					p:label="Seattle campus" p:labelPlacement="RIGHT">
-					<property name="control">
-						<bean parent="CheckboxControl" />
-					</property>
-				</bean>
-				<bean parent="AttributeField_Form" p:propertyName="campusTacoma"
-					p:label="Tacoma campus" p:labelPlacement="RIGHT">
-					<property name="control">
-						<bean parent="CheckboxControl" />
-					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Search Input Parameters -->
+    <bean id="course_search_params" parent="FieldGroup">
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField_Form" p:propertyName="campusBothell"
+                      p:label="Bothell campus" p:labelPlacement="RIGHT">
+                    <property name="control">
+                        <bean parent="CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField_Form" p:propertyName="campusSeattle"
+                      p:label="Seattle campus" p:labelPlacement="RIGHT">
+                    <property name="control">
+                        <bean parent="CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField_Form" p:propertyName="campusTacoma"
+                      p:label="Tacoma campus" p:labelPlacement="RIGHT">
+                    <property name="control">
+                        <bean parent="CheckboxControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Layout for Search Facets and Search Results -->
-	<bean id="course_search_results_panel" parent="Group" p:layoutManager.orientation="HORIZONTAL">
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<ref bean="course_search_result_facets" />
-				<ref bean="course_search_results" />
-			</list>
-		</property>
-	</bean>
+    <!-- Layout for Search Facets and Search Results -->
+    <bean id="course_search_results_panel" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_result_facets"/>
+                <ref bean="course_search_results"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Facets -->
-	<bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<!-- FACETS FOR RESULTS - TO BE BUILT -->
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Search Facets -->
+    <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <!-- FACETS FOR RESULTS - TO BE BUILT -->
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Results List and Buttons -->
-	<bean id="course_search_results" parent="Group">
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<ref bean="course_search_results_list" />
-				<ref bean="course_search_results_buttons" />
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Search Results List and Buttons -->
+    <bean id="course_search_results" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_results_list"/>
+                <ref bean="course_search_results_buttons"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Results List -->
-	<bean id="course_search_results_list" parent="Group">
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<!-- SEARCH RESULTS -->
-			</list>
-		</property>
-	</bean>
+    <!-- Group for Search Results List -->
+    <bean id="course_search_results_list" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_results_list_items"/>
+            </list>
+        </property>
+    </bean>
 
-	<!-- Group for Search Results Buttons -->
-	<bean id="course_search_results_buttons" parent="Group">
-		<property name="accordion.render" value="false" />
-		<property name="items">
-			<list>
-				<bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-					p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP" />
-				<bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-					p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP" />
-			</list>
-		</property>
-	</bean>
+
+    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="4">
+        <property name="accordion.render" value="false"/>
+        <property name="collectionObjectClass" value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
+        <property name="propertyName" value="courseSearchResults"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.sequencePropertyName" value="code"/>
+        <property name="layoutManager.sequenceFieldPrototype.label" value="Code"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField" p:propertyName="courseName" p:label="Course Name" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="code" p:label="Credits" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="code" p:label="Scheduled Time" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="code" p:label="Gen Edu Req" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Group for Search Results Buttons -->
+    <bean id="course_search_results_buttons" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
+                      p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP"/>
+                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
+                      p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP"/>
+            </list>
+        </property>
+    </bean>
 
 </beans>
