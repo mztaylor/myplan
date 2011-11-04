@@ -12,29 +12,44 @@
          express or implied. See the License for the specific language governing permissions
          and limitations under the License. -->
 
-    <bean id="myplan_course_search_view" parent="KSFormView">
+
+    <bean id="courseSearchView" parent="KSFormView">
         <property name="id" value="courseSearchView"/>
         <property name="title" value="Find Courses"/>
-        <property name="singlePageView" value="true"/>
         <property name="styleClasses" value="myplan"/>
-        <!-- <property name="viewHelperServiceClassName" value="org.kuali.student.enrollment.class2.registration.service.RegistrationViewHelperServiceImpl"
-              /> -->
-        <property name="page">
-            <bean parent="Page"/>
-        </property>
+        <property name="entryPageId" value="course_search"/>
+
         <property name="items">
             <list>
-                <ref bean="course_search_grid_layout"/>
+                <bean parent="Page" p:id="course_search">
+                    <property name="items">
+                        <list>
+                            <ref bean="course_search_page"/>
+                        </list>
+                    </property>
+                    <property name="footer">
+                        <bean parent="Footer"/>
+                    </property>
+                </bean>
+                <bean parent="Page" p:id="course_search_result">
+                    <property name="items">
+                        <list>
+                            <ref bean="course_search_result_page"/>
+                        </list>
+                    </property>
+                    <property name="footer">
+                        <bean parent="Footer"/>
+                    </property>
+                </bean>
             </list>
         </property>
-        <property name="footer">
-            <bean parent="Footer"/>
-        </property>
-        <property name="formClass" value="edu.uw.myplan.trng.course.form.CourseSearchForm" />
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="edu.uw.myplan.trng.course.form.CourseSearchForm"/>
     </bean>
 
-    <!-- Layout for Course Search -->
-    <bean id="course_search_grid_layout" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+
+     <!-- Layout for Course Search Form Page -->
+    <bean id="course_search_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <property name="accordion.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">
@@ -45,8 +60,33 @@
         </property>
     </bean>
 
-    <!-- Group for Course Search Functions and Results -->
+
+    <!-- Layout for Course Search Result Page-->
+    <bean id="course_search_result_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_result_panel"/>
+                <ref bean="mystuff_panel"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Course Search Functions only -->
     <bean id="course_search_panel" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_functions"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Group for Course Search Functions and Results -->
+    <bean id="course_search_result_panel" parent="Group">
         <property name="accordion.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">

@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 
 import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
 import edu.uw.myplan.trng.course.form.CourseSearchForm;
+import edu.uw.myplan.trng.course.util.CourseSearchConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -48,7 +49,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Controller
 @RequestMapping(value = "/course")
-public class CourseController extends UifControllerBase {
+public class CourseSearchController extends UifControllerBase {
 
     private transient LuService luService;
 
@@ -141,7 +142,7 @@ public class CourseController extends UifControllerBase {
 
         courseSearchForm.setCourseSearchResults(searchResults);
 
-        return getUIFModelAndView(courseSearchForm);
+        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     //Note: here I am using r1 LuService implementation!!!
