@@ -70,7 +70,7 @@ public class CourseInfoLookupableImpl extends LookupableImpl {
         searchRequest.setSearchKey("lu.search.mostCurrent.union");
 
         try {
-            SearchResult searchResult = getLuService().search(searchRequest);
+            SearchResult searchResult = getLuService().search(searchRequest)   ;
 
             if (searchResult.getRows().size() > 0) {
                 for(SearchResultRow srrow : searchResult.getRows()){
