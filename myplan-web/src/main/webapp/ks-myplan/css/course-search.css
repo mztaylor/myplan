@@ -1,22 +1,82 @@
+#course_search_panel_div {
+	width:700px;
+    margin-right: 20px;
+}
 #courseSearchView_div button, .button-primary {
 	background-image: -moz-linear-gradient(top, #8bcefd, #007dd6);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #8bcefd), color-stop(1, #007dd6));
     background-image: -o-linear-gradient(top,rgba(139,206,253,1),rgba(0,125,214,1));    /* be nice to Opera */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#8bcefd, endColorstr=#007dd6);  /* IE7 and older */
     -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#8bcefd, EndColorStr=#007dd6);  /*IE8 */
-    background:  linear-gradient(top, rgba(139,206,253,1) 0%, rgba(0,125,214,1) 100%);  /* for the future */
+    background: linear-gradient(top, rgba(139,206,253,1) 0%, rgba(0,125,214,1) 100%);  /* for the future */
 	background-color:#007dd6;
 	color: #fff;
 	text-shadow: none;
-	border-color:#aaa;
+	border: solid 1px #969696;
 	padding: 0.4em 2em;
 	font-size: 1em;
-	font-weight:bold;
+	font-weight:normal;
+    border-radius: 4px;
 }
 
 #course_search_functions_div {
 	background: #d6d6d6;
 	border: solid 2px #a9a9a9;
-	padding: 1em;
+	padding: 10px 0 0 10px;
 	border-radius: 8px;
+}
+
+#course_search_functions_div input[type='text'] {
+    border: solid 1px #969696;
+    padding: 4px;
+}
+
+#course_search_result_facets_div {
+	border-top: solid 1px #a9a9a9;
+    border-left: solid 1px #a9a9a9;
+    border-right: solid 1px #a9a9a9;
+    font-size: 90%;
+}
+#course_search_result_facets_div h4.section-subhead,  #course_search_result_facets_group .facetHeader label {
+	display:block;
+	font-weight: normal;
+	background: #cccccc;
+	border-bottom: solid 1px #a9a9a9;
+	padding:5px;
+}
+#course_search_result_facets_group .facetHeader label {
+	background: #e4e4e4;
+	font-weight:bold;
+    font-size:90%;
+}
+.datatable {
+	font-size:90%;
+}
+.dataTables_length {
+    width: none;
+    float: right;
+}
+.dataTables_info {
+    width: 100%;
+    float: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.datatable .odd, .datatable .odd .sorting_1 {
+    background-color: #fff;
+}
+.datatable .even, .datatable .even .sorting_1 {
+    background-color: #f1f1f1;
+}
+.dataTables_scroll {
+    border: solid 1px #a9a9a9;
+}
+table.display thead tr {
+	background: #d6d6d6;
+}
+table.display thead th {
+    border: none;
+    font-size: 90%;
+    color: #5f5e5f;
 }

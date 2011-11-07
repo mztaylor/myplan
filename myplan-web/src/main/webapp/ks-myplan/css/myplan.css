@@ -1,7 +1,7 @@
 #view_div {
 	margin:0 auto;
 	padding: 10px;
-	max-width: 1140px;
+	width: 940px;
 }
 
 .myplan .breadcrumbs, .myplan #viewpage_div, .myplan #viewheader_div  {
@@ -12,12 +12,25 @@
 .myplan .summary {
 	max-width: none;
 }
-
-#mystuff_panel_div, #course_search_results_list_div {
-	border:solid 1px #ccc;
-	min-height: 300px;
+.myplan .boxLayoutVerticalItem {
+	padding: 0;
+	margin: 0 0 10px 0;
+}
+.myplan .boxLayoutHorizontalItem {
+	margin: 0 10px 0 0;
 }
 
-#mystuff_panel_div { 
-	margin: 0 -1px; 
+.myplan .page-title-header {
+    font-family: arial,helvetica,clean,sans-serif;
+    margin: 1em 0 0 0;
+}
+
+.myplan #viewlayout_div {
+    margin: 0 10px;
+}
+
+#mystuff_panel_div {
+	margin: 0;
+    border: solid 1px #d3d3d3;
+    width:198px;
 }
