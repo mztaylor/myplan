@@ -25,10 +25,23 @@
 	padding: 10px 0 0 10px;
 	border-radius: 8px;
 }
-
+#course_search_fields_span span {
+	line-height: 2.4em;
+}
 #course_search_functions_div input[type='text'] {
     border: solid 1px #969696;
-    padding: 4px;
+    font-size: 100%;
+    padding:4px;
+    width: 15em;
+}
+
+#course_search_functions_div select {
+	font-size: 100%;
+}
+
+#course_search_params_span {
+	margin-left: 5.5em;
+	display:block;
 }
 
 #course_search_result_facets_div {
@@ -49,19 +62,25 @@
 	font-weight:bold;
     font-size:90%;
 }
+
+#course_search_results_list_items_group {
+	width: 579px;
+}
+#dataTables_wrapper {
+	overflow:auto;
+}
 .datatable {
 	font-size:90%;
 }
 .dataTables_length {
-    width: none;
     float: right;
+    text-align: right;
 }
 .dataTables_info {
-    width: 100%;
-    float: none;
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    float: left;
+}
+.dataTables_scroll {
+
 }
 .datatable .odd, .datatable .odd .sorting_1 {
     background-color: #fff;
