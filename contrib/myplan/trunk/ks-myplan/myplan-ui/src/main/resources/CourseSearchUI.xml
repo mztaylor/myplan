@@ -141,8 +141,7 @@
                                 <list>
                                     <bean parent="KeyLabelPair" p:key="1" p:value="All"/>
                                     <bean parent="KeyLabelPair" p:key="2" p:value="Course Title"/>
-                                    <bean parent="KeyLabelPair" p:key="3"
-                                          p:value="Course Title and description"/>
+                                    <bean parent="KeyLabelPair" p:key="3" p:value="Course Title and description"/>
                                 </list>
                             </property>
                         </bean>
@@ -228,7 +227,7 @@
     </bean>
 
 
-    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="4">
+    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="5">
         <property name="accordion.render" value="false"/>
         <property name="collectionObjectClass" value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
@@ -251,17 +250,22 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="code" p:label="Credits" p:readOnly="true">
+                <bean parent="AttributeField" p:propertyName="credit" p:label="Credits" p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="code" p:label="Scheduled Time" p:readOnly="true">
+                <bean parent="AttributeField" p:propertyName="scheduledTime" p:label="Scheduled Time" p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="code" p:label="Gen Edu Req" p:readOnly="true">
+                <bean parent="AttributeField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                 <bean parent="AttributeField" p:propertyName="status" p:label="Status" p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
