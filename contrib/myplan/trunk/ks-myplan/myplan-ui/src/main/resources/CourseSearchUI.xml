@@ -48,7 +48,7 @@
     </bean>
 
 
-     <!-- Layout for Course Search Form Page -->
+    <!-- Layout for Course Search Form Page -->
     <bean id="course_search_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <property name="accordion.render" value="false"/>
         <property name="styleClasses" value=""/>
@@ -237,6 +237,13 @@
         <property name="layoutManager.sequencePropertyName" value="code"/>
         <property name="layoutManager.sequenceFieldPrototype.label" value="Code"/>
         <property name="bindingInfo.bindToForm" value="true"/>
+        <!-- Have to turn off emptyTableMessage, so that oLanguage option is not overridden by code -->
+        <property name="layoutManager.tableTools.emptyTableMessage" value=""/>
+        <property name="layoutManager.tableTools.componentOptions">
+            <map merge="true">
+                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable' : 'No records found'}"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="AttributeField" p:propertyName="courseName" p:label="Course Name" p:readOnly="true">
