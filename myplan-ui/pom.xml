@@ -17,6 +17,11 @@
 			<artifactId>ks-lum-api</artifactId>
 			<version>${kuali.student.version}</version>
 		</dependency>
+        <dependency>
+			<groupId>org.kuali.student.lum</groupId>
+			<artifactId>ks-lum-impl</artifactId>
+			<version>${kuali.student.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.kuali.student.common</groupId>
 			<artifactId>ks-common-api</artifactId>

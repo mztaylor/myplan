@@ -19,6 +19,8 @@ public class CourseSearchItem {
 
     private String genEduReq  = " ";
 
+    private String status = "--";
+
     public String getCode() {
         return code;
     }
@@ -57,6 +59,14 @@ public class CourseSearchItem {
 
     public void setGenEduReq(String genEduReq) {
         this.genEduReq = genEduReq;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 
