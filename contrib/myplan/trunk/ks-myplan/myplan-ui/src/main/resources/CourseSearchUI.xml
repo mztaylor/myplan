@@ -19,6 +19,18 @@
         <property name="styleClasses" value="myplan"/>
         <property name="entryPageId" value="course_search"/>
 
+        <property name="additionalCssFiles">
+            <list >
+                <value>/ks-myplan/css/course-search.css</value>
+            </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list >
+                <value>/ks-myplan/scripts/jquery.ThreeDots.min.js</value>
+                <value>/ks-myplan/scripts/course-search.js</value>
+            </list>
+        </property>
+
         <property name="items">
             <list>
                 <bean parent="Page" p:id="course_search">
@@ -75,6 +87,8 @@
 
     <!-- Group for Course Search Functions only -->
     <bean id="course_search_panel" parent="Group">
+        <property name="summary"
+                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="accordion.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">
@@ -87,6 +101,8 @@
 
     <!-- Group for Course Search Functions and Results -->
     <bean id="course_search_result_panel" parent="Group">
+        <property name="summary"
+                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="accordion.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">
@@ -110,8 +126,6 @@
 
     <!-- Group for Search Fields Container -->
     <bean id="course_search_functions" parent="Group">
-        <property name="summary"
-                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="accordion.render" value="false"/>
         <property name="items">
             <list>
@@ -127,10 +141,10 @@
         <property name="items">
             <list>
                 <bean parent="AttributeField_Form" p:propertyName="searchQuery"
-                      p:label="Search courses" p:labelPlacement="LEFT"
-                      p:labelField.renderColon="false">
+                      p:label="Search for" p:labelPlacement="LEFT"
+                      p:labelField.renderColon="false" p:labelField.styleClasses="fl-text-bold">
                     <property name="control">
-                        <bean parent="TextControl" p:size="20"/>
+                        <bean parent="TextControl" p:watermarkText="E.g. English 1xx, CHEM 142"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField_Form" p:propertyName="searchTerm"
@@ -139,10 +153,11 @@
                         <bean parent="SelectControl">
                             <property name="options">
                                 <list>
-                                    <bean parent="KeyLabelPair" p:key="1" p:value="All"/>
-                                    <bean parent="KeyLabelPair" p:key="2" p:value="Course Title"/>
-                                    <bean parent="KeyLabelPair" p:key="3" p:value="Course Title and description"/>
-                                </list>
+									<bean parent="KeyLabelPair" p:key="1" p:value="Any quarter" />
+									<bean parent="KeyLabelPair" p:key="2" p:value="Autumn 11 quarter only" />
+									<bean parent="KeyLabelPair" p:key="3" p:value="Winter 12 quarter only" />
+                                    <bean parent="KeyLabelPair" p:key="4" p:value="Autumn 11 and Winter 12" />
+								</list>
                             </property>
                         </bean>
                     </property>
@@ -151,11 +166,11 @@
                              </property> -->
                 </bean>
                 <bean parent="ActionField" p:methodToCall="searchForCourses"
-                      p:actionLabel="Go" p:jumpToIdAfterSubmit="TOP"/>
+                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP"/>
 
-            </list>
-        </property>
-    </bean>
+			</list>
+		</property>
+	</bean>
 
     <!-- Group for Search Input Parameters -->
     <bean id="course_search_params" parent="FieldGroup">
@@ -195,15 +210,26 @@
         </property>
     </bean>
 
-    <!-- Group for Search Facets -->
-    <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
-        <property name="accordion.render" value="false"/>
-        <property name="items">
-            <list>
-                <!-- FACETS FOR RESULTS - TO BE BUILT -->
-            </list>
-        </property>
-    </bean>
+	<!-- Group for Search Facets -->
+	<bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
+		<property name="accordion.render" value="false" />
+		<property name="items">
+			<list>
+                <bean parent="FieldGroup" p:label="Scheduled Time*" p:labelField.renderColon="false" p:labelField.styleClasses="facetHeader">
+                    <property name="items">
+						<list>
+							<!--<bean parent="AttributeField_Form" p:propertyName="autumn2011"
+								p:label="Autumn 2011" p:labelPlacement="RIGHT">
+								<property name="control">
+									<bean parent="CheckboxControl" />
+								</property>
+							</bean>-->
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
 
     <!-- Group for Search Results List and Buttons -->
     <bean id="course_search_results" parent="Group">
@@ -227,7 +253,7 @@
     </bean>
 
 
-    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="5">
+    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="6">
         <property name="accordion.render" value="false"/>
         <property name="collectionObjectClass" value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
@@ -235,38 +261,58 @@
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.sequencePropertyName" value="code"/>
         <property name="layoutManager.sequenceFieldPrototype.label" value="Code"/>
+        <property name="layoutManager.renderSequenceField" value="false" />
         <property name="bindingInfo.bindToForm" value="true"/>
         <!-- Have to turn off emptyTableMessage, so that oLanguage option is not overridden by code -->
         <property name="layoutManager.tableTools.emptyTableMessage" value=""/>
         <property name="layoutManager.tableTools.componentOptions">
             <map merge="true">
-                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable' : 'No records found'}"/>
+                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results'}"/>
+                <entry key="aoColumns" value="[ {'sSortDataType':'dom-text'}, {'sSortDataType':'dom-text'}, {'bSortable':false}, {'bSortable':false}, {'bSortable':false} ]"/>
+                <entry key="sDom" value="ilrtp"/>
+                <entry key="bRetrieve" value="true"/>
+                <entry key="sScrollX" value="100%"/>
+                <entry key="bScrollCollapse" value="true"/>
+                <entry key="iDisplayLength" value="20"/>
+                <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
+                <entry key="sPaginationType" value="full_numbers"/>
             </map>
         </property>
         <property name="items">
             <list>
+                <bean parent="AttributeField" p:propertyName="code" p:label="Code" p:readOnly="true">
+                    <property name="styleClasses" value="courseCode"/>
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
                 <bean parent="AttributeField" p:propertyName="courseName" p:label="Course Name" p:readOnly="true">
+                    <property name="styleClasses" value="courseName"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField" p:propertyName="credit" p:label="Credits" p:readOnly="true">
+                    <property name="styleClasses" value="courseCredits"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField" p:propertyName="scheduledTime" p:label="Scheduled Time" p:readOnly="true">
+                    <property name="styleClasses" value="courseScheduledTime"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true">
+                    <property name="styleClasses" value="courseGenEduReq"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
                  <bean parent="AttributeField" p:propertyName="status" p:label="Status" p:readOnly="true">
-                    <property name="control">
+                     <property name="styleClasses" value="courseStatus"/>
+                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
@@ -276,14 +322,16 @@
 
 
     <!-- Group for Search Results Buttons -->
-    <bean id="course_search_results_buttons" parent="Group">
+    <bean id="course_search_results_buttons" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <property name="accordion.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
                       p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP"/>
+                <!--
                 <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
                       p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP"/>
+                -->
             </list>
         </property>
     </bean>
