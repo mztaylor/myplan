@@ -178,19 +178,19 @@
         <property name="items">
             <list>
                 <bean parent="AttributeField_Form" p:propertyName="campusBothell"
-                      p:label="Bothell campus" p:labelPlacement="RIGHT">
+                      p:label="Bothell campus" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="CheckboxControl"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField_Form" p:propertyName="campusSeattle"
-                      p:label="Seattle campus" p:labelPlacement="RIGHT">
+                      p:label="Seattle campus" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="CheckboxControl"/>
                     </property>
                 </bean>
                 <bean parent="AttributeField_Form" p:propertyName="campusTacoma"
-                      p:label="Tacoma campus" p:labelPlacement="RIGHT">
+                      p:label="Tacoma campus" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="CheckboxControl"/>
                     </property>
@@ -215,7 +215,7 @@
 		<property name="accordion.render" value="false" />
 		<property name="items">
 			<list>
-                <bean parent="FieldGroup" p:label="Scheduled Time*" p:labelField.renderColon="false" p:labelField.styleClasses="facetHeader">
+                <bean parent="FieldGroup" p:label="By Quarter" p:labelField.renderColon="false" p:labelField.styleClasses="facetHeader">
                     <property name="items">
 						<list>
 							<!--<bean parent="AttributeField_Form" p:propertyName="autumn2011"
@@ -267,7 +267,7 @@
         <property name="layoutManager.tableTools.emptyTableMessage" value=""/>
         <property name="layoutManager.tableTools.componentOptions">
             <map merge="true">
-                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results'}"/>
+                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'oPaginate':{'sNext':'Next &gt;','sPrevious':'&lt; Previous'}}"/>
                 <entry key="aoColumns" value="[ {'sSortDataType':'dom-text'}, {'sSortDataType':'dom-text'}, {'bSortable':false}, {'bSortable':false}, {'bSortable':false} ]"/>
                 <entry key="sDom" value="ilrtp"/>
                 <entry key="bRetrieve" value="true"/>
@@ -276,6 +276,15 @@
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
                 <entry key="sPaginationType" value="full_numbers"/>
+                <entry key="fnDrawCallback" value="function() {
+                    var paginateRow = jq(this).parent().prev().children('div.dataTables_paginate');
+                    var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
+                    if (pageCount > 1)  {
+                        paginateRow.css('display', 'block');
+                    } else {
+                        paginateRow.css('display', 'none');
+                    }
+                }"/>
             </map>
         </property>
         <property name="items">
