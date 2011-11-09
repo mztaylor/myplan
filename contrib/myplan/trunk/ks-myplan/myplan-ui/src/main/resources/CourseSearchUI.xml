@@ -261,6 +261,7 @@
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.sequencePropertyName" value="code"/>
         <property name="layoutManager.sequenceFieldPrototype.label" value="Code"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="layoutManager.renderSequenceField" value="false" />
         <property name="bindingInfo.bindToForm" value="true"/>
         <!-- Have to turn off emptyTableMessage, so that oLanguage option is not overridden by code -->

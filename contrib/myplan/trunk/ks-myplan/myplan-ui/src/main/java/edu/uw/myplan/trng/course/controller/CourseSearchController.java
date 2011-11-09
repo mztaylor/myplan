@@ -97,22 +97,17 @@ public class CourseSearchController extends UifControllerBase {
                                          HttpServletRequest request, HttpServletResponse response) {
 
         List<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
-        String courseId = null;
-        List<SearchParam> searchParams = new ArrayList<SearchParam>();
-        SearchParam qpv1 = new SearchParam();
-        qpv1.setKey("lu.queryParam.luOptionalType");
-        qpv1.setValue("kuali.lu.type.CreditCourse");
-        searchParams.add(qpv1);
-        for (QueryParamEnum qpEnum : QueryParamEnum.values()) {
-            SearchParam qpv = new SearchParam();
-            qpv.setKey(qpEnum.getQueryKey());
-            qpv.setValue(courseSearchForm.getSearchQuery());
-            searchParams.add(qpv);
-        }
 
+        String courseId = null;
+        SearchParam searchParam = new SearchParam();
+        searchParam.setKey("queryText");
+        searchParam.setValue(courseSearchForm.getSearchQuery());
+        List<SearchParam> params = new ArrayList<SearchParam>();
+        params.add( searchParam );
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setParams(searchParams);
-        searchRequest.setSearchKey("lu.search.mostCurrent.union");
+        searchRequest.setParams(params);
+        searchRequest.setSearchKey("myplan.lu.search.current");
+
 
         try {
             SearchResult searchResult = getLuService().search(searchRequest);
@@ -204,7 +199,7 @@ public class CourseSearchController extends UifControllerBase {
                 termsTmp.append("?");
                 continue;
             }
-            termsTmp.append(atpSto.getName());
+            termsTmp.append(atpSto.getName().substring(0,2).toUpperCase());
         }
         return termsTmp.toString();
     }
