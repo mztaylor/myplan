@@ -88,6 +88,14 @@
 .dataTables_wrapper .dataTables_scroll {
     border: solid 1px #a9a9a9;
 }
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollHead table thead tr {
+	background: #d6d6d6;
+}
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollHead table thead tr th {
+    border: none;
+    font-size: 90%;
+    color: #5f5e5f;
+}
 .dataTables_wrapper .dataTables_scroll .odd, .dataTables_wrapper .dataTables_scroll .odd .sorting_1 {
     background-color: #fff;
 }
@@ -104,12 +112,3 @@
 .dataTables_wrapper .dataTables_paginate .first, .dataTables_wrapper .dataTables_paginate .last {
 	display:none;
 }
-.dataTables_wrapper .dataTables_scroll .dataTables_scrollHead table thead tr {
-	background: #d6d6d6;
-}
-.dataTables_wrapper .dataTables_scroll .dataTables_scrollHead table thead tr th {
-    border: none;
-    font-size: 90%;
-    color: #5f5e5f;
-}
-
