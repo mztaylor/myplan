@@ -21,6 +21,8 @@ public class CourseSearchItem {
 
     private String status = "--";
 
+    private String level = "--";
+
     public String getCode() {
         return code;
     }
@@ -67,6 +69,14 @@ public class CourseSearchItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 }
 
