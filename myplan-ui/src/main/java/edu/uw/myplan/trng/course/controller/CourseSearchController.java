@@ -127,6 +127,7 @@ public class CourseSearchController extends UifControllerBase {
                                 item.setScheduledTime(formatScheduledTime(course));
                                 item.setCredit(formatCredits(course));
                                 item.setGenEduReq(formatGenEduReq(course));
+                                item.setLevel(course.getLevel());
                                 // item.setStatus(TBD);
                                 searchResults.add(item);
                             }
