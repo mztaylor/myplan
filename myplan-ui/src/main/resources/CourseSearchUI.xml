@@ -253,7 +253,7 @@
     </bean>
 
 
-    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="6">
+    <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="7">
         <property name="accordion.render" value="false"/>
         <property name="collectionObjectClass" value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
@@ -266,18 +266,36 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <!-- Have to turn off emptyTableMessage, so that oLanguage option is not overridden by code -->
         <property name="layoutManager.tableTools.emptyTableMessage" value=""/>
+        <!-- Have to enable disableTableSort, so that aoColumns option is not overridden by code -->
+        <property name="layoutManager.tableTools.disableTableSort" value="true"/>
         <property name="layoutManager.tableTools.componentOptions">
             <map merge="true">
-                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'oPaginate':{'sNext':'Next &gt;','sPrevious':'&lt; Previous'}}"/>
-                <!--<entry key="aoColumns" value="[ {'sSortDataType':'dom-text'}, {'sSortDataType':'dom-text'}, {'bSortable':false}, {'bSortable':false}, {'bSortable':false} ]"/>-->
+
+                <entry key="oLanguage" value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results'}"/>
+                <entry key="iDisplayLength" value="20"/>
+                <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
+
+                <!--
                 <entry key="sDom" value="ilrtp"/>
+                <entry key="sPaginationType" value="full_numbers"/>
                 <entry key="bRetrieve" value="true"/>
                 <entry key="sScrollX" value="100%"/>
                 <entry key="bScrollCollapse" value="true"/>
-                <entry key="iDisplayLength" value="20"/>
-                <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
-                <entry key="sPaginationType" value="full_numbers"/>
-                <!--<entry key="fnDrawCallback" value="function() {
+                -->
+
+                <entry key="aoColumns" value="[
+                    {'bSortable':true, 'sSortDataType':'dom-text'},
+                    {'bVisible':true},
+                    {'bSortable':false},
+                    {'bSortable':false},
+                    {'bSortable':false},
+                    {'bSortable':false},
+                    {'bVisible':false}
+                ]"/>
+
+
+                <!--
+                <entry key="fnDrawCallback" value="function() {
                     var paginateRow = jq(this).parent().prev().children('div.dataTables_paginate');
                     var pageCount = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
                     if (pageCount > 1)  {
@@ -285,7 +303,8 @@
                     } else {
                         paginateRow.css('display', 'none');
                     }
-                }"/>-->
+                }"/>
+                -->
             </map>
         </property>
         <property name="items">
@@ -320,8 +339,14 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                 <bean parent="AttributeField" p:propertyName="status" p:label="Status" p:readOnly="true">
+                <bean parent="AttributeField" p:propertyName="status" p:label="Status" p:readOnly="true">
                      <property name="styleClasses" value="courseStatus"/>
+                     <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="level" p:label="Level" p:readOnly="true">
+                     <property name="styleClasses" value="courseLevel"/>
                      <property name="control">
                         <bean parent="TextControl"/>
                     </property>
