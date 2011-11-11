@@ -1,27 +1,33 @@
 package edu.uw.myplan.trng.course.dataobject;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  * User: kmuthu
  * Date: 11/3/11
  * Time: 11:08 AM
- * To change this template use File | Settings | File Templates.
+ *
+ *  Wrapper for CourseInfo data.
+ *
  */
 public class CourseSearchItem {
-
     private String code;
-
     private String courseName;
-
     private String credit  = " ";
-
     private String scheduledTime  = " ";
-
     private String genEduReq  = " ";
-
     private String status = "--";
-
     private String level = "--";
+
+    /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
+    private String curriculumFacetKey = "CHEM";
+    private String courseLevelFacetKey = "101";
+    private String genEduReqFacetKey = "";
+    private String timeScheduleFacetKey = "FA";
+    private String creditsFacetKey = "1,2,3";
 
     public String getCode() {
         return code;
@@ -77,6 +83,46 @@ public class CourseSearchItem {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public String getCurriculumFacetKey() {
+        return curriculumFacetKey;
+    }
+
+    public void setCurriculumFacetKey(String curriculumFacetKey) {
+        this.curriculumFacetKey = curriculumFacetKey;
+    }
+
+    public String getCourseLevelFacetKey() {
+        return courseLevelFacetKey;
+    }
+
+    public void setCourseLevelFacetKey(String courseLevelFacetKey) {
+        this.courseLevelFacetKey = courseLevelFacetKey;
+    }
+
+    public String getGenEduReqFacetKey() {
+        return genEduReqFacetKey;
+    }
+
+    public void setGenEduReqFacetKey(String genEduReqFacetKey) {
+        this.genEduReqFacetKey = genEduReqFacetKey;
+    }
+
+    public String getTimeScheduleFacetKey() {
+        return timeScheduleFacetKey;
+    }
+
+    public void setTimeScheduleFacetKey(String timeScheduleFacetKey) {
+        this.timeScheduleFacetKey = timeScheduleFacetKey;
+    }
+
+    public String getCreditsFacetKey() {
+        return creditsFacetKey;
+    }
+
+    public void setCreditsFacetKey(String creditsFacetKey) {
+        this.creditsFacetKey = creditsFacetKey;
     }
 }
 
