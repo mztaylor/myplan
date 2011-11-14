@@ -245,6 +245,7 @@
 		<property name="propertyName" value="courseSearchResults" />
 		<property name="renderAddLine" value="false" />
 		<property name="renderLineActions" value="false" />
+        <property name="layoutManager.id"  value="course_search_results_datatable"/>
 		<property name="layoutManager.sequencePropertyName" value="code" />
 		<property name="layoutManager.sequenceFieldPrototype.label"
 			value="Code" />
@@ -279,7 +280,7 @@
                     {'bSortable':false},
                     {'bSortable':false},
                     {'bSortable':false},
-                    {'bVisible':false}
+                    {'bVisible':true}
                 ]" />
 
 
@@ -334,13 +335,7 @@
 						<bean parent="TextControl" />
 					</property>
 				</bean>
-				<bean parent="AttributeField" p:propertyName="level" p:label="Level"
-					p:readOnly="true">
-					<property name="styleClasses" value="courseLevel" />
-					<property name="control">
-						<bean parent="TextControl" />
-					</property>
-				</bean>
+                <bean parent="ActionLinkField" p:clientSideJs="facetFilter(6, &quot;@{#line.level}&quot;);" p:actionLabel="@{#line.level}" />
 			</list>
 		</property>
 	</bean>
