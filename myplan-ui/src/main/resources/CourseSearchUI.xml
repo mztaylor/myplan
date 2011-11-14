@@ -366,32 +366,20 @@
 		<property name="accordion.render" value="false" />
 		<property name="items">
 			<list>
-				<bean parent="FieldGroup" p:label="By Level"
-					p:labelField.renderColon="false" p:labelField.styleClasses="facetHeader">
-					<property name="items">
-						<list>
-<!-- 							<ref bean="course_search_facet_level_header" /> -->
-							<ref bean="course_search_facet_results" />
-						</list>
-					</property>
-				</bean>
+                <ref bean="course_search_facet_results" />
 			</list>
 		</property>
 	</bean>
 
 
-  <bean id="course_search_facet_results" parent="CollectionGroup" p:accordion.render="false"
+  <bean id="course_search_facet_results" parent="CollectionGroup"
         p:layoutManager-ref="StackedLayoutManagerBox" p:header.styleClasses="facet_header">
 		<property name="accordion.render" value="false" />
 		<property name="collectionObjectClass"
-			value="edu.uw.myplan.trng.course.dataobject.Facettem" />
+			value="edu.uw.myplan.trng.course.dataobject.FacetItem" />
 		<property name="propertyName" value="courseLevelFacetItems" />
 		<property name="renderAddLine" value="false" />
 		<property name="renderLineActions" value="false" />
-		<property name="layoutManager.sequencePropertyName" value="code" />
-		<property name="layoutManager.sequenceFieldPrototype.label"
-			value="Code" />
-		<property name="layoutManager.renderSequenceField" value="false" />
 		<property name="bindingInfo.bindToForm" value="true" />
 		<property name="items">
 			<list>
