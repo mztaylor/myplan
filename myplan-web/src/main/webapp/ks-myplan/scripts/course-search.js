@@ -11,3 +11,4 @@ function facetFilter(colIndex, filterText ) {
     /* Filter immediately */
     oTable.fnFilter(filterText, colIndex );
 }
+

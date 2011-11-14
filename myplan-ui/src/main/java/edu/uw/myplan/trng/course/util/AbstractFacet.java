@@ -27,4 +27,23 @@ public abstract class AbstractFacet {
      * @param item A CourseSearchItem which will be parsed and code.
      */
     public abstract void process(CourseInfo course, CourseSearchItem item);
+
+    /**
+     * Checks if the facet key is new or not. If not a new facet key, increments the count for that facet
+     * @param key
+     * @return
+     */
+    protected boolean checkIfNewFacetKey(String key) {
+        boolean isNew = true;
+
+        for (FacetItem item : facetItems) {
+            if (item.getKey().equals(key)) {
+                item.setCount(item.getCount() + 1);
+                isNew = false;
+                break;
+            }
+        }
+
+        return isNew;
+    }
 }
