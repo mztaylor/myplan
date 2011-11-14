@@ -13,11 +13,6 @@ public class FacetItem {
     /* Number of CourseSearchItems which match this facet. */
     private int count;
 
-    public FacetItem(String key, String displayName) {
-        this.key = key;
-        this.displayName = displayName;
-    }
-
     public String getKey() {
         return key;
     }
