@@ -4,8 +4,7 @@ jq(document).ready(function() {
     jq("#course_search_fields_span span input[type='text']").blur();
 } );
 
-function facetFilter(colIndex, filterText) {
-
+function facetFilter(colIndex, filterText, obj) {
     if ( !arrFacets[colIndex] ) {
     	arrFacets[colIndex] = [];
     }
@@ -15,32 +14,27 @@ function facetFilter(colIndex, filterText) {
     } else {
     	arrFacets[colIndex].splice(key, 1);
     }
-
-    filterDataTable(arrFacets);
+    jq(obj).toggleClass('checked');
+    filterDataTable(arrFacets, colIndex);
 }
 
-function filterDataTable(arrFacets) {
+function facetAll(colIndex) {
+    arrFacets[colIndex] = [];
+    filterDataTable(arrFacets, colIndex);
+}
 
+function filterDataTable(arrFacets, colIndex) {
     oTable = jq('#course_search_results_datatable').dataTable();
-
-	for ( var i = 0; i < arrFacets.length; i++ ) {
-
-        oTable.fnFilter('', i, true, false);
-
-        var queryString;
-
-		if ( arrFacets[i] && arrFacets[i].length > 0 ) {
-
-            for ( var n = 0; n < arrFacets[i].length; n++ ) {
-
-				if ( n === 0 ) {
-					queryString = arrFacets[i][n];
-				} else {
-					queryString = queryString + '|' + arrFacets[i][n];
-				}
-			}
-            oTable.fnFilter(queryString, i, true, false);
-		}
-	}
+    oTable.fnFilter('', colIndex, true, false);
+    var queryString;
+    if ( arrFacets[colIndex] && arrFacets[colIndex].length > 0 ) {
+        for ( var i = 0; i < arrFacets[colIndex].length; i++ ) {
+            if ( i === 0 ) {
+                queryString = arrFacets[colIndex][i];
+            } else {
+                queryString = queryString + '|' + arrFacets[colIndex][i];
+            }
+        }
+        oTable.fnFilter(queryString, colIndex, true, false);
+    }
 }
-
