@@ -115,3 +115,11 @@
 .dataTables_wrapper .dataTables_paginate .first, .dataTables_wrapper .dataTables_paginate .last {
 	display:none;
 }
+.facets a.item {
+    padding:0 0 0 21px;
+    background:url('/myplan-embedded-dev/ks-myplan/images/facetCheckbox.png') no-repeat 0px 0px;
+    min-height:16px;
+}
+.facets a.item.checked {
+    background-position: 0px -32px;
+}
