@@ -267,21 +267,20 @@
                        value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results'}"/>
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
-
-                <!-- <entry key="sDom" value="ilrtp"/> <entry key="sPaginationType" value="full_numbers"/>
-                        <entry key="bRetrieve" value="true"/> <entry key="sScrollX" value="100%"/>
-                        <entry key="bScrollCollapse" value="true"/> -->
-
+                <entry key="sDom" value="ilrtp"/>
+                <entry key="sPaginationType" value="full_numbers"/>
+                <entry key="bRetrieve" value="true"/> <entry key="sScrollX" value="100%"/>
+                <entry key="bScrollCollapse" value="true"/>
                 <entry key="aoColumns"
                        value="[
-                    {'bSortable':true, 'sSortDataType':'dom-text'},
-                    {'bVisible':true},
-                    {'bSortable':false},
-                    {'bSortable':false},
-                    {'bSortable':false},
-                    {'bSortable':false},
-                    {'bVisible':false}
-                ]"/>
+                            {'bSortable':true, 'sSortDataType':'dom-text'},
+                            {'bVisible':true},
+                            {'bSortable':false},
+                            {'bSortable':false},
+                            {'bSortable':false},
+                            {'bSortable':false},
+                            {'bVisible':false}
+                        ]"/>
 
 
                 <!-- <entry key="fnDrawCallback" value="function() { var paginateRow
@@ -394,7 +393,7 @@
                               p:actionLabel="All" p:styleClasses="facetAllCheck">
                             <property name="actionImageField">
                                 <bean parent="ImageField"
-                                      p:source="../ks-myplan/images/checkboxUnchecked.gif"
+                                      p:source="../ks-myplan/images/checkboxChecked.png"
                                       p:altText="Apply All"/>
                             </property>
                         </bean>
@@ -409,7 +408,7 @@
                       p:actionLabel="@{#line.displayName}">
                     <property name="actionImageField">
                         <bean parent="ImageField"
-                              p:source="../ks-myplan/images/checkboxUnchecked.gif"
+                              p:source="../ks-myplan/images/checkboxUnchecked.png"
                               p:altText="@{#line.displayName}"/>
                     </property>
                 </bean>
