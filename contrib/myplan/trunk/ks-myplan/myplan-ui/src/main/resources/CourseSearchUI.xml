@@ -383,34 +383,29 @@
         <property name="collectionObjectClass"
                   value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
         <property name="propertyName" value="courseLevelFacetItems"/>
-        <property name="styleClasses" value="facetBox"/>
+        <property name="styleClasses" value="facets"/>
         <property name="header.group">
             <bean parent="GroupBodyOnly">
                 <property name="layoutManager.orientation" value="HORIZONTAL"/>
                 <property name="items">
                     <list>
-                        <bean parent="ActionLinkField" p:clientSideJs=""
-                              p:actionLabel="All" p:styleClasses="facetAllCheck">
-                            <property name="actionImageField">
-                                <bean parent="ImageField"
-                                      p:source="../ks-myplan/images/checkboxChecked.png"
-                                      p:altText="Apply All"/>
-                            </property>
+                        <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(6);">
+                            <!--<property name="actionImageField">
+                                <bean parent="ImageField" p:altText="Apply All"
+                                      p:source="../ks-myplan/images/checkboxChecked.png"/>
+                            </property>-->
                         </bean>
                     </list>
                 </property>
             </bean>
         </property>
-
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;);"
-                      p:actionLabel="@{#line.displayName}">
-                    <property name="actionImageField">
-                        <bean parent="ImageField"
-                              p:source="../ks-myplan/images/checkboxUnchecked.png"
-                              p:altText="@{#line.displayName}"/>
-                    </property>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="item" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;, this);">
+                    <!--<property name="actionImageField">
+                        <bean parent="ImageField" p:altText="@{#line.displayName}"
+                              p:source="../ks-myplan/images/checkboxUnchecked.png"/>
+                    </property>-->
                 </bean>
             </list>
         </property>
