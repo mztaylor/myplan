@@ -1,3 +1,7 @@
+a, a:hover, a:active, a:focus {
+  outline: 0;
+}
+
 #view_div {
 	margin:0 auto;
 	padding: 10px;
