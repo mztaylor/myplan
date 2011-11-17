@@ -32,9 +32,9 @@ public abstract class AbstractFacet {
     public abstract void process(CourseInfo course, CourseSearchItem item);
 
     /**
-     * Checks if the facet key is new or not. If not a new facet key, increments the count for that facet.
+     * Checks if the facet key is new. If not the count is incremented.
      * @param key
-     * @return
+     * @return True if the facet key exists. Otherwise, false.
      */
     protected boolean checkIfNewFacetKey(String key) {
         boolean isNew = true;
