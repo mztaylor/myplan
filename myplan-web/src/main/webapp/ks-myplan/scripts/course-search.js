@@ -2,6 +2,9 @@ var arrFacets = [];
 
 jq(document).ready(function() {
     jq("#course_search_fields_span span input[type='text']").blur();
+    jq(".facets a[id$='_toggle'").live("click", function(){
+        jq(this).toggleClass('collapsed');
+    });
 } );
 
 function facetFilter(colIndex, filterText, obj) {
@@ -12,11 +15,14 @@ function facetFilter(colIndex, filterText, obj) {
     if ( key === -1 ) {
     	arrFacets[colIndex].push(String(filterText));
         jq(obj).addClass('checked');
+        jq(obj).parents('.facets').find('a.all').removeClass('checked');
     } else {
     	arrFacets[colIndex].splice(key, 1);
         jq(obj).removeClass('checked');
+        if ( arrFacets[colIndex].length === 0 ) {
+           jq(obj).parents('.facets').find('a.all').addClass('checked');
+        }
     }
-    jq(obj).parents('.facets').find('a.all').removeClass('checked');
     filterDataTable(arrFacets, colIndex);
 }
 
