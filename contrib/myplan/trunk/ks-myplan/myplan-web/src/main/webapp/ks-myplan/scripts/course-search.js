@@ -11,15 +11,21 @@ function facetFilter(colIndex, filterText, obj) {
     var key = jq.inArray(String(filterText), arrFacets[colIndex]);
     if ( key === -1 ) {
     	arrFacets[colIndex].push(String(filterText));
+        jq(obj).addClass('checked');
     } else {
     	arrFacets[colIndex].splice(key, 1);
+        jq(obj).removeClass('checked');
     }
-    jq(obj).toggleClass('checked');
+    jq(obj).parents('.facets').find('a.all').removeClass('checked');
     filterDataTable(arrFacets, colIndex);
 }
 
-function facetAll(colIndex) {
+function facetAll(colIndex, obj) {
     arrFacets[colIndex] = [];
+    jq(obj).parents('.facets').find("div[id$='_group'] a.item").each(function() {
+    	jq(this).removeClass('checked');
+    });
+    jq(obj).addClass('checked');
     filterDataTable(arrFacets, colIndex);
 }
 
