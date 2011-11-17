@@ -49,8 +49,7 @@
     border-left: solid 1px #a9a9a9;
     border-right: solid 1px #a9a9a9;
     border: solid 1px #a9a9a9;
-    font-size: 90%;
-    min-height: 400px; /* for development purposes only */
+    font-size: 85%;
     width:118px;
 }
 #course_search_result_facets_div h4.section-subhead,  #course_search_result_facets_group .facetHeader label {
@@ -60,10 +59,27 @@
 	border-bottom: solid 1px #a9a9a9;
 	padding:5px;
 }
-#course_search_result_facets_group .facetHeader label {
-	background: #e4e4e4;
+#course_search_result_facets_div .facets h4.section-subhead {
+	background: #e9e9e9;
 	font-weight:bold;
     font-size:90%;
+    display:block;
+}
+#course_search_result_facets_div .facets a img.expand_collapse-buttons {
+    float: right;
+    background: url('/myplan-embedded-dev/ks-myplan/images/facetExpandCollapse.png') no-repeat 0px 0px;
+}
+#course_search_result_facets_div .facets a.collapsed img.expand_collapse-buttons {
+    background-position: 0px -14px;
+}
+#course_search_result_facets_div .facets a.item {
+    padding: 0 0 0 21px;
+    background: url('/myplan-embedded-dev/ks-myplan/images/facetCheckbox.png') no-repeat 0px 0px;
+    min-height: 16px;
+    display: block;
+}
+#course_search_result_facets_div .facets a.item.checked {
+    background-position: 0px -32px;
 }
 #course_search_results_div {
 	margin:0;
@@ -114,12 +130,4 @@
 }
 .dataTables_wrapper .dataTables_paginate .first, .dataTables_wrapper .dataTables_paginate .last {
 	display:none;
-}
-.facets a.item {
-    padding:0 0 0 21px;
-    background:url('/myplan-embedded-dev/ks-myplan/images/facetCheckbox.png') no-repeat 0px 0px;
-    min-height:16px;
-}
-.facets a.item.checked {
-    background-position: 0px -32px;
 }
