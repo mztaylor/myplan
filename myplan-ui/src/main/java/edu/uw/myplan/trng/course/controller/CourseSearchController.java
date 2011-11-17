@@ -127,10 +127,7 @@ public class CourseSearchController extends UifControllerBase {
             }
         }
 
-
-
         try {
-
             HashSet<String> courseSet = new HashSet<String>();
             for( String term : terms )
             {
@@ -165,7 +162,6 @@ public class CourseSearchController extends UifControllerBase {
                 item.setScheduledTime(formatScheduledTime(course));
                 item.setCredit(formatCredits(course));
                 item.setGenEduReq(formatGenEduReq(course));
-                item.setLevel(course.getLevel());
                 // item.setStatus(TBD);
 
                 //  Update facet info and code the item.

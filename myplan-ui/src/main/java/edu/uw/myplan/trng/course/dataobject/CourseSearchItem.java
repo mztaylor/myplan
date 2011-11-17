@@ -16,18 +16,17 @@ import java.util.Map;
 public class CourseSearchItem {
     private String code;
     private String courseName;
-    private String credit  = " ";
-    private String scheduledTime  = " ";
-    private String genEduReq  = " ";
+    private String credit  = "--";
+    private String scheduledTime  = "--";
+    private String genEduReq  = "--";
     private String status = "--";
-    private String level = "--";
 
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
-    private String curriculumFacetKey = "CHEM";
-    private String courseLevelFacetKey = "101";
-    private String genEduReqFacetKey = "";
-    private String timeScheduleFacetKey = "FA";
-    private String creditsFacetKey = "1,2,3";
+    private String curriculumFacetKey;
+    private String courseLevelFacetKey;
+    private String genEduReqFacetKey;
+    private String timeScheduleFacetKey;
+    private String creditsFacetKey;
 
     public String getCode() {
         return code;
@@ -75,14 +74,6 @@ public class CourseSearchItem {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
     }
 
     public String getCurriculumFacetKey() {
