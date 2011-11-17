@@ -389,7 +389,7 @@
                 <property name="layoutManager.orientation" value="HORIZONTAL"/>
                 <property name="items">
                     <list>
-                        <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(6);">
+                        <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(6, this);">
                             <!--<property name="actionImageField">
                                 <bean parent="ImageField" p:altText="Apply All"
                                       p:source="../ks-myplan/images/checkboxChecked.png"/>
