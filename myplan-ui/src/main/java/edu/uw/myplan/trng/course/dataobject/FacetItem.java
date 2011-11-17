@@ -3,7 +3,7 @@ package edu.uw.myplan.trng.course.dataobject;
 /**
  *  Facet results record.
  */
-public class FacetItem {
+public class FacetItem implements Comparable<FacetItem> {
     /* The key which will be used for filtering in the main grid of search results. */
     private String key;
 
@@ -35,5 +35,13 @@ public class FacetItem {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    @Override
+    public int compareTo(FacetItem other) {
+        if (other == null) {
+            return 1;
+        }
+        return this.getDisplayName().compareTo(other.getDisplayName());
     }
 }

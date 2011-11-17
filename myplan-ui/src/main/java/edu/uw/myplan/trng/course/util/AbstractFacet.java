@@ -5,6 +5,7 @@ import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractFacet {
@@ -16,6 +17,8 @@ public abstract class AbstractFacet {
     }
 
     public List<FacetItem> getFacetItems() {
+        //  Put the list in a predictable order.
+        Collections.sort(facetItems);
         return facetItems;
     }
 
@@ -24,12 +27,12 @@ public abstract class AbstractFacet {
      * codes the CourseSearchItem by adding the FacetItem key to the CourseSearchItem.
      *
      * @param course
-     * @param item A CourseSearchItem which will be parsed and code.
+     * @param item A CourseSearchItem which will be parsed and coded.
      */
     public abstract void process(CourseInfo course, CourseSearchItem item);
 
     /**
-     * Checks if the facet key is new or not. If not a new facet key, increments the count for that facet
+     * Checks if the facet key is new or not. If not a new facet key, increments the count for that facet.
      * @param key
      * @return
      */
