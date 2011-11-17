@@ -52,6 +52,9 @@
     font-size: 85%;
     width:118px;
 }
+#course_search_result_facets_div table, #course_search_result_facets_div .boxLayoutVerticalItem {
+    margin: 0;
+}
 #course_search_result_facets_div h4.section-subhead,  #course_search_result_facets_group .facetHeader label {
 	display:block;
 	font-weight: normal;
