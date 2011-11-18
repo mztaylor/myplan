@@ -16,10 +16,10 @@ import java.util.Map;
 public class CourseSearchItem {
     private String code;
     private String courseName;
-    private String credit  = "--";
-    private String scheduledTime  = "--";
-    private String genEduReq  = "--";
-    private String status = "--";
+    private String credit;
+    private String scheduledTime;
+    private String genEduReq;
+    private String status;
 
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
     private String curriculumFacetKey;
@@ -116,4 +116,3 @@ public class CourseSearchItem {
         this.creditsFacetKey = creditsFacetKey;
     }
 }
-
