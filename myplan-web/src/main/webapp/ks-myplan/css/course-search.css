@@ -57,6 +57,7 @@
 }
 #course_search_result_facets_div .facets>div[id$='_group'] {
     border-bottom: solid 1px #a9a9a9;
+    padding: 3px;
 }
 
 #course_search_result_facets_div h4.section-subhead,  #course_search_result_facets_group .facetHeader label {
