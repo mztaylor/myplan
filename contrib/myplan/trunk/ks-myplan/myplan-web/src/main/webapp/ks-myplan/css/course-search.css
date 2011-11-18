@@ -77,7 +77,7 @@
     float: right;
     background: url('/myplan-embedded-dev/ks-myplan/images/facetExpandCollapse.png') no-repeat 0px 0px;
 }
-#course_search_result_facets_div .facets a.collapsed img.expand_collapse-buttons {
+#course_search_result_facets_div .facets a img.expand_collapse-buttons.collapsed {
     background-position: 0px -14px;
 }
 #course_search_result_facets_div .facets a.item {
