@@ -51,7 +51,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
-
 @Controller
 @RequestMapping(value = "/course")
 public class CourseSearchController extends UifControllerBase {
@@ -188,12 +187,11 @@ public class CourseSearchController extends UifControllerBase {
             throw new RuntimeException(e);
         }
 
-
         return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     private String formatCredits(CourseInfo courseInfo) {
-        String credits = "--";
+        String credits = "";
 
         List<ResultComponentInfo> options = courseInfo.getCreditOptions();
         if (options.size() == 0) {
@@ -218,7 +216,7 @@ public class CourseSearchController extends UifControllerBase {
             StringBuilder cTmp = new StringBuilder();
             for (String c : rci.getResultValues()) {
                 if (cTmp.length() != 0) {
-                    cTmp.append(" ,");
+                    cTmp.append(", ");
                 }
                 cTmp.append(trimCredits(c));
             }
@@ -227,6 +225,8 @@ public class CourseSearchController extends UifControllerBase {
             String minCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE);
             String maxCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE);
             credits = minCredits + "-" + maxCredits;
+        } else {
+            logger.error("Unknown Course Credit type [" + type + "].");
         }
         return credits;
     }
@@ -245,6 +245,7 @@ public class CourseSearchController extends UifControllerBase {
     private String formatScheduledTime(CourseInfo courseInfo) {
         List<String> terms = courseInfo.getTermsOffered();
         Collections.sort(terms);
+        //  TODO: Order terms (Fall, Winter, Spring, Summer)
         StringBuilder termsTmp = new StringBuilder();
         for (String term : terms) {
             if (termsTmp.length() != 0) {

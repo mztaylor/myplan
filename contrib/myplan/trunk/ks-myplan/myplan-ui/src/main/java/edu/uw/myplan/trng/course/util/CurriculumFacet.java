@@ -30,17 +30,25 @@ public class CurriculumFacet extends AbstractFacet {
      */
     @Override
     public void process(CourseInfo course, CourseSearchItem courseSearchItem) {
+
         String key = course.getSubjectArea();
+        String displayName = null;
+        if (key == null || key.equals("")) {
+            key = "unknown";
+            displayName = "Unknown";
+        }
 
         //  If it's a new facet key then create a new FacetItem. Otherwise, just increment the count.
         if (checkIfNewFacetKey(key)) {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
-            String displayName = getOrganizationName(key);
+            if (displayName == null) {
+                displayName = getOrganizationName(key);
+            }
             FacetItem item = new FacetItem();
             item.setKey(key);
             item.setDisplayName(displayName);
-            item.setCount(item.getCount() + 1);
+            item.setCount(1);
             facetItems.add(item);
         }
         //  Code the item with the facet key.
@@ -60,13 +68,14 @@ public class CurriculumFacet extends AbstractFacet {
             organizationName = subjectAreaCache.get(key);
         } else {
             //  TODO: FIXME: This doesn't current do the right thing. Waiting for Kamal and Virginia to work through org mapping.
-            try {
-                OrgInfo oi = getOrganizationService().getOrganization(key);
-                organizationName = oi.getShortName();
-            } catch (Exception e) {
-                //  TODO: Determine the Right thing to do.
+            //  Don't do the lookup because it outputs stack traces.
+            //try {
+            //    OrgInfo oi = getOrganizationService().getOrganization(key);
+           //     organizationName = oi.getShortName();
+            //} catch (Exception e) {
+            //    //  TODO: Determine the Right thing to do.
                 //e.printStackTrace();
-            }
+            //}
             //  Put this item in the cache.
             subjectAreaCache.put(key, organizationName);
         }
