@@ -125,7 +125,21 @@ public class CourseSearchController extends UifControllerBase {
                     break;
             }
         }
-
+        String campus1 = "XX";
+        String campus2 = "XX";
+        String campus3 = "XX";
+        if( courseSearchForm.getCampusSeattle() )
+        {
+            campus1 = "NO";
+        }
+        if( courseSearchForm.getCampusTacoma() )
+        {
+            campus2 = "SO";
+        }
+        if( courseSearchForm.getCampusBothell() )
+        {
+            campus3 = "AL";
+        }
         try {
             HashSet<String> courseSet = new HashSet<String>();
             for( String term : terms )
@@ -133,6 +147,9 @@ public class CourseSearchController extends UifControllerBase {
                 List<SearchParam> params = new ArrayList<SearchParam>();
                 params.add( new SearchParam( "queryText", term ));
                 params.add( new SearchParam( "queryLevel", level ));
+                params.add( new SearchParam( "campus1", campus1 ));
+                params.add( new SearchParam( "campus2", campus2 ));
+                params.add( new SearchParam( "campus3", campus3 ));
 
                 SearchRequest searchRequest = new SearchRequest();
                 searchRequest.setParams(params);
