@@ -264,7 +264,8 @@ public class CourseSearchController extends UifControllerBase {
         Collections.sort(terms);
         //  TODO: Order terms (Fall, Winter, Spring, Summer)
         StringBuilder termsTmp = new StringBuilder();
-        for (String term : terms) {
+        for (String term : terms)
+        {
             if (termsTmp.length() != 0) {
                 termsTmp.append(", ");
             }

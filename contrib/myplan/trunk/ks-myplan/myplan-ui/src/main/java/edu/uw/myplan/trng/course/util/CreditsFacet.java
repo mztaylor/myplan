@@ -13,8 +13,6 @@ import java.util.List;
 */
 public class CreditsFacet extends AbstractFacet {
 
-    private static final String keyDelimiter = ";";
-
     public CreditsFacet() {
         super();
     }
@@ -34,12 +32,12 @@ public class CreditsFacet extends AbstractFacet {
          *      Variable: 2-4
          */
         String credits = item.getCredit();
-        String displayName = null;
+        boolean isUnknown = false;
 
         //  If not credits info was set then setup for an "Unknown" facet.
         if (credits == null || credits.equals("")) {
-            credits = "u";
-            displayName = "Unknown";
+            isUnknown = true;
+            credits = UNKNOWN_FACET_KEY;
         }
 
         //  Parse the credits string and make a list of keys.
@@ -62,14 +60,18 @@ public class CreditsFacet extends AbstractFacet {
             keys.add(credits);
         }
 
-        for (String key : keys) {
-            if (checkIfNewFacetKey(key + keyDelimiter)) {
+        for (String key : keys)
+        {
+            if (checkIfNewFacetKey(key + FACET_KEY_DELIMITER)) {
                 FacetItem fItem = new FacetItem();
+                String displayName = null;
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
-                if (displayName == null) {
+                if (isUnknown) {
+                    displayName = UNKNOWN_FACET_DISPLAY_NAME;
+                } else {
                     displayName = key;
                 }
-                fItem.setKey(key + keyDelimiter);
+                fItem.setKey(key + FACET_KEY_DELIMITER);
                 fItem.setDisplayName(displayName);
                 fItem.setCount(1);
                 facetItems.add(fItem);
@@ -78,8 +80,9 @@ public class CreditsFacet extends AbstractFacet {
 
         //  Convert the list back into a string which can be matched against on the client.
         StringBuilder kb = new StringBuilder();
-        for (String k : keys) {
-            kb.append(k).append(keyDelimiter);
+        for (String k : keys)
+        {
+            kb.append(k).append(FACET_KEY_DELIMITER);
         }
         item.setCreditsFacetKey(kb.toString());
     }

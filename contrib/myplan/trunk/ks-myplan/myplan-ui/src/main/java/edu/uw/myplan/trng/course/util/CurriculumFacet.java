@@ -32,17 +32,21 @@ public class CurriculumFacet extends AbstractFacet {
     public void process(CourseInfo course, CourseSearchItem courseSearchItem) {
 
         String key = course.getSubjectArea();
-        String displayName = null;
+        boolean isUnknown = false;
+
+        //  If no subject area info was set then setup for an "Unknown" facet item.
         if (key == null || key.equals("")) {
-            key = "unknown";
-            displayName = "Unknown";
+            key = UNKNOWN_FACET_KEY;
         }
 
         //  If it's a new facet key then create a new FacetItem. Otherwise, just increment the count.
         if (checkIfNewFacetKey(key)) {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
-            if (displayName == null) {
+            String displayName = null;
+            if (isUnknown) {
+                displayName = UNKNOWN_FACET_DISPLAY_NAME;
+            } else {
                 displayName = getOrganizationName(key);
             }
             FacetItem item = new FacetItem();
