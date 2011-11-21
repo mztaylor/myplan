@@ -307,7 +307,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="credit" p:label="Credits"
+                <bean parent="AttributeField" p:propertyName="creditsFacetKey" p:label="Credits"
                       p:readOnly="true">
                     <property name="styleClasses" value="courseCredits"/>
                     <property name="control">
@@ -408,7 +408,7 @@
         <property name="propertyName" value="courseLevelFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -438,7 +438,7 @@
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(7, &quot;@{#line.key}&quot;, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(7, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -468,7 +468,7 @@
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(4, &quot;@{#line.key}&quot;, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(4, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -498,7 +498,7 @@
         <property name="propertyName" value="creditsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(2, &quot;@{#line.key}&quot;, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(2, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -528,7 +528,7 @@
         <property name="propertyName" value="timeScheduleFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(3, &quot;@{#line.key}&quot;, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(3, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
