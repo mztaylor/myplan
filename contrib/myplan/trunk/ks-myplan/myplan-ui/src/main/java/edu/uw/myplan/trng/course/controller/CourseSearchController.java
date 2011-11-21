@@ -259,10 +259,49 @@ public class CourseSearchController extends UifControllerBase {
         return credits;
     }
 
+    /**
+     * Hard-coded term ordering.
+     * TODO: Make this runtime configurable.
+     */
+    private enum TermOrder {
+        FALL   ("kuali.atp.season.Fall"),
+        WINTER ("kuali.atp.season.Winter"),
+        SPRING ("kuali.atp.season.Spring"),
+        SUMMER ("kuali.atp.season.Summer");
+
+        private String termKey;
+
+        TermOrder(String termKey) {
+            this.termKey = termKey;
+        }
+
+        private String getTermKey() {
+            return termKey;
+        }
+
+        /*
+         *  Sort a list of term keys in the order described above.
+         */
+        private static void orderTerms(List<String> terms) {
+            Object[] termsArray = terms.toArray();
+            int index = 0;
+            for (TermOrder t : TermOrder.values())
+            {
+                for (int i = 0; i < termsArray.length; i++)
+                {
+                    if (t.getTermKey().equals(termsArray[i])) {
+                        terms.set(index, (String) t.getTermKey());
+                        index++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private String formatScheduledTime(CourseInfo courseInfo) {
         List<String> terms = courseInfo.getTermsOffered();
-        Collections.sort(terms);
-        //  TODO: Order terms (Fall, Winter, Spring, Summer)
+        TermOrder.orderTerms(terms);
         StringBuilder termsTmp = new StringBuilder();
         for (String term : terms)
         {
@@ -311,7 +350,7 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     private String formatGenEduReq(CourseInfo courseInfo) {
-        return "--";
+        return "";
     }
 
     //Note: here I am using r1 LuService implementation!!!
