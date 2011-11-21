@@ -13,6 +13,8 @@ import java.util.List;
 */
 public class CreditsFacet extends AbstractFacet {
 
+    private static final String keyDelimiter = ";";
+
     public CreditsFacet() {
         super();
     }
@@ -32,14 +34,16 @@ public class CreditsFacet extends AbstractFacet {
          *      Variable: 2-4
          */
         String credits = item.getCredit();
+        String displayName = null;
 
-        //  Make sure credit info exists before processing it.
+        //  If not credits info was set then setup for an "Unknown" facet.
         if (credits == null || credits.equals("")) {
-            credits = "Unknown";
+            credits = "u";
+            displayName = "Unknown";
         }
 
-        List<String> keys = new ArrayList<String>();
         //  Parse the credits string and make a list of keys.
+        List<String> keys = new ArrayList<String>();
         if (credits.contains("-")) {
             //  Parse the range and create keys at one credit increments.
             String k[] = credits.split("-");
@@ -59,19 +63,23 @@ public class CreditsFacet extends AbstractFacet {
         }
 
         for (String key : keys) {
-            if (checkIfNewFacetKey(key)) {
+            if (checkIfNewFacetKey(key + keyDelimiter)) {
                 FacetItem fItem = new FacetItem();
-                //  The display name and the key are the same in this case.
-                fItem.setKey(key);
-                fItem.setDisplayName(key);
+                //  Use the key as the display name if it wasn't set to "Unknown" above.
+                if (displayName == null) {
+                    displayName = key;
+                }
+                fItem.setKey(key + keyDelimiter);
+                fItem.setDisplayName(displayName);
                 fItem.setCount(1);
                 facetItems.add(fItem);
             }
         }
+
         //  Convert the list back into a string which can be matched against on the client.
         StringBuilder kb = new StringBuilder();
         for (String k : keys) {
-            kb.append(k).append(";");
+            kb.append(k).append(keyDelimiter);
         }
         item.setCreditsFacetKey(kb.toString());
     }
