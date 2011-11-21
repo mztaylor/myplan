@@ -2,9 +2,6 @@ var arrFacets = [];
 
 jq(document).ready(function() {
     jq("#course_search_fields_span span input[type='text']").blur();
-    jq(".facets .section-subhead a[id$='_toggle'] img").live("click", function(){
-        jq(this).toggleClass('collapsed');
-    });
 } );
 
 function facetFilter(colIndex, filterText, obj) {
