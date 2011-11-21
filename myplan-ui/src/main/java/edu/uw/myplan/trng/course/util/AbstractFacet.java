@@ -12,6 +12,10 @@ public abstract class AbstractFacet {
 
     List<FacetItem> facetItems;
 
+    static final String FACET_KEY_DELIMITER = ";";
+    static final String UNKNOWN_FACET_KEY = "u";
+    static final String UNKNOWN_FACET_DISPLAY_NAME = "Unknown";
+
     public AbstractFacet() {
         this.facetItems = new ArrayList<FacetItem>();
     }
@@ -39,7 +43,8 @@ public abstract class AbstractFacet {
     protected boolean checkIfNewFacetKey(String key) {
         boolean isNew = true;
 
-        for (FacetItem item : facetItems) {
+        for (FacetItem item : facetItems)
+        {
             if (item.getKey().equals(key)) {
                 item.setCount(item.getCount() + 1);
                 isNew = false;
