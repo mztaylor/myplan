@@ -168,8 +168,9 @@
     font-size: 90%;
     color: #5f5e5f;
 }
-.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr .courseCode {
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr td.courseCode {
     font-weight: bold;
+    white-space: nowrap;
 }
 .dataTables_wrapper .dataTables_scroll .odd, .dataTables_wrapper .dataTables_scroll .odd .sorting_1 {
     background-color: #fff;
