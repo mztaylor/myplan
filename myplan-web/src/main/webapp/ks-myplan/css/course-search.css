@@ -57,7 +57,12 @@
 }
 #course_search_result_facets_div .facets>div[id$='_group'] {
     border-bottom: solid 1px #a9a9a9;
-    padding: 3px 3px 0 3px;
+    padding:0;
+}
+#course_search_result_facets_div .facets>div[id$='_group'] span.fieldLine span.all {
+	border-bottom:solid 1px #a9a9a9;
+	display:block;
+    margin-bottom: -1px;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] {
 	max-height: 133px;
@@ -127,7 +132,7 @@
     min-height: 16px;
     line-height: 16px;
     display: block;
-    margin: 0 0 3px 0;
+    margin: 3px;
 }
 #course_search_result_facets_div .facets a.item.checked {
     background-position: 0px -32px;
