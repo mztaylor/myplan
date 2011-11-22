@@ -57,8 +57,46 @@
 }
 #course_search_result_facets_div .facets>div[id$='_group'] {
     border-bottom: solid 1px #a9a9a9;
-    padding: 3px;
+    padding: 3px 3px 0 3px;
 }
+#course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] {
+	max-height: 133px;
+	overflow-y: auto;
+}
+#course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
+	overflow:hidden;
+}
+
+
+/* beginning of scrollbar */
+::-webkit-scrollbar{
+        width:8px;
+        height:8px;}
+
+::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment{
+        display:block;
+        height:0;
+        background-color:transparent;}
+
+::-webkit-scrollbar-track {
+		margin: 3px;}
+
+::-webkit-scrollbar-track-piece{
+        background-color:#eee;
+        -webkit-border-radius:8px;}
+
+::-webkit-scrollbar-thumb:vertical{
+        height:50px;background-color:#999;
+        -webkit-border-radius:8px;}
+
+::-webkit-scrollbar-thumb:horizontal{
+        width:50px;background-color:#999;
+        -webkit-border-radius:8px;}
+/* end of scrollbar */
+
+
+
+
 
 #course_search_result_facets_div h4.section-subhead,  #course_search_result_facets_group .facetHeader label {
 	display:block;
@@ -89,6 +127,7 @@
     min-height: 16px;
     line-height: 16px;
     display: block;
+    margin: 0 0 3px 0;
 }
 #course_search_result_facets_div .facets a.item.checked {
     background-position: 0px -32px;

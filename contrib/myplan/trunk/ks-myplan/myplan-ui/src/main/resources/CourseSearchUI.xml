@@ -181,12 +181,6 @@
         <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
         <property name="items">
             <list>
-                <bean parent="AttributeField_Form" p:propertyName="campusBothell"
-                      p:label="Bothell campus" p:labelPlacement="RIGHT" p:defaultValue="true">
-                    <property name="control">
-                        <bean parent="CheckboxControl"/>
-                    </property>
-                </bean>
                 <bean parent="AttributeField_Form" p:propertyName="campusSeattle"
                       p:label="Seattle campus" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
@@ -195,6 +189,12 @@
                 </bean>
                 <bean parent="AttributeField_Form" p:propertyName="campusTacoma"
                       p:label="Tacoma campus" p:labelPlacement="RIGHT" p:defaultValue="true">
+                    <property name="control">
+                        <bean parent="CheckboxControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField_Form" p:propertyName="campusBothell"
+                      p:label="Bothell campus" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="CheckboxControl"/>
                     </property>
@@ -238,7 +238,7 @@
 
 
     <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout"
-          p:layoutManager.numberOfColumns="8">
+          p:layoutManager.numberOfColumns="11">
         <property name="accordion.render" value="false"/>
         <property name="collectionObjectClass"
                   value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
@@ -274,11 +274,14 @@
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'bVisible':true},
+                            {'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':false},
                             {'bSortable':false},
                             {'bSortable':false},
                             {'bSortable':false},
+                            {'bVisible':false},
+                            {'bVisible':false},
+                            {'bVisible':false},
                             {'bVisible':false},
                             {'bVisible':false}
                         ]"/>
@@ -307,7 +310,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="creditsFacetKey" p:label="Credits"
+                <bean parent="AttributeField" p:propertyName="credit" p:label="Credits"
                       p:readOnly="true">
                     <property name="styleClasses" value="courseCredits"/>
                     <property name="control">
@@ -328,23 +331,39 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="status" p:label="Status"
+                <bean parent="AttributeField" p:propertyName="status" p:label=""
                       p:readOnly="true">
                     <property name="styleClasses" value="courseStatus"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
+                <bean parent="AttributeField" p:propertyName="timeScheduleFacetKey" p:label="Quarter Offered"
                       p:readOnly="true">
-                    <property name="styleClasses" value="courseLevel"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="curriculumFacetKey" p:label="Curriculum"
+                <bean parent="AttributeField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req"
                       p:readOnly="true">
-                    <property name="styleClasses" value="courseCurriculum"/>
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="creditsFacetKey" p:label="Credits"
+                      p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
+                      p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+                <bean parent="AttributeField" p:propertyName="curriculumFacetKey" p:label="Subject Area"
+                      p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
@@ -368,148 +387,27 @@
         </property>
     </bean>
 
-
     <!-- Group for Search Facets -->
     <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
         <property name="accordion.render" value="false"/>
         <property name="items">
             <list>
                 <ref bean="facet_quarter"/>
-                <ref bean="facet_curriculum"/>
                 <ref bean="facet_genedureq"/>
-                <ref bean="facet_level"/>
                 <ref bean="facet_credits"/>
+                <ref bean="facet_level"/>
+                <ref bean="facet_curriculum"/>
             </list>
         </property>
     </bean>
 
-    <!-- Course Level Facets -->
-    <bean id="facet_level" parent="Group" p:title="Course Level">
-        <property name="accordion.render" value="true"/>
-        <property name="styleClasses" value="facets"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(6, this);"/>
-                <ref bean="course_search_facet_level"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_facet_level" parent="CollectionGroup">
-        <property name="accordion.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="courseLevelFacetItems"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Curriculum Facets -->
-    <bean id="facet_curriculum" parent="Group" p:title="By Curriculum">
-        <property name="accordion.render" value="true"/>
-        <property name="styleClasses" value="facets"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(7, this);"/>
-                <ref bean="course_search_facet_curriculum"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_facet_curriculum" parent="CollectionGroup">
-        <property name="accordion.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="curriculumFacetItems"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(7, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Gen Edu Req Facets -->
-    <bean id="facet_genedureq" parent="Group" p:title="Gen. Edu. Req.">
-        <property name="accordion.render" value="true"/>
-        <property name="styleClasses" value="facets"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(4, this);"/>
-                <ref bean="course_search_facet_genedureq"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_facet_genedureq" parent="CollectionGroup">
-        <property name="accordion.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="genEduReqFacetItems"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(4, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Credits Facets -->
-    <bean id="facet_credits" parent="Group" p:title="Credits">
-        <property name="accordion.render" value="true"/>
-        <property name="styleClasses" value="facets"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(2, this);"/>
-                <ref bean="course_search_facet_credits"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_facet_credits" parent="CollectionGroup">
-        <property name="accordion.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="creditsFacetItems"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(2, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
-            </list>
-        </property>
-    </bean>
-
-     <!-- Quarter (Time Schedule) Facets -->
+    <!-- Quarter (Time Schedule) Facets -->
     <bean id="facet_quarter" parent="Group" p:title="By Quarter">
         <property name="accordion.render" value="true"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(3, this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(6, this);"/>
                 <ref bean="course_search_facet_quarter"/>
             </list>
         </property>
@@ -528,11 +426,132 @@
         <property name="propertyName" value="timeScheduleFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(3, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(6, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
 
+
+
+    <!-- Gen Edu Req Facets -->
+    <bean id="facet_genedureq" parent="Group" p:title="Gen. Edu. Req.">
+        <property name="accordion.render" value="true"/>
+        <property name="styleClasses" value="facets"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(7, this);"/>
+                <ref bean="course_search_facet_genedureq"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_search_facet_genedureq" parent="CollectionGroup">
+        <property name="accordion.render" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+        <property name="propertyName" value="genEduReqFacetItems"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(7, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Credits Facets -->
+    <bean id="facet_credits" parent="Group" p:title="Credits">
+        <property name="accordion.render" value="true"/>
+        <property name="styleClasses" value="facets"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(8, this);"/>
+                <ref bean="course_search_facet_credits"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_search_facet_credits" parent="CollectionGroup">
+        <property name="accordion.render" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+        <property name="propertyName" value="creditsFacetItems"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(8, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Course Level Facets -->
+    <bean id="facet_level" parent="Group" p:title="Course Level">
+        <property name="accordion.render" value="true"/>
+        <property name="styleClasses" value="facets"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(9, this);"/>
+                <ref bean="course_search_facet_level"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_search_facet_level" parent="CollectionGroup">
+        <property name="accordion.render" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+        <property name="propertyName" value="courseLevelFacetItems"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(9, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Subject Area Facets -->
+    <bean id="facet_curriculum" parent="Group" p:title="Subject Area">
+        <property name="accordion.render" value="true"/>
+        <property name="styleClasses" value="facets"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll(10, this);"/>
+                <ref bean="course_search_facet_curriculum"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_search_facet_curriculum" parent="CollectionGroup">
+        <property name="accordion.render" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.accordion.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+        <property name="propertyName" value="curriculumFacetItems"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} (@{#line.count})" p:styleClasses="item" p:clientSideJs="facetFilter(10, &quot;@{#line.key}&quot;, this);" p:labelField.render="false"/>
+            </list>
+        </property>
+    </bean>
 
 </beans>
 
