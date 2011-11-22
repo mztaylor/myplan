@@ -168,10 +168,30 @@
     font-size: 90%;
     color: #5f5e5f;
 }
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr td {
+	line-height:1.5em;
+}
 .dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr td.courseCode {
     font-weight: bold;
     white-space: nowrap;
 }
+
+/* In Development */
+/*
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr td.courseName {
+	width: 250px;
+}
+.dataTables_wrapper .dataTables_scroll .dataTables_scrollBody table tbody tr td.courseName span.courseName {
+white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+}
+*/
+/* end of In Development */
+
+
 .dataTables_wrapper .dataTables_scroll .odd, .dataTables_wrapper .dataTables_scroll .odd .sorting_1 {
     background-color: #fff;
 }
