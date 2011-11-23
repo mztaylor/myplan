@@ -241,7 +241,7 @@ public class CourseSearchController extends UifControllerBase {
         } else if (type.equals(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE)) {
             String minCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE);
             String maxCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE);
-            credits = minCredits + "-" + maxCredits;
+            credits = trimCredits(minCredits) + "-" + trimCredits(maxCredits);
         } else {
             logger.error("Unknown Course Credit type [" + type + "].");
         }
@@ -261,7 +261,7 @@ public class CourseSearchController extends UifControllerBase {
 
     /**
      * Hard-coded term ordering.
-     * TODO: Make this runtime configurable.
+     * TODO: UW SPECIFIC - Make this runtime configurable.
      */
     private enum TermOrder {
         FALL   ("kuali.atp.season.Fall"),
