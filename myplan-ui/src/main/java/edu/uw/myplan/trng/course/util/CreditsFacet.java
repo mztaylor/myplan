@@ -4,9 +4,7 @@ import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
 import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
 *  Logic for building list of FacetItems and coding CourseSearchItems.
@@ -15,6 +13,18 @@ public class CreditsFacet extends AbstractFacet {
 
     public CreditsFacet() {
         super();
+    }
+
+    /**
+     * The credits facet list needs to be in numeric order rather than string order, so
+     *
+     * @return A list of FacetItems.
+     */
+    @Override
+    public List<FacetItem> getFacetItems() {
+        //  Put the list integer order.
+        Collections.sort(facetItems, new CreditsComparator());
+        return facetItems;
     }
 
     /**
@@ -40,24 +50,37 @@ public class CreditsFacet extends AbstractFacet {
             credits = UNKNOWN_FACET_KEY;
         }
 
-        //  Parse the credits string and make a list of keys.
+        /*
+         *  Parse the credits string and make a list of keys.
+         *
+         *  TODO: UW SPECIFIC -
+         *
+         */
         List<String> keys = new ArrayList<String>();
         if (credits.contains("-")) {
-            //  Parse the range and create keys at one credit increments.
+            /*
+             * Parse the range. The lower and/or the upper values in the range can be float values, so round the
+             * lower and upper values down, then create keys for the whole numbers. So, the range 1.5-3.5 would result
+             * in this set of keys [1, 2, 3].
+             */
             String k[] = credits.split("-");
-            int lower = Integer.valueOf(k[0]);
-            int upper = Integer.valueOf(k[1]);
-            for (int i = lower; i <= upper; i++) {
+            Float actualLower = Float.valueOf(k[0]);
+            Float actualUpper = Float.valueOf(k[1]);
+            int upper = actualUpper.intValue();
+            for (int i = actualLower.intValue(); i <= upper; i++) {
                 keys.add(String.valueOf(i));
             }
         } else if (credits.contains(",")) {
             //  Remove the spaces.
             credits = credits.replace(" ", "");
             //  Tokenize and add to the list.
-            keys.addAll(Arrays.asList(credits.split(",")));
+            String k[] = credits.split(",");
+            for (String key : k) {
+                keys.add(trimCredit(key));
+            }
         } else {
             //  Assume this was a fixed credit value.
-            keys.add(credits);
+            keys.add(trimCredit(credits));
         }
 
         for (String key : keys)
@@ -85,5 +108,28 @@ public class CreditsFacet extends AbstractFacet {
             kb.append(k).append(FACET_KEY_DELIMITER);
         }
         item.setCreditsFacetKey(kb.toString());
+    }
+
+    private String trimCredit(String credit) {
+        if (credit.contains(".")) {
+            credit = credit.substring(0, credit.indexOf("."));
+        }
+        return credit;
+    }
+
+    /**
+     * Custom comparator for credits keys as they need to be sorted by numeric value
+     * rather than their string value.
+     */
+    class CreditsComparator implements Comparator {
+        public int compare(Object o1, Object o2){
+            FacetItem facetItem1 = (FacetItem) o1;
+            FacetItem facetItem2 = (FacetItem) o2;
+            //  The trailing ; needs to be stripped off before converting to a Float.
+            Float cv1 = Float.valueOf(facetItem1.getKey().replace(";", ""));
+            Float cv2 = Float.valueOf(facetItem2.getKey().replace(";", ""));
+            return cv1.compareTo(cv2);
+        }
+
     }
 }
