@@ -39,7 +39,7 @@ public class CurriculumFacet extends AbstractFacet {
         }
 
         //  If it's a new facet key then create a new FacetItem. Otherwise, just increment the count.
-        if (isNewFacetKey(key)) {
+        if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
             String displayName = null;
@@ -49,7 +49,7 @@ public class CurriculumFacet extends AbstractFacet {
                 displayName = getOrganizationName(key);
             }
             FacetItem item = new FacetItem();
-            item.setKey(key);
+            item.setKey(key + FACET_KEY_DELIMITER);
             item.setDisplayName(displayName);
             facetItems.add(item);
         }

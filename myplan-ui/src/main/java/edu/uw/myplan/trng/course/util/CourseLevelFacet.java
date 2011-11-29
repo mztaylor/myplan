@@ -28,10 +28,10 @@ public class CourseLevelFacet extends AbstractFacet {
         }
 
         //  If it's a new facet key then create a new FacetItem.
-        if (isNewFacetKey(key)) {
+        if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
             FacetItem fItem = new FacetItem();
             //  The display name and the key are the same in this case.
-            fItem.setKey(key);
+            fItem.setKey(key + FACET_KEY_DELIMITER);
             String displayName = null;
             if (isUnknown) {
                 displayName = UNKNOWN_FACET_DISPLAY_NAME;

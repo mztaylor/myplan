@@ -53,7 +53,7 @@ public class CreditsFacet extends AbstractFacet {
         /*
          *  Parse the credits string and make a list of keys.
          *
-         *  TODO: UW SPECIFIC -
+         *  TODO: UW SPECIFIC
          *
          */
         List<String> keys = new ArrayList<String>();
