@@ -28,7 +28,7 @@ public class CourseLevelFacet extends AbstractFacet {
         }
 
         //  If it's a new facet key then create a new FacetItem.
-        if (checkIfNewFacetKey(key)) {
+        if (isNewFacetKey(key)) {
             FacetItem fItem = new FacetItem();
             //  The display name and the key are the same in this case.
             fItem.setKey(key);
@@ -39,7 +39,6 @@ public class CourseLevelFacet extends AbstractFacet {
                 displayName = key;
             }
             fItem.setDisplayName(displayName);
-            fItem.setCount(1);
             facetItems.add(fItem);
         }
         //  Code the item with the facet key.

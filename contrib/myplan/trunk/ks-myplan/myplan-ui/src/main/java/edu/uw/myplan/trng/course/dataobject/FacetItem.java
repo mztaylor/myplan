@@ -11,9 +11,6 @@ public class FacetItem implements Comparable<FacetItem> {
     /* The name which will be displayed */
     private String displayName;
 
-    /* Number of CourseSearchItems which match this facet. */
-    private int count;
-
     public String getKey() {
         return key;
     }
@@ -28,14 +25,6 @@ public class FacetItem implements Comparable<FacetItem> {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     @Override
