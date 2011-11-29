@@ -54,7 +54,7 @@ public class CurriculumFacet extends AbstractFacet {
             facetItems.add(item);
         }
         //  Code the item with the facet key.
-        courseSearchItem.setCurriculumFacetKey(key);
+        courseSearchItem.setCurriculumFacetKey(key + FACET_KEY_DELIMITER);
     }
 
     /**

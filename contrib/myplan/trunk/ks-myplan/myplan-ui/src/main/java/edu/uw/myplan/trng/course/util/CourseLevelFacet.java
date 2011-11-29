@@ -42,6 +42,6 @@ public class CourseLevelFacet extends AbstractFacet {
             facetItems.add(fItem);
         }
         //  Code the item with the facet key.
-        item.setCourseLevelFacetKey(key);
+        item.setCourseLevelFacetKey(key + FACET_KEY_DELIMITER);
     }
 }
