@@ -68,6 +68,13 @@
 			<artifactId>rice-core-api</artifactId>
 			<version>${kuali.rice.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.kuali.rice</groupId>
+            <artifactId>rice-kns</artifactId>
+            <version>${kuali.rice.version}</version>
+        </dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
