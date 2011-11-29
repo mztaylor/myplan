@@ -10,6 +10,7 @@ import java.util.List;
 
 public abstract class AbstractFacet {
 
+    // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
     List<FacetItem> facetItems;
 
     static final String FACET_KEY_DELIMITER = ";";
@@ -36,17 +37,16 @@ public abstract class AbstractFacet {
     public abstract void process(CourseInfo course, CourseSearchItem item);
 
     /**
-     * Checks if the facet key is new. If not the count is incremented.
+     * Checks if the facet key is new.
      * @param key
      * @return True if the facet key exists. Otherwise, false.
      */
-    protected boolean checkIfNewFacetKey(String key) {
+    protected boolean isNewFacetKey(String key) {
         boolean isNew = true;
 
         for (FacetItem item : facetItems)
         {
             if (item.getKey().equals(key)) {
-                item.setCount(item.getCount() + 1);
                 isNew = false;
                 break;
             }

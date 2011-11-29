@@ -50,7 +50,7 @@ public class TimeScheduleFacet extends AbstractFacet {
 
         for (String key : keys)
         {
-            if (checkIfNewFacetKey(key + FACET_KEY_DELIMITER)) {
+            if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
                 FacetItem fItem = new FacetItem();
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
                 String displayName = null;
@@ -61,7 +61,6 @@ public class TimeScheduleFacet extends AbstractFacet {
                 }
                 fItem.setKey(key + FACET_KEY_DELIMITER);
                 fItem.setDisplayName(displayName);
-                fItem.setCount(1);
                 facetItems.add(fItem);
             }
         }

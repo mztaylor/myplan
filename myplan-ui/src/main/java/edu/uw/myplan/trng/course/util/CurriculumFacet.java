@@ -5,7 +5,6 @@ import javax.xml.namespace.QName;
 import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
 import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
@@ -40,7 +39,7 @@ public class CurriculumFacet extends AbstractFacet {
         }
 
         //  If it's a new facet key then create a new FacetItem. Otherwise, just increment the count.
-        if (checkIfNewFacetKey(key)) {
+        if (isNewFacetKey(key)) {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
             String displayName = null;
@@ -52,7 +51,6 @@ public class CurriculumFacet extends AbstractFacet {
             FacetItem item = new FacetItem();
             item.setKey(key);
             item.setDisplayName(displayName);
-            item.setCount(1);
             facetItems.add(item);
         }
         //  Code the item with the facet key.
