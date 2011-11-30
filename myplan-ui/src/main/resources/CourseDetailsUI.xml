@@ -18,8 +18,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
     -->
-
-
     <bean id="CourseInfo" parent="CourseInfo-parentBean"/>
     <bean id="CourseInfo-parentBean" abstract="true" parent="DataObjectEntry">
         <property name="objectLabel" value="Course"/>
@@ -121,19 +119,24 @@
         </property>
     </bean>
 
-    <bean id="CourseInfo-LookupView" parent="KSLookupView">
-        <property name="title" value="Course Lookup"/>
-        <property name="dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo"/>
-        <property name="viewHelperServiceClassName" value="edu.uw.myplan.trng.course.service.CourseInfoLookupableImpl"/>
-        <property name="criteriaFields">
+
+
+    <bean id="CourseInfo-InquiryView" parent="KSInquiryView">
+        <property name="title" value="Course Info"/>
+        <property name="dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo" />
+        <property name="viewHelperServiceClassName"
+                  value="edu.uw.myplan.trng.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
+        <property name="singlePageView" value="true"/>
+        <property name="items">
             <list>
-                <bean parent="LookupCriteriaAttributeField" p:propertyName="id"/>
-                <bean parent="LookupCriteriaAttributeField" p:propertyName="code"/>
-                <bean parent="LookupCriteriaAttributeField" p:propertyName="courseTitle"/>
-                <bean parent="LookupCriteriaAttributeField" p:propertyName="subjectArea"/>
+                <ref bean="InquiryView-information"/>
             </list>
         </property>
-        <property name="resultFields">
+    </bean>
+
+    <bean id="InquiryView-information" parent="GroupSectionGridLayout">
+        <property name="layoutManager.numberOfColumns" value="5"/>
+        <property name="items">
             <list>
                 <bean parent="AttributeField" p:propertyName="id"/>
                 <bean parent="AttributeField" p:propertyName="code"/>
@@ -142,5 +145,6 @@
                 <bean parent="AttributeField" p:propertyName="descr"/>
             </list>
         </property>
+        <property name="title" value="Course Details"/>
     </bean>
 </beans>

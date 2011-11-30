@@ -302,13 +302,29 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
+
+                <!--  TODO: This is a better way to create this field (once InputField is available).
+                <bean parent="InputField" p:prpertyName="code" p:label="Code">
+                    <property name="fieldInquiry.dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo"/>
+                    <property name="fieldInquiry.inquiryParameters">
+                        <map>
+                            <entry key="someField" value="code"/>
+                        </map>
+                    </property>
+                    </bean>
+                -->
+
+                <bean parent="LinkField" p:linkLabel="@{#line.courseName}"
+                      p:hrefText="http://localhost:8080/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.lum.course.dto.CourseInfo&amp;courseId=@{#line.courseId}" />
+
+                <!--
                 <bean parent="AttributeField" p:propertyName="courseName"
                       p:label="Course Name" p:readOnly="true">
                     <property name="styleClasses" value="courseName"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
-                </bean>
+                </bean>  -->
                 <bean parent="AttributeField" p:propertyName="credit" p:label="Credits"
                       p:readOnly="true">
                     <property name="styleClasses" value="courseCredits"/>

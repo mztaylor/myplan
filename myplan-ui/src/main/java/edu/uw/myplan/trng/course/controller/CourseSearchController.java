@@ -173,6 +173,7 @@ public class CourseSearchController extends UifControllerBase {
                 CourseInfo course = getCourseService().getCourse(courseId);
 
                 CourseSearchItem item = new CourseSearchItem();
+                item.setCourseId(course.getId());
                 item.setCode(course.getCode());
                 item.setCourseName(course.getCourseTitle());
                 item.setScheduledTime(formatScheduledTime(course));
