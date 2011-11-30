@@ -26,7 +26,6 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <!--<value>/ks-myplan/scripts/jquery.ThreeDots.min.js</value> -->
                 <value>/ks-myplan/scripts/course-search.js</value>
             </list>
         </property>
@@ -275,10 +274,10 @@
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'bSortable':false},
-                            {'bSortable':false},
-                            {'bSortable':false},
-                            {'bSortable':false},
+                            {'bSortable':false, 'bVisible':true},
+                            {'bSortable':false, 'bVisible':true},
+                            {'bSortable':false, 'bVisible':true},
+                            {'bSortable':false, 'bVisible':true},
                             {'sTitle': 'facetQuarter', 'bVisible':false},
                             {'sTitle': 'facetGenEduReq', 'bVisible':false},
                             {'sTitle': 'facetCredits', 'bVisible':false},
@@ -362,7 +361,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="curriculumFacetKey" p:label="Subject Area"
+                <bean parent="AttributeField" p:propertyName="curriculumFacetKey" p:label="Course Prefix"
                       p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
@@ -407,7 +406,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll('facetQuarter', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetQuarter item all checked" p:clientSideJs="facetFilter('facetQuarter', 'All', this);"/>
                 <ref bean="course_search_facet_quarter"/>
             </list>
         </property>
@@ -426,7 +425,7 @@
         <property name="propertyName" value="timeScheduleFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} ()" p:styleClasses="item" p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item" p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -439,7 +438,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll('facetGenEduReq', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetGenEduReq item all checked" p:clientSideJs="facetFilter('facetGenEduReq', 'All', this);"/>
                 <ref bean="course_search_facet_genedureq"/>
             </list>
         </property>
@@ -458,7 +457,7 @@
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} ()" p:styleClasses="item" p:clientSideJs="facetFilter('facetGenEduReq', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetGenEduReq item" p:clientSideJs="facetFilter('facetGenEduReq', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -469,7 +468,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll('facetCredits', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCredits item all checked" p:clientSideJs="facetFilter('facetCredits', 'All', this);"/>
                 <ref bean="course_search_facet_credits"/>
             </list>
         </property>
@@ -488,7 +487,7 @@
         <property name="propertyName" value="creditsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} ()" p:styleClasses="item" p:clientSideJs="facetFilter('facetCredits', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCredits item" p:clientSideJs="facetFilter('facetCredits', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -499,7 +498,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll('facetLevel', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetLevel item all checked" p:clientSideJs="facetFilter('facetLevel', 'All', this);"/>
                 <ref bean="course_search_facet_level"/>
             </list>
         </property>
@@ -518,18 +517,18 @@
         <property name="propertyName" value="courseLevelFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} ()" p:styleClasses="item" p:clientSideJs="facetFilter('facetLevel', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetLevel item" p:clientSideJs="facetFilter('facetLevel', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
 
     <!-- Subject Area Facets -->
-    <bean id="facet_curriculum" parent="Group" p:title="Subject Area">
+    <bean id="facet_curriculum" parent="Group" p:title="Course Prefix">
         <property name="accordion.render" value="true"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="item all checked" p:clientSideJs="facetAll('facetCurriculum', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCurriculum item all checked" p:clientSideJs="facetFilter('facetCurriculum', 'All', this);"/>
                 <ref bean="course_search_facet_curriculum"/>
             </list>
         </property>
@@ -548,7 +547,7 @@
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName} ()" p:styleClasses="item" p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCurriculum item" p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
