@@ -14,19 +14,29 @@ import java.util.Map;
  *
  */
 public class CourseSearchItem {
+    private String courseId;
+
     private String code;
     private String courseName;
     private String credit;
     private String scheduledTime;
     private String genEduReq;
     private String status;
-
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
     private String curriculumFacetKey;
+
     private String courseLevelFacetKey;
     private String genEduReqFacetKey;
     private String timeScheduleFacetKey;
     private String creditsFacetKey;
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
 
     public String getCode() {
         return code;
