@@ -1,5 +1,4 @@
 var arrFacets = [], arrFacetSearch = [], arrFacetCount = [];
-var txtSearchQuery;
 
 jq.fn.dataTableExt.oApi.fnGetColumnIndex = function ( oSettings, sCol ) {
     var cols = oSettings.aoColumns;
@@ -19,7 +18,6 @@ jq.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
 }
 
 function buildFacets() {
-    txtSearchQuery = jq("#course_search_fields_span span input[type='text']").val();
     var oTable = jq('#course_search_results_datatable').dataTable();
     jq("#course_search_result_facets_div a.item").not(".all").each(function() {
     	// Create multidimensional array filled with facets provided from server, keys are set to datatable column index
@@ -27,7 +25,6 @@ function buildFacets() {
         if (!arrFacetSearch[colIndex]) arrFacetSearch[colIndex] = []; // If key is undefined, create it
         arrFacetSearch[colIndex].push(jq(this).text()); // Insert facet text to array
 	});
-    jq("#course_search_results_datatable_info").append(txtSearchQuery);
     calculateFacets(null);
 }
 
@@ -124,9 +121,10 @@ function calculateFacets(colIndex) {
 }
 
 jq(document).ready(function() {
-    jq("#course_search_fields_span span input[type='text']").blur();
+    jq("input[type='text']").blur();
 } );
 
 jq(window).load(function(){
-    if ( jq("#course_search_results_panel_div").length > 0 ) buildFacets();
+    if ( jq("#course_search_results_datatable").length > 0 ) buildFacets();
+    jq(".ellipsis").ellipsis();
 });
