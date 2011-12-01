@@ -1,4 +1,4 @@
-package edu.uw.myplan.trng.course.dataobject;
+package org.kuali.student.myplan.course.dataobject;
 
 /**
  *  Facet results record.

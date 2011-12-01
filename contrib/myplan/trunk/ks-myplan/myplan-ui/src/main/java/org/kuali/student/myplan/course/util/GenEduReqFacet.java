@@ -1,6 +1,5 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
 /**
@@ -16,7 +15,7 @@ public class GenEduReqFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem item) {
+    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item) {
         //  Do all of the lookups
 
         //  Create or update count FacetItem

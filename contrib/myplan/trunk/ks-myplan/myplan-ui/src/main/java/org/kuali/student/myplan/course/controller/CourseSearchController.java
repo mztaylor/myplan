@@ -13,17 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package edu.uw.myplan.trng.course.controller;
+package org.kuali.student.myplan.course.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import edu.uw.myplan.trng.course.util.*;
 import org.apache.log4j.Logger;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
-import edu.uw.myplan.trng.course.form.CourseSearchForm;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -49,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 
 @Controller
 @RequestMapping(value = "/course")
@@ -67,24 +63,24 @@ public class CourseSearchController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return new CourseSearchForm();
+        return new org.kuali.student.myplan.course.form.CourseSearchForm();
     }
 
     @RequestMapping(params = "methodToCall=start")
-    public ModelAndView start(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView start(@ModelAttribute("KualiForm") org.kuali.student.myplan.course.form.CourseSearchForm courseSearchForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         return getUIFModelAndView(courseSearchForm);
     }
 
     @RequestMapping(params = "methodToCall=searchForCourses")
-    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") org.kuali.student.myplan.course.form.CourseSearchForm courseSearchForm, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
         //  Initialize facets.
-        CurriculumFacet curriculumFacet = new CurriculumFacet();
-        CreditsFacet creditsFacet = new CreditsFacet();
-        CourseLevelFacet courseLevelFacet = new CourseLevelFacet();
-        GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
-        TimeScheduleFacet timeScheduleFacet = new TimeScheduleFacet();
+        org.kuali.student.myplan.course.util.CurriculumFacet curriculumFacet = new org.kuali.student.myplan.course.util.CurriculumFacet();
+        org.kuali.student.myplan.course.util.CreditsFacet creditsFacet = new org.kuali.student.myplan.course.util.CreditsFacet();
+        org.kuali.student.myplan.course.util.CourseLevelFacet courseLevelFacet = new org.kuali.student.myplan.course.util.CourseLevelFacet();
+        org.kuali.student.myplan.course.util.GenEduReqFacet genEduReqFacet = new org.kuali.student.myplan.course.util.GenEduReqFacet();
+        org.kuali.student.myplan.course.util.TimeScheduleFacet timeScheduleFacet = new org.kuali.student.myplan.course.util.TimeScheduleFacet();
 
         String query = courseSearchForm.getSearchQuery();
         QueryTokenizer tokenizer = new QueryTokenizer();
@@ -166,13 +162,13 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
 
-            ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
+            ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem> searchResults = new ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem>();
 
             for ( String courseId : courseSet )
             {
                 CourseInfo course = getCourseService().getCourse(courseId);
 
-                CourseSearchItem item = new CourseSearchItem();
+                org.kuali.student.myplan.course.dataobject.CourseSearchItem item = new org.kuali.student.myplan.course.dataobject.CourseSearchItem();
                 item.setCourseId(course.getId());
                 item.setCode(course.getCode());
                 item.setCourseName(course.getCourseTitle());
@@ -205,7 +201,7 @@ public class CourseSearchController extends UifControllerBase {
             throw new RuntimeException(e);
         }
 
-        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), org.kuali.student.myplan.course.util.CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     private String formatCredits(CourseInfo courseInfo) {

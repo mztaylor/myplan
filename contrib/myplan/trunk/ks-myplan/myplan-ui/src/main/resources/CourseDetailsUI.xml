@@ -125,7 +125,7 @@
         <property name="title" value="Course Info"/>
         <property name="dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo" />
         <property name="viewHelperServiceClassName"
-                  value="edu.uw.myplan.trng.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
         <property name="singlePageView" value="true"/>
         <property name="items">
             <list>

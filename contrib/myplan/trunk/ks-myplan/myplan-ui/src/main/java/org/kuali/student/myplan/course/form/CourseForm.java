@@ -12,7 +12,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package edu.uw.myplan.trng.course.form;
+package org.kuali.student.myplan.course.form;
 
 import org.kuali.student.lum.course.dto.CourseInfo;
 
