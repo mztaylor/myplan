@@ -315,7 +315,7 @@
                 -->
 
                 <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target=""
-                      p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.lum.course.dto.CourseInfo&amp;courseId=@{#line.courseId}" />
+                      p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
 
                 <!--
                 <bean parent="AttributeField" p:propertyName="courseName"
