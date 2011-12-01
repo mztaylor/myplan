@@ -56,7 +56,7 @@
         </property>
         <property name="footer.render" value="false"/>
         <property name="formClass"
-                  value="edu.uw.myplan.trng.course.form.CourseSearchForm"/>
+                  value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
     </bean>
 
 
@@ -240,7 +240,7 @@
           p:layoutManager.numberOfColumns="11">
         <property name="accordion.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.CourseSearchItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
@@ -437,7 +437,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="timeScheduleFacetItems"/>
         <property name="items">
             <list>
@@ -469,7 +469,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
@@ -499,7 +499,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="creditsFacetItems"/>
         <property name="items">
             <list>
@@ -529,7 +529,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="courseLevelFacetItems"/>
         <property name="items">
             <list>
@@ -559,7 +559,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="edu.uw.myplan.trng.course.dataobject.FacetItem"/>
+                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>

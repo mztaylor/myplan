@@ -13,20 +13,15 @@
  * permissions and limitations under the License.
  *
  */
-package edu.uw.myplan.trng.main.controller;
+package org.kuali.student.myplan.main.controller;
 
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import edu.uw.myplan.trng.main.form.LaunchForm;
+import org.kuali.student.myplan.main.form.LaunchForm;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "/launch")

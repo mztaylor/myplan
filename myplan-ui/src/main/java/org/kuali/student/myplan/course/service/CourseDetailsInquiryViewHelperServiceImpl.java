@@ -1,4 +1,4 @@
-package edu.uw.myplan.trng.course.service;
+package org.kuali.student.myplan.course.service;
 
 import java.util.Map;
 import javax.xml.namespace.QName;

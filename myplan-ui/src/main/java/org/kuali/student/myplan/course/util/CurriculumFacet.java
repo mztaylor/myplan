@@ -1,9 +1,7 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
 import javax.xml.namespace.QName;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
-import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.lum.course.dto.CourseInfo;
@@ -28,7 +26,7 @@ public class CurriculumFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem courseSearchItem) {
+    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem courseSearchItem) {
 
         String key = course.getSubjectArea();
         boolean isUnknown = false;
@@ -48,7 +46,7 @@ public class CurriculumFacet extends AbstractFacet {
             } else {
                 displayName = getOrganizationName(key);
             }
-            FacetItem item = new FacetItem();
+            org.kuali.student.myplan.course.dataobject.FacetItem item = new org.kuali.student.myplan.course.dataobject.FacetItem();
             item.setKey(key + FACET_KEY_DELIMITER);
             item.setDisplayName(displayName);
             facetItems.add(item);

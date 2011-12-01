@@ -1,4 +1,4 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
 /**
  * Created by IntelliJ IDEA.

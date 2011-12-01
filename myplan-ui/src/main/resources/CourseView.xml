@@ -35,7 +35,7 @@ limitations under the License.
           </list>         
       </property>
      
-      <property name="formClass" value="edu.uw.myplan.trng.course.form.CourseForm" />
+      <property name="formClass" value="org.kuali.student.myplan.course.form.CourseForm" />
       <property name="defaultBindingObjectPath" value="CourseInfo" />
 
 	  <property name="footer">

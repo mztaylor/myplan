@@ -1,7 +1,5 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
-import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
 import java.util.ArrayList;
@@ -11,17 +9,17 @@ import java.util.List;
 public abstract class AbstractFacet {
 
     // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
-    List<FacetItem> facetItems;
+    List<org.kuali.student.myplan.course.dataobject.FacetItem> facetItems;
 
     static final String FACET_KEY_DELIMITER = ";";
     static final String UNKNOWN_FACET_KEY = "u";
     static final String UNKNOWN_FACET_DISPLAY_NAME = "Unknown";
 
     public AbstractFacet() {
-        this.facetItems = new ArrayList<FacetItem>();
+        this.facetItems = new ArrayList<org.kuali.student.myplan.course.dataobject.FacetItem>();
     }
 
-    public List<FacetItem> getFacetItems() {
+    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getFacetItems() {
         //  Put the list in a predictable order.
         Collections.sort(facetItems);
         return facetItems;
@@ -34,7 +32,7 @@ public abstract class AbstractFacet {
      * @param course
      * @param item A CourseSearchItem which will be parsed and coded.
      */
-    public abstract void process(CourseInfo course, CourseSearchItem item);
+    public abstract void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item);
 
     /**
      * Checks if the facet key is new.
@@ -44,7 +42,7 @@ public abstract class AbstractFacet {
     protected boolean isNewFacetKey(String key) {
         boolean isNew = true;
 
-        for (FacetItem item : facetItems)
+        for (org.kuali.student.myplan.course.dataobject.FacetItem item : facetItems)
         {
             if (item.getKey().equals(key)) {
                 isNew = false;

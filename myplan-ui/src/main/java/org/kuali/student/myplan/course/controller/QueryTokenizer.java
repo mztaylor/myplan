@@ -1,4 +1,4 @@
-package edu.uw.myplan.trng.course.controller;
+package org.kuali.student.myplan.course.controller;
 
 import java.util.*;
 import java.util.regex.*;

@@ -1,7 +1,5 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
-import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
 import java.util.*;
@@ -21,7 +19,7 @@ public class CreditsFacet extends AbstractFacet {
      * @return A list of FacetItems.
      */
     @Override
-    public List<FacetItem> getFacetItems() {
+    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getFacetItems() {
         //  Put the list integer order.
         Collections.sort(facetItems, new CreditsComparator());
         return facetItems;
@@ -31,7 +29,7 @@ public class CreditsFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem item) {
+    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item) {
         /*
          * In this case the course/item may match more than one facet item, so
          * first the credits string which was set by the controller must be parsed
@@ -86,7 +84,7 @@ public class CreditsFacet extends AbstractFacet {
         for (String key : keys)
         {
             if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
-                FacetItem fItem = new FacetItem();
+                org.kuali.student.myplan.course.dataobject.FacetItem fItem = new org.kuali.student.myplan.course.dataobject.FacetItem();
                 String displayName = null;
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
                 if (isUnknown) {
@@ -122,8 +120,8 @@ public class CreditsFacet extends AbstractFacet {
      */
     class CreditsComparator implements Comparator {
         public int compare(Object o1, Object o2){
-            FacetItem facetItem1 = (FacetItem) o1;
-            FacetItem facetItem2 = (FacetItem) o2;
+            org.kuali.student.myplan.course.dataobject.FacetItem facetItem1 = (org.kuali.student.myplan.course.dataobject.FacetItem) o1;
+            org.kuali.student.myplan.course.dataobject.FacetItem facetItem2 = (org.kuali.student.myplan.course.dataobject.FacetItem) o2;
             //  The trailing ; needs to be stripped off before converting to a Float.
             Float cv1 = Float.valueOf(facetItem1.getKey().replace(";", ""));
             Float cv2 = Float.valueOf(facetItem2.getKey().replace(";", ""));

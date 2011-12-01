@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  *
  */
-package edu.uw.myplan.trng.main.form;
+package org.kuali.student.myplan.main.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
 

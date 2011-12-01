@@ -1,7 +1,5 @@
-package edu.uw.myplan.trng.course.util;
+package org.kuali.student.myplan.course.util;
 
-import edu.uw.myplan.trng.course.dataobject.CourseSearchItem;
-import edu.uw.myplan.trng.course.dataobject.FacetItem;
 import org.kuali.student.lum.course.dto.CourseInfo;
 
 /**
@@ -17,7 +15,7 @@ public class CourseLevelFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem item) {
+    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item) {
         String key = course.getLevel();
 
         boolean isUnknown = false;
@@ -29,7 +27,7 @@ public class CourseLevelFacet extends AbstractFacet {
 
         //  If it's a new facet key then create a new FacetItem.
         if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
-            FacetItem fItem = new FacetItem();
+            org.kuali.student.myplan.course.dataobject.FacetItem fItem = new org.kuali.student.myplan.course.dataobject.FacetItem();
             //  The display name and the key are the same in this case.
             fItem.setKey(key + FACET_KEY_DELIMITER);
             String displayName = null;
