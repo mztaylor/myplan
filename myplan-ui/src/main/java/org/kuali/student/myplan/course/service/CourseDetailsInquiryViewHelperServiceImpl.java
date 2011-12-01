@@ -10,13 +10,15 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
     private transient CourseService courseService;
 
     @Override
-    public CourseInfo retrieveDataObject(Map fieldValues) {
+    public CourseDetails retrieveDataObject(Map fieldValues) {
+        //  Get the courseId from the query parameters.
         String courseId = (String) fieldValues.get("courseId");
 
         CourseInfo course = null;
@@ -24,16 +26,19 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             course = getCourseService().getCourse(courseId);
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
-        } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (PermissionDeniedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
         }
-        return course;
+
+        CourseDetails courseDetails = new CourseDetails();
+
+        courseDetails.setCourseId(course.getId());
+        courseDetails.setCode(course.getCode());
+        courseDetails.setCourseDescription(course.getDescr().getFormatted());
+        courseDetails.setCredit("1-100");
+        courseDetails.setCourseTitle(course.getCourseTitle());
+
+        return courseDetails;
     }
 
     protected CourseService getCourseService() {
