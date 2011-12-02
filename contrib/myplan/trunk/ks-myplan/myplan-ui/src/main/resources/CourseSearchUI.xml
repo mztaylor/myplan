@@ -239,8 +239,7 @@
     <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout"
           p:layoutManager.numberOfColumns="11">
         <property name="accordion.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.course.dataobject.CourseSearchItem"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
@@ -295,8 +294,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="AttributeField" p:propertyName="code" p:label="Code"
-                      p:readOnly="true">
+                <bean parent="AttributeField" p:propertyName="code" p:label="Code" p:readOnly="true">
                     <property name="styleClasses" value="courseCode"/>
                     <property name="control">
                         <bean parent="TextControl"/>

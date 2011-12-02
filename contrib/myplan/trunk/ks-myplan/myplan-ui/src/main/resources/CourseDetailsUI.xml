@@ -119,8 +119,26 @@
         </property>
     </bean>
 
+    <!--
+    <bean id="CourseDetails.programRequirements" parent="CourseDetails.programRequirements-parentBean"/>
+    <bean id="CourseDetails.programRequirements-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="programRequirements"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Description"/>
+        <property name="shortLabel" value="Description"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="200"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="TextControl" p:size="200"/>
+        </property>
+    </bean>
+    -->
+
     <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
-        <property name="title" value="Course Info"/>
+        <property name="title" value="Course Details"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails" />
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
@@ -128,12 +146,13 @@
         <property name="items">
             <list>
                 <ref bean="InquiryView-information"/>
+                <ref bean="InquiryView-programRequirements"/>
             </list>
         </property>
     </bean>
 
     <bean id="InquiryView-information" parent="GroupSectionGridLayout">
-        <property name="layoutManager.numberOfColumns" value="5"/>
+        <property name="layoutManager.numberOfColumns" value="2"/>
         <property name="items">
             <list>
                 <bean parent="AttributeField" p:propertyName="courseId"/>
@@ -141,8 +160,69 @@
                 <bean parent="AttributeField" p:propertyName="courseTitle"/>
                 <bean parent="AttributeField" p:propertyName="credit"/>
                 <bean parent="AttributeField" p:propertyName="courseDescription"/>
+
             </list>
         </property>
         <property name="title" value="Course Details"/>
     </bean>
+
+    <bean id="InquiryView-programRequirements" parent="CollectionGroupSectionTableLayout" p:layoutManager.numberOfColumns="1">
+        <property name="title" value="Program Requirements"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.StringWrapper"/>
+        <property name="propertyName" value="programRequirements"/>
+        <property name="summary" value="Program Requirements"/>
+        <property name="items">
+              <list>
+                    <bean parent="AttributeField" p:propertyName="string">
+                                            <property name="styleClasses" value="courseCode"/>
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                    </bean>
+              </list>
+        </property>
+    </bean>
+
+    <!--
+    <bean id="StringWrapper.string" parent="StringWrapper.string-parentBean"/>
+    <bean id="StringWrapper.string-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="string"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Program Requirements"/>
+        <property name="shortLabel" value="Req."/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="50"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="TextControl" p:size="50"/>
+        </property>
+    </bean>
+    -->
+
+    <!--
+    <bean id="program_requirements_items" parent="CollectionGroupTableLayout" p:layoutManager.numberOfColumns="1">
+        <property name="accordion.render" value="false"/>
+        <property name="collectionObjectClass" value="java.lang.String"/>
+        <property name="propertyName" value="programRequirements"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.id" value="program_requirements_datatable"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+
+        <property name="layoutManager.tableTools.emptyTableMessage" value=""/>
+
+        <property name="layoutManager.tableTools.disableTableSort" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField" p:propertyName="toString()" p:readOnly="true">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    -->
 </beans>
