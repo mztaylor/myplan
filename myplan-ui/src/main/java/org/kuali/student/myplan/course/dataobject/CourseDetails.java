@@ -13,14 +13,14 @@ public class CourseDetails {
     private String credit;
     private String courseDescription;
 
-    private List<String> programRequirements;
+    private List<StringWrapper> programRequirements;
     private List<String> genEdRequirements;
     private List<String> prerequisites;
     private List<String> termsOffered;
 
     public CourseDetails() {
-        programRequirements = new ArrayList<String>();
-        programRequirements.add("Not implemented.");
+        programRequirements = new ArrayList<StringWrapper>();
+        programRequirements.add(new StringWrapper("Not implemented."));
         genEdRequirements = new ArrayList<String>();
         genEdRequirements.add("Not implemented.");
         prerequisites = new ArrayList<String>();
@@ -69,11 +69,11 @@ public class CourseDetails {
         this.courseDescription = courseDescription;
     }
 
-    public List<String> getProgramRequirements() {
+    public List<StringWrapper> getProgramRequirements() {
         return programRequirements;
     }
 
-    public void setProgramRequirements(List<String> programRequirements) {
+    public void setProgramRequirements(List<StringWrapper> programRequirements) {
         this.programRequirements = programRequirements;
     }
 
