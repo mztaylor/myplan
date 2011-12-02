@@ -26,6 +26,7 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
+                <value>/ks-myplan/scripts/jquery.ellipsis.js</value>
                 <value>/ks-myplan/scripts/course-search.js</value>
             </list>
         </property>
@@ -262,12 +263,14 @@
             <map merge="true">
 
                 <entry key="oLanguage"
-                       value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results'}"/>
+                       value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
                 <entry key="sDom" value="ilrtp"/>
                 <entry key="sPaginationType" value="full_numbers"/>
-                <entry key="bRetrieve" value="true"/> <entry key="sScrollX" value="100%"/>
+                <entry key="bRetrieve" value="true"/>
+
+                <entry key="bAutoWidth" value="false"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="aoColumns"
                        value="[
@@ -277,11 +280,11 @@
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
-                            {'sTitle': 'facetQuarter', 'bVisible':false},
-                            {'sTitle': 'facetGenEduReq', 'bVisible':false},
-                            {'sTitle': 'facetCredits', 'bVisible':false},
-                            {'sTitle': 'facetLevel', 'bVisible':false},
-                            {'sTitle': 'facetCurriculum', 'bVisible':false}
+                            {'sTitle':'facetQuarter', 'bVisible':false},
+                            {'sTitle':'facetGenEduReq', 'bVisible':false},
+                            {'sTitle':'facetCredits', 'bVisible':false},
+                            {'sTitle':'facetLevel', 'bVisible':false},
+                            {'sTitle':'facetCurriculum', 'bVisible':false}
                         ]"/>
 
 
@@ -312,7 +315,7 @@
                     </bean>
                 -->
 
-                <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target=""
+                <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target="" p:styleClasses="courseName ellipsis"
                       p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
 
                 <!--
@@ -344,13 +347,18 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="status" p:label=""
+                <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('You clicked the add button');">
+                    <property name="actionImageField">
+                        <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
+                    </property>
+                </bean>
+                <!--<bean parent="AttributeField" p:propertyName="status" p:label=""
                       p:readOnly="true">
                     <property name="styleClasses" value="courseStatus"/>
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
-                </bean>
+                </bean>-->
                 <bean parent="AttributeField" p:propertyName="timeScheduleFacetKey" p:label="Quarter Offered"
                       p:readOnly="true">
                     <property name="control">
