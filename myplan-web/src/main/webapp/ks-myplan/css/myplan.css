@@ -1,5 +1,10 @@
+body {
+    font-size: 12px;
+    line-height: 1em;
+    font-family: arial,helvetica,clean,sans-serif;
+}
 a, a:hover, a:active, a:focus {
-  outline: 0;
+    outline: 0;
 }
 
 #view_div {
@@ -38,4 +43,12 @@ a, a:hover, a:active, a:focus {
     background: #d3d3d3;
     width:200px;
     min-height: 500px
+}
+.ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+}
+
+.ellipsis.multiline {
+        white-space: normal;
 }

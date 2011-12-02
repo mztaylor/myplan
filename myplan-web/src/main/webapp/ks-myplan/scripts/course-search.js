@@ -26,6 +26,7 @@ function buildFacets() {
         arrFacetSearch[colIndex].push(jq(this).text()); // Insert facet text to array
 	});
     calculateFacets(null);
+    oTable.fnAdjustColumnSizing();
 }
 
 function facetFilter(colName, filterText, obj) {
