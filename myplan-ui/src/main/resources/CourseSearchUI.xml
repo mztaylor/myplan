@@ -275,7 +275,7 @@
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'bSortable':true, 'sSortDataType':'dom-text'},
+                            {'sWidth': '175px', 'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},

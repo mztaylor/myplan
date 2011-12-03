@@ -139,13 +139,16 @@
 #course_search_results_list_items_group {
 	width: 570px;
 }
+table.display {
+    width: 100%;
+}
 .dataTables_wrapper {
 
 }
 .dataTables_wrapper .dataTables_info {
     float: none;
     font-size: 150%;
-    display: block;
+    line-height: 150%;
     width: 100%;
 }
 .dataTables_wrapper .dataTables_length {
@@ -182,7 +185,7 @@
 .dataTables_wrapper table tbody tr td.courseName span.courseName a {
 	display: block;
     line-height: 1.8em;
-    width: 175px;
+    max-width: 175px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
