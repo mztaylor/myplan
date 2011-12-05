@@ -13,18 +13,19 @@ public class CourseDetails {
     private String credit;
     private String courseDescription;
 
-    private List<StringWrapper> programRequirements;
+    private List<String> programRequirements;
     private List<String> genEdRequirements;
-    private List<String> prerequisites;
+    private List<String> requisites;
     private List<String> termsOffered;
 
     public CourseDetails() {
-        programRequirements = new ArrayList<StringWrapper>();
-        programRequirements.add(new StringWrapper("Not implemented."));
+        programRequirements = new ArrayList<String>();
+        programRequirements.add("Not implemented.");
         genEdRequirements = new ArrayList<String>();
         genEdRequirements.add("Not implemented.");
-        prerequisites = new ArrayList<String>();
-        prerequisites.add("Not implemented.");
+        genEdRequirements.add("Not implemented again.");
+        requisites = new ArrayList<String>();
+        requisites.add("Not implemented.");
         termsOffered = new ArrayList<String>();
         termsOffered.add("Not implemented");
     }
@@ -69,11 +70,11 @@ public class CourseDetails {
         this.courseDescription = courseDescription;
     }
 
-    public List<StringWrapper> getProgramRequirements() {
+    public List<String> getProgramRequirements() {
         return programRequirements;
     }
 
-    public void setProgramRequirements(List<StringWrapper> programRequirements) {
+    public void setProgramRequirements(List<String> programRequirements) {
         this.programRequirements = programRequirements;
     }
 
@@ -85,12 +86,12 @@ public class CourseDetails {
         this.genEdRequirements = genEdRequirements;
     }
 
-    public List<String> getPrerequisites() {
-        return prerequisites;
+    public List<String> getRequisites() {
+        return requisites;
     }
 
-    public void setPrerequisites(List<String> prerequisites) {
-        this.prerequisites = prerequisites;
+    public void setRequisites(List<String> requisites) {
+        this.requisites = requisites;
     }
 
     public List<String> getTermsOffered() {
