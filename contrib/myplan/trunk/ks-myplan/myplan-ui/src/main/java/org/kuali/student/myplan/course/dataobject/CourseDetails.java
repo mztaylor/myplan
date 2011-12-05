@@ -13,14 +13,11 @@ public class CourseDetails {
     private String credit;
     private String courseDescription;
 
-    private List<String> programRequirements;
     private List<String> genEdRequirements;
     private List<String> requisites;
     private List<String> termsOffered;
 
     public CourseDetails() {
-        programRequirements = new ArrayList<String>();
-        programRequirements.add("Not implemented.");
         genEdRequirements = new ArrayList<String>();
         genEdRequirements.add("Not implemented.");
         genEdRequirements.add("Not implemented again.");
@@ -68,14 +65,6 @@ public class CourseDetails {
 
     public void setCourseDescription(String courseDescription) {
         this.courseDescription = courseDescription;
-    }
-
-    public List<String> getProgramRequirements() {
-        return programRequirements;
-    }
-
-    public void setProgramRequirements(List<String> programRequirements) {
-        this.programRequirements = programRequirements;
     }
 
     public List<String> getGenEdRequirements() {
