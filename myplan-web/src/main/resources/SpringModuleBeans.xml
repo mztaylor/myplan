@@ -32,12 +32,12 @@
         </property>
         <property name="packagePrefixes">
             <list>
-                <value>edu.uw.myplan.trng.course</value>
+                <value>org.kuali.student.myplan.course</value>
             </list>
         </property>
     </bean>
 
-    <context:component-scan base-package="edu.uw.myplan.trng.course.controller" />
+    <context:component-scan base-package="org.kuali.student.myplan.course.controller" />
 
 </beans>
 

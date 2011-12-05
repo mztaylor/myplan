@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
 import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,7 @@ public class TimeScheduleFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item) {
+    public void process(CourseInfo course, CourseSearchItem item) {
         /*
          * Time schedule contains multiple items so use a delimiter to separate keys.
          */

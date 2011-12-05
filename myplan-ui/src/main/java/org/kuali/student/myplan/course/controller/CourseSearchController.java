@@ -27,6 +27,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpSeasonalTypeInfo;
+import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
@@ -35,6 +36,7 @@ import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.util.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -109,11 +111,11 @@ public class CourseSearchController extends UifControllerBase {
         HashMap<String,String> divisionMap = fetchCourseDivisions();
 
         //  Initialize facets.
-        org.kuali.student.myplan.course.util.CurriculumFacet curriculumFacet = new org.kuali.student.myplan.course.util.CurriculumFacet();
-        org.kuali.student.myplan.course.util.CreditsFacet creditsFacet = new org.kuali.student.myplan.course.util.CreditsFacet();
-        org.kuali.student.myplan.course.util.CourseLevelFacet courseLevelFacet = new org.kuali.student.myplan.course.util.CourseLevelFacet();
-        org.kuali.student.myplan.course.util.GenEduReqFacet genEduReqFacet = new org.kuali.student.myplan.course.util.GenEduReqFacet();
-        org.kuali.student.myplan.course.util.TimeScheduleFacet timeScheduleFacet = new org.kuali.student.myplan.course.util.TimeScheduleFacet();
+        CurriculumFacet curriculumFacet = new CurriculumFacet();
+        CreditsFacet creditsFacet = new CreditsFacet();
+        CourseLevelFacet courseLevelFacet = new CourseLevelFacet();
+        GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
+        TimeScheduleFacet timeScheduleFacet = new TimeScheduleFacet();
 
         String query = courseSearchForm.getSearchQuery().toUpperCase();
         QueryTokenizer tokenizer = new QueryTokenizer();
@@ -397,10 +399,10 @@ public class CourseSearchController extends UifControllerBase {
      * TODO: UW SPECIFIC - Make this runtime configurable.
      */
     private enum TermOrder {
-        FALL   ("kuali.atp.season.Fall"),
-        WINTER ("kuali.atp.season.Winter"),
-        SPRING ("kuali.atp.season.Spring"),
-        SUMMER ("kuali.atp.season.Summer");
+        FALL   ("kuali.atp.type.autumn"),
+        WINTER ("kuali.atp.type.winter"),
+        SPRING ("kuali.atp.type.spring"),
+        SUMMER ("kuali.atp.type.summer");
 
         private String termKey;
 
@@ -447,18 +449,18 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     /**
-     * Gets a "term" from the AtpSeasonalTypes cache.
-     * @param term The key of the AtpSeasonalTypeInfo
-     * @return A String representation of the AtpSeasonalTypeInfo.
+     * Gets a "term" from the AtpTypes cache.
+     * @param term The key of the AtpTypeInfo
+     * @return A String representation of the AtpTypeInfo.
      */
     private String getTerm(String term) {
         if (atpCache == null) {
-            initializeAtpSeasonalTypesCache();
+            initializeAtpTypesCache();
         }
         String t = atpCache.get(term);
         if (t == null) {
             logger.error("Term [" + term + "] was not found in the ATP cache. Attempting to re-initialize the the cache");
-            initializeAtpSeasonalTypesCache();
+            initializeAtpTypesCache();
             t = "?";
         }
         return t;
@@ -468,16 +470,16 @@ public class CourseSearchController extends UifControllerBase {
      * Initializes ATP term cache.
      * AtpSeasonalTypes rarely change, so fetch them all and store them in a Map.
      */
-    private void initializeAtpSeasonalTypesCache() {
+    private void initializeAtpTypesCache() {
         atpCache = new HashMap<String, String>();
-        List<AtpSeasonalTypeInfo> atpSeasonalTypeInfos;
+        List<AtpTypeInfo> atpTypeInfos;
         try {
-            atpSeasonalTypeInfos = getAtpService().getAtpSeasonalTypes();
+            atpTypeInfos = getAtpService().getAtpTypes();
         } catch (OperationFailedException e) {
-            logger.error("ATP seasonal types lookup failed.", e);
+            logger.error("ATP types lookup failed.", e);
             return;
         }
-        for (AtpSeasonalTypeInfo ti : atpSeasonalTypeInfos) {
+        for (AtpTypeInfo ti : atpTypeInfos) {
             atpCache.put(ti.getId(), ti.getName().substring(0,2).toUpperCase());
         }
     }
