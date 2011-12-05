@@ -36,7 +36,9 @@ import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -69,46 +71,14 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=start")
-    public ModelAndView start(@ModelAttribute("KualiForm") org.kuali.student.myplan.course.form.CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView start(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         return getUIFModelAndView(courseSearchForm);
     }
 
-    public HashMap<String,String> fetchCourseDivisions()
-    {
-        HashMap<String,String> map = new HashMap<String,String>();
-        try
-        {
-            List<SearchParam> params = new ArrayList<SearchParam>();
-            SearchRequest request = new SearchRequest();
-            request.setSearchKey( "myplan.distinct.clu.divisions" );
-            request.setParams( params );
-
-            SearchResult result = getLuService().search( request );
-
-            for( SearchResultRow row : result.getRows() )
-            {
-                for( SearchResultCell cell : row.getCells() )
-                {
-                    String division = cell.getValue();
-                    // Store both trimmed and original, because source data
-                    // is sometimes space padded.
-                    map.put( division.trim(), division );
-                }
-            }
-        }
-        catch( Exception e )
-        {
-             e.printStackTrace();
-        }
-        return map;
-    }
-
     @RequestMapping(params = "methodToCall=searchForCourses")
-    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") org.kuali.student.myplan.course.form.CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
-
-        HashMap<String,String> divisionMap = fetchCourseDivisions();
 
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
@@ -117,196 +87,34 @@ public class CourseSearchController extends UifControllerBase {
         GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
         TimeScheduleFacet timeScheduleFacet = new TimeScheduleFacet();
 
-        String query = courseSearchForm.getSearchQuery().toUpperCase();
-        QueryTokenizer tokenizer = new QueryTokenizer();
-
-        List<String> levels = tokenizer.extractCourseLevels(query);
-        for( String level : levels )
+        CourseSearchStrategy searcher = new CourseSearchStrategy();
+        try
         {
-            query = query.replace( level, "" );
-        }
-        List<String> codes = tokenizer.extractCourseCodes(query);
-        for( String code : codes )
-        {
-            query = query.replace( code, "" );
-        }
+            List<SearchRequest> requests = searcher.queryToRequests( courseSearchForm );
 
-        // Remove spaces, make upper case
-        query = query.trim().replaceAll( "\\s+", " " );
-
-        ArrayList<String> divisions = new ArrayList<String>();
-
-        List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
-        TokenPairs pairs = new TokenPairs( tokens );
-        for( String pair : pairs )
-        {
-            if( divisionMap.containsKey( pair ))
-            {
-                String division = divisionMap.get( pair );
-                divisions.add( division );
-                query = query.replace( pair, "" );
-
-            }
-        }
-
-        // Remove spaces, make upper case
-        query = query.trim().replaceAll( "\\s+", " " );
-        tokens = tokenizer.tokenize( query );
-
-        /*
-        String campus1 = "XX";
-        String campus2 = "XX";
-        String campus3 = "XX";
-        if( courseSearchForm.getCampusSeattle() )
-        {
-            campus1 = "NO";
-        }
-        if( courseSearchForm.getCampusTacoma() )
-        {
-            campus2 = "SO";
-        }
-        if( courseSearchForm.getCampusBothell() )
-        {
-            campus3 = "AL";
-        }
- */
-        boolean allcampus =
-            courseSearchForm.getCampusSeattle() &&
-            courseSearchForm.getCampusTacoma() &&
-            courseSearchForm.getCampusBothell();
-
-        try {
             HashSet<String> courseSet = new HashSet<String>();
-//            for( String term : terms )
+
+            for( SearchRequest searchRequest : requests )
             {
-                /*
-                SearchRequest searchRequest = new SearchRequest();
-                if( allcampus )
-                {
-                    searchRequest.setSearchKey("myplan.lu.search.current.allcampus");
-                }
-                else
-                {
-                    searchRequest.setSearchKey("myplan.lu.search.current");
-                }
-
-                List<SearchParam> params = new ArrayList<SearchParam>();
-                params.add( new SearchParam( "queryText", term ));
-                params.add( new SearchParam( "queryLevel", level ));
-                if( !allcampus )
-                {
-                params.add( new SearchParam( "campus1", campus1 ));
-                params.add( new SearchParam( "campus2", campus2 ));
-                params.add( new SearchParam( "campus3", campus3 ));
-                }
-                searchRequest.setParams(params);
-                */
-                for( String division : divisions )
-                {
-                    boolean needDivisionQuery = true;
-
-                    for( String code : codes )
-                    {
-                        needDivisionQuery = false;
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.divisionAndCode" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        params.add( new SearchParam( "code", code ));
-                        searchRequest.setParams(params);
-
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for ( SearchResultRow row : searchResult.getRows() ) {
-                            for (SearchResultCell cell : row.getCells() ) {
-                                if ( "lu.resultColumn.cluId".equals( cell.getKey() )) {
-                                    String courseId = cell.getValue();
-                                    courseSet.add( courseId );
-                                }
-                            }
-                        }
-                    }
-
-                    for( String level : levels )
-                    {
-                        needDivisionQuery = false;
-
-                        level = level.substring( 0, 1 ) + "00";
-
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.divisionAndLevel" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        params.add( new SearchParam( "level", level ));
-                        searchRequest.setParams(params);
-
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for ( SearchResultRow row : searchResult.getRows() ) {
-                            for (SearchResultCell cell : row.getCells() ) {
-                                if ( "lu.resultColumn.cluId".equals( cell.getKey() )) {
-                                    String courseId = cell.getValue();
-                                    courseSet.add( courseId );
-                                }
-                            }
-                        }
-                    }
-
-                    if( needDivisionQuery )
-                    {
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.division" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        searchRequest.setParams(params);
-
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for ( SearchResultRow row : searchResult.getRows() ) {
-                            for (SearchResultCell cell : row.getCells() ) {
-                                if ( "lu.resultColumn.cluId".equals( cell.getKey() )) {
-                                    String courseId = cell.getValue();
-                                    courseSet.add( courseId );
-                                }
-                            }
-                        }
-                    }
-                }
-                for( QueryTokenizer.Token token : tokens )
-                {
-                    String queryText = null;
-                    switch( token.rule )
-                    {
-                        case WORD:
-                            queryText = token.value;
-                            break;
-                        case QUOTED:
-                            break;
-                        default:
-                            break;
-                    }
-                    SearchRequest searchRequest = new SearchRequest();
-                    searchRequest.setSearchKey( "myplan.lu.search.fulltext" );
-                    List<SearchParam> params = new ArrayList<SearchParam>();
-                    params.add( new SearchParam( "queryText", queryText ));
-                    searchRequest.setParams(params);
-
-                    SearchResult searchResult = getLuService().search(searchRequest);
-                    for ( SearchResultRow row : searchResult.getRows() ) {
-                        for (SearchResultCell cell : row.getCells() ) {
-                            if ( "lu.resultColumn.cluId".equals( cell.getKey() )) {
-                                String courseId = cell.getValue();
-                                courseSet.add( courseId );
-                            }
+                SearchResult searchResult = getLuService().search( searchRequest );
+                for ( SearchResultRow row : searchResult.getRows() ) {
+                    for (SearchResultCell cell : row.getCells() ) {
+                        if ( "lu.resultColumn.cluId".equals( cell.getKey() )) {
+                            String courseId = cell.getValue();
+                            courseSet.add( courseId );
                         }
                     }
                 }
             }
 
-            ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem> searchResults = new ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem>();
+
+            ArrayList<CourseSearchItem> searchResults = new ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem>();
 
             for ( String courseId : courseSet )
             {
                 CourseInfo course = getCourseService().getCourse(courseId);
 
-                org.kuali.student.myplan.course.dataobject.CourseSearchItem item = new org.kuali.student.myplan.course.dataobject.CourseSearchItem();
+                CourseSearchItem item = new CourseSearchItem();
                 item.setCourseId(course.getId());
                 item.setCode(course.getCode());
                 item.setCourseName(course.getCourseTitle());
@@ -339,7 +147,7 @@ public class CourseSearchController extends UifControllerBase {
             throw new RuntimeException(e);
         }
 
-        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), org.kuali.student.myplan.course.util.CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     private String formatCredits(CourseInfo courseInfo) {
