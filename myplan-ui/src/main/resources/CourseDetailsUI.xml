@@ -122,7 +122,7 @@
 
     <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
         <property name="page.header.render" value="false"/>
-        <property name="title" value="@{dataObject.title}"/>
+        <property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails" />
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
