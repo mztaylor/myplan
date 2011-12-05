@@ -119,52 +119,87 @@
         </property>
     </bean>
 
-    <!--
-    <bean id="CourseDetails.programRequirements" parent="CourseDetails.programRequirements-parentBean"/>
-    <bean id="CourseDetails.programRequirements-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="programRequirements"/>
-        <property name="dataType" value="STRING"/>
-        <property name="label" value="Course Description"/>
-        <property name="shortLabel" value="Description"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="200"/>
-        <property name="validCharactersConstraint">
-            <bean parent="AnyCharacterPatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="TextControl" p:size="200"/>
-        </property>
-    </bean>
-    -->
 
     <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
-        <property name="title" value="Course Details"/>
+        <property name="page.header.render" value="false"/>
+        <property name="title" value="@{dataObject.title}"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails" />
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
         <property name="singlePageView" value="true"/>
         <property name="items">
             <list>
-                <ref bean="InquiryView-information"/>
-                <ref bean="InquiryView-programRequirements"/>
+                <ref bean="course_details_page"/>
             </list>
         </property>
     </bean>
 
-    <bean id="InquiryView-information" parent="GroupSectionGridLayout">
-        <property name="layoutManager.numberOfColumns" value="2"/>
+
+    <!-- Layout for Course Search Form Page -->
+    <bean id="course_details_page" parent="Group"
+          p:layoutManager.orientation="HORIZONTAL">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
         <property name="items">
             <list>
-                <bean parent="AttributeField" p:propertyName="courseId"/>
-                <bean parent="AttributeField" p:propertyName="code"/>
-                <bean parent="AttributeField" p:propertyName="courseTitle"/>
-                <bean parent="AttributeField" p:propertyName="credit"/>
-                <bean parent="AttributeField" p:propertyName="courseDescription"/>
-
+                <ref bean="course_details_panel"/>
+                <ref bean="mystuff_panel"/>
             </list>
         </property>
-        <property name="title" value="Course Details"/>
     </bean>
+
+    <bean id="course_details_panel" parent="Group">
+        <property name="accordion.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="course_details_title"/>
+                <ref bean="course_details_addtoplan"/>
+                <ref bean="course_details_overview"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Search Details Page Title -->
+    <bean id="course_details_title" parent="FieldGroup">
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField" p:propertyName="code">
+                    <property name="control">
+                        <bean parent="TextControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="course_details_addtoplan" parent="Group"
+          p:layoutManager.orientation="HORIZONTAL">
+        <property name="accordion.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
+                      p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_overview" parent="GroupSectionGridLayout">
+        <property name="layoutManager.numberOfColumns" value="2"/>
+        <property name="title" value="Course Overview"/>
+        <property name="items">
+            <list>
+                <bean parent="AttributeField" p:propertyName="code"/>
+                <bean parent="AttributeField" p:propertyName="credit"/>
+                <bean parent="AttributeField" p:propertyName="courseDescription"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--
 
     <bean id="InquiryView-programRequirements" parent="CollectionGroupSectionTableLayout" p:layoutManager.numberOfColumns="1">
         <property name="title" value="Program Requirements"/>
@@ -183,7 +218,7 @@
         </property>
     </bean>
 
-    <!--
+
     <bean id="StringWrapper.string" parent="StringWrapper.string-parentBean"/>
     <bean id="StringWrapper.string-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="string"/>
