@@ -1,9 +1,13 @@
 package org.kuali.student.myplan.course.service;
 
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.kuali.student.common.exceptions.*;
+import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
+import org.kuali.student.core.statement.service.StatementService;
+import org.kuali.student.core.statement.util.StatementServiceConstants;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -15,6 +19,7 @@ import org.kuali.student.myplan.course.dataobject.CourseDetails;
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
     private transient CourseService courseService;
+    private transient StatementService statementService;
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -35,16 +40,45 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         courseDetails.setCourseDescription(course.getDescr().getFormatted());
-        courseDetails.setCredit("1-100");
+        courseDetails.setCredit("1-10");
         courseDetails.setCourseTitle(course.getCourseTitle());
+
+        courseDetails.setCampusLocations(course.getCampusLocations());
+
+        List<StatementTreeViewInfo> statements = null;
+        try {
+            statements = getCourseService().getCourseStatements(courseId, null, null);
+        } catch (DoesNotExistException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (PermissionDeniedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        //for (StatementTreeViewInfo stvi : statements) {
+        //    stvi.
+        //}
 
         return courseDetails;
     }
 
     protected CourseService getCourseService() {
-        if(courseService == null) {
-            courseService = (CourseService)GlobalResourceLoader.getService(new QName(CourseServiceConstants.COURSE_NAMESPACE,"CourseService"));
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
         }
         return this.courseService;
     }
+
+    protected StatementService getStatementService() {
+        this.statementService = (StatementService) GlobalResourceLoader
+                .getService(new QName(StatementServiceConstants.PREREQUISITE_STATEMENT_TYPE, "StatementService"));
+        return this.statementService;
+    }
+
 }

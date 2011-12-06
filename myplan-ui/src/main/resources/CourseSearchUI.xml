@@ -442,8 +442,7 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="timeScheduleFacetItems"/>
         <property name="items">
             <list>
