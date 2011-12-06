@@ -23,7 +23,6 @@ public class CourseDetails {
         genEdRequirements.add("Not implemented.");
         genEdRequirements.add("Not implemented again.");
         requisites = new ArrayList<String>();
-        requisites.add("Not implemented.");
         termsOffered = new ArrayList<String>();
         termsOffered.add("Not implemented");
     }

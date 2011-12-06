@@ -1,8 +1,11 @@
 package org.kuali.student.myplan.course.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
+
+import org.apache.log4j.Logger;
 
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
@@ -15,8 +18,11 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.util.CreditsFormatter;
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
+
+    final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
 
     private transient CourseService courseService;
     private transient StatementService statementService;
@@ -40,29 +46,34 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         courseDetails.setCourseDescription(course.getDescr().getFormatted());
-        courseDetails.setCredit("1-10");
+        courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
 
         courseDetails.setCampusLocations(course.getCampusLocations());
 
+        //  Lookup course statements and build the requisites list.
         List<StatementTreeViewInfo> statements = null;
         try {
             statements = getCourseService().getCourseStatements(courseId, null, null);
         } catch (DoesNotExistException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (PermissionDeniedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            //  TODO: Is this a problem?
+        } catch (Exception e) {
+            logger.error("Course Statement lookup failed.", e);
         }
 
-        //for (StatementTreeViewInfo stvi : statements) {
-        //    stvi.
-        //}
+        List<String> reqs = new ArrayList<String>();
+        for (StatementTreeViewInfo stvi : statements) {
+            String statement = null;
+            try {
+                statement = getStatementService().translateStatementTreeViewToNL(stvi, "KUALI.RULE", "en") ;
+            } catch (Exception e) {
+                logger.error("Translation of Course Statement to natural language failed.", e);
+                //  TODO: How should this be handled?
+                statement = "";
+            }
+            reqs.add(statement);
+        }
+        courseDetails.setRequisites(reqs);
 
         return courseDetails;
     }

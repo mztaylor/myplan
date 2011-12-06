@@ -147,7 +147,7 @@ public class CourseSearchController extends UifControllerBase {
             throw new RuntimeException(e);
         }
 
-        return getUIFModelAndView(courseSearchForm, courseSearchForm.getViewId(), CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+        return getUIFModelAndView(courseSearchForm, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     private String formatCredits(CourseInfo courseInfo) {
