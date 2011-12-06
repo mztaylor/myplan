@@ -35,6 +35,7 @@
 
         <property name="collections">
 			<list>
+                <ref bean="CourseDetails.campusLocations"/>
                 <ref bean="CourseDetails.requisites"/>
                 <ref bean="CourseDetails.genEdRequirements"/>
 			</list>
@@ -127,6 +128,19 @@
         </property>
     </bean>
 
+    <bean id="CourseDetails.campusLocations" parent="CourseDetails.campusLocations-parentBean"/>
+    <bean id="CourseDetails.campusLocations-parentBean" abstract="true" parent="CollectionDefinition">
+        <property name="name" value="campusLocations"/>
+        <property name="shortLabel" value="Locations"/>
+        <property name="summary">
+            <value>Campus Locations</value>
+        </property>
+        <property name="label" value="Campus Locations"/>
+        <property name="elementLabel" value="Campus Locations"/>
+        <property name="minOccurs" value="0"/>
+        <property name="dataObjectClass" value="java.lang.String"/>
+    </bean>
+
 
     <bean id="CourseDetails.requisites" parent="CourseDetails.requisites-parentBean"/>
     <bean id="CourseDetails.requisites-parentBean" abstract="true" parent="CollectionDefinition">
@@ -155,7 +169,6 @@
         <property name="minOccurs" value="0"/>
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
-
 
 
     <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
@@ -228,6 +241,7 @@
                 </bean>
                 <bean parent="AttributeField" p:propertyName="credit" p:label="Credits"/>
                 <bean parent="AttributeField" p:propertyName="courseDescription" p:label="Course Description"/>
+                <bean parent="AttributeField" p:propertyName="campusLocations" p:label="Campus Locations"/>
             </list>
         </property>
     </bean>

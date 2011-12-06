@@ -13,9 +13,10 @@ public class CourseDetails {
     private String credit;
     private String courseDescription;
 
-    private List<String> genEdRequirements;
-    private List<String> requisites;
+    private List<String> campusLocations;
     private List<String> termsOffered;
+    private List<String> requisites;
+    private List<String> genEdRequirements;
 
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
@@ -89,5 +90,12 @@ public class CourseDetails {
 
     public void setTermsOffered(List<String> termsOffered) {
         this.termsOffered = termsOffered;
+    }
+    public List<String> getCampusLocations() {
+        return campusLocations;
+    }
+
+    public void setCampusLocations(List<String> campusLocations) {
+        this.campusLocations = campusLocations;
     }
 }
