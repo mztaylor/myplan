@@ -1,25 +1,7 @@
-#course_search_panel_div,
-#course_search_result_panel_div {
-	width:700px;
+/* Styles for left content containers */
+#course_search_panel_div, #course_search_result_panel_div, #course_details_panel_div {
     margin-right: 20px;
 }
-#courseSearchView_div button.button-primary {
-	background-image: -moz-linear-gradient(top, #8bcefd, #007dd6);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #8bcefd), color-stop(1, #007dd6));
-    background-image: -o-linear-gradient(top,rgba(139,206,253,1),rgba(0,125,214,1));    /* be nice to Opera */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#8bcefd, endColorstr=#007dd6);  /* IE7 and older */
-    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#8bcefd, EndColorStr=#007dd6);  /*IE8 */
-    background: linear-gradient(top, rgba(139,206,253,1) 0%, rgba(0,125,214,1) 100%);  /* for the future */
-	background-color:#007dd6;
-	color: #fff;
-	text-shadow: none;
-	border: solid 1px #969696;
-	padding: 5px 20px;
-    margin: 0;
-    border-radius: 4px;
-    line-height: 1em;
-}
-
 #course_search_functions_div {
 	background: #d6d6d6;
 	border: solid 2px #a9a9a9;
@@ -34,15 +16,12 @@
     padding:4px;
     width: 200px;
 }
-
-#course_search_functions_div select {
-
-}
-
 #course_search_params_span {
 	margin-left: 5.5em;
 	display:block;
 }
+
+/* Styles for Facet Panel */
 #course_search_result_facets_div {
 	border-bottom: solid 1px #a9a9a9;
     border-left: solid 1px #a9a9a9;
@@ -68,38 +47,6 @@
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
 	overflow:hidden;
 }
-
-
-/* beginning of scrollbar */
-::-webkit-scrollbar{
-        width:8px;
-        height:8px;}
-
-::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment{
-        display:block;
-        height:0;
-        background-color:transparent;}
-
-::-webkit-scrollbar-track {
-		margin: 3px;}
-
-::-webkit-scrollbar-track-piece{
-        background-color:#eee;
-        -webkit-border-radius:8px;}
-
-::-webkit-scrollbar-thumb:vertical{
-        height:50px;background-color:#999;
-        -webkit-border-radius:8px;}
-
-::-webkit-scrollbar-thumb:horizontal{
-        width:50px;background-color:#999;
-        -webkit-border-radius:8px;}
-/* end of scrollbar */
-
-
-
-
-
 #course_search_result_facets_div .section-subhead,  #course_search_result_facets_group .facetHeader label {
 	display:block;
 	font-weight: normal;
@@ -133,6 +80,8 @@
 #course_search_result_facets_div .facets a.item.checked {
     background-position: 0px -32px;
 }
+
+/* Styles for course search results */
 #course_search_results_div {
 	margin:0;
 }
@@ -207,4 +156,14 @@ table.display {
 }
 .dataTables_wrapper .dataTables_paginate .first, .dataTables_wrapper .dataTables_paginate .last {
 	display:none;
+}
+
+/* Styles for course details page */
+#course_details_overview_div table th label {
+    white-space: nowrap;
+}
+#course_details_overview_div table td ul, #course_details_overview_div table td ul li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
