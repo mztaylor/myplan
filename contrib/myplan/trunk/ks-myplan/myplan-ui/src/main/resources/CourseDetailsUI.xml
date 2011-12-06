@@ -165,6 +165,12 @@
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
         <property name="singlePageView" value="true"/>
+        <property name="styleClasses" value="myplan"/>
+        <property name="additionalCssFiles">
+            <list>
+                <value>/ks-myplan/css/course-search.css</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_details_page"/>
@@ -188,7 +194,7 @@
 
     <bean id="course_details_panel" parent="Group">
         <property name="accordion.render" value="false"/>
-        <property name="styleClasses" value=""/>
+        <property name="styleClasses" value="fl-container-700"/>
         <property name="items">
             <list>
                 <ref bean="course_details_addtoplan"/>
@@ -210,18 +216,18 @@
 
     <bean id="course_details_overview" parent="GroupSectionGridLayout">
         <property name="layoutManager.numberOfColumns" value="2"/>
-        <property name="title" value="Course Overview"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="AttributeField" p:propertyName="code"/>
-                <bean parent="AttributeField" p:propertyName="credit"/>
-                <bean parent="AttributeField" p:propertyName="courseDescription"/>
-                <bean parent="AttributeField" p:propertyName="requisites" p:label="Course Requisites">
+                <!--<bean parent="AttributeField" p:propertyName="code"/>-->
+                <bean parent="AttributeField" p:propertyName="requisites" p:label="Prerequisites">
                     <property name="formatter" ref="course_requirements_formatter"/>
                 </bean>
-                <bean parent="AttributeField" p:propertyName="genEdRequirements" p:label="Gen Edu. Requirements">
+                <bean parent="AttributeField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements">
                     <property name="formatter" ref="course_requirements_formatter"/>
                 </bean>
+                <bean parent="AttributeField" p:propertyName="credit" p:label="Credits"/>
+                <bean parent="AttributeField" p:propertyName="courseDescription" p:label="Course Description"/>
             </list>
         </property>
     </bean>
