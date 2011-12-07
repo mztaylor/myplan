@@ -1,6 +1,8 @@
 /* Styles for left content containers */
-#course_search_panel_div, #course_search_result_panel_div, #course_details_panel_div {
-    margin-right: 20px;
+#course_search_panel_div,
+#course_search_result_panel_div,
+#course_details_panel_div {
+    /*margin-right: 20px;*/
 }
 #course_search_functions_div {
 	background: #d6d6d6;
@@ -9,7 +11,7 @@
 	border-radius: 8px;
 }
 #course_search_fields_span span {
-	line-height: 2.4em;
+	line-height: 2.5em;
 }
 #course_search_functions_div input[type='text'] {
     border: solid 1px #969696;
@@ -27,13 +29,14 @@
     border-left: solid 1px #a9a9a9;
     border-right: solid 1px #a9a9a9;
     font-size: 90%;
-    width:118px;
+    width: 118px;
 }
-#course_search_result_facets_div table, #course_search_result_facets_div .boxLayoutVerticalItem, #course_search_result_facets_div table th, #course_search_result_facets_div table td {
-    margin: 0;
-    padding: 0;
-}
+#course_search_result_facets_div table,
+#course_search_result_facets_div .boxLayoutVerticalItem,
+#course_search_result_facets_div table th,
+#course_search_result_facets_div table td,
 #course_search_result_facets_div .facets>div[id$='_group'] {
+    margin: 0;
     padding: 0;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] span.fieldLine span.all {
@@ -45,19 +48,20 @@
 	overflow-y: auto;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
-	overflow:hidden;
+	overflow: hidden;
 }
-#course_search_result_facets_div .section-subhead,  #course_search_result_facets_group .facetHeader label {
-	display:block;
+#course_search_result_facets_div .section-subhead,
+#course_search_result_facets_group .facetHeader label {
+	display: block;
 	font-weight: normal;
 	background: #cccccc;
 	border-top: solid 1px #a9a9a9;
-	padding:5px;
+	padding: 5px;
 }
 #course_search_result_facets_div .facets .section-subhead {
 	background: #e9e9e9;
-	font-weight:bold;
-    display:block;
+	font-weight: bold;
+    display: block;
 }
 #course_search_result_facets_div img.expand_collapse-buttons {
     float: right;
@@ -88,9 +92,6 @@
 #course_search_results_list_items_group {
 	width: 570px;
 }
-table.display {
-    width: 100%;
-}
 .dataTables_wrapper {
 
 }
@@ -109,7 +110,8 @@ table.display {
 .dataTables_wrapper table {
     border: solid 1px #a9a9a9;
 }
-.dataTables_wrapper table th, .dataTables_wrapper table td {
+.dataTables_wrapper table th,
+.dataTables_wrapper table td {
     vertical-align: middle;
 }
 .dataTables_wrapper table thead tr {
@@ -124,8 +126,8 @@ table.display {
     font-size: 88%;
 }
 .dataTables_wrapper table tbody tr td {
-	line-height:1.8em;
-    height:1.8em;
+	line-height: 1.8em;
+    height: 1.8em;
 }
 .dataTables_wrapper table tbody tr td.courseCode span.courseCode {
     font-weight: bold;
@@ -141,20 +143,23 @@ table.display {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
-.dataTables_wrapper .odd, .dataTables_wrapper .odd .sorting_1 {
+.dataTables_wrapper .odd,
+.dataTables_wrapper .odd td[class^='sorting_'] {
     background-color: #fff;
 }
-.dataTables_wrapper .even, .dataTables_wrapper .even .sorting_1 {
+.dataTables_wrapper .even,
+.dataTables_wrapper .even td[class^='sorting_'] {
     background-color: #f1f1f1;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .paginate_button,
 .dataTables_wrapper .dataTables_paginate .paginate_active,
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
 	background: none;
 	border: none;
 }
-.dataTables_wrapper .dataTables_paginate .first, .dataTables_wrapper .dataTables_paginate .last {
+.dataTables_wrapper .dataTables_paginate .first,
+.dataTables_wrapper .dataTables_paginate .last {
 	display:none;
 }
 
@@ -162,7 +167,8 @@ table.display {
 #course_details_overview_div table th label {
     white-space: nowrap;
 }
-#course_details_overview_div table td ul, #course_details_overview_div table td ul li {
+#course_details_overview_div table td ul,
+#course_details_overview_div table td ul li {
     list-style: none;
     padding: 0;
     margin: 0;

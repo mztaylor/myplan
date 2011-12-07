@@ -13,29 +13,32 @@ a, a:hover, a:active, a:focus {
 	width: 940px;
 }
 
-.myplan .breadcrumbs, .myplan #viewpage_div, .myplan #viewheader_div  {
+.myplan .kr-breadcrumbs,
+.myplan #viewpage_div,
+.myplan #viewheader_div,
+.myplan #viewlayout_div {
 	margin: 0;
 	padding: 0;
+    width: auto;
 }
 
 .myplan .summary {
 	max-width: none;
+    margin: 0 0 10px 0;
+    display: block;
 }
 .myplan .boxLayoutVerticalItem {
-	padding: 0;
 	margin: 0 0 10px 0;
+    padding: 0;
 }
 .myplan .boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
+    padding: 0;
 }
 
-.myplan .page-title-header {
+.myplan .kr-page-title-header {
     font-family: arial,helvetica,clean,sans-serif;
     margin: 1em 0 0 0;
-}
-
-.myplan #viewlayout_div {
-    margin: 0 10px;
 }
 
 #mystuff_panel_div {
@@ -50,7 +53,7 @@ a, a:hover, a:active, a:focus {
 .ellipsis.multiline {
         white-space: normal;
 }
-button.button-primary {
+button.kr-button-primary {
 	background-image: -moz-linear-gradient(top, #8bcefd, #007dd6);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #8bcefd), color-stop(1, #007dd6));
     background-image: -o-linear-gradient(top,rgba(139,206,253,1),rgba(0,125,214,1));    /* be nice to Opera */
