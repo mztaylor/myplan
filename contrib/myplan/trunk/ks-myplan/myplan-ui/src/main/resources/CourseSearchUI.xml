@@ -62,10 +62,12 @@
 
 
     <!-- Layout for Course Search Form Page -->
-    <bean id="course_search_page" parent="Group"
-          p:layoutManager.orientation="HORIZONTAL">
+    <bean id="course_search_page" parent="Group">
+        <!--<property name="layoutManager">
+            <bean parent="BoxLayoutManager"/>
+        </property>-->
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
+        <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
                 <ref bean="course_search_panel"/>
@@ -76,10 +78,12 @@
 
 
     <!-- Layout for Course Search Result Page -->
-    <bean id="course_search_result_page" parent="Group"
-          p:layoutManager.orientation="HORIZONTAL">
+    <bean id="course_search_result_page" parent="Group">
+        <!--<property name="layoutManager">
+            <bean parent="BoxLayoutManager"/>
+        </property>-->
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
+        <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
                 <ref bean="course_search_result_panel"/>
@@ -93,7 +97,7 @@
         <property name="instructionalText"
                   value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-700"/>
+        <property name="styleClasses" value="fl-container-flex75 fl-force-left"/>
         <property name="items">
             <list>
                 <ref bean="course_search_functions"/>
@@ -107,7 +111,7 @@
         <property name="instructionalText"
                   value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-700"/>
+        <property name="styleClasses" value="fl-container-flex75 fl-force-left"/>
         <property name="items">
             <list>
                 <ref bean="course_search_functions"/>
@@ -119,7 +123,7 @@
     <!-- Group for MyStuff Panel TBD -->
     <bean id="mystuff_panel" parent="Group">
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-200"/>
+        <property name="styleClasses" value="fl-container-flex25 fl-force-left"/>
         <property name="items">
             <list>
                 <!-- MYSTUFF - TBD -->
@@ -206,6 +210,7 @@
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="Group"
           p:layoutManager.orientation="HORIZONTAL">
+        <property name="styleClasses" value="fl-container-auto"/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -217,6 +222,7 @@
 
     <!-- Group for Search Results List and Buttons -->
     <bean id="course_search_results" parent="Group">
+        <property name="styleClasses" value="fl-force-left"/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -275,7 +281,7 @@
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'sWidth': '175px', 'bSortable':true, 'sSortDataType':'dom-text'},
+                            {'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
@@ -286,13 +292,14 @@
                             {'sTitle':'facetLevel', 'bVisible':false},
                             {'sTitle':'facetCurriculum', 'bVisible':false}
                         ]"/>
-
-
-                <!-- <entry key="fnDrawCallback" value="function() { var paginateRow
-                        = jq(this).parent().prev().children('div.dataTables_paginate'); var pageCount
-                        = Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength);
-                        if (pageCount > 1) { paginateRow.css('display', 'block'); } else { paginateRow.css('display',
-                        'none'); } }"/> -->
+                <!--<entry key="fnDrawCallback"
+                       value="function() {
+                            if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
+                                $('.dataTables_paginate').show();
+                            } else {
+                                $('.dataTables_paginate').hide();
+                            }
+                       }"/>-->
             </map>
         </property>
         <property name="items">
@@ -347,7 +354,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="ActionField" p:label="Add" p:clientSideJs="alert('You clicked the add button');">
+                <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('You clicked the add button');">
                     <property name="actionImage">
                         <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
@@ -410,6 +417,7 @@
 
     <!-- Group for Search Facets -->
     <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
+        <property name="styleClasses" value="fl-force-left"/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
