@@ -157,13 +157,18 @@
     -ms-text-overflow: ellipsis;
     */
 }
-.dataTables_wrapper .odd,
-.dataTables_wrapper .odd td[class^='sorting_'] {
-    background-color: #fff;
+.dataTables_wrapper tr.odd,
+.dataTables_wrapper tr.odd td[class^='sorting_'] {
+    background: #fff;
 }
-.dataTables_wrapper .even,
-.dataTables_wrapper .even td[class^='sorting_'] {
-    background-color: #f1f1f1;
+.dataTables_wrapper tr.even,
+.dataTables_wrapper tr.even td[class^='sorting_'] {
+    background: #f1f1f1;
+}
+.dataTables_wrapper tr.odd:hover,
+.dataTables_wrapper tr.even:hover {
+    background: #ccc;
+    cursor: pointer;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .paginate_button,
@@ -171,6 +176,10 @@
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
 	background: none;
 	border: none;
+}
+.dataTables_wrapper .dataTables_paginate.paging_full_numbers {
+    width: 100%;
+    background: #a9a9a9;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
