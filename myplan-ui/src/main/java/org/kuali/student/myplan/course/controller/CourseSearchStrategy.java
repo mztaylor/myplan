@@ -9,11 +9,9 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: jasonosgood
  * Date: 12/5/11
  * Time: 10:45 AM
@@ -90,144 +88,125 @@ public class CourseSearchStrategy
 
         ArrayList<String> divisions = new ArrayList<String>();
 
-        List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
-//        TokenPairs pairs = ;
-        List<String> terms = new TokenPairs( tokens ).sortedLongestFirst();
-        for( String term :  terms )
+        boolean match = true;
+        while( match )
         {
-            if( divisionMap.containsKey( term ))
+            match = false;
+            List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
+            List<String> terms = new TokenPairs( tokens ).sortedLongestFirst();
+            for( String term :  terms )
             {
-                String division = divisionMap.get( term );
-                divisions.add( division );
-                query = query.replace( term, "" );
-            }
-        }
-        for( String term : terms )
-        {
-            if( divisionMap.containsKey( term ))
-            {
-                String division = divisionMap.get( term );
-                divisions.add( division );
-                query = query.replace( term, "" );
+                String key = term.replace( " ", "" );
+                if( divisionMap.containsKey( key ))
+                {
+                    String division = divisionMap.get( key );
+                    divisions.add( division );
+                    query = query.replace( term, "" );
+                    match = true;
+                    break;
+                }
             }
         }
 
-        // Remove spaces, make upper case
+        // Remove spaces
         query = query.trim().replaceAll( "\\s+", " " );
-        tokens = tokenizer.tokenize( query );
+        List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
 
-        /*
-        String campus1 = "XX";
-        String campus2 = "XX";
-        String campus3 = "XX";
+        String campus1 = "-1";
+        String campus2 = "-1";
+        String campus3 = "-1";
         if( courseSearchForm.getCampusSeattle() )
         {
-            campus1 = "NO";
+            campus1 = "0";
         }
         if( courseSearchForm.getCampusTacoma() )
         {
-            campus2 = "SO";
+            campus2 = "1";
         }
         if( courseSearchForm.getCampusBothell() )
         {
-            campus3 = "AL";
+            campus3 = "2";
         }
- */
-        boolean allcampus =
-            courseSearchForm.getCampusSeattle() &&
-            courseSearchForm.getCampusTacoma() &&
-            courseSearchForm.getCampusBothell();
 
-//            for( String term : terms )
+        for( String division : divisions )
+        {
+            boolean needDivisionQuery = true;
+
+            for( String code : codes )
             {
-                /*
+                needDivisionQuery = false;
                 SearchRequest searchRequest = new SearchRequest();
-                if( allcampus )
-                {
-                    searchRequest.setSearchKey("myplan.lu.search.current.allcampus");
-                }
-                else
-                {
-                    searchRequest.setSearchKey("myplan.lu.search.current");
-                }
-
+                searchRequest.setSearchKey( "myplan.lu.search.divisionAndCode" );
                 List<SearchParam> params = new ArrayList<SearchParam>();
-                params.add( new SearchParam( "queryText", term ));
-                params.add( new SearchParam( "queryLevel", level ));
-                if( !allcampus )
-                {
+                params.add( new SearchParam( "division", division ));
+                params.add( new SearchParam( "code", code ));
                 params.add( new SearchParam( "campus1", campus1 ));
                 params.add( new SearchParam( "campus2", campus2 ));
                 params.add( new SearchParam( "campus3", campus3 ));
-                }
                 searchRequest.setParams(params);
-                */
-                for( String division : divisions )
-                {
-                    boolean needDivisionQuery = true;
+                requests.add( searchRequest );
 
-                    for( String code : codes )
-                    {
-                        needDivisionQuery = false;
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.divisionAndCode" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        params.add( new SearchParam( "code", code ));
-                        searchRequest.setParams(params);
-                        requests.add( searchRequest );
-
-                    }
-
-                    for( String level : levels )
-                    {
-                        needDivisionQuery = false;
-
-                        level = level.substring( 0, 1 ) + "00";
-
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.divisionAndLevel" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        params.add( new SearchParam( "level", level ));
-                        searchRequest.setParams(params);
-
-                        requests.add( searchRequest );
-                    }
-
-                    if( needDivisionQuery )
-                    {
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.lu.search.division" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "division", division ));
-                        searchRequest.setParams(params);
-
-                        requests.add( searchRequest );
-                    }
-                }
-                for( QueryTokenizer.Token token : tokens )
-                {
-                    String queryText = null;
-                    switch( token.rule )
-                    {
-                        case WORD:
-                            queryText = token.value;
-                            break;
-                        case QUOTED:
-                            break;
-                        default:
-                            break;
-                    }
-                    SearchRequest searchRequest = new SearchRequest();
-                    searchRequest.setSearchKey( "myplan.lu.search.fulltext" );
-                    List<SearchParam> params = new ArrayList<SearchParam>();
-                    params.add( new SearchParam( "queryText", queryText ));
-                    searchRequest.setParams(params);
-
-                    requests.add( searchRequest );
-                }
             }
+
+            for( String level : levels )
+            {
+                needDivisionQuery = false;
+
+                level = level.substring( 0, 1 ) + "00";
+
+                SearchRequest searchRequest = new SearchRequest();
+                searchRequest.setSearchKey( "myplan.lu.search.divisionAndLevel" );
+                List<SearchParam> params = new ArrayList<SearchParam>();
+                params.add( new SearchParam( "division", division ));
+                params.add( new SearchParam( "level", level ));
+                params.add( new SearchParam( "campus1", campus1 ));
+                params.add( new SearchParam( "campus2", campus2 ));
+                params.add( new SearchParam( "campus3", campus3 ));
+                searchRequest.setParams(params);
+
+                requests.add( searchRequest );
+            }
+
+            if( needDivisionQuery )
+            {
+                SearchRequest searchRequest = new SearchRequest();
+                searchRequest.setSearchKey( "myplan.lu.search.division" );
+                List<SearchParam> params = new ArrayList<SearchParam>();
+                params.add( new SearchParam( "division", division ));
+                params.add( new SearchParam( "campus1", campus1 ));
+                params.add( new SearchParam( "campus2", campus2 ));
+                params.add( new SearchParam( "campus3", campus3 ));
+                searchRequest.setParams(params);
+
+                requests.add( searchRequest );
+            }
+        }
+        for( QueryTokenizer.Token token : tokens )
+        {
+            String queryText = null;
+            switch( token.rule )
+            {
+                case WORD:
+                    queryText = token.value;
+                    break;
+                case QUOTED:
+                    queryText = token.value;
+                    queryText = queryText.substring( 1, queryText.length() - 1 );
+                    break;
+                default:
+                    break;
+            }
+            SearchRequest searchRequest = new SearchRequest();
+            searchRequest.setSearchKey( "myplan.lu.search.fulltext" );
+            List<SearchParam> params = new ArrayList<SearchParam>();
+            params.add( new SearchParam( "queryText", queryText ));
+            params.add( new SearchParam( "campus1", campus1 ));
+            params.add( new SearchParam( "campus2", campus2 ));
+            params.add( new SearchParam( "campus3", campus3 ));
+            searchRequest.setParams(params);
+
+            requests.add( searchRequest );
+        }
 
         return requests;
     }
