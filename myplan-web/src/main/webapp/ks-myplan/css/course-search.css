@@ -4,6 +4,13 @@
 #course_details_panel_div {
     /*margin-right: 20px;*/
 }
+
+#course_search_page_group>div>span>span.clearfix,
+#course_search_page_group>div>span>span.clearfix::after,
+#course_search_result_page_group>div>span>span.clearfix,
+#course_search_result_page_group>div>span>span.clearfix::after {
+   	clear: none;
+}
 #course_search_functions_div {
 	background: #d6d6d6;
 	border: solid 2px #a9a9a9;
@@ -50,7 +57,7 @@
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
 	overflow: hidden;
 }
-#course_search_result_facets_div .section-subhead,
+#course_search_result_facets_div .kr-section-subhead,
 #course_search_result_facets_group .facetHeader label {
 	display: block;
 	font-weight: normal;
@@ -58,14 +65,16 @@
 	border-top: solid 1px #a9a9a9;
 	padding: 5px;
 }
-#course_search_result_facets_div .facets .section-subhead {
+#course_search_result_facets_div .facets .kr-section-subhead {
 	background: #e9e9e9;
 	font-weight: bold;
     display: block;
+    color: #000;
 }
 #course_search_result_facets_div img.expand_collapse-buttons {
     float: right;
     background: url('/myplan-embedded-dev/ks-myplan/images/facetExpandCollapse.png') no-repeat 0px 0px;
+    margin: 0;
 }
 #course_search_result_facets_div img.expand_collapse-buttons[alt="expand"] {
     background-position: 0px 0px;
@@ -79,7 +88,10 @@
     min-height: 16px;
     line-height: 16px;
     display: block;
-    margin: 3px;
+    margin: 0 0 3px 3px;
+}
+#course_search_result_facets_div .facets a.item.all {
+	margin-top: 3px;
 }
 #course_search_result_facets_div .facets a.item.checked {
     background-position: 0px -32px;
@@ -90,7 +102,7 @@
 	margin:0;
 }
 #course_search_results_list_items_group {
-	width: 570px;
+	/*width: 570px;*/
 }
 .dataTables_wrapper {
 
@@ -134,7 +146,8 @@
     white-space: nowrap;
 }
 .dataTables_wrapper table tbody tr td.courseName span.courseName a {
-	display: block;
+	/*
+    display: block;
     line-height: 1.8em;
     max-width: 175px;
     white-space: nowrap;
@@ -142,6 +155,7 @@
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
+    */
 }
 .dataTables_wrapper .odd,
 .dataTables_wrapper .odd td[class^='sorting_'] {

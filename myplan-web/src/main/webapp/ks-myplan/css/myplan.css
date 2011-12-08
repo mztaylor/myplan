@@ -10,9 +10,13 @@ a, a:hover, a:active, a:focus {
 #view_div {
 	margin:0 auto;
 	padding: 10px;
-	width: 940px;
+	width: auto;
+    min-width: 940px;
+    max-width: 1440px;
 }
-
+#viewfooter_div {
+    clear: both;
+}
 .myplan .kr-breadcrumbs,
 .myplan #viewpage_div,
 .myplan #viewheader_div,
