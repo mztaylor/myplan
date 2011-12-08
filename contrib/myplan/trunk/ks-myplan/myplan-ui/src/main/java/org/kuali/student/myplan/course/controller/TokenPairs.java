@@ -10,6 +10,15 @@ import java.util.*;
  */
 public class TokenPairs implements Iterable<String>, Iterator<String>
 {
+    /*
+    public class Pair
+    {
+        publc Pair( String original )
+        {
+
+        }
+    }
+    */
     List<QueryTokenizer.Token> _list = null;
 
     public TokenPairs( List<QueryTokenizer.Token> list )
@@ -35,7 +44,7 @@ public class TokenPairs implements Iterable<String>, Iterator<String>
         }
         else if( a != b )
         {
-            result = _list.get( a ).value + _list.get( b ).value;
+            result = _list.get( a ).value + " " + _list.get( b ).value;
             a++;
         }
 
