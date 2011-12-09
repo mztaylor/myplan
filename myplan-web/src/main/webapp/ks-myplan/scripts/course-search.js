@@ -111,11 +111,11 @@ function calculateFacets(colIndex) {
 
 	jq("#course_search_result_facets_div a.item").not('.all').each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]);
-        var txtFacet = jq(this).text().split(" (",1);
+        var txtFacet = jq(this).text().split(" <span>(",1);
         if ( arrFacetCount[colIndex][txtFacet] != 0 ) {
-            jq(this).html(txtFacet + ' (' + arrFacetCount[colIndex][txtFacet] + ')').show();
+            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').show();
         } else {
-            jq(this).html(txtFacet + ' (' + arrFacetCount[colIndex][txtFacet] + ')').hide();
+            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').hide();
         }
 	});
 }
@@ -126,5 +126,5 @@ jq(document).ready(function() {
 
 jq(window).load(function(){
     if ( jq("#course_search_results_datatable").length > 0 ) buildFacets();
-    jq(".ellipsis").ellipsis();
+    //jq(".ellipsis").ellipsis();
 });
