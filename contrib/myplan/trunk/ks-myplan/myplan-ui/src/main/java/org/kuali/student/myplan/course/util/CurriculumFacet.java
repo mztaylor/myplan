@@ -4,7 +4,8 @@ import javax.xml.namespace.QName;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.organization.service.OrganizationService;
-import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +27,9 @@ public class CurriculumFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem courseSearchItem) {
-
-        String key = course.getSubjectArea();
+    public void process(CourseSearchItem course)
+    {
+        String key = course.getSubject();
         boolean isUnknown = false;
 
         //  If no subject area info was set then setup for an "Unknown" facet item.
@@ -46,13 +47,14 @@ public class CurriculumFacet extends AbstractFacet {
             } else {
                 displayName = getOrganizationName(key);
             }
-            org.kuali.student.myplan.course.dataobject.FacetItem item = new org.kuali.student.myplan.course.dataobject.FacetItem();
+            FacetItem item = new FacetItem();
             item.setKey(key + FACET_KEY_DELIMITER);
             item.setDisplayName(displayName);
             facetItems.add(item);
         }
+
         //  Code the item with the facet key.
-        courseSearchItem.setCurriculumFacetKey(key + FACET_KEY_DELIMITER);
+        course.setCurriculumFacetKey(key + FACET_KEY_DELIMITER);
     }
 
     /**

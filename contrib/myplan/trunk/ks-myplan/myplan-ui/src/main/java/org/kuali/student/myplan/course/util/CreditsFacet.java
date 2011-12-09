@@ -1,7 +1,6 @@
 package org.kuali.student.myplan.course.util;
 
 
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 
@@ -32,7 +31,7 @@ public class CreditsFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem item) {
+    public void process(CourseSearchItem item) {
         /*
          * In this case the course/item may match more than one facet item, so
          * first the credits string which was set by the controller must be parsed
