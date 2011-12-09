@@ -22,9 +22,10 @@ import org.kuali.student.myplan.course.util.CreditsFormatter;
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
-    final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
+    private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
 
     private transient CourseService courseService;
+
     private transient StatementService statementService;
 
     @Override

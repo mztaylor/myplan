@@ -141,39 +141,32 @@
         </property>
     </bean>
 
+
     <!-- Group for Search Input Fields -->
     <bean id="course_search_fields" parent="FieldGroup">
         <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
         <property name="items">
             <list>
                 <bean parent="InputField_Form" p:propertyName="searchQuery"
-                      p:label="Search for" p:labelPlacement="LEFT"
-                      p:labelField.renderColon="false" p:labelField.styleClasses="fl-text-bold">
+                    p:label="Search for" p:labelPlacement="LEFT"
+                    p:labelField.renderColon="false" p:labelField.styleClasses="fl-text-bold">
                     <property name="control">
                         <bean parent="TextControl" p:watermarkText="E.g. English 1xx, CHEM 142"/>
                     </property>
                 </bean>
-                <bean parent="InputField_Form" p:propertyName="searchTerm"
-                      p:label="in" p:labelPlacement="LEFT" p:labelField.renderColon="false">
+                <bean parent="InputField_Form" p:propertyName="searchTerm" p:label="in" p:labelPlacement="LEFT"
+                      p:labelField.renderColon="false">
+
                     <property name="control">
-                        <bean parent="SelectControl">
-                            <property name="options">
-                                <list>
-                                    <bean parent="KeyLabelPair" p:key="1" p:value="Any quarter"/>
-                                    <bean parent="KeyLabelPair" p:key="2" p:value="Autumn 11 quarter only"/>
-                                    <bean parent="KeyLabelPair" p:key="3" p:value="Winter 12 quarter only"/>
-                                    <bean parent="KeyLabelPair" p:key="4"
-                                          p:value="Autumn 11 and Winter 12"/>
-                                </list>
-                            </property>
-                        </bean>
+                        <bean parent="SelectControl"/>
                     </property>
 
-                    <!-- <property name="optionsFinder"> <bean class="org.kuali.student.enrollment.class2.courseoffering.keyvalue.SubjectAreaKeyValues"/>
-                             </property> -->
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.PublishedTermsListBuilder" />
+                    </property>
                 </bean>
                 <bean parent="ActionField" p:methodToCall="searchForCourses"
-                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP"/>
+                p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP"/>
 
             </list>
         </property>

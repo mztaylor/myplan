@@ -43,6 +43,20 @@
 			<artifactId>ks-common-util</artifactId>
 			<version>${kuali.student.version}</version>
 		</dependency>
+
+        <!-- -->
+        <dependency>
+            <groupId>org.kuali.student.enroll</groupId>
+            <artifactId>ks-enroll-api</artifactId>
+            <version>${kuali.student.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kuali.student.enroll</groupId>
+            <artifactId>ks-enroll-impl</artifactId>
+            <version>${kuali.student.version}</version>
+        </dependency>
+
+
 		<!--  End Kuali Student Dependencies -->
 
 

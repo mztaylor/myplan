@@ -51,7 +51,7 @@ import java.util.*;
 @RequestMapping(value = "/course")
 public class CourseSearchController extends UifControllerBase {
 
-    final Logger logger = Logger.getLogger(CourseSearchController.class);
+    private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
     private transient LuService luService;
 
