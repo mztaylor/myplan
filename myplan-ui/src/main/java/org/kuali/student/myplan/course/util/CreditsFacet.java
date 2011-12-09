@@ -125,18 +125,18 @@ public class CreditsFacet extends AbstractFacet {
             FacetItem facetItem1 = (FacetItem) o1;
             FacetItem facetItem2 = (FacetItem) o2;
 
-            String unkownKey = UNKNOWN_FACET_KEY + ';';
+            String unknownKey = UNKNOWN_FACET_KEY + FACET_KEY_DELIMITER;
 
-            if(unkownKey.equals(facetItem1.getKey())) {
+            if(unknownKey.equals(facetItem1.getKey())) {
                return 1;
             }
 
-            if(unkownKey.equals(facetItem2.getKey())) {
+            if(unknownKey.equals(facetItem2.getKey())) {
                 return -1;
             }
             //  The trailing ; needs to be stripped off before converting to a Float.
-            Float cv1 = Float.valueOf(facetItem1.getKey().replace(";", ""));
-            Float cv2 = Float.valueOf(facetItem2.getKey().replace(";", ""));
+            Float cv1 = Float.valueOf(facetItem1.getKey().replace(FACET_KEY_DELIMITER, ""));
+            Float cv2 = Float.valueOf(facetItem2.getKey().replace(FACET_KEY_DELIMITER, ""));
 
             return cv1.compareTo(cv2);
         }
