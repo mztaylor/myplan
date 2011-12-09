@@ -15,7 +15,6 @@
 
     <bean id="courseSearchView" parent="KSFormView">
         <property name="id" value="courseSearchView"/>
-        <property name="title" value="Find Courses"/>
         <property name="styleClasses" value="myplan"/>
         <property name="entryPageId" value="course_search"/>
 
@@ -26,14 +25,13 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/scripts/jquery.ellipsis.js</value>
                 <value>/ks-myplan/scripts/course-search.js</value>
             </list>
         </property>
-
         <property name="items">
             <list>
                 <bean parent="Page" p:id="course_search">
+                    <property name="title" value="Find Courses"/>
                     <property name="items">
                         <list>
                             <ref bean="course_search_page"/>
@@ -44,6 +42,7 @@
                     </property>
                 </bean>
                 <bean parent="Page" p:id="course_search_result">
+                    <property name="title" value="Find Courses"/>
                     <property name="items">
                         <list>
                             <ref bean="course_search_result_page"/>
@@ -62,7 +61,7 @@
 
 
     <!-- Layout for Course Search Form Page -->
-    <bean id="course_search_page" parent="Group">
+    <bean id="course_search_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <!--<property name="layoutManager">
             <bean parent="BoxLayoutManager"/>
         </property>-->
@@ -78,7 +77,7 @@
 
 
     <!-- Layout for Course Search Result Page -->
-    <bean id="course_search_result_page" parent="Group">
+    <bean id="course_search_result_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <!--<property name="layoutManager">
             <bean parent="BoxLayoutManager"/>
         </property>-->
@@ -97,7 +96,7 @@
         <property name="instructionalText"
                   value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-flex75 fl-force-left"/>
+        <property name="styleClasses" value="fl-container-720 fl-force-left"/>
         <property name="items">
             <list>
                 <ref bean="course_search_functions"/>
@@ -111,7 +110,7 @@
         <property name="instructionalText"
                   value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-flex75 fl-force-left"/>
+        <property name="styleClasses" value="fl-container-720 fl-force-left"/>
         <property name="items">
             <list>
                 <ref bean="course_search_functions"/>
@@ -123,7 +122,7 @@
     <!-- Group for MyStuff Panel TBD -->
     <bean id="mystuff_panel" parent="Group">
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-flex25 fl-force-left"/>
+        <property name="styleClasses" value="fl-container-200 fl-force-left"/>
         <property name="items">
             <list>
                 <!-- MYSTUFF - TBD -->
@@ -208,9 +207,8 @@
     </bean>
 
     <!-- Layout for Search Facets and Search Results -->
-    <bean id="course_search_results_panel" parent="Group"
-          p:layoutManager.orientation="HORIZONTAL">
-        <property name="styleClasses" value="fl-container-auto"/>
+    <bean id="course_search_results_panel" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="styleClasses" value=""/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -222,7 +220,7 @@
 
     <!-- Group for Search Results List and Buttons -->
     <bean id="course_search_results" parent="Group">
-        <property name="styleClasses" value="fl-force-left"/>
+        <property name="styleClasses" value=""/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -275,13 +273,12 @@
                 <entry key="sDom" value="ilrtp"/>
                 <entry key="sPaginationType" value="full_numbers"/>
                 <entry key="bRetrieve" value="true"/>
-
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'bSortable':true, 'sSortDataType':'dom-text'},
+                            {'sWidth':'175px;', 'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
@@ -322,7 +319,7 @@
                     </bean>
                 -->
 
-                <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target="" p:styleClasses="courseName ellipsis"
+                <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target="" p:styleClasses="courseName"
                       p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
 
                 <!--
@@ -417,7 +414,7 @@
 
     <!-- Group for Search Facets -->
     <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
-        <property name="styleClasses" value="fl-force-left"/>
+        <property name="styleClasses" value="fl-container-flex15 fl-force-left"/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
