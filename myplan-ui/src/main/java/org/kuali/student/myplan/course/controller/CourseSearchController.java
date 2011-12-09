@@ -217,13 +217,15 @@ public class CourseSearchController extends UifControllerBase {
                         {
                             Iterator<SearchResultCell> i = row.getCells().iterator();
                             String name = i.next().getValue();
-                            String code = i.next().getValue();
-                            String division = i.next().getValue();
+                            String number = i.next().getValue();
+                            String subject = i.next().getValue();
                             String credits = i.next().getValue();
 
                             item.setCourseId( courseId );
+                            item.setSubject( subject );
+                            item.setNumber( number );
                             item.setCourseName( name );
-                            item.setCode( division.trim() + " " + code.trim() );
+                            item.setCode( subject + " " + number );
 
                             if( creditMap.containsKey( credits ))
                             {
@@ -253,18 +255,17 @@ public class CourseSearchController extends UifControllerBase {
                                 termsOffered.add( term );
                             }
                         }
-                        String gaga = formatScheduledItem( termsOffered );
-                        item.setScheduledTime( gaga );
+                        String formatted = formatScheduledItem( termsOffered );
+                        item.setScheduledTime( formatted );
                     }
 
                     //  Update facet info and code the item.
-                    /*
-                    curriculumFacet.process(course, item);
-                    courseLevelFacet.process(course, item);
-                    genEduReqFacet.process(course, item);
-                    creditsFacet.process(course, item);
-                    timeScheduleFacet.process(course, item);
-                    */
+                    curriculumFacet.process(item);
+                    courseLevelFacet.process(item);
+                    genEduReqFacet.process(item);
+                    creditsFacet.process(item);
+                    timeScheduleFacet.process(item);
+
                     // TODO: Gen Edu Req goes here
 
                     searchResults.add(item);

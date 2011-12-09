@@ -15,7 +15,7 @@
 package org.kuali.student.myplan.course.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
-
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {
@@ -32,11 +32,11 @@ public class CourseSearchForm extends UifFormBase {
     private List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> courseSearchResults;
 
     /** Facet data lists */
-    private List<org.kuali.student.myplan.course.dataobject.FacetItem> curriculumFacetItems;
-    private List<org.kuali.student.myplan.course.dataobject.FacetItem> courseLevelFacetItems;
-    private List<org.kuali.student.myplan.course.dataobject.FacetItem> timeScheduleFacetItems;
-    private List<org.kuali.student.myplan.course.dataobject.FacetItem> genEduReqFacetItems;
-    private List<org.kuali.student.myplan.course.dataobject.FacetItem> creditsFacetItems;
+    private List<FacetItem> curriculumFacetItems;
+    private List<FacetItem> courseLevelFacetItems;
+    private List<FacetItem> timeScheduleFacetItems;
+    private List<FacetItem> genEduReqFacetItems;
+    private List<FacetItem> creditsFacetItems;
 
     public CourseSearchForm() {
         super();
@@ -86,7 +86,7 @@ public class CourseSearchForm extends UifFormBase {
         return searchTerm;
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getCurriculumFacetItems() {
+    public List<FacetItem> getCurriculumFacetItems() {
         return curriculumFacetItems;
     }
 
@@ -94,39 +94,39 @@ public class CourseSearchForm extends UifFormBase {
         this.searchTerm = searchTerm;
     }
 
-    public void setCurriculumFacetItems(List<org.kuali.student.myplan.course.dataobject.FacetItem> curriculumFacetItems) {
+    public void setCurriculumFacetItems(List<FacetItem> curriculumFacetItems) {
         this.curriculumFacetItems = curriculumFacetItems;
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getCourseLevelFacetItems() {
+    public List<FacetItem> getCourseLevelFacetItems() {
         return courseLevelFacetItems;
     }
 
-    public void setCourseLevelFacetItems(List<org.kuali.student.myplan.course.dataobject.FacetItem> courseLevelFacetItems) {
+    public void setCourseLevelFacetItems(List<FacetItem> courseLevelFacetItems) {
         this.courseLevelFacetItems = courseLevelFacetItems;
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getTimeScheduleFacetItems() {
+    public List<FacetItem> getTimeScheduleFacetItems() {
         return timeScheduleFacetItems;
     }
 
-    public void setTimeScheduleFacetItems(List<org.kuali.student.myplan.course.dataobject.FacetItem> timeScheduleFacetItems) {
+    public void setTimeScheduleFacetItems(List<FacetItem> timeScheduleFacetItems) {
         this.timeScheduleFacetItems = timeScheduleFacetItems;
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getGenEduReqFacetItems() {
+    public List<FacetItem> getGenEduReqFacetItems() {
         return genEduReqFacetItems;
     }
 
-    public void setGenEduReqFacetItems(List<org.kuali.student.myplan.course.dataobject.FacetItem> genEduReqFacetItems) {
+    public void setGenEduReqFacetItems(List<FacetItem> genEduReqFacetItems) {
         this.genEduReqFacetItems = genEduReqFacetItems;
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.FacetItem> getCreditsFacetItems() {
+    public List<FacetItem> getCreditsFacetItems() {
         return creditsFacetItems;
     }
 
-    public void setCreditsFacetItems(List<org.kuali.student.myplan.course.dataobject.FacetItem> creditsFacetItems) {
+    public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
         this.creditsFacetItems = creditsFacetItems;
     }
 }

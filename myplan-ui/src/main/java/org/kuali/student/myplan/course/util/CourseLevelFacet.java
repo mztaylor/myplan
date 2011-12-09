@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
-import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 /**
 *  Logic for building list of Course Level FacetItems and coding CourseSearchItems.
@@ -15,7 +16,7 @@ public class CourseLevelFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, org.kuali.student.myplan.course.dataobject.CourseSearchItem item) {
+    public void process(CourseSearchItem course) {
         String key = course.getLevel();
 
         boolean isUnknown = false;
@@ -27,7 +28,7 @@ public class CourseLevelFacet extends AbstractFacet {
 
         //  If it's a new facet key then create a new FacetItem.
         if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
-            org.kuali.student.myplan.course.dataobject.FacetItem fItem = new org.kuali.student.myplan.course.dataobject.FacetItem();
+            FacetItem fItem = new FacetItem();
             //  The display name and the key are the same in this case.
             fItem.setKey(key + FACET_KEY_DELIMITER);
             String displayName = null;
@@ -40,6 +41,6 @@ public class CourseLevelFacet extends AbstractFacet {
             facetItems.add(fItem);
         }
         //  Code the item with the facet key.
-        item.setCourseLevelFacetKey(key + FACET_KEY_DELIMITER);
+        course.setCourseLevelFacetKey(key + FACET_KEY_DELIMITER);
     }
 }

@@ -5,12 +5,14 @@ import java.util.regex.*;
 
 public class QueryTokenizer
 {
+
+    Pattern LEVEL = Pattern.compile( "[0-9][Xx][Xx]" );
+    Pattern NUMBER = Pattern.compile( "[0-9]+" );
+
 	enum Rule
 	{
         // Order significant. See matcher's foreach loop below.
-		LEVEL( "[0-9][Xx][Xx]" ),
-		NUMBER( "[0-9]+" ),
-		WORD( "[A-Za-z]+" ),
+		WORD( "[A-Za-z0-9]+" ),
 		QUOTED( "\"[^\"]*\"" );
 		
 		public Pattern pattern;
@@ -74,13 +76,11 @@ public class QueryTokenizer
         m.useTransparentBounds( true );
         m.useAnchoringBounds( false );
 
-        Rule rule = Rule.LEVEL;
-
         while( pos < len )
         {
             m.region( pos, len );
 
-            if( m.usePattern( rule.pattern ).lookingAt() )
+            if( m.usePattern( LEVEL ).lookingAt() )
             {
                 String value = source.substring( m.start(), m.end() );
                 tokens.add( value );
@@ -102,13 +102,11 @@ public class QueryTokenizer
         Matcher m = Pattern.compile( "dummy" ).matcher( source );
         m.useTransparentBounds( true );
 
-        Rule rule = Rule.NUMBER;
-
         while( pos < len )
         {
             m.region( pos, len );
 
-            if( m.usePattern( rule.pattern ).lookingAt() )
+            if( m.usePattern( NUMBER ).lookingAt() )
             {
                 if( m.end() - m.start() == 3 )
                 {

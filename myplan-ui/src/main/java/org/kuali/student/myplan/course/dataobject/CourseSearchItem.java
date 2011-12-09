@@ -16,6 +16,8 @@ import java.util.Map;
 public class CourseSearchItem {
     private String courseId;
 
+    private String number;
+    private String subject;
     private String code;
     private String courseName;
     private String credit;
@@ -38,12 +40,33 @@ public class CourseSearchItem {
         this.courseId = courseId;
     }
 
+    public String getNumber() {
+        return number;
+    }
+    
+    public void setNumber( String number ) {
+        this.number = number;
+    }
+    
+    // aka KSLU_CLU_IDENT.DIVISION
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject( String subject ) {
+        this.subject = subject;
+    }
+
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getLevel() {
+        return getNumber().substring( 0, 1 ) + "00";
     }
 
     public String getCourseName() {

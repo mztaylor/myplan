@@ -1,7 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class TimeScheduleFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseInfo course, CourseSearchItem item) {
+    public void process(CourseSearchItem item) {
         /*
          * Time schedule contains multiple items so use a delimiter to separate keys.
          */
@@ -50,7 +50,7 @@ public class TimeScheduleFacet extends AbstractFacet {
         for (String key : keys)
         {
             if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
-                org.kuali.student.myplan.course.dataobject.FacetItem fItem = new org.kuali.student.myplan.course.dataobject.FacetItem();
+                FacetItem fItem = new FacetItem();
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
                 String displayName = null;
                 if (isUnknown) {
