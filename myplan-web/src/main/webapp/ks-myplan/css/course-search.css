@@ -55,7 +55,7 @@
 	display: block;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] {
-	max-height: 133px;
+	max-height: 114px;
 	overflow-y: auto;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
@@ -160,6 +160,7 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseName span.courseName a {
     display: block;
+    text-transform: capitalize;
     line-height: 1.8em;
     max-width: 175px;
     white-space: nowrap;
