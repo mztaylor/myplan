@@ -111,7 +111,7 @@ function calculateFacets(colIndex) {
 
 	jq("#course_search_result_facets_div a.item").not('.all').each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]);
-        var txtFacet = jq(this).text().split(" <span>(",1);
+        var txtFacet = jq(this).text().split(" (",1);
         if ( arrFacetCount[colIndex][txtFacet] != 0 ) {
             jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').show();
         } else {
