@@ -179,7 +179,7 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd:hover,
 #course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #d6d6d6;
+    background: #aaa;
     cursor: pointer;
 }
 #course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
