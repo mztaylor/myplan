@@ -100,7 +100,7 @@ function calculateFacets(colIndex) {
                         // Check for array variable with facet text as key, if none, create it and set to inital count value to 0
 						if ( !arrFacetCount[n][arrFacetSearch[n][c]] ) arrFacetCount[n][arrFacetSearch[n][c]] = 0;
 						// Search for facet text in datatable column values, if found, increment array variable value
-                        if ( oTable[i][n].search(arrFacetSearch[n][c]+';') >= 0 ) arrFacetCount[n][arrFacetSearch[n][c]]++;
+                        if ( oTable[i][n].search(';'+arrFacetSearch[n][c]+';') >= 0 ) arrFacetCount[n][arrFacetSearch[n][c]]++;
 					}
 				}
 			}
