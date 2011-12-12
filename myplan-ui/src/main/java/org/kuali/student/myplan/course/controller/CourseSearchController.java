@@ -63,13 +63,13 @@ public class CourseSearchController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return new org.kuali.student.myplan.course.form.CourseSearchForm();
+        return new CourseSearchForm();
     }
 
     @RequestMapping(params = "methodToCall=start")
-    public ModelAndView start(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView start(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-        return getUIFModelAndView(courseSearchForm);
+        return getUIFModelAndView(form);
     }
 
     public class Hit
@@ -95,7 +95,7 @@ public class CourseSearchController extends UifControllerBase {
     int maxHits = 250;
 
     @RequestMapping(params = "methodToCall=searchForCourses")
-    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm courseSearchForm, BindingResult result,
+    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
 
         HashMap<String,String> creditMap = new HashMap<String,String>();
@@ -148,7 +148,7 @@ public class CourseSearchController extends UifControllerBase {
         CourseSearchStrategy searcher = new CourseSearchStrategy();
         try
         {
-            List<SearchRequest> requests = searcher.queryToRequests( courseSearchForm );
+            List<SearchRequest> requests = searcher.queryToRequests( form );
 
             HashMap<String,Hit> courseMap = new HashMap<String,Hit>();
 
@@ -182,7 +182,7 @@ public class CourseSearchController extends UifControllerBase {
             }
 
 
-            ArrayList<CourseSearchItem> searchResults = new ArrayList<org.kuali.student.myplan.course.dataobject.CourseSearchItem>();
+            ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
 
             Hit[] hits = courseMap.values().toArray( new Hit[0] );
             Arrays.sort( hits, new HitComparator() );
@@ -190,19 +190,7 @@ public class CourseSearchController extends UifControllerBase {
             for ( Hit hit : hits )
             {
                 String courseId = hit.courseID;
-                /*
-                {
-                    CourseInfo course = getCourseService().getCourse(courseId);
 
-                    CourseSearchItem item = new CourseSearchItem();
-                    item.setCourseId(course.getId());
-                    item.setCode(course.getCode());
-                    item.setCourseName(course.getCourseTitle());
-                    item.setScheduledTime(formatScheduledTime(course));
-                    item.setCredit(formatCredits(course));
-                    item.setGenEduReq(formatGenEduReq(course));
-                    // item.setStatus(TBD);
-                       */
                 {
                     CourseSearchItem item = new CourseSearchItem();
                     {
@@ -274,20 +262,20 @@ public class CourseSearchController extends UifControllerBase {
             }
 
             //  Add the facet data to the response.
-            courseSearchForm.setCurriculumFacetItems(curriculumFacet.getFacetItems());
-            courseSearchForm.setCreditsFacetItems(creditsFacet.getFacetItems());
-            courseSearchForm.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
-            courseSearchForm.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
-            courseSearchForm.setTimeScheduleFacetItems(timeScheduleFacet.getFacetItems());
+            form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
+            form.setCreditsFacetItems(creditsFacet.getFacetItems());
+            form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
+            form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
+            form.setTimeScheduleFacetItems(timeScheduleFacet.getFacetItems());
 
             //  Add the search results to the response.
-            courseSearchForm.setCourseSearchResults(searchResults);
+            form.setCourseSearchResults(searchResults);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return getUIFModelAndView(courseSearchForm, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+        return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
 

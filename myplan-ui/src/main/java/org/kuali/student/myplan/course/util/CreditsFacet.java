@@ -85,7 +85,9 @@ public class CreditsFacet extends AbstractFacet {
 
         for (String key : keys)
         {
-            if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
+            if (isNewFacetKey( FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER))
+//            if (isNewFacetKey( key + FACET_KEY_DELIMITER))
+            {
                 FacetItem fItem = new FacetItem();
                 String displayName = null;
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
@@ -94,7 +96,8 @@ public class CreditsFacet extends AbstractFacet {
                 } else {
                     displayName = key;
                 }
-                fItem.setKey(key + FACET_KEY_DELIMITER);
+                fItem.setKey(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
+//                fItem.setKey( key + FACET_KEY_DELIMITER);
                 fItem.setDisplayName(displayName);
                 facetItems.add(fItem);
             }
@@ -104,7 +107,8 @@ public class CreditsFacet extends AbstractFacet {
         StringBuilder kb = new StringBuilder();
         for (String k : keys)
         {
-            kb.append(k).append(FACET_KEY_DELIMITER);
+//            kb.append(k).append(FACET_KEY_DELIMITER);
+            kb.append(FACET_KEY_DELIMITER).append(k).append(FACET_KEY_DELIMITER);
         }
         item.setCreditsFacetKey(kb.toString());
     }
