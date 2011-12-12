@@ -189,6 +189,9 @@
                 <ref bean="course_details_page"/>
             </list>
         </property>
+        <property name="footer">
+            <bean parent="Footer"/>
+        </property>
     </bean>
 
 
