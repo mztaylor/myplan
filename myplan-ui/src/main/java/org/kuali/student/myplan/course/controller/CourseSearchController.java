@@ -26,7 +26,6 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.common.search.dto.*;
-import org.kuali.student.core.atp.dto.AtpSeasonalTypeInfo;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.dto.CourseInfo;
@@ -52,6 +51,8 @@ import java.util.*;
 public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
+
+    private static final int MAX_HITS = 25000;
 
     private transient LuService luService;
 
@@ -92,8 +93,6 @@ public class CourseSearchController extends UifControllerBase {
         }
     }
 
-    int maxHits = 250;
-
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
@@ -116,16 +115,16 @@ public class CourseSearchController extends UifControllerBase {
                 String min = i.next().getValue();
                 String max = i.next().getValue();
                 String credit = null;
-                if( "kuali.resultComponentType.credit.degree.multiple".equals( type ))
+                if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE.equals( type ))
                 {
                     credit = min + ", " + max;
                 }
-                else if( "kuali.resultComponentType.credit.degree.range".equals( type ))
+                else if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE.equals( type ))
                 {
                     credit = min + "-" + max;
 
                 }
-                else if( "kuali.resultComponentType.credit.degree.fixed".equals( type ))
+                else if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED.equals( type ))
                 {
                     credit = min;
                 }
@@ -172,7 +171,7 @@ public class CourseSearchController extends UifControllerBase {
                                 courseMap.put( courseId, hit );
                             }
 
-                            if( courseMap.size() == maxHits )
+                            if( courseMap.size() == MAX_HITS)
                             {
                                 break done;
                             }
@@ -227,6 +226,8 @@ public class CourseSearchController extends UifControllerBase {
 
                         }
                     }
+
+                    // Load Terms Offered
                     {
                         SearchRequest searchRequest = new SearchRequest();
                         searchRequest.setSearchKey( "myplan.course.info.atp" );
@@ -254,7 +255,28 @@ public class CourseSearchController extends UifControllerBase {
                     creditsFacet.process(item);
                     timeScheduleFacet.process(item);
 
-                    // TODO: Gen Edu Req goes here
+                    // Load Gen Ed Requirements
+//                    {
+//                        SearchRequest searchRequest = new SearchRequest();
+//                        searchRequest.setSearchKey( "myplan.course.info.gened" );
+//                        List<SearchParam> params = new ArrayList<SearchParam>();
+//                        params.add( new SearchParam( "courseID", courseId ));
+//                        searchRequest.setParams(params);
+//                        ArrayList<String> termsOffered = new ArrayList<String>();
+//                        SearchResult searchResult = getLuService().search( searchRequest );
+//                        for ( SearchResultRow row : searchResult.getRows() )
+//                        {
+//                            for (SearchResultCell cell : row.getCells() )
+//                            {
+//                                String genEd = cell.getValue();
+//
+//
+//                                termsOffered.add( term );
+//                            }
+//                        }
+//                        String formatted = formatScheduledItem( termsOffered );
+//                        item.setScheduledTime( formatted );
+//                    }
 
                     searchResults.add(item);
 
@@ -276,48 +298,6 @@ public class CourseSearchController extends UifControllerBase {
         }
 
         return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
-    }
-
-
-    private String formatCredits(CourseInfo courseInfo) {
-        String credits = "";
-
-        List<ResultComponentInfo> options = courseInfo.getCreditOptions();
-        if (options.size() == 0) {
-            logger.warn("Credit options list was empty.");
-            return credits;
-        }
-        /* At UW this list should only contain one item. */
-        if (options.size() > 1) {
-            logger.warn("Credit option list contained more than one value.");
-        }
-        ResultComponentInfo rci = options.get(0);
-
-        /**
-         *  Credit values are provided in three formats: FIXED, LIST (Multiple), and RANGE (Variable). Determine the
-         *  format and parse it into a String representation.
-         */
-        String type = rci.getType();
-        if (type.equals(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED)) {
-            credits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE);
-            credits = trimCredits(credits);
-        } else if (type.equals(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE)) {
-            StringBuilder cTmp = new StringBuilder();
-            for (String c : rci.getResultValues()) {
-                if (cTmp.length() != 0) {
-                    cTmp.append(", ");
-                }
-                cTmp.append(trimCredits(c));
-            }
-            credits = cTmp.toString();
-        } else if (type.equals(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE)) {
-            String minCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE);
-            String maxCredits = rci.getAttributes().get(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE);
-            credits = trimCredits(minCredits) + "-" + trimCredits(maxCredits);
-        } else {
-            logger.error("Unknown Course Credit type [" + type + "].");
-        }
-        return credits;
     }
 
     /**

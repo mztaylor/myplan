@@ -20,11 +20,9 @@ public class CourseDetails {
 
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
-        genEdRequirements.add("Not implemented.");
-        genEdRequirements.add("Not implemented again.");
+        genEdRequirements.add("Not implemented");
         requisites = new ArrayList<String>();
         termsOffered = new ArrayList<String>();
-        termsOffered.add("Not implemented");
     }
 
     public String getCourseId() {
