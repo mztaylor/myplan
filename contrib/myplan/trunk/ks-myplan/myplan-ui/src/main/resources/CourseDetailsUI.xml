@@ -252,9 +252,7 @@
                 <bean parent="InputField" p:propertyName="requisites" p:label="Prerequisites">
                     <property name="formatter" ref="course_requirements_formatter"/>
                 </bean>
-                <bean parent="InputField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements">
-                    <property name="formatter" ref="course_requirements_formatter"/>
-                </bean>
+                <bean parent="InputField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements" />
                 <bean parent="InputField" p:propertyName="credit" p:label="Credits"/>
                 <bean parent="InputField" p:propertyName="courseDescription" p:label="Course Description"/>
                 <bean parent="InputField" p:propertyName="campusLocations" p:label="Campus"/>
