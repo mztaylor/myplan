@@ -143,13 +143,13 @@
     </bean>
 
     <bean id="CourseDetails.termsOffered" parent="CourseDetails.termsOffered-parentBean"/>
-    <bean id="CourseDetails.campusLocations-termsOffered" abstract="true" parent="CollectionDefinition">
+    <bean id="CourseDetails.termsOffered-parentBean" abstract="true" parent="CollectionDefinition">
         <property name="name" value="termsOffered"/>
         <property name="shortLabel" value="Typically Offered in"/>
         <property name="summary">
             <value>Terms Offered</value>
         </property>
-        <property name="label" value="Typicall Offered in"/>
+        <property name="label" value="Typically Offered in"/>
         <property name="minOccurs" value="0"/>
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
