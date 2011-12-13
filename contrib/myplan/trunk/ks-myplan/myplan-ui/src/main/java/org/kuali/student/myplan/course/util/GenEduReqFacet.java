@@ -6,6 +6,8 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 */
 public class GenEduReqFacet extends AbstractFacet {
 
+
+
     public GenEduReqFacet() {
         super();
     }
