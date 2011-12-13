@@ -29,6 +29,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private static final String STATEMENT_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/statement";
     private static final String ENUM_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/enumerationmanagement";
+    //  TODO: This is duplicated in CourseSearchController
+    private static final String GEN_EDU_REQUIREMENTS_PREFIX = "genEdRequirement";
 
     private transient CourseService courseService;
 
@@ -98,6 +100,17 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             reqs.add(statement);
         }
         courseDetails.setRequisites(reqs);
+
+        //  Get general education requirements.
+        List<String> genEdReqs = new ArrayList<String>();
+        Map<String, String> attributes = course.getAttributes();
+        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+            if (entry.getValue().equals("true") && entry.getKey().startsWith(GEN_EDU_REQUIREMENTS_PREFIX)) {
+                String r = entry.getKey().replace(GEN_EDU_REQUIREMENTS_PREFIX, "");
+                genEdReqs.add(r);
+            }
+        }
+        courseDetails.setGenEdRequirements(genEdReqs);
 
         return courseDetails;
     }

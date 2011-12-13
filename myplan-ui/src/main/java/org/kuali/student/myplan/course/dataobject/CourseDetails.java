@@ -20,7 +20,6 @@ public class CourseDetails {
 
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
-        genEdRequirements.add("Not implemented");
         requisites = new ArrayList<String>();
         termsOffered = new ArrayList<String>();
     }
