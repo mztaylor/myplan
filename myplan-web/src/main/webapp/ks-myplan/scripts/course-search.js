@@ -122,6 +122,9 @@ function calculateFacets(colIndex) {
 
 jq(document).ready(function() {
     jq("input[type='text']").blur();
+    jq(".search-text input[type='text']").bind('keypress', function(e) {
+	    if ( e.keyCode === 13 ) jq("button.search-submit").click();
+	});
 } );
 
 jq(window).load(function(){

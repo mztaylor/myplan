@@ -19,6 +19,7 @@
 	border: solid 2px #a9a9a9;
 	padding: 10px 0 0 10px;
 	border-radius: 8px;
+    overflow: hidden;
 }
 #course_search_fields_span span {
 	line-height: 2.5em;
@@ -160,9 +161,8 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseName span.courseName a {
     display: block;
-    text-transform: capitalize;
     line-height: 1.8em;
-    max-width: 175px;
+    width: 175px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -179,7 +179,7 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd:hover,
 #course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #aaa;
+    background: #a9a9a9;
     cursor: pointer;
 }
 #course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
