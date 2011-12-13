@@ -76,17 +76,16 @@ public class CreditsFacet extends AbstractFacet {
             //  Tokenize and add to the list.
             String k[] = credits.split(",");
             for (String key : k) {
-                keys.add(trimCredit(key));
+                keys.add(CreditsFormatter.trimCredits(key));
             }
         } else {
             //  Assume this was a fixed credit value.
-            keys.add(trimCredit(credits));
+            keys.add(CreditsFormatter.trimCredits(credits));
         }
 
         for (String key : keys)
         {
             if (isNewFacetKey( FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER))
-//            if (isNewFacetKey( key + FACET_KEY_DELIMITER))
             {
                 FacetItem fItem = new FacetItem();
                 String displayName = null;
@@ -97,7 +96,6 @@ public class CreditsFacet extends AbstractFacet {
                     displayName = key;
                 }
                 fItem.setKey(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
-//                fItem.setKey( key + FACET_KEY_DELIMITER);
                 fItem.setDisplayName(displayName);
                 facetItems.add(fItem);
             }
@@ -107,17 +105,9 @@ public class CreditsFacet extends AbstractFacet {
         StringBuilder kb = new StringBuilder();
         for (String k : keys)
         {
-//            kb.append(k).append(FACET_KEY_DELIMITER);
             kb.append(FACET_KEY_DELIMITER).append(k).append(FACET_KEY_DELIMITER);
         }
         item.setCreditsFacetKey(kb.toString());
-    }
-
-    private String trimCredit(String credit) {
-        if (credit.contains(".")) {
-            credit = credit.substring(0, credit.indexOf("."));
-        }
-        return credit;
     }
 
     /**
