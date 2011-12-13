@@ -249,13 +249,6 @@ public class CourseSearchController extends UifControllerBase {
                         item.setScheduledTime( formatted );
                     }
 
-                    //  Update facet info and code the item.
-                    curriculumFacet.process(item);
-                    courseLevelFacet.process(item);
-                    genEduReqFacet.process(item);
-                    creditsFacet.process(item);
-                    timeScheduleFacet.process(item);
-
                     // Load Gen Ed Requirements
                     {
                         SearchRequest searchRequest = new SearchRequest();
@@ -276,6 +269,14 @@ public class CourseSearchController extends UifControllerBase {
                         String formatted = formatGenEduReq(genEdReqs);
                         item.setGenEduReq( formatted );
                     }
+
+                    //  Update facet info and code the item.
+                    curriculumFacet.process(item);
+                    courseLevelFacet.process(item);
+                    genEduReqFacet.process(item);
+                    creditsFacet.process(item);
+                    timeScheduleFacet.process(item);
+
 
                     searchResults.add(item);
                 }
