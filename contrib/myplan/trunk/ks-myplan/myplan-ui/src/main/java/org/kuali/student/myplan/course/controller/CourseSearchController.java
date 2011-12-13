@@ -54,12 +54,13 @@ public class CourseSearchController extends UifControllerBase {
 
     private static final int MAX_HITS = 25000;
 
+    private static final String GEN_EDU_REQUIREMENTS_PREFIX = "genEdRequirement";
+
     private transient LuService luService;
 
     private transient AtpService atpService;
 
     private transient CourseService courseService;
-
     private transient Map<String, String> atpCache;
 
     @Override
@@ -256,30 +257,27 @@ public class CourseSearchController extends UifControllerBase {
                     timeScheduleFacet.process(item);
 
                     // Load Gen Ed Requirements
-//                    {
-//                        SearchRequest searchRequest = new SearchRequest();
-//                        searchRequest.setSearchKey( "myplan.course.info.gened" );
-//                        List<SearchParam> params = new ArrayList<SearchParam>();
-//                        params.add( new SearchParam( "courseID", courseId ));
-//                        searchRequest.setParams(params);
-//                        ArrayList<String> termsOffered = new ArrayList<String>();
-//                        SearchResult searchResult = getLuService().search( searchRequest );
-//                        for ( SearchResultRow row : searchResult.getRows() )
-//                        {
-//                            for (SearchResultCell cell : row.getCells() )
-//                            {
-//                                String genEd = cell.getValue();
-//
-//
-//                                termsOffered.add( term );
-//                            }
-//                        }
-//                        String formatted = formatScheduledItem( termsOffered );
-//                        item.setScheduledTime( formatted );
-//                    }
+                    {
+                        SearchRequest searchRequest = new SearchRequest();
+                        searchRequest.setSearchKey( "myplan.course.info.gened" );
+                        List<SearchParam> params = new ArrayList<SearchParam>();
+                        params.add( new SearchParam("courseID", courseId));
+                        searchRequest.setParams(params);
+                        List<String> genEdReqs = new ArrayList<String>();
+                        SearchResult searchResult = getLuService().search( searchRequest );
+                        for ( SearchResultRow row : searchResult.getRows() )
+                        {
+                            for (SearchResultCell cell : row.getCells() )
+                            {
+                                String genEd = cell.getValue();
+                                genEdReqs.add(genEd);
+                            }
+                        }
+                        String formatted = formatGenEduReq(genEdReqs);
+                        item.setGenEduReq( formatted );
+                    }
 
                     searchResults.add(item);
-
                 }
             }
 
@@ -345,18 +343,33 @@ public class CourseSearchController extends UifControllerBase {
         return formatScheduledItem( terms );
     }
 
+    private String formatGenEduReq(List<String> genEduRequirements) {
+        //  Make the order predictable.
+        Collections.sort(genEduRequirements);
+        StringBuilder genEdsOut = new StringBuilder();
+        for (String req : genEduRequirements)
+        {
+            if (genEdsOut.length() != 0) {
+                genEdsOut.append(", ");
+            }
+            req = req.replace(GEN_EDU_REQUIREMENTS_PREFIX,"");
+            genEdsOut.append(req);
+        }
+        return genEdsOut.toString();
+    }
+
     private String formatScheduledItem( List<String> terms )
     {
         TermOrder.orderTerms(terms);
-        StringBuilder termsTmp = new StringBuilder();
+        StringBuilder termsOut = new StringBuilder();
         for (String term : terms)
         {
-            if (termsTmp.length() != 0) {
-                termsTmp.append(", ");
+            if (termsOut.length() != 0) {
+                termsOut.append(", ");
             }
-            termsTmp.append(getTerm(term));
+            termsOut.append(getTerm(term));
         }
-        return termsTmp.toString();
+        return termsOut.toString();
     }
 
     /**
@@ -393,10 +406,6 @@ public class CourseSearchController extends UifControllerBase {
         for (AtpTypeInfo ti : atpTypeInfos) {
             atpCache.put(ti.getId(), ti.getName().substring(0,2).toUpperCase());
         }
-    }
-
-    private String formatGenEduReq(CourseInfo courseInfo) {
-        return "";
     }
 
     //Note: here I am using r1 LuService implementation!!!
