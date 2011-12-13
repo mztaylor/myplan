@@ -149,9 +149,9 @@
             <list>
                 <bean parent="InputField_Form" p:propertyName="searchQuery"
                     p:label="Search for" p:labelPlacement="LEFT"
-                    p:labelField.renderColon="false" p:labelField.styleClasses="fl-text-bold">
+                    p:labelField.renderColon="false" p:labelField.styleClasses="fl-text-bold" p:styleClasses="search-text">
                     <property name="control">
-                        <bean parent="TextControl" p:watermarkText="E.g. English 1xx, CHEM 142"/>
+                        <bean parent="TextControl" p:watermarkText="E.g. English 1xx, CHEM 142" />
                     </property>
                 </bean>
                 <bean parent="InputField_Form" p:propertyName="searchTerm" p:label="in" p:labelPlacement="LEFT"
@@ -166,7 +166,7 @@
                     </property>
                 </bean>
                 <bean parent="ActionField" p:methodToCall="searchForCourses"
-                p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP"/>
+                p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:styleClasses="search-submit kr-button-primary"/>
 
             </list>
         </property>
@@ -271,7 +271,7 @@
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'sSortDataType':'dom-text'},
-                            {'sWidth':'175px;', 'bSortable':true, 'sSortDataType':'dom-text'},
+                            {'sWidth':'175px', 'bSortable':true, 'sSortDataType':'dom-text'},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
                             {'bSortable':false, 'bVisible':true},
