@@ -1,5 +1,12 @@
 package org.kuali.student.myplan.course.service;
 
+import edu.uw.kuali.student.lib.client.studentservice.CircularTermList;
+import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
+import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.enrollment.acal.dto.*;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -7,7 +14,10 @@ import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
 
+import org.apache.log4j.Logger;
+
 import javax.jws.WebParam;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,22 +26,120 @@ import java.util.List;
  * UW implementation of AcademicCalendarService.
  */
 public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
+    private final Logger logger = Logger.getLogger(AcademicCalendarService.class);
+
+    /**
+     * The number of terms to inspect when looking for section data.
+     */
+    private static final short PUBLISHED_QUARTER_COUNT = 3;
+    private static final String DEFAULT_CURRICULUM = "chem";
+
+    private SAXReader reader;
+
+    private StudentServiceClient studentServiceClient;
+
+    public UwAcademicCalendarServiceImpl() {
+        this.reader = new SAXReader();
+    }
+
+    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
+        this.studentServiceClient = studentServiceClient;
+    }
+
     @Override
-    public List<TermInfo> getCurrentTerms(@WebParam(name = "processKey") String processKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<TermInfo> getCurrentTerms(@WebParam(name = "processKey") String processKey,
+                                          @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException,
+                OperationFailedException, PermissionDeniedException {
+
         List<TermInfo> termInfos = new ArrayList<TermInfo>();
 
-        TermInfo ti1 = new TermInfo();
-        ti1.setName("Autumn 11");
+        /*
+         *  Estimate the current term.
+         */
+        DateTime now = new DateTime();
+        String currentTerm = null;
+        int month = now.getMonthOfYear();
+        switch (month) {
+            case 1: case 2: case 3:
+                currentTerm = "Winter";
+                break;
+            case 4: case 5: case 6:
+                currentTerm = "Spring";
+                break;
+            case 7: case 8: case 9:
+                currentTerm = "Summer";
+                break;
+            case 10: case 11: case 12:
+                currentTerm = "Autumn";
+                break;
+        }
 
-        TermInfo ti2 = new TermInfo();
-        ti2.setName("Winter 12");
+        String year = String.valueOf(now.getYear());
+        logger.info(String.format("Current estimated as: %s %s", currentTerm, year));
+        //  Go ahead and initialize the term list.
+        CircularTermList ccl = new CircularTermList(currentTerm, now.getYear());
 
-        TermInfo ti3 = new TermInfo();
-        ti3.setName("Spring 12");
+        /*
+         *  Query the student term service to get the last drop date.
+         */
+        String responseText = null;
+        try {
+            responseText = studentServiceClient.getTermInfo(year, currentTerm);
+        } catch (ServiceException e) {
+            throw new RuntimeException("Query to Student Term Service failed.", e);
+        }
 
-        termInfos.add(ti1);
-        termInfos.add(ti2);
-        termInfos.add(ti3);
+        Document termDocument = null;
+        try {
+            termDocument = reader.read(new StringReader(responseText));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+        }
+
+        String lastDropDayDateString =  termDocument.getRootElement().element("LastDropDay").getTextTrim();
+        DateTime lastDropDay = new DateTime(lastDropDayDateString);
+
+        logger.info(String.format("Last drop day for %s %s is: %s",
+            ccl.getQuarter(), ccl.getYear(), lastDropDayDateString));
+
+        /*
+         *  If the last drop day has passed then increment to the next term.
+         */
+        if (lastDropDay.isBeforeNow()) {
+            logger.info("The last drop day has passed. Incrementing to the next term.");
+            ccl.incrementQuarter();
+        }
+
+        /*
+         *  Query the section service for available calendar info.
+         *  Stop processing if any service exceptions are encountered.
+         */
+        for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
+            responseText = null;
+            try {
+                logger.info(String.format("Querying the Student Section Service for: %s - %s %s",
+                    DEFAULT_CURRICULUM, ccl.getQuarter(), ccl.getYear()));
+                responseText = studentServiceClient.getSectionInfo(String.valueOf(ccl.getYear()), ccl.getQuarter(), DEFAULT_CURRICULUM);
+            } catch (ServiceException e) {
+                logger.error("Call to Student Section Service failed.", e);
+                break;
+            }
+
+            Document sectionDocument = null;
+            try {
+                termDocument = reader.read(new StringReader(responseText));
+            } catch (Exception e) {
+                logger.error("Could not parse reply from the Student Section Service.", e);
+                break;
+            }
+
+            TermInfo ti = new TermInfo();
+            ti.setName(ccl.getQuarter() + " " + ccl.getYear());
+            termInfos.add(ti);
+
+            ccl.incrementQuarter();
+        }
 
         return termInfos;
     }

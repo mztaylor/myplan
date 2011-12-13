@@ -10,6 +10,16 @@
 		<artifactId>ks-myplan</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+
+    <!-- For Restlet dependency -->
+     <repositories>
+		<repository>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- Kuali Student Dependencies -->
 		<dependency>
@@ -44,7 +54,6 @@
 			<version>${kuali.student.version}</version>
 		</dependency>
 
-        <!-- -->
         <dependency>
             <groupId>org.kuali.student.enroll</groupId>
             <artifactId>ks-enroll-api</artifactId>
@@ -55,10 +64,30 @@
             <artifactId>ks-enroll-impl</artifactId>
             <version>${kuali.student.version}</version>
         </dependency>
-
-
 		<!--  End Kuali Student Dependencies -->
 
+        <!--  Local KS-Enroll-Impl dependencies-->
+         <dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.ssl</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.net</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <!-- End -->
 
 		<dependency>
 			<artifactId>servlet-api</artifactId>

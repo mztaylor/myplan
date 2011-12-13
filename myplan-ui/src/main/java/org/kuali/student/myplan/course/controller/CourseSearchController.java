@@ -301,17 +301,6 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     /**
-     *  Drop the decimal point and and trailing zero from credits.
-     * @return The supplied value minus the trailing ".0"
-     */
-    private String trimCredits(String credits) {
-        if (credits.endsWith(".0")) {
-            credits = credits.substring(0, credits.indexOf("."));
-        }
-        return credits;
-    }
-
-    /**
      * Hard-coded term ordering.
      * TODO: UW SPECIFIC - Make this runtime configurable.
      */
