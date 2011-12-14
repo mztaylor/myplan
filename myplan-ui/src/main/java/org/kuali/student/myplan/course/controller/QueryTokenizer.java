@@ -12,7 +12,7 @@ public class QueryTokenizer
 	enum Rule
 	{
         // Order significant. See matcher's foreach loop below.
-		WORD( "[A-Za-z0-9]+" ),
+		WORD( "[A-Za-z0-9&]+" ),
 		QUOTED( "\"[^\"]*\"" );
 		
 		public Pattern pattern;
@@ -194,7 +194,7 @@ public class QueryTokenizer
 
         System.out.println( "gah" );
         {
-            String str = "A A xyzzy XYZZY \"quoted text\"";
+            String str = "A A xyzzy XYZZY edc&i \"quoted text\"";
             QueryTokenizer toho = new QueryTokenizer();
             List<Token> result = toho.tokenize( str );
             for( Token t : result )

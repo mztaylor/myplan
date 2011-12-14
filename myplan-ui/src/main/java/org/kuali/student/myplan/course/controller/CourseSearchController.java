@@ -52,7 +52,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
-    private static final int MAX_HITS = 25000;
+    private static final int MAX_HITS = 250;
 
     private static final String GEN_EDU_REQUIREMENTS_PREFIX = "genEdRequirement";
 
