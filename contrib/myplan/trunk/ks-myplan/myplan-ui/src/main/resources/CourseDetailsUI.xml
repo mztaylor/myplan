@@ -256,7 +256,7 @@
                 <bean parent="InputField" p:propertyName="credit" p:label="Credits"/>
                 <bean parent="InputField" p:propertyName="courseDescription" p:label="Course Description"/>
                 <bean parent="InputField" p:propertyName="campusLocations" p:label="Campus"/>
-                <bean parent="InputField" p:propertyName="termsOffered" p:label="Typically Offered in"/>
+                <bean parent="InputField" p:propertyName="termsOffered" p:label="Quarters Offered"/>
             </list>
         </property>
     </bean>

@@ -344,7 +344,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('You clicked the add button');">
+                <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('Selected course has been added successfully');">
                     <property name="actionImage">
                         <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
@@ -397,10 +397,12 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
+                <!--
                 <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
                       p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP"/>
-                <!-- <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-                        p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP"/> -->
+                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
+                      p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP"/>
+                -->
             </list>
         </property>
     </bean>
