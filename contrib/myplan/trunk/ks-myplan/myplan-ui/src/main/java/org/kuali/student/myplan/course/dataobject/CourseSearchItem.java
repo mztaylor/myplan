@@ -19,8 +19,12 @@ public class CourseSearchItem {
     private String number;
     private String subject;
     private String code;
+    private String level;
     private String courseName;
     private String credit;
+    private float creditMin;
+    private float creditMax;
+    private CreditType creditType;
     private String scheduledTime;
     private String genEduReq;
     private String status;
@@ -66,7 +70,11 @@ public class CourseSearchItem {
     }
 
     public String getLevel() {
-        return getNumber().substring( 0, 1 ) + "00";
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     public String getCourseName() {
@@ -83,6 +91,32 @@ public class CourseSearchItem {
 
     public void setCredit(String credit) {
         this.credit = credit;
+    }
+
+    public float getCreditMin() {
+        return creditMin;
+    }
+
+    public void setCreditMin(float creditMin) {
+        this.creditMin = creditMin;
+    }
+
+    public float getCreditMax() {
+        return creditMax;
+    }
+
+    public void setCreditMax(float creditMax) {
+        this.creditMax = creditMax;
+    }
+
+    public enum CreditType { fixed, range, multiple, unknown };
+
+    public CreditType getCreditType() {
+        return creditType;
+    }
+
+    public void setCreditType(CreditType creditType) {
+        this.creditType = creditType;
     }
 
     public String getScheduledTime() {

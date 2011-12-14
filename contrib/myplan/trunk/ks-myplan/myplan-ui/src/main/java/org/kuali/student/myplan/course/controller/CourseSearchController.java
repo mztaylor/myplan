@@ -94,11 +94,31 @@ public class CourseSearchController extends UifControllerBase {
         }
     }
 
+
+    public class Credit {
+        String id;
+        String display;
+        float min;
+        float max;
+        CourseSearchItem.CreditType type;
+    }
+
+    int maxHits = 250;
+
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
 
-        HashMap<String,String> creditMap = new HashMap<String,String>();
+        HashMap<String,Credit> creditMap = new HashMap<String,Credit>();
+        {
+            // Don't think this will ever be used
+            Credit credit = new Credit();
+            credit.id = "u";
+            credit.min = 0.0f;
+            credit.max = 0.0f;
+            credit.display = "Unknown";
+            credit.type = CourseSearchItem.CreditType.unknown;
+        }
 
         try
         {
@@ -115,20 +135,26 @@ public class CourseSearchController extends UifControllerBase {
                 String type = i.next().getValue();
                 String min = i.next().getValue();
                 String max = i.next().getValue();
-                String credit = null;
+                Credit credit = new Credit();
+                credit.id = id;
+                credit.min = Float.valueOf( min );
+                credit.max = Float.valueOf( max );
                 if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE.equals( type ))
                 {
-                    credit = min + ", " + max;
+                    credit.display = min + ", " + max;
+                    credit.type = CourseSearchItem.CreditType.multiple;
                 }
                 else if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE.equals( type ))
                 {
-                    credit = min + "-" + max;
-
+                    credit.display = min + "-" + max;
+                    credit.type = CourseSearchItem.CreditType.range;
                 }
                 else if( CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED.equals( type ))
                 {
-                    credit = min;
+                    credit.display = min;
+                    credit.type = CourseSearchItem.CreditType.fixed;
                 }
+
                 creditMap.put( id, credit );
             }
         }
@@ -192,7 +218,7 @@ public class CourseSearchController extends UifControllerBase {
                 String courseId = hit.courseID;
 
                 {
-                    CourseSearchItem item = new CourseSearchItem();
+                    CourseSearchItem course = new CourseSearchItem();
                     {
                         SearchRequest searchRequest = new SearchRequest();
                         searchRequest.setSearchKey( "myplan.course.info" );
@@ -207,24 +233,29 @@ public class CourseSearchController extends UifControllerBase {
                             String name = i.next().getValue();
                             String number = i.next().getValue();
                             String subject = i.next().getValue();
-                            String credits = i.next().getValue();
+                            String level = i.next().getValue();
+                            String id = i.next().getValue();
 
-                            item.setCourseId( courseId );
-                            item.setSubject( subject );
-                            item.setNumber( number );
-                            item.setCourseName( name );
-                            item.setCode( subject + " " + number );
+                            course.setCourseId(courseId);
+                            course.setSubject(subject);
+                            course.setNumber(number);
+                            course.setLevel(level);
+                            course.setCourseName(name);
+                            course.setCode(subject + " " + number);
 
-                            if( creditMap.containsKey( credits ))
+                            Credit credit = null;
+                            if( creditMap.containsKey( id ))
                             {
-                                String temp = creditMap.get( credits );
-                                item.setCredit( temp );
+                                credit = creditMap.get( id );
                             }
                             else
                             {
-                                item.setCredit( credits );
+                                credit = creditMap.get( "u" );
                             }
-
+                            course.setCreditMin( credit.min );
+                            course.setCreditMax( credit.max );
+                            course.setCreditType( credit.type );
+                            course.setCredit( credit.display );
                         }
                     }
 
@@ -246,7 +277,7 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         String formatted = formatScheduledItem( termsOffered );
-                        item.setScheduledTime( formatted );
+                        course.setScheduledTime(formatted);
                     }
 
                     // Load Gen Ed Requirements
@@ -267,18 +298,18 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         String formatted = formatGenEduReq(genEdReqs);
-                        item.setGenEduReq( formatted );
+                        course.setGenEduReq( formatted );
                     }
 
                     //  Update facet info and code the item.
-                    curriculumFacet.process(item);
-                    courseLevelFacet.process(item);
-                    genEduReqFacet.process(item);
-                    creditsFacet.process(item);
-                    timeScheduleFacet.process(item);
+                    curriculumFacet.process(course);
+                    courseLevelFacet.process(course);
+                    genEduReqFacet.process(course);
+                    creditsFacet.process(course);
+                    timeScheduleFacet.process(course);
 
 
-                    searchResults.add(item);
+                    searchResults.add(course);
                 }
             }
 

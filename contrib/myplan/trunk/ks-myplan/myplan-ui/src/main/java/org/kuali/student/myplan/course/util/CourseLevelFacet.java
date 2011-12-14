@@ -17,30 +17,27 @@ public class CourseLevelFacet extends AbstractFacet {
      */
     @Override
     public void process(CourseSearchItem course) {
-        String key = course.getLevel();
+        String displayName = course.getLevel();
+        String key = null;
 
-        boolean isUnknown = false;
-
-        if (key == null || key.equals("")) {
-            isUnknown = true;
+        if (displayName == null || displayName.equals("")) {
+            displayName = UNKNOWN_FACET_DISPLAY_NAME;
             key = UNKNOWN_FACET_KEY;
+        } else {
+            key = displayName;
         }
 
+        key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
+
         //  If it's a new facet key then create a new FacetItem.
-        if (isNewFacetKey(key + FACET_KEY_DELIMITER)) {
+        if (isNewFacetKey( key )) {
             FacetItem fItem = new FacetItem();
             //  The display name and the key are the same in this case.
-            fItem.setKey(key + FACET_KEY_DELIMITER);
-            String displayName = null;
-            if (isUnknown) {
-                displayName = UNKNOWN_FACET_DISPLAY_NAME;
-            } else {
-                displayName = key;
-            }
+            fItem.setKey(key);
             fItem.setDisplayName(displayName);
             facetItems.add(fItem);
         }
         //  Code the item with the facet key.
-        course.setCourseLevelFacetKey(key + FACET_KEY_DELIMITER);
+        course.setCourseLevelFacetKey(key);
     }
 }
