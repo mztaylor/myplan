@@ -175,11 +175,11 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable .even,
 #course_search_results_list_items_div #course_search_results_datatable .even td[class^='sorting_'] {
-    background: #f1f1f1;
+    background: #eee;
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd:hover,
 #course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #a9a9a9;
+    background: #ddd;
     cursor: pointer;
 }
 #course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
