@@ -36,11 +36,12 @@ public class GenEduReqFacet extends AbstractFacet {
         /*
          *  TODO: UW SPECIFIC
          */
+        //  Remove white space before tokenizing.
+        genEdString = genEdString.replaceAll("\\s+", "");
         String k[] = genEdString.split(",");
         List<String> keys = new ArrayList<String>(Arrays.asList(k));
         for (String key : keys)
         {
-            key = key.trim();
             if (isNewFacetKey( FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER))
             {
                 FacetItem fItem = new FacetItem();
