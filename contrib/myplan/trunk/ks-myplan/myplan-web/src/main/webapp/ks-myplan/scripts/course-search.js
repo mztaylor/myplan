@@ -128,6 +128,7 @@ jq(document).ready(function() {
 } );
 
 jq(window).load(function(){
-    if ( jq("#course_search_results_datatable").length > 0 ) buildFacets();
-    //jq(".ellipsis").ellipsis();
+    if ( jq("#course_search_results_datatable").length > 0 ) {
+        buildFacets();
+    }
 });

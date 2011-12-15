@@ -121,6 +121,7 @@
     font-size: 150%;
     line-height: 150%;
     width: 100%;
+    margin-bottom: 0.25em;
 }
 #course_search_results_list_items_div .dataTables_length {
     float: right;
@@ -175,12 +176,11 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable .even,
 #course_search_results_list_items_div #course_search_results_datatable .even td[class^='sorting_'] {
-    background: #eee;
+    background: #e9e9e9;
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd:hover,
 #course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #ddd;
-    cursor: pointer;
+    background: #d3d3d3;
 }
 #course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
     width: auto;
