@@ -47,14 +47,16 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         //  Add the "any" item.
         keyValues.add(new ConcreteKeyValue("1", "Any quarter"));
 
-        //  Add the individual term items.
-        short keyCount = 1;
-        for (TermInfo ti : termInfos) {
-            keyCount++;
-            String termName = ti.getName();
-            keyValues.add(new ConcreteKeyValue(String.valueOf(keyCount), termName + listItemSuffix));
+        //  Add term info to the list if the above service call was successful.
+        if (termInfos != null) {
+            //  Add the individual term items.
+            short keyCount = 1;
+            for (TermInfo ti : termInfos) {
+                keyCount++;
+                String termName = ti.getName();
+                keyValues.add(new ConcreteKeyValue(String.valueOf(keyCount), termName + listItemSuffix));
+            }
         }
-
         return keyValues;
     }
 
