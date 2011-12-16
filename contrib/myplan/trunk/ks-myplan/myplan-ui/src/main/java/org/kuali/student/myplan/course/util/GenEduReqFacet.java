@@ -12,7 +12,7 @@ import java.util.List;
 */
 public class GenEduReqFacet extends AbstractFacet {
 
-
+    private final String NONE_GENED_FACET_KEY = "None";
 
     public GenEduReqFacet() {
         super();
@@ -28,9 +28,9 @@ public class GenEduReqFacet extends AbstractFacet {
         boolean isUnknown = false;
 
         //  If no gen edu req info was set then setup for an "Unknown" facet.
-        if (genEdString == null || genEdString.equals("")) {
+        if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
             isUnknown = true;
-            genEdString = UNKNOWN_FACET_KEY;
+            genEdString = NONE_GENED_FACET_KEY;
         }
 
         /*
@@ -48,7 +48,7 @@ public class GenEduReqFacet extends AbstractFacet {
                 String displayName = null;
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
                 if (isUnknown) {
-                    displayName = UNKNOWN_FACET_DISPLAY_NAME;
+                    displayName = NONE_GENED_FACET_KEY;
                 } else {
                     displayName = key;
                 }

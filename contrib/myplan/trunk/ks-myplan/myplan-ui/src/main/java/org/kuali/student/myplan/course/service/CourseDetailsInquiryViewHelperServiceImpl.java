@@ -9,6 +9,8 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 
 import org.kuali.student.common.exceptions.*;
+import org.kuali.student.core.atp.dto.AtpTypeInfo;
+import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
@@ -36,10 +38,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient StatementService statementService;
 
-    //TODO: This should be changed to a ehCache spring bean
+    private transient AtpService atpService;
+
+    //TODO: These should be changed to a ehCache spring bean
     private Map<String, String> campusLocationCache;
-
-
     private Map<String, String> atpCache;
 
     private transient EnumerationManagementService enumService;
@@ -66,16 +68,22 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
 
-        courseDetails.setTermsOffered(course.getTermsOffered());
-
-        if (null != getCampusLocations() || !this.campusLocationCache.isEmpty()) {
-            List<String> enumeratedCampus = new ArrayList<String>();
-            for (String campus : course.getCampusLocations()) {
-                enumeratedCampus.add(this.campusLocationCache.get(campus));
-            }
-
-            courseDetails.setCampusLocations(enumeratedCampus);
+        // Terms Offered
+        initializeAtpTypesCache();
+        List<String> termsOffered = new ArrayList<String>();
+        for (String term : course.getTermsOffered()) {
+            termsOffered.add(atpCache.get(term));
         }
+        courseDetails.setTermsOffered(termsOffered);
+
+        // Campus Locations
+        initializeCampusLocations();
+        List<String> enumeratedCampus = new ArrayList<String>();
+        for (String campus : course.getCampusLocations()) {
+            enumeratedCampus.add(this.campusLocationCache.get(campus));
+        }
+
+        courseDetails.setCampusLocations(enumeratedCampus);
 
         //  Lookup course statements and build the requisites list.
         List<StatementTreeViewInfo> statements = null;
@@ -140,21 +148,53 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.enumService;
     }
 
-    protected synchronized Map<String, String> getCampusLocations() {
-        try {
-            List<EnumeratedValueInfo> campusLocations = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
-            if (this.campusLocationCache == null) {
-                this.campusLocationCache = new HashMap<String, String>();
-            }
-            for (EnumeratedValueInfo campus : campusLocations) {
-                this.campusLocationCache.put(campus.getCode(), campus.getValue());
-            }
-
-        } catch (Exception e) {
-            logger.error("Could not load campus locations..");
+    /**
+     * Provides an instance of the AtpService client.
+     */
+    protected AtpService getAtpService() {
+        if (atpService == null) {
+            // TODO: Namespace should not be hard-coded.
+            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
         }
+        return this.atpService;
+    }
 
-        return this.campusLocationCache;
+    protected synchronized void initializeCampusLocations() {
+        if (null == campusLocationCache || campusLocationCache.isEmpty()) {
+            try {
+                List<EnumeratedValueInfo> campusLocations = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
+                if (this.campusLocationCache == null) {
+                    this.campusLocationCache = new HashMap<String, String>();
+                }
+                for (EnumeratedValueInfo campus : campusLocations) {
+                    this.campusLocationCache.put(campus.getCode(), campus.getValue());
+                }
+
+            } catch (Exception e) {
+                logger.error("Could not load campus locations..");
+            }
+        }
+    }
+
+    /**
+     * Initializes ATP term cache.
+     * AtpSeasonalTypes rarely change, so fetch them all and store them in a Map.
+     */
+    private synchronized void initializeAtpTypesCache() {
+
+        if (null == atpCache || atpCache.isEmpty()) {
+            atpCache = new HashMap<String, String>();
+            List<AtpTypeInfo> atpTypeInfos;
+            try {
+                atpTypeInfos = getAtpService().getAtpTypes();
+            } catch (OperationFailedException e) {
+                logger.error("ATP types lookup failed.", e);
+                return;
+            }
+            for (AtpTypeInfo ti : atpTypeInfos) {
+                atpCache.put(ti.getId(), ti.getName().substring(0,1).toUpperCase() + ti.getName().substring(1));
+            }
+        }
     }
 
 }

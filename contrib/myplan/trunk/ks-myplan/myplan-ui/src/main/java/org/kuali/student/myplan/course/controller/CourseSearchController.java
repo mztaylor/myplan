@@ -376,6 +376,7 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     private String formatGenEduReq(List<String> genEduRequirements) {
+
         //  Make the order predictable.
         Collections.sort(genEduRequirements);
         StringBuilder genEdsOut = new StringBuilder();

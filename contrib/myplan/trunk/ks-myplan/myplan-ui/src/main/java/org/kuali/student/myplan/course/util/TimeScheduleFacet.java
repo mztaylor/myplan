@@ -26,7 +26,7 @@ public class TimeScheduleFacet extends AbstractFacet {
          */
         String times = course.getScheduledTime();
 
-        if (times == null || times.equals("")) {
+        if (times == null || times.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || times.equals("")) {
             times = UNKNOWN_FACET_DISPLAY_NAME;
         }
 

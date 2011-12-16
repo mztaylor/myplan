@@ -12,7 +12,7 @@ public abstract class AbstractFacet {
     List<FacetItem> facetItems;
 
     static final String FACET_KEY_DELIMITER = ";";
-    static final String UNKNOWN_FACET_KEY = "u";
+    static final String UNKNOWN_FACET_KEY = "Unknown";
     static final String UNKNOWN_FACET_DISPLAY_NAME = "Unknown";
 
     public AbstractFacet() {
