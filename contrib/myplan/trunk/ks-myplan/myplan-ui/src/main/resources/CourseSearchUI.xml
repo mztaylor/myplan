@@ -166,8 +166,7 @@
                     </property>
                 </bean>
                 <bean parent="ActionField" p:methodToCall="searchForCourses"
-                p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:styleClasses="search-submit kr-button-primary"/>
-
+                    p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:styleClasses="search-submit kr-button-primary"/>
             </list>
         </property>
     </bean>
@@ -312,7 +311,7 @@
                     </bean>
                 -->
 
-                <bean parent="LinkField" p:label="Course Name" p:linkLabel="@{#line.courseName}" p:target="" p:styleClasses="courseName"
+                <bean parent="LinkField" p:label="Course Name" p:title="@{#line.courseName}" p:linkLabel="@{#line.courseName}" p:styleClasses="courseName"
                       p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
 
                 <!--
@@ -568,7 +567,7 @@
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCurriculum item" p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCurriculum item" p:title="@{#line.displayName}" p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
