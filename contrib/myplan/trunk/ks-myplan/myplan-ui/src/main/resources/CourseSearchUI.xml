@@ -311,7 +311,7 @@
                     </bean>
                 -->
 
-                <bean parent="LinkField" p:label="Course Name" p:title="@{#line.courseName}" p:linkLabel="@{#line.courseName}" p:styleClasses="courseName"
+                <bean parent="LinkField" p:label="Course Name" p:title="@{#line.courseName}" p:linkLabel="@{#line.courseName}" p:styleClasses="courseName" p:target=""
                       p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
 
                 <!--
