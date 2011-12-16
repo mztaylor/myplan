@@ -25,6 +25,13 @@ function buildFacets() {
         if (!arrFacetSearch[colIndex]) arrFacetSearch[colIndex] = []; // If key is undefined, create it
         arrFacetSearch[colIndex].push(jq(this).text()); // Insert facet text to array
 	});
+    jq("#course_search_result_facets_div a.item.all").each(function() {
+        var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
+        if ( arrFacetSearch[colIndex].length <= 1 ) {
+            jq(this).removeClass('checked').hide();
+            jq(this).parents(".facets").find("a.item").addClass('checked');
+        }
+    });
     calculateFacets(null);
 }
 
@@ -112,10 +119,10 @@ function calculateFacets(colIndex) {
 	jq("#course_search_result_facets_div a.item").not('.all').each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]);
         var txtFacet = jq(this).text().split(" (",1);
-        if ( arrFacetCount[colIndex][txtFacet] != 0 ) {
-            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').show();
+        if ( typeof arrFacetCount[colIndex][txtFacet] != 'undefined' && arrFacetCount[colIndex][txtFacet] != 0 ) {
+            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').show(); // .css({ opacity: 1 });
         } else {
-            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').hide();
+            jq(this).html(txtFacet + ' <span>(0)</span>').hide(); //.css({ opacity: 0.33 }).click(function(e) {}) .hide()  ' + arrFacetCount[colIndex][txtFacet] + '
         }
 	});
 }
