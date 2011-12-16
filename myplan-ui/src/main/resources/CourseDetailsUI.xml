@@ -237,8 +237,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-                      p:actionLabel="Add this Course" p:jumpToIdAfterSubmit="TOP"/>
+                <bean parent="ActionField"
+                      p:actionLabel="Add this Course" p:clientSideJs="alert('This course has been added successfully');"/>
             </list>
         </property>
     </bean>
