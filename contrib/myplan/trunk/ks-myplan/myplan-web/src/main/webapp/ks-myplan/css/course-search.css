@@ -95,6 +95,7 @@
     line-height: 16px;
     display: block;
     margin: 0 0 3px 3px;
+    cursor: pointer;
 }
 #course_search_result_facets_div .facets a.item.all {
 	margin-top: 3px;
@@ -169,6 +170,7 @@ table.datatable {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
+    cursor: pointer;
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd,
 #course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
