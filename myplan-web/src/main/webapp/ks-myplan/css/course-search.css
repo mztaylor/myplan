@@ -56,7 +56,7 @@
 	display: block;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] {
-	max-height: 114px;
+	max-height: 95px;
 	overflow-y: auto;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] div[id$='_group'] {
