@@ -57,7 +57,15 @@ public class CourseDetails {
     }
 
     public String getCourseDescription() {
-        return courseDescription;
+        // TODO quickfix Put in just for usability testing, remove asap
+        String quickfix = courseDescription;
+        int n = quickfix.lastIndexOf( "Prerequisite:" );
+        if( n > -1  )
+        {
+            quickfix = quickfix.substring( 0, n );
+        }
+        return quickfix;
+//        return courseDescription;
     }
 
     public void setCourseDescription(String courseDescription) {
@@ -93,5 +101,12 @@ public class CourseDetails {
 
     public void setCampusLocations(List<String> campusLocations) {
         this.campusLocations = campusLocations;
+    }
+
+    public static void main( String[] args )
+    {
+        CourseDetails details = new CourseDetails();
+        details.setCourseDescription( "abc-Prerequisite: xyz");
+        System.out.println( details.getCourseDescription() );
     }
 }
