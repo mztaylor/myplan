@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: kmuthu
@@ -124,6 +126,60 @@ public class CourseSearchItem {
         this.creditType = creditType;
     }
 
+
+    // TODO: I'm not real excited by this solution (for tying together type ids, display strings,
+    // and implicit sort order). Quick fix. At the very least, investigate if sort order
+    // is somehow/where stored in the UW Kuali database. -- JO
+    public enum TermOffered {
+        // Order is important, used for sorting
+        AUTUMN( "kuali.atp.type.autumn", "Autumn", "AU" ),
+        SPRING( "kuali.atp.type.spring", "Spring", "SP" ),
+        SUMMER( "kuali.atp.type.summer", "Summer", "SU" ),
+        WINTER( "kuali.atp.type.winter", "Winter", "WI" ),
+        UNKNOWN( "unknown", "Unknown", "" );
+
+        public final String type;
+        public String facet = null;
+        public String column = null;
+        TermOffered( String type, String facet, String column )
+        {
+            this.type = type;
+            this.facet = facet;
+            this.column = column;
+        }
+
+        public static final HashMap<String,TermOffered> map = new HashMap<String,TermOffered>();
+
+        static {
+            for( TermOffered offered : EnumSet.allOf( TermOffered.class )) {
+                map.put( offered.type, offered );
+            }
+        }
+
+        public static TermOffered get( String type )
+        {
+            TermOffered found = map.get( type );
+            return found != null ? found : UNKNOWN;
+        }
+
+    }
+
+    ArrayList<TermOffered> termOfferedList = new ArrayList<TermOffered>();
+    public void addTermOffered( String type )
+    {
+        TermOffered offered = TermOffered.get( type );
+        termOfferedList.add( offered );
+    }
+
+    public List<TermOffered> getTermOfferedList()
+    {
+        if( termOfferedList.isEmpty() )
+        {
+            termOfferedList.add( TermOffered.UNKNOWN );
+        }
+        return termOfferedList;
+    }
+
     public String getScheduledTime() {
         return scheduledTime;
     }
@@ -190,5 +246,23 @@ public class CourseSearchItem {
 
     public void setCreditsFacetKey(String creditsFacetKey) {
         this.creditsFacetKey = creditsFacetKey;
+    }
+
+    public static void main( String[] args )
+    {
+        HashSet<TermOffered> map = new HashSet<TermOffered>();
+
+        map.add( TermOffered.WINTER );
+        map.add( TermOffered.UNKNOWN );
+        map.add( TermOffered.SUMMER );
+
+        ArrayList<TermOffered> list = new ArrayList<TermOffered>();
+        list.addAll( map );
+        Collections.sort( list );
+        for( TermOffered offered : list )
+        {
+            System.out.println( offered.facet );
+        }
+
     }
 }

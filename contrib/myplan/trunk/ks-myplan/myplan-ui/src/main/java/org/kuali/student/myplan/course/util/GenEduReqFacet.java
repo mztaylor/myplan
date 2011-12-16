@@ -14,10 +14,26 @@ public class GenEduReqFacet extends AbstractFacet {
 
     private final String NONE_GENED_FACET_KEY = "None";
 
+
     public GenEduReqFacet() {
         super();
     }
 
+    @Override
+    // TODO Irradicate this garbage. Quickfix. -- JO
+    public List<FacetItem> getFacetItems() {
+        List<FacetItem> list = super.getFacetItems();
+        if( showNone )
+        {
+            FacetItem item = new FacetItem();
+            item.setDisplayName( "None" );
+            item.setKey( ";None;" );
+            list.add( item );
+        }
+        return list;
+    }
+
+    boolean showNone = false;
     /**
      * {@inheritDoc}
      */
@@ -30,7 +46,9 @@ public class GenEduReqFacet extends AbstractFacet {
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
             isUnknown = true;
-            genEdString = NONE_GENED_FACET_KEY;
+            showNone = true;
+//            genEdString = UNKNOWN_FACET_KEY;
+            genEdString = "None";
         }
 
         /*
@@ -48,7 +66,7 @@ public class GenEduReqFacet extends AbstractFacet {
                 String displayName = null;
                 //  Use the key as the display name if it wasn't set to "Unknown" above.
                 if (isUnknown) {
-                    displayName = NONE_GENED_FACET_KEY;
+                    displayName = UNKNOWN_FACET_DISPLAY_NAME;
                 } else {
                     displayName = key;
                 }

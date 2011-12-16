@@ -261,11 +261,8 @@ public class CourseSearchController extends UifControllerBase {
 
                     // Load Terms Offered
                     {
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey( "myplan.course.info.atp" );
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add( new SearchParam( "courseID", courseId ));
-                        searchRequest.setParams(params);
+                        SearchRequest searchRequest = new SearchRequest( "myplan.course.info.atp" );
+                        searchRequest.addParam( "courseID", courseId );
                         ArrayList<String> termsOffered = new ArrayList<String>();
                         SearchResult searchResult = getLuService().search( searchRequest );
                         for ( SearchResultRow row : searchResult.getRows() )
@@ -274,6 +271,7 @@ public class CourseSearchController extends UifControllerBase {
                             {
                                 String term = cell.getValue();
                                 termsOffered.add( term );
+                                course.addTermOffered( term );
                             }
                         }
                         String formatted = formatScheduledItem( termsOffered );
