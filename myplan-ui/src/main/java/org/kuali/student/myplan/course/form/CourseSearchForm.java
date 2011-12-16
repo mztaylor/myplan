@@ -15,7 +15,10 @@
 package org.kuali.student.myplan.course.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
+
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {
@@ -29,7 +32,7 @@ public class CourseSearchForm extends UifFormBase {
     private String searchTerm;
 
     /** Search results list. */
-    private List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> courseSearchResults;
+    private List<CourseSearchItem> courseSearchResults;
 
     /** Facet data lists */
     private List<FacetItem> curriculumFacetItems;
