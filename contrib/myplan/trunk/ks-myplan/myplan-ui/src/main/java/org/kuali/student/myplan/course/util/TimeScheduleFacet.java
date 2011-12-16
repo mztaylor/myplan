@@ -55,7 +55,7 @@ public class TimeScheduleFacet extends AbstractFacet {
         String times = course.getScheduledTime();
 
         if (times == null || times.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || times.equals("")) {
-            times = UNKNOWN_FACET_DISPLAY_NAME;
+            times = unknownFacetDisplayName;
         }
  /*
         //  Parse the times string and make a list of keys.
@@ -64,8 +64,8 @@ public class TimeScheduleFacet extends AbstractFacet {
         StringBuilder facet = new StringBuilder();
         for (String name : names) {
             String key = null;
-            if( UNKNOWN_FACET_DISPLAY_NAME.equals( name )) {
-                key = UNKNOWN_FACET_DISPLAY_NAME;
+            if( unknownFacetDisplayName.equals( name )) {
+                key = unknownFacetDisplayName;
             } else {
                 key = name;
             }

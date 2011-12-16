@@ -11,10 +11,12 @@ import java.util.*;
 */
 public class CreditsFacet extends AbstractFacet {
 
+    private HashSet<Integer> creditFacetSet = new HashSet<Integer>();
+
     public CreditsFacet() {
         super();
+        super.setShowUnknownKey(false);
     }
-    HashSet<Integer> creditFacetSet = new HashSet<Integer>();
 
     /**
      * The credits facet list needs to be in numeric order rather than string order, so

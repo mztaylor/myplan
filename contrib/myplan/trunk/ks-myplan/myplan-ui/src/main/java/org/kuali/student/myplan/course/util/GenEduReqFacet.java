@@ -12,28 +12,12 @@ import java.util.List;
 */
 public class GenEduReqFacet extends AbstractFacet {
 
-    private final String NONE_GENED_FACET_KEY = "None";
-
-
     public GenEduReqFacet() {
         super();
+        unknownFacetKey =  "None";
+        unknownFacetDisplayName = "None";
     }
 
-    @Override
-    // TODO Irradicate this garbage. Quickfix. -- JO
-    public List<FacetItem> getFacetItems() {
-        List<FacetItem> list = super.getFacetItems();
-        if( showNone )
-        {
-            FacetItem item = new FacetItem();
-            item.setDisplayName( "None" );
-            item.setKey( ";None;" );
-            list.add( item );
-        }
-        return list;
-    }
-
-    boolean showNone = false;
     /**
      * {@inheritDoc}
      */
@@ -41,14 +25,12 @@ public class GenEduReqFacet extends AbstractFacet {
     public void process(CourseSearchItem item) {
 
         String genEdString = item.getGenEduReq();
-        boolean isUnknown = false;
 
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
-            isUnknown = true;
-            showNone = true;
-//            genEdString = UNKNOWN_FACET_KEY;
-            genEdString = "None";
+            unknownKeyCount++;
+            item.setGenEduReqFacetKey(FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER);
+            return;
         }
 
         /*
@@ -64,12 +46,7 @@ public class GenEduReqFacet extends AbstractFacet {
             {
                 FacetItem fItem = new FacetItem();
                 String displayName = null;
-                //  Use the key as the display name if it wasn't set to "Unknown" above.
-                if (isUnknown) {
-                    displayName = UNKNOWN_FACET_DISPLAY_NAME;
-                } else {
-                    displayName = key;
-                }
+                displayName = key;
                 fItem.setKey(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
                 fItem.setDisplayName(displayName);
                 facetItems.add(fItem);
