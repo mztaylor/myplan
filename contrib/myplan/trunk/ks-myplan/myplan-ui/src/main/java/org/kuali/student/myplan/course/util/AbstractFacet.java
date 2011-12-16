@@ -13,8 +13,6 @@ public abstract class AbstractFacet {
     // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
     protected List<FacetItem> facetItems;
 
-    protected int unknownKeyCount = 0;
-
     protected String unknownFacetKey = "Unknown";
 
     protected String unknownFacetDisplayName = "Unknown";
@@ -65,14 +63,6 @@ public abstract class AbstractFacet {
         }
 
         return isNew;
-    }
-
-    public int getUnknownKeyCount() {
-        return unknownKeyCount;
-    }
-
-    public void setUnknownKeyCount(int unknownKeyCount) {
-        this.unknownKeyCount = unknownKeyCount;
     }
 
     public String getUnknownFacetKey() {

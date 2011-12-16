@@ -28,7 +28,6 @@ public class GenEduReqFacet extends AbstractFacet {
 
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
-            unknownKeyCount++;
             item.setGenEduReqFacetKey(FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER);
             return;
         }
