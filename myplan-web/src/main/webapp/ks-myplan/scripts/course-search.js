@@ -25,6 +25,7 @@ function buildFacets() {
         if (!arrFacetSearch[colIndex]) arrFacetSearch[colIndex] = []; // If key is undefined, create it
         arrFacetSearch[colIndex].push(jq(this).text()); // Insert facet text to array
 	});
+    /*
     jq("#course_search_result_facets_div a.item.all").each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
         if ( arrFacetSearch[colIndex].length <= 1 ) {
@@ -32,6 +33,7 @@ function buildFacets() {
             jq(this).parents(".facets").find("a.item").addClass('checked');
         }
     });
+    */
     calculateFacets(null);
 }
 
