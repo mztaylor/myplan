@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.course.service;
+package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.CircularTermList;
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
@@ -26,13 +26,14 @@ import java.util.List;
  * UW implementation of AcademicCalendarService.
  */
 public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
-    private final Logger logger = Logger.getLogger(AcademicCalendarService.class);
+    private final static Logger logger = Logger.getLogger(UwAcademicCalendarServiceImpl.class);
 
     /**
      * The number of terms to inspect when looking for section data.
      */
     private static final short PUBLISHED_QUARTER_COUNT = 3;
     private static final String DEFAULT_CURRICULUM = "chem";
+    private static final String TERM_KEY_PREFIX = "kuali.uw.atp.";
 
     private SAXReader reader;
 
@@ -135,6 +136,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             }
 
             TermInfo ti = new TermInfo();
+            ti.setKey(TERM_KEY_PREFIX + ccl.getQuarter().toLowerCase() + ccl.getYear());
             ti.setName(ccl.getQuarter() + " " + ccl.getYear());
             termInfos.add(ti);
 
