@@ -15,6 +15,7 @@
 
     <bean id="courseSearchView" parent="KSFormView">
         <property name="id" value="courseSearchView"/>
+        <property name="breadcrumbs.render" value="false"/>
         <property name="styleClasses" value="myplan"/>
         <property name="entryPageId" value="course_search"/>
 

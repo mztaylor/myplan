@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.springframework.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,9 @@ import java.util.Map;
  *
  */
 public class CourseSearchItem {
+
+    public static final String EMPTY_RESULT_VALUE_KEY = "-";
+
     private String courseId;
 
     private String number;
@@ -25,8 +30,8 @@ public class CourseSearchItem {
     private float creditMin;
     private float creditMax;
     private CreditType creditType;
-    private String scheduledTime;
-    private String genEduReq;
+    private String scheduledTime = EMPTY_RESULT_VALUE_KEY;
+    private String genEduReq = EMPTY_RESULT_VALUE_KEY;
     private String status;
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
     private String curriculumFacetKey;
@@ -124,7 +129,9 @@ public class CourseSearchItem {
     }
 
     public void setScheduledTime(String scheduledTime) {
-        this.scheduledTime = scheduledTime;
+        if(StringUtils.hasText(scheduledTime)) {
+            this.scheduledTime = scheduledTime;
+        }
     }
 
     public String getGenEduReq() {
@@ -132,7 +139,9 @@ public class CourseSearchItem {
     }
 
     public void setGenEduReq(String genEduReq) {
-        this.genEduReq = genEduReq;
+        if(StringUtils.hasText(genEduReq)) {
+            this.genEduReq = genEduReq;
+        }
     }
 
     public String getStatus() {

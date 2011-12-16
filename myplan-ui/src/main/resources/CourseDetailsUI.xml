@@ -185,6 +185,7 @@
 
 
     <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
+        <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails" />
@@ -262,7 +263,9 @@
     </bean>
 
 
-    <bean id="course_requirements_formatter" class="org.kuali.student.myplan.course.util.RequirementsFormatter"/>
+    <bean id="course_requirements_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
+        <property name="emptyListMessage" value="None"/>
+    </bean>
 
 
 </beans>
