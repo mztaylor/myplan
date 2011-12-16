@@ -8,12 +8,19 @@ import java.util.List;
 
 public abstract class AbstractFacet {
 
-    // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
-    List<FacetItem> facetItems;
+    protected static final String FACET_KEY_DELIMITER = ";";
 
-    static final String FACET_KEY_DELIMITER = ";";
-    static final String UNKNOWN_FACET_KEY = "Unknown";
-    static final String UNKNOWN_FACET_DISPLAY_NAME = "Unknown";
+    // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
+    protected List<FacetItem> facetItems;
+
+    protected int unknownKeyCount = 0;
+
+    protected String unknownFacetKey = "Unknown";
+
+    protected String unknownFacetDisplayName = "Unknown";
+
+    protected boolean showUnknownKey = true;
+
 
     public AbstractFacet() {
         this.facetItems = new ArrayList<FacetItem>();
@@ -22,6 +29,14 @@ public abstract class AbstractFacet {
     public List<FacetItem> getFacetItems() {
         //  Put the list in a predictable order.
         Collections.sort(facetItems);
+
+        if(showUnknownKey) {
+            FacetItem unkownFacet = new FacetItem();
+            unkownFacet.setKey(FACET_KEY_DELIMITER + unknownFacetKey + FACET_KEY_DELIMITER);
+            unkownFacet.setDisplayName(unknownFacetDisplayName);
+            facetItems.add(unkownFacet);
+        }
+
         return facetItems;
     }
 
@@ -50,5 +65,37 @@ public abstract class AbstractFacet {
         }
 
         return isNew;
+    }
+
+    public int getUnknownKeyCount() {
+        return unknownKeyCount;
+    }
+
+    public void setUnknownKeyCount(int unknownKeyCount) {
+        this.unknownKeyCount = unknownKeyCount;
+    }
+
+    public String getUnknownFacetKey() {
+        return unknownFacetKey;
+    }
+
+    public void setUnknownFacetKey(String unknownFacetKey) {
+        this.unknownFacetKey = unknownFacetKey;
+    }
+
+    public String getUnknownFacetDisplayName() {
+        return unknownFacetDisplayName;
+    }
+
+    public void setUnknownFacetDisplayName(String unknownFacetDisplayName) {
+        this.unknownFacetDisplayName = unknownFacetDisplayName;
+    }
+
+    public boolean isShowUnknownKey() {
+        return showUnknownKey;
+    }
+
+    public void setShowUnknownKey(boolean showUnknownKey) {
+        this.showUnknownKey = showUnknownKey;
     }
 }

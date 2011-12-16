@@ -21,8 +21,8 @@ public class CourseLevelFacet extends AbstractFacet {
         String key = null;
 
         if (displayName == null || displayName.equals("")) {
-            displayName = UNKNOWN_FACET_DISPLAY_NAME;
-            key = UNKNOWN_FACET_KEY;
+            displayName = unknownFacetDisplayName;
+            key = unknownFacetKey;
         } else {
             key = displayName;
         }

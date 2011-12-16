@@ -248,21 +248,4 @@ public class CourseSearchItem {
         this.creditsFacetKey = creditsFacetKey;
     }
 
-    public static void main( String[] args )
-    {
-        HashSet<TermOffered> map = new HashSet<TermOffered>();
-
-        map.add( TermOffered.WINTER );
-        map.add( TermOffered.UNKNOWN );
-        map.add( TermOffered.SUMMER );
-
-        ArrayList<TermOffered> list = new ArrayList<TermOffered>();
-        list.addAll( map );
-        Collections.sort( list );
-        for( TermOffered offered : list )
-        {
-            System.out.println( offered.facet );
-        }
-
-    }
 }

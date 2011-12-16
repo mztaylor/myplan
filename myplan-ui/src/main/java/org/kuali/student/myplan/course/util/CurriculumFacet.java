@@ -31,10 +31,10 @@ public class CurriculumFacet extends AbstractFacet {
     {
         String key = course.getSubject();
 
-        String displayName = UNKNOWN_FACET_DISPLAY_NAME;
+        String displayName = unknownFacetDisplayName;
 
         if (key == null || key.equals("")) {
-            key = UNKNOWN_FACET_KEY;
+            key = unknownFacetKey;
         } else {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
