@@ -55,7 +55,7 @@ public class CollectionListFormatter extends Formatter {
         Iterator<Object> i = collection.iterator();
         while (i.hasNext()) {
             Object elem = i.next();
-            Element itemElement = listElement.addElement(listType.getListElementName());
+            Element itemElement = listElement.addElement(listType.getListItemElementName());
             itemElement.setText(elem.toString());
         }
         return listElement.asXML();
