@@ -1,10 +1,10 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class CourseSearchItem {
     private float creditMin;
     private float creditMax;
     private CreditType creditType;
-    private String scheduledTime = EMPTY_RESULT_VALUE_KEY;
+    private String termsDisplayName = EMPTY_RESULT_VALUE_KEY;
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
     private String status;
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
@@ -40,8 +40,12 @@ public class CourseSearchItem {
 
     private String courseLevelFacetKey;
     private String genEduReqFacetKey;
-    private String timeScheduleFacetKey;
+    private String termsFacetKey;
     private String creditsFacetKey;
+
+
+    private List<AtpTypeInfo> termInfoList;
+
 
     public String getCourseId() {
         return courseId;
@@ -126,69 +130,16 @@ public class CourseSearchItem {
         this.creditType = creditType;
     }
 
-
-    // TODO: I'm not real excited by this solution (for tying together type ids, display strings,
-    // and implicit sort order). Quick fix. At the very least, investigate if sort order
-    // is somehow/where stored in the UW Kuali database. -- JO
-    public enum TermOffered {
-        // Order is important, used for sorting
-        AUTUMN( "kuali.atp.type.autumn", "Autumn", "AU" ),
-        SPRING( "kuali.atp.type.spring", "Spring", "SP" ),
-        SUMMER( "kuali.atp.type.summer", "Summer", "SU" ),
-        WINTER( "kuali.atp.type.winter", "Winter", "WI" ),
-        UNKNOWN( "unknown", "Unknown", "" );
-
-        public final String type;
-        public String facet = null;
-        public String column = null;
-        TermOffered( String type, String facet, String column )
-        {
-            this.type = type;
-            this.facet = facet;
-            this.column = column;
-        }
-
-        public static final HashMap<String,TermOffered> map = new HashMap<String,TermOffered>();
-
-        static {
-            for( TermOffered offered : EnumSet.allOf( TermOffered.class )) {
-                map.put( offered.type, offered );
-            }
-        }
-
-        public static TermOffered get( String type )
-        {
-            TermOffered found = map.get( type );
-            return found != null ? found : UNKNOWN;
-        }
-
+    public String getTermsDisplayName() {
+        return termsDisplayName;
     }
 
-    ArrayList<TermOffered> termOfferedList = new ArrayList<TermOffered>();
-    public void addTermOffered( String type )
-    {
-        TermOffered offered = TermOffered.get( type );
-        termOfferedList.add( offered );
-    }
-
-    public List<TermOffered> getTermOfferedList()
-    {
-        if( termOfferedList.isEmpty() )
-        {
-            termOfferedList.add( TermOffered.UNKNOWN );
-        }
-        return termOfferedList;
-    }
-
-    public String getScheduledTime() {
-        return scheduledTime;
-    }
-
-    public void setScheduledTime(String scheduledTime) {
-        if(StringUtils.hasText(scheduledTime)) {
-            this.scheduledTime = scheduledTime;
+    public void setTermsDisplayName(String termsDisplayName) {
+        if(StringUtils.hasText(termsDisplayName)) {
+            this.termsDisplayName = termsDisplayName;
         }
     }
+
 
     public String getGenEduReq() {
         return genEduReq;
@@ -232,12 +183,12 @@ public class CourseSearchItem {
         this.genEduReqFacetKey = genEduReqFacetKey;
     }
 
-    public String getTimeScheduleFacetKey() {
-        return timeScheduleFacetKey;
+    public String getTermsFacetKey() {
+        return termsFacetKey;
     }
 
-    public void setTimeScheduleFacetKey(String timeScheduleFacetKey) {
-        this.timeScheduleFacetKey = timeScheduleFacetKey;
+    public void setTermsFacetKey(String termsFacetKey) {
+        this.termsFacetKey = termsFacetKey;
     }
 
     public String getCreditsFacetKey() {
@@ -248,4 +199,11 @@ public class CourseSearchItem {
         this.creditsFacetKey = creditsFacetKey;
     }
 
+    public List<AtpTypeInfo> getTermInfoList() {
+        return termInfoList;
+    }
+
+    public void setTermInfoList(List<AtpTypeInfo> termInfoList) {
+        this.termInfoList = termInfoList;
+    }
 }

@@ -331,7 +331,7 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="scheduledTime"
+                <bean parent="InputField" p:propertyName="termsDisplayName"
                       p:label="Quarter Offered" p:readOnly="true">
                     <property name="styleClasses" value="courseScheduledTime"/>
                     <property name="control">
@@ -357,13 +357,13 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>-->
-                <bean parent="InputField" p:propertyName="timeScheduleFacetKey" p:label="Quarter Projected"
+                <bean parent="InputField" p:propertyName="termsFacetKey" p:label="Quarter Projected"
                       p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="timeScheduleFacetKey" p:label="Quarter Scheduled"
+                <bean parent="InputField" p:propertyName="termsFacetKey" p:label="Quarter Scheduled"
                       p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
