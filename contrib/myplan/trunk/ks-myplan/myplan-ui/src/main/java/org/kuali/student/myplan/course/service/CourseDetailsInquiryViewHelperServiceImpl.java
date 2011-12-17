@@ -15,7 +15,6 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.core.statement.service.StatementService;
-import org.kuali.student.core.statement.util.StatementServiceConstants;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -23,16 +22,12 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
-
-    private static final String STATEMENT_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/statement";
-    private static final String ENUM_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/enumerationmanagement";
-    //  TODO: This is duplicated in CourseSearchController
-    private static final String GEN_EDU_REQUIREMENTS_PREFIX = "genEdRequirement";
 
     private transient CourseService courseService;
 
@@ -113,8 +108,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<String> genEdReqs = new ArrayList<String>();
         Map<String, String> attributes = course.getAttributes();
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            if (entry.getValue().equals("true") && entry.getKey().startsWith(GEN_EDU_REQUIREMENTS_PREFIX)) {
-                String r = entry.getKey().replace(GEN_EDU_REQUIREMENTS_PREFIX, "");
+            if (entry.getValue().equals("true") && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
+                String r = entry.getKey().replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
                 genEdReqs.add(r);
             }
         }
@@ -134,7 +129,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     protected synchronized StatementService getStatementService() {
         if (this.statementService == null) {
             this.statementService = (StatementService) GlobalResourceLoader
-                    .getService(new QName(STATEMENT_SERVICE_NAMESPACE, "StatementService"));
+                    .getService(new QName(CourseSearchConstants.STATEMENT_SERVICE_NAMESPACE, "StatementService"));
         }
         return this.statementService;
     }
@@ -143,7 +138,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
             this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
+                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
         }
         return this.enumService;
     }
