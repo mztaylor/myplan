@@ -37,9 +37,15 @@ public class CourseSearchForm extends UifFormBase {
     /** Facet data lists */
     private List<FacetItem> curriculumFacetItems;
     private List<FacetItem> courseLevelFacetItems;
-    private List<FacetItem> timeScheduleFacetItems;
+
+    private List<FacetItem> termsFacetItems;
+    private List<FacetItem> scheduledTermsFacetItems;
+
     private List<FacetItem> genEduReqFacetItems;
     private List<FacetItem> creditsFacetItems;
+
+    /** The key of the term drop-down any item. */
+    public static final String SEARCH_TERM_ANY_ITEM = "any";
 
     public CourseSearchForm() {
         super();
@@ -109,12 +115,20 @@ public class CourseSearchForm extends UifFormBase {
         this.courseLevelFacetItems = courseLevelFacetItems;
     }
 
-    public List<FacetItem> getTimeScheduleFacetItems() {
-        return timeScheduleFacetItems;
+    public List<FacetItem> getTermsFacetItems() {
+        return termsFacetItems;
     }
 
-    public void setTimeScheduleFacetItems(List<FacetItem> timeScheduleFacetItems) {
-        this.timeScheduleFacetItems = timeScheduleFacetItems;
+    public void setTermsFacetItems(List<FacetItem> termsFacetItems) {
+        this.termsFacetItems = termsFacetItems;
+    }
+
+    public List<FacetItem> getScheduledTermsFacetItems() {
+        return scheduledTermsFacetItems;
+    }
+
+    public void setScheduledTermsFacetItems(List<FacetItem> scheduledTermsFacetItems) {
+        this.scheduledTermsFacetItems = scheduledTermsFacetItems;
     }
 
     public List<FacetItem> getGenEduReqFacetItems() {

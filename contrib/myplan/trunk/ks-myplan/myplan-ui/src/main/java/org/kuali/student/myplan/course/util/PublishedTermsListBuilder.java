@@ -6,6 +6,7 @@ import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
@@ -45,7 +46,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         }
 
         //  Add the "any" item.
-        keyValues.add(new ConcreteKeyValue("any", "Any quarter"));
+        keyValues.add(new ConcreteKeyValue(CourseSearchForm.SEARCH_TERM_ANY_ITEM, "Any quarter"));
 
         //  Add term info to the list if the above service call was successful.
         if (termInfos != null) {

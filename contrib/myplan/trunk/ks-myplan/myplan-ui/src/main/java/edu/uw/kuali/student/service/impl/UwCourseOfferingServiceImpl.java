@@ -66,6 +66,16 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         this.studentServiceClient = studentServiceClient;
     }
 
+    /**
+     * This implementation actually returns course code ...
+     *    Student Service: curriculum abbreviation _ course number
+     *    MyPlan: subject _ number.
+     *
+     * @param termKey
+     * @param subjectArea
+     * @param context
+     * @return A list of course codes.
+     */
     @Override
     public List<String> getCourseOfferingIdsByTermAndSubjectArea(@WebParam(name = "termKey") String termKey,
                                                                  @WebParam(name = "subjectArea") String subjectArea,
@@ -150,32 +160,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         return courseCodes;
     }
-
-    /**
-     *
-<SearchResults xmlns="http://webservices.washington.edu/student/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-<Sections>
-<Section>
-<Href>
-/student/v4/public/course/2011,winter,CHEM,142/A.xml
-</Href>
-<CourseNumber>142</CourseNumber>
-<CurriculumAbbreviation>CHEM</CurriculumAbbreviation>
-<Quarter>winter</Quarter>
-<SectionID>A</SectionID>
-<Year>2011</Year>
-</Section>
-     *
-     * @param courseOfferingId
-     * @param context
-     * @return
-     * @throws DoesNotExistException
-     * @throws InvalidParameterException
-     * @throws MissingParameterException
-     * @throws OperationFailedException
-     * @throws PermissionDeniedException
-     */
-
 
     @Override
     public CourseOfferingInfo getCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {

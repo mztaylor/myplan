@@ -194,7 +194,7 @@ public class QueryTokenizer
 
         System.out.println( "gah" );
         {
-            String str = "A A xyzzy XYZZY edc&i \"quoted text\"";
+            String str = "A A xyzzy XYZZY edc&i \"quoted txt\"";
             QueryTokenizer toho = new QueryTokenizer();
             List<Token> result = toho.tokenize( str );
             for( Token t : result )

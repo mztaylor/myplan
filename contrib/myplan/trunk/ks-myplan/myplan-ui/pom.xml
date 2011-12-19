@@ -116,6 +116,16 @@
             <artifactId>rice-kns</artifactId>
             <version>${kuali.rice.version}</version>
         </dependency>
+
+
+        <!-- TODO: Fix this -->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
