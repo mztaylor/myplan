@@ -1,19 +1,22 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
-import org.dom4j.Document;
-import org.restlet.data.MediaType;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Rest client for the Student Service.
  */
 public class FauxStudentServiceClientImpl
 	implements StudentServiceClient {
+
+    private static Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     public FauxStudentServiceClientImpl() {}
 
@@ -65,14 +68,16 @@ public class FauxStudentServiceClientImpl
 
     @Override
     public String getSectionInfo(String year, String term, String curriculumCode) throws ServiceException {
-        //   https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2009&quarter=winter&curriculum_abbreviation=chem
-        StringBuilder sb = new StringBuilder();
-        sb.append("<SearchResults xmlns=\"http://webservices.washington.edu/student/\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\">")
-            .append("<Sections><Section>")
-            .append("<Href>/student/v4/public/course/2009,winter,CHEM,142/A.xml</Href>")
-            .append("<CourseNumber>142</CourseNumber><CurriculumAbbreviation>CHEM</CurriculumAbbreviation><Quarter>winter</Quarter>")
-            .append("<SectionID>A</SectionID><Year>2009</Year></Section></Sections>")
-            .append("</SearchResults>");
-        return sb.toString();
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2011&quarter=winter&curriculum_abbreviation=chem
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
     }
 }

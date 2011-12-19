@@ -28,6 +28,9 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
@@ -36,6 +39,7 @@ import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -58,6 +62,10 @@ public class CourseSearchController extends UifControllerBase {
     private transient AtpService atpService;
 
     private transient CourseService courseService;
+
+    private transient CourseOfferingService courseOfferingService;
+
+    private transient AcademicCalendarService academicCalendarService;
 
     private transient Map<String, String> atpCache;
 
@@ -158,6 +166,7 @@ public class CourseSearchController extends UifControllerBase {
         CourseLevelFacet courseLevelFacet = new CourseLevelFacet();
         GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
         TermsFacet termsFacet = new TermsFacet();
+        ScheduledTermsFacet scheduledTermsFacet = new ScheduledTermsFacet();
 
         CourseSearchStrategy searcher = new CourseSearchStrategy();
         try {
@@ -221,7 +230,6 @@ public class CourseSearchController extends UifControllerBase {
                             course.setNumber(number);
                             course.setLevel(level);
                             course.setCourseName(name);
-                            course.setCode(subject + " " + number);
 
                             Credit credit = null;
                             if (creditMap.containsKey(id)) {
@@ -236,7 +244,47 @@ public class CourseSearchController extends UifControllerBase {
                         }
                     }
 
-                    // Load Terms Offered
+
+                    /*
+                     *  If the "any" item was chosen in the terms dop-down then continue processing.
+                     *  Otherwise, determine if the CourseSearchItem should be filtered out of the
+                     *  result set.
+                     */
+                    if ( ! form.getSearchTerm().equals(CourseSearchForm.SEARCH_TERM_ANY_ITEM)) {
+                        /*
+                          Use the course offering service to see if the course is being offered in the selected term.
+                          Note: In the UW implementation of the Course Offering service, course id is actually course code.
+                        */
+                        List<String> courseCodes = getCourseOfferingService()
+                            .getCourseOfferingIdsByTermAndSubjectArea(form.getSearchTerm(), course.getSubject(), null);
+
+                        if ( ! courseCodes.contains(course.getCode())) {
+                            //  The course code is not in the list, so move on to the next item.
+                            continue;
+                        }
+                    }
+
+                    //  Load scheduled terms.
+                    {
+                        List<String> scheduledTerms = new ArrayList<String>();
+
+                        //  Fetch the available terms from the Academic Calendar Service.
+                        List<TermInfo> termInfos = null;
+                        try {
+                            termInfos = getAcademicCalendarService().getCurrentTerms(null, null);
+                        } catch (Exception e) {
+                            logger.error("Web service call failed.", e);
+                        }
+                        //  Add term info to the list if the above service call was successful.
+                        if (termInfos != null) {
+                            for (TermInfo ti : termInfos) {
+                                scheduledTerms.add(ti.getName());
+                            }
+                        }
+                        course.setScheduledTermsSet(scheduledTerms);
+                    }
+
+                    // Load Terms Offered.
                     {
                         SearchRequest searchRequest = new SearchRequest("myplan.course.info.atp");
                         searchRequest.addParam("courseID", courseId);
@@ -284,7 +332,7 @@ public class CourseSearchController extends UifControllerBase {
                     genEduReqFacet.process(course);
                     creditsFacet.process(course);
                     termsFacet.process(course);
-
+                    scheduledTermsFacet.process(course);
 
                     searchResults.add(course);
                 }
@@ -295,7 +343,8 @@ public class CourseSearchController extends UifControllerBase {
             form.setCreditsFacetItems(creditsFacet.getFacetItems());
             form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
             form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
-            form.setTimeScheduleFacetItems(termsFacet.getFacetItems());
+            form.setTermsFacetItems(termsFacet.getFacetItems());
+            form.setScheduledTermsFacetItems(scheduledTermsFacet.getFacetItems());
 
             //  Add the search results to the response.
             form.setCourseSearchResults(searchResults);
@@ -349,26 +398,44 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     protected LuService getLuService() {
-        if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
         }
         return this.luService;
     }
 
     protected AtpService getAtpService() {
-        if (atpService == null) {
+        if (this.atpService == null) {
             // TODO: Namespace should not be hard-coded.
-            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
+            this.atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
         }
         return this.atpService;
     }
 
     protected CourseService getCourseService() {
-        if (courseService == null) {
-            courseService = (CourseService) GlobalResourceLoader.getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        if (this.courseService == null) {
+           this. courseService = (CourseService) GlobalResourceLoader.getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
         }
         return this.courseService;
     }
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+           this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    protected AcademicCalendarService getAcademicCalendarService() {
+        if (this.academicCalendarService == null) {
+            this.academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return this.academicCalendarService;
+    }
+
 
     public TermInfoComparator getAtpTypeComparator() {
         return atpTypeComparator;

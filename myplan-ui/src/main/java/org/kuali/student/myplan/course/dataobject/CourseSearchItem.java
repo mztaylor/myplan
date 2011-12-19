@@ -19,13 +19,12 @@ import java.util.*;
  */
 public class CourseSearchItem {
 
-    public static final String EMPTY_RESULT_VALUE_KEY = "-";
+    public static final String EMPTY_RESULT_VALUE_KEY = "&mdash;";
 
     private String courseId;
 
     private String number;
     private String subject;
-    private String code;
     private String level;
     private String courseName;
     private String credit;
@@ -41,10 +40,12 @@ public class CourseSearchItem {
     private String courseLevelFacetKey;
     private String genEduReqFacetKey;
     private String termsFacetKey;
+    private String scheduledFacetKey;
     private String creditsFacetKey;
 
 
     private List<AtpTypeInfo> termInfoList;
+    private List<String> scheduledTermsList;
 
 
     public String getCourseId() {
@@ -73,11 +74,11 @@ public class CourseSearchItem {
     }
 
     public String getCode() {
-        return code;
+        return subject + "_" + number;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public String getCodeFormatted() {
+        return subject + " " + number;
     }
 
     public String getLevel() {
@@ -191,6 +192,14 @@ public class CourseSearchItem {
         this.termsFacetKey = termsFacetKey;
     }
 
+    public String getScheduledFacetKey() {
+        return scheduledFacetKey;
+    }
+
+    public void setScheduledFacetKey(String scheduledFacetKey) {
+        this.scheduledFacetKey = scheduledFacetKey;
+    }
+
     public String getCreditsFacetKey() {
         return creditsFacetKey;
     }
@@ -205,5 +214,18 @@ public class CourseSearchItem {
 
     public void setTermInfoList(List<AtpTypeInfo> termInfoList) {
         this.termInfoList = termInfoList;
+    }
+
+    public List<String> getScheduledTermsList() {
+        return this.scheduledTermsList;
+    }
+
+    public void setScheduledTermsSet(List<String> scheduledTermsList) {
+        this.scheduledTermsList = scheduledTermsList;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s", getCodeFormatted(), getCourseId());
     }
 }
