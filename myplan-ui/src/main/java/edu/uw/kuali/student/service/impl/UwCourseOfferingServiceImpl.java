@@ -95,7 +95,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             getCourseOfferingIdsByTermAndSubjectArea(termKey, subjectArea, null);
         }
 
-        if (courseOfferingCache.containsKey(cacheKey)) {
+        if (courseOfferingCache.containsKey(cacheKey) && courseOfferingCache.get(cacheKey).contains(courseId)) {
 
             CourseOfferingInfo co = new CourseOfferingInfo();
             co.setCourseId(courseId);
