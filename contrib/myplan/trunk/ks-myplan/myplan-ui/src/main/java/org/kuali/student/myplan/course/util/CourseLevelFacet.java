@@ -10,6 +10,7 @@ public class CourseLevelFacet extends AbstractFacet {
 
     public CourseLevelFacet() {
         super();
+        super.setShowUnknownKey(false);
     }
 
     /**

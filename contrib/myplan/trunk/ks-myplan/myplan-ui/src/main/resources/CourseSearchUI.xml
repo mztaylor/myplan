@@ -291,11 +291,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="InputField" p:propertyName="codeFormatted" p:label="Code" p:readOnly="true">
+                <bean parent="DataField" p:propertyName="code" p:label="Code" p:readOnly="true">
                     <property name="styleClasses" value="courseCode"/>
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
 
                 <!--  TODO: This is a better way to create this field (once InputField is available).
@@ -320,26 +317,17 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>  -->
-                <bean parent="InputField" p:propertyName="credit" p:label="Credits"
+                <bean parent="DataField" p:propertyName="credit" p:label="Credits"
                       p:readOnly="true">
                     <property name="styleClasses" value="courseCredits"/>
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="termsDisplayName"
+                <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms"
                       p:label="Quarter Offered" p:readOnly="true">
                     <property name="styleClasses" value="courseScheduledTime"/>
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="genEduReq"
+                <bean parent="DataField" p:propertyName="genEduReq"
                       p:label="Gen Edu Req" p:readOnly="true">
                     <property name="styleClasses" value="courseGenEduReq"/>
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
                 <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('Selected course has been added successfully');">
                     <property name="actionImage">
@@ -353,41 +341,23 @@
                         <bean parent="TextControl"/>
                     </property>
                 </bean>-->
-                <bean parent="InputField" p:propertyName="termsFacetKey" p:label="Quarter Projected"
+                <bean parent="DataField" p:propertyName="termsFacetKey" p:label="Quarter Projected"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
+                <bean parent="DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req"
+                <bean parent="DataField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="creditsFacetKey" p:label="Credits"
+                <bean parent="DataField" p:propertyName="creditsFacetKey" p:label="Credits"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
+                <bean parent="DataField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
-                <bean parent="InputField" p:propertyName="curriculumFacetKey" p:label="Course Prefix"
+                <bean parent="DataField" p:propertyName="curriculumFacetKey" p:label="Course Prefix"
                       p:readOnly="true">
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
                 </bean>
             </list>
         </property>
