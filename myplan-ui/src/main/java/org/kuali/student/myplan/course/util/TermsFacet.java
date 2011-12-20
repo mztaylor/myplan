@@ -26,6 +26,7 @@ public class TermsFacet extends AbstractFacet {
         if (null == course.getTermInfoList() || 0 == course.getTermInfoList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facet.append(key);
+            setShowUnknownKey(true);
         } else {
             for (AtpTypeInfo term : course.getTermInfoList()) {
                 String termStr =   term.getName().substring(0, 1).toUpperCase() + term.getName().substring(1);

@@ -15,6 +15,11 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.core.statement.service.StatementService;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.infc.CourseOffering;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -22,8 +27,10 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
+import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
@@ -32,6 +39,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient CourseService courseService;
 
     private transient StatementService statementService;
+
+    private transient CourseOfferingService courseOfferingService;
+
+    private transient AcademicCalendarService academicCalendarService;
 
     private transient AtpService atpService;
 
@@ -115,6 +126,35 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         courseDetails.setGenEdRequirements(genEdReqs);
 
+
+        /*
+          Use the course offering service to see if the course is being offered in the selected term.
+          Note: In the UW implementation of the Course Offering service, course id is actually course code.
+        */
+        try {
+            //  Fetch the available terms from the Academic Calendar Service.
+            List<TermInfo> termInfos = null;
+            try {
+                termInfos = getAcademicCalendarService().getCurrentTerms(null, null);
+            } catch (Exception e) {
+                logger.error("Web service call failed.", e);
+            }
+
+            List<String> scheduledTerms = new ArrayList<String>();
+            for(TermInfo term : termInfos) {
+                List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsForCourseAndTerm(course.getCode(), term.getKey(), null);
+                if(null != courseOfferings && courseOfferings.size() > 1) {
+                    scheduledTerms.add(term.getName());
+                }
+            }
+
+            courseDetails.setScheduledTerms(scheduledTerms);
+
+
+        } catch (Exception e) {
+            logger.error("Exception loading course offering for:" + course.getCode());
+        }
+
         return courseDetails;
     }
 
@@ -154,6 +194,23 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.atpService;
     }
 
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    protected AcademicCalendarService getAcademicCalendarService() {
+        if (this.academicCalendarService == null) {
+            this.academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return this.academicCalendarService;
+    }
+
     protected synchronized void initializeCampusLocations() {
         if (null == campusLocationCache || campusLocationCache.isEmpty()) {
             try {
@@ -187,7 +244,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 return;
             }
             for (AtpTypeInfo ti : atpTypeInfos) {
-                atpCache.put(ti.getId(), ti.getName().substring(0,1).toUpperCase() + ti.getName().substring(1));
+                atpCache.put(ti.getId(), ti.getName().substring(0, 1).toUpperCase() + ti.getName().substring(1));
             }
         }
     }

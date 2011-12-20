@@ -24,6 +24,7 @@ public class ScheduledTermsFacet extends AbstractFacet {
         if (null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.append(key);
+            setShowUnknownKey(true);
         } else {
             for (String t : course.getScheduledTermsList()) {
                 String key = FACET_KEY_DELIMITER + t + FACET_KEY_DELIMITER;

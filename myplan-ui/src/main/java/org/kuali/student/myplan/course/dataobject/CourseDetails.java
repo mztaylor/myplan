@@ -15,6 +15,7 @@ public class CourseDetails {
 
     private List<String> campusLocations;
     private List<String> termsOffered;
+    private List<String> scheduledTerms;
     private List<String> requisites;
     private List<String> genEdRequirements;
 
@@ -106,10 +107,11 @@ public class CourseDetails {
         this.campusLocations = campusLocations;
     }
 
-    public static void main( String[] args )
-    {
-        CourseDetails details = new CourseDetails();
-        details.setCourseDescription( "abc-Prerequisite: xyz");
-        System.out.println( details.getCourseDescription() );
+    public List<String> getScheduledTerms() {
+        return scheduledTerms;
+    }
+
+    public void setScheduledTerms(List<String> scheduledTerms) {
+        this.scheduledTerms = scheduledTerms;
     }
 }

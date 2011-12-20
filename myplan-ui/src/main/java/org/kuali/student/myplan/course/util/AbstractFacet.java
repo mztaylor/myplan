@@ -17,8 +17,7 @@ public abstract class AbstractFacet {
 
     protected String unknownFacetDisplayName = "Unknown";
 
-    protected boolean showUnknownKey = true;
-
+    protected boolean showUnknownKey = false;
 
     public AbstractFacet() {
         this.facetItems = new ArrayList<FacetItem>();
@@ -88,4 +87,5 @@ public abstract class AbstractFacet {
     public void setShowUnknownKey(boolean showUnknownKey) {
         this.showUnknownKey = showUnknownKey;
     }
+
 }
