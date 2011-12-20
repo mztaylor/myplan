@@ -249,7 +249,7 @@ public class CourseSearchController extends UifControllerBase {
                         List<String> courseCodes = getCourseOfferingService()
                             .getCourseOfferingIdsByTermAndSubjectArea(form.getSearchTerm(), course.getSubject(), null);
 
-                        if ( ! courseCodes.contains(course.getCodeFormatted())) {
+                        if ( ! courseCodes.contains(course.getCode())) {
                             //  The course code is not in the list, so move on to the next item.
                             continue;
                         }

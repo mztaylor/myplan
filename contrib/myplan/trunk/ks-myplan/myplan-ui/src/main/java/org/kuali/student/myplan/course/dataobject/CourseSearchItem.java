@@ -86,10 +86,6 @@ public class CourseSearchItem {
         this.code = code;
     }
 
-    public String getCodeFormatted() {
-        return subject + "_" + number;
-    }
-
     public String getLevel() {
         return level;
     }
@@ -256,6 +252,6 @@ public class CourseSearchItem {
 
     @Override
     public String toString() {
-        return String.format("%s: %s", getCodeFormatted(), getCourseId());
+        return String.format("%s: %s", getCode(), getCourseId());
     }
 }
