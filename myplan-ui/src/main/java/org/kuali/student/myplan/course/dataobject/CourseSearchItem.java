@@ -157,7 +157,7 @@ public class CourseSearchItem {
                 Element scheduledListItem = scheduledListElement.addElement(listType.getListItemElementName()); //  dd
                 String termAbbreviation = scheduledTerm.substring(0, 2).toUpperCase();
                 String year = scheduledTerm.substring(scheduledTerm.length() - 2);
-                scheduledListItem.setText(String.format("%s: %s", termAbbreviation, year));
+                scheduledListItem.setText(String.format("%s %s", termAbbreviation, year));
             }
         }
 
