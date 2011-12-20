@@ -15,7 +15,6 @@ public class CreditsFacet extends AbstractFacet {
 
     public CreditsFacet() {
         super();
-        super.setShowUnknownKey(false);
     }
 
     /**

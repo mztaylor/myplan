@@ -66,6 +66,51 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         this.studentServiceClient = studentServiceClient;
     }
 
+
+    /**
+     * This impelemnation uses course code for courseId
+     *
+     * @param courseId
+     * @param termKey
+     * @param context
+     * @return
+     * @throws DoesNotExistException
+     * @throws InvalidParameterException
+     * @throws MissingParameterException
+     * @throws OperationFailedException
+     * @throws PermissionDeniedException
+     */
+    @Override
+    public List<CourseOfferingInfo> getCourseOfferingsForCourseAndTerm(@WebParam(name = "courseId") String courseId,
+            @WebParam(name = "termKey") String termKey, @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException,
+            OperationFailedException, PermissionDeniedException {
+
+        List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
+
+        String subjectArea = courseId.substring(0,6).trim();
+        String cacheKey = termKey + ":" + subjectArea;
+
+        if (courseOfferingCache.containsKey(cacheKey)) {
+            getCourseOfferingIdsByTermAndSubjectArea(termKey, cacheKey, null);
+        }
+
+        if (courseOfferingCache.containsKey(cacheKey)) {
+
+            CourseOfferingInfo co = new CourseOfferingInfo();
+            co.setCourseId(courseId);
+            co.setTermKey(termKey);
+            co.setCourseOfferingCode(courseId);
+            co.setSubjectArea(subjectArea);
+            co.setCourseNumberSuffix(courseId.substring(7));
+
+            courseOfferingInfos.add(co);
+        }
+
+        return courseOfferingInfos;
+
+    }
+
     /**
      * This implementation actually returns course code ...
      *    Student Service: curriculum abbreviation _ course number
@@ -169,11 +214,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsByIdList(@WebParam(name = "courseOfferingIds") List<String> courseOfferingIds, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public List<CourseOfferingInfo> getCourseOfferingsForCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termKey") String termKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
          throw new RuntimeException("Not implemented.");
     }
 
