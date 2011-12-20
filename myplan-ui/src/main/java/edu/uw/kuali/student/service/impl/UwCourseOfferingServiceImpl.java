@@ -155,7 +155,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             Element section = (Element) node;
             String number = section.elementText("CourseNumber");
             String ca = section.elementText("CurriculumAbbreviation");
-            courseCodes.add(ca + "_" + number);
+            //  This needs to be 10 characters wide. Curriculum code is 4 chars, number is 3.
+            courseCodes.add(ca + "   " + number);
         }
 
         return courseCodes;

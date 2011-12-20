@@ -22,16 +22,18 @@ public class CourseSearchItem {
     public static final String EMPTY_RESULT_VALUE_KEY = "&mdash;";
 
     private String courseId;
-
     private String code;
+
     private String number;
     private String subject;
     private String level;
     private String courseName;
+
     private String credit;
     private float creditMin;
     private float creditMax;
     private CreditType creditType;
+
     private String termsDisplayName = EMPTY_RESULT_VALUE_KEY;
     private String scheduledTermsDisplayName;
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
@@ -45,11 +47,8 @@ public class CourseSearchItem {
     private String scheduledFacetKey;
     private String creditsFacetKey;
 
-
     private List<AtpTypeInfo> termInfoList;
     private List<String> scheduledTermsList;
-
-
 
 
     public String getCourseId() {
@@ -239,7 +238,7 @@ public class CourseSearchItem {
         return this.scheduledTermsList;
     }
 
-    public void setScheduledTermsSet(List<String> scheduledTermsList) {
+    public void setScheduledTerms(List<String> scheduledTermsList) {
         this.scheduledTermsList = scheduledTermsList;
     }
 

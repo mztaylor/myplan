@@ -47,6 +47,13 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         this.studentServiceClient = studentServiceClient;
     }
 
+    /**
+     * Provides a list of terms which have published section info.
+     *
+     * @param processKey
+     * @param context
+     * @return A list of TermInfos in chronological order.
+     */
     @Override
     public List<TermInfo> getCurrentTerms(@WebParam(name = "processKey") String processKey,
                                           @WebParam(name = "context") ContextInfo context)
