@@ -126,9 +126,7 @@ public class CourseSearchController extends UifControllerBase {
         }
 
         try {
-            SearchRequest searchRequest = new SearchRequest();
-
-            searchRequest.setSearchKey("myplan.course.info.credits.details");
+            SearchRequest searchRequest = new SearchRequest("myplan.course.info.credits.details");
             List<SearchParam> params = new ArrayList<SearchParam>();
             searchRequest.setParams(params);
             SearchResult searchResult = getLuService().search(searchRequest);
@@ -196,8 +194,8 @@ public class CourseSearchController extends UifControllerBase {
 
             ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
 
-            Hit[] hits = courseMap.values().toArray(new Hit[0]);
-            Arrays.sort(hits, new HitComparator());
+            ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values());
+            Collections.sort(hits, new HitComparator());
 
             for (Hit hit : hits) {
                 String courseId = hit.courseID;
@@ -205,11 +203,8 @@ public class CourseSearchController extends UifControllerBase {
                 {
                     CourseSearchItem course = new CourseSearchItem();
                     {
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey("myplan.course.info");
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add(new SearchParam("courseID", courseId));
-                        searchRequest.setParams(params);
+                        SearchRequest searchRequest = new SearchRequest( "myplan.course.info" );
+                        searchRequest.addParam("courseID", courseId);
 
                         SearchResult searchResult = getLuService().search(searchRequest);
                         for (SearchResultRow row : searchResult.getRows()) {
@@ -282,9 +277,10 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         course.setScheduledTerms(scheduledTerms);
+                        course.setScheduledTermsDisplayName(formatScheduledTerms(scheduledTerms));
                     }
 
-                    // Load Terms.
+                    // Load Terms Offered.
                     {
                         SearchRequest searchRequest = new SearchRequest("myplan.course.info.atp");
                         searchRequest.addParam("courseID", courseId);
@@ -304,6 +300,7 @@ public class CourseSearchController extends UifControllerBase {
 
                         Collections.sort(termsOffered, atpTypeComparator);
                         course.setTermInfoList(termsOffered);
+                        course.setTermsDisplayName(formatTermsOffered(termsOffered) + course.getScheduledTermsDisplayName());
                     }
 
                     // Load Gen Ed Requirements
