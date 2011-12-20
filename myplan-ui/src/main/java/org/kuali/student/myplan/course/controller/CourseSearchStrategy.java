@@ -9,6 +9,7 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,10 +34,7 @@ public class CourseSearchStrategy
         HashMap<String,String> map = new HashMap<String,String>();
         try
         {
-            List<SearchParam> params = new ArrayList<SearchParam>();
-            SearchRequest request = new SearchRequest();
-            request.setSearchKey( "myplan.distinct.clu.divisions" );
-            request.setParams( params );
+            SearchRequest request = new SearchRequest( "myplan.distinct.clu.divisions" );
 
             SearchResult result = getLuService().search( request );
 
@@ -94,8 +92,12 @@ public class CourseSearchStrategy
             match = false;
             List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
             List<String> terms = new TokenPairs( tokens ).sortedLongestFirst();
-            for( String term :  terms )
+
+            Iterator<String> i = terms.iterator();
+            while( match == false && i.hasNext() )
             {
+                String term = i.next();
+
                 String key = term.replace( " ", "" );
                 if( divisionMap.containsKey( key ))
                 {
@@ -103,7 +105,6 @@ public class CourseSearchStrategy
                     divisions.add( division );
                     query = query.replace( term, "" );
                     match = true;
-                    break;
                 }
             }
         }
@@ -135,17 +136,13 @@ public class CourseSearchStrategy
             for( String code : codes )
             {
                 needDivisionQuery = false;
-                SearchRequest searchRequest = new SearchRequest();
-                searchRequest.setSearchKey( "myplan.lu.search.divisionAndCode" );
-                List<SearchParam> params = new ArrayList<SearchParam>();
-                params.add( new SearchParam( "division", division ));
-                params.add( new SearchParam( "code", code ));
-                params.add( new SearchParam( "campus1", campus1 ));
-                params.add( new SearchParam( "campus2", campus2 ));
-                params.add( new SearchParam( "campus3", campus3 ));
-                searchRequest.setParams(params);
-                requests.add( searchRequest );
-
+                SearchRequest request = new SearchRequest( "myplan.lu.search.divisionAndCode" );
+                request.addParam( "division", division );
+                request.addParam( "code", code );
+                request.addParam( "campus1", campus1 );
+                request.addParam( "campus2", campus2 );
+                request.addParam( "campus3", campus3 );
+                requests.add( request );
             }
 
             for( String level : levels )
@@ -154,31 +151,23 @@ public class CourseSearchStrategy
 
                 level = level.substring( 0, 1 ) + "00";
 
-                SearchRequest searchRequest = new SearchRequest();
-                searchRequest.setSearchKey( "myplan.lu.search.divisionAndLevel" );
-                List<SearchParam> params = new ArrayList<SearchParam>();
-                params.add( new SearchParam( "division", division ));
-                params.add( new SearchParam( "level", level ));
-                params.add( new SearchParam( "campus1", campus1 ));
-                params.add( new SearchParam( "campus2", campus2 ));
-                params.add( new SearchParam( "campus3", campus3 ));
-                searchRequest.setParams(params);
-
-                requests.add( searchRequest );
+                SearchRequest request = new SearchRequest( "myplan.lu.search.divisionAndLevel" );
+                request.addParam("division", division);
+                request.addParam("level", level);
+                request.addParam("campus1", campus1);
+                request.addParam("campus2", campus2);
+                request.addParam("campus3", campus3);
+                requests.add( request );
             }
 
             if( needDivisionQuery )
             {
-                SearchRequest searchRequest = new SearchRequest();
-                searchRequest.setSearchKey( "myplan.lu.search.division" );
-                List<SearchParam> params = new ArrayList<SearchParam>();
-                params.add( new SearchParam( "division", division ));
-                params.add( new SearchParam( "campus1", campus1 ));
-                params.add( new SearchParam( "campus2", campus2 ));
-                params.add( new SearchParam( "campus3", campus3 ));
-                searchRequest.setParams(params);
-
-                requests.add( searchRequest );
+                SearchRequest request = new SearchRequest( "myplan.lu.search.division" );
+                request.addParam("division", division);
+                request.addParam("campus1", campus1);
+                request.addParam("campus2", campus2);
+                request.addParam("campus3", campus3);
+                requests.add( request );
             }
         }
         for( QueryTokenizer.Token token : tokens )
@@ -196,16 +185,12 @@ public class CourseSearchStrategy
                 default:
                     break;
             }
-            SearchRequest searchRequest = new SearchRequest();
-            searchRequest.setSearchKey( "myplan.lu.search.fulltext" );
-            List<SearchParam> params = new ArrayList<SearchParam>();
-            params.add( new SearchParam( "queryText", queryText ));
-            params.add( new SearchParam( "campus1", campus1 ));
-            params.add( new SearchParam( "campus2", campus2 ));
-            params.add( new SearchParam( "campus3", campus3 ));
-            searchRequest.setParams(params);
-
-            requests.add( searchRequest );
+            SearchRequest request = new SearchRequest( "myplan.lu.search.fulltext" );
+            request.addParam("queryText", queryText);
+            request.addParam("campus1", campus1);
+            request.addParam("campus2", campus2);
+            request.addParam("campus3", campus3);
+            requests.add( request );
         }
 
         return requests;
