@@ -36,33 +36,36 @@ function buildFacets() {
 }
 
 function facetFilter(colName, filterText, obj) {
-	oTable = jq("#course_search_results_datatable").dataTable();
-	var colIndex = oTable.fnGetColumnIndex(colName);
-    var filterText = filterText.replace('&','&amp;');
-    if (filterText === 'All') {
-    	arrFacets[colIndex] = [];
-		jq(obj).parents('.facets').find("div[id$='_group'] a.item").each(function() {
-			jq(this).removeClass('checked');
-		});
-		jq(obj).addClass('checked');
-	} else {
-		if ( !arrFacets[colIndex] ) {
-			arrFacets[colIndex] = [];
-		}
-		var key = jq.inArray(String(filterText), arrFacets[colIndex]);
-		if ( key === -1 ) {
-			arrFacets[colIndex].push(String(filterText));
-			jq(obj).addClass('checked');
-			jq(obj).parents('.facets').find('a.all').removeClass('checked');
-		} else {
-			arrFacets[colIndex].splice(key, 1);
-			jq(obj).removeClass('checked');
-			if ( arrFacets[colIndex].length === 0 ) {
-			   jq(obj).parents('.facets').find('a.all').addClass('checked');
-			}
-		}
+    if ( !jq(obj).is('.disabled') && !jq(obj).is('.static') ) {
+        oTable = jq("#course_search_results_datatable").dataTable();
+	    var colIndex = oTable.fnGetColumnIndex(colName);
+        var filterText = filterText.replace('&','&amp;');
+
+        if ( filterText === 'All' ) {
+            arrFacets[colIndex] = [];
+            jq(obj).parents('.facets').find("div[id$='_group'] a.item").each(function() {
+                jq(this).removeClass('checked');
+            });
+            jq(obj).addClass('checked');
+        } else {
+            if ( !arrFacets[colIndex] ) {
+                arrFacets[colIndex] = [];
+            }
+            var key = jq.inArray(String(filterText), arrFacets[colIndex]);
+            if ( key === -1 ) {
+                arrFacets[colIndex].push(String(filterText));
+                jq(obj).addClass('checked');
+                jq(obj).parents('.facets').find('a.all').removeClass('checked');
+            } else {
+                arrFacets[colIndex].splice(key, 1);
+                jq(obj).removeClass('checked');
+                if ( arrFacets[colIndex].length === 0 ) {
+                   jq(obj).parents('.facets').find('a.all').addClass('checked');
+                }
+            }
+        }
+        filterDataTable(colIndex, filterText);
     }
-    filterDataTable(colIndex, filterText);
 }
 
 function filterDataTable(colIndex, filterText) {
