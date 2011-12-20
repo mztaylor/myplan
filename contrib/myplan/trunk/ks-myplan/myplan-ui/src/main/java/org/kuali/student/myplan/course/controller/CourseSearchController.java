@@ -55,7 +55,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
-    private static final int MAX_HITS = 2500;
+    private static final int MAX_HITS = 250;
 
     private transient LuService luService;
 
@@ -241,7 +241,6 @@ public class CourseSearchController extends UifControllerBase {
                         }
                     }
 
-
                     /*
                      *  If the "any" item was chosen in the terms dop-down then continue processing.
                      *  Otherwise, determine if the CourseSearchItem should be filtered out of the
@@ -272,14 +271,18 @@ public class CourseSearchController extends UifControllerBase {
                         } catch (Exception e) {
                             logger.error("Web service call failed.", e);
                         }
-                        //  Add term info to the list if the above service call was successful.
+                        //  If the course is offered in the term then add the term info to the scheduled terms list.
                         if (termInfos != null) {
                             for (TermInfo ti : termInfos) {
-                                scheduledTerms.add(ti.getName());
+                                List<String> offerings = getCourseOfferingService()
+                                    .getCourseOfferingIdsByTermAndSubjectArea(ti.getKey(), course.getSubject(), null);
+                                if (offerings.contains(course.getCode())) {
+                                    scheduledTerms.add(ti.getName());
+                                }
                             }
                         }
-                        course.setScheduledTermsSet(scheduledTerms);
-                        course.setScheduledTermsDisplayName( formatSechuledTerms( scheduledTerms ));
+                        course.setScheduledTerms(scheduledTerms);
+                        course.setScheduledTermsDisplayName(formatScheduledTerms(scheduledTerms));
                     }
 
                     // Load Terms Offered.
@@ -302,7 +305,7 @@ public class CourseSearchController extends UifControllerBase {
 
                         Collections.sort(termsOffered, atpTypeComparator);
                         course.setTermInfoList(termsOffered);
-                        course.setTermsDisplayName(course.getTermsDisplayName() + formatTermsOffered(termsOffered));
+                        course.setTermsDisplayName(formatTermsOffered(termsOffered) + course.getScheduledTermsDisplayName());
                     }
 
                     // Load Gen Ed Requirements
@@ -374,14 +377,16 @@ public class CourseSearchController extends UifControllerBase {
         return genEdsOut.toString();
     }
 
-    private String formatSechuledTerms(List<String> terms) {
+    private String formatScheduledTerms(List<String> terms) {
         StringBuffer termsOut = new StringBuffer();
         int i = 0;
         for (String term : terms) {
             if (i > 0 && i != termsOut.length()) {
                 termsOut.append(", ");
             }
-            termsOut.append(term);
+            String termAbbreviation = term.substring(0, 2).toUpperCase();
+            String year = term.substring(term.length() - 2);
+            termsOut.append(String.format("%s %s", termAbbreviation, year));
             i++;
         }
         return termsOut.toString();
