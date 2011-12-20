@@ -1,6 +1,10 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -34,8 +38,6 @@ public class CourseSearchItem {
     private float creditMax;
     private CreditType creditType;
 
-    private String termsDisplayName = EMPTY_RESULT_VALUE_KEY;
-    private String scheduledTermsDisplayName;
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
     private String status;
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
@@ -138,26 +140,39 @@ public class CourseSearchItem {
         this.creditType = creditType;
     }
 
-    public String getTermsDisplayName() {
-        return termsDisplayName;
-    }
-
+    /**
+     * TODO: This should be handled with a Formatter.
+     * @return
+     */
     public String getScheduledAndOfferedTerms() {
-        return scheduledTermsDisplayName + " " + termsDisplayName;
-    }
 
-    public void setTermsDisplayName(String termsDisplayName) {
-        if(StringUtils.hasText(termsDisplayName)) {
-            this.termsDisplayName = termsDisplayName;
+        CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DD;
+
+        Element termsList = DocumentHelper.createElement(listType.getListElementName()); // dl
+
+        if (scheduledTermsList != null && scheduledTermsList.size() > 0) {
+            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            Element scheduledListElement = termsListItem.addElement(listType.getListElementName()); //  dl
+            for (String scheduledTerm : scheduledTermsList) {
+                Element scheduledListItem = scheduledListElement.addElement(listType.getListItemElementName()); //  dd
+                String termAbbreviation = scheduledTerm.substring(0, 2).toUpperCase();
+                String year = scheduledTerm.substring(scheduledTerm.length() - 2);
+                scheduledListItem.setText(String.format("%s: %s", termAbbreviation, year));
+            }
         }
-    }
 
-    public String getScheduledTermsDisplayName() {
-        return scheduledTermsDisplayName;
-    }
+        if (termInfoList != null && termInfoList.size() > 0) {
+            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            Element termListElement = termsListItem.addElement(listType.getListElementName()); // dl
+            for (AtpTypeInfo term : termInfoList) {
+                Element scheduledListItem = termListElement.addElement(listType.getListItemElementName());
+                scheduledListItem.setText(term.getName().substring(0, 2).toUpperCase());
+            }
+        }
 
-    public void setScheduledTermsDisplayName(String scheduledTermsDisplayName) {
-        this.scheduledTermsDisplayName = scheduledTermsDisplayName;
+        System.err.println(termsList.asXML());
+
+        return termsList.asXML();
     }
 
     public String getGenEduReq() {
