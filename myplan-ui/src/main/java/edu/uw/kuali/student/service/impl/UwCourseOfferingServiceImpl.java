@@ -92,7 +92,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         String cacheKey = termKey + ":" + subjectArea;
 
         if (courseOfferingCache.containsKey(cacheKey)) {
-            getCourseOfferingIdsByTermAndSubjectArea(termKey, cacheKey, null);
+            getCourseOfferingIdsByTermAndSubjectArea(termKey, subjectArea, null);
         }
 
         if (courseOfferingCache.containsKey(cacheKey)) {
