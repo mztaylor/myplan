@@ -23,6 +23,7 @@ public class CourseSearchItem {
 
     private String courseId;
 
+    private String code;
     private String number;
     private String subject;
     private String level;
@@ -32,6 +33,7 @@ public class CourseSearchItem {
     private float creditMax;
     private CreditType creditType;
     private String termsDisplayName = EMPTY_RESULT_VALUE_KEY;
+    private String scheduledTermsDisplayName;
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
     private String status;
     /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
@@ -46,6 +48,8 @@ public class CourseSearchItem {
 
     private List<AtpTypeInfo> termInfoList;
     private List<String> scheduledTermsList;
+
+
 
 
     public String getCourseId() {
@@ -74,11 +78,15 @@ public class CourseSearchItem {
     }
 
     public String getCode() {
-        return subject + "_" + number;
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getCodeFormatted() {
-        return subject + " " + number;
+        return subject + "_" + number;
     }
 
     public String getLevel() {
@@ -135,12 +143,23 @@ public class CourseSearchItem {
         return termsDisplayName;
     }
 
+    public String getScheduledAndOfferedTerms() {
+        return scheduledTermsDisplayName + " " + termsDisplayName;
+    }
+
     public void setTermsDisplayName(String termsDisplayName) {
         if(StringUtils.hasText(termsDisplayName)) {
             this.termsDisplayName = termsDisplayName;
         }
     }
 
+    public String getScheduledTermsDisplayName() {
+        return scheduledTermsDisplayName;
+    }
+
+    public void setScheduledTermsDisplayName(String scheduledTermsDisplayName) {
+        this.scheduledTermsDisplayName = scheduledTermsDisplayName;
+    }
 
     public String getGenEduReq() {
         return genEduReq;

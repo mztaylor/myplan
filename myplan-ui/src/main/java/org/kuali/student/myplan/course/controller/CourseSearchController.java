@@ -55,7 +55,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
-    private static final int MAX_HITS = 250;
+    private static final int MAX_HITS = 2500;
 
     private transient LuService luService;
 
@@ -174,7 +174,6 @@ public class CourseSearchController extends UifControllerBase {
 
             HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
 
-            done:
             for (SearchRequest searchRequest : requests) {
                 SearchResult searchResult = getLuService().search(searchRequest);
                 for (SearchResultRow row : searchResult.getRows()) {
@@ -188,10 +187,6 @@ public class CourseSearchController extends UifControllerBase {
                             } else {
                                 hit = new Hit(courseId);
                                 courseMap.put(courseId, hit);
-                            }
-
-                            if (courseMap.size() == MAX_HITS) {
-                                break done;
                             }
                         }
                     }
@@ -224,12 +219,14 @@ public class CourseSearchController extends UifControllerBase {
                             String subject = i.next().getValue();
                             String level = i.next().getValue();
                             String id = i.next().getValue();
+                            String cd = i.next().getValue();
 
                             course.setCourseId(courseId);
                             course.setSubject(subject);
                             course.setNumber(number);
                             course.setLevel(level);
                             course.setCourseName(name);
+                            course.setCode(cd);
 
                             Credit credit = null;
                             if (creditMap.containsKey(id)) {
@@ -258,7 +255,7 @@ public class CourseSearchController extends UifControllerBase {
                         List<String> courseCodes = getCourseOfferingService()
                             .getCourseOfferingIdsByTermAndSubjectArea(form.getSearchTerm(), course.getSubject(), null);
 
-                        if ( ! courseCodes.contains(course.getCode())) {
+                        if ( ! courseCodes.contains(course.getCodeFormatted())) {
                             //  The course code is not in the list, so move on to the next item.
                             continue;
                         }
@@ -282,6 +279,7 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         course.setScheduledTermsSet(scheduledTerms);
+                        course.setScheduledTermsDisplayName( formatSechuledTerms( scheduledTerms ));
                     }
 
                     // Load Terms Offered.
@@ -304,7 +302,7 @@ public class CourseSearchController extends UifControllerBase {
 
                         Collections.sort(termsOffered, atpTypeComparator);
                         course.setTermInfoList(termsOffered);
-                        course.setTermsDisplayName(formatTermsOffered(termsOffered));
+                        course.setTermsDisplayName(course.getTermsDisplayName() + formatTermsOffered(termsOffered));
                     }
 
                     // Load Gen Ed Requirements
@@ -335,6 +333,10 @@ public class CourseSearchController extends UifControllerBase {
                     scheduledTermsFacet.process(course);
 
                     searchResults.add(course);
+                }
+
+                if(searchResults.size() >= MAX_HITS) {
+                    break;
                 }
             }
 
@@ -370,6 +372,19 @@ public class CourseSearchController extends UifControllerBase {
             genEdsOut.append(req);
         }
         return genEdsOut.toString();
+    }
+
+    private String formatSechuledTerms(List<String> terms) {
+        StringBuffer termsOut = new StringBuffer();
+        int i = 0;
+        for (String term : terms) {
+            if (i > 0 && i != termsOut.length()) {
+                termsOut.append(", ");
+            }
+            termsOut.append(term);
+            i++;
+        }
+        return termsOut.toString();
     }
 
     private String formatTermsOffered(List<AtpTypeInfo> terms) {

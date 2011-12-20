@@ -20,6 +20,7 @@ public class CurriculumFacet extends AbstractFacet {
 
     public CurriculumFacet() {
         super();
+        super.setShowUnknownKey(false);
         subjectAreaCache = new HashMap<String, String>();
     }
 
