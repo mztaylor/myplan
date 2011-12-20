@@ -23,24 +23,22 @@ function buildFacets() {
     	// Create multidimensional array filled with facets provided from server, keys are set to datatable column index
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
         if (!arrFacetSearch[colIndex]) arrFacetSearch[colIndex] = []; // If key is undefined, create it
-        arrFacetSearch[colIndex].push(jq(this).text()); // Insert facet text to array
+        arrFacetSearch[colIndex].push(jq(this).text().trim()); // Insert facet text to array
 	});
-    /*
     jq("#course_search_result_facets_div a.item.all").each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
         if ( arrFacetSearch[colIndex].length <= 1 ) {
             jq(this).removeClass('checked').hide();
-            jq(this).parents(".facets").find("a.item").addClass('checked');
+            jq(this).parents(".facets").find("a.item").addClass('static');
         }
     });
-    */
     calculateFacets(null);
 }
 
 function facetFilter(colName, filterText, obj) {
 	oTable = jq("#course_search_results_datatable").dataTable();
 	var colIndex = oTable.fnGetColumnIndex(colName);
-
+    var filterText = filterText.replace('&','&amp;');
     if (filterText === 'All') {
     	arrFacets[colIndex] = [];
 		jq(obj).parents('.facets').find("div[id$='_group'] a.item").each(function() {
@@ -109,7 +107,8 @@ function calculateFacets(colIndex) {
                         // Check for array variable with facet text as key, if none, create it and set to inital count value to 0
 						if ( !arrFacetCount[n][arrFacetSearch[n][c]] ) arrFacetCount[n][arrFacetSearch[n][c]] = 0;
 						// Search for facet text in datatable column values, if found, increment array variable value
-                        if ( oTable[i][n].search(';'+arrFacetSearch[n][c]+';') >= 0 ) arrFacetCount[n][arrFacetSearch[n][c]]++;
+                        if ( oTable[i][n].search(';'+arrFacetSearch[n][c].replace("&", "&amp;")+';') >= 0 ) arrFacetCount[n][arrFacetSearch[n][c]]++;
+
 					}
 				}
 			}
@@ -122,9 +121,9 @@ function calculateFacets(colIndex) {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]);
         var txtFacet = jq(this).text().split(" (",1);
         if ( typeof arrFacetCount[colIndex][txtFacet] != 'undefined' && arrFacetCount[colIndex][txtFacet] != 0 ) {
-            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').show(); // .css({ opacity: 1 });
+            jq(this).html(txtFacet + ' <span>(' + arrFacetCount[colIndex][txtFacet] + ')</span>').removeClass('disabled');
         } else {
-            jq(this).html(txtFacet + ' <span>(0)</span>').hide(); //.css({ opacity: 0.33 }).click(function(e) {}) .hide()  ' + arrFacetCount[colIndex][txtFacet] + '
+            jq(this).html(txtFacet + ' <span>(0)</span>').addClass('disabled');
         }
 	});
 }

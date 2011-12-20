@@ -54,6 +54,7 @@
 #course_search_result_facets_div .facets>div[id$='_group'] span.fieldLine span.all {
 	border-top: solid 1px #a9a9a9;
 	display: block;
+    margin: 0 0 3px 0;
 }
 #course_search_result_facets_div .facets>div[id$='_group'] div[id$='_div'] {
 	max-height: 95px;
@@ -96,6 +97,7 @@
     display: block;
     margin: 0 0 3px 3px;
     cursor: pointer;
+    opacity: 1;
 }
 #course_search_result_facets_div .facets a.item.all {
 	margin-top: 3px;
@@ -103,11 +105,21 @@
 #course_search_result_facets_div .facets a.item.checked {
     background-position: 0px -32px;
 }
-#course_search_result_facets_div .facets a.item span,
-#course_search_result_facets_div .facets a.item span:hover,
-#course_search_result_facets_div .facets a.item:hover span {
+#course_search_result_facets_div .facets a.item.static,
+#course_search_result_facets_div .facets a.item.static:hover {
+    background-position: 0px -32px;
+	cursor: default;
+    text-decoration: none;
+}
+#course_search_result_facets_div .facets a.item span {
     color: #999;
     text-decoration: none;
+}
+#course_search_result_facets_div .facets a.item.disabled,
+#course_search_result_facets_div .facets a.item.disabled:hover {
+    text-decoration: none;
+    cursor: default;
+    opacity: 0.33;
 }
 
 /* Styles for course search results */
@@ -218,5 +230,25 @@ table.datatable {
 #course_details_overview_div table td ul li {
     list-style: none;
     padding: 0;
+    margin: 0;
+    clear: both;
+    display: block;
+}
+#course_details_overview_div table td dl,
+#course_details_overview_div table td dl dd {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    float: left;
+}
+#course_details_overview_div table td dl {
+    clear: both;
+}
+#course_details_overview_div table td dl dd:after {
+    content: ",";
+    margin: 0 0.33em 0 0;
+}
+#course_details_overview_div table td dl dd:last-child:after {
+    content: "";
     margin: 0;
 }
