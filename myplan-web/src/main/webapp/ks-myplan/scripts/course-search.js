@@ -27,7 +27,7 @@ function buildFacets() {
 	});
     jq("#course_search_result_facets_div a.item.all").each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
-        if ( arrFacetSearch[colIndex].length <= 1 ) {
+        if ( typeof arrFacetSearch[colIndex] === 'undefined' || arrFacetSearch[colIndex].length <= 1 ) {
             jq(this).removeClass('checked').hide();
             jq(this).parents(".facets").find("a.item").addClass('static');
         }
