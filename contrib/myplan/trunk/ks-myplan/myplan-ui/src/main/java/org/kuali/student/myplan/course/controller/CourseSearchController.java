@@ -282,10 +282,9 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         course.setScheduledTerms(scheduledTerms);
-                        course.setScheduledTermsDisplayName(formatScheduledTerms(scheduledTerms));
                     }
 
-                    // Load Terms Offered.
+                    // Load Terms.
                     {
                         SearchRequest searchRequest = new SearchRequest("myplan.course.info.atp");
                         searchRequest.addParam("courseID", courseId);
@@ -305,7 +304,6 @@ public class CourseSearchController extends UifControllerBase {
 
                         Collections.sort(termsOffered, atpTypeComparator);
                         course.setTermInfoList(termsOffered);
-                        course.setTermsDisplayName(formatTermsOffered(termsOffered) + course.getScheduledTermsDisplayName());
                     }
 
                     // Load Gen Ed Requirements
@@ -376,35 +374,6 @@ public class CourseSearchController extends UifControllerBase {
         }
         return genEdsOut.toString();
     }
-
-    private String formatScheduledTerms(List<String> terms) {
-        StringBuffer termsOut = new StringBuffer();
-        int i = 0;
-        for (String term : terms) {
-            if (i > 0 && i != termsOut.length()) {
-                termsOut.append(", ");
-            }
-            String termAbbreviation = term.substring(0, 2).toUpperCase();
-            String year = term.substring(term.length() - 2);
-            termsOut.append(String.format("%s %s", termAbbreviation, year));
-            i++;
-        }
-        return termsOut.toString();
-    }
-
-    private String formatTermsOffered(List<AtpTypeInfo> terms) {
-        StringBuffer termsOut = new StringBuffer();
-        int i = 0;
-        for (AtpTypeInfo term : terms) {
-            if (i > 0 && i != termsOut.length()) {
-                termsOut.append(", ");
-            }
-            termsOut.append(term.getName().substring(0, 2).toUpperCase());
-            i++;
-        }
-        return termsOut.toString();
-    }
-
 
     // TODO: This should be turned into a ATP service level cache
     //@Cacheable("atpType")
