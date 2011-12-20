@@ -143,7 +143,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             List<String> scheduledTerms = new ArrayList<String>();
             for(TermInfo term : termInfos) {
                 List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsForCourseAndTerm(course.getCode(), term.getKey(), null);
-                if(null != courseOfferings && courseOfferings.size() > 1) {
+                if(null != courseOfferings && courseOfferings.size() > 0) {
                     scheduledTerms.add(term.getName());
                 }
             }
