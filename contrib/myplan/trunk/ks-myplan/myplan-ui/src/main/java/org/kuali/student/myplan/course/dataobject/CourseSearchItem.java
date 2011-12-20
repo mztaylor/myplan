@@ -169,9 +169,6 @@ public class CourseSearchItem {
                 scheduledListItem.setText(term.getName().substring(0, 2).toUpperCase());
             }
         }
-
-        System.err.println(termsList.asXML());
-
         return termsList.asXML();
     }
 
