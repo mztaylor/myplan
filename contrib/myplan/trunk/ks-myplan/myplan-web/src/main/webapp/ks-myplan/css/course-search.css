@@ -40,7 +40,7 @@
     border-left: solid 1px #a9a9a9;
     border-right: solid 1px #a9a9a9;
     font-size: 90%;
-    width: 118px;
+    width: 128px;
     margin-right: 10px;
 }
 #course_search_result_facets_div table,
@@ -127,7 +127,7 @@
     margin:0;
 }
 #course_search_results_div {
-    width: 590px;
+    width: 580px;
 }
 #course_search_results_list_items_div .dataTables_info {
     float: none;
@@ -183,6 +183,30 @@ table.datatable {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     cursor: pointer;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl,
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd {
+    margin:0;
+    padding:0;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl {
+    white-space: nowrap;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd {
+    display: block;
+    clear: both;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd {
+    display: inline;
+    clear: none;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd:after {
+    content: ",";
+    margin: 0 0.33em 0 0;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd:last-child:after {
+    content: "";
+    margin: 0;
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd,
 #course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
