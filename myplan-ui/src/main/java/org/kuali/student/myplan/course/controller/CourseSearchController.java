@@ -277,7 +277,6 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
                         course.setScheduledTerms(scheduledTerms);
-                        course.setScheduledTermsDisplayName(formatScheduledTerms(scheduledTerms));
                     }
 
                     // Load Terms Offered.
@@ -300,7 +299,6 @@ public class CourseSearchController extends UifControllerBase {
 
                         Collections.sort(termsOffered, atpTypeComparator);
                         course.setTermInfoList(termsOffered);
-                        course.setTermsDisplayName(formatTermsOffered(termsOffered) + course.getScheduledTermsDisplayName());
                     }
 
                     // Load Gen Ed Requirements
@@ -372,8 +370,6 @@ public class CourseSearchController extends UifControllerBase {
         return genEdsOut.toString();
     }
 
-    // TODO: This should be turned into a ATP service level cache
-    //@Cacheable("atpType")
     private AtpTypeInfo getATPType(String key) {
         try {
             return getAtpService().getAtpType(key);
