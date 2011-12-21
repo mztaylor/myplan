@@ -129,6 +129,8 @@ function calculateFacets(colIndex) {
             jq(this).html(txtFacet + ' <span>(0)</span>').addClass('disabled');
         }
 	});
+
+
 }
 
 jq(document).ready(function() {
@@ -140,6 +142,7 @@ jq(document).ready(function() {
 
 jq(window).load(function(){
     if ( jq("#course_search_results_datatable").length > 0 ) {
+        jq("#course_search_results_panel_group").fadeIn('slow');
         buildFacets();
     }
 });

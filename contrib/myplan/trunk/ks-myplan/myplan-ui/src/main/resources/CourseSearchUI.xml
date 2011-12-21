@@ -259,19 +259,20 @@
                        value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
-                <entry key="sDom" value="ilrtp"/>
+                <entry key="sDom" value="ilrtSp"/>
                 <entry key="sPaginationType" value="full_numbers"/>
                 <entry key="bRetrieve" value="true"/>
                 <entry key="bAutoWidth" value="false"/>
+                <entry key="bDeferRender" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="aoColumns"
                        value="[
-                            {'bSortable':true, 'sSortDataType':'dom-txt'},
-                            {'sWidth':'175px', 'bSortable':true, 'sSortDataType':'dom-txt'},
-                            {'bSortable':false, 'bVisible':true},
-                            {'bSortable':false, 'bVisible':true},
-                            {'bSortable':false, 'bVisible':true},
-                            {'bSortable':false, 'bVisible':true},
+                            {'bSortable':true, 'sSortDataType':'dom-txt', 'bSearchable':false},
+                            {'sWidth':'175px', 'bSortable':true, 'sSortDataType':'dom-txt', 'bSearchable':false},
+                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
+                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
+                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
+                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
                             {'sTitle':'facetQuarter', 'bVisible':false},
                             {'sTitle':'facetScheduled', 'bVisible':false},
                             {'sTitle':'facetGenEduReq', 'bVisible':false},
