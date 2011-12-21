@@ -135,7 +135,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             //  Fetch the available terms from the Academic Calendar Service.
             List<TermInfo> termInfos = null;
             try {
-                termInfos = getAcademicCalendarService().getCurrentTerms(null, null);
+                termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
+                        CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Web service call failed.", e);
             }

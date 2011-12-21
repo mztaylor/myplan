@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
+import org.kuali.student.r2.common.dto.ContextInfo;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Kamal
@@ -17,4 +19,9 @@ public class CourseSearchConstants {
     // Service Constants
     public static final String STATEMENT_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/statement";
     public static final String ENUM_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/enumerationmanagement";
+
+    //  Global context info for use in service methods which need caching, but don't use the context argument.
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
+    //  Process key for use in service methods which need caching, but don't use the process key argument.
+    public static final String PROCESS_KEY = "Null";
 }

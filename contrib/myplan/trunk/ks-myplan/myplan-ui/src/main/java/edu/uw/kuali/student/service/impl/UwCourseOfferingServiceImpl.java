@@ -46,7 +46,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private StudentServiceClient studentServiceClient;
 
-    //  TODO: Make this static and synchronized.
+    //  TODO: Replace this with ehcache.
     private static Map<String, Set<String>> courseOfferingCache;
 
 
