@@ -12,6 +12,7 @@ import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstan
 
 import org.apache.log4j.Logger;
 
+import javax.naming.Context;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,12 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
     private final static String listItemSuffix = " quarter only";
 
     /**
+     * Placeholders so that ehcache (via AOP pointcounts) don't blow up when trying to
+     * use these parameters as keys (computing the hashcode).
+     */
+    public final static String processKeyPlaceHolder = "placeHolder";
+    public final static ContextInfo contextInfoPlaceHolder = new ContextInfo();
+    /**
      *  Build and returns the list of available terms.
      *
      * @return A List of available terms as KeyValue items.
@@ -40,7 +47,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         //  Fetch the available terms from the Academic Calendar Service.
         List<TermInfo> termInfos = null;
         try {
-            termInfos = getAcademicCalendarService().getCurrentTerms(null, null);
+            termInfos = getAcademicCalendarService().getCurrentTerms(processKeyPlaceHolder, contextInfoPlaceHolder);
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
         }
@@ -66,5 +73,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         }
         return this.academicCalendarService;
     }
+
+
 
 }

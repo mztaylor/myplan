@@ -31,8 +31,6 @@ import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
@@ -61,13 +59,13 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient AtpService atpService;
 
-    private transient CourseService courseService;
+//    private transient CourseService courseService;
 
     private transient CourseOfferingService courseOfferingService;
 
     private transient AcademicCalendarService academicCalendarService;
 
-    private transient Map<String, String> atpCache;
+//    private transient Map<String, String> atpCache;
 
     private TermInfoComparator atpTypeComparator;
 
@@ -110,10 +108,8 @@ public class CourseSearchController extends UifControllerBase {
 
     int maxHits = 250;
 
-    @RequestMapping(params = "methodToCall=searchForCourses")
-    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-                                         HttpServletRequest request, HttpServletResponse response) {
-
+    public HashMap<String, Credit> getCreditMap()
+    {
         HashMap<String, Credit> creditMap = new HashMap<String, Credit>();
         {
             // Don't think this will ever be used
@@ -153,10 +149,28 @@ public class CourseSearchController extends UifControllerBase {
 
                 creditMap.put(id, credit);
             }
+            return creditMap;
         } catch (Exception e) {
             throw new RuntimeException(e);
 
         }
+    }
+
+    public Credit getCreditByID( String id ) {
+        Credit credit;
+        HashMap<String, Credit> creditMap  = getCreditMap();
+        if (getCreditMap().containsKey(id)) {
+            credit = creditMap.get(id);
+        } else {
+            credit = creditMap.get("u");
+        }
+        return credit;
+    }
+
+    @RequestMapping(params = "methodToCall=searchForCourses")
+    public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+                                         HttpServletRequest request, HttpServletResponse response) {
+
 
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
@@ -224,11 +238,7 @@ public class CourseSearchController extends UifControllerBase {
                             course.setCode(cd);
 
                             Credit credit = null;
-                            if (creditMap.containsKey(id)) {
-                                credit = creditMap.get(id);
-                            } else {
-                                credit = creditMap.get("u");
-                            }
+                            credit = getCreditByID( id );
                             course.setCreditMin(credit.min);
                             course.setCreditMax(credit.max);
                             course.setCreditType(credit.type);
@@ -297,7 +307,7 @@ public class CourseSearchController extends UifControllerBase {
                             }
                         }
 
-                        Collections.sort(termsOffered, atpTypeComparator);
+                        Collections.sort(termsOffered, getAtpTypeComparator() );
                         course.setTermInfoList(termsOffered);
                     }
 
@@ -393,14 +403,14 @@ public class CourseSearchController extends UifControllerBase {
         }
         return this.atpService;
     }
-
+/*
     protected CourseService getCourseService() {
         if (this.courseService == null) {
            this. courseService = (CourseService) GlobalResourceLoader.getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
         }
         return this.courseService;
     }
-
+*/
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
