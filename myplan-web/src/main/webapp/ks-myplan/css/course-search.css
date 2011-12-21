@@ -71,6 +71,9 @@
 	border-top: solid 1px #a9a9a9;
 	padding: 5px;
 }
+#course_search_result_facets_div .facets a[id$='_toggle'] {
+    text-decoration: none;
+}
 #course_search_result_facets_div .facets .kr-section-subhead {
 	background: #e9e9e9;
 	font-weight: bold;
@@ -149,6 +152,9 @@ table.datatable {
     border: solid 1px #a9a9a9;
     border-bottom: none;
     width: 100%;
+}
+#course_search_results_panel_group {
+    display: none;
 }
 #course_search_results_list_items_div #course_search_results_datatable th,
 #course_search_results_list_items_div #course_search_results_datatable td {
