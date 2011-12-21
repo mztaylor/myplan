@@ -28,12 +28,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
 
     private final static String listItemSuffix = " quarter only";
 
-    /**
-     * Placeholders so that ehcache (via AOP pointcounts) don't blow up when trying to
-     * use these parameters as keys (computing the hashcode).
-     */
-    public final static String processKeyPlaceHolder = "placeHolder";
-    public final static ContextInfo contextInfoPlaceHolder = new ContextInfo();
+
     /**
      *  Build and returns the list of available terms.
      *
@@ -47,7 +42,8 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         //  Fetch the available terms from the Academic Calendar Service.
         List<TermInfo> termInfos = null;
         try {
-            termInfos = getAcademicCalendarService().getCurrentTerms(processKeyPlaceHolder, contextInfoPlaceHolder);
+            termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
+                CourseSearchConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
         }

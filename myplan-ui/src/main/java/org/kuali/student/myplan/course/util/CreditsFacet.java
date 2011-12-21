@@ -18,7 +18,7 @@ public class CreditsFacet extends AbstractFacet {
     }
 
     /**
-     * The credits facet list needs to be in numeric order rather than string order, so
+     * Overriding because the credits facet list needs to be in numeric order rather than string order.
      *
      * @return A list of FacetItems.
      */
@@ -32,7 +32,7 @@ public class CreditsFacet extends AbstractFacet {
             String display = credit.toString();
             String key = FACET_KEY_DELIMITER + display + FACET_KEY_DELIMITER;
             item.setKey( key );
-            item.setDisplayName(display);
+            item.setDisplayName( display );
             facetItems.add( item );
         }
 
