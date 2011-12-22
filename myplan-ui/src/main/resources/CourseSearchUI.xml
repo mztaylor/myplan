@@ -53,6 +53,17 @@
                         <bean parent="Footer"/>
                     </property>
                 </bean>
+                <bean parent="Page" p:id="course_search_no_results">
+                    <property name="title" value="Find Courses"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="course_search_no_results_page"/>
+                        </list>
+                    </property>
+                    <property name="footer">
+                        <bean parent="Footer"/>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="footer.render" value="false"/>
@@ -92,6 +103,21 @@
         </property>
     </bean>
 
+    <!-- Layout for Course Search No Results Found -->
+    <bean id="course_search_no_results_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <!--<property name="layoutManager">
+            <bean parent="BoxLayoutManager"/>
+        </property>-->
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value="fl-container-auto"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_no_results_panel"/>
+                <ref bean="mystuff_panel"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- Group for Course Search Functions only -->
     <bean id="course_search_panel" parent="Group">
         <property name="instructionalText"
@@ -116,6 +142,20 @@
             <list>
                 <ref bean="course_search_functions"/>
                 <ref bean="course_search_results_panel"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Course Search Functions and No Results Found -->
+    <bean id="course_search_no_results_panel" parent="Group">
+        <property name="instructionalText"
+                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value="fl-container-720 fl-force-left"/>
+        <property name="items">
+            <list>
+                <ref bean="course_search_functions"/>
+                <ref bean="course_search_no_results_found"/>
             </list>
         </property>
     </bean>
@@ -199,6 +239,17 @@
         </property>
     </bean>
 
+    <!-- Layout for No Results Found  -->
+    <bean id="course_search_no_results_found" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="styleClasses" value=""/>
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField" p:messageText="0 results found"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <property name="styleClasses" value=""/>
@@ -256,7 +307,7 @@
             <map merge="true">
 
                 <entry key="oLanguage"
-                       value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'No records found', 'sZeroRecords':'No records found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
+                       value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'0 results found', 'sZeroRecords':'0 results found', 'sProcessing':'Loading...', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
                 <entry key="sDom" value="ilrtSp"/>
@@ -267,12 +318,12 @@
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="aoColumns"
                        value="[
-                            {'bSortable':true, 'sSortDataType':'dom-txt', 'bSearchable':false},
-                            {'sWidth':'175px', 'bSortable':true, 'sSortDataType':'dom-txt', 'bSearchable':false},
-                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
-                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
-                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
-                            {'bSortable':false, 'bVisible':true, 'bSearchable':false},
+                            {'bSortable':true, 'bSearchable':false},
+                            {'bSortable':true, 'bSearchable':false, 'sWidth':'175px'},
+                            {'bSortable':false, 'bSearchable':false},
+                            {'bSortable':false, 'bSearchable':false},
+                            {'bSortable':false, 'bSearchable':false},
+                            {'bSortable':false, 'bSearchable':false},
                             {'sTitle':'facetQuarter', 'bVisible':false},
                             {'sTitle':'facetScheduled', 'bVisible':false},
                             {'sTitle':'facetGenEduReq', 'bVisible':false},
@@ -297,11 +348,11 @@
                 </bean>
 
                 <!--  TODO: This is a better way to create this field (once InputField is available).
-                <bean parent="InputField" p:prpertyName="code" p:label="Code">
+                <bean parent="InputField" p:propertyName="code" p:label="Code" p:styleClasses="courseCode">
                     <property name="fieldInquiry.dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo"/>
                     <property name="fieldInquiry.inquiryParameters">
                         <map>
-                            <entry key="someField" value="code"/>
+                            <entry key="courseCode" value="code"/>
                         </map>
                     </property>
                     </bean>
@@ -335,13 +386,6 @@
                         <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
                 </bean>
-                <!--<bean parent="InputField" p:propertyName="status" p:label=""
-                      p:readOnly="true">
-                    <property name="styleClasses" value="courseStatus"/>
-                    <property name="control">
-                        <bean parent="TextControl"/>
-                    </property>
-                </bean>-->
                 <bean parent="DataField" p:propertyName="termsFacetKey" p:label="Quarter Projected"
                       p:readOnly="true">
                 </bean>
