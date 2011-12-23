@@ -163,10 +163,10 @@ table.datatable {
 #course_search_results_list_items_div #course_search_results_datatable thead tr {
 	background: #d6d6d6;
 }
-#course_search_results_list_items_div #course_search_results_datatable tr th {
+#course_search_results_list_items_div #course_search_results_datatable thead tr th {
     border: none;
-}
-#course_search_results_list_items_div #course_search_results_datatable tr th label {
+    padding: 3px 7px;
+    line-height: 1.5em;
     font-weight: bold;
     color: #5f5e5f;
     font-size: 88%;
@@ -174,6 +174,7 @@ table.datatable {
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td {
 	line-height: 1.8em;
     height: 1.8em;
+    padding: 3px 7px;
 }
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseCode span.courseCode {
     font-weight: bold;
@@ -234,6 +235,7 @@ table.datatable {
     border-top: none;
 }
 #course_search_results_list_items_div .dataTables_paginate .first,
+#course_search_results_list_items_div .dataTables_paginate .last,
 #course_search_results_list_items_div .dataTables_paginate .paginate_button,
 #course_search_results_list_items_div .dataTables_paginate .paginate_active,
 #course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
@@ -243,6 +245,16 @@ table.datatable {
 #course_search_results_list_items_div .dataTables_paginate .first,
 #course_search_results_list_items_div .dataTables_paginate .last {
 	display:none;
+}
+#course_search_results_list_items_div .dataTables_paginate .paginate_active {
+    font-weight:bold;
+    background: #666;
+    color:#fff;
+}
+#course_search_results_list_items_div .dataTables_paginate .first:hover,
+#course_search_results_list_items_div .dataTables_paginate .last:hover,
+#course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
+	text-decoration: underline;
 }
 
 /* Styles for course details page */
