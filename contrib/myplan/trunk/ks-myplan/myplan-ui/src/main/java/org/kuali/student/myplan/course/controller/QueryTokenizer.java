@@ -6,8 +6,8 @@ import java.util.regex.*;
 public class QueryTokenizer
 {
 
-    Pattern LEVEL = Pattern.compile( "[0-9][Xx][Xx]" );
-    Pattern NUMBER = Pattern.compile( "[0-9]+" );
+    public static Pattern LEVEL = Pattern.compile( "[0-9][Xx][Xx]" );
+    public static Pattern NUMBER = Pattern.compile( "[0-9]+" );
 
 	enum Rule
 	{
@@ -34,7 +34,7 @@ public class QueryTokenizer
 		}
 	}
 	
-	public List<Token> tokenize( String source )
+	public static List<Token> tokenize( String source )
 	{
 		ArrayList<Token> tokens = new ArrayList<Token>();
 		int pos = 0;
@@ -66,7 +66,17 @@ public class QueryTokenizer
 		return tokens;
 	}
 
-    public List<String> extractCourseLevels(String source)
+    public static List<String> toStringList( List<Token> tokens )
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        for( Token token : tokens )
+        {
+            list.add( token.value );
+        }
+        return list;
+    }
+
+    public static List<String> extractCourseLevels(String source)
     {
         ArrayList<String> tokens = new ArrayList<String>();
         int pos = 0;
@@ -93,7 +103,7 @@ public class QueryTokenizer
         return tokens;
     }
 
-    public List<String> extractCourseCodes(String source)
+    public static List<String> extractCourseCodes(String source)
     {
         ArrayList<String> tokens = new ArrayList<String>();
         int pos = 0;
@@ -121,89 +131,4 @@ public class QueryTokenizer
 
         return tokens;
     }
-
-
-	public static void main( String[] args ) 
-		throws Exception
-	{
-
-
-         /*
-        {
-        LinkedHashSet<String> set = new LinkedHashSet<String>();
-        set.add( "apple" );
-        set.add( "banana" );
-        set.add( "cherry" );
-        set.remove( "apple" );
-        set.add( "apple" );
-
-
-        for( String item : set )
-        {
-            System.out.println( item );
-        }
-        }
-        System.out.println( "**" );
-        {
-        LinkedHashMap<String,String> set = new LinkedHashMap<String,String>();
-         set.put( "apple", "apple" );
-         set.put( "banana", "banana" );
-         set.put( "cherry", "cherry" );
-         set.put( "apple", "apple" );
-
-         for( String item : set.keySet() )
-         {
-             System.out.println( item );
-         }
-        }
-        */
-//		String str = "abc123 xyzzy XYZZY 4xx 4XX \"quoted text\" 0 00 000 0000";
-        /*
-        {
-            String str = "a pol123";
-            QueryTokenizer toho = new QueryTokenizer();
-            List<Token> result = toho.tokenize( str );
-            for( Token t : result )
-            {
-                System.out.println(t.value);
-            }
-        }
-        */
-
-        /*
-        {
-            String str = "apple banana 3xx 4xx";
-            QueryTokenizer toho = new QueryTokenizer();
-            for( String level : toho.extractCourseLevels(str))
-            {
-                str = str.replace( level, "" );
-                System.out.println( level + ", " + str );
-            }
-        }
-
-        {
-            String str = "econ253";
-            QueryTokenizer toho = new QueryTokenizer();
-            for( String level : toho.extractCourseCodes(str))
-            {
-                str = str.replace( level, "" );
-                System.out.println( level + ", " + str );
-            }
-        }
-        */
-
-        System.out.println( "gah" );
-        {
-            String str = "A A xyzzy XYZZY edc&i \"quoted txt\"";
-            QueryTokenizer toho = new QueryTokenizer();
-            List<Token> result = toho.tokenize( str );
-            for( Token t : result )
-            {
-                System.out.println(t.rule + " " + t.value);
-            }
-
-
-        }
-	}
-
 }
