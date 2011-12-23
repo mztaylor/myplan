@@ -1,99 +1,56 @@
 package org.kuali.student.myplan.course.controller;
 
-import javax.transaction.NotSupportedException;
 import java.util.*;
 
-/**
- * User: jasonosgood
- * Date: 12/2/11
- * Time: 11:13 AM
- */
-public class TokenPairs implements Iterable<String>, Iterator<String>
+public class TokenPairs
 {
-    /*
-    public class Pair
+    public static List<String> toPairs(List<String> list)
     {
-        publc Pair( String original )
+        ArrayList<String> pairs = new ArrayList<String>();
+        int a = 0;
+        int b = 0;
+        int size = list.size();
+        while( a < size )
         {
+            String result = null;
+            if( a == b )
+            {
+                result = list.get( a );
+                b++;
+            }
+            else if( a != b )
+            {
+                result = list.get( a ) + " " + list.get( b );
+                a++;
+            }
 
-        }
-    }
-    */
-    List<QueryTokenizer.Token> _list = null;
+            if( b == size )
+            {
+                a = b;
+            }
 
-    public TokenPairs( List<QueryTokenizer.Token> list )
-    {
-        _list = list;
-    }
-
-    int a = 0;
-    int b = 0;
-
-    @Override
-    public boolean hasNext() {
-        return a < _list.size();
-    }
-
-    @Override
-    public String next() {
-        String result = null;
-        if( a == b )
-        {
-            result = _list.get( a ).value;
-            b++;
-        }
-        else if( a != b )
-        {
-            result = _list.get( a ).value + " " + _list.get( b ).value;
-            a++;
+            pairs.add( result );
         }
 
-        if( b == _list.size() )
-        {
-            a = b;
-        }
-
-        return result;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public Iterator<String> iterator() {
-        return this;
+        return pairs;
     }
 
     public static class LongestFirst implements Comparator<String>
     {
+       // First sort by length, then by String's own comparison (ie alpha)
        public int compare( String left, String right )
        {
-         return right.length() - left.length();
-//           return left.length() - right.length();
+          int diff = right.length() - left.length();
+          if( diff == 0 )
+          {
+              diff = left.compareTo( right );
+          }
+          return diff;
        }
     }
 
-    public List<String> sortedLongestFirst()
+    public static void sortedLongestFirst( List<String> list )
     {
-        ArrayList<String> sorted = new ArrayList<String>();
-        for( String pair : this )
-        {
-            sorted.add( pair );
-        }
-        Collections.sort(sorted, new LongestFirst());
-        return sorted;
-    }
-
-    public static void main( String[] args )
-    {
-        List<String> sorted = Arrays.asList( new String[] { "A", "BBBB", "AA", "BB", "BBB" } );
-        Collections.sort( sorted, new LongestFirst()  );
-        for( String ugh : sorted )
-        {
-            System.out.println( ugh );
-        }
+        Collections.sort(list, new LongestFirst());
     }
 }

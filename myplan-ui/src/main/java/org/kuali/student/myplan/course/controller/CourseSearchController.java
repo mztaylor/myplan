@@ -59,13 +59,9 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient AtpService atpService;
 
-//    private transient CourseService courseService;
-
     private transient CourseOfferingService courseOfferingService;
 
     private transient AcademicCalendarService academicCalendarService;
-
-//    private transient Map<String, String> atpCache;
 
     private TermInfoComparator atpTypeComparator;
 
@@ -111,15 +107,6 @@ public class CourseSearchController extends UifControllerBase {
     public HashMap<String, Credit> getCreditMap()
     {
         HashMap<String, Credit> creditMap = new HashMap<String, Credit>();
-        {
-            // Don't think this will ever be used
-            Credit credit = new Credit();
-            credit.id = "u";
-            credit.min = 0.0f;
-            credit.max = 0.0f;
-            credit.display = "Unknown";
-            credit.type = CourseSearchItem.CreditType.unknown;
-        }
 
         try {
             SearchRequest searchRequest = new SearchRequest("myplan.course.info.credits.details");
@@ -404,14 +391,7 @@ public class CourseSearchController extends UifControllerBase {
         }
         return this.atpService;
     }
-/*
-    protected CourseService getCourseService() {
-        if (this.courseService == null) {
-           this. courseService = (CourseService) GlobalResourceLoader.getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
-        }
-        return this.courseService;
-    }
-*/
+
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
@@ -428,7 +408,6 @@ public class CourseSearchController extends UifControllerBase {
         }
         return this.academicCalendarService;
     }
-
 
     public TermInfoComparator getAtpTypeComparator() {
         return atpTypeComparator;

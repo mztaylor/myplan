@@ -12,11 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * User: jasonosgood
- * Date: 12/5/11
- * Time: 10:45 AM
- */
 public class CourseSearchStrategy
 {
     private transient LuService luService;
@@ -68,20 +63,19 @@ public class CourseSearchStrategy
 
 
         String query = courseSearchForm.getSearchQuery().toUpperCase();
-        QueryTokenizer tokenizer = new QueryTokenizer();
 
-        List<String> levels = tokenizer.extractCourseLevels(query);
+        List<String> levels = QueryTokenizer.extractCourseLevels(query);
         for( String level : levels )
         {
             query = query.replace( level, "" );
         }
-        List<String> codes = tokenizer.extractCourseCodes(query);
+        List<String> codes = QueryTokenizer.extractCourseCodes(query);
         for( String code : codes )
         {
             query = query.replace( code, "" );
         }
 
-        // Remove spaces, make upper case
+        // Remove spaces
         query = query.trim().replaceAll( "\\s+", " " );
 
         ArrayList<String> divisions = new ArrayList<String>();
@@ -90,20 +84,23 @@ public class CourseSearchStrategy
         while( match )
         {
             match = false;
-            List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
-            List<String> terms = new TokenPairs( tokens ).sortedLongestFirst();
+            // Retokenize after each division found is removed
+            List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize( query );
+            List<String> list = QueryTokenizer.toStringList(tokens);
+            List<String> pairs = TokenPairs.toPairs( list );
+            TokenPairs.sortedLongestFirst( pairs );
 
-            Iterator<String> i = terms.iterator();
+            Iterator<String> i = pairs.iterator();
             while( match == false && i.hasNext() )
             {
-                String term = i.next();
+                String pair = i.next();
 
-                String key = term.replace( " ", "" );
+                String key = pair.replace( " ", "" );
                 if( divisionMap.containsKey( key ))
                 {
                     String division = divisionMap.get( key );
                     divisions.add( division );
-                    query = query.replace( term, "" );
+                    query = query.replace( pair, "" );
                     match = true;
                 }
             }
@@ -111,7 +108,7 @@ public class CourseSearchStrategy
 
         // Remove spaces
         query = query.trim().replaceAll( "\\s+", " " );
-        List<QueryTokenizer.Token> tokens = tokenizer.tokenize( query );
+        List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize( query );
 
         String campus1 = "-1";
         String campus2 = "-1";
