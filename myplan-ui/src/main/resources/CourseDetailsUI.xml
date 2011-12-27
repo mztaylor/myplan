@@ -272,16 +272,13 @@
                 <bean parent="DataField" p:propertyName="termsOffered" p:label="Projected Quarters"/>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
                 <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus">
-                     <property name="formatter" ref="course_requirements_formatter"/>
+                     <property name="formatter" ref="unordered_list_formatter"/>
                 </bean>
             </list>
         </property>
     </bean>
 
-
     <bean id="unordered_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
         <property name="emptyListMessage" value="None"/>
     </bean>
-
-
 </beans>
