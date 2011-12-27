@@ -11,18 +11,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
 
 /**
-* Unit Test Class for Course Search Controller
-* User: kmuthu
-* Date: 12/20/11
-* Time: 11:54 AM
-* To change this template use File | Settings | File Templates.
-*/
+ * Unit Test Class for Course Search Controller
+ * User: kmuthu
+ * Date: 12/20/11
+ * Time: 11:54 AM
+ * To change this template use File | Settings | File Templates.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})
-public class TestCourseSearchController {
+public class CourseSearchControllerTest {
 
-   @Autowired
-   private CourseSearchController searchController;
+    @Autowired
+    private CourseSearchController searchController;
+
+    public CourseSearchController getSearchController() {
+        return searchController;
+    }
+
+    public void setSearchController(CourseSearchController searchController) {
+        this.searchController = searchController;
+    }
 
     @Test
     public void testSearchLevel() {
@@ -33,19 +41,9 @@ public class TestCourseSearchController {
         form.setCampusBothell(true);
         form.setCampusTacoma(true);
 
-        searchController.searchForCourses(form, null, null, null );
+        searchController.searchForCourses(form, null, null, null);
 
-        assertEquals (1, form.getCourseSearchResults().size());
-        assertEquals ("CHEM   453", form.getCourseSearchResults().get(0).getCode());
-
-
-    }
-
-    public CourseSearchController getSearchController() {
-        return searchController;
-    }
-
-    public void setSearchController(CourseSearchController searchController) {
-        this.searchController = searchController;
+        assertEquals(1, form.getCourseSearchResults().size());
+        assertEquals("CHEM   453", form.getCourseSearchResults().get(0).getCode());
     }
 }

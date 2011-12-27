@@ -49,8 +49,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     //  TODO: Replace this with ehcache.
     private static Map<String, Set<String>> courseOfferingCache;
 
-
-
     public UwCourseOfferingServiceImpl() {
         courseOfferingCache = new ConcurrentHashMap<String, Set<String>>(1000);
 
@@ -59,26 +57,20 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         patternYear = Pattern.compile(REGEX_YEAR);
 
         this.reader = new SAXReader();
-
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
 
-
     /**
-     * This impelemnation uses course code for courseId
+     * This implementation uses course code for courseId
      *
      * @param courseId
      * @param termKey
      * @param context
      * @return
-     * @throws DoesNotExistException
-     * @throws InvalidParameterException
-     * @throws MissingParameterException
-     * @throws OperationFailedException
-     * @throws PermissionDeniedException
+     *
      */
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsForCourseAndTerm(@WebParam(name = "courseId") String courseId,
@@ -108,7 +100,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
 
         return courseOfferingInfos;
-
     }
 
     /**
