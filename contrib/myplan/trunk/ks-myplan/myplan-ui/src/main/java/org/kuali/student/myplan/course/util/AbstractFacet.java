@@ -27,7 +27,7 @@ public abstract class AbstractFacet {
         //  Put the list in a predictable order.
         Collections.sort(facetItems);
 
-        if(showUnknownKey && facetItems.size() > 0) {
+        if(showUnknownKey || facetItems.size() > 0) {
             FacetItem unknownFacet = new FacetItem();
             unknownFacet.setKey(FACET_KEY_DELIMITER + unknownFacetKey + FACET_KEY_DELIMITER);
             unknownFacet.setDisplayName(unknownFacetDisplayName);

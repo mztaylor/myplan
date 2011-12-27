@@ -14,15 +14,8 @@ import java.util.List;
 
 public class CourseSearchStrategy
 {
-    private transient LuService luService;
 
-    //Note: here I am using r1 LuService implementation!!!
-    protected LuService getLuService() {
-        if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
-        }
-        return this.luService;
-    }
+    private transient LuService luService;
 
     public HashMap<String,String> fetchCourseDivisions()
     {
@@ -191,5 +184,18 @@ public class CourseSearchStrategy
         }
 
         return requests;
+    }
+
+
+    //Note: here I am using r1 LuService implementation!!!
+    protected LuService getLuService() {
+        if (luService == null) {
+            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
+
+    public void setLuService(LuService luService) {
+        this.luService = luService;
     }
 }

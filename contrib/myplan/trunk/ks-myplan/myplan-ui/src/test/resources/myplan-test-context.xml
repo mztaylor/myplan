@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
+          http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+          http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+
+
+    <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:META-INF/myplan-test-config.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize" />
+        <property name="arguments">
+            <list><ref bean="config"/></list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{config.getProperties()}" />
+    </bean>
+
+
+    <import resource="classpath:ks-services-test-context.xml"/>
+    <!--<import resource="classpath:ksb/ks-lu-context.xml"/>-->
+
+
+    <bean id="searchController" class="org.kuali.student.myplan.course.controller.CourseSearchController">
+        <property name="luService" ref="luServiceImpl"/>
+        <property name="atpService" ref="atpServiceImpl"/>
+        <property name="courseOfferingService" ref="coService"/>
+        <property name="academicCalendarService" ref="acalService"/>
+        <property name="atpTypeComparator" ref="atpTypeComparator"/>
+    </bean>
+
+
+    <bean id="studentServiceClient" class="${uw.studentservice.impl}">
+        <constructor-arg>
+            <value>${uw.studentservice.url}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>${uw.keystore.filename}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>${uw.keystore.password}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>${uw.truststore.filename}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>${uw.truststore.password}</value>
+        </constructor-arg>
+    </bean>
+
+    <!-- Override acalService bean with UW implementation -->
+    <bean id="acalService" class="edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl">
+        <property name="studentServiceClient" ref="studentServiceClient"/>
+    </bean>
+
+    <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
+    <bean id="coService" class="edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl">
+        <property name="studentServiceClient" ref="studentServiceClient"/>
+    </bean>
+
+    <bean id="atpTypeComparator" class="edu.uw.kuali.student.myplan.util.TermInfoComparator"/>
+
+    <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
+        <property name="luService" ref="luServiceImpl"/>
+    </bean>
+
+</beans>

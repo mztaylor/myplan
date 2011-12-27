@@ -18,18 +18,22 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {
     private static final long serialVersionUID = 4898118410378641665L;
 
+    /** The key of the term drop-down any item. */
+    public static final String SEARCH_TERM_ANY_ITEM = "any";
+
     /** Form fields */
-    private Boolean campusBothell;
-    private Boolean campusSeattle;
-    private Boolean campusTacoma;
+    private boolean campusBothell;
+    private boolean campusSeattle;
+    private boolean campusTacoma;
     private String searchQuery;
-    private String searchTerm;
+    private String searchTerm = SEARCH_TERM_ANY_ITEM;
 
     /** Search results list. */
     private List<CourseSearchItem> courseSearchResults;
@@ -43,9 +47,6 @@ public class CourseSearchForm extends UifFormBase {
 
     private List<FacetItem> genEduReqFacetItems;
     private List<FacetItem> creditsFacetItems;
-
-    /** The key of the term drop-down any item. */
-    public static final String SEARCH_TERM_ANY_ITEM = "any";
 
     public CourseSearchForm() {
         super();
