@@ -58,10 +58,18 @@ public class CourseDetails {
     }
 
     public String getCourseDescription() {
+        // TODO quickfix Put in just for usability testing, remove asap
         if (courseDescription == null) {
             courseDescription = "";
         }
-        return courseDescription;
+        String quickfix = courseDescription;
+        int n = quickfix.lastIndexOf( "Prerequisite:" );
+        if( n > -1  )
+        {
+            quickfix = quickfix.substring( 0, n );
+        }
+        return quickfix;
+//        return courseDescription;
     }
 
     public void setCourseDescription(String courseDescription) {
