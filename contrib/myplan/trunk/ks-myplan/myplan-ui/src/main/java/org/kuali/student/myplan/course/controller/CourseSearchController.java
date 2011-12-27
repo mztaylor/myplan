@@ -173,6 +173,8 @@ public class CourseSearchController extends UifControllerBase {
         TermsFacet termsFacet = new TermsFacet();
         ScheduledTermsFacet scheduledTermsFacet = new ScheduledTermsFacet();
 
+        ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
+
         try {
             List<SearchRequest> requests = searcher.queryToRequests(form);
 
@@ -197,8 +199,6 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
 
-
-            ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
 
             ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values());
             Collections.sort(hits, new HitComparator());
@@ -352,6 +352,10 @@ public class CourseSearchController extends UifControllerBase {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+        if(0 == searchResults.size() ) {
+            return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
         }
 
         return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
