@@ -15,12 +15,8 @@ import java.util.Map;
  */
 public class CurriculumFacet extends AbstractFacet {
 
-    private transient Map<String, String> subjectAreaCache;
-    private transient OrganizationService organizationService;
-
     public CurriculumFacet() {
         super();
-        subjectAreaCache = new HashMap<String, String>();
     }
 
     /**
@@ -38,7 +34,7 @@ public class CurriculumFacet extends AbstractFacet {
         } else {
             // TODO: Use the Org Service to lookup curriculum name based on key.
             // For now just use the serviceArea code as the displayName.
-            displayName = getOrganizationName(key);
+            displayName = (key);
         }
 
         key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
@@ -54,43 +50,5 @@ public class CurriculumFacet extends AbstractFacet {
 
         //  Code the item with the facet key.
         course.setCurriculumFacetKey(key);
-    }
-
-    /**
-     * Finds the organization name based on the key.
-     * @return
-     */
-    private String getOrganizationName(String key) {
-        //  Prepare to simply return the key if the lookup fails.
-        String organizationName = key;
-
-        //  First look in the cache for the name.
-        if (subjectAreaCache.containsKey(key)) {
-            organizationName = subjectAreaCache.get(key);
-        } else {
-            //  TODO: FIXME: This doesn't current do the right thing. Waiting for Kamal and Virginia to work through org mapping.
-            //  Don't do the lookup because it outputs stack traces.
-            //try {
-            //    OrgInfo oi = getOrganizationService().getOrganization(key);
-           //     organizationName = oi.getShortName();
-            //} catch (Exception e) {
-            //    //  TODO: Determine the Right thing to do.
-                //e.printStackTrace();
-            //}
-            //  Put this item in the cache.
-            subjectAreaCache.put(key, organizationName);
-        }
-        return organizationName;
-    }
-
-    /**
-     * Provides an instance of the OrganizationService client.
-     */
-    protected OrganizationService getOrganizationService() {
-        if (organizationService == null) {
-            organizationService = (OrganizationService) GlobalResourceLoader
-                .getService(new QName("http://student.kuali.org/wsdl/organization", "OrganizationService"));
-        }
-        return organizationService;
     }
 }

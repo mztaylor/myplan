@@ -263,21 +263,23 @@
         <property name="items">
             <list>
                 <!--<bean parent="InputField" p:propertyName="code"/>-->
-                <bean parent="DataField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements" >
-                    <property name="formatter" ref="course_requirements_formatter"/>
+                <bean parent="DataField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements" />
+                <bean parent="DataField" p:propertyName="requisites" p:label="Prerequisite">
+                    <property name="formatter" ref="unordered_list_formatter"/>
                 </bean>
-                <bean parent="DataField" p:propertyName="requisites" p:label="Prerequisite"/>
                 <bean parent="DataField" p:propertyName="credit" p:label="Credits"/>
                 <bean parent="DataField" p:propertyName="scheduledTerms" p:label="Scheduled Quarters"/>
                 <bean parent="DataField" p:propertyName="termsOffered" p:label="Projected Quarters"/>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
-                <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus"/>
+                <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus">
+                     <property name="formatter" ref="course_requirements_formatter"/>
+                </bean>
             </list>
         </property>
     </bean>
 
 
-    <bean id="course_requirements_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
+    <bean id="unordered_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
         <property name="emptyListMessage" value="None"/>
     </bean>
 

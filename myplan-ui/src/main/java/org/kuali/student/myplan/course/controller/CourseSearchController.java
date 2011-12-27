@@ -63,7 +63,13 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient AcademicCalendarService academicCalendarService;
 
+    private transient Map<String, String> atpCache;
+
+    @Autowired
     private TermInfoComparator atpTypeComparator;
+
+    @Autowired
+    private CourseSearchStrategy searcher = new CourseSearchStrategy();
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
@@ -167,7 +173,6 @@ public class CourseSearchController extends UifControllerBase {
         TermsFacet termsFacet = new TermsFacet();
         ScheduledTermsFacet scheduledTermsFacet = new ScheduledTermsFacet();
 
-        CourseSearchStrategy searcher = new CourseSearchStrategy();
         try {
             List<SearchRequest> requests = searcher.queryToRequests(form);
 
@@ -409,12 +414,37 @@ public class CourseSearchController extends UifControllerBase {
         return this.academicCalendarService;
     }
 
+    public void setLuService(LuService luService) {
+        this.luService = luService;
+    }
+
+    public void setAtpService(AtpService atpService) {
+        this.atpService = atpService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
+
+    public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        this.academicCalendarService = academicCalendarService;
+    }
+
     public TermInfoComparator getAtpTypeComparator() {
         return atpTypeComparator;
     }
 
-    @Autowired
     public void setAtpTypeComparator(TermInfoComparator atpTypeComparator) {
         this.atpTypeComparator = atpTypeComparator;
     }
+
+    public CourseSearchStrategy getSearcher() {
+        return searcher;
+    }
+
+    public void setSearcher(CourseSearchStrategy searcher) {
+        this.searcher = searcher;
+    }
 }
+
+

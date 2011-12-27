@@ -11,6 +11,8 @@ public class ScheduledTermsFacet extends AbstractFacet {
 
     public ScheduledTermsFacet() {
         super();
+        super.setUnknownFacetKey("Not Scheduled");
+        super.setUnknownFacetDisplayName("Not Scheduled");
     }
 
     /**

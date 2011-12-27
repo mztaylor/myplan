@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
+          http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+          http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <bean id="jotm" class="org.springframework.transaction.jta.JotmFactoryBean">
+        <property name="defaultTimeout" value="${transaction.timeout}"/>
+    </bean>
+
+    <bean id="userTransaction" class="org.kuali.rice.core.framework.persistence.jta.UserTransactionFactoryBean">
+        <property name="defaultUserTransaction">
+            <ref local="jotm"/>
+        </property>
+    </bean>
+    <bean id="jtaTransactionManager"
+          class="org.kuali.rice.core.framework.persistence.jta.TransactionManagerFactoryBean">
+        <property name="defaultTransactionManager">
+            <ref local="jotm"/>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="jotm">
+        <property name="userTransaction">
+            <ref local="userTransaction"/>
+        </property>
+        <property name="transactionManager">
+            <ref local="jtaTransactionManager"/>
+        </property>
+        <property name="defaultTimeout" value="${transaction.timeout}"/>
+    </bean>
+
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.kuali.rice.core.framework.persistence.jdbc.datasource.XAPoolDataSource">
+        <property name="transactionManager">
+            <ref local="jtaTransactionManager"/>
+        </property>
+        <property name="driverClassName" value="${datasource.driver.name}"/>
+        <property name="url" value="${datasource.url}"/>
+        <property name="maxSize" value="${datasource.pool.maxSize}"/>
+        <property name="minSize" value="${datasource.pool.minSize}"/>
+        <property name="maxWait" value="${datasource.pool.maxWait}"/>
+        <property name="validationQuery" value="${datasource.pool.validationQuery}"/>
+        <property name="username" value="${datasource.username}"/>
+        <property name="password" value="${datasource.password}"/>
+    </bean>
+
+    <bean id="nonTransactionalDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${datasource.driver.name}"/>
+        <property name="url" value="${datasource.url}"/>
+        <property name="maxActive" value="${datasource.pool.maxSize}"/>
+        <property name="minIdle" value="${datasource.pool.minSize}"/>
+        <property name="initialSize" value="${datasource.pool.minSize}"/>
+        <property name="validationQuery" value="${datasource.pool.validationQuery}"/>
+        <property name="username" value="${datasource.username}"/>
+        <property name="password" value="${datasource.password}"/>
+        <property name="accessToUnderlyingConnectionAllowed" value="true"/>
+    </bean>
+
+
+    <bean id="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform"
+                  value="${jpa.databasePlatform}"/>
+        <property name="showSql" value="${jpa.showSql}"/>
+        <property name="generateDdl" value="${jpa.generateDdl}"/>
+    </bean>
+
+    <!-- Default JPA EntityManagerFactory -->
+    <bean id="defaultEntityManagerFactory" abstract="true"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" autowire-candidate="false"
+          autowire="byType">
+        <property name="jpaVendorAdapter" ref="vendorAdapter"/>
+        <property name="dataSource" ref="dataSource"/>
+             <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.transaction.manager_lookup_class" value="${ks.core.jpa.JpaProperties.hibernate.transaction.manager_lookup_class}"/>
+                <entry key="hibernate.hbm2ddl.auto" value="${ks.core.jpa.JpaProperties.hibernate.hbm2ddl.auto}"/>
+                <entry key="hibernate.connection.release_mode" value="${ks.core.jpa.JpaProperties.hibernate.connection.release_mode}"/>
+               	<!--<entry key="hibernate.connection.autocommit" value="${ks.core.jpa.JpaProperties.hibernate.connection.autocommit}"/>-->
+            </map>
+        </property>
+        <!--<property name="persistenceUnitPostProcessors" ref="postProcessorList" />-->
+    </bean>
+
+    <!-- Atp Service Config -->
+    <bean id="atpEntityManagerFactory" parent="defaultEntityManagerFactory">
+        <property name="persistenceUnitName" value="Atp"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/atp-persistence.xml"/>
+    </bean>
+
+    <bean id="atpEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="atpEntityManagerFactory"/>
+    </bean>
+
+    <bean id="atpDao"
+          class="org.kuali.student.core.atp.dao.impl.AtpDaoImpl">
+        <property name="em" ref="atpEntityManager"/>
+    </bean>
+
+    <bean id="atpServiceImpl"
+          class="org.kuali.student.core.atp.service.impl.AtpServiceImpl">
+        <property name="atpDao" ref="atpDao"/>
+        <!-- Currently Search or create are not used by MyPlan in ATP. -->
+        <!--<property name="searchManager" ref="atpSearchManager"/>-->
+        <!--<property name="dictionaryServiceDelegate" ref="coreDictionaryService" />-->
+        <!--<property name="validatorFactory" ref="coreValidatorFactory"/>-->
+    </bean>
+
+
+    <!-- Lu Service Config -->
+    <bean id="luEntityManagerFactory" parent="defaultEntityManagerFactory">
+        <property name="persistenceUnitName" value="Lu"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/lu-persistence.xml"/>
+    </bean>
+
+    <bean id="luEntityManager"
+          class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="luEntityManagerFactory"/>
+    </bean>
+
+    <bean id="luDao" class="org.kuali.student.lum.lu.dao.impl.LuDaoImpl">
+        <property name="em" ref="luEntityManager"/>
+    </bean>
+
+    <bean id="luSearchManager"
+          class="org.kuali.student.common.search.service.impl.SearchManagerImpl">
+        <constructor-arg index="0"
+                         value="classpath:myplan-search-config.xml"/>
+        <!--<property name="crossSearchManager" ref="lumCrossServiceSearchManager"/>-->
+    </bean>
+
+    <bean id="luServiceImpl" class="org.kuali.student.lum.lu.service.impl.LuServiceImpl">
+        <property name="luDao" ref="luDao"/>
+        <property name="searchManager" ref="luSearchManager"/>
+
+        <!--Not used by MyPlan-->
+        <!--<property name="searchDispatcher" ref="lumSearchDispatcher"/>        -->
+        <!--<property name="dictionaryServiceDelegate" ref="lumDictionaryService"/>-->
+        <!--<property name="validatorFactory" ref="lumValidatorFactory"/>-->
+
+    </bean>
+
+
+    <!-- Course Service Config -->
+    <bean id="courseAssembler"
+          class="org.kuali.student.lum.course.service.assembler.CourseAssembler">
+        <property name="luService" ref="luServiceImpl"/>
+        <!--<property name="loAssembler" ref="loAssembler"/>-->
+        <!--<property name="loService" ref="loClient"/>-->
+        <!--<property name="lrcService" ref="lrcClient"/>-->
+        <!--<property name="cluAssemblerUtils" ref="cluAssemblerUtils"/>-->
+        <!--<property name="formatAssembler" ref="formatAssembler"/>-->
+        <!--<property name="courseJointAssembler" ref="courseJointAssembler"/>-->
+
+    </bean>
+
+
+    <bean id="courseServiceImpl"
+          class="org.kuali.student.lum.course.service.impl.CourseServiceImpl">
+        <property name="luService" ref="luServiceImpl"/>
+        <property name="courseAssembler" ref="courseAssembler"/>
+        <!--<property name="courseServiceMethodInvoker" ref="courseServiceMethodInvoker"/>-->
+        <!--<property name="dictionaryServiceDelegate" ref="lumDictionaryService"/>-->
+        <!--<property name="validatorFactory" ref="lumValidatorFactory"/>-->
+        <!--<property name="statementService" ref="statementServiceClient"/>-->
+    </bean>
+
+
+    <bean id="courseServiceMethodInvoker"
+          class="org.kuali.student.lum.course.service.impl.CourseServiceMethodInvoker">
+        <property name="luService" ref="luServiceImpl"/>
+        <!--<property name="loService" ref="loClient"/>-->
+        <!--<property name="lrcService" ref="lrcClient"/>-->
+    </bean>
+
+</beans>
