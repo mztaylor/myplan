@@ -46,7 +46,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AtpService atpService;
 
-    //TODO: These should be changed to a ehCache spring bean
+    //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
 

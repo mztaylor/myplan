@@ -19,7 +19,7 @@ public class TermInfoComparator implements Comparator<AtpTypeInfo> {
     public int compare(AtpTypeInfo o1, AtpTypeInfo o2) {
         String atpKey1 = o1.getId().replaceAll("\\.","_").toUpperCase();
         String atpKey2 = o2.getId().replaceAll("\\.","_").toUpperCase();
-        return TermOrder.valueOf(atpKey1).compareTo( TermOrder.valueOf(atpKey2));
+        return TermOrder.valueOf(atpKey1).compareTo(TermOrder.valueOf(atpKey2));
     }
 
     @Override

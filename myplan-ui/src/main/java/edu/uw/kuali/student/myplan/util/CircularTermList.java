@@ -1,4 +1,4 @@
-package edu.uw.kuali.student.lib.client.studentservice;
+package edu.uw.kuali.student.myplan.util;
 
 public class CircularTermList {
     private short index = 0;

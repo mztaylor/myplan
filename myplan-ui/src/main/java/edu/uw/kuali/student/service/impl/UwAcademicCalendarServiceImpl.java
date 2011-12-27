@@ -1,9 +1,8 @@
 package edu.uw.kuali.student.service.impl;
 
-import edu.uw.kuali.student.lib.client.studentservice.CircularTermList;
+import edu.uw.kuali.student.myplan.util.CircularTermList;
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.joda.time.DateTime;
