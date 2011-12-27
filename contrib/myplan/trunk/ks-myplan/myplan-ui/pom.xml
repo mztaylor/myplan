@@ -118,6 +118,30 @@
         </dependency>
 
 
+        <!-- Unit Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+
+
+
+
         <!-- TODO: Fix this -->
         <dependency>
             <groupId>jaxen</groupId>
