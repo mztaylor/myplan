@@ -331,14 +331,14 @@
                             {'sTitle':'facetLevel', 'bVisible':false},
                             {'sTitle':'facetCurriculum', 'bVisible':false}
                         ]"/>
-                <!--<entry key="fnDrawCallback"
+                <entry key="fnDrawCallback"
                        value="function() {
                             if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
-                                $('.dataTables_paginate').show();
+                                jq('.dataTables_paginate span').not('.first, .last').show();
                             } else {
-                                $('.dataTables_paginate').hide();
+                                jq('.dataTables_paginate span').hide();
                             }
-                       }"/>-->
+                       }"/>
             </map>
         </property>
         <property name="items">
