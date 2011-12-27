@@ -14,6 +14,8 @@ public class CourseSearchConstants {
 
     public static final String COURSE_SEARCH_RESULT_PAGE = "course_search_result";
 
+    public static final String COURSE_SEARCH_EMPTY_RESULT_PAGE = "course_search_no_results";
+
     public static final String GEN_EDU_REQUIREMENTS_PREFIX = "kuali.uw.lu.genedreq.";
 
     // Service Constants

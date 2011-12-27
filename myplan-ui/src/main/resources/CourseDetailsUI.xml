@@ -268,7 +268,9 @@
                     <property name="formatter" ref="unordered_list_formatter"/>
                 </bean>
                 <bean parent="DataField" p:propertyName="credit" p:label="Credits"/>
-                <bean parent="DataField" p:propertyName="scheduledTerms" p:label="Scheduled Quarters"/>
+                <bean parent="DataField" p:propertyName="scheduledTerms" p:label="Scheduled Quarters">
+                    <property name="formatter" ref="unordered_list_formatter"/>
+                </bean>
                 <bean parent="DataField" p:propertyName="termsOffered" p:label="Projected Quarters"/>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
                 <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus">
