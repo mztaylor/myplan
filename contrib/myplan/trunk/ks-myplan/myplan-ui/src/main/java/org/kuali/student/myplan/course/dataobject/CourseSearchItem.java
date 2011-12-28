@@ -5,6 +5,7 @@ import org.dom4j.Element;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
+import org.kuali.student.myplan.course.util.FacetKeyFormatter;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -40,18 +41,17 @@ public class CourseSearchItem {
 
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
     private String status;
-    /* Facet keys used for filtering in the view. The value of the Map Entry isn't used. */
-    private String curriculumFacetKey;
 
-    private String courseLevelFacetKey;
-    private String genEduReqFacetKey;
-    private String termsFacetKey;
-    private String scheduledFacetKey;
-    private String creditsFacetKey;
+    /* Facet keys used for filtering in the view. */
+    private Set<String> curriculumFacetKeys = new HashSet<String>();
+    private Set<String> courseLevelFacetKeys = new HashSet<String>();
+    private Set<String> genEduReqFacetKeys = new HashSet<String>();
+    private Set<String> termsFacetKeys = new HashSet<String>();
+    private Set<String> scheduledFacetKeys = new HashSet<String>();
+    private Set<String> creditsFacetKeys = new HashSet<String>();
 
     private List<AtpTypeInfo> termInfoList;
     private List<String> scheduledTermsList;
-
 
     public String getCourseId() {
         return courseId;
@@ -186,52 +186,92 @@ public class CourseSearchItem {
         this.status = status;
     }
 
-    public String getCurriculumFacetKey() {
-        return curriculumFacetKey;
+    public Set<String> getCurriculumFacetKeys() {
+        return curriculumFacetKeys;
     }
 
-    public void setCurriculumFacetKey(String curriculumFacetKey) {
-        this.curriculumFacetKey = curriculumFacetKey;
+    public Set<String> getCourseLevelFacetKeys() {
+        return courseLevelFacetKeys;
+    }
+
+    public Set<String> getGenEduReqFacetKeys() {
+        return genEduReqFacetKeys;
+    }
+
+    public Set<String> getTermsFacetKeys() {
+        return termsFacetKeys;
+    }
+
+     public Set<String> getScheduledFacetKeys() {
+        return scheduledFacetKeys;
+    }
+
+    public Set<String> getCreditsFacetKeys() {
+        return creditsFacetKeys;
+    }
+
+    /**
+     * Get a combined set of terms and scheduled.
+     *
+     * @return
+     */
+    public Set<String> getQuartersFacetKeys() {
+        Set<String> termsAndQuarters = new HashSet<String>();
+        termsAndQuarters.addAll(scheduledFacetKeys);
+        termsAndQuarters.addAll(termsFacetKeys);
+        return termsAndQuarters;
     }
 
     public String getCourseLevelFacetKey() {
-        return courseLevelFacetKey;
+        return FacetKeyFormatter.format(courseLevelFacetKeys);
     }
 
-    public void setCourseLevelFacetKey(String courseLevelFacetKey) {
-        this.courseLevelFacetKey = courseLevelFacetKey;
+    public String getCurriculumFacetKey() {
+        return FacetKeyFormatter.format(curriculumFacetKeys);
     }
 
     public String getGenEduReqFacetKey() {
-        return genEduReqFacetKey;
-    }
-
-    public void setGenEduReqFacetKey(String genEduReqFacetKey) {
-        this.genEduReqFacetKey = genEduReqFacetKey;
+        return FacetKeyFormatter.format(genEduReqFacetKeys);
     }
 
     public String getTermsFacetKey() {
-        return termsFacetKey;
-    }
-
-    public void setTermsFacetKey(String termsFacetKey) {
-        this.termsFacetKey = termsFacetKey;
+        return FacetKeyFormatter.format(termsFacetKeys);
     }
 
     public String getScheduledFacetKey() {
-        return scheduledFacetKey;
-    }
-
-    public void setScheduledFacetKey(String scheduledFacetKey) {
-        this.scheduledFacetKey = scheduledFacetKey;
+        return FacetKeyFormatter.format(scheduledFacetKeys);
     }
 
     public String getCreditsFacetKey() {
-        return creditsFacetKey;
+         return FacetKeyFormatter.format(creditsFacetKeys);
     }
 
-    public void setCreditsFacetKey(String creditsFacetKey) {
-        this.creditsFacetKey = creditsFacetKey;
+    public String getQuartersFacetKey() {
+          return FacetKeyFormatter.format(getQuartersFacetKeys());
+    }
+
+    public void setCurriculumFacetKeys(Set<String> curriculumFacetKeys) {
+        this.curriculumFacetKeys = curriculumFacetKeys;
+    }
+
+    public void setCourseLevelFacetKeys(Set<String> courseLevelFacetKeys) {
+        this.courseLevelFacetKeys = courseLevelFacetKeys;
+    }
+
+    public void setGenEduReqFacetKeys(Set<String> genEduReqFacetKeys) {
+        this.genEduReqFacetKeys = genEduReqFacetKeys;
+    }
+
+    public void setTermsFacetKeys(Set<String> termsFacetKeys) {
+        this.termsFacetKeys = termsFacetKeys;
+    }
+
+    public void setScheduledFacetKeys(Set<String> scheduledFacetKeys) {
+        this.scheduledFacetKeys = scheduledFacetKeys;
+    }
+
+    public void setCreditsFacetKeys(Set<String> creditsFacetKeys) {
+        this.creditsFacetKeys = creditsFacetKeys;
     }
 
     public List<AtpTypeInfo> getTermInfoList() {

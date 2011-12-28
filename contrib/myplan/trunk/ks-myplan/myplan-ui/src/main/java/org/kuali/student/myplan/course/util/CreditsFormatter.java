@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- *
+ *  Turns credits info into Strings.
  */
 public class CreditsFormatter {
 

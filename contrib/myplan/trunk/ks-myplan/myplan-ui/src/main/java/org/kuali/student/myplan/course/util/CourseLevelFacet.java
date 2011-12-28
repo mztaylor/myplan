@@ -6,6 +6,7 @@ import org.kuali.student.myplan.course.dataobject.FacetItem;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
 *  Logic for building list of Course Level FacetItems and coding CourseSearchItems.
@@ -52,12 +53,8 @@ public class CourseLevelFacet extends AbstractFacet {
         key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
 
         //  Code the item with the facet key.
-        course.setCourseLevelFacetKey(key);
-    }
-
-    public static void main( String[] args )
-    {
-        int level = Integer.valueOf( "500" );
-
+        Set<String> keys = new HashSet<String>();
+        keys.add(key);
+        course.setCourseLevelFacetKeys(keys);
     }
 }

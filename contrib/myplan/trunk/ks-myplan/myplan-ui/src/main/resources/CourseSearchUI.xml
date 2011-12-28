@@ -386,7 +386,7 @@
                         <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
                 </bean>
-                <bean parent="DataField" p:propertyName="termsFacetKey" p:label="Quarter Projected"
+                <bean parent="DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true">
                 </bean>
                 <bean parent="DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
@@ -432,7 +432,6 @@
         <property name="items">
             <list>
                 <ref bean="facet_quarter"/>
-                <ref bean="facet_scheduled"/>
                 <ref bean="facet_genedureq"/>
                 <ref bean="facet_credits"/>
                 <ref bean="facet_level"/>
@@ -442,13 +441,14 @@
     </bean>
 
     <!-- Quarter Facets (Projected) -->
-    <bean id="facet_quarter" parent="Group" p:title="Projected">
+    <bean id="facet_quarter" parent="Group" p:title="Quarter">
         <property name="disclosure.render" value="true"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetQuarter item all checked" p:clientSideJs="facetFilter('facetQuarter', 'All', this);"/>
-                <ref bean="course_search_facet_quarter"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetQuarter item all checked"
+                      p:clientSideJs="facetFilter('facetQuarter', 'All', this);"/>
+                <ref bean="course_search_facet_quarter" />
             </list>
         </property>
     </bean>
@@ -462,15 +462,16 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="termsFacetItems"/>
+        <property name="propertyName" value="quartersFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item" p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item"
+                      p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
 
-    <!-- Time Schedule Facets (Scheduled)-->
+    <!-- Time Schedule Facets (Scheduled)  ... Combined with quarters
     <bean id="facet_scheduled" parent="Group" p:title="Scheduled">
         <property name="disclosure.render" value="true"/>
         <property name="styleClasses" value="facets"/>
@@ -498,7 +499,7 @@
             </list>
         </property>
     </bean>
-
+     -->
 
 
     <!-- Gen Edu Req Facets -->
@@ -537,7 +538,8 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCredits item all checked" p:clientSideJs="facetFilter('facetCredits', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCredits item all checked"
+                      p:clientSideJs="facetFilter('facetCredits', 'All', this);"/>
                 <ref bean="course_search_facet_credits"/>
             </list>
         </property>
@@ -556,7 +558,8 @@
         <property name="propertyName" value="creditsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCredits item" p:clientSideJs="facetFilter('facetCredits', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCredits item"
+                      p:clientSideJs="facetFilter('facetCredits', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>

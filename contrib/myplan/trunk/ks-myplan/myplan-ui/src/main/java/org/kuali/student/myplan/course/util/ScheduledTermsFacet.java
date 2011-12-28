@@ -4,6 +4,9 @@ import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Logic for building list of FacetItems and coding CourseSearchItems.
  */
@@ -11,8 +14,6 @@ public class ScheduledTermsFacet extends AbstractFacet {
 
     public ScheduledTermsFacet() {
         super();
-        super.setUnknownFacetKey("Not Scheduled");
-        super.setUnknownFacetDisplayName("Not Scheduled");
     }
 
     /**
@@ -21,26 +22,27 @@ public class ScheduledTermsFacet extends AbstractFacet {
     @Override
     public void process(CourseSearchItem course) {
 
-        StringBuilder facetKeys = new StringBuilder();
+        //  A Set of facet keys which pertain to this course.
+        Set<String> facetKeys = new HashSet<String>();
 
         if (null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
-            facetKeys.append(key);
+            facetKeys.add(key);
             setShowUnknownKey(true);
         } else {
             for (String t : course.getScheduledTermsList()) {
                 String key = FACET_KEY_DELIMITER + t + FACET_KEY_DELIMITER;
                 String displayName = t;
-                facetKeys.append(key);
                 if (isNewFacetKey(key)) {
                     FacetItem fItem = new FacetItem();
                     fItem.setKey(key);
                     fItem.setDisplayName(displayName);
                     facetItems.add(fItem);
                 }
+                facetKeys.add(key);
             }
         }
-        //
-        course.setScheduledFacetKey(facetKeys.toString());
+
+        course.setScheduledFacetKeys(facetKeys);
     }
 }
