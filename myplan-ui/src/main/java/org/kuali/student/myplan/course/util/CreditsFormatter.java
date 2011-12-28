@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
@@ -66,6 +67,10 @@ public class CreditsFormatter {
      * @return The supplied value minus the trailing ".0"
      */
     public static String trimCredits(String credits) {
+        if (StringUtils.isBlank(credits)) {
+            return "";
+        }
+        credits = credits.trim();
         if (credits.endsWith(".0")) {
             credits = credits.substring(0, credits.indexOf("."));
         }
