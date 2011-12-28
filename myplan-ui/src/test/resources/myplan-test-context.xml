@@ -36,6 +36,7 @@
         <property name="properties" value="#{config.getProperties()}" />
     </bean>
 
+    <import resource="classpath:myplan-search-config.xml"/>
 
     <import resource="classpath:ks-services-test-context.xml"/>
     <!--<import resource="classpath:ksb/ks-lu-context.xml"/>-->

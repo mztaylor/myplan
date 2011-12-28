@@ -46,38 +46,40 @@ public class CourseSearchStrategy
         return map;
     }
 
+    public final static String NO_CAMPUS = "-1";
+    public final static String SEATTLE_CAMPUS = "0";
+    public final static String TACOMA_CAMPUS = "1";
+    public final static String BOTHELL_CAMPUS = "2";
 
-    public List<SearchRequest> queryToRequests( CourseSearchForm courseSearchForm )
-        throws Exception
+    public void addCampusParams( ArrayList<SearchRequest> requests, CourseSearchForm form )
     {
-        ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
-
-        HashMap<String,String> divisionMap = fetchCourseDivisions();
-
-
-        String query = courseSearchForm.getSearchQuery().toUpperCase();
-
-        List<String> levels = QueryTokenizer.extractCourseLevels(query);
-        for( String level : levels )
+        String campus1 = form.getCampusSeattle() ? SEATTLE_CAMPUS : NO_CAMPUS;
+        String campus2 = form.getCampusTacoma() ? TACOMA_CAMPUS : NO_CAMPUS;
+        String campus3 = form.getCampusBothell() ? BOTHELL_CAMPUS : NO_CAMPUS;
+        for( SearchRequest request : requests )
         {
-            query = query.replace( level, "" );
+            request.addParam("campus1", campus1);
+            request.addParam("campus2", campus2);
+            request.addParam("campus3", campus3);
         }
-        List<String> codes = QueryTokenizer.extractCourseCodes(query);
-        for( String code : codes )
-        {
-            query = query.replace( code, "" );
-        }
+    }
 
-        // Remove spaces
-        query = query.trim().replaceAll( "\\s+", " " );
-
-        ArrayList<String> divisions = new ArrayList<String>();
-
+    /**
+     *
+     * @param divisionMap for reference
+     * @param query initial query
+     * @param divisions matches found
+     * @return query string, minus matches found
+     */
+    public String extractDivisions( HashMap<String,String> divisionMap, String query, List<String> divisions )
+    {
         boolean match = true;
         while( match )
         {
             match = false;
             // Retokenize after each division found is removed
+            // Remove extra spaces to normalize input
+            query = query.trim().replaceAll( "\\s+", " " );
             List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize( query );
             List<String> list = QueryTokenizer.toStringList(tokens);
             List<String> pairs = TokenPairs.toPairs( list );
@@ -98,27 +100,10 @@ public class CourseSearchStrategy
                 }
             }
         }
+        return query;
+    }
 
-        // Remove spaces
-        query = query.trim().replaceAll( "\\s+", " " );
-        List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize( query );
-
-        String campus1 = "-1";
-        String campus2 = "-1";
-        String campus3 = "-1";
-        if( courseSearchForm.getCampusSeattle() )
-        {
-            campus1 = "0";
-        }
-        if( courseSearchForm.getCampusTacoma() )
-        {
-            campus2 = "1";
-        }
-        if( courseSearchForm.getCampusBothell() )
-        {
-            campus3 = "2";
-        }
-
+    public void addDivisionSearches(List<String> divisions, List<String> codes, List<String> levels, List<SearchRequest> requests) {
         for( String division : divisions )
         {
             boolean needDivisionQuery = true;
@@ -129,9 +114,6 @@ public class CourseSearchStrategy
                 SearchRequest request = new SearchRequest( "myplan.lu.search.divisionAndCode" );
                 request.addParam( "division", division );
                 request.addParam( "code", code );
-                request.addParam( "campus1", campus1 );
-                request.addParam( "campus2", campus2 );
-                request.addParam( "campus3", campus3 );
                 requests.add( request );
             }
 
@@ -139,14 +121,12 @@ public class CourseSearchStrategy
             {
                 needDivisionQuery = false;
 
+                // Converts "1XX" to "100"
                 level = level.substring( 0, 1 ) + "00";
 
                 SearchRequest request = new SearchRequest( "myplan.lu.search.divisionAndLevel" );
                 request.addParam("division", division);
                 request.addParam("level", level);
-                request.addParam("campus1", campus1);
-                request.addParam("campus2", campus2);
-                request.addParam("campus3", campus3);
                 requests.add( request );
             }
 
@@ -154,12 +134,14 @@ public class CourseSearchStrategy
             {
                 SearchRequest request = new SearchRequest( "myplan.lu.search.division" );
                 request.addParam("division", division);
-                request.addParam("campus1", campus1);
-                request.addParam("campus2", campus2);
-                request.addParam("campus3", campus3);
                 requests.add( request );
             }
         }
+    }
+
+    public void addFullTextSearches(String query, List<SearchRequest> requests) {
+        List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize( query );
+
         for( QueryTokenizer.Token token : tokens )
         {
             String queryText = null;
@@ -177,11 +159,40 @@ public class CourseSearchStrategy
             }
             SearchRequest request = new SearchRequest( "myplan.lu.search.fulltext" );
             request.addParam("queryText", queryText);
-            request.addParam("campus1", campus1);
-            request.addParam("campus2", campus2);
-            request.addParam("campus3", campus3);
             requests.add( request );
         }
+    }
+
+    public List<SearchRequest> queryToRequests( CourseSearchForm form )
+        throws Exception
+    {
+        String query = form.getSearchQuery().toUpperCase();
+
+        List<String> levels = QueryTokenizer.extractCourseLevels(query);
+        for( String level : levels )
+        {
+            query = query.replace( level, "" );
+        }
+        List<String> codes = QueryTokenizer.extractCourseCodes(query);
+        for( String code : codes )
+        {
+            query = query.replace( code, "" );
+        }
+
+        HashMap<String,String> divisionMap = fetchCourseDivisions();
+
+        ArrayList<String> divisions = new ArrayList<String>();
+        query = extractDivisions( divisionMap, query, divisions );
+
+
+        ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
+
+        // Order is important, more exact search results appear at top of list
+        addDivisionSearches(divisions, codes, levels, requests);
+
+        addFullTextSearches(query, requests);
+
+        addCampusParams( requests, form );
 
         return requests;
     }

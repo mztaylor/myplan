@@ -38,4 +38,15 @@ public class TokenPairsTest {
         assertEquals( list.get( 2 ), "BB" );
         assertEquals( list.get( 3 ), "A" );
     }
+
+    @Test
+    public void testLongestFirstComparator()
+    {
+        TokenPairs.LongestFirst comparator = new TokenPairs.LongestFirst();
+        assertEquals( 0, comparator.compare( "A", "A" ) );
+        assertEquals( 1, comparator.compare( "A", "AA" ) );
+        assertEquals( -1, comparator.compare( "AA", "A" ) );
+        assertEquals( 1, comparator.compare( "B", "A" ) );
+        assertEquals( -1, comparator.compare( "A", "B" ) );
+    }
 }
