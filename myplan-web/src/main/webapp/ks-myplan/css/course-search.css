@@ -1,7 +1,8 @@
 /* Styles for left content containers */
 #course_search_panel_div,
 #course_search_result_panel_div,
-#course_details_panel_div {
+#course_details_panel_div,
+#course_search_no_results_panel_div {
     width: 720px;
 }
 /*
@@ -126,6 +127,10 @@
 }
 
 /* Styles for course search results */
+#course_search_no_results_found_div {
+    font-size: 150%;
+    line-height: 150%;
+}
 #course_search_results_panel_group>div>span>span {
     margin:0;
 }
