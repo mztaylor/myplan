@@ -18,6 +18,13 @@ public class QueryTokenizerTest {
     }
 
     @Test
+    public void testIgnoreSpaces() throws Exception {
+        List<QueryTokenizer.Token> list = QueryTokenizer.tokenize( "   A  B   C     D  " );
+        assertTrue( list.size() == 4 );
+        assertEquals( list.get( 3 ).rule, QueryTokenizer.Rule.WORD );
+    }
+
+    @Test
     public void testExtractCourseLevels() throws Exception {
         List<String> levels = QueryTokenizer.extractCourseLevels(sample);
         assertEquals( levels.get( 0 ), "3xx" );
