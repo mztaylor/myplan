@@ -47,7 +47,7 @@ public class CreditsFacet extends AbstractFacet {
         int min = (int) course.getCreditMin();
         int max = (int) course.getCreditMax();
 
-        ArrayList<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<Integer>();
         switch( course.getCreditType() ) {
             case range:
                 for( int x = min; x <= max; x++ ) {
@@ -70,12 +70,10 @@ public class CreditsFacet extends AbstractFacet {
 
         creditFacetSet.addAll( list );
 
-        StringBuilder facet = new StringBuilder();
-        for( Integer credit : list ) {
-            facet.append(FACET_KEY_DELIMITER).append(credit.toString()).append(FACET_KEY_DELIMITER);
+        Set<String> facetKeys = new HashSet<String>();
+        for (Integer credit : list ) {
+            facetKeys.add(FACET_KEY_DELIMITER + credit.toString() + FACET_KEY_DELIMITER);
         }
-
-        course.setCreditsFacetKey(facet.toString());
+        course.setCreditsFacetKeys(facetKeys);
     }
-
 }

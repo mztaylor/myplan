@@ -20,6 +20,7 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {
@@ -32,6 +33,7 @@ public class CourseSearchForm extends UifFormBase {
     private boolean campusBothell;
     private boolean campusSeattle;
     private boolean campusTacoma;
+
     private String searchQuery;
     private String searchTerm = SEARCH_TERM_ANY_ITEM;
 
@@ -146,5 +148,33 @@ public class CourseSearchForm extends UifFormBase {
 
     public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
         this.creditsFacetItems = creditsFacetItems;
+    }
+
+    public List<FacetItem> getQuartersFacetItems() {
+        List<FacetItem> facetItems = new ArrayList<FacetItem>();
+
+        //  TODO: Hack alert! Strip out "Unknown" FacetItems and place one at the end of the list.
+        FacetItem unknown = null;
+        for (FacetItem facetItem : scheduledTermsFacetItems) {
+            if (facetItem.getKey().equals(";Unknown;")) {
+                unknown = facetItem;
+            } else {
+                facetItems.add(facetItem);
+            }
+        }
+
+        for (FacetItem facetItem : termsFacetItems) {
+            if (facetItem.getKey().equals(";Unknown;")) {
+                unknown = facetItem;
+            } else {
+                facetItems.add(facetItem);
+            }
+        }
+
+        if (facetItems != null) {
+            facetItems.add(unknown);
+        }
+
+        return facetItems;
     }
 }

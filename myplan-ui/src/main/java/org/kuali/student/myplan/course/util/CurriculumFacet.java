@@ -8,7 +8,9 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *  Logic for building list of FacetItems and coding CourseSearchItems.
@@ -49,6 +51,8 @@ public class CurriculumFacet extends AbstractFacet {
         }
 
         //  Code the item with the facet key.
-        course.setCurriculumFacetKey(key);
+        Set<String> keys = new HashSet<String>();
+        keys.add(key);
+        course.setCurriculumFacetKeys(keys);
     }
 }

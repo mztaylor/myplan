@@ -5,12 +5,12 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractFacet {
 
     protected static final String FACET_KEY_DELIMITER = ";";
 
-    // TODO: This can probably be a HashMap<String, String> now that the number of matches isn't being stored.
     protected List<FacetItem> facetItems;
 
     protected String unknownFacetKey = "Unknown";
@@ -27,7 +27,7 @@ public abstract class AbstractFacet {
         //  Put the list in a predictable order.
         Collections.sort(facetItems);
 
-        if(showUnknownKey || facetItems.size() > 0) {
+        if (showUnknownKey || facetItems.size() > 0) {
             FacetItem unknownFacet = new FacetItem();
             unknownFacet.setKey(FACET_KEY_DELIMITER + unknownFacetKey + FACET_KEY_DELIMITER);
             unknownFacet.setDisplayName(unknownFacetDisplayName);
@@ -87,5 +87,4 @@ public abstract class AbstractFacet {
     public void setShowUnknownKey(boolean showUnknownKey) {
         this.showUnknownKey = showUnknownKey;
     }
-
 }

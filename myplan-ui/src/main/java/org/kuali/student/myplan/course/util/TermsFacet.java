@@ -21,29 +21,32 @@ public class TermsFacet extends AbstractFacet {
     @Override
     public void process(CourseSearchItem course) {
 
-        StringBuilder facet = new StringBuilder();
+        //  The Set of facet keys which pertain to this course.
+        Set<String> facetKeys = new HashSet<String>();
 
         if (null == course.getTermInfoList() || 0 == course.getTermInfoList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
-            facet.append(key);
+            facetKeys.add(key);
             setShowUnknownKey(true);
         } else {
             for (AtpTypeInfo term : course.getTermInfoList()) {
-                String termStr =   term.getName().substring(0, 1).toUpperCase() + term.getName().substring(1);
-                String key = FACET_KEY_DELIMITER + termStr  + FACET_KEY_DELIMITER;
-                facet.append(key);
+                //  Title-case the term name.
+                String termName =   term.getName().substring(0, 1).toUpperCase() + term.getName().substring(1);
+                String key = FACET_KEY_DELIMITER + termName  + FACET_KEY_DELIMITER;
 
+                //  If an FacetItem doesn't exist for this key then create one and add it to the Facet.
                 if (isNewFacetKey( key )) {
                     FacetItem fItem = new FacetItem();
-                    String displayName = null;
-                    displayName = key;
                     fItem.setKey(key);
-                    fItem.setDisplayName(termStr);
+                    fItem.setDisplayName(termName);
                     facetItems.add(fItem);
                 }
+
+                facetKeys.add(key);
             }
         }
 
-        course.setTermsFacetKey(facet.toString());
+        //  Add the set of keys to the courseSearchItem.
+        course.setTermsFacetKeys(facetKeys);
     }
 }
