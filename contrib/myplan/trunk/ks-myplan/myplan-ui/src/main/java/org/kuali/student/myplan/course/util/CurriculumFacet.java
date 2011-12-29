@@ -41,13 +41,9 @@ public class CurriculumFacet extends AbstractFacet {
 
         key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
 
-        //  If it's a new facet key then create a new FacetItem.
+        //  If it's a new facet key then create a new FacetItem and add it to the list.
         if (isNewFacetKey( key )) {
-            FacetItem fItem = new FacetItem();
-            //  The display name and the key are the same in this case.
-            fItem.setKey(key);
-            fItem.setDisplayName(displayName);
-            facetItems.add(fItem);
+            facetItems.add(new FacetItem(key, displayName));
         }
 
         //  Code the item with the facet key.

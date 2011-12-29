@@ -28,10 +28,8 @@ public abstract class AbstractFacet {
         Collections.sort(facetItems);
 
         if (showUnknownKey || facetItems.size() > 0) {
-            FacetItem unknownFacet = new FacetItem();
-            unknownFacet.setKey(FACET_KEY_DELIMITER + unknownFacetKey + FACET_KEY_DELIMITER);
-            unknownFacet.setDisplayName(unknownFacetDisplayName);
-            facetItems.add(unknownFacet);
+            String key = FACET_KEY_DELIMITER + unknownFacetKey + FACET_KEY_DELIMITER;
+            facetItems.add(new FacetItem(key, unknownFacetDisplayName));
         }
 
         return facetItems;

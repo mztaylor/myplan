@@ -41,11 +41,9 @@ public class GenEduReqFacet extends AbstractFacet {
             {
                 if (isNewFacetKey( FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER ))
                 {
-                    FacetItem fItem = new FacetItem();
                     String displayName = key;
-                    fItem.setKey(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
-                    fItem.setDisplayName(displayName);
-                    facetItems.add(fItem);
+                    key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
+                    facetItems.add( new FacetItem(key, displayName));
                 }
                 facetKeys.add(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
             }

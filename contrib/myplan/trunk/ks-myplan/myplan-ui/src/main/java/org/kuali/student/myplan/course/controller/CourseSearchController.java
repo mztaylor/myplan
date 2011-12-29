@@ -108,8 +108,6 @@ public class CourseSearchController extends UifControllerBase {
         CourseSearchItem.CreditType type;
     }
 
-    int maxHits = 250;
-
     public HashMap<String, Credit> getCreditMap()
     {
         HashMap<String, Credit> creditMap = new HashMap<String, Credit>();
@@ -164,14 +162,12 @@ public class CourseSearchController extends UifControllerBase {
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest request, HttpServletResponse response) {
 
-
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
         CreditsFacet creditsFacet = new CreditsFacet();
         CourseLevelFacet courseLevelFacet = new CourseLevelFacet();
         GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
         TermsFacet termsFacet = new TermsFacet();
-        ScheduledTermsFacet scheduledTermsFacet = new ScheduledTermsFacet();
 
         ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
 
@@ -199,13 +195,11 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
 
-
             ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values());
             Collections.sort(hits, new HitComparator());
 
             for (Hit hit : hits) {
                 String courseId = hit.courseID;
-
                 {
                     CourseSearchItem course = new CourseSearchItem();
                     {
@@ -329,12 +323,11 @@ public class CourseSearchController extends UifControllerBase {
                     genEduReqFacet.process(course);
                     creditsFacet.process(course);
                     termsFacet.process(course);
-                    scheduledTermsFacet.process(course);
 
                     searchResults.add(course);
                 }
 
-                if(searchResults.size() >= MAX_HITS) {
+                if (searchResults.size() >= MAX_HITS) {
                     break;
                 }
             }
@@ -345,7 +338,6 @@ public class CourseSearchController extends UifControllerBase {
             form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
             form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
             form.setTermsFacetItems(termsFacet.getFacetItems());
-            form.setScheduledTermsFacetItems(scheduledTermsFacet.getFacetItems());
 
             //  Add the search results to the response.
             form.setCourseSearchResults(searchResults);
