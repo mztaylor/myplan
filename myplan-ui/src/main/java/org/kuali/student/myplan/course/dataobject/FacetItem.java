@@ -11,6 +11,16 @@ public class FacetItem implements Comparable<FacetItem> {
     /* The name which will be displayed */
     private String displayName;
 
+    public FacetItem() {}
+
+    /**
+     * Convenience constructor.
+     */
+    public FacetItem(String key, String displayName) {
+        setKey(key);
+        setDisplayName(displayName);
+    }
+
     public String getKey() {
         return key;
     }

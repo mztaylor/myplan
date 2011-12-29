@@ -440,7 +440,7 @@
         </property>
     </bean>
 
-    <!-- Quarter Facets (Projected) -->
+    <!-- Terms/Scheduled Terms/Quarters Facet -->
     <bean id="facet_quarter" parent="Group" p:title="Quarter">
         <property name="disclosure.render" value="true"/>
         <property name="styleClasses" value="facets"/>
@@ -462,7 +462,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="quartersFacetItems"/>
+        <property name="propertyName" value="termsFacetItems"/>
         <property name="items">
             <list>
                 <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item"
@@ -470,37 +470,6 @@
             </list>
         </property>
     </bean>
-
-    <!-- Time Schedule Facets (Scheduled)  ... Combined with quarters
-    <bean id="facet_scheduled" parent="Group" p:title="Scheduled">
-        <property name="disclosure.render" value="true"/>
-        <property name="styleClasses" value="facets"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetScheduled item all checked" p:clientSideJs="facetFilter('facetScheduled', 'All', this);"/>
-                <ref bean="course_search_facet_scheduled"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_facet_scheduled" parent="CollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
-        <property name="propertyName" value="scheduledTermsFacetItems"/>
-        <property name="items">
-            <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetScheduled item" p:clientSideJs="facetFilter('facetScheduled', '@{#line.key}', this);" p:labelField.render="false"/>
-            </list>
-        </property>
-    </bean>
-     -->
-
 
     <!-- Gen Edu Req Facets -->
     <bean id="facet_genedureq" parent="Group" p:title="Gen. Edu. Req.">

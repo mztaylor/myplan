@@ -30,12 +30,9 @@ public class CourseLevelFacet extends AbstractFacet {
         Arrays.sort(list);
 
         for( Integer credit : list ) {
-            FacetItem item = new FacetItem();
             String display = credit.toString();
             String key = FACET_KEY_DELIMITER + display + FACET_KEY_DELIMITER;
-            item.setKey( key );
-            item.setDisplayName( display );
-            facetItems.add( item );
+            facetItems.add(new FacetItem(key, display));
         }
 
         return facetItems;

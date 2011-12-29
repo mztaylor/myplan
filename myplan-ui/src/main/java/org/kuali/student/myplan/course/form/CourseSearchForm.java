@@ -18,9 +18,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {
@@ -43,10 +41,7 @@ public class CourseSearchForm extends UifFormBase {
     /** Facet data lists */
     private List<FacetItem> curriculumFacetItems;
     private List<FacetItem> courseLevelFacetItems;
-
     private List<FacetItem> termsFacetItems;
-    private List<FacetItem> scheduledTermsFacetItems;
-
     private List<FacetItem> genEduReqFacetItems;
     private List<FacetItem> creditsFacetItems;
 
@@ -126,14 +121,6 @@ public class CourseSearchForm extends UifFormBase {
         this.termsFacetItems = termsFacetItems;
     }
 
-    public List<FacetItem> getScheduledTermsFacetItems() {
-        return scheduledTermsFacetItems;
-    }
-
-    public void setScheduledTermsFacetItems(List<FacetItem> scheduledTermsFacetItems) {
-        this.scheduledTermsFacetItems = scheduledTermsFacetItems;
-    }
-
     public List<FacetItem> getGenEduReqFacetItems() {
         return genEduReqFacetItems;
     }
@@ -148,33 +135,5 @@ public class CourseSearchForm extends UifFormBase {
 
     public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
         this.creditsFacetItems = creditsFacetItems;
-    }
-
-    public List<FacetItem> getQuartersFacetItems() {
-        List<FacetItem> facetItems = new ArrayList<FacetItem>();
-
-        //  TODO: Hack alert! Strip out "Unknown" FacetItems and place one at the end of the list.
-        FacetItem unknown = null;
-        for (FacetItem facetItem : scheduledTermsFacetItems) {
-            if (facetItem.getKey().equals(";Unknown;")) {
-                unknown = facetItem;
-            } else {
-                facetItems.add(facetItem);
-            }
-        }
-
-        for (FacetItem facetItem : termsFacetItems) {
-            if (facetItem.getKey().equals(";Unknown;")) {
-                unknown = facetItem;
-            } else {
-                facetItems.add(facetItem);
-            }
-        }
-
-        if (facetItems != null) {
-            facetItems.add(unknown);
-        }
-
-        return facetItems;
     }
 }
