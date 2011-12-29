@@ -29,19 +29,19 @@
                 <ref bean="CourseDetails.code"/>
                 <ref bean="CourseDetails.courseTitle"/>
                 <ref bean="CourseDetails.credit"/>
-                <ref bean="CourseDetails.courseDescription"/>                
+                <ref bean="CourseDetails.courseDescription"/>
             </list>
         </property>
 
         <property name="collections">
-			<list>
+            <list>
                 <ref bean="CourseDetails.campusLocations"/>
                 <ref bean="CourseDetails.scheduledTerms"/>
                 <ref bean="CourseDetails.termsOffered"/>
                 <ref bean="CourseDetails.requisites"/>
                 <ref bean="CourseDetails.genEdRequirements"/>
-			</list>
-		</property>
+            </list>
+        </property>
 
         <property name="primaryKeys">
             <list>
@@ -182,7 +182,6 @@
     </bean>
 
 
-
     <bean id="CourseDetails.genEdRequirements" parent="CourseDetails.genEdRequirements-parentBean"/>
     <bean id="CourseDetails.genEdRequirements-parentBean" abstract="true" parent="CollectionDefinition">
         <property name="name" value="genEdRequirements"/>
@@ -201,9 +200,9 @@
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails" />
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl" />
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="styleClasses" value="myplan"/>
         <property name="additionalCssFiles">
@@ -242,6 +241,7 @@
             <list>
                 <ref bean="course_details_addtoplan"/>
                 <ref bean="course_details_overview"/>
+                <ref bean="course_details_time_schedule"/>
             </list>
         </property>
     </bean>
@@ -252,7 +252,8 @@
         <property name="items">
             <list>
                 <bean parent="ActionField"
-                      p:actionLabel="Add this Course" p:clientSideJs="alert('This course has been added successfully');"/>
+                      p:actionLabel="Add this Course"
+                      p:clientSideJs="alert('This course has been added successfully');"/>
             </list>
         </property>
     </bean>
@@ -262,25 +263,93 @@
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <!--<bean parent="InputField" p:propertyName="code"/>-->
-                <bean parent="DataField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements" />
-                <bean parent="DataField" p:propertyName="requisites" p:label="Prerequisite">
-                    <property name="formatter" ref="unordered_list_formatter"/>
-                </bean>
-                <bean parent="DataField" p:propertyName="credit" p:label="Credits"/>
-                <bean parent="DataField" p:propertyName="scheduledTerms" p:label="Scheduled Quarters">
-                    <property name="formatter" ref="unordered_list_formatter"/>
-                </bean>
-                <bean parent="DataField" p:propertyName="termsOffered" p:label="Projected Quarters"/>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
-                <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus">
-                     <property name="formatter" ref="unordered_list_formatter"/>
+
+                <bean parent="DataField" p:propertyName="requisites" p:label="Course Requisites"
+                      p:styleClasses="vertical">
+                    <property name="formatter" ref="data_list_formatter"/>
                 </bean>
+
+                <bean parent="FieldGroup" p:label="Quarters">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:styleClasses="icon" >
+                                <property name="formatter" ref="data_list_formatter"/>
+                            </bean>
+                            <bean parent="FieldGroup" p:labelField.render="false">
+                                <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MessageField" p:messageText="(Source:"/>
+                                        <bean parent="LinkField" p:linkLabel="UW Time Schedule" p:hrefText="http://www.washington.edu/students/timeschd/"
+                                              p:title="UW Time Schedule" p:target="" p:labelField.render="false"/>
+                                        <bean parent="MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="FieldGroup" p:label="">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="MessageField" p:messageText="Projected to be offered in "/>
+                            <bean parent="DataField" p:propertyName="termsOffered" p:labelField.render="false" p:styleClasses="horizontal">
+                                <property name="formatter" ref="data_list_formatter"/>
+                            </bean>
+                            <bean parent="MessageField" p:messageText="quarters"/>
+                            <bean parent="FieldGroup" p:labelField.render="false">
+                                <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MessageField" p:messageText="(Source:"/>
+                                        <bean parent="LinkField" p:linkLabel="UW Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
+                                              p:title="UW Course Catalog" p:target="" p:labelField.render="false"/>
+                                        <bean parent="MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="DataField" p:propertyName="credit" p:label="Credits"/>
+
+                <bean parent="DataField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements"
+                      p:styleClasses="vertical">
+                    <property name="formatter" ref="data_list_formatter"/>
+                </bean>
+
+                <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus" p:styleClasses="horizontal">
+                    <property name="formatter" ref="data_list_formatter"/>
+                </bean>
+
             </list>
         </property>
     </bean>
 
-    <bean id="unordered_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
+    <bean id="course_details_time_schedule" parent="CollectionGroup">
+        <property name="disclosure.render" value="false"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
+        <property name="propertyName" value="scheduledTerms"/>
+        <property name="items">
+            <list>
+                <bean parent="LinkField" p:title="See full details about this course in @{#line} Time Schedule" p:linkLabel="See full details about this course in @{#line} Time Schedule"
+                      p:hrefText="#" p:labelField.render="false" p:target=""/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
         <property name="emptyListMessage" value="None"/>
     </bean>
 </beans>

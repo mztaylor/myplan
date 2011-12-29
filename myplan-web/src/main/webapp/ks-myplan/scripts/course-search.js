@@ -28,8 +28,10 @@ function buildFacets() {
     jq("#course_search_result_facets_div a.item.all").each(function() {
         var colIndex = oTable.fnGetColumnIndex(jq(this).attr('class').split(" ",1)[0]); // Get the column number based on first hardcoded class (the column sTitle) on facet
         if ( typeof arrFacetSearch[colIndex] === 'undefined' || arrFacetSearch[colIndex].length <= 1 ) {
-            jq(this).removeClass('checked').hide();
+            jq(this).removeClass('checked').css('display', 'none');
             jq(this).parents(".facets").find("a.item").addClass('static');
+        } else {
+            jq(this).addClass('checked').css('display', 'block');
         }
     });
     calculateFacets(null);
@@ -129,8 +131,6 @@ function calculateFacets(colIndex) {
             jq(this).html(txtFacet + ' <span>(0)</span>').addClass('disabled');
         }
 	});
-
-
 }
 
 jq(document).ready(function() {
@@ -142,7 +142,14 @@ jq(document).ready(function() {
 
 jq(window).load(function(){
     if ( jq("#course_search_results_datatable").length > 0 ) {
-        jq("#course_search_results_panel_group").fadeIn('slow');
+        jq("#course_search_results_panel_div").fadeIn('slow');
         buildFacets();
+    }
+    if ( jq("#course_search_no_results_found_div").length > 0 ) {
+        jq("#course_search_result_facets_div .facets").each(function() {
+            jq(this).find("span.all").hide();
+            jq(this).find("a[id$='_toggle'] img").click();
+        });
+        jq("#course_search_no_results_found_div").fadeIn('slow');
     }
 });
