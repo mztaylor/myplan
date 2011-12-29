@@ -1,20 +1,41 @@
 package org.kuali.student.myplan.course.controller;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kuali.student.common.search.dto.SearchParam;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})
 public class CourseSearchStrategyTest {
+
+    @Autowired
+    private CourseSearchStrategy courseSearchStrategy = null;
+
+    public CourseSearchStrategy getCourseSearchStrategy() {
+        return courseSearchStrategy;
+    }
+
+    public void setCourseSearchStrategy( CourseSearchStrategy strategy ) {
+        this.courseSearchStrategy = strategy;
+    }
+
     @Test
     public void testFetchCourseDivisions() throws Exception {
-
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
+        HashMap<String,String> divisionsMap = strategy.fetchCourseDivisions();
+        assertFalse( divisionsMap.isEmpty() );
     }
 
     @Test
@@ -27,7 +48,7 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add( new SearchRequest( "test" ));
 
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         strategy.addCampusParams(requests, form );
 
         SearchRequest request = requests.get( 0 );
@@ -53,7 +74,7 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add( new SearchRequest( "test" ));
 
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         strategy.addCampusParams(requests, form );
 
         SearchRequest request = requests.get( 0 );
@@ -72,7 +93,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddDivisionSearchesNothing()
     {
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         ArrayList<String> divisions = new ArrayList<String>();
         ArrayList<String> levels = new ArrayList<String>();
         ArrayList<String> codes = new ArrayList<String>();
@@ -84,7 +105,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddDivisionSearchesJustDivision()
     {
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         ArrayList<String> divisions = new ArrayList<String>();
         divisions.add( "DIVISION" );
         ArrayList<String> codes = new ArrayList<String>();
@@ -118,7 +139,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddDivisionSearchesDivisionAndLevel()
     {
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         ArrayList<String> divisions = new ArrayList<String>();
         divisions.add( "DIVISION" );
         ArrayList<String> codes = new ArrayList<String>();
@@ -136,7 +157,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddFullTextSearches()
     {
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         String query = "text \"text\"";
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         strategy.addFullTextSearches( query, requests);
@@ -153,7 +174,7 @@ public class CourseSearchStrategyTest {
         map.put( "AB", "A B " );
         map.put( "B",   "B   " );
         map.put( "C",   "C   " );
-        CourseSearchStrategy strategy = new CourseSearchStrategy();
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
         ArrayList<String> divisions = new ArrayList<String>();
         String query = "A B C";
         query = strategy.extractDivisions( map, query, divisions );

@@ -50,7 +50,6 @@
         <property name="atpTypeComparator" ref="atpTypeComparator"/>
     </bean>
 
-
     <bean id="studentServiceClient" class="${uw.studentservice.impl}">
         <constructor-arg>
             <value>${uw.studentservice.url}</value>
@@ -84,5 +83,6 @@
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>
     </bean>
+
 
 </beans>

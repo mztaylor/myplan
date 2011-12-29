@@ -14,9 +14,6 @@ import java.util.List;
 
 public class CourseSearchStrategy
 {
-
-    private transient LuService luService;
-
     public HashMap<String,String> fetchCourseDivisions()
     {
         HashMap<String,String> map = new HashMap<String,String>();
@@ -197,6 +194,7 @@ public class CourseSearchStrategy
         return requests;
     }
 
+    private transient LuService luService;
 
     //Note: here I am using r1 LuService implementation!!!
     protected LuService getLuService() {
