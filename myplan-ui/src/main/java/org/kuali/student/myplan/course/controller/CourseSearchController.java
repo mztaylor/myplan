@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
@@ -90,6 +91,16 @@ public class CourseSearchController extends UifControllerBase {
             this.courseID = courseID;
             count = 1;
         }
+
+        @Override
+        public boolean equals( Object other ) {
+            return courseID.equals( ((Hit)other).courseID );
+        }
+
+        @Override
+        public int hashCode() {
+            return courseID.hashCode();
+        }
     }
 
     public class HitComparator implements Comparator<Hit> {
@@ -108,8 +119,16 @@ public class CourseSearchController extends UifControllerBase {
         CourseSearchItem.CreditType type;
     }
 
-    public HashMap<String, Credit> getCreditMap()
-    {
+    public String getCellValue( SearchResultRow row, String key ) {
+        for( SearchResultCell cell : row.getCells() ) {
+            if( key.equals( cell.getKey() )) {
+                return cell.getValue();
+            }
+        }
+        throw new RuntimeException( "cell result '" + key + "' not found" );
+    }
+
+    public HashMap<String, Credit> getCreditMap() {
         HashMap<String, Credit> creditMap = new HashMap<String, Credit>();
 
         try {
@@ -118,11 +137,10 @@ public class CourseSearchController extends UifControllerBase {
             searchRequest.setParams(params);
             SearchResult searchResult = getLuService().search(searchRequest);
             for (SearchResultRow row : searchResult.getRows()) {
-                Iterator<SearchResultCell> i = row.getCells().iterator();
-                String id = i.next().getValue();
-                String type = i.next().getValue();
-                String min = i.next().getValue();
-                String max = i.next().getValue();
+                String id = getCellValue( row, "credit.id" );
+                String type = getCellValue( row, "credit.type" );
+                String min = getCellValue( row, "credit.min" );
+                String max = getCellValue( row, "credit.max" );
                 Credit credit = new Credit();
                 credit.id = id;
                 credit.min = Float.valueOf(min);
@@ -143,7 +161,6 @@ public class CourseSearchController extends UifControllerBase {
             return creditMap;
         } catch (Exception e) {
             throw new RuntimeException(e);
-
         }
     }
 
@@ -158,10 +175,191 @@ public class CourseSearchController extends UifControllerBase {
         return credit;
     }
 
+
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-                                         HttpServletRequest request, HttpServletResponse response) {
+                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+       try {
+            List<SearchRequest> requests = searcher.queryToRequests(form);
 
+            List<Hit> hits = processSearchRequests(requests);
+
+            ArrayList<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
+
+            for (Hit hit : hits) {
+                CourseSearchItem course = getCourseInfo( hit.courseID );
+                if( isCourseOffered(form, course)) {
+                    loadScheduledTerms(course);
+                    loadTermsOffered(course);
+                    loadGenEduReqs(course);
+
+                    courseList.add(course);
+
+                    if (courseList.size() >= MAX_HITS) {
+                        break;
+                    }
+                }
+            }
+
+            populateFacets( form, courseList );
+
+            //  Add the search results to the response.
+            form.setCourseSearchResults(courseList);
+
+            if( courseList.size() == 0 ) {
+                return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+    }
+
+    HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
+
+    public void hitCourseID( String id ) {
+        Hit hit = null;
+        if( courseMap.containsKey( id )) {
+            hit = courseMap.get( id );
+            hit.count++;
+        } else {
+            hit = new Hit( id );
+            courseMap.put( id, hit );
+        }
+    }
+
+    public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
+        for (SearchRequest request : requests) {
+            SearchResult searchResult = getLuService().search(request);
+            for (SearchResultRow row : searchResult.getRows()) {
+                String id = getCellValue( row, "lu.resultColumn.cluId" );
+                hitCourseID( id );
+            }
+        }
+
+        ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values() );
+        Collections.sort(hits, new HitComparator());
+        return hits;
+    }
+
+    public boolean isCourseOffered(CourseSearchForm form, CourseSearchItem course) throws Exception {
+        /*
+         *  If the "any" item was chosen in the terms dop-down then continue processing.
+         *  Otherwise, determine if the CourseSearchItem should be filtered out of the
+         *  result set.
+         */
+        String term = form.getSearchTerm();
+
+        if( term.equals(CourseSearchForm.SEARCH_TERM_ANY_ITEM) ) return true;
+
+        /*
+          Use the course offering service to see if the course is being offered in the selected term.
+          Note: In the UW implementation of the Course Offering service, course id is actually course code.
+        */
+        CourseOfferingService service = getCourseOfferingService();
+
+        String subject = course.getSubject();
+        List<String> codes = service.getCourseOfferingIdsByTermAndSubjectArea(term, subject, null);
+
+        //  The course code is not in the list, so move on to the next item.
+        return codes.contains(course.getCode());
+    }
+
+    private void loadScheduledTerms(CourseSearchItem course) {
+        //  Load scheduled terms.
+        //  Fetch the available terms from the Academic Calendar Service.
+        try {
+            List<String> scheduledTerms = new ArrayList<String>();
+
+            List<TermInfo> termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
+                CourseSearchConstants.CONTEXT_INFO);
+
+            //  If the course is offered in the term then add the term info to the scheduled terms list.
+            for (TermInfo ti : termInfos) {
+                List<String> offerings = getCourseOfferingService()
+                    .getCourseOfferingIdsByTermAndSubjectArea(ti.getKey(), course.getSubject(), null);
+                if (offerings.contains(course.getCode())) {
+                    scheduledTerms.add(ti.getName());
+                }
+            }
+
+            course.setScheduledTerms(scheduledTerms);
+        } catch (Exception e) {
+            // TODO: Eating this error sucks
+            logger.error("Web service call failed.", e);
+        }
+    }
+
+    private void loadTermsOffered(CourseSearchItem course) throws MissingParameterException {
+        String courseId = course.getCourseId();
+        SearchRequest request = new SearchRequest("myplan.course.info.atp");
+        request.addParam("courseID", courseId);
+
+        List<AtpTypeInfo> termsOffered = new ArrayList<AtpTypeInfo>();
+        SearchResult result = getLuService().search(request);
+        for (SearchResultRow row : result.getRows()) {
+            String id = getCellValue( row, "atp.id" );
+
+            // Don't add the terms that are not found
+            AtpTypeInfo atpType = getATPType(id);
+            if (null != atpType) {
+                termsOffered.add(atpType);
+            }
+        }
+
+        Collections.sort(termsOffered, getAtpTypeComparator());
+        course.setTermInfoList(termsOffered);
+    }
+
+    private void loadGenEduReqs(CourseSearchItem course) throws MissingParameterException {
+        String courseId = course.getCourseId();
+        SearchRequest request = new SearchRequest("myplan.course.info.gened");
+        request.addParam("courseID", courseId);
+        List<String> reqs = new ArrayList<String>();
+        SearchResult result = getLuService().search(request);
+        for (SearchResultRow row : result.getRows()) {
+            String genEd = getCellValue( row, "gened.name");
+            reqs.add(genEd);
+        }
+        String formatted = formatGenEduReq(reqs);
+        course.setGenEduReq(formatted);
+    }
+
+    private CourseSearchItem getCourseInfo(String courseId) throws MissingParameterException {
+        CourseSearchItem course = new CourseSearchItem();
+
+        SearchRequest request = new SearchRequest( "myplan.course.info" );
+        request.addParam("courseID", courseId);
+        SearchResult result = getLuService().search(request);
+        for (SearchResultRow row : result.getRows()) {
+            String name = getCellValue( row, "course.name" );
+            String number = getCellValue( row, "course.number" );
+            String subject = getCellValue( row, "course.subject" );
+            String level = getCellValue( row, "course.level" );
+            String creditsID = getCellValue( row, "course.credits" );
+            String code = getCellValue( row, "course.code" );
+
+            course.setCourseId(courseId);
+            course.setSubject(subject);
+            course.setNumber(number);
+            course.setLevel(level);
+            course.setCourseName(name);
+            course.setCode(code);
+
+            Credit credit = getCreditByID( creditsID );
+            course.setCreditMin(credit.min);
+            course.setCreditMax(credit.max);
+            course.setCreditType(credit.type);
+            course.setCredit(credit.display);
+            break;
+        }
+        return course;
+    }
+
+    public void populateFacets( CourseSearchForm form, List<CourseSearchItem> courses ) {
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
         CreditsFacet creditsFacet = new CreditsFacet();
@@ -169,188 +367,21 @@ public class CourseSearchController extends UifControllerBase {
         GenEduReqFacet genEduReqFacet = new GenEduReqFacet();
         TermsFacet termsFacet = new TermsFacet();
 
-        ArrayList<CourseSearchItem> searchResults = new ArrayList<CourseSearchItem>();
-
-        try {
-            List<SearchRequest> requests = searcher.queryToRequests(form);
-
-            HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
-
-            for (SearchRequest searchRequest : requests) {
-                SearchResult searchResult = getLuService().search(searchRequest);
-                for (SearchResultRow row : searchResult.getRows()) {
-                    for (SearchResultCell cell : row.getCells()) {
-                        if ("lu.resultColumn.cluId".equals(cell.getKey())) {
-                            String courseId = cell.getValue();
-                            Hit hit = null;
-                            if (courseMap.containsKey(courseId)) {
-                                hit = courseMap.get(courseId);
-                                hit.count++;
-                            } else {
-                                hit = new Hit(courseId);
-                                courseMap.put(courseId, hit);
-                            }
-                        }
-                    }
-                }
-            }
-
-            ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values());
-            Collections.sort(hits, new HitComparator());
-
-            for (Hit hit : hits) {
-                String courseId = hit.courseID;
-                {
-                    CourseSearchItem course = new CourseSearchItem();
-                    {
-                        SearchRequest searchRequest = new SearchRequest( "myplan.course.info" );
-                        searchRequest.addParam("courseID", courseId);
-
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for (SearchResultRow row : searchResult.getRows()) {
-                            Iterator<SearchResultCell> i = row.getCells().iterator();
-                            String name = i.next().getValue();
-                            String number = i.next().getValue();
-                            String subject = i.next().getValue();
-                            String level = i.next().getValue();
-                            String id = i.next().getValue();
-                            String cd = i.next().getValue();
-
-                            course.setCourseId(courseId);
-                            course.setSubject(subject);
-                            course.setNumber(number);
-                            course.setLevel(level);
-                            course.setCourseName(name);
-                            course.setCode(cd);
-
-                            Credit credit = null;
-                            credit = getCreditByID( id );
-                            course.setCreditMin(credit.min);
-                            course.setCreditMax(credit.max);
-                            course.setCreditType(credit.type);
-                            course.setCredit(credit.display);
-                        }
-                    }
-
-                    /*
-                     *  If the "any" item was chosen in the terms dop-down then continue processing.
-                     *  Otherwise, determine if the CourseSearchItem should be filtered out of the
-                     *  result set.
-                     */
-                    if ( ! form.getSearchTerm().equals(CourseSearchForm.SEARCH_TERM_ANY_ITEM)) {
-                        /*
-                          Use the course offering service to see if the course is being offered in the selected term.
-                          Note: In the UW implementation of the Course Offering service, course id is actually course code.
-                        */
-                        List<String> courseCodes = getCourseOfferingService()
-                            .getCourseOfferingIdsByTermAndSubjectArea(form.getSearchTerm(), course.getSubject(), null);
-
-                        if ( ! courseCodes.contains(course.getCode())) {
-                            //  The course code is not in the list, so move on to the next item.
-                            continue;
-                        }
-                    }
-
-                    //  Load scheduled terms.
-                    {
-                        List<String> scheduledTerms = new ArrayList<String>();
-
-                        //  Fetch the available terms from the Academic Calendar Service.
-                        List<TermInfo> termInfos = null;
-                        try {
-                            termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
-                                CourseSearchConstants.CONTEXT_INFO);
-                        } catch (Exception e) {
-                            logger.error("Web service call failed.", e);
-                        }
-                        //  If the course is offered in the term then add the term info to the scheduled terms list.
-                        if (termInfos != null) {
-                            for (TermInfo ti : termInfos) {
-                                List<String> offerings = getCourseOfferingService()
-                                    .getCourseOfferingIdsByTermAndSubjectArea(ti.getKey(), course.getSubject(), null);
-                                if (offerings.contains(course.getCode())) {
-                                    scheduledTerms.add(ti.getName());
-                                }
-                            }
-                        }
-                        course.setScheduledTerms(scheduledTerms);
-                    }
-
-                    // Load Terms Offered.
-                    {
-                        SearchRequest searchRequest = new SearchRequest("myplan.course.info.atp");
-                        searchRequest.addParam("courseID", courseId);
-                        List<AtpTypeInfo> termsOffered = new ArrayList<AtpTypeInfo>();
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for (SearchResultRow row : searchResult.getRows()) {
-                            for (SearchResultCell cell : row.getCells()) {
-                                String term = cell.getValue();
-
-                                // Don't add the terms that are not found
-                                AtpTypeInfo atpType = getATPType(term);
-                                if (null != atpType) {
-                                    termsOffered.add(atpType);
-                                }
-                            }
-                        }
-
-                        Collections.sort(termsOffered, getAtpTypeComparator() );
-                        course.setTermInfoList(termsOffered);
-                    }
-
-                    // Load Gen Ed Requirements
-                    {
-                        SearchRequest searchRequest = new SearchRequest();
-                        searchRequest.setSearchKey("myplan.course.info.gened");
-                        List<SearchParam> params = new ArrayList<SearchParam>();
-                        params.add(new SearchParam("courseID", courseId));
-                        searchRequest.setParams(params);
-                        List<String> genEdReqs = new ArrayList<String>();
-                        SearchResult searchResult = getLuService().search(searchRequest);
-                        for (SearchResultRow row : searchResult.getRows()) {
-                            for (SearchResultCell cell : row.getCells()) {
-                                String genEd = cell.getValue();
-                                genEdReqs.add(genEd);
-                            }
-                        }
-                        String formatted = formatGenEduReq(genEdReqs);
-                        course.setGenEduReq(formatted);
-                    }
-
-                    //  Update facet info and code the item.
-                    curriculumFacet.process(course);
-                    courseLevelFacet.process(course);
-                    genEduReqFacet.process(course);
-                    creditsFacet.process(course);
-                    termsFacet.process(course);
-
-                    searchResults.add(course);
-                }
-
-                if (searchResults.size() >= MAX_HITS) {
-                    break;
-                }
-            }
-
-            //  Add the facet data to the response.
-            form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
-            form.setCreditsFacetItems(creditsFacet.getFacetItems());
-            form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
-            form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
-            form.setTermsFacetItems(termsFacet.getFacetItems());
-
-            //  Add the search results to the response.
-            form.setCourseSearchResults(searchResults);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        //  Update facet info and code the item.
+        for( CourseSearchItem course : courses ) {
+            curriculumFacet.process(course);
+            courseLevelFacet.process(course);
+            genEduReqFacet.process(course);
+            creditsFacet.process(course);
+            termsFacet.process(course);
         }
 
-        if(0 == searchResults.size() ) {
-            return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
-        }
-
-        return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
+        //  Add the facet data to the response.
+        form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
+        form.setCreditsFacetItems(creditsFacet.getFacetItems());
+        form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
+        form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
+        form.setTermsFacetItems(termsFacet.getFacetItems());
     }
 
     //TODO: Change this to using the Enumeration Service to get the Gen Edd Display Value
