@@ -10,7 +10,7 @@ public enum CollectionListFormatterHtmlListType {
     /** Output an ordered list. */
     OL("ol","li"),
     /** Output a data definition list. */
-    DD("dl", "dd");
+    DL("dl", "dd");
 
     private String listElementName;
     private String itemElementName;

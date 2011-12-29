@@ -18,7 +18,7 @@ public class CollectionListFormatter extends Formatter {
     private final static Logger logger = Logger.getLogger(CollectionListFormatter.class);
 
     //  Default paramater values.
-    private CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.UL;
+    private CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DL;
     private String emptyListMessage = "";
     private String styleClassName = "kr-collection-list";
 
