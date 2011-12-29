@@ -188,7 +188,7 @@
         <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
         <property name="items">
             <list>
-                <bean parent="InputField_Form" p:propertyName="searchQuery"
+                <bean id="course_search_query" parent="InputField_Form" p:propertyName="searchQuery"
                     p:label="Search for" p:labelPlacement="LEFT"
                     p:labelField.renderColon="false" p:labelField.styleClasses="fl-txt-bold" p:styleClasses="search-txt">
                     <property name="control">
@@ -245,7 +245,37 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="MessageField" p:messageText="0 results found"/>
+                <ref bean="course_search_result_facets"/>
+                <ref bean="empty_table"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Empty Table Result Set -->
+    <bean id="empty_table" parent="Group">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean id="empty_table_header" parent="MessageField" p:messageText="0 results found" p:styleClasses="dataTables_info"/>
+                <bean id="empty_table_help" parent="Group">
+                    <property name="disclosure.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean id="empty_table_message1" parent="MessageField" p:messageText="We couldn't find anything matching your search."/>
+                            <bean id="empty_table_message2" parent="MessageField" p:messageText="A few suggestions:"/>
+                            <bean id="empty_table_message_list" parent="Group">
+                                <property name="disclosure.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MessageField" p:messageText="Check your spelling"/>
+                                        <bean parent="MessageField" p:messageText="Try a more general search (Any quarter, ENGL 1xx)"/>
+                                        <bean parent="MessageField" p:messageText="Use at least 2 characters"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -262,20 +292,9 @@
         </property>
     </bean>
 
-    <!-- Group for Search Results List and Buttons -->
+    <!-- Group for Search Results List -->
     <bean id="course_search_results" parent="Group">
         <property name="styleClasses" value=""/>
-        <property name="disclosure.render" value="false"/>
-        <property name="items">
-            <list>
-                <ref bean="course_search_results_list"/>
-                <ref bean="course_search_results_buttons"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Group for Search Results List -->
-    <bean id="course_search_results_list" parent="Group">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
@@ -283,7 +302,6 @@
             </list>
         </property>
     </bean>
-
 
     <bean id="course_search_results_list_items" parent="CollectionGroupTableLayout"
           p:layoutManager.numberOfColumns="12">
@@ -408,23 +426,6 @@
         </property>
     </bean>
 
-
-    <!-- Group for Search Results Buttons -->
-    <bean id="course_search_results_buttons" parent="Group"
-          p:layoutManager.orientation="HORIZONTAL">
-        <property name="disclosure.render" value="false"/>
-        <property name="items">
-            <list>
-                <!--
-                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-                      p:actionLabel="Add to Plan" p:jumpToIdAfterSubmit="TOP"/>
-                <bean parent="ActionField" p:methodToCall="searchCourseOfferings"
-                      p:actionLabel="Save it for later" p:jumpToIdAfterSubmit="TOP"/>
-                -->
-            </list>
-        </property>
-    </bean>
-
     <!-- Group for Search Facets -->
     <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
         <property name="styleClasses" value="fl-container-flex15 fl-force-left"/>
@@ -446,7 +447,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetQuarter item all checked"
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetQuarter item all"
                       p:clientSideJs="facetFilter('facetQuarter', 'All', this);"/>
                 <ref bean="course_search_facet_quarter" />
             </list>
@@ -465,8 +466,7 @@
         <property name="propertyName" value="termsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item"
-                      p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item" p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -477,7 +477,8 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetGenEduReq item all checked" p:clientSideJs="facetFilter('facetGenEduReq', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetGenEduReq item all"
+                      p:clientSideJs="facetFilter('facetGenEduReq', 'All', this);"/>
                 <ref bean="course_search_facet_genedureq"/>
             </list>
         </property>
@@ -507,7 +508,7 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCredits item all checked"
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCredits item all"
                       p:clientSideJs="facetFilter('facetCredits', 'All', this);"/>
                 <ref bean="course_search_facet_credits"/>
             </list>
@@ -539,7 +540,8 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetLevel item all checked" p:clientSideJs="facetFilter('facetLevel', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetLevel item all"
+                      p:clientSideJs="facetFilter('facetLevel', 'All', this);"/>
                 <ref bean="course_search_facet_level"/>
             </list>
         </property>
@@ -558,7 +560,8 @@
         <property name="propertyName" value="courseLevelFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetLevel item" p:clientSideJs="facetFilter('facetLevel', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetLevel item"
+                      p:clientSideJs="facetFilter('facetLevel', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -569,7 +572,8 @@
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCurriculum item all checked" p:clientSideJs="facetFilter('facetCurriculum', 'All', this);"/>
+                <bean parent="ActionLinkField" p:actionLabel="All" p:styleClasses="facetCurriculum item all"
+                      p:clientSideJs="facetFilter('facetCurriculum', 'All', this);"/>
                 <ref bean="course_search_facet_curriculum"/>
             </list>
         </property>
@@ -588,7 +592,8 @@
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCurriculum item" p:title="@{#line.displayName}" p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCurriculum item" p:title="@{#line.displayName}"
+                      p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
