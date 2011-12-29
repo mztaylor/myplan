@@ -2,11 +2,15 @@ package org.kuali.student.myplan.course;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kuali.student.common.search.dto.SearchResultCell;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +34,26 @@ public class CourseSearchControllerTest {
 
     public void setSearchController(CourseSearchController searchController) {
         this.searchController = searchController;
+    }
+
+    @Test
+    public void testGetCellValue() {
+        CourseSearchController controller = getSearchController();
+        SearchResultRow row = new SearchResultRow();
+        row.addCell( "key", "value" );
+        assertEquals( "value", controller.getCellValue( row, "key" ));
+        try {
+            controller.getCellValue( row, "fail" );
+            fail( "should have throw exception");
+        }
+        catch( Exception e ) {}
+    }
+
+    @Test
+    public void testGetCreditMap() {
+        CourseSearchController controller = getSearchController();
+        HashMap<String, CourseSearchController.Credit> map = controller.getCreditMap();
+        assertFalse( map.isEmpty() );
     }
 
     @Test
