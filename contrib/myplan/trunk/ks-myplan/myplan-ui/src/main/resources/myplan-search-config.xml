@@ -29,34 +29,25 @@
     <import resource="classpath:lu-search-config.xml"/>
     <search:searchType id="myplan.course.info">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
-                <search:resultColumn id="boogie.longname">
-                    <search:desc/>
+                <search:resultColumn id="course.name">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.suffixcode">
+                <search:resultColumn id="course.number">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.division">
-                    <search:name>longname</search:name>
-                    <search:desc>longname</search:desc>
+                <search:resultColumn id="course.subject">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.level">
-                    <search:name>longname</search:name>
-                    <search:desc>longname</search:desc>
+                <search:resultColumn id="course.level">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.credits">
-                    <search:name>longname</search:name>
-                    <search:desc>longname</search:desc>
+                <search:resultColumn id="course.credits">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.code">
-                    <search:name>longname</search:name>
-                    <search:desc>longname</search:desc>
+                <search:resultColumn id="course.code">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
             </search:resultColumns>
@@ -69,12 +60,10 @@
 
     <search:searchType id="myplan.course.info.atp">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
-                <search:resultColumn id="myplan.coursesearch.atp.id">
-                    <search:name/>
-                    <search:desc/>
+                <search:resultColumn id="atp.id">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
             </search:resultColumns>
@@ -87,12 +76,10 @@
 
     <search:searchType id="myplan.course.info.gened">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
-                <search:resultColumn id="myplan.coursesearch.gened.type">
-                    <search:name/>
-                    <search:desc/>
+                <search:resultColumn id="gened.name">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
             </search:resultColumns>
@@ -105,27 +92,19 @@
 
     <search:searchType id="myplan.course.info.credits.details">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
-                <search:resultColumn id="boogie.id">
-                    <search:name>max</search:name>
-                    <search:desc>max</search:desc>
+                <search:resultColumn id="credit.id">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.type">
-                    <search:name>max</search:name>
-                    <search:desc>max</search:desc>
+                <search:resultColumn id="credit.type">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.min">
-                    <search:name>max</search:name>
-                    <search:desc>max</search:desc>
+                <search:resultColumn id="credit.min">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
-                <search:resultColumn id="boogie.max">
-                    <search:name>max</search:name>
-                    <search:desc>max</search:desc>
+                <search:resultColumn id="credit.max">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
             </search:resultColumns>
@@ -138,39 +117,12 @@
 
     <search:searchType id="myplan.distinct.clu.divisions">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
-                <!-- this is wrong, but works. i haven't figured out how to create a new "bean" for this purpose -->
-                <ref bean="lu.resultColumn.cluId"/>
-            </search:resultColumns>
-        </search:searchResultTypeInfo>
-        <search:searchCriteriaTypeInfo>
-            <search:queryParams>
-            </search:queryParams>
-        </search:searchCriteriaTypeInfo>
-    </search:searchType>
-
-    <search:searchType id="myplan.lu.search.current">
-        <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
-            <search:resultColumns>
-                <ref bean="lu.resultColumn.cluId"/>
-            </search:resultColumns>
-        </search:searchResultTypeInfo>
-        <search:searchCriteriaTypeInfo>
-            <search:queryParams>
-            </search:queryParams>
-        </search:searchCriteriaTypeInfo>
-    </search:searchType>
-
-    <search:searchType id="myplan.lu.search.current.allcampus">
-        <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
-            <search:resultColumns>
-                <ref bean="lu.resultColumn.cluId"/>
+                <search:resultColumn id="division">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
             </search:resultColumns>
         </search:searchResultTypeInfo>
         <search:searchCriteriaTypeInfo>
@@ -181,8 +133,8 @@
 
     <search:searchType id="myplan.lu.search.fulltext">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
                 <ref bean="lu.resultColumn.cluId"/>
             </search:resultColumns>
@@ -195,8 +147,8 @@
 
     <search:searchType id="myplan.lu.search.divisionAndCode">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
                 <ref bean="lu.resultColumn.cluId"/>
             </search:resultColumns>
@@ -209,8 +161,8 @@
 
     <search:searchType id="myplan.lu.search.divisionAndLevel">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
                 <ref bean="lu.resultColumn.cluId"/>
             </search:resultColumns>
@@ -223,8 +175,8 @@
 
     <search:searchType id="myplan.lu.search.division">
         <search:searchResultTypeInfo>
-            <search:name>myplan name</search:name>
-            <search:desc>myplan desc</search:desc>
+            <search:name/>
+            <search:desc/>
             <search:resultColumns>
                 <ref bean="lu.resultColumn.cluId"/>
             </search:resultColumns>
