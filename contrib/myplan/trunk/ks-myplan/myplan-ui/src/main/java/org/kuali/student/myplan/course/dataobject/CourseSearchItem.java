@@ -142,7 +142,7 @@ public class CourseSearchItem {
      */
     public String getScheduledAndOfferedTerms() {
 
-        CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DD;
+        CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DL;
 
         Element termsList = DocumentHelper.createElement(listType.getListElementName()); // dl
 
