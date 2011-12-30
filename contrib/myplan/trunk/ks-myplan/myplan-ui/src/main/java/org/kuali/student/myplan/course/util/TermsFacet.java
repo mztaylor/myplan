@@ -13,7 +13,6 @@ public class TermsFacet extends AbstractFacet {
 
     public TermsFacet() {
         super();
-        super.setShowUnknownKey(true);
     }
 
     /**
@@ -40,6 +39,7 @@ public class TermsFacet extends AbstractFacet {
         if (null == course.getTermInfoList() || 0 == course.getTermInfoList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.add(key);
+            super.setShowUnknownKey(true);
         } else {
             for (AtpTypeInfo term : course.getTermInfoList()) {
                 //  Title-case the term name.
@@ -59,6 +59,7 @@ public class TermsFacet extends AbstractFacet {
         if (null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.add(key);
+            super.setShowUnknownKey(true);
         } else {
             for (String t : course.getScheduledTermsList()) {
                 String key = FACET_KEY_DELIMITER + t + FACET_KEY_DELIMITER;
@@ -90,8 +91,11 @@ public class TermsFacet extends AbstractFacet {
                 return -1;
             }
 
+            //  If the facet items that end with a year are scheduled terms and should precede terms.
             boolean isYear1 = fi1.getKey().matches(".*\\d{4}" + FACET_KEY_DELIMITER + "$");
             boolean isYear2 = fi2.getKey().matches(".*\\d{4}" + FACET_KEY_DELIMITER + "$");
+
+            //  Two scheduled terms.
             if (isYear1 && isYear2) {
                 //  TODO: For now just ignore the year.
                 String termKey1 = fi1.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
@@ -109,6 +113,7 @@ public class TermsFacet extends AbstractFacet {
                 return 1;
             }
 
+            //  Two terms.
             if ( ! isYear1 &&  ! isYear2) {
                 String termKey1 = fi1.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
                 String termKey2 = fi2.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
