@@ -44,6 +44,9 @@
     width: 128px;
     margin-right: 10px;
 }
+#course_search_result_facets_div a {
+    color: #000;
+}
 #course_search_result_facets_div table,
 #course_search_result_facets_div .boxLayoutVerticalItem,
 #course_search_result_facets_div table th,
@@ -195,6 +198,7 @@ table.datatable {
     -ms-text-overflow: ellipsis;
     cursor: pointer;
 }
+/*
 #course_search_results_list_items_div #course_search_results_datatable tbody td dl,
 #course_search_results_list_items_div #course_search_results_datatable tbody td dl dd {
     margin:0;
@@ -219,17 +223,18 @@ table.datatable {
     content: "";
     margin: 0;
 }
+*/
 #course_search_results_list_items_div #course_search_results_datatable .odd,
 #course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
     background: #fff;
 }
 #course_search_results_list_items_div #course_search_results_datatable .even,
 #course_search_results_list_items_div #course_search_results_datatable .even td[class^='sorting_'] {
-    background: #e9e9e9;
+    background: #eee;
 }
 #course_search_results_list_items_div #course_search_results_datatable .odd:hover,
 #course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #d3d3d3;
+    background: #ddd;
 }
 #course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
     width: auto;
@@ -321,7 +326,9 @@ table.datatable {
 #course_details_overview_div table td ul,
 #course_details_overview_div table td ul li,
 #course_details_overview_div table td dl,
-#course_details_overview_div table td dl dd {
+#course_details_overview_div table td dl dd,
+#course_search_results_list_items_div table td dl,
+#course_search_results_list_items_div table td dl dd {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -346,22 +353,39 @@ table.datatable {
     margin-right: 0;
 }
 #course_details_overview_div table td .icon dl,
-#course_details_overview_div table td .icon dl dd {
+#course_details_overview_div table td .icon dl dd,
+#course_search_results_list_items_div table td .icon dl,
+#course_search_results_list_items_div table td .icon dl dd {
     display: block;
     float: left;
 }
-#course_details_overview_div table td .icon dl {
+#course_details_overview_div table td .icon dl,
+#course_search_results_list_items_div table td .icon dl {
     clear: both;
 }
-#course_details_overview_div table td .icon dl dd {
-    background: #e9e9e9;
-    color: #808080;
-    border-radius: 3px;
-    margin-right: 0.5em;
-    font-weight: bold;
-    font-size: 88%;
-    padding: 0 4px;
+#course_search_results_list_items_div table td .icon dl dd {
+    margin: 0 0 3px 0;
+    clear: both;
 }
-#course_details_overview_div table td .icon dl dd:last-child {
-    margin-right: 0;
+#course_search_results_list_items_div table td .icon dl dd:last-child {
+    margin:0;
+}
+#course_details_overview_div table td .icon dl dd,
+#course_search_results_list_items_div table td .icon dl dd dl dd {
+    background: #ccc;
+    color: #333;
+    border-radius: 3px;
+    margin: 0 0.5em 0 0;
+    font-weight: bold;
+    font-size: 80%;
+    padding: 0 4px;
+    clear: none;
+}
+#course_details_overview_div table td .icon dl dd:last-child,
+#course_search_results_list_items_div table td .icon dl dd dl dd:last-child {
+    margin: 0;
+}
+#course_details_overview_div table td .source {
+    font-size: 90%;
+    color: #777;
 }

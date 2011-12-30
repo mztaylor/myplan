@@ -190,7 +190,7 @@
             <list>
                 <bean id="course_search_query" parent="InputField_Form" p:propertyName="searchQuery"
                     p:label="Search for" p:labelPlacement="LEFT"
-                    p:labelField.renderColon="false" p:labelField.styleClasses="fl-txt-bold" p:styleClasses="search-txt">
+                    p:labelField.renderColon="false" p:labelField.styleClasses="fl-txt-bold" p:styleClasses="search-text">
                     <property name="control">
                         <bean parent="TextControl" p:watermarkText="E.g. English 1xx, CHEM 142" />
                     </property>
@@ -393,7 +393,7 @@
                 </bean>
                 <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms"
                       p:label="Quarter Offered" p:readOnly="true">
-                    <property name="styleClasses" value="courseScheduledTime"/>
+                    <property name="styleClasses" value="courseScheduledTime icon"/>
                 </bean>
                 <bean parent="DataField" p:propertyName="genEduReq"
                       p:label="Gen Edu Req" p:readOnly="true">

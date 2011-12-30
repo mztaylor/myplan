@@ -10,6 +10,7 @@ body {
     outline: 0;
     white-space: normal;
     overflow:  auto;
+    color:#1d8fd9;
 }
 
 #view_div {
