@@ -265,9 +265,26 @@
             <list>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
 
-                <bean parent="DataField" p:propertyName="requisites" p:label="Course Requisites"
-                      p:styleClasses="vertical">
-                    <property name="formatter" ref="data_list_formatter"/>
+                <bean parent="FieldGroup" p:label="Course Requisites">
+                    <property name="group.layoutManager.orientation" value="VERTICAL"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:propertyName="requisites" p:labelField.render="false" p:styleClasses="vertical">
+                                <property name="formatter" ref="data_list_formatter"/>
+                            </bean>
+                            <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
+                                <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MessageField" p:messageText="(Source:"/>
+                                        <bean parent="LinkField" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
+                                              p:title="UW Course Catalog" p:target="" p:labelField.render="false"/>
+                                        <bean parent="MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
 
                 <bean parent="FieldGroup" p:label="Quarters">
@@ -277,14 +294,11 @@
                             <bean parent="DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:styleClasses="icon" >
                                 <property name="formatter" ref="data_list_formatter"/>
                             </bean>
-                            <bean parent="FieldGroup" p:labelField.render="false">
+                            <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="MessageField" p:messageText="(Source:"/>
-                                        <bean parent="LinkField" p:linkLabel="UW Time Schedule" p:hrefText="http://www.washington.edu/students/timeschd/"
-                                              p:title="UW Time Schedule" p:target="" p:labelField.render="false"/>
-                                        <bean parent="MessageField" p:messageText=")"/>
+                                        <bean parent="MessageField" p:messageText="(Source: Time Schedule)"/>
                                     </list>
                                 </property>
                             </bean>
@@ -301,12 +315,12 @@
                                 <property name="formatter" ref="data_list_formatter"/>
                             </bean>
                             <bean parent="MessageField" p:messageText="quarters"/>
-                            <bean parent="FieldGroup" p:labelField.render="false">
+                            <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="MessageField" p:messageText="(Source:"/>
-                                        <bean parent="LinkField" p:linkLabel="UW Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
+                                        <bean parent="LinkField" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
                                               p:title="UW Course Catalog" p:target="" p:labelField.render="false"/>
                                         <bean parent="MessageField" p:messageText=")"/>
                                     </list>
@@ -343,8 +357,9 @@
         <property name="propertyName" value="scheduledTerms"/>
         <property name="items">
             <list>
-                <bean parent="LinkField" p:title="See full details about this course in @{#line} Time Schedule" p:linkLabel="See full details about this course in @{#line} Time Schedule"
-                      p:hrefText="#" p:labelField.render="false" p:target=""/>
+                <bean parent="LinkField" p:linkLabel="&gt;&gt; See full details about this course in &lt;strong&gt;@{#line} Time Schedule&lt;/strong&gt;"
+                      p:title="See full details about this course in @{#line} Time Schedule"
+                      p:hrefText="http://www.washington.edu/students/timeschd/" p:labelField.render="false" p:target=""/>
             </list>
         </property>
     </bean>
