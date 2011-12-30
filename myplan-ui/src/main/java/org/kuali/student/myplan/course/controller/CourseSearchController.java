@@ -64,8 +64,6 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient AcademicCalendarService academicCalendarService;
 
-    private transient Map<String, String> atpCache;
-
     @Autowired
     private TermInfoComparator atpTypeComparator;
 
@@ -184,7 +182,7 @@ public class CourseSearchController extends UifControllerBase {
 
             List<Hit> hits = processSearchRequests(requests);
 
-            ArrayList<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
+            List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
 
             for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo( hit.courseID );
@@ -209,18 +207,16 @@ public class CourseSearchController extends UifControllerBase {
             if( courseList.size() == 0 ) {
                 return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
             }
+            return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-
-        return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
-    HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
 
-    public void hitCourseID( String id ) {
+    public void hitCourseID( Map<String, Hit> courseMap, String id ) {
         Hit hit = null;
         if( courseMap.containsKey( id )) {
             hit = courseMap.get( id );
@@ -232,11 +228,13 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
+        HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
+
         for (SearchRequest request : requests) {
             SearchResult searchResult = getLuService().search(request);
             for (SearchResultRow row : searchResult.getRows()) {
                 String id = getCellValue( row, "lu.resultColumn.cluId" );
-                hitCourseID( id );
+                hitCourseID( courseMap, id );
             }
         }
 
@@ -253,7 +251,7 @@ public class CourseSearchController extends UifControllerBase {
          */
         String term = form.getSearchTerm();
 
-        if( term.equals(CourseSearchForm.SEARCH_TERM_ANY_ITEM) ) return true;
+        if( CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals( term )) return true;
 
         /*
           Use the course offering service to see if the course is being offered in the selected term.
