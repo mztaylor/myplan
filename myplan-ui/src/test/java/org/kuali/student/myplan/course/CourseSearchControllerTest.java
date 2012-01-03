@@ -5,12 +5,14 @@ import org.junit.runner.RunWith;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
+import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -37,11 +39,32 @@ public class CourseSearchControllerTest {
     }
 
     @Test
+    public void testHitComparator() {
+        CourseSearchController.HitComparator comparator = new CourseSearchController.HitComparator();
+
+        CourseSearchController.Hit hit1 = new CourseSearchController.Hit( "a" );
+        hit1.count++;
+
+        CourseSearchController.Hit hit2 = new CourseSearchController.Hit( "b" );
+        hit2.count++;
+        hit2.count++;
+        hit2.count++;
+
+        assertTrue( comparator.compare( hit1, hit2 ) > 0 );
+        assertTrue( comparator.compare( hit2, hit1 ) < 0 );
+        assertTrue(comparator.compare(hit1, hit1) == 0);
+        assertTrue(comparator.compare(hit1, null) > 0);
+        assertTrue(comparator.compare(null, hit2) < 0);
+    }
+
+    @Test
     public void testGetCellValue() {
         CourseSearchController controller = getSearchController();
         SearchResultRow row = new SearchResultRow();
         row.addCell( "key", "value" );
+
         assertEquals( "value", controller.getCellValue( row, "key" ));
+
         try {
             controller.getCellValue( row, "fail" );
             fail( "should have throw exception");
@@ -57,7 +80,18 @@ public class CourseSearchControllerTest {
     }
 
     @Test
-    public void testSearchLevel() {
+    public void testGetCreditByID() {
+        CourseSearchController controller = getSearchController();
+
+        CourseSearchController.Credit nothing = controller.getCreditByID("nothing");
+        assertNull(nothing);
+
+        CourseSearchController.Credit something = controller.getCreditByID( "kuali.creditType.credit.degree.1-4" );
+        assertNotNull(something);
+    }
+
+    @Test
+    public void testSearchForCoursesExactMatch() {
 
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("CHEM 453");
@@ -67,7 +101,66 @@ public class CourseSearchControllerTest {
 
         searchController.searchForCourses(form, null, null, null);
 
-        assertEquals(1, form.getCourseSearchResults().size());
-        assertEquals("CHEM   453", form.getCourseSearchResults().get(0).getCode());
+        List<CourseSearchItem> results = form.getCourseSearchResults();
+        assertEquals(1, results.size());
+        CourseSearchItem course = results.get(0);
+        assertEquals("CHEM   453", course.getCode());
+        assertEquals("CHEM", course.getSubject());
+        assertEquals("453", course.getNumber());
+        assertEquals("400", course.getLevel());
+        assertEquals("3", course.getCredit());
+    }
+
+    @Test
+    public void testSearchForCoursesSubjectArea() {
+
+        CourseSearchForm form = new CourseSearchForm();
+        form.setSearchQuery("HDCE");
+        form.setCampusSeattle(true);
+        form.setCampusBothell(true);
+        form.setCampusTacoma(true);
+
+        searchController.searchForCourses(form, null, null, null);
+
+        List<CourseSearchItem> results = form.getCourseSearchResults();
+        assertTrue( results.size() > 0 );
+    }
+
+    @Test
+    public void testSearchForCoursesSubjectAreaLevel() {
+
+        CourseSearchForm form = new CourseSearchForm();
+        form.setSearchQuery("ENGL 1xx");
+        form.setCampusSeattle(true);
+        form.setCampusBothell(true);
+        form.setCampusTacoma(true);
+
+        searchController.searchForCourses(form, null, null, null);
+
+        List<CourseSearchItem> results = form.getCourseSearchResults();
+        assertTrue( results.size() > 0 );
+    }
+
+    @Test
+    public void testIsCourseOffered() {
+
+        CourseSearchForm form = new CourseSearchForm();
+        CourseSearchItem course = new CourseSearchItem();
+        CourseSearchController controller = getSearchController();
+
+        try {
+            form.setSearchTerm(CourseSearchForm.SEARCH_TERM_ANY_ITEM);
+
+            assertTrue(controller.isCourseOffered(form, course));
+
+            form.setSearchTerm("fake");
+            course.setCode( "CHEM" );
+            assertTrue(controller.isCourseOffered(form, course));
+
+            course.setCode( "FAKE" );
+            assertFalse(controller.isCourseOffered(form, course));
+        } catch (Exception e) {
+            fail( "failed!" );
+        }
     }
 }

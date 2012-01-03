@@ -7,6 +7,7 @@ import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
 import org.kuali.student.myplan.course.util.FacetKeyFormatter;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +50,6 @@ public class CourseSearchItem {
     private Set<String> creditsFacetKeys = new HashSet<String>();
 
     private List<AtpTypeInfo> termInfoList;
-    private List<String> scheduledTermsList;
 
     public String getCourseId() {
         return courseId;
@@ -280,12 +280,18 @@ public class CourseSearchItem {
         this.termInfoList = termInfoList;
     }
 
+    private List<String> scheduledTermsList = new ArrayList<String>();
+
     public List<String> getScheduledTermsList() {
         return this.scheduledTermsList;
     }
 
     public void setScheduledTerms(List<String> scheduledTermsList) {
         this.scheduledTermsList = scheduledTermsList;
+    }
+
+    public void addScheduledTerm( String term ) {
+        scheduledTermsList.add( term );
     }
 
     @Override

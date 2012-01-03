@@ -81,9 +81,9 @@ public class CourseSearchController extends UifControllerBase {
         return getUIFModelAndView(form);
     }
 
-    public class Hit {
-        String courseID;
-        int count = 0;
+    public static class Hit {
+        public String courseID;
+        public int count = 0;
 
         public Hit(String courseID) {
             this.courseID = courseID;
@@ -101,9 +101,11 @@ public class CourseSearchController extends UifControllerBase {
         }
     }
 
-    public class HitComparator implements Comparator<Hit> {
+    public static class HitComparator implements Comparator<Hit> {
         @Override
         public int compare(Hit x, Hit y) {
+            if( x == null ) return -1;
+            if( y == null ) return 1;
             return y.count - x.count;
         }
     }
@@ -263,28 +265,35 @@ public class CourseSearchController extends UifControllerBase {
         List<String> codes = service.getCourseOfferingIdsByTermAndSubjectArea(term, subject, null);
 
         //  The course code is not in the list, so move on to the next item.
-        return codes.contains(course.getCode());
+        String code = course.getCode();
+        boolean result = codes.contains(code);
+        return result;
     }
 
+    //  Load scheduled terms.
+    //  Fetch the available terms from the Academic Calendar Service.
     private void loadScheduledTerms(CourseSearchItem course) {
-        //  Load scheduled terms.
-        //  Fetch the available terms from the Academic Calendar Service.
         try {
-            List<String> scheduledTerms = new ArrayList<String>();
+            AcademicCalendarService atpService = getAcademicCalendarService();
 
-            List<TermInfo> termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
-                CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> terms = atpService.getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
+                    CourseSearchConstants.CONTEXT_INFO);
+
+            CourseOfferingService offeringService = getCourseOfferingService();
 
             //  If the course is offered in the term then add the term info to the scheduled terms list.
-            for (TermInfo ti : termInfos) {
-                List<String> offerings = getCourseOfferingService()
-                    .getCourseOfferingIdsByTermAndSubjectArea(ti.getKey(), course.getSubject(), null);
-                if (offerings.contains(course.getCode())) {
-                    scheduledTerms.add(ti.getName());
+            String code = course.getCode();
+
+            for (TermInfo term : terms) {
+
+                String key = term.getKey();
+                String subject = course.getSubject();
+
+                List<String> offerings = offeringService.getCourseOfferingIdsByTermAndSubjectArea(key, subject, null);
+                if (offerings.contains(code)) {
+                    course.addScheduledTerm( term.getName() );
                 }
             }
-
-            course.setScheduledTerms(scheduledTerms);
         } catch (Exception e) {
             // TODO: Eating this error sucks
             logger.error("Web service call failed.", e);
