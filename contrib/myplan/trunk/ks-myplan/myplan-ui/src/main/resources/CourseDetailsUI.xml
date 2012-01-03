@@ -241,7 +241,7 @@
             <list>
                 <ref bean="course_details_addtoplan"/>
                 <ref bean="course_details_overview"/>
-                <ref bean="course_details_time_schedule"/>
+                <!-- <ref bean="course_details_time_schedule"/> -->
             </list>
         </property>
     </bean>
@@ -292,13 +292,16 @@
                     <property name="items">
                         <list>
                             <bean parent="DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:styleClasses="icon" >
-                                <property name="formatter" ref="data_list_formatter"/>
+                                <property name="formatter" ref="scheduled_terms_formatter"/>
                             </bean>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="MessageField" p:messageText="(Source: Time Schedule)"/>
+                                        <bean parent="MessageField" p:messageText="(Source:"/>
+                                        <bean parent="LinkField" p:linkLabel="UW Time Schedule" p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0) + '/' } "
+                                              p:title="UW Time Schedule" p:target="" p:labelField.render="false"/>
+                                        <bean parent="MessageField" p:messageText=")"/>
                                     </list>
                                 </property>
                             </bean>
@@ -310,11 +313,11 @@
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                     <property name="items">
                         <list>
-                            <bean parent="MessageField" p:messageText="Projected to be offered in "/>
+                            <bean parent="MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? 'No projected quarter information is available' : 'Projected to be offered in '}"/>
                             <bean parent="DataField" p:propertyName="termsOffered" p:labelField.render="false" p:styleClasses="horizontal">
                                 <property name="formatter" ref="data_list_formatter"/>
                             </bean>
-                            <bean parent="MessageField" p:messageText="quarters"/>
+                            <bean parent="MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? '' : 'quarters'}"/>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                                 <property name="items">
@@ -345,6 +348,8 @@
         </property>
     </bean>
 
+    <!-- Uncomment after fixing the time schedule link issue -->
+    <!--
     <bean id="course_details_time_schedule" parent="CollectionGroup">
         <property name="disclosure.render" value="false"/>
         <property name="renderAddLine" value="false"/>
@@ -363,8 +368,12 @@
             </list>
         </property>
     </bean>
+    -->
 
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListFormatter">
         <property name="emptyListMessage" value="None"/>
     </bean>
+
+    <bean id="scheduled_terms_formatter" class="edu.uw.kuali.student.myplan.util.ScheduledTermsFormatter"/>
+
 </beans>

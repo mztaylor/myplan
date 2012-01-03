@@ -3,15 +3,13 @@ package org.kuali.student.myplan.course.dataobject;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
 import org.kuali.student.myplan.course.util.FacetKeyFormatter;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-
-import java.util.*;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.

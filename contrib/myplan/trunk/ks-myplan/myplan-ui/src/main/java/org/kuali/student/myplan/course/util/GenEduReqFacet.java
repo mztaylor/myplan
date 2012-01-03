@@ -12,8 +12,7 @@ public class GenEduReqFacet extends AbstractFacet {
 
     public GenEduReqFacet() {
         super();
-        unknownFacetKey =  "None";
-        unknownFacetDisplayName = "None";
+        super.setShowUnknownKey(false);
     }
 
     /**
@@ -30,7 +29,6 @@ public class GenEduReqFacet extends AbstractFacet {
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
             facetKeys.add(FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER);
-            setShowUnknownKey(true);
         } else {
             //  TODO: UW SPECIFIC
             //  Remove white space before tokenizing.

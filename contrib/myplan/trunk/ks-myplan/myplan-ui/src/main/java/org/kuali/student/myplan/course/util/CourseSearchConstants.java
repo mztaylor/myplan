@@ -2,6 +2,8 @@ package org.kuali.student.myplan.course.util;
 
 import org.kuali.student.r2.common.dto.ContextInfo;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Kamal
@@ -26,4 +28,6 @@ public class CourseSearchConstants {
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
     //  Process key for use in service methods which need caching, but don't use the process key argument.
     public static final String PROCESS_KEY = "Null";
+
+    public static final Pattern TERM_PATTERN = Pattern.compile("([a-zA-Z]+)[\\s]+[0-9][0-9]([0-9][0-9])");
 }
