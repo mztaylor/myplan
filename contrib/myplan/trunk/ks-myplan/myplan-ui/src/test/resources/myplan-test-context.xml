@@ -74,10 +74,14 @@
     </bean>
 
     <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
+    <bean id="coService" class="edu.uw.kuali.student.myplan.tests.unit.FakeCourseOfferingService">
+    </bean>
+
+    <!--
     <bean id="coService" class="edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl">
         <property name="studentServiceClient" ref="studentServiceClient"/>
     </bean>
-
+    -->
     <bean id="atpTypeComparator" class="edu.uw.kuali.student.myplan.util.TermInfoComparator"/>
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
