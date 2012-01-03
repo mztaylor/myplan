@@ -299,7 +299,7 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="MessageField" p:messageText="(Source:"/>
-                                        <bean parent="LinkField" p:linkLabel="UW Time Schedule" p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0) + '/' } "
+                                        <bean parent="LinkField" p:linkLabel="UW Time Schedule" p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0).substring(0,1) + '/' } "
                                               p:title="UW Time Schedule" p:target="" p:labelField.render="false"/>
                                         <bean parent="MessageField" p:messageText=")"/>
                                     </list>
