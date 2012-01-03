@@ -5,18 +5,23 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * Logic for building list of FacetItems and coding CourseSearchItems.
  */
 public class TermsFacet extends AbstractFacet {
 
+    private static final String PROJECTED_TERM_PREFIX = "Projected ";
+
     public TermsFacet() {
         super();
+        super.setShowUnknownKey(false);
     }
 
     /**
      * Put the terms in a predictable order.
+     *
      * @return
      */
     @Override
@@ -36,18 +41,14 @@ public class TermsFacet extends AbstractFacet {
         Set<String> facetKeys = new HashSet<String>();
 
         //  Terms
-        if (null == course.getTermInfoList() || 0 == course.getTermInfoList().size()) {
-            String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
-            facetKeys.add(key);
-            super.setShowUnknownKey(true);
-        } else {
+        if (null != course.getTermInfoList() && 0 != course.getTermInfoList().size()) {
             for (AtpTypeInfo term : course.getTermInfoList()) {
                 //  Title-case the term name.
-                String termName =   term.getName().substring(0, 1).toUpperCase() + term.getName().substring(1);
-                String key = FACET_KEY_DELIMITER + termName  + FACET_KEY_DELIMITER;
+                String termName = PROJECTED_TERM_PREFIX + term.getName().substring(0, 2).toUpperCase();
+                String key = FACET_KEY_DELIMITER + termName + FACET_KEY_DELIMITER;
 
                 //  If an FacetItem doesn't exist for this key then create one and add it to the Facet.
-                if (isNewFacetKey( key )) {
+                if (isNewFacetKey(key)) {
                     facetItems.add(new FacetItem(key, termName));
                 }
 
@@ -59,13 +60,21 @@ public class TermsFacet extends AbstractFacet {
         if (null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.add(key);
-            super.setShowUnknownKey(true);
         } else {
             for (String t : course.getScheduledTermsList()) {
-                String key = FACET_KEY_DELIMITER + t + FACET_KEY_DELIMITER;
-                String displayName = t;
+
+
+                String termFacetKey = t;
+
+                // Convert Winter 2012 to WI 12
+                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(termFacetKey);
+                if (m.matches()) {
+                    termFacetKey = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
+                }
+
+                String key = FACET_KEY_DELIMITER + termFacetKey + FACET_KEY_DELIMITER;
                 if (isNewFacetKey(key)) {
-                    facetItems.add(new FacetItem(key, displayName));
+                    facetItems.add(new FacetItem(key, termFacetKey));
                 }
                 facetKeys.add(key);
             }
@@ -92,31 +101,32 @@ public class TermsFacet extends AbstractFacet {
             }
 
             //  If the facet items that end with a year are scheduled terms and should precede terms.
-            boolean isYear1 = fi1.getKey().matches(".*\\d{4}" + FACET_KEY_DELIMITER + "$");
-            boolean isYear2 = fi2.getKey().matches(".*\\d{4}" + FACET_KEY_DELIMITER + "$");
+            boolean isYear1 = fi1.getKey().matches(".*\\d{2}" + FACET_KEY_DELIMITER + "$");
+            boolean isYear2 = fi2.getKey().matches(".*\\d{2}" + FACET_KEY_DELIMITER + "$");
 
             //  Two scheduled terms.
             if (isYear1 && isYear2) {
-                //  TODO: For now just ignore the year.
+                //  TODO: For now just ignore the year and projected keywords
                 String termKey1 = fi1.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
-                termKey1 = termKey1.replaceAll(" \\d{4}", "");
+                termKey1 = termKey1.replaceAll(" \\d{2}", "");
                 String termKey2 = fi2.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
-                termKey2 = termKey2.replaceAll(" \\d{4}", "");
+                termKey2 = termKey2.replaceAll(" \\d{2}", "");
+
                 return TermsFacet.TermOrder.valueOf(termKey1).compareTo(TermsFacet.TermOrder.valueOf(termKey2));
             }
 
-            if (isYear1 && ! isYear2) {
+            if (isYear1 && !isYear2) {
                 return -1;
             }
 
-            if ( ! isYear1 && isYear2) {
+            if (!isYear1 && isYear2) {
                 return 1;
             }
 
             //  Two terms.
-            if ( ! isYear1 &&  ! isYear2) {
-                String termKey1 = fi1.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
-                String termKey2 = fi2.getKey().replaceAll(FACET_KEY_DELIMITER, "").toUpperCase();
+            if (!isYear1 && !isYear2) {
+                String termKey1 = fi1.getKey().replaceAll(FACET_KEY_DELIMITER, "").replaceAll(PROJECTED_TERM_PREFIX, "").toUpperCase();
+                String termKey2 = fi2.getKey().replaceAll(FACET_KEY_DELIMITER, "").replaceAll(PROJECTED_TERM_PREFIX, "").toUpperCase();
                 return TermsFacet.TermOrder.valueOf(termKey1).compareTo(TermsFacet.TermOrder.valueOf(termKey2));
             }
             return 0;
@@ -124,9 +134,9 @@ public class TermsFacet extends AbstractFacet {
     }
 
     private enum TermOrder {
-          AUTUMN,
-          WINTER,
-          SPRING,
-          SUMMER;
+        AU,
+        WI,
+        SP,
+        SU;
     }
 }
