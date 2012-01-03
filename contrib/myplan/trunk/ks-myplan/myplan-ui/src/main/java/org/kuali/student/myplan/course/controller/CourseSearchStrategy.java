@@ -43,10 +43,12 @@ public class CourseSearchStrategy
         return map;
     }
 
+
+    // TODO: Fetch these from the enumeration service, ala CourseDetailsInquiryViewHelperServiceImpl.initializeCampusLocations
     public final static String NO_CAMPUS = "-1";
     public final static String SEATTLE_CAMPUS = "0";
-    public final static String TACOMA_CAMPUS = "1";
-    public final static String BOTHELL_CAMPUS = "2";
+    public final static String BOTHELL_CAMPUS = "1";
+    public final static String TACOMA_CAMPUS = "2";
 
     public void addCampusParams( ArrayList<SearchRequest> requests, CourseSearchForm form )
     {
