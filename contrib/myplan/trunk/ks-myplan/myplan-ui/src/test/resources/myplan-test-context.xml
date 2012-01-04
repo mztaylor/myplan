@@ -88,5 +88,23 @@
         <property name="luService" ref="luServiceImpl"/>
     </bean>
 
+    <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
+        <property name="atpService" ref="atpServiceImpl"/>
+        <property name="courseOfferingService" ref="coService"/>
+        <property name="academicCalendarService" ref="acalService"/>
+        <property name="courseService" ref="courseServiceImpl"/>
+    </bean>
+    <!--
+//    private transient CourseOfferingService courseOfferingService;
+
+//    private transient AcademicCalendarService academicCalendarService;
+
+//    private transient AtpService atpService;
+
+    private transient CourseService courseService;
+
+    private transient StatementService statementService;
+    private transient EnumerationManagementService enumService;
+        -->
 
 </beans>
