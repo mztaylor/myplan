@@ -46,11 +46,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AtpService atpService;
 
+    private transient EnumerationManagementService enumService;
+
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
-
-    private transient EnumerationManagementService enumService;
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -167,6 +167,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.courseService;
     }
 
+    public synchronized void setCourseService( CourseService courseService ) {
+        this.courseService = courseService;
+    }
+
     protected synchronized StatementService getStatementService() {
         if (this.statementService == null) {
             this.statementService = (StatementService) GlobalResourceLoader
@@ -195,12 +199,20 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.atpService;
     }
 
+    public void setAtpService(AtpService atpService) {
+        this.atpService = atpService;
+    }
+
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
             this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
     }
 
     protected AcademicCalendarService getAcademicCalendarService() {
@@ -210,6 +222,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
         }
         return this.academicCalendarService;
+    }
+
+    public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        this.academicCalendarService = academicCalendarService;
     }
 
     protected synchronized void initializeCampusLocations() {
