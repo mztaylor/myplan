@@ -169,6 +169,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             throw new RuntimeException("Term key did not contain a year.");
         }
 
+        logger.info(String.format("Querying the Student Section Service for: %s - %s %s", year, term, subjectArea));
         String responseText = studentServiceClient.getSectionInfo(year, term, subjectArea);
 
         Document document = null;
@@ -181,7 +182,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//s:Section");
         Map<String,String> namespaces = new HashMap<String,String>();
-        namespaces.put("s","http://webservices.washington.edu/student/");
+        namespaces.put("s", "http://webservices.washington.edu/student/");
         xpath.setNamespaceURIs(namespaces);
 
         Set<String> courseCodes = new HashSet<String>(100);
@@ -191,8 +192,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             Element section = (Element) node;
             String number = section.elementText("CourseNumber");
             String ca = section.elementText("CurriculumAbbreviation");
-            //  This needs to be 10 characters wide. Curriculum code is 4 chars, number is 3.
-            courseCodes.add(ca + "   " + number);
+
+            //  This needs to be 10 characters wide. Curriculum code is 4-6 chars, number is 3.
+            StringBuilder cc = new StringBuilder("          ");
+            cc.replace(0, ca.length() - 1, ca);
+            cc.replace(7, 9, number);
+
+            courseCodes.add(cc.toString().trim());
         }
 
         return courseCodes;
