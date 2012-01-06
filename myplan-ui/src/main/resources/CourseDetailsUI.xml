@@ -269,7 +269,7 @@
                     <property name="group.layoutManager.orientation" value="VERTICAL"/>
                     <property name="items">
                         <list>
-                            <bean parent="DataField" p:propertyName="requisites" p:labelField.render="false" p:styleClasses="vertical">
+                            <bean parent="DataField" p:propertyName="requisites" p:labelField.render="false" p:escapeHtmlInPropertyValue="false" p:styleClasses="vertical">
                                 <property name="formatter" ref="data_list_formatter"/>
                             </bean>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">

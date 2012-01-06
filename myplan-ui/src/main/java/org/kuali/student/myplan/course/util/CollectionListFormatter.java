@@ -1,10 +1,8 @@
 package org.kuali.student.myplan.course.util;
 
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+
 import org.kuali.rice.core.web.format.Formatter;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -49,16 +47,19 @@ public class CollectionListFormatter extends Formatter {
             }
         }
 
-        Element listElement = DocumentHelper.createElement(listType.getListElementName());
-        listElement.addAttribute("class", this.styleClassName);
+        StringBuffer formattedText = new StringBuffer();
+        formattedText.append("<" + listType.getListElementName() + " class=\"" + this.styleClassName + "\">" );
 
         Iterator<Object> i = collection.iterator();
         while (i.hasNext()) {
             Object elem = i.next();
-            Element itemElement = listElement.addElement(listType.getListItemElementName());
-            itemElement.setText(elem.toString());
+            formattedText.append("<" + listType.getListItemElementName() + ">");
+            formattedText.append(elem.toString());
+            formattedText.append("</" + listType.getListItemElementName() + ">");
         }
-        return listElement.asXML();
+
+        formattedText.append("</" + listType.getListElementName() + ">");
+        return formattedText.toString();
     }
 
     /**

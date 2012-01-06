@@ -47,6 +47,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>myplan-api</module>
+                <module>myplan-impl</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>
@@ -54,6 +56,8 @@
         <profile>
             <id>skip-all-wars</id>
             <modules>
+                <module>myplan-api</module>
+                <module>myplan-impl</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>
