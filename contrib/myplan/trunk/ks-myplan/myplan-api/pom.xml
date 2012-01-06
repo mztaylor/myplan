@@ -4,6 +4,7 @@
     <artifactId>myplan-api</artifactId>
     <name>MyPlan API</name>
     <description>MyPlan API</description>
+
     <parent>
         <groupId>org.kuali.student.myplan</groupId>
         <artifactId>ks-myplan</artifactId>

@@ -22,6 +22,11 @@
     <dependencies>
         <!-- Kuali Student Dependencies -->
         <dependency>
+            <groupId>org.kuali.student.myplan</groupId>
+            <artifactId>myplan-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.kuali.student.lum</groupId>
             <artifactId>ks-lum-api</artifactId>
             <version>${kuali.student.version}</version>
