@@ -17,7 +17,8 @@ import java.util.List;
  * Date: 1/5/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PlanItemSetInfo", propOrder = {"planItemIds", "interestedInItemsCount", "interestedInAllItems", "id", "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
+@XmlType(name = "PlanItemSetInfo", propOrder = {"planItemIds", "interestedInItemsCount", "interestedInAllItems", "id",
+        "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
 public class PlanItemSetInfo extends TypeStateEntityInfo implements PlanItemSet  {
 
     @XmlAttribute
