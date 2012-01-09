@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 1/5/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LearningPlanInfo", propOrder = {"id", "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
+@XmlType(name = "LearningPlanInfo", propOrder = {"studentId", "id", "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
 public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPlan {
 
     @XmlAttribute
@@ -24,6 +24,9 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
     @XmlElement
     private RichTextInfo descr;
 
+    @XmlElement
+    private String studentId;
+
     @XmlAnyElement
     private List<Element> _futureElements;
 
@@ -31,6 +34,7 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
     public LearningPlanInfo() {
         this.id = null;
         this.descr = null;
+        this.studentId = null;
         this._futureElements = null;
     }
 
@@ -39,10 +43,12 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
 
         if(null != plan) {
             this.id = plan.getId();
+            this.studentId = plan.getStudentId();
             this.descr = (null != plan.getDescr()) ? new RichTextInfo(plan.getDescr()) : null;
         }
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -51,11 +57,21 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
         this.id = id;
     }
 
+    @Override
     public RichTextInfo getDescr() {
         return descr;
     }
 
     public void setDescr(RichTextInfo descr) {
         this.descr = descr;
+    }
+
+    @Override
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 }

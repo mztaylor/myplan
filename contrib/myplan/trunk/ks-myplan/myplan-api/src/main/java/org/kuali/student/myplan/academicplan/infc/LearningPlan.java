@@ -18,4 +18,9 @@ public interface LearningPlan extends HasId, TypeStateEntity {
 
     public RichText getDescr();
 
+    /**
+     * Plan's associated student id
+     * @name Student Id
+     */
+    public String getStudentId();
 }
