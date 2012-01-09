@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import org.kuali.student.r2.common.infc.Attribute;
 
 @Entity
-@Table(name = "KSEN_MP_PLAN_ATTR")
+@Table(name = "KSPL_LRNG_PLAN_ATTR")
 public class LearningPlanAttributeEntity extends BaseAttributeEntity<LearningPlanEntity> {
 
     @ManyToOne
