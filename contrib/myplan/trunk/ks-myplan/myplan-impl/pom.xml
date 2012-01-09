@@ -42,6 +42,22 @@
             <version>${kuali.student.version}</version>
         </dependency>
         <dependency>
+	        <groupId>org.kuali.student.common</groupId>
+			<artifactId>ks-common-test</artifactId>
+			<version>${kuali.student.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+	        <groupId>org.kuali.student.common</groupId>
+			<artifactId>ks-jta</artifactId>
+			<version>${kuali.student.version}</version>
+		</dependency>
+        <dependency>
+	        <groupId>org.kuali.student.common</groupId>
+			<artifactId>ks-hibernate</artifactId>
+			<version>${kuali.student.version}</version>
+		</dependency>
+        <dependency>
             <groupId>org.kuali.student.core</groupId>
             <artifactId>ks-core-api</artifactId>
             <version>${kuali.student.version}</version>
