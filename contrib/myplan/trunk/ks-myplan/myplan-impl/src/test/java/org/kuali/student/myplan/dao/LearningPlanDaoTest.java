@@ -3,6 +3,7 @@ package org.kuali.student.myplan.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import org.kuali.student.myplan.model.LearningPlanEntity;
@@ -17,7 +18,7 @@ import java.util.List;
 public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
 
     @Dao(value = "org.kuali.student.myplan.dao.LearningPlanDao", testSqlFile = "classpath:myplan-learning_plan.sql")
-	private LearningPlanDao dao;
+	private LearningPlanDao	dao;
 
     @Test
     public void testGetAllLearningPlans() {
