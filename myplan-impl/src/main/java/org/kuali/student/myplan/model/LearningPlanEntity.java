@@ -30,7 +30,6 @@ public class LearningPlanEntity extends MetaEntity implements AttributeOwner<Lea
         this.attributes = attributes;
     }
 
-
     @Override
     public List<LearningPlanAttributeEntity> getAttributes() {
         return attributes;
