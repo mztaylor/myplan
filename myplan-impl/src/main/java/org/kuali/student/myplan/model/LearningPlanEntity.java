@@ -11,18 +11,25 @@ import java.util.List;
 @Table(name = "KSPL_LRNG_PLAN")
 public class LearningPlanEntity extends MetaEntity implements AttributeOwner<LearningPlanAttributeEntity> {
 
+    @Column(name="STUDENT_ID")
+	private String studentId;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "RT_DESCR_ID")
     private LearningPlanRichTextEntity descr;
 
+    @ManyToOne(optional=false)
+    @JoinColumn(name = "TYPE_ID")
+    private LearningPlanTypeEntity learningPlanType;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private  List<LearningPlanAttributeEntity> attributes;
-
 
     @Override
     public void setAttributes(List<LearningPlanAttributeEntity> attributes) {
         this.attributes = attributes;
     }
+
 
     @Override
     public List<LearningPlanAttributeEntity> getAttributes() {
@@ -35,5 +42,13 @@ public class LearningPlanEntity extends MetaEntity implements AttributeOwner<Lea
 
     public void setDescr(LearningPlanRichTextEntity descr) {
         this.descr = descr;
+    }
+
+    public LearningPlanTypeEntity getLearningPlanType() {
+        return learningPlanType;
+    }
+
+    public void setLearningPlanType(LearningPlanTypeEntity learningPlanType) {
+        this.learningPlanType = learningPlanType;
     }
 }
