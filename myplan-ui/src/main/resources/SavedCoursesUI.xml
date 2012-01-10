@@ -190,7 +190,10 @@
         <property name="propertyName" value="savedCoursesList"/>
         <property name="items">
             <list>
+                <bean parent="ActionLinkField" p:actionLabel="@{#line.code} @{#line.title} " p:labelField.render="false"/>
+                <!--
                 <bean parent="MessageField" p:messageText="@{#line.title}"/>
+                -->
             </list>
         </property>
     </bean>
