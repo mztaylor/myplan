@@ -3,7 +3,6 @@ package org.kuali.student.myplan.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import org.kuali.student.myplan.model.LearningPlanEntity;
@@ -17,8 +16,8 @@ import java.util.List;
 @PersistenceFileLocation("classpath:META-INF/lp-persistence.xml")
 public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
 
-    @Dao(value = "org.kuali.student.myplan.dao.LearningPlanDao", testSqlFile = "classpath:myplan-learning_plan.sql")
-	private LearningPlanDao	dao;
+    @Dao(value = "org.kuali.student.myplan.dao.AcademicPlanDao", testSqlFile = "classpath:myplan-learning_plan.sql")
+	private AcademicPlanDao dao;
 
     @Test
     public void testGetAllLearningPlans() {

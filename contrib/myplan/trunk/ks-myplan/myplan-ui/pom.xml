@@ -20,6 +20,7 @@
     </repositories>
 
     <dependencies>
+
         <!-- Kuali Student Dependencies -->
         <dependency>
             <groupId>org.kuali.student.lum</groupId>
@@ -136,10 +137,6 @@
             <artifactId>antlr</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-
-
 
 
         <!-- TODO: Fix this -->
