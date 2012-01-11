@@ -179,12 +179,12 @@
         </property>
     </bean>
 
-    <bean id="watch_list" parent="CollectionGroup" p:title="Watch List (TBD)">
+    <bean id="watch_list" parent="ListGroup" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
+
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <!--<property name="header.render" value="false"/>-->
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
