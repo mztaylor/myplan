@@ -1,3 +1,10 @@
+#course_search_instructions_span {
+    color: #666;
+    margin-bottom: 1em;
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+}
 /* Styles for left content containers */
 #course_search_panel_div,
 #course_search_result_panel_div,
@@ -388,4 +395,8 @@ table.datatable {
 #course_details_overview_div table td .source {
     font-size: 90%;
     color: #777;
+}
+.link_back {
+    margin-bottom: 2em;
+    display: block;
 }
