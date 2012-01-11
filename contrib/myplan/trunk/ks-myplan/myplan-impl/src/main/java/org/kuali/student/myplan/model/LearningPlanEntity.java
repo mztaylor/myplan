@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "KSPL_LRNG_PLAN")
-public class LearningPlanEntity extends MetaEntity implements AttributeOwner<LearningPlanAttributeEntity> {
+public class LearningPlanEntity extends MetaEntity
+        implements AttributeOwner<LearningPlanAttributeEntity>, Comparable<LearningPlanEntity> {
 
     @Column(name="STUDENT_ID")
 	private String studentId;
@@ -35,6 +36,14 @@ public class LearningPlanEntity extends MetaEntity implements AttributeOwner<Lea
         return attributes;
     }
 
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
     public LearningPlanRichTextEntity getDescr() {
         return descr;
     }
@@ -49,5 +58,32 @@ public class LearningPlanEntity extends MetaEntity implements AttributeOwner<Lea
 
     public void setLearningPlanType(LearningPlanTypeEntity learningPlanType) {
         this.learningPlanType = learningPlanType;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
+    }
+
+    @Override
+    public int compareTo(LearningPlanEntity other) {
+
+        if (other == null) {
+            return -1;
+        }
+
+        //  First check student id.
+        if (! other.getStudentId().equals(this.getStudentId())) {
+            return this.getStudentId().compareTo(other.getStudentId());
+        }
+
+        //  Could check type here.
+
+        //  Check description text
+        if (! this.getDescr().getPlain().equals(other.getDescr().getPlain())) {
+            return this.getDescr().getPlain().compareTo(other.getDescr().getPlain());
+        }
+
+        return 0;
     }
 }

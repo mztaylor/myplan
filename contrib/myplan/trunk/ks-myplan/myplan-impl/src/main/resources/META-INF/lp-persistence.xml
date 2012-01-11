@@ -6,6 +6,7 @@
 
     <!-- JPA test "unit" -->
     <persistence-unit name="LearningPlan" transaction-type="JTA">
+
         <class>org.kuali.student.r2.common.entity.BaseAttributeEntity</class>
 
         <class>org.kuali.student.myplan.model.LearningPlanEntity</class>
@@ -23,6 +24,4 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     </persistence-unit>
-
-
 </persistence>
