@@ -44,10 +44,13 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @JoinColumn(name = "TYPE_ID")
     private PlanItemTypeEntity learningPlanItemType;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner")
-    private List<PlanItemAttributeEntity> attributes;
+    @ManyToOne()
+    @JoinColumn(name = "PLAN_ID")
+    private LearningPlanEntity learningPlan;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "OWNER")
+    private List<PlanItemAttributeEntity> attributes;
 
 	@Override
 	public List<PlanItemAttributeEntity> getAttributes() {

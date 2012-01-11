@@ -142,13 +142,14 @@ CREATE INDEX KSPL_LRNG_PLAN_ITEM_ATTR_I1 ON KSPL_LRNG_PLAN_ITEM_ATTR (OWNER);
 
 
 
-INSERT INTO KSPL_LRNG_PLAN_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.type.plan', 'plan-type-1', 0, 'Learning plan description', 'Learning Plan');
-INSERT INTO KSPL_LRNG_PLAN_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.type.plan.template', 'plan-type-2', 0, 'Learning plan template description', 'Learning Plan Template');
 
-INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, PLAIN, FORMATTED, VER_NBR) VALUES ('lp1-Desc', '<p>Student 1 Learning Plan 1</p>',  'Student 1 Learning Plan 1', 0);
-INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, PLAIN, FORMATTED, VER_NBR) VALUES ('lp2-Desc', '<p>Student 1 Learning Plan 2</p>',  'Student 1 Learning Plan 2', 0);
-INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, PLAIN, FORMATTED, VER_NBR) VALUES ('lp3-Desc', '<p>Student 2 Learning Plan 1</p>',  'Student 2 Learning Plan 1', 0);
-INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, PLAIN, FORMATTED, VER_NBR) VALUES ('lp4-Desc', '<p>Student 2 Learning Plan 2</p>',  'Student 2 Learning Plan 2', 0);
+INSERT INTO KSPL_LRNG_PLAN_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.type.plan', 'obj-plan-type-1', 0, 'Learning plan description', 'Learning Plan');
+INSERT INTO KSPL_LRNG_PLAN_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.type.plan.template', 'obj-plan-type-2', 0, 'Learning plan template description', 'Learning Plan Template');
+
+INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp1-Desc', '<p>Student 1 Learning Plan 1</p>',  'Student 1 Learning Plan 1', 0);
+INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp2-Desc', '<p>Student 1 Learning Plan 2</p>',  'Student 1 Learning Plan 2', 0);
+INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp3-Desc', '<p>Student 2 Learning Plan 1</p>',  'Student 2 Learning Plan 1', 0);
+INSERT INTO KSPL_MYPLAN_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp4-Desc', '<p>Student 2 Learning Plan 2</p>',  'Student 2 Learning Plan 2', 0);
 
 INSERT INTO KSPL_LRNG_PLAN (ID, OBJ_ID, VER_NBR, STUDENT_ID, RT_DESCR_ID, TYPE_ID) values ('lp1', 'obj-lp1', 0, 'student1', 'lp1-Desc', 'kuali.academicplan.type.plan');
 INSERT INTO KSPL_LRNG_PLAN (ID, OBJ_ID, VER_NBR, STUDENT_ID, RT_DESCR_ID, TYPE_ID) values ('lp2', 'obj-lp2', 0, 'student1', 'lp2-Desc', 'kuali.academicplan.type.plan');

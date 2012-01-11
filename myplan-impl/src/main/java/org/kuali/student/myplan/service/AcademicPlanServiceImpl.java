@@ -7,7 +7,7 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.dao.AcademicPlanDao;
+import org.kuali.student.myplan.dao.LearningPlanDao;
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -22,13 +22,13 @@ import java.util.List;
  * TODO: Placeholder.
  */
 public class AcademicPlanServiceImpl implements AcademicPlanService {
-    private AcademicPlanDao learningPlanDao;
+    private LearningPlanDao learningPlanDao;
 
-    public AcademicPlanDao getLearningPlanDao() {
+    public LearningPlanDao getLearningPlanDao() {
         return learningPlanDao;
     }
 
-    public void setLearningPlanDao(AcademicPlanDao learningPlanDao) {
+    public void setLearningPlanDao(LearningPlanDao learningPlanDao) {
         this.learningPlanDao = learningPlanDao;
     }
 

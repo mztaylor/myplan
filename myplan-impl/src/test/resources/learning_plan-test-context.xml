@@ -99,7 +99,7 @@
 	  	<property name="learningPlanDao" ref="learningPlanDao"/>
 	</bean>
 
-     <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.AcademicPlanDao">
+     <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
     	<property name="em" ref="entityManager"/>
     </bean>   
 
