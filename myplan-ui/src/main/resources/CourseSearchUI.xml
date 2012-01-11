@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <!-- Copyright 2007-2009 The Kuali Foundation Licensed under the Educational
@@ -160,16 +161,32 @@
         </property>
     </bean>
 
-    <!-- Group for MyStuff Panel TBD -->
-    <bean id="mystuff_panel" parent="Group">
+    <bean id="mystuff_panel" parent="CollectionGroup">
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-200 fl-force-left"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="propertyName" value="savedCoursesList"/>
         <property name="items">
             <list>
-                <!-- MYSTUFF - TBD -->
+                <bean parent="FieldGroup">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="MessageField" p:messageText="@{#line.code}"/>
+                            <bean parent="MessageField" p:messageText="@{#line.title}"/>
+                            <bean parent="MessageField" p:messageText="@{#line.credit}"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
+
 
     <!-- Group for Search Fields Container -->
     <bean id="course_search_functions" parent="Group">
@@ -181,7 +198,6 @@
             </list>
         </property>
     </bean>
-
 
     <!-- Group for Search Input Fields -->
     <bean id="course_search_fields" parent="FieldGroup">

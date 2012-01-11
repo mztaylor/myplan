@@ -20,9 +20,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.krad.uif.UifConstants;
+import org.kuali.rice.krad.uif.UifParameters;
+import org.kuali.rice.krad.uif.component.Component;
+import org.kuali.rice.krad.uif.field.MessageField;
+import org.kuali.rice.krad.uif.util.ComponentFactory;
+import org.kuali.rice.krad.uif.util.UifWebUtils;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
@@ -35,6 +42,7 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
@@ -44,6 +52,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
@@ -217,6 +226,79 @@ public class CourseSearchController extends UifControllerBase {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=refreshProgGroup")
+	public ModelAndView refreshProgGroup(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+			HttpServletRequest request, HttpServletResponse response) {
+
+//		return updateComponent(uiTestForm, result, request, response);
+        String requestedComponentId = request.getParameter(UifParameters.REQUESTED_COMPONENT_ID);
+        if (StringUtils.isBlank(requestedComponentId)) {
+            throw new RuntimeException("Requested component id for update not found in request");
+        }
+        // get a new instance of the component
+        Component component = ComponentFactory.getNewInstanceForRefresh(form.getView(), requestedComponentId);
+
+        // run lifecycle and update in view
+        form.getView().getViewHelperService().performComponentLifecycle(form.getView(), form, component,
+                requestedComponentId);
+        MessageField field = (MessageField) component;
+        String text = field.getMessageText() + " " + new Date().toString();
+        field.setMessageText( text );
+
+//        return UifWebUtils.getComponentModelAndView(component, form);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject(UifConstants.DEFAULT_MODEL_NAME, form);
+        modelAndView.addObject("Component", component);
+        modelAndView.setViewName("ComponentUpdate");
+
+        return modelAndView;
+	}
+
+    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=refreshSavedCourses")
+	public ModelAndView refreshSavedCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+			HttpServletRequest request, HttpServletResponse response) {
+
+//		return updateComponent(uiTestForm, result, request, response);
+        String requestedComponentId = request.getParameter(UifParameters.REQUESTED_COMPONENT_ID);
+        if (StringUtils.isBlank(requestedComponentId)) {
+            throw new RuntimeException("Requested component id for update not found in request");
+        }
+        // get a new instance of the component
+        Component component = ComponentFactory.getNewInstanceForRefresh(form.getView(), requestedComponentId);
+
+        // run lifecycle and update in view
+        form.getView().getViewHelperService().performComponentLifecycle(form.getView(), form, component,
+                requestedComponentId);
+        /*
+        MessageField field = (MessageField) component;
+        String text = field.getMessageText() + " " + new Date().toString();
+        field.setMessageText( text );
+        */
+
+//        return UifWebUtils.getComponentModelAndView(component, form);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject(UifConstants.DEFAULT_MODEL_NAME, form);
+        modelAndView.addObject("Component", component);
+        modelAndView.setViewName("ComponentUpdate");
+
+        return modelAndView;
+	}
+
+/*
+    private List<SavedCoursesItem> savedCoursesList = new ArrayList<SavedCoursesItem>();
+
+    public List<SavedCoursesItem> getSavedCoursesList() {
+        return savedCoursesList;
+    }
+
+    public void setSavedCoursesList( List<SavedCoursesItem> savedCoursesList ) {
+        this.savedCoursesList = savedCoursesList;
+    }
+
+    public void addSavedCourses( SavedCoursesItem item ) {
+        savedCoursesList.add( item );
+    }
+*/
 
     public void hitCourseID( Map<String, Hit> courseMap, String id ) {
         Hit hit = null;
@@ -479,6 +561,7 @@ public class CourseSearchController extends UifControllerBase {
     public void setSearcher(CourseSearchStrategy searcher) {
         this.searcher = searcher;
     }
+
 }
 
 
