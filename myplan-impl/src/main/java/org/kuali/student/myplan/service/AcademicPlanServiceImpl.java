@@ -47,7 +47,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByType(@WebParam(name = "planItemId") String planItemId,
+    public List<PlanItem> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
                                                    @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -55,12 +55,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
