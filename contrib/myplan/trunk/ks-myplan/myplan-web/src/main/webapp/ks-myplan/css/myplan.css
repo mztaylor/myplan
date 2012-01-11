@@ -48,11 +48,46 @@ body {
     padding: 0;
 }
 
+/* My Stuff */
 #mystuff_panel_div {
 	margin: 0;
-    background: #d3d3d3;
-    min-height: 500px
+    border: solid 1px #ccc;
 }
+#mystuff_panel_div .kr-section-subhead {
+    display:block;
+    text-align:center;
+    background: #ccc;
+    font-weight: normal;
+    padding: 5px;
+    line-height: 1.5em;
+}
+#mystuff_panel_div .kr-section-subhead.kr-collectionGroup-header {
+    background: #e4e4e4;
+}
+
+/* Watch List */
+#watch_list_div .boxLayoutVerticalItem,
+#watch_list_div .datatable {
+    margin:0;
+}
+#watch_list_div .kr-collection-item {
+    border-bottom:dotted 1px #aaaaaa;
+    padding:5px;
+}
+#watch_list_div .kr-collection-item .boxLayoutHorizontalItem {
+    margin-right: 0.33em;
+}
+#watch_list_div .courseCode {
+    font-weight: bold;
+    white-space: nowrap;
+}
+#watch_list_div .courseName {
+
+}
+#watch_list_div .courseCredits {
+    white-space: nowrap;
+}
+
 .ellipsis {
     white-space: nowrap;
     overflow: hidden;
