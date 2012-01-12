@@ -183,10 +183,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <!--<property name="header.render" value="false"/>-->
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="propertyName" value="savedCoursesList"/>
         <property name="items">
@@ -397,7 +395,6 @@
                             } else {
                                 jq('.dataTables_paginate span').hide();
                             }
-                            //saveState(this);
                        }"/>
             </map>
         </property>
