@@ -371,7 +371,8 @@ public class CourseSearchController extends UifControllerBase {
                 String key = term.getKey();
                 String subject = course.getSubject();
 
-                List<String> offerings = offeringService.getCourseOfferingIdsByTermAndSubjectArea(key, subject, null);
+                List<String> offerings = offeringService
+                        .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
                 if (offerings.contains(code)) {
                     course.addScheduledTerm( term.getName() );
                 }
@@ -516,7 +517,8 @@ public class CourseSearchController extends UifControllerBase {
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
-           this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+            this.courseOfferingService = (CourseOfferingService)
+                GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return this.courseOfferingService;
     }
