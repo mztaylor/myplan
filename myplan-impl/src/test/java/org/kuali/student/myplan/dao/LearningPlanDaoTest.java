@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.model.LearningPlanEntity;
 
 import org.kuali.student.common.test.spring.AbstractTransactionalDaoTest;
@@ -53,6 +54,8 @@ public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
         String studentId = "new-student";
 
         LearningPlanEntity learningPlanEntity = new LearningPlanEntity();
+        String id = UUIDHelper.genStringUUID();
+        learningPlanEntity.setId(id);
         learningPlanEntity.setDescr(lpDesc);
         learningPlanEntity.setLearningPlanType(learningPlanTypeEntity);
         learningPlanEntity.setStudentId(studentId);
@@ -65,6 +68,14 @@ public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
         learningPlanDao.persist(learningPlanEntity);
 
         assertEquals(5, learningPlanDao.findAll().size());
+
+        LearningPlanEntity lpe = learningPlanDao.find(id);
+        assertEquals(learningPlanEntity.getId(), lpe.getId());
+        assertEquals(learningPlanEntity.getDescr().getPlain(), lpe.getDescr().getPlain());
+        assertEquals(learningPlanEntity.getDescr().getFormatted(), lpe.getDescr().getFormatted());
+        assertEquals(learningPlanEntity.getStudentId(), lpe.getStudentId());
+        assertEquals(learningPlanEntity.getCreateId(), lpe.getCreateId());
+        assertEquals(learningPlanEntity.getCreateTime(), lpe.getCreateTime());
     }
 
     @Test

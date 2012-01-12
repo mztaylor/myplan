@@ -9,7 +9,7 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.dao.LearningPlanDao;
-import org.kuali.student.myplan.dao.PlanItemEntityDao;
+import org.kuali.student.myplan.dao.PlanItemDao;
 import org.kuali.student.myplan.model.LearningPlanEntity;
 import org.kuali.student.myplan.model.LearningPlanRichTextEntity;
 import org.kuali.student.myplan.model.PlanItemEntity;
@@ -30,13 +30,13 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     private LearningPlanDao learningPlanDao;
 
-    private PlanItemEntityDao planItemEntityDao;
+    private PlanItemDao planItemEntityDao;
 
-    public PlanItemEntityDao getPlanItemEntityDao() {
+    public PlanItemDao getPlanItemEntityDao() {
         return planItemEntityDao;
     }
 
-    public void setPlanItemEntityDao(PlanItemEntityDao planItemEntityDao) {
+    public void setPlanItemEntityDao(PlanItemDao planItemEntityDao) {
         this.planItemEntityDao = planItemEntityDao;
     }
 
