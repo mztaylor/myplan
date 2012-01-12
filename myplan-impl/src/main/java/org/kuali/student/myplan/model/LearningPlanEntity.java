@@ -1,10 +1,15 @@
 package org.kuali.student.myplan.model;
 
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
 import org.kuali.student.r2.common.entity.TypeEntity;
+import org.kuali.student.r2.common.infc.Attribute;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +30,31 @@ public class LearningPlanEntity extends MetaEntity
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private  List<LearningPlanAttributeEntity> attributes;
+
+    public LearningPlanEntity() {
+        super();
+    }
+
+    public LearningPlanEntity(LearningPlan learningPlan) {
+        this();
+
+        this.setId(learningPlan.getId());
+        this.setStudentId(learningPlan.getStudentId());
+
+        LearningPlanRichTextEntity rte = new LearningPlanRichTextEntity();
+        rte.setPlain(learningPlan.getDescr().getPlain());
+        rte.setFormatted(learningPlan.getDescr().getFormatted());
+
+        this.setDescr(rte);
+
+        this.setAttributes(new ArrayList<LearningPlanAttributeEntity>());
+        if (null != learningPlan.getAttributes()) {
+            for (Attribute att : learningPlan.getAttributes()) {
+                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att);
+                this.getAttributes().add(attEntity);
+            }
+        }
+    }
 
     @Override
     public void setAttributes(List<LearningPlanAttributeEntity> attributes) {
@@ -64,6 +94,31 @@ public class LearningPlanEntity extends MetaEntity
     public String toString() {
         return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
     }
+
+    /**
+     * Provides and data transfer object representation of the plan.
+     * @return LearningPlanInfo
+     */
+    public LearningPlanInfo toDto() {
+        LearningPlanInfo dto = new LearningPlanInfo();
+
+        dto.setId(getId());
+        dto.setStudentId(this.studentId);
+
+        if (this.getDescr() != null) {
+            dto.setDescr(this.getDescr().toDto());
+        }
+
+        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+        for (LearningPlanAttributeEntity att : getAttributes()) {
+            AttributeInfo attInfo = att.toDto();
+            attributes.add(attInfo);
+        }
+        dto.setAttributes(attributes);
+
+        return dto;
+    }
+
 
     @Override
     public int compareTo(LearningPlanEntity other) {

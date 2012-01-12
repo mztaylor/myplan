@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.service;
 
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
@@ -8,21 +9,36 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.dao.LearningPlanDao;
+import org.kuali.student.myplan.dao.PlanItemEntityDao;
+import org.kuali.student.myplan.model.LearningPlanEntity;
+import org.kuali.student.myplan.model.LearningPlanRichTextEntity;
+import org.kuali.student.myplan.model.PlanItemEntity;
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.TypeInfo;
-import org.kuali.student.r2.common.dto.TypeTypeRelationInfo;
+import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: Placeholder.
+ * Academic Plan Service Implementation.
  */
+@Transactional(readOnly=true,noRollbackFor={DoesNotExistException.class},rollbackFor={Throwable.class})
 public class AcademicPlanServiceImpl implements AcademicPlanService {
+
     private LearningPlanDao learningPlanDao;
+
+    private PlanItemEntityDao planItemEntityDao;
+
+    public PlanItemEntityDao getPlanItemEntityDao() {
+        return planItemEntityDao;
+    }
+
+    public void setPlanItemEntityDao(PlanItemEntityDao planItemEntityDao) {
+        this.planItemEntityDao = planItemEntityDao;
+    }
 
     public LearningPlanDao getLearningPlanDao() {
         return learningPlanDao;
@@ -36,7 +52,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public LearningPlan getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                         @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+
+        LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
+        if (null == lpe) {
+            throw new DoesNotExistException(learningPlanId);
+        }
+
+        LearningPlanInfo dto = lpe.toDto();
+        return dto;
     }
 
     @Override
@@ -83,15 +106,44 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                                @WebParam(name = "planTypeKey") String planTypeKey,
                                                                @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+
+        List<LearningPlanEntity> lpeList = learningPlanDao.getLearningPlansByType(studentId, planTypeKey);
+
+        List<LearningPlan> learningPlanDtos = new ArrayList<LearningPlan>();
+        for (LearningPlanEntity lpe : lpeList) {
+            learningPlanDtos.add(lpe.toDto());
+        }
+
+        return learningPlanDtos;
     }
 
     @Override
+    @Transactional
     public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
-            OperationFailedException, PermissionDeniedException {
-        return null;
+        OperationFailedException, PermissionDeniedException {
+
+        LearningPlanEntity lpe = new LearningPlanEntity(learningPlan);
+        lpe.setId(UUIDHelper.genStringUUID());
+
+        lpe.setStudentId(learningPlan.getStudentId());
+
+        RichTextInfo rti = learningPlan.getDescr();
+
+        LearningPlanRichTextEntity learningPlanRichTextEntity = new LearningPlanRichTextEntity();
+        learningPlanRichTextEntity.setPlain(rti.getPlain());
+        learningPlanRichTextEntity.setFormatted(rti.getFormatted());
+        lpe.setDescr(learningPlanRichTextEntity);
+
+        LearningPlanEntity existing = learningPlanDao.find(lpe.getId());
+        if( existing != null) {
+            throw new AlreadyExistsException();
+	    }
+
+        learningPlanDao.persist(lpe);
+
+        return learningPlanDao.find(lpe.getId()).toDto();
     }
 
     @Override
@@ -108,8 +160,29 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "learningPlan") LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Transactional
+    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+                                               @WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
+                                               @WebParam(name = "context") ContextInfo context)
+            throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException,
+                MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
+
+        LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
+        if (lpe == null) {
+            throw new DoesNotExistException(learningPlanId);
+        }
+
+        LearningPlanEntity modifiedLpe = new LearningPlanEntity(learningPlan);
+
+        modifiedLpe.setStudentId(learningPlan.getStudentId());
+
+        //  Update the description if necessary.
+        LearningPlanRichTextEntity rte = lpe.getDescr();
+        rte.setPlain(learningPlan.getDescr().getPlain());
+        rte.setFormatted(learningPlan.getDescr().getFormatted());
+
+        learningPlanDao.merge(modifiedLpe);
+        return learningPlanDao.find(modifiedLpe.getId()).toDto();
     }
 
     @Override
@@ -123,8 +196,28 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public StatusInfo deleteLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Transactional
+    public StatusInfo deleteLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+                                         @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        StatusInfo status = new StatusInfo();
+        status.setSuccess(Boolean.TRUE);
+
+        LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
+        if (lpe == null) {
+           throw new DoesNotExistException(learningPlanId);
+        }
+
+        //  Delete plan items.
+        List<PlanItemEntity> pies = planItemEntityDao.getPlanItems(learningPlanId);
+        for (PlanItemEntity pie : pies) {
+            planItemEntityDao.remove(pie);
+        }
+
+        learningPlanDao.remove(lpe);
+
+        return status;
+
     }
 
     @Override
