@@ -86,6 +86,14 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         this.learningPlanItemType = learningPlanItemType;
     }
 
+    public LearningPlanEntity getLearningPlan() {
+        return learningPlan;
+    }
+
+    public void setLearningPlan(LearningPlanEntity learningPlan) {
+        this.learningPlan = learningPlan;
+    }
+
     @Override
     public String toString() {
         return "PlanItemEntity [" + getId() + "]";
