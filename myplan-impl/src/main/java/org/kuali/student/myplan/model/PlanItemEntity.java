@@ -42,6 +42,10 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @JoinColumn(name = "PLAN_ID")
     private LearningPlanEntity learningPlan;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "RT_DESCR_ID")
+    private PlanItemRichTextEntity descr;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "OWNER")
     private List<PlanItemAttributeEntity> attributes;
@@ -93,6 +97,13 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         this.learningPlan = learningPlan;
     }
 
+    public PlanItemRichTextEntity getDescr() {
+        return descr;
+    }
+
+    public void setDescr(PlanItemRichTextEntity descr) {
+        this.descr = descr;
+    }
    /* public List<AtpEntity> getPlanPeriods() {
         return planPeriods;
     }

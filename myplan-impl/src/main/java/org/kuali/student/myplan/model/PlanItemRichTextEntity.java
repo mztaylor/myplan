@@ -7,18 +7,21 @@ import org.kuali.student.r2.common.infc.RichText;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Plan item comment.
+ */
 @Entity
-@Table(name = "KSPL_LRNG_PLAN_RICH_TEXT")
-public class LearningPlanRichTextEntity extends RichTextEntity {
+@Table(name = "KSPL_LRNG_PI_RICH_TEXT")
+public class PlanItemRichTextEntity extends RichTextEntity {
 
-    public LearningPlanRichTextEntity() {}
+    public PlanItemRichTextEntity() {}
 
-    public LearningPlanRichTextEntity(String plain, String formatted){
+    public PlanItemRichTextEntity(String plain, String formatted){
         this.setFormatted(formatted);
         this.setPlain(plain);
     }
 
-    public LearningPlanRichTextEntity(RichText rt) {
+    public PlanItemRichTextEntity(RichText rt) {
         if (null != rt) {
             this.setFormatted(rt.getFormatted());
             this.setPlain(rt.getPlain());
