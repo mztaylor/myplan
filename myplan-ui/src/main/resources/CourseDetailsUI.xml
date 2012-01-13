@@ -231,13 +231,7 @@
 
     <bean id="course_details_back_link" parent="HeaderPage_NoActions">
         <property name="items">
-            <bean parent="ActionLinkField">
-                <property name="title" value="Back to Search Results"/>
-                <property name="actionLabel" value="Back to Search Results"/>
-                <property name="clientSideJs" value="history.go(-1)"/>
-                <property name="styleClasses" value="link_back"/>
-                <property name="labelField.render" value="false"/>
-            </bean>
+            <bean parent="ActionLinkField" p:actionLabel="Back to Search Results" p:title="Back to Search Results" p:clientSideJs="history.go(-1)" p:styleClasses="link_back" />
         </property>
     </bean>
 
