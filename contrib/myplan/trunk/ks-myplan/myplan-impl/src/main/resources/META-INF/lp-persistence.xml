@@ -46,6 +46,8 @@
         <class>org.kuali.student.myplan.model.PlanItemTypeEntity</class>
         <class>org.kuali.student.myplan.model.PlanItemTypeAttributeEntity</class>
 
+        <class>org.kuali.student.myplan.model.PlanItemRichTextEntity</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     </persistence-unit>
