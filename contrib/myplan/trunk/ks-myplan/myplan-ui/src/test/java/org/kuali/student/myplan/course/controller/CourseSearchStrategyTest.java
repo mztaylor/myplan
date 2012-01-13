@@ -188,4 +188,5 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequests() throws Exception {
 
     }
+
 }

@@ -202,7 +202,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-        <property name="propertyName" value="savedCoursesList"/>
+        <property name="propertyName" value="savedCoursesItemList"/>
         <property name="items">
             <list>
                 <bean parent="FieldGroup" p:labelField.render="false">

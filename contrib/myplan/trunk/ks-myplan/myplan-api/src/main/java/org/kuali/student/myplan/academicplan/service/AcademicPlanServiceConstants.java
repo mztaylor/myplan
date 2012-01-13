@@ -10,4 +10,5 @@ import org.kuali.student.r2.common.util.constants.CommonServiceConstants;
  */
 public class AcademicPlanServiceConstants {
     public static final String NAMESPACE = CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "acadplan";
+    public static final String LEARNING_PLAN_ITEM_TYPE_WISHLIST = "this constant was missing, so jason just picked a random value";
 }

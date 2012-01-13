@@ -2,10 +2,11 @@ package org.kuali.student.myplan.course;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
+import org.kuali.student.myplan.course.dataobject.SavedCoursesService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -163,4 +164,18 @@ public class CourseSearchControllerTest {
             fail( "failed!" );
         }
     }
+
+    @Test
+    public void testSavedCoursesService() throws Exception {
+
+        CourseSearchController controller = getSearchController();
+        try {
+            SavedCoursesService savedCoursesService = controller.getSavedCoursesService();
+            List<SavedCoursesItem> itemList = savedCoursesService.getSavedCoursesList();
+        } catch (Exception e) {
+            fail( "failed!" );
+        }
+
+    }
+
 }
