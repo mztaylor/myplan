@@ -29,7 +29,6 @@ import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.uif.component.Component;
 import org.kuali.rice.krad.uif.field.MessageField;
 import org.kuali.rice.krad.uif.util.ComponentFactory;
-import org.kuali.rice.krad.uif.util.UifWebUtils;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
@@ -43,6 +42,7 @@ import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
+import org.kuali.student.myplan.course.dataobject.SavedCoursesService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
@@ -81,7 +81,11 @@ public class CourseSearchController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return new CourseSearchForm();
+        CourseSearchForm form = new CourseSearchForm();
+        SavedCoursesService savedCoursesService = getSavedCoursesService();
+        List<SavedCoursesItem> savedCoursesList = savedCoursesService.getSavedCoursesList();
+        form.setSavedCoursesItemList( savedCoursesList );
+        return form;
     }
 
     @RequestMapping(params = "methodToCall=start")
@@ -215,6 +219,10 @@ public class CourseSearchController extends UifControllerBase {
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
 
+            SavedCoursesService savedCoursesService = getSavedCoursesService();
+            List<SavedCoursesItem> savedCoursesList = savedCoursesService.getSavedCoursesList();
+            form.setSavedCoursesItemList( savedCoursesList );
+
             if( courseList.size() == 0 ) {
                 return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
             }
@@ -225,7 +233,7 @@ public class CourseSearchController extends UifControllerBase {
         }
 
     }
-
+ /*
     @RequestMapping(method = RequestMethod.POST, params = "methodToCall=refreshProgGroup")
 	public ModelAndView refreshProgGroup(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -269,11 +277,11 @@ public class CourseSearchController extends UifControllerBase {
         // run lifecycle and update in view
         form.getView().getViewHelperService().performComponentLifecycle(form.getView(), form, component,
                 requestedComponentId);
-        /*
-        MessageField field = (MessageField) component;
-        String text = field.getMessageText() + " " + new Date().toString();
-        field.setMessageText( text );
-        */
+
+//        MessageField field = (MessageField) component;
+//        String text = field.getMessageText() + " " + new Date().toString();
+//        field.setMessageText( text );
+
 
 //        return UifWebUtils.getComponentModelAndView(component, form);
         ModelAndView modelAndView = new ModelAndView();
@@ -283,23 +291,7 @@ public class CourseSearchController extends UifControllerBase {
 
         return modelAndView;
 	}
-
-/*
-    private List<SavedCoursesItem> savedCoursesList = new ArrayList<SavedCoursesItem>();
-
-    public List<SavedCoursesItem> getSavedCoursesList() {
-        return savedCoursesList;
-    }
-
-    public void setSavedCoursesList( List<SavedCoursesItem> savedCoursesList ) {
-        this.savedCoursesList = savedCoursesList;
-    }
-
-    public void addSavedCourses( SavedCoursesItem item ) {
-        savedCoursesList.add( item );
-    }
 */
-
     public void hitCourseID( Map<String, Hit> courseMap, String id ) {
         Hit hit = null;
         if( courseMap.containsKey( id )) {
@@ -564,6 +556,18 @@ public class CourseSearchController extends UifControllerBase {
         this.searcher = searcher;
     }
 
+    private SavedCoursesService savedCoursesService;
+
+    public SavedCoursesService getSavedCoursesService() {
+        if( savedCoursesService == null ) {
+            savedCoursesService = new SavedCoursesService();
+        }
+        return savedCoursesService;
+    }
+
+    public void setSavedCoursesService( SavedCoursesService savedCourses ) {
+        this.savedCoursesService = savedCourses;
+    }
 }
 
 

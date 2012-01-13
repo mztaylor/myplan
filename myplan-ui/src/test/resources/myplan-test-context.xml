@@ -48,6 +48,7 @@
         <property name="courseOfferingService" ref="coService"/>
         <property name="academicCalendarService" ref="acalService"/>
         <property name="atpTypeComparator" ref="atpTypeComparator"/>
+        <property name="savedCoursesService" ref="savedCoursesService"/>
     </bean>
 
     <bean id="studentServiceClient" class="${uw.studentservice.impl}">
@@ -83,6 +84,13 @@
     </bean>
     -->
     <bean id="atpTypeComparator" class="edu.uw.kuali.student.myplan.util.TermInfoComparator"/>
+
+    <bean id="savedCoursesService" class="org.kuali.student.myplan.course.dataobject.SavedCoursesService">
+        <property name="academicPlanService" ref="academicPlanService"/>
+        <property name="courseService" ref="courseServiceImpl"/>
+    </bean>
+
+    <bean id="academicPlanService" class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>

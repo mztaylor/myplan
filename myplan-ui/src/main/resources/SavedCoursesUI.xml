@@ -100,7 +100,7 @@
     <bean id="SavedCourses" parent="SavedCourses-parentBean"/>
     <bean id="SavedCourses-parentBean" abstract="true" parent="DataObjectEntry">
         <property name="objectLabel" value="Saved Courses"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCourses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesService"/>
         <property name="titleAttribute" value="userID"/>
         <property name="attributes">
             <list>
@@ -143,7 +143,7 @@
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="title" value="title goes here"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCourses"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesService"/>
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.SavedCoursesInquiryView"/>
         <property name="singlePageView" value="true"/>

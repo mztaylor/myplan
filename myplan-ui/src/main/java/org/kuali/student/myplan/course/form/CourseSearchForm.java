@@ -140,72 +140,15 @@ public class CourseSearchForm extends UifFormBase {
         this.creditsFacetItems = creditsFacetItems;
     }
 
-    private String field1;
-    private String field2;
-    private String field3;
+    List<SavedCoursesItem> savedCoursesItemList;
 
-    public String getField1() {
-        return this.field1;
-    }
-
-    public String getField2() {
-//        return this.field2;
-        return new Date().toString();
-    }
-
-    public String getField3() {
-        return this.field3;
-    }
-
-    public void setField1(String field1) {
-        this.field1 = field1;
-    }
-
-    public void setField2(String field2) {
-        this.field2 = field2;
-    }
-
-    public void setField3(String field3) {
-        this.field3 = field3;
-    }
-
-    public List<SavedCoursesItem> getSavedCoursesList()
+    public List<SavedCoursesItem> getSavedCoursesItemList()
     {
-        List<SavedCoursesItem> list = new ArrayList<SavedCoursesItem>();
-        {
-            SavedCoursesItem item = new SavedCoursesItem();
-            item.setCourseID( "abc" );
-            item.setCode( "ENGL 101");
-            item.setTitle( "English as a force multiplier" );
-            item.setCredit( "(1-5, Max 10)" );
-            list.add( item );
-        }
-        {
-            SavedCoursesItem item = new SavedCoursesItem();
-            item.setCourseID( "123" );
-            item.setCode( "CHEM 451");
-            item.setTitle( "Chemistry in our everyday lives" );
-            item.setCredit( "(5)" );
-            list.add( item );
-        }
-        {
-            SavedCoursesItem item = new SavedCoursesItem();
-            item.setCourseID( "xyz" );
-            item.setCode( "HIST 101");
-            item.setTitle( "History of the banana peeler" );
-            item.setCredit( "(5)" );
-            list.add( item );
-        }
-        {
-            SavedCoursesItem item = new SavedCoursesItem();
-            item.setCourseID( "yup" );
-            item.setCode( "PHYS 301");
-            item.setTitle( "Physics is what makes things go bang" );
-            item.setCredit( "(5)" );
-            list.add( item );
-        }
-        return list;
+        return savedCoursesItemList;
+    }
 
+    public void setSavedCoursesItemList( List<SavedCoursesItem> savedCoursesItemList ) {
+        this.savedCoursesItemList = savedCoursesItemList;
     }
 
 }
