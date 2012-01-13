@@ -1,27 +1,21 @@
 package org.kuali.student.myplan.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
+import org.kuali.student.r2.core.class1.atp.model.AtpEntity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -51,6 +45,11 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "OWNER")
     private List<PlanItemAttributeEntity> attributes;
+
+    // TODO: This field isn't need for wishlist items, so hold for now.
+    //@ManyToMany(cascade = CascadeType.ALL)
+    //@JoinTable(name = "KSPL_LRNG_PL_IT_ATP_RELTN", joinColumns = @JoinColumn(name = "PLAN_ITEM_ID"), inverseJoinColumns = @JoinColumn(name = "ATP_ID"))
+    //private List<AtpEntity> planPeriods;
 
 	@Override
 	public List<PlanItemAttributeEntity> getAttributes() {
@@ -92,6 +91,38 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
     public void setLearningPlan(LearningPlanEntity learningPlan) {
         this.learningPlan = learningPlan;
+    }
+
+   /* public List<AtpEntity> getPlanPeriods() {
+        return planPeriods;
+    }
+
+    public void setPlanPeriods(List<AtpEntity> planPeriods) {
+        this.planPeriods = planPeriods;
+    }*/
+
+    /**
+     * Provides and data transfer object representation of the plan item.
+     * @return LearningPlanInfo
+     */
+    public PlanItemInfo toDto() {
+        PlanItemInfo dto = new PlanItemInfo();
+
+        dto.setId(getId());
+        dto.setLearningPlanId(this.getLearningPlan().getId());
+        dto.setRefObjectId(this.getRefObjectId());
+        dto.setRefObjectType(this.getRefObjectTypeKey());
+        // FIXME: dto.setDescr();
+        // FIXME: dto.setPlanPeriods();
+
+        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+        for (PlanItemAttributeEntity att : getAttributes()) {
+            AttributeInfo attInfo = att.toDto();
+            attributes.add(attInfo);
+        }
+        dto.setAttributes(attributes);
+
+        return dto;
     }
 
     @Override

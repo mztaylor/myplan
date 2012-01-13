@@ -30,14 +30,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     private LearningPlanDao learningPlanDao;
 
-    private PlanItemDao planItemEntityDao;
+    private PlanItemDao planItemDao;
 
-    public PlanItemDao getPlanItemEntityDao() {
-        return planItemEntityDao;
+    public PlanItemDao getPlanItemDao() {
+        return planItemDao;
     }
 
-    public void setPlanItemEntityDao(PlanItemDao planItemEntityDao) {
-        this.planItemEntityDao = planItemEntityDao;
+    public void setPlanItemDao(PlanItemDao planItemDao) {
+        this.planItemDao = planItemDao;
     }
 
     public LearningPlanDao getLearningPlanDao() {
@@ -78,8 +78,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+                                             @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        List<PlanItem> dtos = new ArrayList<PlanItem>();
+
+        List<PlanItemEntity> planItems = planItemDao.getPlanItems(learningPlanId);
+        for (PlanItemEntity pie : planItems) {
+            dtos.add(pie.toDto());
+        }
+        return dtos;
     }
 
     @Override
@@ -209,9 +218,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         //  Delete plan items.
-        List<PlanItemEntity> pies = planItemEntityDao.getPlanItems(learningPlanId);
+        List<PlanItemEntity> pies = planItemDao.getPlanItems(learningPlanId);
         for (PlanItemEntity pie : pies) {
-            planItemEntityDao.remove(pie);
+            planItemDao.remove(pie);
         }
 
         learningPlanDao.remove(lpe);

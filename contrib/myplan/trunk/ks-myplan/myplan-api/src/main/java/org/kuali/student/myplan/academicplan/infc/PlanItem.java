@@ -18,7 +18,6 @@ public interface PlanItem extends HasId, TypeStateEntity {
      * A description of the Learning Plan Item
      * @name Description
      */
-
     public RichText getDescr();
 
     /**
