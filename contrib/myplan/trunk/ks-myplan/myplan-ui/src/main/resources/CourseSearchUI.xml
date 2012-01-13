@@ -83,8 +83,7 @@
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
-                <bean id="course_search_instructions" parent="MessageField"
-                      p:messageText="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
+                <ref bean="course_search_instructions"/>
                 <ref bean="course_search_panel"/>
                 <ref bean="mystuff_panel"/>
             </list>
@@ -102,6 +101,7 @@
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
+                <ref bean="course_search_instructions"/>
                 <ref bean="course_search_result_panel"/>
                 <ref bean="mystuff_panel"/>
             </list>
@@ -118,6 +118,7 @@
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
+                <ref bean="course_search_instructions"/>
                 <ref bean="course_search_no_results_panel"/>
                 <ref bean="mystuff_panel"/>
             </list>
@@ -138,6 +139,8 @@
         </property>
     </bean>
 
+    <bean id="course_search_instructions" parent="MessageField"
+                      p:messageText="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
 
     <!-- Group for Course Search Functions and Results -->
     <bean id="course_search_result_panel" parent="Group">
@@ -179,8 +182,21 @@
         </property>
     </bean>
 
-    <bean id="watch_list" parent="ListGroup" p:title="Watch List (TBD)">
+    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <ref bean="saved_courses_summary_list"/>
+                <bean parent="LinkField" p:linkLabel="View all courses in full details" p:hrefText="#link"
+                      p:title="View all courses in full details" p:styleClasses="" p:target=""/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="saved_courses_summary_list" parent="ListGroup">
+        <property name="disclosure.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
@@ -193,7 +209,7 @@
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                     <property name="items">
                         <list>
-                            <bean parent="MessageField" p:messageText="@{#line.code}"  p:styleClasses="courseCode" />
+                            <bean parent="MessageField" p:messageText="@{#line.code}"  p:styleClasses="courseCode fl-text-bold" />
                             <bean parent="MessageField" p:messageText="@{#line.title}" p:styleClasses="courseName" />
                             <bean parent="MessageField" p:messageText="@{#line.credit}" p:styleClasses="courseCredits" />
                         </list>

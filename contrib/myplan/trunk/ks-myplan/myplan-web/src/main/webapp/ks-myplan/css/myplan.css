@@ -61,18 +61,22 @@ body {
     padding: 5px;
     line-height: 1.5em;
 }
-#mystuff_panel_div .kr-collection-cntr .kr-section-subhead {
-    background: #e4e4e4;
-}
+
 
 /* Watch List */
-#watch_list_div ul,
-#watch_list_div ul li .boxLayoutVerticalItem,
-#watch_list_div ul li .boxLayoutHorizontalItem {
+#watch_list_div {
+    border-bottom: solid 1px #ccc;
+}
+#watch_list_div .kr-section-subhead {
+    background: #e4e4e4;
+}
+#saved_courses_summary_list_div ul,
+#saved_courses_summary_list_div ul li .boxLayoutVerticalItem,
+#saved_courses_summary_list_div ul li .boxLayoutHorizontalItem {
     margin:0;
     padding: 0;
 }
-#watch_list_div ul li {
+#saved_courses_summary_list_div ul li {
     border-bottom:dotted 1px #aaaaaa;
     padding:6px;
     display: block;
@@ -80,16 +84,13 @@ body {
     cursor: pointer;
     font-size: 95%;
 }
-#watch_list_div ul li .courseCode,
-#watch_list_div ul li .courseName,
-#watch_list_div ul li .courseCredits {
+#saved_courses_summary_list_div ul li .courseCode,
+#saved_courses_summary_list_div ul li .courseName,
+#saved_courses_summary_list_div ul li .courseCredits {
     float: left;
     margin-right: 0.33em;
-    }
-#watch_list_div ul li .courseCode {
-    font-weight: bold;
 }
-#watch_list_div ul li .courseName {
+#saved_courses_summary_list_div ul li .courseName {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
