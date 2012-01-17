@@ -188,8 +188,8 @@
         <property name="items">
             <list>
                 <ref bean="saved_courses_summary_list"/>
-                <bean parent="LinkField" p:linkLabel="View all courses in full details" p:hrefText="#link"
-                      p:title="View all courses in full details" p:styleClasses="" p:target=""/>
+                <bean parent="LinkField" p:linkLabel="View @{getSavedCoursesList().size() lt 2 ? 'course' : 'all '+getSavedCoursesList().size()+' courses'} in full details" p:hrefText="#link"
+                      p:title="View @{getSavedCoursesList().size() lt 2 ? 'course' : 'all '+getSavedCoursesList().size()+' courses'} in full details" p:styleClasses="link_viewall" p:target=""/>
             </list>
         </property>
     </bean>
@@ -388,7 +388,7 @@
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bDeferRender" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
-                <entry key="bStateSave" value="false"/>
+                <entry key="bStateSave" value="true"/>
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'bSearchable':false},
