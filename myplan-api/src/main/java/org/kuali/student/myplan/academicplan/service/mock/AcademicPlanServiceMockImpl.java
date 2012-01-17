@@ -43,7 +43,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setDescr( richText );
             plan.setLearningPlanId( learningPlanId );
             // ENGL 101
-            String cluID = "75ca71e8-034e-45bf-8e45-84ab3f1d3d88";
+            String cluID = "059881be-4168-4f99-9e64-310c8c50ae7b";
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
@@ -67,7 +67,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setDescr( richText );
             plan.setLearningPlanId( learningPlanId );
             // ENGL 101
-            String cluID = "5d61c370-d2e7-453a-8e1d-689ecaa150fd";
+            String cluID = "059b348d-8547-46ca-86ab-8240576b46ac";
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
@@ -91,7 +91,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setDescr( richText );
             plan.setLearningPlanId( learningPlanId );
             // ENGL 101
-            String cluID = "96dd52bf-978e-4c9b-a115-1ad0345ed7cc";
+            String cluID = "05a2ec10-4c83-4f17-b3d1-938ffdab6ac6";
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
@@ -115,7 +115,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setDescr( richText );
             plan.setLearningPlanId( learningPlanId );
             // CHEM 101
-            String cluID = "dab829f3-e642-4479-aba3-f3e67d66f8df";
+            String cluID = "05a9d09d-1d65-4c8b-a6d1-095baba5d7fe";
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
@@ -139,7 +139,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setDescr( richText );
             plan.setLearningPlanId( learningPlanId );
             // HIST 101
-            String cluID = "dbf117fc-20ea-4177-acd4-c53249be3dcb";
+            String cluID = "05a9d09d-1d65-4c8b-a6d1-095baba5d7fe";
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
@@ -156,6 +156,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setId( "1" );
             list.add( plan );
         }
+
+        // UnComment next line if testing for empty list and comment out 'return list';
+        // return new ArrayList<PlanItem>();
         return list;
     }
 
