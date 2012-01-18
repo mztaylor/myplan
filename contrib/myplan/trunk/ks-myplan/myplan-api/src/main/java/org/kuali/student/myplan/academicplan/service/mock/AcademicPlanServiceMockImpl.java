@@ -158,7 +158,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         }
 
         // UnComment next line if testing for empty list and comment out 'return list';
-        // return new ArrayList<PlanItem>();
+        //return new ArrayList<PlanItem>();
         return list;
     }
 

@@ -223,9 +223,12 @@ public class CourseSearchController extends UifControllerBase {
             List<SavedCoursesItem> savedCoursesList = savedCoursesService.getSavedCoursesList();
             form.setSavedCoursesItemList( savedCoursesList );
 
+            /*
+            // Removed by Garett - 01/17/2012
             if( courseList.size() == 0 ) {
                 return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
             }
+            */
             return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
         }
         catch (Exception e) {
