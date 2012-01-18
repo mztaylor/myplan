@@ -181,3 +181,14 @@ jq(window).load(function(){
         jq("#course_search_no_results_found_div").fadeIn('fast');
     }
 });
+
+function retrieveContent(id, getId, url) {
+    jq("#" + id + "_div").load(url + " #" + getId + "_group", null, function (response, status, xhr) {
+        if (status === 'success') {
+            jq("#" + id + "_group").html( jq(this).html() );
+            jq("body").unblock();
+        } else {
+        	jq("#" + id).html( "Sorry but there was an error: " + xhr.status + " " + xhr.statusText);
+        }
+    });
+}

@@ -172,6 +172,18 @@
             <list>
                 <ref bean="watch_list"/>
                 <ref bean="watch_list_empty"/>
+                <ref bean="watch_list_test"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="watch_list_test" parent="Group" p:title="Watch List (TBD)">
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="onDocumentReadyScript" value="retrieveContent('watch_list_test', 'course_details_overview', 'inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=66d381eb-1823-4dd7-a765-2e93974af9a8')"/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField" p:messageText="This is a test"/>
             </list>
         </property>
     </bean>
