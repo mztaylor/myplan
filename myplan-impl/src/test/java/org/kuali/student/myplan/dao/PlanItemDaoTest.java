@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 @PersistenceFileLocation("classpath:META-INF/lp-persistence.xml")
 public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
 
-    @Dao(value = "org.kuali.student.myplan.dao.PlanItemDao", testSqlFile = "classpath:myplan-learning_plan.sql")
+    @Dao(value = "org.kuali.student.myplan.dao.PlanItemDao", testSqlFile = "classpath:learning_plan.sql")
 	private PlanItemDao planItemDao;
 
     @Dao(value = "org.kuali.student.myplan.dao.PlanItemTypeDao")

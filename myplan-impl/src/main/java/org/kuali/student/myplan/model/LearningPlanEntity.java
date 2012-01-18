@@ -6,7 +6,6 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
 import org.kuali.student.r2.common.entity.TypeEntity;
-import org.kuali.student.r2.common.infc.Attribute;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,27 +32,6 @@ public class LearningPlanEntity extends MetaEntity
 
     public LearningPlanEntity() {
         super();
-    }
-
-    public LearningPlanEntity(LearningPlan learningPlan) {
-        this();
-
-        this.setId(learningPlan.getId());
-        this.setStudentId(learningPlan.getStudentId());
-
-        LearningPlanRichTextEntity rte = new LearningPlanRichTextEntity();
-        rte.setPlain(learningPlan.getDescr().getPlain());
-        rte.setFormatted(learningPlan.getDescr().getFormatted());
-
-        this.setDescr(rte);
-
-        this.setAttributes(new ArrayList<LearningPlanAttributeEntity>());
-        if (null != learningPlan.getAttributes()) {
-            for (Attribute att : learningPlan.getAttributes()) {
-                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att);
-                this.getAttributes().add(attEntity);
-            }
-        }
     }
 
     @Override

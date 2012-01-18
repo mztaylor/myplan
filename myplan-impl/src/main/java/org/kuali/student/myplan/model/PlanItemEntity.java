@@ -50,10 +50,14 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @JoinColumn(name = "OWNER")
     private List<PlanItemAttributeEntity> attributes;
 
-    // TODO: This field isn't need for wishlist items, so hold for now.
+    // TODO: This field isn't needed for wishlist items, so hold for now.
     //@ManyToMany(cascade = CascadeType.ALL)
     //@JoinTable(name = "KSPL_LRNG_PL_IT_ATP_RELTN", joinColumns = @JoinColumn(name = "PLAN_ITEM_ID"), inverseJoinColumns = @JoinColumn(name = "ATP_ID"))
     //private List<AtpEntity> planPeriods;
+
+    public PlanItemEntity(){
+        super();
+    }
 
 	@Override
 	public List<PlanItemAttributeEntity> getAttributes() {

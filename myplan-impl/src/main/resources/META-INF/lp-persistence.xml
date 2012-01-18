@@ -11,7 +11,7 @@
 
         <!-- These are needed for the ManyToMany mapping of plan items to ATPs
 
-        !!! Hold on this for now.
+        !!! Hold on to this for now.
 
         <class>org.kuali.student.r2.core.class1.atp.model.AtpEntity</class>
         <class>org.kuali.student.r2.core.class1.atp.model.AtpAttributeEntity</class>
