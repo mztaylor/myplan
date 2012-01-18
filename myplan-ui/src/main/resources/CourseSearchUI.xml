@@ -54,6 +54,8 @@
                         <bean parent="Footer"/>
                     </property>
                 </bean>
+                <!--
+                // Removed by Garett - 01/17/2012 - using render property to show empty collection content
                 <bean parent="Page" p:id="course_search_no_results">
                     <property name="title" value="Find Courses"/>
                     <property name="items">
@@ -64,7 +66,7 @@
                     <property name="footer">
                         <bean parent="Footer"/>
                     </property>
-                </bean>
+                </bean>-->
             </list>
         </property>
         <property name="footer.render" value="false"/>
@@ -109,10 +111,7 @@
     </bean>
 
     <!-- Layout for Course Search No Results Found -->
-    <bean id="course_search_no_results_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
-        <!--<property name="layoutManager">
-            <bean parent="BoxLayoutManager"/>
-        </property>-->
+    <!--<bean id="course_search_no_results_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value="fl-container-auto"/>
@@ -123,12 +122,10 @@
                 <ref bean="mystuff_panel"/>
             </list>
         </property>
-    </bean>
+    </bean>-->
 
     <!-- Group for Course Search Functions only -->
     <bean id="course_search_panel" parent="Group">
-        <!--<property name="instructionalText"
-                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>-->
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
@@ -144,29 +141,25 @@
 
     <!-- Group for Course Search Functions and Results -->
     <bean id="course_search_result_panel" parent="Group">
-        <!--<property name="instructionalText"
-                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>-->
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
         <property name="items">
             <list>
                 <ref bean="course_search_functions"/>
-                <ref bean="course_search_results_panel"/>
+                <ref bean="course_search_result_section"/>
             </list>
         </property>
     </bean>
 
-    <!-- Group for Course Search Functions and No Results Found -->
-    <bean id="course_search_no_results_panel" parent="Group">
-        <!--<property name="instructionalText"
-                  value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>-->
+    <!-- Group for Course Search Results and Facets -->
+    <bean id="course_search_result_section" parent="Group">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
+        <property name="styleClasses" value="noMarginPadding"/>
         <property name="items">
             <list>
-                <ref bean="course_search_functions"/>
+                <ref bean="course_search_results_panel"/>
                 <ref bean="course_search_no_results_found"/>
             </list>
         </property>
@@ -178,6 +171,7 @@
         <property name="items">
             <list>
                 <ref bean="watch_list"/>
+                <ref bean="watch_list_empty"/>
             </list>
         </property>
     </bean>
@@ -185,11 +179,38 @@
     <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value=""/>
+        <property name="render" value="@{getSavedCoursesItemList().size() gt 0 ? 'true' : 'false'}"/>
         <property name="items">
             <list>
                 <ref bean="saved_courses_summary_list"/>
-                <bean parent="LinkField" p:linkLabel="View @{getSavedCoursesList().size() lt 2 ? 'course' : 'all '+getSavedCoursesList().size()+' courses'} in full details" p:hrefText="#link"
-                      p:title="View @{getSavedCoursesList().size() lt 2 ? 'course' : 'all '+getSavedCoursesList().size()+' courses'} in full details" p:styleClasses="link_viewall" p:target=""/>
+                <bean parent="LinkField" p:linkLabel="View @{getSavedCoursesItemList().size() lt 2 ? 'course' : 'all '+getSavedCoursesItemList().size()+' courses'} in full details" p:hrefText="#link"
+                      p:title="View @{getSavedCoursesItemList().size() lt 2 ? 'course' : 'all '+getSavedCoursesItemList().size()+' courses'} in full details" p:styleClasses="link_viewall" p:target=""/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="watch_list_empty" parent="Group" p:title="Watch List (TBD)">
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="render" value="@{getSavedCoursesItemList().size() gt 0 ? 'false' : 'true'}"/>
+        <property name="items">
+            <list>
+                <ref bean="saved_courses_summary_list_empty" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="saved_courses_summary_list_empty" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="header.render" value="false"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField"
+                      p:messageText="You don't have any saved courses. Save a course by adding ("/>
+                <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Example of Add to Plan button"/>
+                <bean parent="MessageField"
+                      p:messageText=") from the search results (TBD)"/>
             </list>
         </property>
     </bean>
@@ -293,6 +314,7 @@
         <property name="styleClasses" value=""/>
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'false' : 'true'}"/>
         <property name="items">
             <list>
                 <ref bean="course_search_result_facets"/>
@@ -337,6 +359,7 @@
         <property name="styleClasses" value=""/>
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'true' : 'false'}"/>
         <property name="items">
             <list>
                 <ref bean="course_search_result_facets"/>
