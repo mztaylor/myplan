@@ -18,8 +18,8 @@ import java.util.List;
 
 @PersistenceFileLocation("classpath:META-INF/lp-persistence.xml")
 public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
-                                                                          // "classpath:ks-atp.sql,myplan-learning_plan.sql"
-    @Dao(value = "org.kuali.student.myplan.dao.LearningPlanDao", testSqlFile = "classpath:myplan-learning_plan.sql")
+                                                                          // "classpath:ks-atp.sql,learning_plan.sql"
+    @Dao(value = "org.kuali.student.myplan.dao.LearningPlanDao", testSqlFile = "classpath:learning_plan.sql")
 	private LearningPlanDao learningPlanDao;
 
     @Dao(value = "org.kuali.student.myplan.dao.LearningPlanTypeDao")

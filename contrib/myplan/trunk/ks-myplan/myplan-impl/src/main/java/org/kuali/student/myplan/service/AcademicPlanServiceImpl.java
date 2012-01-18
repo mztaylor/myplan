@@ -8,11 +8,13 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.dao.LearningPlanDao;
+import org.kuali.student.myplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.dao.PlanItemDao;
-import org.kuali.student.myplan.model.LearningPlanEntity;
-import org.kuali.student.myplan.model.LearningPlanRichTextEntity;
-import org.kuali.student.myplan.model.PlanItemEntity;
+import org.kuali.student.myplan.dao.PlanItemTypeDao;
+import org.kuali.student.myplan.model.*;
+import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,8 +33,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     private LearningPlanDao learningPlanDao;
 
+    private LearningPlanTypeDao learningPlanTypeDao;
     private PlanItemDao planItemDao;
-
+    private PlanItemTypeDao planItemTypeDao;
     public PlanItemDao getPlanItemDao() {
         return planItemDao;
     }
@@ -40,12 +44,28 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         this.planItemDao = planItemDao;
     }
 
+    public PlanItemTypeDao getPlanItemTypeDao() {
+        return planItemTypeDao;
+    }
+
+    public void setPlanItemTypeDao(PlanItemTypeDao planItemTypeDao) {
+        this.planItemTypeDao = planItemTypeDao;
+    }
+
     public LearningPlanDao getLearningPlanDao() {
         return learningPlanDao;
     }
 
     public void setLearningPlanDao(LearningPlanDao learningPlanDao) {
         this.learningPlanDao = learningPlanDao;
+    }
+
+    public LearningPlanTypeDao getLearningPlanTypeDao() {
+        return learningPlanTypeDao;
+    }
+
+    public void setLearningPlanTypeDao(LearningPlanTypeDao learningPlanTypeDao) {
+        this.learningPlanTypeDao = learningPlanTypeDao;
     }
 
     @Override
@@ -133,17 +153,18 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
         OperationFailedException, PermissionDeniedException {
 
-        LearningPlanEntity lpe = new LearningPlanEntity(learningPlan);
-        lpe.setId(UUIDHelper.genStringUUID());
+        LearningPlanEntity lpe = new LearningPlanEntity();
+        String id = UUIDHelper.genStringUUID();
+        lpe.setId(id);
+
+        LearningPlanTypeEntity type = learningPlanTypeDao.find(learningPlan.getTypeKey());
+        if (type == null) {
+            throw new InvalidParameterException(String.format("Unknown type [%s].", learningPlan.getTypeKey()));
+        }
+        lpe.setLearningPlanType(type);
 
         lpe.setStudentId(learningPlan.getStudentId());
-
-        RichTextInfo rti = learningPlan.getDescr();
-
-        LearningPlanRichTextEntity learningPlanRichTextEntity = new LearningPlanRichTextEntity();
-        learningPlanRichTextEntity.setPlain(rti.getPlain());
-        learningPlanRichTextEntity.setFormatted(rti.getFormatted());
-        lpe.setDescr(learningPlanRichTextEntity);
+        lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
         LearningPlanEntity existing = learningPlanDao.find(lpe.getId());
         if( existing != null) {
@@ -156,16 +177,59 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
+    @Transactional
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem,
-                                           @WebParam(name = "context") ContextInfo context)
+                                       @WebParam(name = "context") ContextInfo context)
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
-            OperationFailedException, PermissionDeniedException {
-        return null;
+                OperationFailedException, PermissionDeniedException {
+
+        PlanItemEntity pie = new PlanItemEntity();
+        String id = planItem.getId();
+        pie.setId(id);
+
+        pie.setRefObjectId(planItem.getRefObjectId());
+        pie.setRefObjectTypeKey(planItem.getRefObjectType());
+
+        PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(planItem.getTypeKey());
+        if (planItemTypeEntity == null) {
+            throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
+        }
+        pie.setLearningPlanItemType(planItemTypeEntity);
+
+        //  Set attributes.
+        pie.setAttributes(new ArrayList<PlanItemAttributeEntity>());
+        for (Attribute att : planItem.getAttributes()) {
+            PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att);
+            pie.getAttributes().add(attEntity);
+        }
+
+        //  Create text entity.
+        pie.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
+
+        //  Set the learning plan.
+        String planId = planItem.getLearningPlanId();
+        if (planId == null) {
+            throw new InvalidParameterException("Learning plan id was null.");
+        }
+        LearningPlanEntity plan = learningPlanDao.find(planItem.getLearningPlanId());
+        if (plan == null) {
+            throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
+        }
+        pie.setLearningPlan(plan);
+
+        PlanItemEntity existing = planItemDao.find(pie.getId());
+        if (existing != null) {
+            throw new AlreadyExistsException();
+	    }
+
+        planItemDao.persist(pie);
+
+        return planItemDao.find(planId).toDto();
     }
 
     @Override
     public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet") PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -173,7 +237,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                                @WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
-            throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException,
+            throws DataValidationErrorException, InvalidParameterException,
                 MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
 
         LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
@@ -181,22 +245,81 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new DoesNotExistException(learningPlanId);
         }
 
-        LearningPlanEntity modifiedLpe = new LearningPlanEntity(learningPlan);
+        lpe.setStudentId(learningPlan.getStudentId());
+        lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
-        modifiedLpe.setStudentId(learningPlan.getStudentId());
 
-        //  Update the description if necessary.
-        LearningPlanRichTextEntity rte = lpe.getDescr();
-        rte.setPlain(learningPlan.getDescr().getPlain());
-        rte.setFormatted(learningPlan.getDescr().getFormatted());
+        lpe.setAttributes(new ArrayList<LearningPlanAttributeEntity>());
+        if (null != learningPlan.getAttributes()) {
+            for (Attribute att : learningPlan.getAttributes()) {
+                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att);
+                lpe.getAttributes().add(attEntity);
+            }
+        }
 
-        learningPlanDao.merge(modifiedLpe);
-        return learningPlanDao.find(modifiedLpe.getId()).toDto();
+        learningPlanDao.merge(lpe);
+        return learningPlanDao.find(learningPlanId).toDto();
     }
 
     @Override
-    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Transactional
+    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId") String planItemId,
+                                       @WebParam(name = "planItem") PlanItemInfo planItem,
+                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
+                    MissingParameterException, OperationFailedException, PermissionDeniedException {
+
+        //  See if the plan item exists before trying to update it.
+        PlanItemEntity planItemEntity = planItemDao.find(planItemId);
+        if (planItemEntity == null) {
+            throw new DoesNotExistException(planItemId);
+        }
+
+        planItemEntity.setRefObjectId(planItem.getRefObjectId());
+        planItemEntity.setRefObjectTypeKey(planItem.getRefObjectType());
+
+        //  Update the plan item type if it has changed.
+        if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
+            PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(planItem.getTypeKey());
+            if (planItemTypeEntity == null) {
+                throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
+            }
+            planItemEntity.setLearningPlanItemType(planItemTypeEntity);
+        }
+
+        //  Update attributes.
+        if (planItem.getAttributes() != null) {
+            List<PlanItemAttributeEntity> attributeEntities = new ArrayList<PlanItemAttributeEntity>();
+            for (AttributeInfo att : planItem.getAttributes()) {
+                PlanItemAttributeEntity ae = new PlanItemAttributeEntity();
+                ae.setId(att.getId());
+                ae.setKey(att.getKey());
+                ae.setValue(att.getValue());
+                ae.setOwner(planItemEntity);
+                attributeEntities.add(ae);
+            }
+            planItemEntity.setAttributes(attributeEntities);
+        }
+
+        //  Update text entity.
+        planItemEntity.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
+
+        //  Update the learning plan.
+        if ( ! planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
+            String planId = planItem.getLearningPlanId();
+            if (planId == null) {
+                throw new InvalidParameterException("Learning plan id was null.");
+            }
+            LearningPlanEntity plan = learningPlanDao.find(planItem.getLearningPlanId());
+            if (plan == null) {
+                throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
+            }
+            planItemEntity.setLearningPlan(plan);
+        }
+
+        planItemDao.merge(planItemEntity);
+
+        return planItemDao.find(planItemEntity.getId()).toDto();
     }
 
     @Override
@@ -220,6 +343,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Delete plan items.
         List<PlanItemEntity> pies = planItemDao.getPlanItems(learningPlanId);
         for (PlanItemEntity pie : pies) {
+            //  TODO: May need to manually remove items from the ATP join table once that is implemented.
             planItemDao.remove(pie);
         }
 
@@ -230,8 +354,25 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public StatusInfo deletePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    @Transactional
+    public StatusInfo deletePlanItem(@WebParam(name = "planItemId") String planItemId,
+                                     @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException,
+                OperationFailedException, PermissionDeniedException {
+
+        StatusInfo status = new StatusInfo();
+        status.setSuccess(true);
+
+        PlanItemEntity pie = planItemDao.find(planItemId);
+        if (pie == null) {
+            throw new DoesNotExistException(String.format("Unknown plan item id [%s].", planItemId));
+        }
+
+        //  TODO: May need to manually remove items from the ATP join table once that is implemented.
+
+        planItemDao.remove(pie);
+
+        return status;
     }
 
     @Override

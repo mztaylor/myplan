@@ -75,10 +75,11 @@ public interface AcademicPlanService  extends DataDictionaryService, TypeService
     public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet")PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
 
-    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId")String learningPlanId, @WebParam(name = "learningPlan")LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId")String learningPlanId, @WebParam(name = "learningPlan")LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
 
-    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "planItem")PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem,
+                                       @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
 
     public PlanItemSetInfo updatePlanItemSet(@WebParam(name = "planItemSetId")String planItemSetId, @WebParam(name = "planItemSet")PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
@@ -89,7 +90,4 @@ public interface AcademicPlanService  extends DataDictionaryService, TypeService
     public StatusInfo deletePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId")String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
-
-
-
 }

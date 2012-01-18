@@ -19,24 +19,72 @@
 
     <context:annotation-config/>
 
+    <!-- Pull in the DAOs -->
+    <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.dao.LearningPlanRichTextDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.dao.LearningPlanTypeDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="planItemDao" class="org.kuali.student.myplan.dao.PlanItemDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="planItemTypeDao" class="org.kuali.student.myplan.dao.PlanItemTypeDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
+    <bean id="planItemRichTextDao" class="org.kuali.student.myplan.dao.PlanItemRichTextDao">
+        <property name="em" ref="entityManager"/>
+    </bean>
+
     <import resource="classpath:META-INF/default-property-config-context-test.xml"/>
     <import resource="classpath:ks-data-dictionary-services-configuration.xml"/>
 	<import resource="classpath:ks-data-dictionary-validator-configuration.xml"/>
-	    <!--  Preloaded data -->
+
+
+                         <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:META-INF/ks-myplan-test-config.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize" />
+        <property name="arguments">
+            <list><ref bean="config"/></list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{config.getProperties()}" />
+    </bean>
+
+
+
+    <!--  Preloaded data -->
     <bean id="dataLoadListener" class="org.kuali.student.common.util.jpa.LoadSqlListener">
         <property name="jtaTxManager" ref="JtaTxManager"/>
         <property name="shouldLoadData" value="true"/>
         <property name="preloadMap">
             <map>
                 <entry key="LearningPlan">
-                    <value>classpath:myplan-learning_plan.sql</value>
+                    <value>classpath:learning_plan.sql</value>
                 </entry>
             </map>
         </property>
     </bean>
 
-    <bean id="systemPropertyConfigurer"
-        class="org.kuali.student.common.util.SystemPropertyConfigurer">
+    <bean id="systemPropertyConfigurer" class="org.kuali.student.common.util.SystemPropertyConfigurer">
         <property name="properties" value="${propertiesPrefix.systemProperties}"/>
     </bean>
         
@@ -63,15 +111,13 @@
         class="org.kuali.student.common.test.spring.UniqueResourceAtomikosDataSourceBean" init-method="init"
         destroy-method="close" depends-on="systemPropertyConfigurer">
         <property name="uniqueResourceName" value="dataSource" />
-        <property name="xaDataSourceClassName"
-            value="${jdbc.xaDataSourceClassName}" />
+        <property name="xaDataSourceClassName" value="${jdbc.xaDataSourceClassName}" />
         <property name="xaProperties" value="${propertiesPrefix.jdbc.xaDataSourceProperties}"/>
         <property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
     </bean>
 
-    <bean id="vendorAdapter" class="${jpa.vendorAdapter}" depends-on="propertyConfigurer">
-        <property name="databasePlatform"
-            value="${jpa.databasePlatform}" />
+    <bean id="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" depends-on="propertyConfigurer">
+        <property name="databasePlatform" value="${jpa.databasePlatform}" />
         <property name="showSql" value="${jpa.showSql}" />
         <property name="generateDdl" value="${jpa.generateDdl}" />
     </bean>
@@ -87,44 +133,22 @@
     
    <bean id="entityManagerFactory" parent="defaultEntityManagerFactory" autowire-candidate="false" autowire="no">
         <property name="persistenceUnitName" value="LearningPlan"/>
-        <property name="persistenceXmlLocation" value="classpath:META-INF/acal-persistence.xml" />
+        <property name="persistenceXmlLocation" value="classpath:META-INF/lp-persistence.xml" />
         <property name="dataSource" ref="dataSource" />
    </bean>
 
     <bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" autowire-candidate="false" autowire="no">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
-    
-    <bean id="learningPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+
+    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
 	  	<property name="learningPlanDao" ref="learningPlanDao"/>
+	  	<property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
+	  	<property name="planItemDao" ref="planItemDao"/>
+	  	<property name="planItemTypeDao" ref="planItemTypeDao"/>
 	</bean>
 
-     <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
-    	<property name="em" ref="entityManager"/>
-    </bean>   
-
-
-    <bean id="typeTypeRelationDao" class="org.kuali.student.r2.common.dao.TypeTypeRelationDao">
-        <property name="em" ref="entityManager"/>
-    </bean>
-
-	<bean id="stateService" class="org.kuali.student.r2.common.service.impl.StateServiceImpl">
-        <property name="stateDao" ref="stateDao"/>
-        <property name="spDao" ref="stateProcessDao"/>
-        <property name="sprDao" ref="stateProcessRelationDao"/>
-    </bean>
-    
-    <bean id="stateDao" class="org.kuali.student.r2.common.dao.StateDao">
-        <property name="em" ref="entityManager"/>
-    </bean>
-    
-    <bean id="stateProcessDao" class="org.kuali.student.r2.common.dao.StateProcessDao">
-        <property name="em" ref="entityManager"/>
-    </bean>
-
-    <bean id="stateProcessRelationDao" class="org.kuali.student.r2.common.dao.StateProcessRelationDao">
-        <property name="em" ref="entityManager"/>
-    </bean>
+	<bean id="permissionService" class="org.kuali.student.kim.permission.mock.PermissionServiceMockImpl" />
 
 	<tx:annotation-driven transaction-manager="JtaTxManager" order="1000" />
 		
