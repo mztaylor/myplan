@@ -295,7 +295,9 @@
                         <list>
                             <bean parent="DataField" p:propertyName="requisites" p:labelField.render="false" p:escapeHtmlInPropertyValue="false" p:styleClasses="vertical">
                                 <property name="formatter" ref="data_list_formatter"/>
+                                <property name="render" value="@{dataObject.requisites.size() gt 0 ? 'true' : 'false'}"/>
                             </bean>
+                            <bean parent="MessageField" p:messageText="None" p:render="@{dataObject.requisites.size() gt 0 ? 'false' : 'true'}"/>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                                 <property name="items">
@@ -362,7 +364,11 @@
                 <bean parent="DataField" p:propertyName="genEdRequirements" p:label="General Edu. Requirements"
                       p:styleClasses="vertical">
                     <property name="formatter" ref="data_list_formatter"/>
+                    <property name="render" value="@{dataObject.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
                 </bean>
+                <bean parent="MessageField" p:label="General Edu. Requirements" p:messageText="None" p:labelField.render="true"
+                      p:render="@{dataObject.genEdRequirements.size() gt 0 ? 'false' : 'true'}"/>
+
 
                 <bean parent="DataField" p:propertyName="campusLocations" p:label="Campus" p:styleClasses="horizontal">
                     <property name="formatter" ref="data_list_formatter"/>
