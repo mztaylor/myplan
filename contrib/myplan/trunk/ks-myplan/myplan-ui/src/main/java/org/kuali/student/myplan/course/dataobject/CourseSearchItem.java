@@ -146,6 +146,7 @@ public class CourseSearchItem {
 
         if (scheduledTermsList != null && scheduledTermsList.size() > 0) {
             Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            termsListItem.addAttribute("class", "scheduled");
             Element scheduledListElement = termsListItem.addElement(listType.getListElementName()); //  dl
             for (String scheduledTerm : scheduledTermsList) {
                 Element scheduledListItem = scheduledListElement.addElement(listType.getListItemElementName()); //  dd
@@ -157,9 +158,10 @@ public class CourseSearchItem {
 
         if (termInfoList != null && termInfoList.size() > 0) {
             Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            termsListItem.addAttribute("class", "projected");
             Element termListElement = termsListItem.addElement(listType.getListElementName()); // dl
             for (AtpTypeInfo term : termInfoList) {
-                Element scheduledListItem = termListElement.addElement(listType.getListItemElementName());
+                Element scheduledListItem = termListElement.addElement(listType.getListItemElementName()); //dd
                 scheduledListItem.setText(term.getName().substring(0, 2).toUpperCase());
             }
         }
