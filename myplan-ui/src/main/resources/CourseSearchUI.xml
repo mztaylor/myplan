@@ -483,7 +483,7 @@
                 </bean>
                 <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms"
                       p:label="Quarter Offered" p:readOnly="true">
-                    <property name="styleClasses" value="courseScheduledTime icon"/>
+                    <property name="styleClasses" value="courseQuarter"/>
                 </bean>
                 <bean parent="DataField" p:propertyName="genEduReq"
                       p:label="Gen Edu Req" p:readOnly="true">
