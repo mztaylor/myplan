@@ -170,8 +170,8 @@
         <property name="styleClasses" value="fl-container-200 fl-force-left"/>
         <property name="items">
             <list>
-                <ref bean="watch_list"/>
-                <ref bean="watch_list_empty"/>
+                <!-- <ref bean="watch_list"/>
+                <ref bean="watch_list_empty"/>    -->
                 <ref bean="watch_list_test"/>
             </list>
         </property>
@@ -187,7 +187,7 @@
             </list>
         </property>
     </bean>
-
+<!--
     <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value=""/>
@@ -251,7 +251,7 @@
             </list>
         </property>
     </bean>
-
+     -->
 
     <!-- Group for Search Fields Container -->
     <bean id="course_search_functions" parent="Group">

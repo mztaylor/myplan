@@ -97,55 +97,14 @@
         </property>
     </bean>
 
-    <bean id="SavedCourses" parent="SavedCourses-parentBean"/>
-    <bean id="SavedCourses-parentBean" abstract="true" parent="DataObjectEntry">
-        <property name="objectLabel" value="Saved Courses"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesService"/>
-        <property name="titleAttribute" value="userID"/>
-        <property name="attributes">
-            <list>
-                <ref bean="SavedCourses.userID"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="SavedCourses.userID" parent="SavedCourses.userID-parentBean"/>
-    <bean id="SavedCourses.userID-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="userID"/>
-        <property name="dataType" value="STRING"/>
-        <property name="label" value="User ID"/>
-        <property name="shortLabel" value="ID"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="100"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="TextControl" p:size="100"/>
-        </property>
-    </bean>
-
-    <bean id="SavedCourses.savedCoursesList" parent="SavedCourses.savedCoursesList-parentBean"/>
-    <bean id="SavedCourses.savedCoursesList-parentBean" abstract="true" parent="CollectionDefinition">
-        <property name="name" value="savedCoursesList"/>
-        <property name="shortLabel" value="saved"/>
-        <property name="summary">
-            <value>Saved Courses</value>
-        </property>
-        <property name="label" value="Saved Courses"/>
-        <property name="elementLabel" value="Saved Courses"/>
-        <property name="minOccurs" value="0"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-    </bean>
-
-
-    <bean id="SavedCoursesInquiryView" parent="KSInquiryView">
+    <bean id="SavedCoursesLookupView" parent="KSLookupView">
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
-        <property name="title" value="title goes here"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesService"/>
+        <property name="title" value=""/>
+        <!-- <property name="viewName" value="WatchList_Summary_View"/> -->
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.course.service.SavedCoursesInquiryView"/>
+                  value="org.kuali.student.myplan.course.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="styleClasses" value="myplan"/>
         <property name="additionalCssFiles">
@@ -153,10 +112,19 @@
                 <value>/ks-myplan/css/course-search.css</value>
             </list>
         </property>
-        <property name="items">
-            <list>
-                <ref bean="saved_courses_page"/>
-            </list>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+
+        <!-- Not Displaying any criteria -->
+        <property name="criteriaGroup">
+            <bean parent="GroupBodyOnly"/>
+        </property>
+        <property name="resultsGroup">
+            <bean parent="saved_courses_summary_list"/>
         </property>
         <property name="footer">
             <bean parent="Footer"/>
@@ -165,35 +133,85 @@
 
 
     <!-- Layout for Course Search Form Page -->
-    <bean id="saved_courses_page" parent="Group"
+    <!--
+    <bean id="saved_courses_summary_group" parent="Group"
           p:layoutManager.orientation="HORIZONTAL">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">
             <list>
-                <bean parent="MessageField" p:messageText="Voila!"/>
-                <ref bean="saved_courses_list"/>
+                <ref bean="watch_list"/>
+               <ref bean="watch_list_empty"/>
             </list>
         </property>
     </bean>
 
-    <bean id="saved_courses_list" parent="CollectionGroup">
+    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="render" value="@{dataObject.size() gt 0 ? 'true' : 'false'}"/>
+        <property name="items">
+            <list>
+                <ref bean="saved_courses_summary_list"/>
+                <bean parent="LinkField"
+                      p:linkLabel="View @{dataObject.size() lt 2 ? 'course' : 'all '+dataObject.size()+' courses'} in full details"
+                      p:hrefText="#link"
+                      p:title="View @{dataObject.size() lt 2 ? 'course' : 'all '+dataObject.size()+' courses'} in full details"
+                      p:styleClasses="link_viewall" p:target=""/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="watch_list_empty" parent="Group" p:title="Watch List (TBD)">
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="render" value="@{searchResults.size() gt 0 ? 'false' : 'true'}"/>
+        <property name="items">
+            <list>
+                <ref bean="saved_courses_summary_list_empty"/>
+            </list>
+        </property>
+    </bean>
+    -->
+
+    <bean id="saved_courses_summary_list_empty" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="header.render" value="false"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses" value=""/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField"
+                      p:messageText="You don't have any saved courses. Save a course by adding ("/>
+                <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png"
+                      p:altText="Example of Add to Plan button"/>
+                <bean parent="MessageField"
+                      p:messageText=") from the search results (TBD)"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="saved_courses_summary_list" parent="ListGroup">
+        <property name="disclosure.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-        <property name="propertyName" value="savedCoursesList"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="propertyName" value="searchResults"/>
         <property name="items">
             <list>
-                <bean parent="ActionLinkField" p:actionLabel="@{#line.code} @{#line.title} " p:labelField.render="false"/>
-                <!--
-                <bean parent="MessageField" p:messageText="@{#line.title}"/>
-                -->
+                <bean parent="FieldGroup" p:labelField.render="false">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="MessageField" p:messageText="@{#line.code}"
+                                  p:styleClasses="courseCode fl-text-bold"/>
+                            <bean parent="MessageField" p:messageText="@{#line.title}" p:styleClasses="courseName"/>
+                            <bean parent="MessageField" p:messageText="@{#line.credit}" p:styleClasses="courseCredits"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
