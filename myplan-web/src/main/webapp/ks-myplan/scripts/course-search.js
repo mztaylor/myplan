@@ -183,7 +183,7 @@ jq(window).load(function(){
 });
 
 function retrieveContent(id, getId, url) {
-    jq("#" + id + "_div").load(url + " #" + getId + "_group", null, function (response, status, xhr) {
+    jq("#" + id + "_group").load(url + " #" + getId + "_group", null, function (response, status, xhr) {
         if (status === 'success') {
             jq("#" + id + "_group").html( jq(this).html() );
             jq("body").unblock();
