@@ -164,18 +164,4 @@ public class CourseSearchControllerTest {
             fail( "failed!" );
         }
     }
-
-   // FIXME: @Test
-    public void testSavedCoursesService() throws Exception {
-
-        CourseSearchController controller = getSearchController();
-        try {
-            SavedCoursesService savedCoursesService = controller.getSavedCoursesService();
-            List<SavedCoursesItem> itemList = savedCoursesService.getSavedCoursesList();
-        } catch (Exception e) {
-            fail( "failed!" );
-        }
-
-    }
-
 }

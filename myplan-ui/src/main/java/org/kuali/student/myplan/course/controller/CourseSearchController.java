@@ -81,11 +81,7 @@ public class CourseSearchController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        CourseSearchForm form = new CourseSearchForm();
-        SavedCoursesService savedCoursesService = getSavedCoursesService();
-        List<SavedCoursesItem> savedCoursesList = savedCoursesService.getSavedCoursesList();
-        form.setSavedCoursesItemList( savedCoursesList );
-        return form;
+        return new CourseSearchForm();
     }
 
     @RequestMapping(params = "methodToCall=start")
@@ -218,10 +214,6 @@ public class CourseSearchController extends UifControllerBase {
 
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
-
-            SavedCoursesService savedCoursesService = getSavedCoursesService();
-            List<SavedCoursesItem> savedCoursesList = savedCoursesService.getSavedCoursesList();
-            form.setSavedCoursesItemList( savedCoursesList );
 
             /*
             // Removed by Garett - 01/17/2012
