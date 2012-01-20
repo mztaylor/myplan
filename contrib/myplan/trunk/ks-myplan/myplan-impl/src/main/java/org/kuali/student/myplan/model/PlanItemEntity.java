@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
 import org.kuali.student.r2.core.class1.atp.model.AtpEntity;
@@ -127,13 +128,19 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         dto.setLearningPlanId(this.getLearningPlan().getId());
         dto.setRefObjectId(this.getRefObjectId());
         dto.setRefObjectType(this.getRefObjectTypeKey());
-        // FIXME: dto.setDescr();
+
+        if (this.getDescr() != null) {
+            dto.setDescr(this.getDescr().toDto());
+        }
+
         // FIXME: dto.setPlanPeriods();
 
         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
-        for (PlanItemAttributeEntity att : getAttributes()) {
-            AttributeInfo attInfo = att.toDto();
-            attributes.add(attInfo);
+        if (getAttributes() != null) {
+            for (PlanItemAttributeEntity att : getAttributes()) {
+                AttributeInfo attInfo = att.toDto();
+                attributes.add(attInfo);
+            }
         }
         dto.setAttributes(attributes);
 

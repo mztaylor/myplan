@@ -10,6 +10,7 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -30,7 +31,6 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
     private transient AcademicPlanService academicPlanService;
 
-
     @Override
     protected List<?> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         try {
@@ -43,8 +43,7 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
             ContextInfo context = new ContextInfo();
             String studentID = user.getPrincipalId();
-            String planTypeKey = "planTypeKey";
-
+            String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 
             List<LearningPlan> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
             for (LearningPlan learningPlan : learningPlanList) {
@@ -77,9 +76,9 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
-
-            // TODO: wire this up to the global service locator doohickie
-            academicPlanService = new AcademicPlanServiceMockImpl();
+            academicPlanService = (AcademicPlanService)
+                GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
+                    AcademicPlanServiceConstants.SERVICE_NAME));
         }
         return academicPlanService;
     }

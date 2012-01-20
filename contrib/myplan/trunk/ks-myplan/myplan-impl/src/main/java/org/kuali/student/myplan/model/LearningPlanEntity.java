@@ -82,15 +82,18 @@ public class LearningPlanEntity extends MetaEntity
 
         dto.setId(getId());
         dto.setStudentId(this.studentId);
+        dto.setTypeKey(this.getLearningPlanType().getId());
 
         if (this.getDescr() != null) {
             dto.setDescr(this.getDescr().toDto());
         }
 
         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
-        for (LearningPlanAttributeEntity att : getAttributes()) {
-            AttributeInfo attInfo = att.toDto();
-            attributes.add(attInfo);
+        if (null != getAttributes()) {
+            for (LearningPlanAttributeEntity att : getAttributes()) {
+                AttributeInfo attInfo = att.toDto();
+                attributes.add(attInfo);
+            }
         }
         dto.setAttributes(attributes);
 

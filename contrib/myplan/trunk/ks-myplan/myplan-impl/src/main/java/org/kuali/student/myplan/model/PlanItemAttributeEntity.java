@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "KSPL_MYPLAN_PLAN_ITEM_ATTR")
+@Table(name = "KSPL_LRNG_PLAN_ITEM_ATTR")
 public class PlanItemAttributeEntity extends BaseAttributeEntity<PlanItemEntity> {
 
     @ManyToOne

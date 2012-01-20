@@ -184,8 +184,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 OperationFailedException, PermissionDeniedException {
 
         PlanItemEntity pie = new PlanItemEntity();
-        String id = planItem.getId();
-        pie.setId(id);
+        String planItemId = UUIDHelper.genStringUUID();
+        pie.setId(planItemId);
 
         pie.setRefObjectId(planItem.getRefObjectId());
         pie.setRefObjectTypeKey(planItem.getRefObjectType());
@@ -198,9 +198,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  Set attributes.
         pie.setAttributes(new ArrayList<PlanItemAttributeEntity>());
-        for (Attribute att : planItem.getAttributes()) {
-            PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att);
-            pie.getAttributes().add(attEntity);
+        if (planItem.getAttributes() != null) {
+            for (Attribute att : planItem.getAttributes()) {
+                PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att);
+                pie.getAttributes().add(attEntity);
+            }
         }
 
         //  Create text entity.
@@ -217,14 +219,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
         pie.setLearningPlan(plan);
 
-        PlanItemEntity existing = planItemDao.find(pie.getId());
+        PlanItemEntity existing = planItemDao.find(planItemId);
         if (existing != null) {
             throw new AlreadyExistsException();
 	    }
 
         planItemDao.persist(pie);
 
-        return planItemDao.find(planId).toDto();
+        return planItemDao.find(planItemId).toDto();
     }
 
     @Override
