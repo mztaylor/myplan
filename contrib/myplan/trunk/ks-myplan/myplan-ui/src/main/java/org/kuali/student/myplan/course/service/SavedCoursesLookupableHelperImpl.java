@@ -43,6 +43,10 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
             ContextInfo context = new ContextInfo();
             String studentID = user.getPrincipalId();
+
+            // FIXME: Test data is stored under this id.
+            studentID = "student1";
+
             String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 
             List<LearningPlan> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
