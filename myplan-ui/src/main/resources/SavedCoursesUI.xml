@@ -97,7 +97,7 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesLookupView" parent="KSLookupView">
+    <bean id="SavedCoursesSummaryView" parent="KSLookupView">
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="title" value=""/>
@@ -112,6 +112,11 @@
                 <value>/ks-myplan/css/course-search.css</value>
             </list>
         </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/myplan.widgets.js</value>
+            </list>
+        </property>
         <property name="criteriaFields">
             <list/>
         </property>
@@ -124,7 +129,7 @@
             <bean parent="GroupBodyOnly"/>
         </property>
         <property name="resultsGroup">
-            <bean parent="saved_courses_summary_list"/>
+            <bean id="saved_courses_summary" parent="saved_courses_summary_list"/>
         </property>
         <property name="footer">
             <bean parent="Footer"/>
@@ -207,7 +212,7 @@
                         <list>
                             <bean parent="MessageField" p:messageText="@{#line.code}"
                                   p:styleClasses="courseCode fl-text-bold"/>
-                            <bean parent="MessageField" p:messageText="@{#line.title}" p:styleClasses="courseName"/>
+                            <bean parent="MessageField" p:messageText="@{#line.title}" p:styleClasses="courseName ellipsis"/>
                             <bean parent="MessageField" p:messageText="@{#line.credit}" p:styleClasses="courseCredits"/>
                         </list>
                     </property>
