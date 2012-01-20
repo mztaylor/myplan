@@ -49,7 +49,7 @@
 	<import resource="classpath:ks-data-dictionary-validator-configuration.xml"/>
 
 
-                         <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
+    <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
         <property name="configLocations">
             <list>
                 <value>classpath:META-INF/ks-myplan-test-config.xml</value>
@@ -151,5 +151,5 @@
 	<bean id="permissionService" class="org.kuali.student.kim.permission.mock.PermissionServiceMockImpl" />
 
 	<tx:annotation-driven transaction-manager="JtaTxManager" order="1000" />
-		
+
 </beans>

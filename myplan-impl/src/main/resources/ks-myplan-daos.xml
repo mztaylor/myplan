@@ -6,26 +6,26 @@
     <import resource="classpath:ks-myplan-services-commons.xml"/>
 
     <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 
     <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.dao.LearningPlanRichTextDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 
     <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.dao.LearningPlanTypeDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 
     <bean id="planItemDao" class="org.kuali.student.myplan.dao.PlanItemDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 
     <bean id="planItemTypeDao" class="org.kuali.student.myplan.dao.PlanItemTypeDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 
     <bean id="planItemRichTextDao" class="org.kuali.student.myplan.dao.PlanItemRichTextDao">
-        <property name="em" ref="enrollEntityManager"/>
+        <property name="em" ref="myplanEntityManager"/>
     </bean>
 </beans>

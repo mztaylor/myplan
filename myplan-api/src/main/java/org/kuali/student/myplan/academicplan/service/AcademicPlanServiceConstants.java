@@ -10,6 +10,7 @@ import org.kuali.student.r2.common.util.constants.CommonServiceConstants;
  */
 public class AcademicPlanServiceConstants {
     public static final String NAMESPACE = CommonServiceConstants.REF_OBJECT_URI_GLOBAL_PREFIX + "acadplan";
+    public static final String SERVICE_NAME = "AcademicPlan";
 
     public static final String LEARNING_PLAN_TYPE_PLAN = "kuali.academicplan.type.plan";
     public static final String LEARNING_PLAN_TYPE_PLAN_TEMPLATE = "kuali.academicplan.type.plan.template";
