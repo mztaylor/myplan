@@ -157,14 +157,6 @@ jq(document).ready(function() {
     jq(".search-text input[type='text']").bind('keypress', function(e) {
 	    if ( e.keyCode === 13 ) jq("button.search-submit").click();
 	});
-	jq("#watch_list_div ul li").each(function() {
-        var margin = parseInt(jq(this).find("span.boxLayoutHorizontalItem span").css("margin-right"), 10)
-        var code = jq(this).find("span.courseCode").width();
-        var credit = jq(this).find("span.courseCredits").width();
-        var name = jq(this).width() - (code + credit + (margin*2));
-        jq(this).find("span.courseCredits").css("margin-right", 0);
-        jq(this).find("span.courseName").width(name);
-    });
 });
 
 jq(window).load(function(){
@@ -182,13 +174,4 @@ jq(window).load(function(){
     }
 });
 
-function retrieveContent(id, getId, url) {
-    jq("#" + id + "_group").load(url + " #" + getId + "_group", null, function (response, status, xhr) {
-        if (status === 'success') {
-            jq("#" + id + "_group").html( jq(this).html() );
-            jq("body").unblock();
-        } else {
-        	jq("#" + id).html( "Sorry but there was an error: " + xhr.status + " " + xhr.statusText);
-        }
-    });
-}
+

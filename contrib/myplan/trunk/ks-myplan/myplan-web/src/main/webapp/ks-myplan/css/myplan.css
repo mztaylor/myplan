@@ -93,13 +93,13 @@ body {
 #saved_courses_summary_list_empty_div span img {
     vertical-align: text-bottom;
 }
-#saved_courses_summary_list_div ul,
-#saved_courses_summary_list_div ul li .boxLayoutVerticalItem,
-#saved_courses_summary_list_div ul li .boxLayoutHorizontalItem {
+#saved_courses_summary_group ul,
+#saved_courses_summary_group ul li .boxLayoutVerticalItem,
+#saved_courses_summary_group ul li .boxLayoutHorizontalItem {
     margin:0;
     padding: 0;
 }
-#saved_courses_summary_list_div ul li {
+#saved_courses_summary_group ul li {
     border-bottom:dotted 1px #aaaaaa;
     padding:6px;
     display: block;
@@ -107,13 +107,13 @@ body {
     cursor: pointer;
     font-size: 95%;
 }
-#saved_courses_summary_list_div ul li .courseCode,
-#saved_courses_summary_list_div ul li .courseName,
-#saved_courses_summary_list_div ul li .courseCredits {
+#saved_courses_summary_group ul li .courseCode,
+#saved_courses_summary_group ul li .courseName,
+#saved_courses_summary_group ul li .courseCredits {
     float: left;
     margin-right: 0.33em;
 }
-#saved_courses_summary_list_div ul li .courseName {
+#saved_courses_summary_group ul li .courseName {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

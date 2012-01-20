@@ -210,6 +210,11 @@
                 <value>/ks-myplan/css/course-search.css</value>
             </list>
         </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/myplan.widgets.js</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Page" p:id="CourseDetails" p:title="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})">
@@ -243,11 +248,11 @@
         <property name="items">
             <list>
                 <ref bean="course_details_panel"/>
-                <ref bean="mystuff_panel_temp"/>
+                <ref bean="mystuff_panel"/>
             </list>
         </property>
     </bean>
-    <bean id="mystuff_panel_temp" parent="Group" p:title="YOUR STUFF (TBD)">
+    <!--<bean id="mystuff_panel_temp" parent="Group" p:title="YOUR STUFF (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value="fl-container-200 fl-force-left"/>
         <property name="items">
@@ -255,7 +260,7 @@
 
             </list>
         </property>
-    </bean>
+    </bean>-->
 
     <bean id="course_details_panel" parent="Group">
         <property name="disclosure.render" value="false"/>

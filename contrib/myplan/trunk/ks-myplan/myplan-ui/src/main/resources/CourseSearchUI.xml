@@ -27,6 +27,7 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
+                <value>/ks-myplan/scripts/myplan.widgets.js</value>
                 <value>/ks-myplan/scripts/course-search.js</value>
             </list>
         </property>
@@ -170,25 +171,26 @@
         <property name="styleClasses" value="fl-container-200 fl-force-left"/>
         <property name="items">
             <list>
-                <!-- <ref bean="watch_list"/>
+                <!-- <ref bean="watch_list_backup"/>
                 <ref bean="watch_list_empty"/>    -->
-                <ref bean="watch_list_test"/>
+                <ref bean="watch_list"/>
             </list>
         </property>
     </bean>
 
-    <bean id="watch_list_test" parent="Group" p:title="Watch List (TBD)">
+    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value=""/>
-        <property name="onDocumentReadyScript" value="retrieveContent('watch_list_test', 'course_details_overview', 'inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=66d381eb-1823-4dd7-a765-2e93974af9a8')"/>
-        <property name="items">
-            <list>
-                <bean parent="MessageField" p:messageText="This is a test"/>
-            </list>
-        </property>
+        <property name="onDocumentReadyScript" value="
+            jq(document).ajaxComplete(function() {
+                truncateField('saved_courses_summary');
+            });
+            retrieveContent('watch_list', 'saved_courses_summary', 'lookup?methodToCall=search&amp;viewId=SavedCoursesSummaryView');
+        "/>
+
     </bean>
 <!--
-    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
+    <bean id="watch_list_backup" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="render" value="@{getSavedCoursesItemList().size() gt 0 ? 'true' : 'false'}"/>
