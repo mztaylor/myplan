@@ -372,40 +372,75 @@
                 // Having labelField throws exception: Cannot convert value of type [java.lang.String] to required type [org.kuali.rice.krad.uif.field.LabelField] for property 'labelField'
 
                 <bean parent="FieldGroup" p:labelField.render="false">
-                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="MessageField" p:labelField="Scheduled For" p:messageText="&lt;dl&gt;&lt;dd&gt;WI 13&lt;/dd&gt;&lt;dd&gt;SP 13&lt;/dd&gt;&lt;/dl&gt;" p:styleClasses="courseQuarterScheduled" p:labelField.render="true"/>
-                            <bean parent="MessageField" p:labelField="Projected For" p:messageText="&lt;dl&gt;&lt;dd&gt;Winter&lt;/dd&gt;&lt;dd&gt;Summer&lt;/dd&gt;&lt;/dl&gt;" p:styleClasses="courseQuarterProjected" p:labelField.render="true"/>
-                            <bean parent="MessageField" p:labelField="Last Offered" p:messageText="Spring 2011" p:styleClasses="courseLastOffered" p:labelField.render="true"/>
-                        </list>
-                    </property>
-                </bean>
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField" p:labelField="Scheduled For" p:messageText="&lt;dl&gt;&lt;dd&gt;WI 13&lt;/dd&gt;&lt;dd&gt;SP 13&lt;/dd&gt;&lt;/dl&gt;" p:styleClasses="courseQuarterScheduled" p:labelField.render="true"/>
+                <bean parent="MessageField" p:labelField="Projected For" p:messageText="&lt;dl&gt;&lt;dd&gt;Winter&lt;/dd&gt;&lt;dd&gt;Summer&lt;/dd&gt;&lt;/dl&gt;" p:styleClasses="courseQuarterProjected" p:labelField.render="true"/>
+                <bean parent="MessageField" p:labelField="Last Offered" p:messageText="Spring 2011" p:styleClasses="courseLastOffered" p:labelField.render="true"/>
+            </list>
+        </property>
+    </bean>
                 <bean parent="FieldGroup" p:labelField.render="false">
-                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="MessageField" p:labelField="Course Requisites" p:messageText="This is the course requisites." p:styleClasses="courseRequisites" p:labelField.render="true"/>
-                        </list>
-                    </property>
-                </bean>
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField" p:labelField="Course Requisites" p:messageText="This is the course requisites." p:styleClasses="courseRequisites" p:labelField.render="true"/>
+            </list>
+        </property>
+    </bean>
                 <bean parent="FieldGroup" p:labelField.render="false">
-                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="MessageField" p:labelField="Course Description" p:messageText="This is the course description." p:styleClasses="courseDescription" p:labelField.render="true"/>
-                        </list>
-                    </property>
-                </bean>
+        <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="items">
+            <list>
+                <bean parent="MessageField" p:labelField="Course Description" p:messageText="This is the course description." p:styleClasses="courseDescription" p:labelField.render="true"/>
+            </list>
+        </property>
+    </bean>
                 -->
             </list>
         </property>
     </bean>
 
+    <!-- Add / delete plan items -->
+    <bean id="SavedCourses-MaintenanceView" parent="KSMaintenanceView">
+        <property name="title" value="Saved Courses Maintenance"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.SavedCoursesMaintainableImpl" />
 
+        <property name="items">
+            <list merge="true">
+                <bean parent="MaintenanceGroupSectionGridLayout">
+                    <property name="title" value="Saved Courses"/>
+                    <!-- <property name="items">
+                      <list>
+                       <bean parent="InputField" p:propertyName="typeKey">
+                           <property name="control">
+                               <bean parent="SelectControl"/>
+                           </property>
+                           <property name="optionsFinder">
+                               <bean class="org.kuali.student.enrollment.class2.acal.keyvalue.TermInfoTypeKeyValues"/>
+                           </property>
+                       </bean>
+                       <bean parent="InputField" p:propertyName="startDate"/>
+                       <bean parent="InputField" p:propertyName="endDate"/>
+                      </list>
+                    </property>-->
+                </bean>
 
+            </list>
+        </property>
+    </bean>
 
-
-
-
+    <bean id="SavedCoursesItemMaintenanceDocument" parent="uifMaintenanceDocumentEntry">
+        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="maintainableClass" value="org.kuali.student.myplan.course.service.SavedCoursesMaintainableImpl"/>
+        <property name="documentTypeName" value="SavedCoursesItemMaintenanceDocument"/>
+        <property name="documentAuthorizerClass" value="org.kuali.student.myplan.course.util.SavedCoursesDocumentAuthorizer"/>
+        <property name="lockingKeys">
+            <list>
+                <value>courseID</value>
+            </list>
+        </property>
+    </bean>
 </beans>
