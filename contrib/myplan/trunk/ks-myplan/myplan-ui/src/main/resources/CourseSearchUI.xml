@@ -83,6 +83,7 @@
         </property>-->
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
@@ -101,6 +102,7 @@
         </property>-->
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
@@ -129,6 +131,7 @@
     <bean id="course_search_panel" parent="Group">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
         <property name="items">
             <list>
@@ -144,6 +147,7 @@
     <bean id="course_search_result_panel" parent="Group">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
         <property name="items">
             <list>
@@ -157,6 +161,7 @@
     <bean id="course_search_result_section" parent="Group">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="noMarginPadding"/>
         <property name="items">
             <list>
@@ -168,11 +173,12 @@
 
     <bean id="mystuff_panel" parent="Group" p:title="YOUR STUFF (TBD)">
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="fl-container-200 fl-force-left"/>
         <property name="items">
             <list>
                 <!-- <ref bean="watch_list_backup"/>
-                <ref bean="watch_list_empty"/>    -->
+                <ref bean="watch_list_empty"/> -->
                 <ref bean="watch_list"/>
             </list>
         </property>
@@ -180,14 +186,14 @@
 
     <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="onDocumentReadyScript" value="
             jq(document).ajaxComplete(function() {
-                truncateField('saved_courses_summary');
-            });
+                    truncateField('saved_courses_summary');
+                });
             retrieveContent('watch_list', 'saved_courses_summary', 'lookup?methodToCall=search&amp;viewId=SavedCoursesSummaryView');
         "/>
-
     </bean>
 <!--
     <bean id="watch_list_backup" parent="Group" p:title="Watch List (TBD)">
@@ -259,6 +265,7 @@
     <bean id="course_search_functions" parent="Group">
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <ref bean="course_search_fields"/>
@@ -270,6 +277,7 @@
     <!-- Group for Search Input Fields -->
     <bean id="course_search_fields" parent="FieldGroup">
         <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <bean id="course_search_query" parent="InputField_Form" p:propertyName="searchQuery"
@@ -299,6 +307,7 @@
     <!-- Group for Search Input Parameters -->
     <bean id="course_search_params" parent="FieldGroup">
         <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+        <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="InputField_Form" p:propertyName="campusSeattle"
@@ -328,6 +337,7 @@
         <property name="styleClasses" value=""/>
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'false' : 'true'}"/>
         <property name="items">
             <list>
@@ -341,18 +351,22 @@
     <bean id="empty_table" parent="Group">
         <property name="disclosure.render" value="false"/>
         <property name="header.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <bean id="empty_table_header" parent="MessageField" p:messageText="0 results found" p:styleClasses="dataTables_info"/>
                 <bean id="empty_table_help" parent="Group">
                     <property name="header.render" value="false"/>
                     <property name="disclosure.render" value="false"/>
+                    <property name="errorsField.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean id="empty_table_message1" parent="MessageField" p:messageText="We couldn't find anything matching your search."/>
                             <bean id="empty_table_message2" parent="MessageField" p:messageText="A few suggestions:"/>
                             <bean id="empty_table_message_list" parent="Group">
                                 <property name="disclosure.render" value="false"/>
+                                <property name="header.render" value="false"/>
+                                <property name="errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="MessageField" p:messageText="Check your spelling"/>
@@ -373,6 +387,7 @@
         <property name="styleClasses" value=""/>
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'true' : 'false'}"/>
         <property name="items">
             <list>
@@ -387,6 +402,7 @@
         <property name="styleClasses" value=""/>
         <property name="header.render" value="false"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <ref bean="course_search_results_list_items"/>
@@ -522,6 +538,7 @@
     <bean id="course_search_result_facets" parent="Group" p:title="Narrow Results">
         <property name="styleClasses" value="fl-container-flex15 fl-force-left"/>
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <ref bean="facet_quarter"/>
@@ -536,6 +553,7 @@
     <!-- Terms/Scheduled Terms/Quarters Facet -->
     <bean id="facet_quarter" parent="Group" p:title="Quarter">
         <property name="disclosure.render" value="true"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
@@ -553,6 +571,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="termsFacetItems"/>
@@ -566,6 +585,7 @@
     <!-- Gen Edu Req Facets -->
     <bean id="facet_genedureq" parent="Group" p:title="Gen. Edu. Req.">
         <property name="disclosure.render" value="true"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
@@ -583,6 +603,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
@@ -597,6 +618,7 @@
     <!-- Credits Facets -->
     <bean id="facet_credits" parent="Group" p:title="Credits">
         <property name="disclosure.render" value="true"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
@@ -614,6 +636,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
@@ -629,6 +652,7 @@
     <!-- Course Level Facets -->
     <bean id="facet_level" parent="Group" p:title="Course Level">
         <property name="disclosure.render" value="true"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
@@ -646,6 +670,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
@@ -661,6 +686,7 @@
     <!-- Subject Area Facets -->
     <bean id="facet_curriculum" parent="Group" p:title="Course Prefix">
         <property name="disclosure.render" value="true"/>
+        <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value="facets"/>
         <property name="items">
             <list>
@@ -673,12 +699,13 @@
 
     <bean id="course_search_facet_curriculum" parent="CollectionGroup">
         <property name="disclosure.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="curriculumFacetItems"/>

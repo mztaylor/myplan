@@ -244,6 +244,8 @@
     <bean id="course_details_page" parent="Group"
           p:layoutManager.orientation="HORIZONTAL">
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="styleClasses" value=""/>
         <property name="items">
             <list>
@@ -264,6 +266,8 @@
 
     <bean id="course_details_panel" parent="Group">
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="styleClasses" value="fl-container-700"/>
         <property name="items">
             <list>
@@ -278,6 +282,8 @@
     <bean id="course_details_addtoplan" parent="Group"
           p:layoutManager.orientation="HORIZONTAL">
         <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="ActionField"
@@ -290,6 +296,8 @@
     <bean id="course_details_overview" parent="GroupSectionGridLayout">
         <property name="layoutManager.numberOfColumns" value="2"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="errorsField.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="DataField" p:propertyName="courseDescription" p:label="Course Description"/>
@@ -320,6 +328,8 @@
 
                 <bean parent="FieldGroup" p:label="Quarters">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="group.header.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean parent="DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:styleClasses="icon" >
@@ -327,6 +337,8 @@
                             </bean>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="group.header.render" value="false"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="MessageField" p:messageText="(Source:"/>
@@ -342,6 +354,8 @@
 
                 <bean parent="FieldGroup" p:label="">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="group.header.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean parent="MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? 'No projected quarter information is available' : 'Projected to be offered in '}"/>
@@ -351,6 +365,8 @@
                             <bean parent="MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? '' : 'quarters'}"/>
                             <bean parent="FieldGroup" p:labelField.render="false" p:styleClasses="source">
                                 <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="group.header.render" value="false"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="MessageField" p:messageText="(Source:"/>
