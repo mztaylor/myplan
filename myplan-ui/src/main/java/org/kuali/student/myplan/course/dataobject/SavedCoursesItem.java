@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SavedCoursesItem {
 
+    private String id;
     private String courseID;
     private String code;
     private String title;
@@ -13,6 +14,14 @@ public class SavedCoursesItem {
     private List<String> scheduleList = new ArrayList<String>();
     private List<String> prereqList = new ArrayList<String>();
     private Date added;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getCourseID() {
         return courseID;

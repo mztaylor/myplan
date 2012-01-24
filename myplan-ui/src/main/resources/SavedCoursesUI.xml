@@ -25,6 +25,7 @@
         <property name="titleAttribute" value="courseID"/>
         <property name="attributes">
             <list>
+                <ref bean="SavedCoursesItem.id"/>
                 <ref bean="SavedCoursesItem.courseID"/>
                 <ref bean="SavedCoursesItem.code"/>
                 <ref bean="SavedCoursesItem.title"/>
@@ -35,12 +36,28 @@
         </property>
     </bean>
 
+    <bean id="SavedCoursesItem.id" parent="SavedCoursesItem.id-parentBean"/>
+    <bean id="SavedCoursesItem.id-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Plan Item ID"/>
+        <property name="shortLabel" value="ID"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="100"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="TextControl" p:size="100"/>
+        </property>
+    </bean>
+
     <bean id="SavedCoursesItem.courseID" parent="SavedCoursesItem.courseID-parentBean"/>
     <bean id="SavedCoursesItem.courseID-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="courseID"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course ID"/>
-        <property name="shortLabel" value="ID"/>
+        <property name="shortLabel" value="Course ID"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="100"/>
         <property name="validCharactersConstraint">
@@ -169,76 +186,6 @@
             <bean parent="Footer"/>
         </property>
     </bean>
-
-
-    <!-- Layout for Course Search Form Page -->
-    <!--
-    <bean id="saved_courses_summary_group" parent="Group"
-          p:layoutManager.orientation="HORIZONTAL">
-        <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
-        <property name="items">
-            <list>
-                <ref bean="watch_list"/>
-               <ref bean="watch_list_empty"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
-        <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
-        <property name="render" value="@{dataObject.size() gt 0 ? 'true' : 'false'}"/>
-        <property name="items">
-            <list>
-                <ref bean="saved_courses_summary_list"/>
-                <bean parent="LinkField"
-                      p:linkLabel="View @{dataObject.size() lt 2 ? 'course' : 'all '+dataObject.size()+' courses'} in full details"
-                      p:hrefText="#link"
-                      p:title="View @{dataObject.size() lt 2 ? 'course' : 'all '+dataObject.size()+' courses'} in full details"
-                      p:styleClasses="link_viewall" p:target=""/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="watch_list_empty" parent="Group" p:title="Watch List (TBD)">
-        <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
-        <property name="render" value="@{searchResults.size() gt 0 ? 'false' : 'true'}"/>
-        <property name="items">
-            <list>
-                <ref bean="saved_courses_summary_list_empty"/>
-            </list>
-        </property>
-    </bean>
-    -->
-
-    <!--<bean id="saved_courses_summary_group" parent="Group">
-        <property name="disclosure.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="items">
-            <list>
-               <ref bean="saved_courses_summary_list"/>
-               <ref bean="saved_courses_summary_list_empty"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="saved_courses_summary_list_empty" parent="Group" p:layoutManager.orientation="HORIZONTAL">
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="styleClasses" value=""/>
-        <property name="items">
-            <list>
-                <bean parent="MessageField"
-                      p:messageText="You don't have any saved courses. Save a course by adding ("/>
-                <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png"
-                      p:altText="Example of Add to Plan button"/>
-                <bean parent="MessageField"
-                      p:messageText=") from the search results (TBD)"/>
-            </list>
-        </property>
-    </bean>-->
 
     <bean id="saved_courses_summary_list" parent="ListGroup">
         <property name="disclosure.render" value="false"/>
@@ -443,4 +390,27 @@
             </list>
         </property>
     </bean>
+
+
+
+    <bean id="savedCoursesListActionsView" parent="KSFormView">
+        <property name="id" value="savedCoursesListActionsView"/>
+        <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
+        <property name="items">
+            <list>
+                <bean parent="GroupSectionGridLayout">
+                    <property name="layoutManager.numberOfColumns" value="2"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="errorsField.render" value="true"/>
+                    <property name="header.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
 </beans>
