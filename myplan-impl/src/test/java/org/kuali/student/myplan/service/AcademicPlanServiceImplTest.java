@@ -7,6 +7,7 @@ import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.enrollment.courseoffering.dto.OfferingInstructorInfo;
 import org.kuali.student.enrollment.lui.dto.LuiInfo;
 import org.kuali.student.enrollment.lui.dto.LuiLuiRelationInfo;
+import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -175,7 +176,8 @@ public class AcademicPlanServiceImplTest {
         planItem.setLearningPlanId(planId);
         planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
-        String courseType = "kuali.lu.type.CreditCourse";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
         planItem.setRefObjectId(courseId);
         planItem.setRefObjectType(courseType);
 
