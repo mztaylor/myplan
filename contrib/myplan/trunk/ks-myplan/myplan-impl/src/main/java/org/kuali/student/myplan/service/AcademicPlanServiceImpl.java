@@ -32,10 +32,10 @@ import java.util.List;
 public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     private LearningPlanDao learningPlanDao;
-
     private LearningPlanTypeDao learningPlanTypeDao;
     private PlanItemDao planItemDao;
     private PlanItemTypeDao planItemTypeDao;
+
     public PlanItemDao getPlanItemDao() {
         return planItemDao;
     }
