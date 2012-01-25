@@ -349,49 +349,7 @@
         </property>
     </bean>
 
-    <!-- Add / delete plan items -->
-    <bean id="SavedCourses-MaintenanceView" parent="KSMaintenanceView">
-        <property name="title" value="Saved Courses Maintenance"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.SavedCoursesMaintainableImpl" />
-
-        <property name="items">
-            <list merge="true">
-                <bean parent="MaintenanceGroupSectionGridLayout">
-                    <property name="title" value="Saved Courses"/>
-                    <!-- <property name="items">
-                      <list>
-                       <bean parent="InputField" p:propertyName="typeKey">
-                           <property name="control">
-                               <bean parent="SelectControl"/>
-                           </property>
-                           <property name="optionsFinder">
-                               <bean class="org.kuali.student.enrollment.class2.acal.keyvalue.TermInfoTypeKeyValues"/>
-                           </property>
-                       </bean>
-                       <bean parent="InputField" p:propertyName="startDate"/>
-                       <bean parent="InputField" p:propertyName="endDate"/>
-                      </list>
-                    </property>-->
-                </bean>
-
-            </list>
-        </property>
-    </bean>
-
-    <bean id="SavedCoursesItemMaintenanceDocument" parent="uifMaintenanceDocumentEntry">
-        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-        <property name="maintainableClass" value="org.kuali.student.myplan.course.service.SavedCoursesMaintainableImpl"/>
-        <property name="documentTypeName" value="SavedCoursesItemMaintenanceDocument"/>
-        <property name="documentAuthorizerClass" value="org.kuali.student.myplan.course.util.SavedCoursesDocumentAuthorizer"/>
-        <property name="lockingKeys">
-            <list>
-                <value>courseID</value>
-            </list>
-        </property>
-    </bean>
-
-
+    <!-- Saved courses actions -->
 
     <bean id="savedCoursesListActionsView" parent="KSFormView">
         <property name="id" value="savedCoursesListActionsView"/>
@@ -405,12 +363,72 @@
                     <property name="header.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
+                            <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
+
+    <bean parent="Page" p:id="add_plan_item_page">
+        <property name="title" value="Add Plan Item"/>
+        <property name="items">
+            <list>
+               <bean parent="GroupSectionGridLayout">
+                    <property name="layoutManager.numberOfColumns" value="2"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="errorsField.render" value="true"/>
+                    <property name="header.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Group" p:layoutManager.orientation="HORIZONTAL">
+                    <property name="header.render" value="false"/>
+                    <property name="disclosure.render" value="false"/>
+                    <property name="errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                             <bean parent="MessageField" p:messageText="Some Text."/>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean parent="Page" p:id="remove_plan_item_page">
+        <property name="title" value="Remove Plan Item"/>
+        <property name="items">
+            <list>
+               <bean parent="GroupSectionGridLayout">
+                    <property name="layoutManager.numberOfColumns" value="2"/>
+                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+                    <property name="errorsField.render" value="true"/>
+                    <property name="header.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Group" p:layoutManager.orientation="HORIZONTAL">
+                    <property name="header.render" value="false"/>
+                    <property name="disclosure.render" value="false"/>
+                    <property name="errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                             <bean parent="MessageField" p:messageText="Some Text."/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
 
 </beans>

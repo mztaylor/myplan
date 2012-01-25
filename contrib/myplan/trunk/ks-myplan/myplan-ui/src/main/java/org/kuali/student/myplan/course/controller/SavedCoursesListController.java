@@ -82,16 +82,18 @@ public class SavedCoursesListController extends UifControllerBase {
             return null;
         }
 
-        if (learningPlans.size() > 0) {
+        if (learningPlans.size() > 1) {
             logger.error(String.format("Student [%s] has more than one plan.", user.getPrincipalId()));
             //  TODO: Error handling
             return null;
         }
 
         //  If the student has no plans then create one for them.
+
+        LearningPlan learningPlan = null;
         if (learningPlans.size() == 0) {
             try {
-                LearningPlan learningPlan = createDefaultLearningPlan(user.getPrincipalId());
+                learningPlan = createDefaultLearningPlan(user.getPrincipalId());
             } catch (InvalidParameterException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } catch (DataValidationErrorException e) {
@@ -105,15 +107,16 @@ public class SavedCoursesListController extends UifControllerBase {
             } catch (OperationFailedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+        } else {
+            learningPlan = learningPlans.get(0);
         }
 
+        //  Course ID will be validated by the service.
         String courseId = form.getCourseId();
 
-        if ( ! isValidCourse(courseId)) {
-            //  TODO: Invalid parameter.
-        }
-
         PlanItemInfo pii = new PlanItemInfo();
+        pii.setLearningPlanId(learningPlan.getId());
+        pii.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
         pii.setRefObjectId(courseId);
 
@@ -139,8 +142,8 @@ public class SavedCoursesListController extends UifControllerBase {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-
-        return getUIFModelAndView(form, "");
+        form.setPlanItemId(newPlanItem.getId());
+        return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
     /**
@@ -164,24 +167,29 @@ public class SavedCoursesListController extends UifControllerBase {
         return newPlan;
     }
 
-    /**
-     * Lookup a course and validate it is valid to be added to the saved courses list.
-     */
-    private boolean isValidCourse(String courseId) {
-        // TODO: Implement this.
-        return true;
-    }
-
     @RequestMapping(params = "methodToCall=removeItem")
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") SavedCoursesListForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         // GlobalVariables.getMessageMap().putError("proertyName", "errorKey", "error parm 1", "error parm 2");
 
+        String planItemId = form.getPlanItemId();
 
+        try {
+            getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (PermissionDeniedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
-                             //  Use default page id for now but maybe use specific page errors and/or
-        return getUIFModelAndView(form, "");
+        return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
 
 
