@@ -215,12 +215,6 @@ public class CourseSearchController extends UifControllerBase {
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
 
-            /*
-            // Removed by Garett - 01/17/2012
-            if( courseList.size() == 0 ) {
-                return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_EMPTY_RESULT_PAGE);
-            }
-            */
             return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
         }
         catch (Exception e) {
@@ -228,65 +222,7 @@ public class CourseSearchController extends UifControllerBase {
         }
 
     }
- /*
-    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=refreshProgGroup")
-	public ModelAndView refreshProgGroup(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-			HttpServletRequest request, HttpServletResponse response) {
 
-//		return updateComponent(uiTestForm, result, request, response);
-        String requestedComponentId = request.getParameter(UifParameters.REQUESTED_COMPONENT_ID);
-        if (StringUtils.isBlank(requestedComponentId)) {
-            throw new RuntimeException("Requested component id for update not found in request");
-        }
-        // get a new instance of the component
-        Component component = ComponentFactory.getNewInstanceForRefresh(form.getView(), requestedComponentId);
-
-        // run lifecycle and update in view
-        form.getView().getViewHelperService().performComponentLifecycle(form.getView(), form, component,
-                requestedComponentId);
-        MessageField field = (MessageField) component;
-        String text = field.getMessageText() + " " + new Date().toString();
-        field.setMessageText( text );
-
-//        return UifWebUtils.getComponentModelAndView(component, form);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject(UifConstants.DEFAULT_MODEL_NAME, form);
-        modelAndView.addObject("Component", component);
-        modelAndView.setViewName("ComponentUpdate");
-
-        return modelAndView;
-	}
-
-    @RequestMapping(method = RequestMethod.POST, params = "methodToCall=refreshSavedCourses")
-	public ModelAndView refreshSavedCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-			HttpServletRequest request, HttpServletResponse response) {
-
-//		return updateComponent(uiTestForm, result, request, response);
-        String requestedComponentId = request.getParameter(UifParameters.REQUESTED_COMPONENT_ID);
-        if (StringUtils.isBlank(requestedComponentId)) {
-            throw new RuntimeException("Requested component id for update not found in request");
-        }
-        // get a new instance of the component
-        Component component = ComponentFactory.getNewInstanceForRefresh(form.getView(), requestedComponentId);
-
-        // run lifecycle and update in view
-        form.getView().getViewHelperService().performComponentLifecycle(form.getView(), form, component,
-                requestedComponentId);
-
-//        MessageField field = (MessageField) component;
-//        String text = field.getMessageText() + " " + new Date().toString();
-//        field.setMessageText( text );
-
-
-//        return UifWebUtils.getComponentModelAndView(component, form);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject(UifConstants.DEFAULT_MODEL_NAME, form);
-        modelAndView.addObject("Component", component);
-        modelAndView.setViewName("ComponentUpdate");
-
-        return modelAndView;
-	}
-*/
     public void hitCourseID( Map<String, Hit> courseMap, String id ) {
         Hit hit = null;
         if( courseMap.containsKey( id )) {
