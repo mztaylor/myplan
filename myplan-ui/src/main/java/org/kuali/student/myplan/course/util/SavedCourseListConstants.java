@@ -11,8 +11,8 @@ public class SavedCourseListConstants {
     public  static final String COURSE_ID = "courseId";
     public static final String TERM = "term";
 
-    public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_page";
-    public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_page";
+    public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_result";
+    public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_result";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 

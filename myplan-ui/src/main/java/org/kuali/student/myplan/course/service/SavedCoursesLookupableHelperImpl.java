@@ -64,7 +64,6 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
                     item.setScheduleList(null);
                     item.setTitle(course.getCourseTitle());
                     savedCoursesList.add(item);
-
                 }
             }
 

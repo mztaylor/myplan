@@ -17,8 +17,10 @@ package org.kuali.student.myplan.course.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -171,14 +173,14 @@ public class SavedCoursesListController extends UifControllerBase {
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") SavedCoursesListForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-        // GlobalVariables.getMessageMap().putError("proertyName", "errorKey", "error parm 1", "error parm 2");
 
         String planItemId = form.getPlanItemId();
 
         try {
             getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            GlobalVariables.getMessageMap().putError("courseId", RiceKeyConstants.ERROR_CUSTOM, new String[] { "Does not exist."});
+            //GlobalVariables.getMessageMap().putError("proertyName", "errorKey", "error parm 1", "error parm 2");
         } catch (InvalidParameterException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (MissingParameterException e) {
@@ -191,7 +193,6 @@ public class SavedCoursesListController extends UifControllerBase {
 
         return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
-
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {

@@ -351,19 +351,35 @@
 
     <!-- Saved courses actions -->
 
-    <bean id="savedCoursesListActionsView" parent="KSFormView">
+    <bean id="savedCoursesListActionsView" parent="KSFormView" p:breadcrumbsInApplicationHeader="false">
         <property name="id" value="savedCoursesListActionsView"/>
         <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
         <property name="items">
             <list>
                 <bean parent="GroupSectionGridLayout">
                     <property name="layoutManager.numberOfColumns" value="2"/>
-                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
                     <property name="errorsField.render" value="true"/>
                     <property name="header.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/>
+                            <bean parent="Page" p:id="add_plan_item_result">
+                                <property name="title" value="Add Plan Item"/>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="add_plan_item_page"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Page" p:id="remove_plan_item_result">
+                                <property name="title" value="Remove Plan Item"/>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="remove_plan_item_page"/>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/> -->
                         </list>
                     </property>
                 </bean>
@@ -371,64 +387,26 @@
         </property>
     </bean>
 
-    <bean parent="Page" p:id="add_plan_item_page">
-        <property name="title" value="Add Plan Item"/>
+     <bean id="add_plan_item_page"  parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="header.render" value="false"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-               <bean parent="GroupSectionGridLayout">
-                    <property name="layoutManager.numberOfColumns" value="2"/>
-                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-                    <property name="errorsField.render" value="true"/>
-                    <property name="header.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Group" p:layoutManager.orientation="HORIZONTAL">
-                    <property name="header.render" value="false"/>
-                    <property name="disclosure.render" value="false"/>
-                    <property name="errorsField.render" value="false"/>
-                    <property name="items">
-                        <list>
-                             <bean parent="MessageField" p:messageText="Some Text."/>
-
-                        </list>
-                    </property>
-                </bean>
+                 <bean parent="MessageField" p:messageText="Add Some Text."/>
             </list>
         </property>
     </bean>
 
-    <bean parent="Page" p:id="remove_plan_item_page">
-        <property name="title" value="Remove Plan Item"/>
+    <bean id="remove_plan_item_page" parent="Group" p:layoutManager.orientation="HORIZONTAL">
+        <property name="header.render" value="false"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-               <bean parent="GroupSectionGridLayout">
-                    <property name="layoutManager.numberOfColumns" value="2"/>
-                    <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-                    <property name="errorsField.render" value="true"/>
-                    <property name="header.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="DataField" p:propertyName="id" p:label="Plan Item Id"/>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Group" p:layoutManager.orientation="HORIZONTAL">
-                    <property name="header.render" value="false"/>
-                    <property name="disclosure.render" value="false"/>
-                    <property name="errorsField.render" value="false"/>
-                    <property name="items">
-                        <list>
-                             <bean parent="MessageField" p:messageText="Some Text."/>
-                        </list>
-                    </property>
-                </bean>
+                 <bean parent="MessageField" p:messageText="Remove Some Text."/>
             </list>
         </property>
     </bean>
-
 
 </beans>
