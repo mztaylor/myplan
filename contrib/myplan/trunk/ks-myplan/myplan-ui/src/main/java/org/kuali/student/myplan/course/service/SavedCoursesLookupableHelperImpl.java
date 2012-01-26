@@ -1,28 +1,20 @@
 package org.kuali.student.myplan.course.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.lookup.LookupableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
-import org.kuali.rice.kim.api.identity.Person;
-
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.CourseServiceConstants;
-
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
-import org.kuali.student.myplan.course.util.CreditsFormatter;
-import org.kuali.student.r2.common.dto.ContextInfo;
-
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
+import org.kuali.student.r2.common.dto.ContextInfo;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +23,13 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
     private transient AcademicPlanService academicPlanService;
 
+    private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
+
     @Override
     protected List<?> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         try {
             List<SavedCoursesItem> savedCoursesList = new ArrayList<SavedCoursesItem>();
 
-            CourseService courseService = getCourseService();
             AcademicPlanService academicPlanService = getAcademicPlanService();
 
             Person user = GlobalVariables.getUserSession().getPerson();
@@ -53,16 +46,13 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
                 for (PlanItem planItem : planItemList) {
                     String courseID = planItem.getRefObjectId();
-                    CourseInfo course = courseService.getCourse(courseID);
 
                     SavedCoursesItem item = new SavedCoursesItem();
-                    item.setCourseID(courseID);
-                    item.setCode(course.getCode());
-                    item.setAdded(new Date());
-                    item.setCredit(CreditsFormatter.formatCredits(course));
-                    item.setPrereqList(null);
-                    item.setScheduleList(null);
-                    item.setTitle(course.getCourseTitle());
+                    item.setId(planItem.getId());
+                    item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                 //TODO: Bug meta is coming back as null
+                 //   item.setDateAdded(planItem.getMeta().getCreateTime());
+
                     savedCoursesList.add(item);
                 }
             }
@@ -87,17 +77,14 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
         this.academicPlanService = academicPlanService;
     }
 
-
-    protected synchronized CourseService getCourseService() {
-        if (this.courseService == null) {
-            this.courseService = (CourseService) GlobalResourceLoader
-                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+    public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
+        if(this.courseDetailsInquiryService == null) {
+            this.courseDetailsInquiryService =  new CourseDetailsInquiryViewHelperServiceImpl();
         }
-        return this.courseService;
+        return courseDetailsInquiryService;
     }
 
-    public synchronized void setCourseService(CourseService courseService) {
-        this.courseService = courseService;
+    public void setCourseDetailsInquiryService(CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService) {
+        this.courseDetailsInquiryService = courseDetailsInquiryService;
     }
-
 }

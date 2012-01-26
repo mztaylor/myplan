@@ -18,6 +18,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
     -->
+    <import resource="classpath:ks-base-dictionary.xml"/>
+
+
     <bean id="CourseDetails" parent="CourseDetails-parentBean"/>
     <bean id="CourseDetails-parentBean" abstract="true" parent="DataObjectEntry">
         <property name="objectLabel" value="Course Details"/>
@@ -42,16 +45,10 @@
                 <ref bean="CourseDetails.genEdRequirements"/>
             </list>
         </property>
-
-        <property name="primaryKeys">
-            <list>
-                <value>courseId</value>
-            </list>
-        </property>
     </bean>
 
     <bean id="CourseDetails.courseId" parent="CourseDetails.courseId-parentBean"/>
-    <bean id="CourseDetails.courseId-parentBean" abstract="true" parent="AttributeDefinition">
+    <bean id="CourseDetails.courseId-parentBean" abstract="true" parent="BaseKuali.idField">
         <property name="name" value="courseId"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course ID"/>
@@ -67,7 +64,7 @@
     </bean>
 
     <bean id="CourseDetails.code" parent="CourseDetails.code-parentBean"/>
-    <bean id="CourseDetails.code-parentBean" abstract="true" parent="AttributeDefinition">
+    <bean id="CourseDetails.code-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="code"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Code"/>
@@ -83,7 +80,7 @@
     </bean>
 
     <bean id="CourseDetails.courseTitle" parent="CourseDetails.courseTitle-parentBean"/>
-    <bean id="CourseDetails.courseTitle-parentBean" abstract="true" parent="AttributeDefinition">
+    <bean id="CourseDetails.courseTitle-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="courseTitle"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Title"/>
@@ -99,7 +96,7 @@
     </bean>
 
     <bean id="CourseDetails.credit" parent="CourseDetails.credit-parentBean"/>
-    <bean id="CourseDetails.credit-parentBean" abstract="true" parent="AttributeDefinition">
+    <bean id="CourseDetails.credit-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="credit"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Credit"/>
@@ -115,7 +112,7 @@
     </bean>
 
     <bean id="CourseDetails.courseDescription" parent="CourseDetails.courseDescription-parentBean"/>
-    <bean id="CourseDetails.courseDescription-parentBean" abstract="true" parent="AttributeDefinition">
+    <bean id="CourseDetails.courseDescription-parentBean" abstract="true" parent="BaseKuali.stringLong">
         <property name="name" value="courseDescription"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Description"/>
@@ -288,7 +285,7 @@
             <list>
                 <bean parent="ActionField"
                       p:actionLabel="Add this Course"
-                      p:clientSideJs="alert('This course has been added successfully');"/>
+                      p:clientSideJs="alert('This courseDetails has been added successfully');"/>
             </list>
         </property>
     </bean>
