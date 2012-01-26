@@ -42,7 +42,6 @@ import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
-import org.kuali.student.myplan.course.dataobject.SavedCoursesService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
@@ -487,18 +486,6 @@ public class CourseSearchController extends UifControllerBase {
         this.searcher = searcher;
     }
 
-    private SavedCoursesService savedCoursesService;
-
-    public SavedCoursesService getSavedCoursesService() {
-        if( savedCoursesService == null ) {
-            savedCoursesService = new SavedCoursesService();
-        }
-        return savedCoursesService;
-    }
-
-    public void setSavedCoursesService( SavedCoursesService savedCourses ) {
-        this.savedCoursesService = savedCourses;
-    }
 }
 
 

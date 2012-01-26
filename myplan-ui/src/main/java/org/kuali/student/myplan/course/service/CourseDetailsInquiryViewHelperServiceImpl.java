@@ -54,8 +54,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
-        //  Get the courseId from the query parameters.
-        String courseId = (String) fieldValues.get("courseId");
+        return retrieveCourseDetails((String) fieldValues.get("courseId"));
+    }
+
+    public CourseDetails retrieveCourseDetails(String courseId) {
 
         CourseInfo course = null;
         try {
