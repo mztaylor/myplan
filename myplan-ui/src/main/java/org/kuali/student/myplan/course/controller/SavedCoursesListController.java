@@ -179,8 +179,7 @@ public class SavedCoursesListController extends UifControllerBase {
         try {
             getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
-            GlobalVariables.getMessageMap().putError("courseId", RiceKeyConstants.ERROR_CUSTOM, new String[] { "Does not exist."});
-            //GlobalVariables.getMessageMap().putError("proertyName", "errorKey", "error parm 1", "error parm 2");
+            GlobalVariables.getMessageMap().putError("planItemId", "error.myplan.savedCoursesList.unknownPlanItem");
         } catch (InvalidParameterException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (MissingParameterException e) {
