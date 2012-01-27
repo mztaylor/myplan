@@ -133,6 +133,8 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
             dto.setDescr(this.getDescr().toDto());
         }
 
+        dto.setMeta(super.toDTO());
+
         // FIXME: dto.setPlanPeriods();
 
         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();

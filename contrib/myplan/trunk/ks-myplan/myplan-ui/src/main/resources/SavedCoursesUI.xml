@@ -334,7 +334,7 @@
         <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-                 <bean parent="MessageField" p:messageText="Remove Some Text."/>
+                 <bean parent="MessageField" p:messageText=""/>
             </list>
         </property>
     </bean>
