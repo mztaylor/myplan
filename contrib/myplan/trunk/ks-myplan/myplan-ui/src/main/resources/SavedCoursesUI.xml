@@ -281,37 +281,26 @@
         </property>
     </bean>
 
-    <!-- Saved courses actions -->
+    <!-- Saved courses actions view and response pages -->
 
-    <bean id="savedCoursesListActionsView" parent="KSFormView" p:breadcrumbsInApplicationHeader="false">
+    <bean id="savedCoursesListActionsView" parent="KSFormView">
         <property name="id" value="savedCoursesListActionsView"/>
         <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="GroupSectionGridLayout">
-                    <property name="layoutManager.numberOfColumns" value="2"/>
-                    <property name="errorsField.render" value="true"/>
-                    <property name="header.render" value="false"/>
+                <bean parent="Page" p:id="add_plan_item_result">
                     <property name="items">
                         <list>
-                            <bean parent="Page" p:id="add_plan_item_result">
-                                <property name="title" value="Add Plan Item"/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="add_plan_item_page"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Page" p:id="remove_plan_item_result">
-                                <property name="title" value="Remove Plan Item"/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="remove_plan_item_page"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!-- <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/> -->
+                            <ref bean="add_plan_item_page"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Page" p:id="remove_plan_item_result">
+                    <property name="items">
+                        <list>
+                            <ref bean="remove_plan_item_page"/>
                         </list>
                     </property>
                 </bean>
@@ -325,7 +314,7 @@
         <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-                 <bean parent="MessageField" p:messageText="Add Some Text."/>
+                <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/>
             </list>
         </property>
     </bean>

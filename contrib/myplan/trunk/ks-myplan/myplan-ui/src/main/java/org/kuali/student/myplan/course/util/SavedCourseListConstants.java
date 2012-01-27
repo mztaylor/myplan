@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class SavedCourseListConstants {
 
     public static final String PLAN_ITEM_ID_PARAM_NAME = "planItemId";
-    public  static final String COURSE_ID = "courseId";
+    public static final String COURSE_ID = "courseId";
     public static final String TERM = "term";
 
     public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_result";
