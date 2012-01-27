@@ -50,8 +50,7 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
                     SavedCoursesItem item = new SavedCoursesItem();
                     item.setId(planItem.getId());
                     item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
-                 //TODO: Bug meta is coming back as null
-                 //   item.setDateAdded(planItem.getMeta().getCreateTime());
+                    item.setDateAdded(planItem.getMeta().getCreateTime());
 
                     savedCoursesList.add(item);
                 }

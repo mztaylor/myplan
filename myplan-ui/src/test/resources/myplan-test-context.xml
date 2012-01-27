@@ -15,7 +15,6 @@
 
     <context:annotation-config/>
 
-
     <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
         <property name="configLocations">
             <list>
@@ -23,7 +22,6 @@
             </list>
         </property>
     </bean>
-
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize" />

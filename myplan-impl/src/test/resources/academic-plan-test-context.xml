@@ -69,8 +69,6 @@
         <property name="properties" value="#{config.getProperties()}" />
     </bean>
 
-
-
     <!--  Preloaded data -->
     <bean id="dataLoadListener" class="org.kuali.student.common.util.jpa.LoadSqlListener">
         <property name="jtaTxManager" ref="JtaTxManager"/>
@@ -141,12 +139,17 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
-	  	<property name="learningPlanDao" ref="learningPlanDao"/>
-	  	<property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
-	  	<property name="planItemDao" ref="planItemDao"/>
-	  	<property name="planItemTypeDao" ref="planItemTypeDao"/>
-	</bean>
+   <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+        <property name="learningPlanDao" ref="learningPlanDao"/>
+        <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
+        <property name="planItemDao" ref="planItemDao"/>
+        <property name="planItemTypeDao" ref="planItemTypeDao"/>
+   </bean>
+
+    <!-- Academic Plan Service Decorators -->
+    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
+        <property name="nextDecorator" ref="academicPlanServicePersistence" />
+    </bean>
 
 	<bean id="permissionService" class="org.kuali.student.kim.permission.mock.PermissionServiceMockImpl" />
 

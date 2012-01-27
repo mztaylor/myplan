@@ -64,87 +64,102 @@ public class SavedCoursesListController extends UifControllerBase {
 
         Person user = GlobalVariables.getUserSession().getPerson();
 
+        boolean hasError = false;
+        /*
+         *  First fetch the student's learning plan. If they don't have a plan then create one.
+         */
         List<LearningPlan> learningPlans = null;
         try {
-            learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(user.getPrincipalId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN,
-                    SavedCourseListConstants.CONTEXT_INFO);
-        } catch (DoesNotExistException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(user.getPrincipalId(),
+                    AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN, SavedCourseListConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Learning plan query failed.", e);
+            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            hasError = true;
         }
 
         if (learningPlans == null) {
             logger.error("Learning Plans query produced null.");
-            //  TODO: Error handling
-            return null;
+            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            hasError = true;
         }
 
+        //  There should currently only be a single learning plan. This may change in the future.
         if (learningPlans.size() > 1) {
             logger.error(String.format("Student [%s] has more than one plan.", user.getPrincipalId()));
-            //  TODO: Error handling
-            return null;
+            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            hasError = true;
         }
 
-        //  If the student has no plans then create one for them.
+        //  Bail here if there were problems with the plan lookup.
+        if (hasError) {
+            form.setPlanItemId("");
+            return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_ADD_PAGE_ID);
+        }
 
+        //  Use an existing plan or create a new one.
         LearningPlan learningPlan = null;
-        if (learningPlans.size() == 0) {
-            try {
-                learningPlan = createDefaultLearningPlan(user.getPrincipalId());
-            } catch (InvalidParameterException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (DataValidationErrorException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (MissingParameterException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (AlreadyExistsException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (PermissionDeniedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (OperationFailedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        } else {
+        if (learningPlans.size() != 0) {
             learningPlan = learningPlans.get(0);
+        } else {
+            try {
+                //  Assume an error here, but clear it if none occurs. This is to avoid flagging in every catch.
+                hasError = true;
+                learningPlan = createDefaultLearningPlan(user.getPrincipalId());
+                hasError = false;
+            } catch (AlreadyExistsException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_DUPLICATE_PLAN);
+            } catch (DataValidationErrorException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_DATA_VALIDATION_ERROR, e.getMessage());
+            } catch (InvalidParameterException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
+            } catch (MissingParameterException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_MISSING_PARAM, e.getMessage());
+            } catch (OperationFailedException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            } catch (PermissionDeniedException e) {
+                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
+            }
         }
 
-        //  Course ID will be validated by the service.
-        String courseId = form.getCourseId();
+        String newPlanItemId = "";
 
-        PlanItemInfo pii = new PlanItemInfo();
-        pii.setLearningPlanId(learningPlan.getId());
-        pii.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
-        pii.setRefObjectId(courseId);
+        if ( ! hasError) {
+            //  Course ID will be validated by the service.
+            String courseId = form.getCourseId();
 
-        RichTextInfo rti = new RichTextInfo();
-        rti.setFormatted("");
-        rti.setPlain("");
-        pii.setDescr(rti);
+            PlanItemInfo pii = new PlanItemInfo();
+            pii.setLearningPlanId(learningPlan.getId());
+            pii.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+            pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
+            pii.setRefObjectId(courseId);
 
-        PlanItem newPlanItem = null;
-        try {
-            newPlanItem = getAcademicPlanService().createPlanItem(pii, SavedCourseListConstants.CONTEXT_INFO);
-        } catch (AlreadyExistsException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (DataValidationErrorException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (PermissionDeniedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            RichTextInfo rti = new RichTextInfo();
+            rti.setFormatted("");
+            rti.setPlain("");
+            pii.setDescr(rti);
+
+            PlanItem newPlanItem = null;
+            try {
+                newPlanItem = getAcademicPlanService().createPlanItem(pii, SavedCourseListConstants.CONTEXT_INFO);
+                newPlanItemId = newPlanItem.getId();
+            } catch (AlreadyExistsException e) {
+                GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_DUPLICATE_PLAN_ITEM);
+            } catch (DataValidationErrorException e) {
+                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_DATA_VALIDATION_ERROR, e.getMessage());
+            } catch (InvalidParameterException e) {
+                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
+            } catch (MissingParameterException e) {
+                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_MISSING_PARAM, "courseId");
+            } catch (OperationFailedException e) {
+                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            } catch (PermissionDeniedException e) {
+                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
+            }
         }
 
-        form.setPlanItemId(newPlanItem.getId());
+        form.setPlanItemId(newPlanItemId);
+
         return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
@@ -173,21 +188,20 @@ public class SavedCoursesListController extends UifControllerBase {
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") SavedCoursesListForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-
         String planItemId = form.getPlanItemId();
 
         try {
             getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", "error.myplan.savedCoursesList.unknownPlanItem");
+            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
         } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
         } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, "planItemId");
         } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
         } catch (PermissionDeniedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
         }
 
         return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_REMOVE_PAGE_ID);
