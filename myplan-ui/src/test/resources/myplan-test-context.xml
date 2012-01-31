@@ -96,6 +96,10 @@
         <property name="luService" ref="luServiceImpl"/>
     </bean>
 
+    <bean id="coursePreReqSearch" class="org.kuali.student.myplan.course.service.CoursePreReqSearch">
+        <property name="luService" ref="luServiceImpl"/>
+    </bean>
+
     <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="courseOfferingService" ref="coService"/>

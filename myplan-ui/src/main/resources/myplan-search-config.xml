@@ -187,6 +187,64 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.course.getcluid">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.course.prereqsearch.subject">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.course.prereqsearch.range">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.course.prereqsearch.exclusions">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+                <ref bean="lu.resultColumn.luOptionalCode"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+
     <bean id="queryMap" parent="queryMap-parent">
         <property name="sourceMap">
             <map merge="true">
@@ -371,6 +429,73 @@
                         c.type like 'kuali.resultComponentType.credit.degree.%'
                         group by
                         v.rslt_comp_id
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.prereqsearch.subject">
+                    <value>NATIVE:
+                        SELECT
+                            clu.id
+                        FROM
+                            KSLU_CLU clu,
+                            KSLU_CLU_IDENT id
+                        WHERE
+                            clu.offic_clu_id = id.id
+                        AND
+                            trim( id.division ) = :subject
+                        ORDER BY id.sufx_cd
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.prereqsearch.range">
+                    <value>NATIVE:
+                        SELECT
+                            clu.id
+                        FROM
+                            KSLU_CLU clu,
+                            KSLU_CLU_IDENT id
+                        WHERE
+                            clu.offic_clu_id = id.id
+                        AND
+                            trim( id.division ) = :subject
+                        AND
+                            trim( id.lvl ) like :range
+                        ORDER BY id.sufx_cd
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.prereqsearch.exclusions">
+                    <value>NATIVE:
+                        SELECT
+                            clu.id,
+                            id.sufx_cd
+                        FROM
+                            KSLU_CLU clu,
+                            KSLU_CLU_IDENT id
+                        WHERE
+                            clu.offic_clu_id = id.id
+                        AND
+                            trim( id.division ) like :subject
+                        AND
+                            trim( id.sufx_cd ) like :range
+                        ORDER BY
+                            id.sufx_cd
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.getcluid">
+                    <value>NATIVE:
+                        SELECT
+                            clu.id, id.LNG_NAME
+                        FROM
+                            KSLU_CLU clu,
+                            KSLU_CLU_IDENT id
+                        WHERE
+                            clu.offic_clu_id = id.id
+                        AND
+                            trim( id.SUFX_CD ) = :number
+                        AND
+                            trim( id.DIVISION ) = :subject
                     </value>
                 </entry>
             </map>
