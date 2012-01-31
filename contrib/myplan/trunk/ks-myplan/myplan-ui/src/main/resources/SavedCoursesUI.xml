@@ -123,11 +123,12 @@
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="propertyName" value="searchResults"/>
-        <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary');"/>
         <property name="items">
             <list>
-                <bean parent="FieldGroup" p:labelField.render="false">
+                <bean parent="FieldGroup" p:labelField.render="false" p:id="@{#line.courseDetails.courseId}">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="onDocumentReadyScript" value="truncateField('@{#line.courseDetails.courseId}');"/>
                     <property name="items">
                         <list>
                             <bean parent="MessageField" p:messageText="@{#line.courseDetails.code}"
@@ -217,7 +218,7 @@
     </bean>
 
     <bean id="saved_courses_detail_list" parent="ListGroup">
-        <property name="title" value="You have @{searchResults.size()} courses in your list"/>
+        <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
         <property name="disclosure.render" value="false"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
@@ -226,60 +227,96 @@
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="propertyName" value="searchResults"/>
+        <property name="styleClasses" value="fl-container-700"/>
+        <!--<property name="onDocumentReadyScript" value="enableToggle('courseDescription');"/>-->
         <property name="items">
             <list>
                 <bean parent="FieldGroup" p:labelField.render="false">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
+                            <bean parent="LinkField" p:target="" p:styleClasses="fl-text-bold">
+                                <property name="linkLabel" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
+                                <property name="title" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
+                                <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseDetails.courseId}"/>
+                                <property name="labelField.render" value="false"/>
+                            </bean>
+                            <!--
                             <bean parent="DataField" p:propertyName="courseDetails.code"
                                   p:styleClasses="courseCode fl-text-bold" p:labelField.render="false"/>
                             <bean parent="DataField" p:propertyName="courseDetails.courseTitle"
-                                  p:styleClasses="courseName fl-text-bold" p:labelField.render="false"/>
+                                  p:styleClasses="courseName fl-text-bold ellipsis" p:labelField.render="false"/>
                             <bean parent="MessageField" p:messageText="(@{#line.courseDetails.credit})"
                                   p:styleClasses="courseCredits fl-text-bold"/>
-                            <!--<bean parent="DataField" p:propertyName="courseDetails.genEdRequirements"
-                                  p:styleClasses="courseGenEduReq"/>-->
+                            <bean parent="DataField" p:propertyName="courseDetails.genEdRequirements"
+                                  p:styleClasses="courseGenEduReq"/>
+                            -->
+                            <bean parent="MessageField" p:messageText="I&amp;S, VLPA"
+                                  p:styleClasses="courseGenEduReq fl-text-gray"/>
                             <bean parent="DataField" p:propertyName="dateAdded" p:label="Added on"
-                                  p:styleClasses="dateAdded" p:labelField.render="true"/>
+                                  p:styleClasses="dateAdded fl-text-gray fl-text-italic" p:labelField.renderColon="false"
+                                  p:labelField.render="true" p:labelField.styleClasses="fl-text-gray fl-text-italic"/>
                         </list>
                     </property>
                 </bean>
-                <!--
                 <bean parent="FieldGroup" p:labelField.render="false">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="DataField" p:label="Scheduled For" p:propertyName="courseDetails.scheduledTerms" p:styleClasses="courseQuarterScheduled"/>
-                            <bean parent="DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered" p:styleClasses="courseQuarterProjected"/>
-                            <bean parent="MessageField" p:label="Last Offered" p:messageText="Spring 2011" p:styleClasses="courseLastOffered" p:labelField.render="true"/>
-                        </list>
-                    </property>
-                </bean>
-
-                <bean parent="FieldGroup" p:labelField.render="false">
-                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites" p:styleClasses="courseRequisites"/>
-                        </list>
-                    </property>
-                </bean>
-                -->
-                <bean parent="FieldGroup" p:labelField.render="false">
-                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="DataField" p:label="Course Description" p:propertyName="courseDetails.courseDescription" p:styleClasses="courseDescription"
-                                  p:labelPlacement="TOP" p:labelField.style="display:block;" />
+                            <!--<bean parent="DataField" p:label="Scheduled For" p:propertyName="courseDetails.scheduledTerms"
+                                  p:styleClasses="courseQuarterScheduled" p:labelField.styleClasses="fl-text-gray"/>
+                            <bean parent="DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered"
+                                  p:styleClasses="courseQuarterProjected" p:labelField.styleClasses="fl-text-gray"/>-->
+                            <bean parent="MessageField" p:label="Last Offered" p:messageText="Spring 2011"
+                                  p:styleClasses="courseLastOffered" p:labelField.styleClasses="fl-text-gray" p:labelField.render="true"/>
                         </list>
                     </property>
                 </bean>
 
                 <bean parent="FieldGroup" p:labelField.render="false">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
+                            <!--<bean parent="DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
+                                  p:styleClasses="courseRequisites" p:labelField.styleClasses="fl-text-gray"/>-->
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="FieldGroup" p:labelField.render="false">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="DataField" p:label="Course Description" p:propertyName="courseDetails.courseDescription"
+                                  p:styleClasses="courseDescription" p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;" />
+                            <!--<bean id="saved_courses_course_description" parent="Group" >
+                                <property name="disclosure.render" value="false"/>
+                                <property name="errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MessageField" p:label="Course Description" p:messageText="@{#line.courseDetails.courseDescription}"
+                                              p:styleClasses="courseDescription" p:style="display:none;"
+                                              p:labelField.render="true" p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;" />
+                                    </list>
+                                </property>
+                                <property name="footer">
+                                    <bean parent="revel_link_footer"/>
+                                </property>
+                            </bean>-->
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="FieldGroup" p:labelField.render="false">
+                    <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="ActionField" p:actionLabel="Move to Plan"
+                                  p:clientSideJs="alert('This course has been moved to your plan');"/>
                             <bean parent="ActionLinkField" p:label="Delete" p:styleClasses="" p:labelField.render="false">
                                 <property name="clientSideJs" value="modifyPlan('removeItem', '@{#line.id}');"/>
                             </bean>
@@ -290,6 +327,18 @@
         </property>
     </bean>
 
+    <bean id="revel_link_footer" parent="Group">
+        <property name="disclosure.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="errorsField.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="ActionLinkField" p:label="Show" p:styleClasses="" p:labelField.render="false">
+                    <property name="clientSideJs" value="alert('Showing details');"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
     <!-- Saved courses actions view and response pages -->
 
     <bean id="savedCoursesListActionsView" parent="KSFormView">

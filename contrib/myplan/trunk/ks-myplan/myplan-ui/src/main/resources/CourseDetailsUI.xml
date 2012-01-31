@@ -285,7 +285,7 @@
             <list>
                 <bean parent="ActionField"
                       p:actionLabel="Add this Course"
-                      p:clientSideJs="alert('This courseDetails has been added successfully');"/>
+                      p:clientSideJs="alert('This course has been added successfully');"/>
             </list>
         </property>
     </bean>
