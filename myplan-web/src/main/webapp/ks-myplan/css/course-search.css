@@ -431,7 +431,24 @@ table.datatable {
     font-size: 90%;
     color: #777;
 }
-.link_back {
+span.link_back {
     margin-bottom: 2em;
     display: block;
+}
+
+#saved_courses_detail_div ul,
+#saved_courses_detail_div ul li {
+    margin: 0;
+    padding: 0;
+}
+
+#saved_courses_detail_div .kr-section-subhead {
+    font-size: 125%;
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+#saved_courses_detail_div ul li {
+    border-top: dotted 1px #aaaaaa;
+    padding:10px;
+    display:block;
 }

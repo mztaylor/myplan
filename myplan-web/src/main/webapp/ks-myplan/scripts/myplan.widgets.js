@@ -1,43 +1,7 @@
-function retrieveContent(id, getId, url) {
-    /*
-    jq("#" + id + "_group").load(url + " #" + getId + "_group", null, function (response, status, xhr) {
-        if (status === 'success') {
-            jq("#" + id + "_group").html( jq(this).html() );
-            jq("body").unblock();
-        } else {
-        	jq("#" + id).html( "Sorry but there was an error: " + xhr.status + " " + xhr.statusText);
-        }
-    });
-    */
-    jq("body").append('<form id="watch_list_form" action="lookup" method="post"><input type="hidden" value="viewId" name="SavedCoursesSummaryView" /></form>');
-    myplanRetrieveComponent("watch_list_group","saved_courses_summary_group","search");
-    /*
-    jq.ajax({
-  		url: url,
-  		dataType: "html",
-  		success: function(data) {
-  		
-  			
-  			var result = jq("#"+getId, data);
-    		//jq("#" + id + "_group").html(data);
-    		console.log( data );
-  		}
-	});
-	*/
-}
-
-function truncateField(id) {
-    jq("#" + id + "_group ul li").each(function() {
-        var margin = Math.ceil(parseFloat(jq(this).find("span.boxLayoutHorizontalItem span").css("margin-right")));
-        var fixed = 0;
-        var fields = jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").length;
-        jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").each(function() {
-        	fixed = fixed + jq(this).width();
-        });
-        var ellipsis = jq(this).width() - ( fixed + ( margin * fields ) );
-        jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
-        jq(this).find("span.boxLayoutHorizontalItem span.ellipsis").width(ellipsis);
-    });
+function loadSavedCoursesList(id, getId, viewId, methodToCall, action) {
+    jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" value="viewId" name="' + viewId + '" /></form>');
+    myplanRetrieveComponent(id, getId, methodToCall);
+    jq("form#"+ id + "_form").remove();
 }
 
 function modifyPlan(methodToCall, courseId, id, getId, url) {
@@ -54,7 +18,7 @@ function modifyPlan(methodToCall, courseId, id, getId, url) {
 }
 
 
-function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock){
+function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, id) {
 	var data;
     //methodToCall checks
 	if(methodToCall != null){
@@ -75,7 +39,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 	}
     //remove this since the methodToCall was passed in or extracted from the page, to avoid issues
     jq("input[name='methodToCall']").remove();
-	
+
 	if(additionalData != null){
 		jq.extend(data, additionalData);
 	}
@@ -88,9 +52,9 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
         jsonViewState = jsonViewState.replace(/"/g, "'");
         jq.extend(data, {clientViewState: jsonViewState});
     }
-	
+
 	var submitOptions = {
-			data: data, 
+			data: data,
 			success: function(response){
 				var tempDiv = document.createElement('div');
 				tempDiv.innerHTML = response;
@@ -109,7 +73,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                 alert( "Request failed: " + textStatus );
             }
 	};
-	
+
 	if(elementToBlock != null && elementToBlock.length){
 		var elementBlockingOptions = {
 				beforeSend: function() {
@@ -140,10 +104,9 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 				}
 		};
 	}
-	
+
 	jq.extend(submitOptions, elementBlockingOptions);
-	var form = jq("#watch_list_form");
-	console.log(submitOptions);
+	var form = jq("#" + id +"_form");
 	form.ajaxSubmit(submitOptions);
 }
 
@@ -151,7 +114,6 @@ function myplanRetrieveComponent(id, incomingId, methodToCall){
 	var elementToBlock = jq("#" + id);
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-	console.log(htmlContent);
 		var component = jq("#" + incomingId, htmlContent);
 
         var displayWithId = id;
@@ -192,7 +154,51 @@ function myplanRetrieveComponent(id, incomingId, methodToCall){
     if (!methodToCall) {
         methodToCall = "updateComponent";
     }
-	
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback,
-			{reqComponentId: id, skipViewInit: "false"}, elementToBlock);
+
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+}
+
+function addSavedCourse(action, methodToCall, viewId, courseId) {
+    // plan?methodToCall="+methodToCall+"&viewId=savedCoursesListActionsView&courseId=
+    //var updateUrl = action + "?methodToCall=" + methodToCall + "&viewId=" + viewId + "&courseId=" + courseId;
+    jq("body").append('<form id="add_saved_course_form" action="' + action + '" method="post"><input type="hidden" value="viewId" name="' + viewId + '" /></form>');
+    myplanRetrieveComponent(id, getId, methodToCall);
+    jq("form#add_saved_course__form").remove();
+}
+
+function truncateField(id) {
+    jq("[id^='" + id + "']").each(function() {
+        jq(this).css("display","block");
+        var margin = Math.ceil(parseFloat(jq(this).find("span.boxLayoutHorizontalItem span").css("margin-right")));
+        var fixed = 0;
+        var fields = jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").length;
+        jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").each(function() {
+        	fixed = fixed + jq(this).width();
+        });
+        var ellipsis = jq(this).width() - ( fixed + ( margin * fields ) );
+        jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
+        jq(this).find("span.boxLayoutHorizontalItem span.ellipsis").width(ellipsis);
+        console.log(id);
+    });
+}
+function enableToggle(styleClass) {
+	jq("." + styleClass).each(function() {
+		jq(this).hide();
+		var link = jq("<div>Show</div>");
+		jq(link).click(function() {
+			jq(this).siblings("." + styleClass).slideDown(500);
+		});
+		jq(this).parent().append(link);
+	});
+}
+function toggleItem() {
+	jq(this).click(function() {
+		if ( jq(this).hasClass("show") ) {
+			jq(this).prev().slideDown(500);
+			jq(this).removeClass("show").addClass("hide");
+		} else {
+			jq(this).prev().slideUp(500);
+			jq(this).removeClass("hide").addClass("show");
+		}
+	});
 }

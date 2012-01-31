@@ -187,12 +187,7 @@
         <property name="disclosure.render" value="false"/>
         <property name="errorsField.render" value="false"/>
         <property name="styleClasses" value=""/>
-        <property name="onDocumentReadyScript" value="
-            jq(document).ajaxComplete(function() {
-                    truncateField('saved_courses_summary');
-                });
-            retrieveContent('watch_list', 'saved_courses_summary', 'lookup?methodToCall=search&amp;viewId=SavedCoursesSummaryView');
-        "/>
+        <property name="onDocumentReadyScript" value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');"/>
     </bean>
 <!--
     <bean id="watch_list_backup" parent="Group" p:title="Watch List (TBD)">
@@ -468,9 +463,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="DataField" p:propertyName="code" p:label="Code" p:readOnly="true">
-                    <property name="styleClasses" value="courseCode"/>
-                </bean>
+                <bean parent="DataField" p:propertyName="code" p:label="Code" p:styleClasses="courseCode" p:readOnly="true"/>
 
                 <!--  TODO: This is a better way to create this field (once InputField is available).
                 <bean parent="InputField" p:propertyName="code" p:label="Code" p:styleClasses="courseCode">
@@ -480,55 +473,36 @@
                             <entry key="courseCode" value="code"/>
                         </map>
                     </property>
-                    </bean>
+                </bean>
                 -->
-
                 <bean parent="LinkField" p:label="Course Name" p:title="@{#line.courseName}" p:linkLabel="@{#line.courseName}" p:styleClasses="courseName" p:target=""
-                      p:hrefText="/myplan-embedded-dev/myplan/inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
-
+                      p:hrefText="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}" />
                 <!--
-                <bean parent="InputField" p:propertyName="courseName"
-                      p:label="Course Name" p:readOnly="true">
-                    <property name="styleClasses" value="courseName"/>
+                <bean parent="InputField" p:propertyName="courseName" p:label="Course Name" p:styleClasses="courseName" p:readOnly="true">
                     <property name="control">
                         <bean parent="TextControl"/>
                     </property>
-                </bean>  -->
-                <bean parent="DataField" p:propertyName="credit" p:label="Credits"
-                      p:readOnly="true">
-                    <property name="styleClasses" value="courseCredits"/>
                 </bean>
-                <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms"
-                      p:label="Quarter Offered" p:readOnly="true">
-                    <property name="styleClasses" value="courseQuarter"/>
-                </bean>
-                <bean parent="DataField" p:propertyName="genEduReq"
-                      p:label="Gen Edu Req" p:readOnly="true">
-                    <property name="styleClasses" value="courseGenEduReq"/>
-                </bean>
-                <bean parent="ActionImageField" p:label="Add" p:clientSideJs="alert('Selected course has been added successfully');">
+                -->
+                <bean parent="DataField" p:propertyName="credit" p:label="Credits" p:styleClasses="courseCredits" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms" p:label="Quarter Offered" p:styleClasses="courseQuarter" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:styleClasses="courseGenEduReq" p:readOnly="true"/>
+                <bean parent="ActionImageField" p:label="" p:styleClasses="">
+                    <property name="clientSideJs" value="alert('The selected course has been successfully added.');"/>
+                    <!--<property name="clientSideJs" value="
+                        addSavedCourse(action, methodToCall, viewId, courseId)('addItem', '@{#line.courseId}');
+                        retrieveContent('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');
+                    "/>-->
                     <property name="actionImage">
-                        <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png" p:altText="Add course to MyPlan"/>
+                        <bean parent="ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
                 </bean>
-                <bean parent="DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
-                      p:readOnly="true">
-                </bean>
-                <bean parent="DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
-                      p:readOnly="true">
-                </bean>
-                <bean parent="DataField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req"
-                      p:readOnly="true">
-                </bean>
-                <bean parent="DataField" p:propertyName="creditsFacetKey" p:label="Credits"
-                      p:readOnly="true">
-                </bean>
-                <bean parent="DataField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
-                      p:readOnly="true">
-                </bean>
-                <bean parent="DataField" p:propertyName="curriculumFacetKey" p:label="Course Prefix"
-                      p:readOnly="true">
-                </bean>
+                <bean parent="DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="creditsFacetKey" p:label="Credits" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="courseLevelFacetKey" p:label="Course Level" p:readOnly="true"/>
+                <bean parent="DataField" p:propertyName="curriculumFacetKey" p:label="Course Prefix" p:readOnly="true"/>
             </list>
         </property>
     </bean>
