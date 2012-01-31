@@ -1,8 +1,10 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.aspectj.weaver.SimpleAnnotationValue;
+
 import java.util.Date;
 
-public class SavedCoursesItem {
+public class SavedCoursesItem implements Comparable {
 
     private String id;
     private CourseDetails courseDetails;
@@ -30,5 +32,11 @@ public class SavedCoursesItem {
 
     public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    @Override
+    public int compareTo( Object object ) {
+        SavedCoursesItem that = (SavedCoursesItem) object;
+        return this.getDateAdded().compareTo( that.getDateAdded() );
     }
 }

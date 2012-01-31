@@ -14,9 +14,7 @@ import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
     private transient CourseService courseService;
@@ -55,6 +53,8 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
                     savedCoursesList.add(item);
                 }
             }
+
+            Collections.sort(savedCoursesList);
 
             return savedCoursesList;
 
