@@ -488,11 +488,8 @@
                 <bean parent="DataField" p:propertyName="scheduledAndOfferedTerms" p:label="Quarter Offered" p:styleClasses="courseQuarter" p:readOnly="true"/>
                 <bean parent="DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:styleClasses="courseGenEduReq" p:readOnly="true"/>
                 <bean parent="ActionImageField" p:label="" p:styleClasses="">
-                    <property name="clientSideJs" value="alert('The selected course has been successfully added.');"/>
-                    <!--<property name="clientSideJs" value="
-                        addSavedCourse(action, methodToCall, viewId, courseId)('addItem', '@{#line.courseId}');
-                        retrieveContent('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');
-                    "/>-->
+                    <!--<property name="clientSideJs" value="alert('The selected course has been successfully added.');"/>-->
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{#line.courseId}');"/>
                     <property name="actionImage">
                         <bean parent="ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
@@ -691,5 +688,3 @@
     </bean>
 
 </beans>
-
-

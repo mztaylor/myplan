@@ -37,6 +37,6 @@ public class SavedCoursesItem implements Comparable {
     @Override
     public int compareTo( Object object ) {
         SavedCoursesItem that = (SavedCoursesItem) object;
-        return this.getDateAdded().compareTo( that.getDateAdded() );
+        return this.getDateAdded().compareTo( that.getDateAdded() ) * -1;
     }
 }

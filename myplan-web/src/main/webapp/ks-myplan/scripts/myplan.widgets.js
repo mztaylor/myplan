@@ -1,22 +1,56 @@
 function loadSavedCoursesList(id, getId, viewId, methodToCall, action) {
-    jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" value="viewId" name="' + viewId + '" /></form>');
+    jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /></form>');
     myplanRetrieveComponent(id, getId, methodToCall);
     jq("form#"+ id + "_form").remove();
 }
 
-function modifyPlan(methodToCall, courseId, id, getId, url) {
-    // methodToCall = addItem or removeItem
-    // courseID = if addItem (course id) or if removeItem (plan item id)
-    var updateUrl = "plan?methodToCall="+methodToCall+"&viewId=savedCoursesListActionsView&courseId="+courseId;
-    var jqxhr = jq.ajax( updateUrl )
-                    .done(function() {
-                        //retrieveContent(id, getId, url);
-                    })
-                    .fail(function() {
-                        showGrowl('Error updating', 'Error', 'errorGrowl');
-                    });
-}
+function myplanRetrieveComponent(id, incomingId, methodToCall){
+	var elementToBlock = jq("#" + id);
 
+	var updateRefreshableComponentCallback = function(htmlContent){
+		var component = jq("#" + incomingId, htmlContent);
+
+        var displayWithId = id;
+        if (id.indexOf('_attribute') > 0) {
+            displayWithId = id.replace('_attribute', '');
+        }
+
+		// special label handling, if any
+		var theLabel = jq("#" + displayWithId + "_label_span", htmlContent);
+		if(jq(".displayWith-" + displayWithId).length && theLabel.length){
+			theLabel.addClass("displayWith-" + displayWithId);
+			jq("span.displayWith-" + displayWithId).replaceWith(theLabel);
+			component.remove("#" + displayWithId + "_label_span");
+		}
+
+		elementToBlock.unblock({onUnblock: function(){
+                var origColor = jq(component).css("background-color");
+                jq(component).css("background-color", "");
+                jq(component).addClass("uif-progressiveDisclosure-highlight");
+
+				// replace component
+				if(jq("#" + id + ">div").length){
+					jq("#" + id + ">div").replaceWith(component);
+				}
+
+				runHiddenScripts(id + ">div");
+                if(origColor == ""){
+                    origColor = "transparent";
+                }
+
+                jq("#" + id).animate({backgroundColor: origColor}, 5000);
+			}
+		});
+
+		jq(".displayWith-" + displayWithId).show();
+	};
+
+    if (!methodToCall) {
+        methodToCall = "updateComponent";
+    }
+
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+}
 
 function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, id) {
 	var data;
@@ -106,64 +140,27 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 	}
 
 	jq.extend(submitOptions, elementBlockingOptions);
-	var form = jq("#" + id +"_form");
+	var form = jq("#" + id + "_form");
 	form.ajaxSubmit(submitOptions);
 }
 
-function myplanRetrieveComponent(id, incomingId, methodToCall){
-	var elementToBlock = jq("#" + id);
+function addSavedCourse(id, action, methodToCall, viewId, courseId) {
+    // plan?methodToCall=addItem&viewId=savedCoursesListActionsView&courseId=
+
+    jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" /></form>');
+
+    var elementToBlock = jq("#" + id + "_form");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + incomingId, htmlContent);
-
-        var displayWithId = id;
-        if (id.indexOf('_attribute') > 0) {
-            displayWithId = id.replace('_attribute', '');
-        }
-
-		// special label handling, if any
-		var theLabel = jq("#" + displayWithId + "_label_span", htmlContent);
-		if(jq(".displayWith-" + displayWithId).length && theLabel.length){
-			theLabel.addClass("displayWith-" + displayWithId);
-			jq("span.displayWith-" + displayWithId).replaceWith(theLabel);
-			component.remove("#" + displayWithId + "_label_span");
-		}
-
-		elementToBlock.unblock({onUnblock: function(){
-                var origColor = jq(component).css("background-color");
-                jq(component).css("background-color", "");
-                jq(component).addClass("uif-progressiveDisclosure-highlight");
-
-				// replace component
-				if(jq("#" + id + ">div").length){
-					jq("#" + id + ">div").replaceWith(component);
-				}
-
-				runHiddenScripts(id + ">div");
-                if(origColor == ""){
-                    origColor = "transparent";
-                }
-
-                jq("#" + id).animate({backgroundColor: origColor}, 5000);
-			}
-		});
-
-		jq(".displayWith-" + displayWithId).show();
+		//var component = jq("#" + incomingId, htmlContent);
+		elementToBlock.unblock();
+        console.log(htmlContent);
+        loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');
+        // showGrowl('Error updating', 'Error', 'errorGrowl');
 	};
 
-    if (!methodToCall) {
-        methodToCall = "updateComponent";
-    }
-
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
-}
-
-function addSavedCourse(action, methodToCall, viewId, courseId) {
-    // plan?methodToCall="+methodToCall+"&viewId=savedCoursesListActionsView&courseId=
-    //var updateUrl = action + "?methodToCall=" + methodToCall + "&viewId=" + viewId + "&courseId=" + courseId;
-    jq("body").append('<form id="add_saved_course_form" action="' + action + '" method="post"><input type="hidden" value="viewId" name="' + viewId + '" /></form>');
-    myplanRetrieveComponent(id, getId, methodToCall);
-    jq("form#add_saved_course__form").remove();
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    jq("form#" + id + "_form").remove();
 }
 
 function truncateField(id) {
@@ -178,7 +175,6 @@ function truncateField(id) {
         var ellipsis = jq(this).width() - ( fixed + ( margin * fields ) );
         jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
         jq(this).find("span.boxLayoutHorizontalItem span.ellipsis").width(ellipsis);
-        console.log(id);
     });
 }
 function enableToggle(styleClass) {
