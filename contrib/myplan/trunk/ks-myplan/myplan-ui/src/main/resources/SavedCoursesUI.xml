@@ -317,9 +317,15 @@
                         <list>
                             <bean parent="ActionField" p:actionLabel="Move to Plan"
                                   p:clientSideJs="alert('This course has been moved to your plan');"/>
-                            <bean parent="ActionLinkField" p:label="Delete" p:styleClasses="" p:labelField.render="false">
-                                <property name="clientSideJs" value="modifyPlan('removeItem', '@{#line.id}');"/>
+                            <bean parent="LinkField" p:target="_blank">
+                                <property name="linkLabel" value="Delete"/>
+                                <property name="title" value="Delete"/>
+                                <property name="hrefText" value="plan?methodToCall=removeItem&amp;viewId=savedCoursesListActionsView&amp;planItemId=@{#line.id}"/>
+                                <property name="labelField.render" value="false"/>
                             </bean>
+                            <!--<bean parent="ActionLinkField" p:label="Delete" p:styleClasses="" p:labelField.render="false">
+                                <property name="clientSideJs" value="modifyPlan('removeItem', '@{#line.id}');"/>
+                            </bean>-->
                         </list>
                     </property>
                 </bean>
