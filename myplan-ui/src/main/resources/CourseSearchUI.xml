@@ -493,6 +493,19 @@
                     <property name="actionImage">
                         <bean parent="ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png" p:altText="Add course to MyPlan"/>
                     </property>
+                    <!--
+                    Potentially correct expression syntax for using the enum, vs an accessor method's boolean return value
+                    #line.status eq T(org.kuali.student.myplan.course.dataobject.CourseSearchItem$PlanState).SAVED
+                    -->
+                    <property name="render" value="@{#line.statusSaved ? false : true}"/>
+                </bean>
+                <bean parent="ActionImageField" p:label="" p:styleClasses="">
+                    <!--<property name="clientSideJs" value="alert('The selected course has been successfully added.');"/>-->
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{#line.courseId}');"/>
+                    <property name="actionImage">
+                        <bean parent="ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnSaved.png" p:altText="Add course to MyPlan"/>
+                    </property>
+                    <property name="render" value="@{#line.statusSaved ? true : false}"/>
                 </bean>
                 <bean parent="DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected" p:readOnly="true"/>
                 <bean parent="DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled" p:readOnly="true"/>

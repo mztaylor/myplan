@@ -189,6 +189,14 @@ public class CourseSearchItem {
         this.status = status;
     }
 
+    public boolean isStatusSaved() {
+        return status == PlanState.SAVED;
+    }
+
+    public boolean isStatusInPlan() {
+        return status == PlanState.IN_PLAN;
+    }
+
     public Set<String> getCurriculumFacetKeys() {
         return curriculumFacetKeys;
     }
