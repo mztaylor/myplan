@@ -125,10 +125,10 @@
         <property name="propertyName" value="searchResults"/>
         <property name="items">
             <list>
-                <bean parent="FieldGroup" p:labelField.render="false" p:id="@{#line.courseDetails.courseId}">
+                <bean parent="FieldGroup" p:labelField.render="false" p:id="@{#line.id}">
                     <property name="group.layoutManager.orientation" value="HORIZONTAL"/>
                     <property name="group.errorsField.render" value="false"/>
-                    <property name="onDocumentReadyScript" value="truncateField('@{#line.courseDetails.courseId}');"/>
+                    <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
                     <property name="items">
                         <list>
                             <bean parent="MessageField" p:messageText="@{#line.courseDetails.code}"
@@ -378,7 +378,7 @@
         <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-                <bean parent="DataField" p:propertyName="planItemId" p:label="Plan Item Id"/>
+                <bean id="add_to_plan_item_key" parent="DataField" p:propertyName="planItemId" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
