@@ -1,10 +1,10 @@
-function loadSavedCoursesList(id, getId, viewId, methodToCall, action) {
+function loadSavedCoursesList(id, getId, viewId, methodToCall, action, highlightId) {
     jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /></form>');
-    myplanRetrieveComponent(id, getId, methodToCall);
+    myplanRetrieveComponent(id, getId, methodToCall, highlightId);
     jq("form#"+ id + "_form").remove();
 }
 
-function myplanRetrieveComponent(id, incomingId, methodToCall){
+function myplanRetrieveComponent(id, incomingId, methodToCall, highlightId){
 	var elementToBlock = jq("#" + id);
 
 	var updateRefreshableComponentCallback = function(htmlContent){
@@ -39,6 +39,10 @@ function myplanRetrieveComponent(id, incomingId, methodToCall){
                 }
 
                 jq("#" + id).animate({backgroundColor: origColor}, 5000);
+
+                if(highlightId) {
+                	jq("[id^='" + highlightId + "']").parents('li').animate( { backgroundColor: "#ffffcc" }, 1 ).animate( { backgroundColor: "#ffffff" }, 3000 );
+                }
 			}
 		});
 
@@ -147,16 +151,22 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 function addSavedCourse(id, action, methodToCall, viewId, courseId) {
     // plan?methodToCall=addItem&viewId=savedCoursesListActionsView&courseId=
 
-    jq("body").append('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" /></form>');
+    var tempForm = jq('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" /></form>');
+    jq(tempForm).hide();
+    jq("body").append(tempForm);
 
     var elementToBlock = jq("#" + id + "_form");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		//var component = jq("#" + incomingId, htmlContent);
-		elementToBlock.unblock();
-        console.log(htmlContent);
-        loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');
-        // showGrowl('Error updating', 'Error', 'errorGrowl');
+		var component = jq("[id^='add_to_plan_item_key']", htmlContent);
+		var idAdded = jq.trim( jq(component).text() );
+		if (idAdded.length > 0) {
+			elementToBlock.unblock();
+			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup', idAdded);
+
+		} else {
+			// showGrowl('Error updating', 'Error', 'errorGrowl');
+		}
 	};
 
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
