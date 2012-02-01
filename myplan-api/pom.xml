@@ -179,8 +179,8 @@
                             </inputFiles>
                         </configuration>
                     </execution>
-                    <!-- This generates the the ks-xxxx-generated.xml files in target/classes -->
-<!--                    <execution>
+                    <!-- This generates the the ks-xxxx-generated.xml files in target/classes
+                    <execution>
                         <id>generate-dictionary-files</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -188,43 +188,23 @@
                         </goals>
                         <configuration>
                             <classNames>
-                                 Atp
-                                <className>AtpInfo</className>
-                                <className>MilestoneInfo</className>
-                                <className>AtpMilestoneRelationInfo</className>
-                                <className>AtpAtpRelationInfo</className>
-                                 Acal
-                                <className>AcademicCalendarInfo</className>
-                                <className>CampusCalendarInfo</className>
-                                <className>TermInfo</className>
-                                <className>RegistrationDateGroupInfo</className>
-                                <className>HolidayInfo</className>
-                                <className>KeyDateInfo</className>
-                                LPR
-                                <className>LuiPersonRelationInfo</className>
-                                Hold
-                                <className>HoldInfo</className>
-                                <className>IssueInfo</className>
-                                <className>RestrictionInfo</className>
-                                LUI
-                                <className>LuiInfo</className>
-                                <className>LuiLuiRelationInfo</className>
-                                <className>LuiCapacityInfo</className>
-                                Course Offering
-                                <className>CourseOfferingInfo</className>
-                                <className>ActivityOfferingInfo</className>
-                                <className>RegistrationGroupInfo</className>
-                                <className>SeatPoolDefinitionInfo</className>
+                                AcademicPlan 
+                                <className>LearningPlanInfo</className>
+                                <className>PlanItemInfo</className>
+                                <className>PlanItemSetInfo</className>
                             </classNames>
                         </configuration>
-                    </execution>                    -->
+                    </execution> 
+                    -->
                 </executions>
+
                 <configuration>
                     <!-- this defines that location of the source code used for all contract docs executions -->
                     <sourceDirs>
                         <sourceDir>${project.basedir}/src/main/java</sourceDir>
                     </sourceDirs>
                 </configuration>
+
                 <dependencies>
                     <dependency>
                         <groupId>org.kuali.rice</groupId>

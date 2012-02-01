@@ -7,10 +7,7 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.TypeInfo;
-import org.kuali.student.r2.common.dto.TypeTypeRelationInfo;
+import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
 
 import javax.jws.WebParam;
@@ -164,6 +161,30 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
                 OperationFailedException, PermissionDeniedException {
         return getNextDecorator().deletePlanItemSet(planItemSetId, context);
+    }
+
+    @Override
+    public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
+                                                           @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
+                                                           @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().validateLearningPlan(validationType, learningPlanInfo, context);
+    }
+
+    @Override
+    public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
+                                                       @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
+                                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+         return getNextDecorator().validatePlanItem(validationType, planItemInfo, context);
+    }
+
+    @Override
+    public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
+                                                          @WebParam(name = "planItemInfo") PlanItemSetInfo planItemSetInfo,
+                                                          @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().validatePlanItemSet(validationType, planItemSetInfo, context);
     }
 
     @Override
