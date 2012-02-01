@@ -25,7 +25,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <bean id="kualiOperationFailedException" class="org.kuali.student.r2.common.exceptions.OperationFailedException" />
     <bean id="kualiReadOnlyException" class="org.kuali.student.r2.common.exceptions.ReadOnlyException" />
 
-    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
@@ -33,9 +33,23 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </bean>
 
     <!-- Academic Plan Service Decorators -->
+
+    <!--
+    Academic plan service with validator decorator.
+
+    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+        <property name="learningPlanDao" ref="learningPlanDao"/>
+        <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
+        <property name="planItemDao" ref="planItemDao"/>
+        <property name="planItemTypeDao" ref="planItemTypeDao"/>
+    </bean>
+
     <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
         <property name="nextDecorator" ref="academicPlanServicePersistence" />
     </bean>
+
+    -->
+
 
     <!--  Wait on authorization decorator for now.
     <bean id="permissionService" class="org.kuali.rice.kim.service.impl.PermissionServiceImpl" />
