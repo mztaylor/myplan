@@ -86,7 +86,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public PlanItem getPlanItem(@WebParam(name = "planItemId") String planItemId,
                                 @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                    @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -112,22 +112,26 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
+                                                  @WebParam(name = "atpKey") String atpKey,
+                                                  @WebParam(name = "planItemTypeKey") String planItemTypeKey,
+                                                  @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+       throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public PlanItemSet getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<PlanItem> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                             @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -154,8 +158,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         OperationFailedException, PermissionDeniedException {
 
         LearningPlanEntity lpe = new LearningPlanEntity();
-        String id = UUIDHelper.genStringUUID();
-        lpe.setId(id);
+        lpe.setId(UUIDHelper.genStringUUID());
 
         LearningPlanTypeEntity type = learningPlanTypeDao.find(learningPlan.getTypeKey());
         if (type == null) {
@@ -230,8 +233,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet") PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;
+    public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet") PlanItemSetInfo planItemSet,
+                                             @WebParam(name = "context") ContextInfo context)
+            throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
+                OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -378,8 +384,34 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
+                                        @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
+                                                           @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
+                                                           @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return new ArrayList<ValidationResultInfo>();
+    }
+
+    @Override
+    public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
+                                                       @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
+                                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return new ArrayList<ValidationResultInfo>();
+    }
+
+    @Override
+    public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
+                                                          @WebParam(name = "planItemInfo") PlanItemSetInfo planItemSetInfo,
+                                                          @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return  new ArrayList<ValidationResultInfo>();
     }
 
     @Override

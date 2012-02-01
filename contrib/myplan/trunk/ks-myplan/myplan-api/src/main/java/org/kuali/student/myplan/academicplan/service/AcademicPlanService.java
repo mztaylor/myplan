@@ -9,6 +9,7 @@ import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.r2.common.datadictionary.service.DataDictionaryService;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.service.TypeService;
 
@@ -90,4 +91,21 @@ public interface AcademicPlanService  extends DataDictionaryService, TypeService
     public StatusInfo deletePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId")String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
+    public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
+                                                           @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
+                                                           @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+
+    public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
+                                                       @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
+                                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+
+
+     public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
+                                                           @WebParam(name = "planItemInfo") PlanItemSetInfo planItemSetInfo,
+                                                           @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+
 }
