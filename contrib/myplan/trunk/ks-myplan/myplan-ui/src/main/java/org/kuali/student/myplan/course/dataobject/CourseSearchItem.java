@@ -39,7 +39,10 @@ public class CourseSearchItem {
     private CreditType creditType;
 
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
-    private String status;
+
+    public enum PlanState { UNPLANNED, SAVED, IN_PLAN }
+
+    private PlanState status = PlanState.UNPLANNED;
 
     /* Facet keys used for filtering in the view. */
     private Set<String> curriculumFacetKeys = new HashSet<String>();
@@ -178,11 +181,11 @@ public class CourseSearchItem {
         }
     }
 
-    public String getStatus() {
+    public PlanState getStatus() {
         return this.status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PlanState status) {
         this.status = status;
     }
 
