@@ -1,7 +1,7 @@
 body {
     font-size: 12px;
     line-height: 1em;
-    font-family: arial,helvetica,clean,sans-serif;
+    font-family: helvetica,arial,clean,sans-serif;
 }
 .myplan a,
 .myplan a:hover,
@@ -70,6 +70,7 @@ body {
 /* Watch List */
 #watch_list_div {
     border-bottom: solid 1px #ccc;
+    min-height: 50px;
 }
 #watch_list_div .kr-section-subhead,
 #watch_list_empty_div .kr-section-subhead
@@ -154,9 +155,21 @@ button.kr-button-primary {
     padding: 0;
 }
 
+.dialogWithDropShadow {
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
 /* Text styles */
 .fl-text-italic {
     font-style: italic !important;
+}
+.msg-success {
+    height: 24px;
+    line-height: 24px;
+    padding: 0 0 0 36px;
+    background: url(../images/iconSuccess.png) no-repeat;
+    font-size: 120%;
 }
 /* beginning of scrollbar */
 ::-webkit-scrollbar{

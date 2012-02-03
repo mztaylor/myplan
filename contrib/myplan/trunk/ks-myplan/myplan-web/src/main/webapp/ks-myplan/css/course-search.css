@@ -179,7 +179,7 @@ table.datatable {
 }
 #course_search_results_list_items_div #course_search_results_datatable thead tr th {
     border: none;
-    padding: 3px 7px;
+    padding: 4px;
     line-height: 1.5em;
     font-weight: bold;
     color: #5f5e5f;
@@ -188,7 +188,7 @@ table.datatable {
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td {
 	line-height: 1.8em;
     height: 1.8em;
-    padding: 3px 7px;
+    padding: 2px 4px;
 }
 #course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseCode span.courseCode {
     font-weight: bold;
@@ -205,32 +205,9 @@ table.datatable {
     -ms-text-overflow: ellipsis;
     cursor: pointer;
 }
-/*
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl,
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd {
-    margin:0;
-    padding:0;
+#course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseStatus {
+    width:55px;
 }
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl {
-    white-space: nowrap;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd {
-    display: block;
-    clear: both;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd {
-    display: inline;
-    clear: none;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd:after {
-    content: ",";
-    margin: 0 0.33em 0 0;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody td dl dd dl dd:last-child:after {
-    content: "";
-    margin: 0;
-}
-*/
 #course_search_results_list_items_div #course_search_results_datatable .odd,
 #course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
     background: #fff;
@@ -435,9 +412,13 @@ span.link_back {
     margin-bottom: 2em;
     display: block;
 }
-
+#saved_courses_detail_div {
+    line-height: 1.5em;
+}
 #saved_courses_detail_div ul,
-#saved_courses_detail_div ul li {
+#saved_courses_detail_div ul li,
+#saved_courses_detail_div ul li dl,
+#saved_courses_detail_div ul li dl dd {
     margin: 0;
     padding: 0;
 }
@@ -451,4 +432,29 @@ span.link_back {
     border-top: dotted 1px #aaaaaa;
     padding:10px;
     display:block;
+}
+#saved_courses_detail_div ul li dl,
+#saved_courses_detail_div ul li dl dd {
+    display:inline;
+}
+#saved_courses_detail_div ul li dl dd:after {
+    content: ",";
+    margin-right: 0.33em;
+}
+#saved_courses_detail_div ul li dl dd:last-child:after {
+    content: "";
+    margin-right: 0;
+}
+#saved_courses_detail_div ul li .courseQuarterScheduled dl dd {
+    background: #ccc;
+    color: #333;
+    border-radius: 3px;
+    margin: 0 0.5em 0 0;
+    font-weight: bold;
+    font-size: 80%;
+    padding: 4px;
+    clear: none;
+}
+#saved_courses_detail_div ul li .courseQuarterScheduled dl dd:after {
+    content: "";
 }

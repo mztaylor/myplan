@@ -191,6 +191,7 @@
         <property name="additionalCssFiles">
             <list>
                 <value>/ks-myplan/css/course-search.css</value>
+                <value>/ks-myplan/jquery-ui/jquery-ui.css</value>
             </list>
         </property>
         <property name="additionalScriptFiles">
@@ -242,18 +243,11 @@
                                 <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
-                            <!--
-                            <bean parent="DataField" p:propertyName="courseDetails.code"
-                                  p:styleClasses="courseCode fl-text-bold" p:labelField.render="false"/>
-                            <bean parent="DataField" p:propertyName="courseDetails.courseTitle"
-                                  p:styleClasses="courseName fl-text-bold ellipsis" p:labelField.render="false"/>
-                            <bean parent="MessageField" p:messageText="(@{#line.courseDetails.credit})"
-                                  p:styleClasses="courseCredits fl-text-bold"/>
                             <bean parent="DataField" p:propertyName="courseDetails.genEdRequirements"
-                                  p:styleClasses="courseGenEduReq"/>
-                            -->
-                            <bean parent="MessageField" p:messageText="I&amp;S, VLPA"
-                                  p:styleClasses="courseGenEduReq fl-text-gray"/>
+                                  p:styleClasses="courseGenEduReq fl-text-gray fl-text-italic">
+                                <property name="formatter" ref="data_list_formatter"/>
+                                <property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
+                            </bean>
                             <bean parent="DataField" p:propertyName="dateAdded" p:label="Added on"
                                   p:styleClasses="dateAdded fl-text-gray fl-text-italic" p:labelField.renderColon="false"
                                   p:labelField.render="true" p:labelField.styleClasses="fl-text-gray fl-text-italic"/>
@@ -265,12 +259,28 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <!--<bean parent="DataField" p:label="Scheduled For" p:propertyName="courseDetails.scheduledTerms"
-                                  p:styleClasses="courseQuarterScheduled" p:labelField.styleClasses="fl-text-gray"/>
+                            <bean parent="DataField" p:label="Scheduled For" p:propertyName="courseDetails.scheduledTerms"
+                                  p:styleClasses="courseQuarterScheduled" p:labelField.styleClasses="fl-text-gray">
+                                <property name="formatter" ref="scheduled_terms_formatter"/>
+                                <property name="render" value="@{#line.courseDetails.scheduledTerms.size() gt 0 ? 'true' : 'false'}"/>
+                            </bean>
+                            <bean parent="MessageField" p:label="Scheduled For" p:labelField.render="true"
+                                  p:styleClasses="courseQuarterScheduled" p:labelField.styleClasses="fl-text-gray">
+                                <property name="messageText" value="Not Scheduled"/>
+                                <property name="render" value="@{#line.courseDetails.scheduledTerms.size() gt 0 ? 'false' : 'true'}"/>
+                            </bean>
                             <bean parent="DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered"
-                                  p:styleClasses="courseQuarterProjected" p:labelField.styleClasses="fl-text-gray"/>-->
-                            <bean parent="MessageField" p:label="Last Offered" p:messageText="Spring 2011"
-                                  p:styleClasses="courseLastOffered" p:labelField.styleClasses="fl-text-gray" p:labelField.render="true"/>
+                                  p:styleClasses="courseQuarterProjected" p:labelField.styleClasses="fl-text-gray">
+                                <property name="formatter" ref="data_list_formatter"/>
+                                <property name="render" value="@{#line.courseDetails.termsOffered.size() gt 0 ? 'true' : 'false'}"/>
+                            </bean>
+                            <bean parent="MessageField" p:label="Projected For" p:labelField.render="true"
+                                  p:styleClasses="courseQuarterProjected" p:labelField.styleClasses="fl-text-gray">
+                                <property name="messageText" value="No Projection"/>
+                                <property name="render" value="@{#line.courseDetails.termsOffered.size() gt 0 ? 'false' : 'true'}"/>
+                            </bean>
+                            <!--<bean parent="MessageField" p:label="Last Offered" p:messageText="Spring 2011"
+                                  p:styleClasses="courseLastOffered" p:labelField.styleClasses="fl-text-gray" p:labelField.render="true"/>-->
                         </list>
                     </property>
                 </bean>
@@ -280,8 +290,15 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <!--<bean parent="DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
-                                  p:styleClasses="courseRequisites" p:labelField.styleClasses="fl-text-gray"/>-->
+                            <bean parent="DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
+                                  p:styleClasses="courseRequisites" p:labelField.styleClasses="fl-text-gray">
+                                <property name="formatter" ref="data_list_formatter"/>
+                                <property name="render" value="@{#line.courseDetails.requisites.size() gt 0 ? 'true' : 'false'}"/>
+                            </bean>
+                            <bean parent="MessageField" p:label="Course Requisites" p:messageText="None"
+                                  p:styleClasses="courseRequisites" p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
+                                <property name="render" value="@{#line.courseDetails.requisites.size() gt 0 ? 'false' : 'true'}"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -291,21 +308,7 @@
                     <property name="items">
                         <list>
                             <bean parent="DataField" p:label="Course Description" p:propertyName="courseDetails.courseDescription"
-                                  p:styleClasses="courseDescription" p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;" />
-                            <!--<bean id="saved_courses_course_description" parent="Group" >
-                                <property name="disclosure.render" value="false"/>
-                                <property name="errorsField.render" value="false"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MessageField" p:label="Course Description" p:messageText="@{#line.courseDetails.courseDescription}"
-                                              p:styleClasses="courseDescription" p:style="display:none;"
-                                              p:labelField.render="true" p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;" />
-                                    </list>
-                                </property>
-                                <property name="footer">
-                                    <bean parent="revel_link_footer"/>
-                                </property>
-                            </bean>-->
+                                  p:styleClasses="courseDescription" p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;"/>
                         </list>
                     </property>
                 </bean>
@@ -317,15 +320,9 @@
                         <list>
                             <bean parent="ActionField" p:actionLabel="Move to Plan"
                                   p:clientSideJs="alert('This course has been moved to your plan');"/>
-                            <bean parent="LinkField" p:target="_blank">
-                                <property name="linkLabel" value="Delete"/>
-                                <property name="title" value="Delete"/>
-                                <property name="hrefText" value="plan?methodToCall=removeItem&amp;viewId=savedCoursesListActionsView&amp;planItemId=@{#line.id}"/>
-                                <property name="labelField.render" value="false"/>
+                            <bean parent="ActionLinkField" p:label="Delete" p:styleClasses="" p:labelField.render="false">
+                                <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
                             </bean>
-                            <!--<bean parent="ActionLinkField" p:label="Delete" p:styleClasses="" p:labelField.render="false">
-                                <property name="clientSideJs" value="modifyPlan('removeItem', '@{#line.id}');"/>
-                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -351,6 +348,7 @@
         <property name="id" value="savedCoursesListActionsView"/>
         <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
         <property name="breadcrumbs.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="items">
             <list>
@@ -378,7 +376,7 @@
         <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-                <bean id="add_to_plan_item_key" parent="DataField" p:propertyName="planItemId" p:labelField.render="false"/>
+                <bean id="add_plan_item_key" parent="DataField" p:propertyName="planItemId" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
@@ -389,7 +387,7 @@
         <property name="errorsField.render" value="true"/>
         <property name="items">
             <list>
-                 <bean parent="MessageField" p:messageText=""/>
+                 <bean id="remove_plan_item_key" parent="MessageField" p:messageText="" p:labelField.render="false"/>
             </list>
         </property>
     </bean>
