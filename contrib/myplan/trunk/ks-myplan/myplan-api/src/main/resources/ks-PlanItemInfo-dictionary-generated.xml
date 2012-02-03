@@ -14,8 +14,8 @@
  limitations under the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
 	<!-- ********************************************************
@@ -32,16 +32,14 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 		ks-XXXX-dictionary.xml instead of this one.
 	************************************************************* -->
 	<!-- ********************************************************************************************************** -->
-	<!-- The following file is required for this file to load:
- ks-base-dictionary.xml
-plus any of its dependencies -->
+	<!-- The following file is required for this file to load: ks-base-dictionary.xml  plus any of its dependencies -->
 	<!-- ********************************************************************************************************** -->
 	<import resource="classpath:ks-base-dictionary.xml"/>
 
 	<!-- PlanItemInfo-->
 	<bean id="PlanItemInfo-generated" abstract="true" parent="DataObjectEntry">
 		<property name="name" value="planItemInfo"/>
-		<property name="dataObjectClass" value="org.kuali.student.enrollment.acal.dto.PlanItemInfo"/>
+		<property name="dataObjectClass" value="org.kuali.student.myplan.academicplan.dto.PlanItemInfo"/>
 		<property name="objectLabel" value="Plan Item"/>
 		<property name="objectDescription">
 			<value>

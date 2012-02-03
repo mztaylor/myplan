@@ -169,7 +169,7 @@
                     <property name="items">
                         <list>
                             <bean parent="MessageField" p:messageText="You don't have any saved courses. Save a course by adding ("/>
-                            <bean parent="ImageField" p:source="/myplan-embedded-dev/ks-myplan/images/btnAdd.png"
+                            <bean parent="ImageField" p:source="ks-myplan/images/btnAdd.png"
                                   p:altText="Example of Add to Plan button"/>
                             <bean parent="MessageField" p:messageText=") from the search results (TBD)"/>
                         </list>

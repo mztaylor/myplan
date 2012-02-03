@@ -36,7 +36,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- The following file gets generated during the build and gets put into the target/classes directory -->
 	<import resource="classpath:ks-PlanItemInfo-dictionary-generated.xml"/>
 	<!-- TODO: remove these once the jira about lists of complex objects gets fixed -->
-	<import resource="classpath:ks-Org.kuali.student.core.atp.dto.AtpInfo-dictionary.xml"/>
+	<import resource="classpath:ks-AtpInfo-dictionary.xml"/>
 
 	<!-- PlanItemInfo-->
 	<bean id="PlanItemInfo" parent="PlanItemInfo-parent"/>
