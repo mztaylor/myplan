@@ -89,7 +89,7 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
                         elementToBlock.unblock();
                         var planListItem = jq("#" + e.toElement.id).parents("li").children();
                         jq(planListItem).fadeOut(250, function() {
-                            jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span style="color:#000;">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(3000).fadeOut(250);
+                            jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span style="color:#000;">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
                         });
                         var planItemCount = jq("#saved_courses_detail_div .kr-section-subhead strong");
                         jq(planItemCount).fadeOut(250, function() {
