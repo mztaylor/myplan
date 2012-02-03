@@ -94,7 +94,7 @@
 }
 #course_search_result_facets_div img.expand_collapse-buttons {
     float: right;
-    background: url('/myplan-embedded-dev/ks-myplan/images/facetExpandCollapse.png') no-repeat 0px 0px;
+    background: url('../images/facetExpandCollapse.png') no-repeat 0px 0px;
     margin: 0;
 }
 #course_search_result_facets_div img.expand_collapse-buttons[alt="expand"] {
@@ -105,7 +105,7 @@
 }
 #course_search_result_facets_div .facets a.item {
     padding: 0 0 0 21px;
-    background: url('/myplan-embedded-dev/ks-myplan/images/facetCheckbox.png') no-repeat 0px 0px;
+    background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
     min-height: 16px;
     line-height: 16px;
     display: block;

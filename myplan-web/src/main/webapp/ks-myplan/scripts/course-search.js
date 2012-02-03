@@ -153,7 +153,7 @@ jq(document).ready(function() {
     jq("input[type='text']").blur();
     jq("button.search-submit").click(function(){
     	jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
-        jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/myplan-embedded-dev/myplan/' } );
+        jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
     });
     jq(".search-text input[type='text']").bind('keypress', function(e) {
 	    if ( e.keyCode === 13 ) jq("button.search-submit").click();
