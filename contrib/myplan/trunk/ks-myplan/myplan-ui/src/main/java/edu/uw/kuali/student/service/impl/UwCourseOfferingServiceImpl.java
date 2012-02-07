@@ -20,9 +20,9 @@ import org.kuali.student.enrollment.courseregistration.dto.CourseRegistrationInf
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.TypeInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
 import java.io.StringReader;
@@ -91,7 +91,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
             CourseOfferingInfo co = new CourseOfferingInfo();
             co.setCourseId(courseId);
-            co.setTermKey(termKey);
+            co.setTermId(termKey);
             co.setCourseOfferingCode(courseId);
             co.setSubjectArea(subjectArea);
             co.setCourseNumberSuffix(courseId.substring(7));
@@ -255,247 +255,238 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     @Override
-    public List<StatementTreeViewInfo> getCourseOfferingRestrictions(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+    public List<org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo> getCourseOfferingRestrictions(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo createCourseOfferingRestriction(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
-         throw new RuntimeException("Not implemented.");
+    public org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo createCourseOfferingRestriction(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo updateCourseOfferingRestriction(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, CircularReferenceException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+    public org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo updateCourseOfferingRestriction(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, CircularReferenceException, VersionMismatchException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteCourseOfferingRestriction(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "restrictionId") String restrictionId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<ValidationResultInfo> validateCourseOfferingRestriction(@WebParam(name = "validationType") String validationType, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+    public List<ValidationResultInfo> validateCourseOfferingRestriction(@WebParam(name = "validationType") String validationType, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public TypeInfo getActivityOfferingType(@WebParam(name = "activityOfferingTypeKey") String activityOfferingTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+    public TypeInfo getActivityOfferingType(@WebParam(name = "activityOfferingTypeKey") String activityOfferingTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<TypeInfo> getAllActivityOfferingTypes(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+    public List<TypeInfo> getAllActivityOfferingTypes(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<TypeInfo> getActivityOfferingTypesForActivityType(@WebParam(name = "activityTypeKey") String activityTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+    public List<TypeInfo> getActivityOfferingTypesForActivityType(@WebParam(name = "activityTypeKey") String activityTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public ActivityOfferingInfo getActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ActivityOfferingInfo> getActivityOfferingsByIdList(@WebParam(name = "activityOfferingIds") List<String> activityOfferingIds, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ActivityOfferingInfo> getActivitiesForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public ActivityOfferingInfo createActivityOffering(@WebParam(name = "courseOfferingIdList") List<String> courseOfferingIdList, @WebParam(name = "activityOfferingInfo") ActivityOfferingInfo activityOfferingInfo, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo assignActivityToCourseOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "courseOfferingIdList") List<String> courseOfferingIdList, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public ActivityOfferingInfo updateActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "activityOfferingInfo") ActivityOfferingInfo activityOfferingInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ValidationResultInfo> validateActivityOffering(@WebParam(name = "validationType") String validationType, @WebParam(name = "activityOfferingInfo") ActivityOfferingInfo activityOfferingInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<StatementTreeViewInfo> getActivityOfferingRestrictions(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+    public List<org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo> getActivityOfferingRestrictions(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo createActivityOfferingRestriction(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
-         throw new RuntimeException("Not implemented.");
+    public org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo createActivityOfferingRestriction(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo updateActivityOfferingRestriction(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, CircularReferenceException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+    public org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo updateActivityOfferingRestriction(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, CircularReferenceException, VersionMismatchException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteActivityOfferingRestriction(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "restrictionId") String restrictionId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<ValidationResultInfo> validateActivityOfferingRestriction(@WebParam(name = "validationType") String validationType, @WebParam(name = "restrictionInfo") StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+    public List<ValidationResultInfo> validateActivityOfferingRestriction(@WebParam(name = "validationType") String validationType, @WebParam(name = "restrictionInfo") org.kuali.student.r2.core.statement.dto.StatementTreeViewInfo restrictionInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public Float calculateInClassContactHoursForTerm(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public Float calculateOutofClassContactHoursForTerm(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public Float calculateTotalContactHoursForTerm(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ActivityOfferingInfo> copyActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "numberOfCopies") Integer numberOfCopies, @WebParam(name = "copyContextTypeKey") String copyContextTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public RegistrationGroupInfo getRegistrationGroup(@WebParam(name = "registrationGroupId") String registrationGroupId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<RegistrationGroupInfo> getRegistrationGroupsByIdList(@WebParam(name = "registrationGroupIds") List<String> registrationGroupIds, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<RegistrationGroupInfo> getRegGroupsForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<RegistrationGroupInfo> getRegGroupsByFormatForCourse(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "formatTypeKey") String formatTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public RegistrationGroupInfo createRegistrationGroup(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "registrationGroupInfo") RegistrationGroupInfo registrationGroupInfo, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public RegistrationGroupInfo updateRegistrationGroup(@WebParam(name = "registrationGroupId") String registrationGroupId, @WebParam(name = "registrationGroupInfo") RegistrationGroupInfo registrationGroupInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteRegistrationGroup(@WebParam(name = "registrationGroupId") String registrationGroupId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ValidationResultInfo> validateRegistrationGroup(@WebParam(name = "validationType") String validationType, @WebParam(name = "registrationGroupInfo") RegistrationGroupInfo registrationGroupInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public SeatPoolDefinitionInfo getSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionId") String seatPoolDefinitionId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<SeatPoolDefinitionInfo> getSeatPoolsForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<SeatPoolDefinitionInfo> getSeatPoolsForRegGroup(@WebParam(name = "registrationGroupId") String registrationGroupId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public SeatPoolDefinitionInfo createSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionInfo") SeatPoolDefinitionInfo seatPoolDefinitionInfo, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public SeatPoolDefinitionInfo updateSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionId") String seatPoolDefinitionId, @WebParam(name = "seatPoolDefinitionInfo") SeatPoolDefinitionInfo seatPoolDefinitionInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionId") String seatPoolDefinitionId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<CourseOfferingInfo> searchForCourseOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> searchForCourseOfferingIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ActivityOfferingInfo> searchForActivityOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> searchForActivityOfferingIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<CourseRegistrationInfo> searchForRegistrationGroups(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> searchForRegistrationGroupIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<SeatPoolDefinitionInfo> searchForSeatpoolDefintions(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> searchForSeatpoolDefintionIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
-    @Override
-    public List<String> getDataDictionaryEntryKeys(@WebParam(name = "context") ContextInfo context) throws OperationFailedException, MissingParameterException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public DictionaryEntryInfo getDataDictionaryEntry(@WebParam(name = "entryKey") String entryKey, @WebParam(name = "context") ContextInfo context) throws OperationFailedException, MissingParameterException, PermissionDeniedException, DoesNotExistException {
-         throw new RuntimeException("Not implemented.");
-    }
 }

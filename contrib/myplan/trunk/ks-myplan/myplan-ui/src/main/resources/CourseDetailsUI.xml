@@ -193,7 +193,7 @@
     </bean>
 
 
-    <bean id="CourseDetails-InquiryView" parent="KSInquiryView">
+    <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <!--<property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>-->

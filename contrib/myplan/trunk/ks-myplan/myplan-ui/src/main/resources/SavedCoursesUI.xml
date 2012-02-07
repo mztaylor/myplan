@@ -74,7 +74,7 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesSummaryView" parent="KSLookupView">
+    <bean id="SavedCoursesSummaryView" parent="MyPlanLookupView">
         <property name="title" value="Saved Courses Summary"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
@@ -179,7 +179,7 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesDetailView" parent="KSLookupView">
+    <bean id="SavedCoursesDetailView" parent="MyPlanLookupView">
         <property name="page.title" value="Watch List"/>
         <property name="viewName" value="SavedCoursesDetailView"/>
         <property name="breadcrumbs.render" value="false"/>

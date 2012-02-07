@@ -1,11 +1,10 @@
 package org.kuali.student.myplan.model;
 
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
-import org.kuali.student.r2.common.entity.TypeEntity;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;

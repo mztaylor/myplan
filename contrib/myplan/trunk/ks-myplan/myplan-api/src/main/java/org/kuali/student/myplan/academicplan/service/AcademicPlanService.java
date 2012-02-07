@@ -11,7 +11,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
-import org.kuali.student.r2.common.service.TypeService;
+import org.kuali.student.r2.core.type.service.TypeService;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -21,26 +21,25 @@ import java.util.List;
 /**
  * Academic Plan service provides a means for students to specify plans for taking courses and other requirements at various time periods to meet
  * certain program goals.
- *
+ * <p/>
  * Things available through learning plan :
- *
+ * <p/>
  * <ol>
- *     <li>Selecting courses, course sets, requirements, certifications etc for a specific time period</li>
- *     <li>Selecting courses and adding them to a wish list</li>
- *     <li>Selecting courses for doing a what if audit</li>
- *     <li>Creating multiple plans (pathways) to meet program goals</li>
- *     <li>Template plans</li>
- *     <li>Planning for </li>
+ * <li>Selecting courses, course sets, requirements, certifications etc for a specific time period</li>
+ * <li>Selecting courses and adding them to a wish list</li>
+ * <li>Selecting courses for doing a what if audit</li>
+ * <li>Creating multiple plans (pathways) to meet program goals</li>
+ * <li>Template plans</li>
+ * <li>Planning for </li>
  * </ol>
  *
  * @version 1.0 (Dev)
- *
  * @Author Kamal
  * Date: 1/6/12
  */
-@WebService(name = "AcademicPlanService", serviceName ="AcademicPlanService", portName = "AcademicPlanService", targetNamespace = AcademicPlanServiceConstants.NAMESPACE)
+@WebService(name = "AcademicPlanService", serviceName = "AcademicPlanService", portName = "AcademicPlanService", targetNamespace = AcademicPlanServiceConstants.NAMESPACE)
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT, use = SOAPBinding.Use.LITERAL, parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
-public interface AcademicPlanService  extends DataDictionaryService, TypeService {
+public interface AcademicPlanService {
 
 
     public LearningPlan getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
@@ -67,30 +66,30 @@ public interface AcademicPlanService  extends DataDictionaryService, TypeService
     public List<LearningPlan> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId, @WebParam(name = "planTypeKey") String planTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
 
-    public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan")LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
 
-    public PlanItemInfo createPlanItem(@WebParam(name = "planItem")PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
 
-    public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet")PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public PlanItemSetInfo createPlanItemSet(@WebParam(name = "planItemSet") PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
 
-    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId")String learningPlanId, @WebParam(name = "learningPlan")LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+    public LearningPlanInfo updateLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "learningPlan") LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
 
-    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem,
+    public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem,
                                        @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
 
 
-    public PlanItemSetInfo updatePlanItemSet(@WebParam(name = "planItemSetId")String planItemSetId, @WebParam(name = "planItemSet")PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public PlanItemSetInfo updatePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "planItemSet") PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
 
-    public StatusInfo deleteLearningPlan(@WebParam(name = "learningPlanId")String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public StatusInfo deleteLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
-    public StatusInfo deletePlanItem(@WebParam(name = "planItemId")String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public StatusInfo deletePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
-    public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId")String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+    public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
 
     public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
                                                            @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
@@ -103,9 +102,9 @@ public interface AcademicPlanService  extends DataDictionaryService, TypeService
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
 
-     public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
-                                                           @WebParam(name = "planItemInfo") PlanItemSetInfo planItemSetInfo,
-                                                           @WebParam(name = "context") ContextInfo context)
+    public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
+                                                          @WebParam(name = "planItemSetInfo") PlanItemSetInfo planItemSetInfo,
+                                                          @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
 }

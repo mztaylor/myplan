@@ -15,6 +15,7 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.core.statement.service.StatementService;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
@@ -27,10 +28,9 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
@@ -145,7 +145,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             List<String> scheduledTerms = new ArrayList<String>();
             for(TermInfo term : termInfos) {
-                List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsForCourseAndTerm(course.getCode(), term.getKey(), null);
+                List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsForCourseAndTerm(course.getCode(), term.getId(), null);
                 if(null != courseOfferings && courseOfferings.size() > 0) {
                     scheduledTerms.add(term.getName());
                 }

@@ -31,8 +31,8 @@
     </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties" value="#{config.getProperties()}" />
-    </bean>
+		<property name="properties" value="#{config.getProperties()}" />
+	</bean>
 
     <import resource="classpath:myplan-search-config.xml"/>
 

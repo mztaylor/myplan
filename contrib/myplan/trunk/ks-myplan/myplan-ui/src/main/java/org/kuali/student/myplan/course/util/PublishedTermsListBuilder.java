@@ -1,18 +1,15 @@
 package org.kuali.student.myplan.course.util;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
-import org.apache.log4j.Logger;
-
-import javax.naming.Context;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +52,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         if (termInfos != null) {
             //  Add the individual term items.
             for (TermInfo ti : termInfos) {
-                keyValues.add(new ConcreteKeyValue(ti.getKey(), ti.getName() + listItemSuffix));
+                keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName() + listItemSuffix));
             }
         }
         return keyValues;

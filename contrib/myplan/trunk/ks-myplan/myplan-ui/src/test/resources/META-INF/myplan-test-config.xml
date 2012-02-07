@@ -149,8 +149,6 @@
     <param name="jpa.databasePlatform">org.hibernate.dialect.Oracle10gDialect</param>
     <param name="jpa.generateDdl">false</param>
 
-
-
     <!-- KS caching config -->
     <param name="ks.cache.config.file">classpath:ks-ehcache.xml</param>
     <param name="ks.enum.enable.caching">true</param>
@@ -159,8 +157,6 @@
     <param name="ks.lrc.enable.caching">true</param>
     <param name="ks.statement.enable.caching">true</param>
     <param name="ks.lu.enable.caching">true</param>
-
-    <param name="css.files" override="true">ks-myplan/css/myplan.css,${css.files}</param>
 
     <!-- TODO: UW SPECIFIC - UW Service Service Rest client defaults. -->
     <param name="uw.studentservice.impl">edu.uw.kuali.student.lib.client.studentservice.FauxStudentServiceClientImpl</param>
@@ -175,6 +171,4 @@
     <param name="config.location">/data/myplan/etc/myplan-config.xml</param>
     <param name="config.location">${additional.config.locations}</param>
 
-    <param name="css.files" override="true">${css.files}</param>
-    <param name="javascript.files" override="true">${javascript.files}</param>
 </config>

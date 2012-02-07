@@ -31,6 +31,7 @@ import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
@@ -45,7 +46,6 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -83,8 +83,12 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=start")
-    public ModelAndView start(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+    public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
+
+        super.start(form, result, request, response);
+
+        CourseSearchForm searchForm = (CourseSearchForm) form;
         return getUIFModelAndView(form);
     }
 
@@ -295,7 +299,7 @@ public class CourseSearchController extends UifControllerBase {
 
             for (TermInfo term : terms) {
 
-                String key = term.getKey();
+                String key = term.getId();
                 String subject = course.getSubject();
 
                 List<String> offerings = offeringService
