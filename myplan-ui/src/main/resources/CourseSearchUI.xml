@@ -35,6 +35,7 @@
             <list>
                 <bean parent="Uif-Page" p:id="course_search">
                     <property name="title" value="Find Courses"/>
+                    <property name="instructionalText" value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
                     <property name="items">
                         <list>
                             <ref bean="course_search_page"/>
@@ -64,7 +65,7 @@
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
-                <ref bean="course_search_instructions"/>
+<!--                <ref bean="course_search_instructions"/> -->
                 <ref bean="course_search_panel"/>
                 <ref bean="mystuff_panel"/>
             </list>
@@ -80,7 +81,7 @@
         <property name="styleClasses" value="fl-container-auto"/>
         <property name="items">
             <list>
-                <ref bean="course_search_instructions"/>
+<!--                <ref bean="course_search_instructions"/> -->
                 <ref bean="course_search_result_panel"/>
                 <ref bean="mystuff_panel"/>
             </list>
