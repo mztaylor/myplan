@@ -14,7 +14,7 @@
          and limitations under the License. -->
 
 
-    <bean id="courseSearchView" parent="Uif-FormView">
+    <bean id="courseSearchView" parent="MyPlanFormView">
         <property name="id" value="courseSearchView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
@@ -23,13 +23,11 @@
         </property>
         <property name="additionalCssFiles">
             <list>
-                <value>/ks-myplan/css/myplan.css</value>
                 <value>/ks-myplan/css/course-search.css</value>
             </list>
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/scripts/myplan.widgets.js</value>
                 <value>/ks-myplan/scripts/course-search.js</value>
             </list>
         </property>
