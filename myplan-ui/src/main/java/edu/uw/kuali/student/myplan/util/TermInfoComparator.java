@@ -22,9 +22,9 @@ public class TermInfoComparator implements Comparator<AtpTypeInfo> {
     }
 
     private enum TermOrder {
-          KUALI_ATP_TYPE_AUTUMN,
-          KUALI_ATP_TYPE_WINTER,
-          KUALI_ATP_TYPE_SPRING,
-          KUALI_ATP_TYPE_SUMMER;
+          KUALI_UW_ATP_TYPE_AUTUMN,
+          KUALI_UW_ATP_TYPE_WINTER,
+          KUALI_UW_ATP_TYPE_SPRING,
+          KUALI_UW_ATP_TYPE_SUMMER;
     }
 }

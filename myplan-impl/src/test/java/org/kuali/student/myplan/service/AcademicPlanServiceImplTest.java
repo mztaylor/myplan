@@ -42,11 +42,11 @@ public class AcademicPlanServiceImplTest {
     private AcademicPlanService academicPlanService;
 
     public static final String principalId = "testuser";
-    public ContextInfo context = ContextInfo.newInstance();
+    public ContextInfo context;
 
     @Before
     public void setUp() {
-        context = ContextInfo.getInstance(context);
+        context = new ContextInfo();
         context.setPrincipalId(principalId);
     }
 

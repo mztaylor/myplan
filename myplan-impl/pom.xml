@@ -37,12 +37,12 @@
         <dependency>
             <groupId>org.kuali.student.enroll</groupId>
             <artifactId>ks-enroll-api</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${kuali.student.enroll.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kuali.student.enroll</groupId>
             <artifactId>ks-enroll-impl</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${kuali.student.enroll.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kuali.student.common</groupId>

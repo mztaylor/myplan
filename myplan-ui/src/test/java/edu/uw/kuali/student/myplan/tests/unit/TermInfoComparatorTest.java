@@ -17,16 +17,16 @@ public class TermInfoComparatorTest {
     @Test
     public void circularTermListExerciseTerms() {
         AtpTypeInfo t1 = new AtpTypeInfo();
-        t1.setId("kuali.atp.type.spring");
+        t1.setId("kuali.uw.atp.type.spring");
 
         AtpTypeInfo t2 = new AtpTypeInfo();
-        t2.setId("kuali.atp.type.winter");
+        t2.setId("kuali.uw.atp.type.winter");
 
         AtpTypeInfo t3 = new AtpTypeInfo();
-        t3.setId("kuali.atp.type.autumn");
+        t3.setId("kuali.uw.atp.type.autumn");
 
         AtpTypeInfo t4 = new AtpTypeInfo();
-        t4.setId("kuali.atp.type.summer");
+        t4.setId("kuali.uw.atp.type.summer");
 
         List<AtpTypeInfo> sorted = new ArrayList<AtpTypeInfo>();
         sorted.add(t3);

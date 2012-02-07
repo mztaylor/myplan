@@ -147,9 +147,11 @@
    </bean>
 
     <!-- Academic Plan Service Decorators -->
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
+    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
         <property name="nextDecorator" ref="academicPlanServicePersistence"/>
     </bean>
+
+    <bean id="academicPlanService" parent="academicPlanServicePersistence"/>
 
 	<bean id="permissionService" class="org.kuali.student.kim.permission.mock.PermissionServiceMockImpl" />
 
