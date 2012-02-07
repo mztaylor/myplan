@@ -7,7 +7,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupInfo;
@@ -17,7 +16,6 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.kuali.student.enrollment.courseregistration.dto.CourseRegistrationInfo;
-import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
@@ -27,7 +25,6 @@ import org.kuali.student.r2.core.type.dto.TypeInfo;
 import javax.jws.WebParam;
 import java.io.StringReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,12 +43,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private StudentServiceClient studentServiceClient;
 
-    //  TODO: Replace this with ehcache.
-    private static Map<String, Set<String>> courseOfferingCache;
-
     public UwCourseOfferingServiceImpl() {
-        courseOfferingCache = new ConcurrentHashMap<String, Set<String>>(1000);
-
         //  Compile regexs for parsing term and year from termKey.
         patternTerm = Pattern.compile(REGEX_TERM, Pattern.CASE_INSENSITIVE);
         patternYear = Pattern.compile(REGEX_YEAR);
@@ -74,30 +66,25 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
      */
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsForCourseAndTerm(@WebParam(name = "courseId") String courseId,
-            @WebParam(name = "termKey") String termKey, @WebParam(name = "context") ContextInfo context)
+            @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
         List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
 
         String subjectArea = courseId.substring(0,6).trim();
-        String cacheKey = termKey + ":" + subjectArea;
 
-        if (courseOfferingCache.containsKey(cacheKey)) {
-            getCourseOfferingIdsByTermAndSubjectArea(termKey, subjectArea, null);
-        }
+        //  Go ahead and fetch (and cache) all course offering IDs for the given term.
+        getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
 
-        if (courseOfferingCache.containsKey(cacheKey) && courseOfferingCache.get(cacheKey).contains(courseId)) {
+        CourseOfferingInfo co = new CourseOfferingInfo();
+        co.setCourseId(courseId);
+        co.setTermId(termId);
+        co.setCourseOfferingCode(courseId);
+        co.setSubjectArea(subjectArea);
+        co.setCourseNumberSuffix(courseId.substring(7));
 
-            CourseOfferingInfo co = new CourseOfferingInfo();
-            co.setCourseId(courseId);
-            co.setTermId(termKey);
-            co.setCourseOfferingCode(courseId);
-            co.setSubjectArea(subjectArea);
-            co.setCourseNumberSuffix(courseId.substring(7));
-
-            courseOfferingInfos.add(co);
-        }
+        courseOfferingInfos.add(co);
 
         return courseOfferingInfos;
     }
@@ -107,13 +94,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
      *    Student Service: curriculum abbreviation _ course number
      *    MyPlan: subject _ number.
      *
-     * @param termKey
+     * @param termId
      * @param subjectArea
      * @param context
      * @return A list of course codes.
      */
     @Override
-    public List<String> getCourseOfferingIdsByTermAndSubjectArea(@WebParam(name = "termKey") String termKey,
+    public List<String> getCourseOfferingIdsByTermAndSubjectArea(@WebParam(name = "termId") String termId,
                                                                  @WebParam(name = "subjectArea") String subjectArea,
                                                                  @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
@@ -121,48 +108,38 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         List<String> ids = new ArrayList<String>(100);
 
-        String cacheKey = termKey + ":" + subjectArea;
-        //   Use the cache if the info is available. Otherwise, query the student service and cache the results.
-        if (courseOfferingCache.containsKey(cacheKey)) {
-            Set<String> co = courseOfferingCache.get(cacheKey);
-            ids.addAll(co);
-        } else {
-            //  Query the web service and cache the results if the call completes successfully.
-            Set<String> courseCodes = null;
-            try {
-                courseCodes = getCourseOfferings(termKey, subjectArea);
-            } catch (ServiceException e) {
-                logger.error("Call to the student service failed.", e);
-            }
-
-            if (courseCodes != null) {
-                courseOfferingCache.put(cacheKey, courseCodes);
-                //  Add course codes to the return list.
-                ids.addAll(courseCodes);
-            }
+        //  Query the web service.
+        Set<String> courseCodes = null;
+        try {
+            courseCodes = getCourseOfferings(termId, subjectArea);
+        } catch (ServiceException e) {
+            logger.error("Call to the student service failed.", e);
         }
+
+        ids.addAll(courseCodes);
+
         return ids;
     }
 
     /**
      * Queries the student service and creates a collection of courseCodes for a given termKey (term, year)
      * and subject area (curriculum abbreviation)
-     * @param termKey  A term key like 'kuali.uw.atp.winter1970'.
+     * @param termId  A term key like 'kuali.uw.atp.winter1970'.
      * @param subjectArea A subject area like 'chem'.
      * @return A Set of course Codes.
      */
-    private Set<String> getCourseOfferings(String termKey, String subjectArea) throws ServiceException {
+    private Set<String> getCourseOfferings(String termId, String subjectArea) throws ServiceException {
 
         String term, year;
 
-        Matcher matcher = patternTerm.matcher(termKey);
+        Matcher matcher = patternTerm.matcher(termId);
         if (matcher.find()) {
             term = matcher.group(1);
         } else {
             throw new RuntimeException("Term key did not contain a term.");
         }
 
-        matcher = patternYear.matcher(termKey);
+        matcher = patternYear.matcher(termId);
         if (matcher.find()) {
             year = matcher.group(1);
         } else {
@@ -441,7 +418,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     public SeatPoolDefinitionInfo updateSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionId") String seatPoolDefinitionId, @WebParam(name = "seatPoolDefinitionInfo") SeatPoolDefinitionInfo seatPoolDefinitionInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-        throw new RuntimeException("Not implemented.");
+         throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -488,5 +465,4 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     public List<String> searchForSeatpoolDefintionIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
-
 }
