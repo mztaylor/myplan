@@ -3,10 +3,10 @@ body {
     line-height: 1em;
     font-family: helvetica,arial,clean,sans-serif;
 }
-.myplan a,
-.myplan a:hover,
-.myplan a:active,
-.myplan a:focus {
+.myplan-view a,
+.myplan-view a:hover,
+.myplan-view a:active,
+.myplan-view a:focus {
     outline: 0;
     white-space: normal;
     overflow:  auto;
@@ -17,33 +17,35 @@ body {
 	margin:0 auto;
 	padding: 10px 0 10px 10px;
 	width: 950px;
-    /*min-width: 940px;
-    max-width: 1440px;*/
 }
-#viewfooter_div {
-    clear: both;
-}
-.myplan .kr-breadcrumbs,
-.myplan #viewpage_div,
-.myplan #viewheader_div,
-.myplan #viewlayout_div {
+.myplan-view #viewpage_div,
+.myplan-view #viewheader_div,
+.myplan-view #viewfooter_div {
 	margin: 0;
 	padding: 0;
     width: auto;
+    clear: both;
 }
-.myplan .kr-breadcrumbs {
+.myplan-view #viewnavigation_div {
+	display: none;
+}
+.myplan-view .kr-breadcrumbs {
     margin: 0 0 1em 0;
+    padding: 0;
+    width: auto;
+    clear: both;
 }
-.myplan .summary {
+
+.myplan-view .summary {
 	max-width: none;
     margin: 0 0 10px 0;
     display: block;
 }
-.myplan .boxLayoutVerticalItem {
+.myplan-view .boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
     padding: 0;
 }
-.myplan .boxLayoutHorizontalItem {
+.myplan-view .boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
     padding: 0;
 }
@@ -125,14 +127,11 @@ span.link_viewall {
     padding:6px;
 }
 
-.ellipsis {
+.myplan-text-ellipsis {
     white-space: nowrap;
     overflow: hidden;
 }
-.ellipsis.multiline {
-    white-space: normal;
-}
-button.kr-button-primary {
+.myplan-button {
 	background-image: -moz-linear-gradient(top, #8bcefd, #007dd6);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #8bcefd), color-stop(1, #007dd6));
     background-image: -o-linear-gradient(top,rgba(139,206,253,1),rgba(0,125,214,1));    /* be nice to Opera */
@@ -154,15 +153,27 @@ button.kr-button-primary {
     margin: 0;
     padding: 0;
 }
-
-.dialogWithDropShadow {
-    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+/* Layout styles ########################################################################### */
+.myplan-container-720 {
+    width: 720px;
 }
-
-/* Text styles */
-.fl-text-italic {
+.myplan-course-search-panel {
+	background: #d6d6d6;
+	border: solid 2px #a9a9a9;
+	padding: 10px 0 0 10px;
+	border-radius: 8px;
+    overflow: hidden;
+}
+/* Text styles ########################################################################### */
+.myplan-text-italic {
     font-style: italic !important;
+}
+.myplan-text-nowrap {
+    white-space: nowrap !important;
+}
+.myplan-text-normal,
+.myplan-text-normal label {
+    font-weight: normal !important;
 }
 .msg-success {
     height: 24px;
@@ -171,6 +182,176 @@ button.kr-button-primary {
     background: url(../images/iconSuccess.png) no-repeat;
     font-size: 120%;
 }
+
+/* Styles for Facet Panel ########################################################################### */
+.myplan-facets-panel {
+	border-bottom: solid 1px #a9a9a9;
+    border-left: solid 1px #a9a9a9;
+    border-right: solid 1px #a9a9a9;
+    font-size: 90%;
+    width: 128px;
+    margin-right: 10px;
+}
+.myplan-facets-panel a {
+    color: #000;
+}
+.myplan-facets-panel .boxLayoutVerticalItem,
+.myplan-facets-panel .myplan-facets-group ul,
+.myplan-facets-panel .myplan-facets-group ul li {
+    margin: 0;
+    padding: 0;
+}
+.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup {
+	max-height: 95px;
+	overflow-y: auto;
+}
+.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup div[id$='_group'] {
+	overflow: hidden;
+}
+.myplan-facets-panel .myplan-facets-group a.item {
+    padding: 0 0 0 21px;
+    background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
+    min-height: 16px;
+    line-height: 16px;
+    display: block;
+    margin: 0 0 3px 3px;
+    cursor: pointer;
+    opacity: 1;
+}
+.myplan-facets-panel .myplan-facets-group a.item.all {
+	margin-top: 3px;
+    /*display: none;*/
+}
+.myplan-facets-panel .myplan-facets-group a.item.checked {
+    background-position: 0px -32px;
+}
+.myplan-facets-panel .myplan-facets-group a.item.static,
+.myplan-facets-panel .myplan-facets-group a.item.static:hover {
+    background-position: 0px -32px;
+	cursor: default;
+    text-decoration: none;
+}
+.myplan-facets-panel .myplan-facets-group a.item span {
+    color: #999;
+    text-decoration: none;
+}
+.myplan-facets-panel .myplan-facets-group a.item.disabled,
+.myplan-facets-panel .myplan-facets-group a.item.disabled:hover {
+    text-decoration: none;
+    cursor: default;
+    opacity: 0.33;
+}
+
+/* Styles for course search results ########################################################################### */
+
+.myplan-course-search-results {
+    width: 578px;
+}
+.myplan-course-search-results .dataTables_info {
+    float: none;
+    font-size: 150%;
+    line-height: 150%;
+    width: 100%;
+    margin-bottom: 0.25em;
+}
+.myplan-course-search-results .dataTables_length {
+    float: right;
+    text-align: right;
+    width: 100%;
+    clear: both;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable {
+    border: solid 1px #a9a9a9;
+    border-bottom: none;
+    width: 100%;
+}
+#course_search_results_panel_div,
+#course_search_no_results_found_div {
+    display: none;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable th,
+.myplan-course-search-results .myplan-course-search-results-datatable td {
+    vertical-align: middle;
+}
+#course_search_results_list_items_div #course_search_results_datatable thead tr {
+	background: #d6d6d6;
+}
+#course_search_results_list_items_div #course_search_results_datatable thead tr th {
+    border: none;
+    padding: 4px;
+    line-height: 1.5em;
+    font-weight: bold;
+    color: #5f5e5f;
+    font-size: 88%;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody tr td {
+	line-height: 1.8em;
+    height: 1.8em;
+    padding: 2px 4px;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseName span.courseName a {
+    display: block;
+    width: 175px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    cursor: pointer;
+}
+#course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseStatus {
+    width:55px;
+}
+#course_search_results_list_items_div #course_search_results_datatable .odd,
+#course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
+    background: #fff;
+}
+#course_search_results_list_items_div #course_search_results_datatable .even,
+#course_search_results_list_items_div #course_search_results_datatable .even td[class^='sorting_'] {
+    background: #eee;
+}
+#course_search_results_list_items_div #course_search_results_datatable .odd:hover,
+#course_search_results_list_items_div #course_search_results_datatable .even:hover {
+    background: #ddd;
+}
+#course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
+    width: auto;
+    float: none;
+    background: #d6d6d6;
+    border: solid 1px #a9a9a9;
+    border-top: none;
+}
+#course_search_results_list_items_div .dataTables_paginate .first,
+#course_search_results_list_items_div .dataTables_paginate .last,
+#course_search_results_list_items_div .dataTables_paginate .paginate_button,
+#course_search_results_list_items_div .dataTables_paginate .paginate_active,
+#course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
+	background: none;
+	border: none;
+}
+#course_search_results_list_items_div .dataTables_paginate .first,
+#course_search_results_list_items_div .dataTables_paginate .last {
+	display:none;
+}
+#course_search_results_list_items_div .dataTables_paginate .paginate_active {
+    font-weight:bold;
+    background: #666;
+    color:#fff;
+}
+#course_search_results_list_items_div .dataTables_paginate .first:hover,
+#course_search_results_list_items_div .dataTables_paginate .last:hover,
+#course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
+	text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
 /* beginning of scrollbar */
 ::-webkit-scrollbar{
         width:8px;
