@@ -18,6 +18,11 @@
         <property name="id" value="courseSearchView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderField-Two"/>
         </property>
@@ -33,20 +38,29 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search">
-                    <property name="title" value="Find Courses"/>
-                    <property name="instructionalText" value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
+                <bean parent="Uif-Page" p:id="course_search" p:title="Find Courses">
+                    <property name="instructionalText"
+                              value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
                     <property name="items">
                         <list>
-                            <ref bean="course_search_page"/>
+                            <ref bean="course_search_section"/>
+                            <ref bean="myplan_section"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="course_search_result">
-                    <property name="title" value="Find Courses"/>
+                <bean parent="Uif-Page" p:id="course_search_result" p:title="Find Courses">
+                    <property name="instructionalText"
+                              value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
                     <property name="items">
                         <list>
-                            <ref bean="course_search_result_page"/>
+                            <ref bean="course_search_result_section"/>
+                            <ref bean="myplan_section"/>
                         </list>
                     </property>
                 </bean>
@@ -58,73 +72,43 @@
 
 
     <!-- Layout for Empty Course Search Form Page  -->
-    <bean id="course_search_page" parent="Uif-HorizontalBoxSection">
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="fl-container-auto"/>
+    <bean id="course_search_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-<!--                <ref bean="course_search_instructions"/> -->
                 <ref bean="course_search_panel"/>
-                <ref bean="mystuff_panel"/>
             </list>
         </property>
     </bean>
 
 
     <!-- Layout for Course Search Result Page -->
-    <bean id="course_search_result_page" parent="Uif-HorizontalBoxSection">
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="fl-container-auto"/>
-        <property name="items">
-            <list>
-<!--                <ref bean="course_search_instructions"/> -->
-                <ref bean="course_search_result_panel"/>
-                <ref bean="mystuff_panel"/>
+    <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
             </list>
         </property>
-    </bean>
-
-
-    <bean id="course_search_instructions" parent="Uif-MessageField"
-          p:messageText="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable"/>
-
-    <!-- Group for Course Search Functions only -->
-    <bean id="course_search_panel" parent="Uif-VerticalBoxSubSection">
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
         <property name="items">
             <list>
-                <ref bean="course_search_functions"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <!-- Group for Course Search Functions and Results -->
-    <bean id="course_search_result_panel" parent="Uif-VerticalBoxSubSection">
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="fl-container-720 fl-force-left fl-push"/>
-        <property name="items">
-            <list>
-                <ref bean="course_search_functions"/>
-                <ref bean="course_search_result_group"/>
+                <ref bean="course_search_panel"/>
+                <ref bean="course_search_results_panel"/>
             </list>
         </property>
     </bean>
 
 
     <!-- Group for Search Fields Container -->
-    <bean id="course_search_functions" parent="Uif-VerticalBoxGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
+    <bean id="course_search_panel" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-search-panel</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_search_fields"/>
@@ -139,21 +123,17 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean id="course_search_query" parent="Uif-InputField" p:propertyName="searchQuery"
-                      p:label="Search for" p:labelPlacement="LEFT"
-                      p:labelField.renderColon="false" p:labelField.styleClasses="fl-txt-bold"
-                      p:styleClasses="search-text">
+                <bean parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
+                      p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="searchTerm" p:label="in" p:labelPlacement="LEFT"
-                      p:labelField.renderColon="false">
-
+                <bean parent="Uif-InputField" p:propertyName="searchTerm" p:label="in"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
-
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.PublishedTermsListBuilder"/>
                     </property>
@@ -162,7 +142,8 @@
                       p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP">
                     <property name="styleClasses">
                         <list merge="true">
-                            <value>search-submit</value>
+                            <value>course-search-submit</value>
+                            <value>myplan-button</value>
                         </list>
                     </property>
                 </bean>
@@ -175,20 +156,20 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="campusSeattle"
-                      p:label="Seattle campus" p:labelPlacement="RIGHT" p:defaultValue="true">
+                <bean parent="Uif-InputField" p:propertyName="campusSeattle" p:label="Seattle campus"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="campusTacoma"
-                      p:label="Tacoma campus" p:labelPlacement="RIGHT" p:defaultValue="true">
+                <bean parent="Uif-InputField" p:propertyName="campusTacoma" p:label="Tacoma campus"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="campusBothell"
-                      p:label="Bothell campus" p:labelPlacement="RIGHT" p:defaultValue="true">
+                <bean parent="Uif-InputField" p:propertyName="campusBothell" p:label="Bothell campus"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
@@ -197,72 +178,34 @@
         </property>
     </bean>
 
-
-    <!-- Group for Course Search Results and Facets -->
-    <bean id="course_search_result_group" parent="Uif-VerticalBoxGroup">
-        <!--<property name="header.render" value="false"/> -->
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="noMarginPadding"/>
+    <!-- Layout for Search Facets and Search Results -->
+    <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
-                <ref bean="course_search_results_panel"/>
-                <ref bean="course_search_no_results_found"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="mystuff_panel" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)">
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="fl-container-200 fl-force-left"/>
-        <property name="items">
-            <list>
-
-                <bean id="mystuff_msg" parent="Uif-MessageField"
-                      p:messageText="MyStuff"/>
-
-
-                <!-- <ref bean="watch_list_backup"/>
-                <ref bean="watch_list_empty"/> -->
-                <!--            <ref bean="watch_list"/> -->
-            </list>
-        </property>
-    </bean>
-
-    <!--
-    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)">
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value=""/>
-        <property name="onDocumentReadyScript"
-                  value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');"/>
-    </bean>
-    -->
-
-    <!-- Layout for No Results Found  -->
-    <bean id="course_search_no_results_found" parent="Uif-HorizontalBoxSubSection" p:layoutManager.orientation="HORIZONTAL">
-        <property name="styleClasses" value=""/>
-        <property name="header.render" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'false' : 'true'}"/>
-        <property name="items">
-            <list>
-                <ref bean="course_search_result_facets"/>
-                <ref bean="empty_table"/>
+                <ref bean="course_search_results_facets"/>
+                <ref bean="course_search_results"/>
+                <ref bean="course_search_results_empty"/>
             </list>
         </property>
     </bean>
 
     <!-- Group for Empty Table Result Set -->
-    <bean id="empty_table" parent="Uif-VerticalBoxGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
+    <bean id="course_search_results_empty" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'false' : 'true'}"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-search-results</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean id="empty_table_header" parent="Uif-MessageField" p:messageText="0 results found"
-                      p:styleClasses="dataTables_info"/>
+                <bean id="empty_table_header" parent="Uif-MessageField" p:messageText="0 results found">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>dataTables_info</value>
+                        </list>
+                    </property>
+                </bean>
                 <bean id="empty_table_help" parent="Uif-VerticalBoxGroup">
                     <property name="disclosure.render" value="false"/>
                     <property name="errorsField.render" value="false"/>
@@ -270,7 +213,8 @@
                         <list>
                             <bean id="empty_table_message1" parent="Uif-MessageField"
                                   p:messageText="We couldn't find anything matching your search."/>
-                            <bean id="empty_table_message2" parent="Uif-MessageField" p:messageText="A few suggestions:"/>
+                            <bean id="empty_table_message2" parent="Uif-MessageField"
+                                  p:messageText="A few suggestions:"/>
                             <bean id="empty_table_message_list" parent="Uif-HorizontalBoxGroup">
                                 <property name="disclosure.render" value="false"/>
                                 <property name="errorsField.render" value="false"/>
@@ -290,40 +234,24 @@
         </property>
     </bean>
 
-    <!-- Layout for Search Facets and Search Results -->
-    <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup">
-        <property name="styleClasses" value=""/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'true' : 'false'}"/>
-        <property name="items">
-            <list>
-                <ref bean="course_search_result_facets"/>
-                <ref bean="course_search_results"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Group for Search Results List -->
-    <bean id="course_search_results" parent="Uif-VerticalBoxGroup">
-        <property name="styleClasses" value=""/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="items">
-            <list>
-                <ref bean="course_search_results_list_items"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="course_search_results_list_items" parent="Uif-TableCollectionGroup"
+    <bean id="course_search_results" parent="Uif-TableCollectionGroup"
           p:layoutManager.numberOfColumns="12">
-        <property name="disclosure.render" value="false"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-search-results</value>
+            </list>
+        </property>
+        <property name="render" value="@{getCourseSearchResults().size() gt 0 ? 'true' : 'false'}"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseSearchItem"/>
         <property name="propertyName" value="courseSearchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.id" value="course_search_results_datatable"/>
+        <property name="layoutManager.styleClasses">
+            <list merge="true">
+                <value>myplan-course-search-results-datatable</value>
+            </list>
+        </property>
         <property name="layoutManager.sequencePropertyName" value="code"/>
         <property name="layoutManager.sequenceFieldPrototype.label" value="Code"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
@@ -375,11 +303,17 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="code" p:label="Code" p:styleClasses="courseCode"
-                      p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="code" p:label="Code" p:readOnly="true">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                            <value>myplan-text-nowrap</value>
+                        </list>
+                    </property>
+                </bean>
 
                 <!--  TODO: This is a better way to create this field (once InputField is available).
-                <bean parent="InputField" p:propertyName="code" p:label="Code" p:styleClasses="courseCode">
+                <bean parent="InputField" p:propertyName="code" p:label="Code">
                     <property name="fieldInquiry.dataObjectClassName" value="org.kuali.student.lum.course.dto.CourseInfo"/>
                     <property name="fieldInquiry.inquiryParameters">
                         <map>
@@ -389,7 +323,7 @@
                 </bean>
                 -->
                 <bean parent="Uif-Link" p:label="Course Name" p:title="@{#line.courseName}"
-                      p:linkLabel="@{#line.courseName}" p:styleClasses="courseName"
+                      p:linkLabel="@{#line.courseName}" p:styleClasses="myplan-text-nowrap"
                       p:hrefText="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseId}"/>
                 <!--
                 <bean parent="InputField" p:propertyName="courseName" p:label="Course Name" p:styleClasses="courseName" p:readOnly="true">
@@ -398,41 +332,47 @@
                     </property>
                 </bean>
                 -->
-                <bean parent="Uif-DataField" p:propertyName="credit" p:label="Credits" p:styleClasses="courseCredits"
-                      p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="credit" p:label="Credits" p:readOnly="true"/>
                 <bean parent="Uif-DataField" p:propertyName="scheduledAndOfferedTerms" p:label="Quarter Offered"
-                      p:styleClasses="courseQuarter" p:readOnly="true"/>
-                <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req"
-                      p:styleClasses="courseGenEduReq" p:readOnly="true"/>
-                <bean parent="Uif-PrimaryActionButton" p:label="" p:styleClasses="">
+                      p:readOnly="true">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>courseQuarter</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
+                <bean parent="Uif-PrimaryActionButton" p:label="">
                     <property name="clientSideJs" value="alert('The selected course has been successfully added.');"/>
-                    <!--<property name="clientSideJs" value="
-                        addSavedCourse(action, methodToCall, viewId, courseId)('addItem', '@{#line.courseId}');
-                        retrieveContent('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');
-                    "/>-->
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
-                              p:altText="Add course to MyPlan"/>
+                              p:altText="Save to the Watch List (TBD)" p:title="Save to the Watch List (TBD)"/>
                     </property>
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true"/>
                 <bean parent="Uif-DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
                       p:readOnly="true"/>
-                <bean parent="Uif-DataField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req" p:readOnly="true"/>
-                <bean parent="Uif-DataField" p:propertyName="creditsFacetKey" p:label="Credits" p:readOnly="true"/>
-                <bean parent="Uif-DataField" p:propertyName="courseLevelFacetKey" p:label="Course Level" p:readOnly="true"/>
-                <bean parent="Uif-DataField" p:propertyName="curriculumFacetKey" p:label="Course Prefix" p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="genEduReqFacetKey" p:label="Gen Edu Req"
+                      p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="creditsFacetKey" p:label="Credits"
+                      p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="courseLevelFacetKey" p:label="Course Level"
+                      p:readOnly="true"/>
+                <bean parent="Uif-DataField" p:propertyName="curriculumFacetKey" p:label="Course Prefix"
+                      p:readOnly="true"/>
             </list>
         </property>
     </bean>
 
     <!-- Group for Search Facets -->
-    <bean id="course_search_result_facets" parent="Uif-VerticalBoxGroup" p:title="Narrow Results">
-        <property name="styleClasses" value="fl-container-flex15 fl-force-left"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="errorsField.render" value="false"/>
+    <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:title="Narrow Results" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-panel</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <ref bean="facet_quarter"/>
@@ -445,180 +385,267 @@
     </bean>
 
     <!-- Terms/Scheduled Terms/Quarters Facet -->
-    <bean id="facet_quarter" parent="Uif-VerticalBoxGroup" p:title="Quarter">
-        <property name="disclosure.render" value="true"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="facets"/>
+    <bean id="facet_quarter" parent="Uif-VerticalBoxGroup" p:title="Quarter" p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Four"/>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="All" p:styleClasses="facetQuarter item all checked"
-                      p:clientSideJs="facetFilter('facetQuarter', 'All', this);"/>
+                <bean parent="Uif-Link" p:linkLabel="All"
+                      p:onClickScript="facetFilter('facetQuarter', 'All', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetQuarter</value>
+                            <value>item</value>
+                            <value>all</value>
+                            <value>checked</value>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="course_search_facet_quarter"/>
             </list>
         </property>
     </bean>
 
     <bean id="course_search_facet_quarter" parent="Uif-ListCollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-    <!--    <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-    -->
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-       <!-- <property name="header.render" value="false"/>   -->
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="termsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="@{#line.displayName}" p:styleClasses="facetQuarter item"
-                      p:clientSideJs="facetFilter('facetQuarter', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                      p:onClickScript="facetFilter('facetQuarter', '@{#line.key}', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetQuarter</value>
+                            <value>item</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Gen Edu Req Facets -->
-    <bean id="facet_genedureq" parent="Uif-VerticalBoxGroup" p:title="Gen. Edu. Req.">
-        <property name="disclosure.render" value="true"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="facets"/>
+    <bean id="facet_genedureq" parent="Uif-VerticalBoxGroup" p:title="Gen. Edu. Req." p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Four"/>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="All" p:styleClasses="facetGenEduReq item all checked"
-                      p:clientSideJs="facetFilter('facetGenEduReq', 'All', this);"/>
+                <bean parent="Uif-Link" p:linkLabel="All"
+                      p:onClickScript="facetFilter('facetGenEduReq', 'All', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetGenEduReq</value>
+                            <value>item</value>
+                            <value>all</value>
+                            <value>checked</value>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="course_search_facet_genedureq"/>
             </list>
         </property>
     </bean>
 
     <bean id="course_search_facet_genedureq" parent="Uif-ListCollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-       <!-- <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        -->
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-      <!--  <property name="header.render" value="false"/> -->
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="@{#line.displayName}" p:styleClasses="facetGenEduReq item"
-                      p:clientSideJs="facetFilter('facetGenEduReq', '@{#line.key}', this);"
-                      p:labelField.render="false"/>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                      p:onClickScript="facetFilter('facetGenEduReq', '@{#line.key}', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetGenEduReq</value>
+                            <value>item</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Credits Facets -->
-    <bean id="facet_credits" parent="Uif-VerticalBoxGroup" p:title="Credits">
-        <property name="disclosure.render" value="true"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="facets"/>
+    <bean id="facet_credits" parent="Uif-VerticalBoxGroup" p:title="Credits" p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Four"/>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="All" p:styleClasses="facetCredits item all checked"
-                      p:clientSideJs="facetFilter('facetCredits', 'All', this);"/>
+                <bean parent="Uif-Link" p:linkLabel="All"
+                      p:onClickScript="facetFilter('facetCredits', 'All', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetCredits</value>
+                            <value>item</value>
+                            <value>all</value>
+                            <value>checked</value>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="course_search_facet_credits"/>
             </list>
         </property>
     </bean>
 
     <bean id="course_search_facet_credits" parent="Uif-ListCollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <!--<property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        -->
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-       <!-- <property name="header.render" value="false"/> -->
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="creditsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="@{#line.displayName}" p:styleClasses="facetCredits item"
-                      p:clientSideJs="facetFilter('facetCredits', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                      p:onClickScript="facetFilter('facetCredits', '@{#line.key}', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetCredits</value>
+                            <value>item</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Course Level Facets -->
-    <bean id="facet_level" parent="Uif-VerticalBoxGroup" p:title="Course Level">
-        <property name="disclosure.render" value="true"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="facets"/>
+    <bean id="facet_level" parent="Uif-VerticalBoxGroup" p:title="Course Level" p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Four"/>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="All" p:styleClasses="facetLevel item all checked"
-                      p:clientSideJs="facetFilter('facetLevel', 'All', this);"/>
+                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetLevel', 'All', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetLevel</value>
+                            <value>item</value>
+                            <value>all</value>
+                            <value>checked</value>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="course_search_facet_level"/>
             </list>
         </property>
     </bean>
 
     <bean id="course_search_facet_level" parent="Uif-ListCollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <!--<property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        --><property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-        <!--<property name="header.render" value="false"/> -->
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="courseLevelFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="@{#line.displayName}" p:styleClasses="facetLevel item"
-                      p:clientSideJs="facetFilter('facetLevel', '@{#line.key}', this);" p:labelField.render="false"/>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                      p:onClickScript="facetFilter('facetLevel', '@{#line.key}', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetLevel</value>
+                            <value>item</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Subject Area Facets -->
-    <bean id="facet_curriculum" parent="Uif-VerticalBoxGroup" p:title="Course Prefix">
-        <property name="disclosure.render" value="true"/>
-        <property name="errorsField.render" value="false"/>
-        <property name="styleClasses" value="facets"/>
+    <bean id="facet_curriculum" parent="Uif-VerticalBoxGroup" p:title="Course Prefix" p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Four"/>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="All" p:styleClasses="facetCurriculum item all checked"
-                      p:clientSideJs="facetFilter('facetCurriculum', 'All', this);"/>
+                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetCurriculum', 'All', this);">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetCurriculum</value>
+                            <value>item</value>
+                            <value>all</value>
+                            <value>checked</value>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="course_search_facet_curriculum"/>
             </list>
         </property>
     </bean>
 
     <bean id="course_search_facet_curriculum" parent="Uif-ListCollectionGroup">
-        <property name="disclosure.render" value="false"/>
-        <!--<property name="header.render" value="false"/> -->
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <!--<property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        --><property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="@{#line.displayName}"
-                      p:styleClasses="facetCurriculum item" p:title="@{#line.displayName}"
-                      p:clientSideJs="facetFilter('facetCurriculum', '@{#line.key}', this);"
-                      p:labelField.render="false"/>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:title="@{#line.displayName}"
+                      p:onClickScript="facetFilter('facetCurriculum', '@{#line.key}', this);"
+                      p:labelField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>facetCurriculum</value>
+                            <value>item</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-200</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean id="mystuff_msg" parent="Uif-MessageField" p:messageText="MyStuff"/>
+                <!-- <ref bean="watch_list"/> -->
+            </list>
+        </property>
+    </bean>
+
+    <!--
+    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)" p:errorsField.render="false">
+        <property name="onDocumentReadyScript"
+                  value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');"/>
+    </bean>
+    -->
+
 </beans>
-
-

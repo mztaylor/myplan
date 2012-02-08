@@ -155,8 +155,8 @@ jq(document).ready(function() {
     	jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
         jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
     });
-    jq(".search-text input[type='text']").bind('keypress', function(e) {
-	    if ( e.keyCode === 13 ) jq("button.search-submit").click();
+    jq("input[name='searchQuery'][type='text']").bind('keypress', function(e) {
+	    if ( e.keyCode === 13 ) jq("button.course-search-submit").click();
 	});
 });
 

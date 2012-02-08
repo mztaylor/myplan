@@ -134,7 +134,7 @@
                             <bean parent="MessageField" p:messageText="@{#line.courseDetails.code}"
                                   p:styleClasses="courseCode fl-text-bold"/>
                             <bean parent="MessageField" p:messageText="@{#line.courseDetails.courseTitle}"
-                                  p:styleClasses="courseName ellipsis"/>
+                                  p:styleClasses="courseName myplan-text-ellipsis"/>
                             <bean parent="MessageField" p:messageText="@{#line.courseDetails.credit}"
                                   p:styleClasses="courseCredits"/>
                         </list>
@@ -244,13 +244,13 @@
                                 <property name="labelField.render" value="false"/>
                             </bean>
                             <bean parent="DataField" p:propertyName="courseDetails.genEdRequirements"
-                                  p:styleClasses="courseGenEduReq fl-text-gray fl-text-italic">
+                                  p:styleClasses="courseGenEduReq fl-text-gray myplan-text-italic">
                                 <property name="formatter" ref="data_list_formatter"/>
                                 <property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
                             </bean>
                             <bean parent="DataField" p:propertyName="dateAdded" p:label="Added on"
-                                  p:styleClasses="dateAdded fl-text-gray fl-text-italic" p:labelField.renderColon="false"
-                                  p:labelField.render="true" p:labelField.styleClasses="fl-text-gray fl-text-italic"/>
+                                  p:styleClasses="dateAdded fl-text-gray myplan-text-italic" p:labelField.renderColon="false"
+                                  p:labelField.render="true" p:labelField.styleClasses="fl-text-gray myplan-text-italic"/>
                         </list>
                     </property>
                 </bean>
