@@ -3,7 +3,7 @@ package org.kuali.student.myplan.course.dataobject;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
+import org.kuali.student.myplan.course.util.CollectionListPropertyEditorHtmlListType;
 import org.kuali.student.myplan.course.util.FacetKeyFormatter;
 import org.springframework.util.StringUtils;
 
@@ -143,7 +143,7 @@ public class CourseSearchItem {
      */
     public String getScheduledAndOfferedTerms() {
 
-        CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DL;
+        CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
 
         Element termsList = DocumentHelper.createElement(listType.getListElementName()); // dl
 

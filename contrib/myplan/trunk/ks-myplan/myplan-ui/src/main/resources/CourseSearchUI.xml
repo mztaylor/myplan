@@ -117,7 +117,6 @@
         </property>
     </bean>
 
-
     <!-- Group for Search Input Fields -->
     <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup">
         <property name="group.errorsField.render" value="false"/>
