@@ -56,7 +56,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     /**
-     * This implementation uses course code for courseId
+     * This implementation uses course code for courseId.
      *
      * @param courseId
      * @param termId
@@ -74,7 +74,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         String subjectArea = courseId.substring(0,6).trim();
 
-        //  Go ahead and fetch (and cache) all course offering IDs for the given term.
         List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
 
         if (ids.contains(courseId)) {
@@ -109,12 +108,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         List<String> ids = new ArrayList<String>(100);
 
-        //  Query the web service.
+        //  Query the web service. Because the results of the call to this method are cached it important that an
+        //  an exception is thrown and the call doesn't complete successfully.
         Set<String> courseCodes = null;
         try {
             courseCodes = getCourseOfferings(termId, subjectArea);
         } catch (ServiceException e) {
-            logger.error("Call to the student service failed.", e);
+            throw new OperationFailedException("Call to the student service failed.", e);
         }
 
         ids.addAll(courseCodes);

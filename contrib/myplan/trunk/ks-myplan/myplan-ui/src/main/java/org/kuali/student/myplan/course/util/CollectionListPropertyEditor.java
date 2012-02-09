@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 
 public class CollectionListPropertyEditor extends PropertyEditorSupport implements Serializable {
 
-    private final static Logger logger = Logger.getLogger(CollectionListFormatter.class);
+    private final static Logger logger = Logger.getLogger(CollectionListPropertyEditor.class);
 
     //  Default parameter values.
     protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
