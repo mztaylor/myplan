@@ -3,6 +3,11 @@ body {
     line-height: 1em;
     font-family: helvetica,arial,clean,sans-serif;
 }
+#view_div {
+	margin:0 auto;
+	padding: 10px 0 10px 10px;
+	width: 950px;
+}
 .myplan-view a,
 .myplan-view a:hover,
 .myplan-view a:active,
@@ -11,12 +16,6 @@ body {
     white-space: normal;
     overflow:  auto;
     color:#1d8fd9;
-}
-
-#view_div {
-	margin:0 auto;
-	padding: 10px 0 10px 10px;
-	width: 950px;
 }
 .myplan-view #viewpage_div,
 .myplan-view #viewheader_div,
@@ -35,12 +34,6 @@ body {
     width: auto;
     clear: both;
 }
-
-.myplan-view .summary {
-	max-width: none;
-    margin: 0 0 10px 0;
-    display: block;
-}
 .myplan-view .boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
     padding: 0;
@@ -49,6 +42,327 @@ body {
 	margin: 0 10px 0 0;
     padding: 0;
 }
+.myplan-button {
+	color: #fff;
+	line-height: 1em;
+    text-shadow: none;
+	padding: 5px 20px;
+    margin: 0;
+    border: solid 1px #969696;
+    border-radius: 4px;
+    background: #007dd6;
+    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* IE10+ */
+    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
+}
+.myplan-button:hover {
+    border: solid 1px #969696;
+    background: #007DD6;
+    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* IE10+ */
+    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
+}
+.myplan-view .uif-instructionalMessage {
+	max-width: none;
+    font-size: 1em;
+}
+
+
+/* Layout styles ########################################################################### */
+.myplan-container-720 {
+    width: 720px;
+}
+.myplan-course-search-panel {
+	background: #d6d6d6;
+	border: solid 2px #a9a9a9;
+	padding: 10px 0 0 10px;
+	border-radius: 8px;
+    overflow: hidden;
+}
+/* Text styles ########################################################################### */
+.myplan-text-italic {
+    font-style: italic !important;
+}
+.myplan-text-nowrap {
+    white-space: nowrap !important;
+}
+.myplan-text-normal,
+.myplan-text-normal label {
+    font-weight: normal !important;
+}
+.myplan-text-ellipsis {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+}
+.msg-success {
+    height: 24px;
+    line-height: 24px;
+    padding: 0 0 0 36px;
+    background: url(../images/iconSuccess.png) no-repeat;
+    font-size: 120%;
+}
+/* Hide search results until load finish, js fade in ######################################################### */
+#course_search_results_panel_div {
+    display:none;
+}
+
+/* Styles for Facet Panel ########################################################################### */
+.myplan-facets-panel {
+	border-bottom: solid 1px #a9a9a9;
+    border-left: solid 1px #a9a9a9;
+    border-right: solid 1px #a9a9a9;
+    font-size: 90%;
+    width: 128px;
+}
+.myplan-facets-panel a, .myplan-facets-panel a:hover{
+    color: #000;
+}
+.myplan-facets-panel .boxLayoutVerticalItem,
+.myplan-facets-panel .myplan-facets-group ul,
+.myplan-facets-panel .myplan-facets-group ul li {
+    margin: 0;
+    padding: 0;
+}
+.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup {
+	max-height: 95px;
+	overflow-y: auto;
+    border-top: solid 1px #a9a9a9;
+    padding-top: 3px;
+}
+.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup div[id$='_group'] {
+	overflow: hidden;
+}
+.myplan-facets-group a[id$='_toggle'] {
+    text-decoration: none;
+}
+.myplan-facets-panel .uif-header {
+	display: block;
+	font-weight: normal;
+	background: #cccccc;
+	border-top: solid 1px #a9a9a9;
+	padding: 4px 0px 4px 4px;
+    white-space: nowrap;
+    color: #000;
+    text-transform: none;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header {
+    font-weight: bold;
+    background: #e9e9e9;
+    font-size: 1em !important;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons {
+    float: right;
+    background: url('../images/facetExpandCollapse.png') no-repeat 0px 0px;
+    margin: 0;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons[alt="expand"] {
+    background-position: 0px 0px;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons[alt="collapse"] {
+    background-position: 0px -14px;
+}
+.myplan-facets-panel .myplan-facets-group span.all {
+    border-top: solid 1px #a9a9a9;
+    display: none;
+}
+.myplan-facets-panel .myplan-facets-group a.item {
+    padding: 0 0 0 21px;
+    background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
+    min-height: 16px;
+    line-height: 16px;
+    display: block;
+    margin: 0 0 3px 3px;
+    cursor: pointer;
+    opacity: 1;
+}
+.myplan-facets-panel .myplan-facets-group a.item.all {
+	margin-top: 3px;
+    /*display: none;*/
+}
+.myplan-facets-panel .myplan-facets-group a.item.checked {
+    background-position: 0px -32px;
+}
+.myplan-facets-panel .myplan-facets-group a.item.static,
+.myplan-facets-panel .myplan-facets-group a.item.static:hover {
+    background-position: 0px -32px;
+	cursor: default;
+    text-decoration: none;
+}
+.myplan-facets-panel .myplan-facets-group a.item span {
+    color: #999;
+    text-decoration: none;
+}
+.myplan-facets-panel .myplan-facets-group a.item.disabled,
+.myplan-facets-panel .myplan-facets-group a.item.disabled:hover {
+    text-decoration: none;
+    cursor: default;
+    opacity: 0.33;
+}
+
+/* Styles for course search results ########################################################################### */
+.myplan-course-search-results {
+    width: 568px;
+    line-height: 1.8em;
+}
+.myplan-course-search-results .dataTables_info {
+    float: none;
+    font-size: 150%;
+    width: 100%;
+    margin: 0;
+}
+.myplan-course-search-results .dataTables_length {
+    float: right;
+    text-align: right;
+    width: 100%;
+    clear: both;
+    margin: 0 0 0.5em 0;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable {
+    border: solid 1px #a9a9a9;
+    border-bottom: none;
+    width: 100%;
+    margin: 0;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable th,
+.myplan-course-search-results .myplan-course-search-results-datatable td {
+    vertical-align: middle;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable thead tr {
+	background: #d6d6d6;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable thead tr th {
+    border: none;
+    padding: 4px;
+    line-height: 1.5em;
+
+}
+.myplan-course-search-results .myplan-course-search-results-datatable thead tr th label {
+    font-weight: bold;
+    color: #5f5e5f;
+    font-size: 88%;
+    text-transform: none;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable tbody tr td {
+	line-height: 1.8em;
+    height: 1.8em;
+    padding: 2px 4px;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable .odd,
+.myplan-course-search-results .myplan-course-search-results-datatable .odd td[class^='sorting_'] {
+    background: #fff;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable .even,
+.myplan-course-search-results .myplan-course-search-results-datatable .even td[class^='sorting_'] {
+    background: #eee;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable .odd:hover,
+.myplan-course-search-results .myplan-course-search-results-datatable .even:hover {
+    background: #ddd;
+}
+.myplan-course-search-results .dataTables_paginate.paging_full_numbers {
+    width: auto;
+    float: none;
+    background: #d6d6d6;
+    border: solid 1px #a9a9a9;
+    border-top: none;
+}
+.myplan-course-search-results .dataTables_paginate .first,
+.myplan-course-search-results .dataTables_paginate .last,
+.myplan-course-search-results .dataTables_paginate .paginate_button,
+.myplan-course-search-results .dataTables_paginate .paginate_active,
+.myplan-course-search-results .dataTables_paginate .paginate_button:hover {
+	background: none;
+	border: none;
+}
+.myplan-course-search-results .dataTables_paginate .first,
+.myplan-course-search-results .dataTables_paginate .last {
+	display:none;
+}
+.myplan-course-search-results .dataTables_paginate .paginate_active {
+    font-weight:bold;
+    background: #666;
+    color:#fff;
+}
+.myplan-course-search-results .dataTables_paginate .first:hover,
+.myplan-course-search-results .dataTables_paginate .last:hover,
+.myplan-course-search-results .dataTables_paginate .paginate_button:hover {
+	text-decoration: underline;
+}
+
+/* Styles for empty result set page */
+.myplan-course-search-results .myplan-course-search-empty {
+    border: solid 1px #a9a9a9;
+    padding: 10px 10px 0 10px;
+}
+.myplan-course-search-results .myplan-course-search-empty > div[id$='_group'] {
+    margin: 0 auto;
+    width: 70%;
+    padding: 25px 0;
+}
+.myplan-course-search-results .myplan-course-search-empty #empty_table_message_list_group>div>span>span{
+    display: list-item;
+    margin: 0;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+
+
+
+
+
+
+
+.myplan-data-list dl, .myplan-data-list dl dd {
+    margin: 0;
+    padding: 0;
+}
+.myplan-data-list dl dd {
+    display: block;
+    float: left;
+}
+.myplan-data-list dl dd:after {
+    content: ",";
+    margin-right: 0.33em;
+}
+.myplan-data-list dl dd:last-child:after {
+    content: "";
+    margin-right: 0;
+}
+.myplan-data-list .scheduled, .myplan-data-list .projected {
+    clear: both;
+}
+.myplan-data-list .scheduled:after {
+    margin: 0;
+    content: "";
+}
+.myplan-data-list .scheduled dl dd {
+    background: #ccc;
+    color: #333;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 80%;
+    padding: 0 4px;
+    clear: none;
+    margin-right: 0.33em;
+}
+.myplan-data-list .scheduled dl dd:after {
+    content: "";
+    margin: 0;
+}
+
 
 /* My Stuff */
 #mystuff_panel_div {
@@ -126,225 +440,6 @@ span.link_viewall {
     text-align:right;
     padding:6px;
 }
-
-.myplan-text-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-}
-.myplan-button {
-	background-image: -moz-linear-gradient(top, #8bcefd, #007dd6);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #8bcefd), color-stop(1, #007dd6));
-    background-image: -o-linear-gradient(top,rgba(139,206,253,1),rgba(0,125,214,1));    /* be nice to Opera */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#8bcefd, endColorstr=#007dd6);  /* IE7 and older */
-    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#8bcefd, EndColorStr=#007dd6);  /*IE8 */
-    background: linear-gradient(top, rgba(139,206,253,1) 0%, rgba(0,125,214,1) 100%);  /* for the future */
-	background-color:#007dd6;
-	color: #fff;
-	text-shadow: none;
-	border: solid 1px #969696;
-	padding: 5px 20px;
-    margin: 0;
-    border-radius: 4px;
-    line-height: 1em;
-}
-
-.noMarginPadding>div>div>span>span.boxLayoutVerticalItem,
-.noMarginPadding>div>div>span>span.boxLayoutHorizontalItem {
-    margin: 0;
-    padding: 0;
-}
-/* Layout styles ########################################################################### */
-.myplan-container-720 {
-    width: 720px;
-}
-.myplan-course-search-panel {
-	background: #d6d6d6;
-	border: solid 2px #a9a9a9;
-	padding: 10px 0 0 10px;
-	border-radius: 8px;
-    overflow: hidden;
-}
-/* Text styles ########################################################################### */
-.myplan-text-italic {
-    font-style: italic !important;
-}
-.myplan-text-nowrap {
-    white-space: nowrap !important;
-}
-.myplan-text-normal,
-.myplan-text-normal label {
-    font-weight: normal !important;
-}
-.msg-success {
-    height: 24px;
-    line-height: 24px;
-    padding: 0 0 0 36px;
-    background: url(../images/iconSuccess.png) no-repeat;
-    font-size: 120%;
-}
-
-/* Styles for Facet Panel ########################################################################### */
-.myplan-facets-panel {
-	border-bottom: solid 1px #a9a9a9;
-    border-left: solid 1px #a9a9a9;
-    border-right: solid 1px #a9a9a9;
-    font-size: 90%;
-    width: 128px;
-    margin-right: 10px;
-}
-.myplan-facets-panel a {
-    color: #000;
-}
-.myplan-facets-panel .boxLayoutVerticalItem,
-.myplan-facets-panel .myplan-facets-group ul,
-.myplan-facets-panel .myplan-facets-group ul li {
-    margin: 0;
-    padding: 0;
-}
-.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup {
-	max-height: 95px;
-	overflow-y: auto;
-}
-.myplan-facets-panel .myplan-facets-group .uif-listCollectionGroup div[id$='_group'] {
-	overflow: hidden;
-}
-.myplan-facets-panel .myplan-facets-group a.item {
-    padding: 0 0 0 21px;
-    background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
-    min-height: 16px;
-    line-height: 16px;
-    display: block;
-    margin: 0 0 3px 3px;
-    cursor: pointer;
-    opacity: 1;
-}
-.myplan-facets-panel .myplan-facets-group a.item.all {
-	margin-top: 3px;
-    /*display: none;*/
-}
-.myplan-facets-panel .myplan-facets-group a.item.checked {
-    background-position: 0px -32px;
-}
-.myplan-facets-panel .myplan-facets-group a.item.static,
-.myplan-facets-panel .myplan-facets-group a.item.static:hover {
-    background-position: 0px -32px;
-	cursor: default;
-    text-decoration: none;
-}
-.myplan-facets-panel .myplan-facets-group a.item span {
-    color: #999;
-    text-decoration: none;
-}
-.myplan-facets-panel .myplan-facets-group a.item.disabled,
-.myplan-facets-panel .myplan-facets-group a.item.disabled:hover {
-    text-decoration: none;
-    cursor: default;
-    opacity: 0.33;
-}
-
-/* Styles for course search results ########################################################################### */
-
-.myplan-course-search-results {
-    width: 578px;
-}
-.myplan-course-search-results .dataTables_info {
-    float: none;
-    font-size: 150%;
-    line-height: 150%;
-    width: 100%;
-    margin-bottom: 0.25em;
-}
-.myplan-course-search-results .dataTables_length {
-    float: right;
-    text-align: right;
-    width: 100%;
-    clear: both;
-}
-.myplan-course-search-results .myplan-course-search-results-datatable {
-    border: solid 1px #a9a9a9;
-    border-bottom: none;
-    width: 100%;
-}
-#course_search_results_panel_div,
-#course_search_no_results_found_div {
-    display: none;
-}
-.myplan-course-search-results .myplan-course-search-results-datatable th,
-.myplan-course-search-results .myplan-course-search-results-datatable td {
-    vertical-align: middle;
-}
-#course_search_results_list_items_div #course_search_results_datatable thead tr {
-	background: #d6d6d6;
-}
-#course_search_results_list_items_div #course_search_results_datatable thead tr th {
-    border: none;
-    padding: 4px;
-    line-height: 1.5em;
-    font-weight: bold;
-    color: #5f5e5f;
-    font-size: 88%;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody tr td {
-	line-height: 1.8em;
-    height: 1.8em;
-    padding: 2px 4px;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseName span.courseName a {
-    display: block;
-    width: 175px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -ms-text-overflow: ellipsis;
-    cursor: pointer;
-}
-#course_search_results_list_items_div #course_search_results_datatable tbody tr td.courseStatus {
-    width:55px;
-}
-#course_search_results_list_items_div #course_search_results_datatable .odd,
-#course_search_results_list_items_div #course_search_results_datatable .odd td[class^='sorting_'] {
-    background: #fff;
-}
-#course_search_results_list_items_div #course_search_results_datatable .even,
-#course_search_results_list_items_div #course_search_results_datatable .even td[class^='sorting_'] {
-    background: #eee;
-}
-#course_search_results_list_items_div #course_search_results_datatable .odd:hover,
-#course_search_results_list_items_div #course_search_results_datatable .even:hover {
-    background: #ddd;
-}
-#course_search_results_list_items_div .dataTables_paginate.paging_full_numbers {
-    width: auto;
-    float: none;
-    background: #d6d6d6;
-    border: solid 1px #a9a9a9;
-    border-top: none;
-}
-#course_search_results_list_items_div .dataTables_paginate .first,
-#course_search_results_list_items_div .dataTables_paginate .last,
-#course_search_results_list_items_div .dataTables_paginate .paginate_button,
-#course_search_results_list_items_div .dataTables_paginate .paginate_active,
-#course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
-	background: none;
-	border: none;
-}
-#course_search_results_list_items_div .dataTables_paginate .first,
-#course_search_results_list_items_div .dataTables_paginate .last {
-	display:none;
-}
-#course_search_results_list_items_div .dataTables_paginate .paginate_active {
-    font-weight:bold;
-    background: #666;
-    color:#fff;
-}
-#course_search_results_list_items_div .dataTables_paginate .first:hover,
-#course_search_results_list_items_div .dataTables_paginate .last:hover,
-#course_search_results_list_items_div .dataTables_paginate .paginate_button:hover {
-	text-decoration: underline;
-}
-
-
 
 
 
