@@ -9,7 +9,6 @@ jq.fn.dataTableExt.oApi.fnGetColumnIndex = function ( oSettings, sCol ) {
     }
     return -1;
 }
-
 jq.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
     var a = [];
     for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ ) {
@@ -17,19 +16,29 @@ jq.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
     }
     return a;
 }
+Array.prototype.inArrayRegEx = function(v) {
+    for ( var i = 0, length = this.length; i < length; i++ ) {
+       if ( typeof this[i] === 'string' && this[i].indexOf(v) > -1 ) {
+            return i;
+       }
+    }
+    return -1;
+};
 
 function buildFacets() {
     if ( jq.cookie('course_search_facets') ) {
     	applyHistory();
     }
     calculateFacets(null);
-	jq("#course_search_result_facets_div a.item.all").each(function() {
-		var txtColumn = jq(this).attr('class').split(' ',1)[0].toString();
+	jq(".myplan-facets-panel a.item.all").each(function() {
+		var styleClasses = jq(this).attr("class").split(" ");
+        var styleIndex = styleClasses.inArrayRegEx("facet");
+        var txtColumn = styleClasses[styleIndex].toString();
 		if ( typeof objFacets[txtColumn] === 'undefined' || objFacets[txtColumn].length <= 1 ) {
-            jq(this).removeClass('checked').css('display', 'none');
-            jq(this).parents(".facets").find("a.item").addClass('static');
+            jq(this).removeClass('checked').parent("span.all").css('display', 'none');
+            jq(this).parents(".myplan-facets-group").find("a.item").addClass('static');
         }  else {
-            jq(this).css('display', 'block');
+            jq(this).parent("span.all").css('display', 'block');
         }
 	});
 }
@@ -76,7 +85,7 @@ function facetFilter(txtColumn, filterText, obj) {
         var txtFacet = filterText.substring(1, filterText.length-1);
         if ( filterText === 'All' ) {
             arrFacets[colIndex] = [];
-            jq(obj).parents('.facets').find("div[id$='_group'] a.item").not('.all').each(function() {
+            jq(obj).parents('.myplan-facets-group').find("a.item").not('.all').each(function() {
                 objFacets[txtColumn][jq(this).text().replace("&", "&amp;").split(" (",1).toString()]["checked"] = false;
             });
             jq(obj).addClass('checked');
@@ -97,7 +106,7 @@ function facetFilter(txtColumn, filterText, obj) {
             } else {
                 arrFacets[colIndex].splice(key, 1);
                 objFacets[txtColumn][txtFacet]["checked"] = false;
-                if ( arrFacets[colIndex].length === 0 ) jq(obj).parents('.facets').find('a.all').addClass('checked');
+                if ( arrFacets[colIndex].length === 0 ) jq(obj).parents('.myplan-facets-group').find('a.all').addClass('checked');
                 for ( var i = 0; i < arrHistory.length; i++ ) {
                 	if ( arrHistory[i][0] === txtColumn && arrHistory[i][1] ===  filterText ) arrHistory.splice(i, 1);
                 }
@@ -118,9 +127,11 @@ function facetFilter(txtColumn, filterText, obj) {
 
 function calculateFacets(colSelected) {
 	oTable = jq("#course_search_results_datatable").dataTable();
-	oTableFiltered = jq("#course_search_results_datatable").dataTable().fnGetFilteredData();
-	jq("#course_search_result_facets_div .facets a.item").not(".all").each(function() {
-		var txtColumn = jq(this).attr('class').split(' ',1)[0].toString();
+	var oTableFiltered = jq("#course_search_results_datatable").dataTable().fnGetFilteredData();
+	jq(".myplan-facets-panel .myplan-facets-group a.item").not(".all").each(function() {
+		var styleClasses = jq(this).attr("class").split(" ");
+        var styleIndex = styleClasses.inArrayRegEx("facet");
+        var txtColumn = styleClasses[styleIndex].toString();
 		var txtFacet = jq(this).text().replace("&", "&amp;").split(" (",1).toString();
 		var colIndex = oTable.fnGetColumnIndex(txtColumn);
 		if ( colIndex != colSelected ) {
@@ -136,7 +147,7 @@ function calculateFacets(colSelected) {
 		objFacets[txtColumn][txtFacet]["count"] = count;
 		if ( objFacets[txtColumn][txtFacet]["checked"] ) {
 			jq(this).addClass('checked');
-			jq(this).parents('.facets').find('a.all').removeClass('checked');
+			jq(this).parents('.myplan-facets-group').find('a.all').removeClass('checked');
 		} else {
 			jq(this).removeClass('checked');
 			// if none in the facet group are checked, add checked class to 'all' -----------------
@@ -166,13 +177,11 @@ jq(window).load(function(){
         jq("#course_search_results_panel_div").fadeIn('fast');
         buildFacets();
     }
-    if ( jq("#course_search_no_results_found_div").length > 0 ) {
-        jq("#course_search_result_facets_div .facets").each(function() {
-            jq(this).find("span.all").hide();
+    if ( jq("#course_search_results_empty_div").length > 0 ) {
+        jq(".myplan-facets-panel .myplan-facets-group").each(function() {
             jq(this).find("a[id$='_toggle'] img").click();
+            jq(this).find("div[id^='facet_'][id$='_group']").hide();
         });
-        jq("#course_search_no_results_found_div").fadeIn('fast');
+        jq("#course_search_results_panel_div").fadeIn('fast');
     }
 });
-
-
