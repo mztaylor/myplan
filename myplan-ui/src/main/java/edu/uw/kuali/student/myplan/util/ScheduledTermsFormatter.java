@@ -4,17 +4,16 @@ import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.kuali.student.myplan.course.util.CollectionListFormatter;
-import org.kuali.student.myplan.course.util.CollectionListFormatterHtmlListType;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Formats scheduled terms list in to a HTML data definition (<dl/>) list.
  */
+@Deprecated
 public class ScheduledTermsFormatter extends CollectionListFormatter {
 
     private final static Logger logger = Logger.getLogger(ScheduledTermsFormatter.class);

@@ -59,7 +59,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
      * This implementation uses course code for courseId
      *
      * @param courseId
-     * @param termKey
+     * @param termId
      * @param context
      * @return
      *
@@ -75,17 +75,18 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         String subjectArea = courseId.substring(0,6).trim();
 
         //  Go ahead and fetch (and cache) all course offering IDs for the given term.
-        getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
+        List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
 
-        CourseOfferingInfo co = new CourseOfferingInfo();
-        co.setCourseId(courseId);
-        co.setTermId(termId);
-        co.setCourseOfferingCode(courseId);
-        co.setSubjectArea(subjectArea);
-        co.setCourseNumberSuffix(courseId.substring(7));
+        if (ids.contains(courseId)) {
+            CourseOfferingInfo co = new CourseOfferingInfo();
+            co.setCourseId(courseId);
+            co.setTermId(termId);
+            co.setCourseOfferingCode(courseId);
+            co.setSubjectArea(subjectArea);
+            co.setCourseNumberSuffix(courseId.substring(7));
 
-        courseOfferingInfos.add(co);
-
+            courseOfferingInfos.add(co);
+        }
         return courseOfferingInfos;
     }
 

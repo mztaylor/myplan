@@ -3,7 +3,7 @@ package org.kuali.student.myplan.course.util;
 /**
  * Defines the type of list that should be rendered in a CollectionListFormatter.
  */
-public enum CollectionListFormatterHtmlListType {
+public enum CollectionListPropertyEditorHtmlListType {
 
     /** Output an unordered list. */
     UL("ul", "li"),
@@ -15,7 +15,7 @@ public enum CollectionListFormatterHtmlListType {
     private String listElementName;
     private String itemElementName;
 
-    CollectionListFormatterHtmlListType(String listElementName, String itemElementName) {
+    CollectionListPropertyEditorHtmlListType(String listElementName, String itemElementName) {
         this.listElementName = listElementName;
         this.itemElementName = itemElementName;
     }

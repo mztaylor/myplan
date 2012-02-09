@@ -11,12 +11,13 @@ import org.apache.log4j.Logger;
 /**
  * Formats a collection in to a HTML data definition (<dl/>) list.
  */
+@Deprecated
 public class CollectionListFormatter extends Formatter {
 
     private final static Logger logger = Logger.getLogger(CollectionListFormatter.class);
 
     //  Default paramater values.
-    protected CollectionListFormatterHtmlListType listType = CollectionListFormatterHtmlListType.DL;
+    protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
     protected String emptyListMessage = "";
     protected String styleClassName = "kr-collection-list";
 
@@ -67,11 +68,11 @@ public class CollectionListFormatter extends Formatter {
      *
      * @param listType
      */
-    public void setListType(CollectionListFormatterHtmlListType listType) {
+    public void setListType(CollectionListPropertyEditorHtmlListType listType) {
         this.listType = listType;
     }
 
-    public CollectionListFormatterHtmlListType getListType() {
+    public CollectionListPropertyEditorHtmlListType getListType() {
         return this.listType;
     }
 

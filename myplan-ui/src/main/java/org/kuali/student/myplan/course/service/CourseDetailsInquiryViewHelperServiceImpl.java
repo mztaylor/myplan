@@ -144,15 +144,19 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
 
             List<String> scheduledTerms = new ArrayList<String>();
-            for(TermInfo term : termInfos) {
-                List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsForCourseAndTerm(course.getCode(), term.getId(), null);
-                if(null != courseOfferings && courseOfferings.size() > 0) {
+            for (TermInfo term : termInfos) {
+                String key = term.getId();
+                String subject = course.getSubjectArea();
+
+                List<String> offerings = getCourseOfferingService()
+                        .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
+
+                if (offerings.contains(course.getCode())) {
                     scheduledTerms.add(term.getName());
                 }
             }
 
             courseDetails.setScheduledTerms(scheduledTerms);
-
 
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode());
