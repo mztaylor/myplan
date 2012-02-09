@@ -275,7 +275,8 @@ public class CourseSearchController extends UifControllerBase {
         CourseOfferingService service = getCourseOfferingService();
 
         String subject = course.getSubject();
-        List<String> codes = service.getCourseOfferingIdsByTermAndSubjectArea(term, subject, CourseSearchConstants.CONTEXT_INFO);
+        List<String> codes = service
+            .getCourseOfferingIdsByTermAndSubjectArea(term, subject, CourseSearchConstants.CONTEXT_INFO);
 
         //  The course code is not in the list, so move on to the next item.
         String code = course.getCode();
@@ -289,7 +290,8 @@ public class CourseSearchController extends UifControllerBase {
         try {
             AcademicCalendarService atpService = getAcademicCalendarService();
 
-            List<TermInfo> terms = atpService.getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> terms = atpService
+                .getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
 
             CourseOfferingService offeringService = getCourseOfferingService();
 

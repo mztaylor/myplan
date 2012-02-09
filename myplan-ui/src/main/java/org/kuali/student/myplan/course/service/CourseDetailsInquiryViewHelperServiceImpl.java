@@ -128,7 +128,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         courseDetails.setGenEdRequirements(genEdReqs);
 
-
         /*
           Use the course offering service to see if the course is being offered in the selected term.
           Note: In the UW implementation of the Course Offering service, course id is actually course code.
