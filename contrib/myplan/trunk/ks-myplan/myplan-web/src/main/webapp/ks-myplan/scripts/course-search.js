@@ -24,6 +24,13 @@ Array.prototype.inArrayRegEx = function(v) {
     }
     return -1;
 };
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
 function buildFacets() {
     if ( jq.cookie('course_search_facets') ) {
@@ -34,7 +41,7 @@ function buildFacets() {
 		var styleClasses = jq(this).attr("class").split(" ");
         var styleIndex = styleClasses.inArrayRegEx("facet");
         var txtColumn = styleClasses[styleIndex].toString();
-		if ( typeof objFacets[txtColumn] === 'undefined' || objFacets[txtColumn].length <= 1 ) {
+		if ( typeof objFacets === "undefined" || Object.size(objFacets[txtColumn]) <= 1 ) {
             jq(this).removeClass('checked').parent("span.all").css('display', 'none');
             jq(this).parents(".myplan-facets-group").find("a.item").addClass('static');
         }  else {
