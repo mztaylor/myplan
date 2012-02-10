@@ -215,13 +215,13 @@ function truncateField(id) {
         jq(this).css("display","block");
         var margin = Math.ceil(parseFloat(jq(this).find("span.boxLayoutHorizontalItem span").css("margin-right")));
         var fixed = 0;
-        var fields = jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").length;
-        jq(this).find("span.boxLayoutHorizontalItem span").not(".ellipsis").each(function() {
+        var fields = jq(this).find("span.boxLayoutHorizontalItem span").not(".myplan-text-ellipsis").length;
+        jq(this).find("span.boxLayoutHorizontalItem span").not(".myplan-text-ellipsis").each(function() {
         	fixed = fixed + jq(this).width();
         });
         var ellipsis = jq(this).width() - ( fixed + ( margin * fields ) );
         jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
-        jq(this).find("span.boxLayoutHorizontalItem span.ellipsis").width(ellipsis);
+        jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
     });
 }
 function enableToggle(styleClass) {

@@ -654,17 +654,20 @@
         </property>
         <property name="items">
             <list>
-                <bean id="mystuff_msg" parent="Uif-MessageField" p:messageText="MyStuff"/>
-                <!-- <ref bean="watch_list"/> -->
+                <!--<bean id="mystuff_msg" parent="Uif-MessageField" p:messageText="MyStuff"/>-->
+                <ref bean="watch_list"/>
             </list>
         </property>
     </bean>
 
-    <!--
-    <bean id="watch_list" parent="Group" p:title="Watch List (TBD)" p:errorsField.render="false">
+
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Watch List (TBD)" p:errorsField.render="false">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Five"/>
+        </property>
         <property name="onDocumentReadyScript"
                   value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');"/>
     </bean>
-    -->
+
 
 </beans>
