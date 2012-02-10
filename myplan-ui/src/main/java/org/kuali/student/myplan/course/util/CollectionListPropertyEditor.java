@@ -19,8 +19,12 @@ package org.kuali.student.myplan.course.util;
 import java.beans.PropertyEditorSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -31,7 +35,14 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
     //  Default parameter values.
     protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
     protected String emptyListMessage = "";
-    protected String styleClassName = "kr-collection-list";
+
+    private List<String> styleClasses;
+    private List<String> emptyListStyleClasses;
+
+    public CollectionListPropertyEditor() {
+        styleClasses = new ArrayList<String>();
+        emptyListStyleClasses = new ArrayList<String>();
+    }
 
     @Override
     public void setValue(Object value) {
@@ -54,16 +65,20 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
          *  If the collection is empty and no empty list message is defined then return an empty string.
          *  Otherwise, add an empty list message to the list.
          */
+        String styleClassNames = "";
         if (collection.isEmpty()) {
             if (this.emptyListMessage.length() == 0) {
                 return "";
             } else {
+                styleClassNames = getEmptyListStyleClassesAsString();
                 collection.add(this.emptyListMessage);
             }
+        } else {
+            styleClassNames = getStyleClassesAsString();
         }
 
         StringBuffer formattedText = new StringBuffer();
-        formattedText.append("<" + listType.getListElementName() + " class=\"" + this.styleClassName + "\">" );
+        formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
 
         Iterator<Object> i = collection.iterator();
         while (i.hasNext()) {
@@ -104,15 +119,33 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
         return this.emptyListMessage;
     }
 
-    /**
-     * Set the CCS class name of the HTML list.
-     * @param styleClassName
-     */
-    public void setStyleClassName(String styleClassName) {
-        this.styleClassName = styleClassName;
+    public List<String> getStyleClasses() {
+        return this.styleClasses;
     }
 
-    public String getStyleClassName() {
-        return this.styleClassName;
+    public void setStyleClasses(List<String> styleClasses) {
+        this.styleClasses = styleClasses;
+    }
+
+    public String getStyleClassesAsString() {
+        if (styleClasses != null) {
+            return StringUtils.join(styleClasses, " ");
+        }
+        return "";
+    }
+
+    public List<String> getEmptyListStyleClasses() {
+        return this.emptyListStyleClasses;
+    }
+
+    public void setEmptyListStyleClasses(List<String> styleClasses) {
+        this.emptyListStyleClasses = styleClasses;
+    }
+
+    public String getEmptyListStyleClassesAsString() {
+        if (emptyListStyleClasses != null) {
+            return StringUtils.join(emptyListStyleClasses, " ");
+        }
+        return "";
     }
 }

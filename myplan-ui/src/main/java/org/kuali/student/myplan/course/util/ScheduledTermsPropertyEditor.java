@@ -39,16 +39,23 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
          *  If the collection is empty and no empty list message is defined then return an empty string.
          *  Otherwise, add an empty list message to the list.
          */
+        String styleClassNames = "";
         if (collection.isEmpty()) {
             if (this.emptyListMessage.length() == 0) {
                 return "";
             } else {
+                styleClassNames = getEmptyListStyleClassesAsString();
                 collection.add(this.emptyListMessage);
             }
+        } else {
+            styleClassNames = getStyleClassesAsString();
         }
 
+        StringBuffer formattedText = new StringBuffer();
+        formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
+
         Element listElement = DocumentHelper.createElement(listType.getListElementName());
-        listElement.addAttribute("class", this.styleClassName);
+        listElement.addAttribute("class", styleClassNames);
 
         Iterator<Object> i = collection.iterator();
         while (i.hasNext()) {

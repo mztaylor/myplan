@@ -115,8 +115,20 @@
         </property>
     </bean>
 
-         <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
+    <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
         <property name="emptyListMessage" value="None" />
+        <property name="styleClasses">
+            <list merge="true">
+                <value>scheduled</value>
+            </list>
+        </property>
+        <!-- This is available too
+        <property name="emptyListStyleClasses">
+            <list merge="true">
+                <value></value>
+            </list>
+        </property>
+        -->
     </bean>
 
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
