@@ -11,126 +11,16 @@
 	display:block;
 }
 
-/* Styles for course details page */
-#course_details_overview_div .datatable {
-	margin-top:3em;
-    line-height: 1.8em;
-}
-#course_details_overview_div table th,
-#course_details_overview_div table td {
-    padding-bottom: 1em;
-}
-#course_details_overview_div table th label {
-    white-space: nowrap;
-}
-#course_details_overview_div table td .boxLayoutHorizontalItem {
-    margin: 0 0.33em 0 0;
-}
-#course_details_overview_div table td ul,
-#course_details_overview_div table td ul li,
-#course_details_overview_div table td dl,
-#course_details_overview_div table td dl dd,
-#course_search_results_list_items_div table td dl,
-#course_search_results_list_items_div table td dl dd {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-#course_details_overview_div table td .vertical dl,
-#course_details_overview_div table td .vertical dl dd {
-    display: block;
-}
-#course_details_overview_div table td .horizontal dl,
-#course_details_overview_div table td .horizontal dl dd {
-    float: left;
-}
-#course_details_overview_div table td .horizontal dl {
-    clear: both;
-}
-#course_details_overview_div table td .horizontal dl dd:after {
-    content: ",";
-    margin-right: 0.33em;
-}
-#course_details_overview_div table td .horizontal dl dd:last-child:after {
-    content: "";
-    margin-right: 0;
-}
-#course_details_overview_div table td .icon dl,
-#course_details_overview_div table td .icon dl dd {
-    display: block;
-    float: left;
-}
-#course_details_overview_div table td .icon dl {
-    clear: both;
-}
-#course_details_overview_div table td .icon dl dd {
-    background: #ccc;
-    color: #333;
-    border-radius: 3px;
-    margin: 0 0.5em 0 0;
-    font-weight: bold;
-    font-size: 80%;
-    padding: 0 4px;
-    clear: none;
-}
-#course_details_overview_div table td .icon dl dd:last-child {
-    margin: 0;
-}
 
 
 
 
 
-#course_search_results_list_items_div table td.courseQuarter dl,
-#course_search_results_list_items_div table td.courseQuarter dl dd {
-    display: block;
-    float: left;
-}
-#course_search_results_list_items_div table td.courseQuarter dl {
-    clear: both;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd {
-    margin: 0 0 3px 0;
-    clear: both;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd:last-child {
-    margin:0;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd.scheduled dl dd {
-    background: #ccc;
-    color: #333;
-    border-radius: 3px;
-    margin: 0 0.5em 0 0;
-    font-weight: bold;
-    font-size: 80%;
-    padding: 0 4px;
-    clear: none;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd.projected dl dd {
-    clear: none;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd.projected dl dd:after {
-    content: ",";
-    margin-right: 0.33em;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd.projected dl dd:last-child:after {
-    content: "";
-    margin-right: 0;
-}
-#course_search_results_list_items_div table td.courseQuarter dl dd dl dd:last-child {
-    margin: 0;
-}
 
 
 
-#course_details_overview_div table td .source {
-    font-size: 90%;
-    color: #777;
-}
-span.link_back {
-    margin-bottom: 2em;
-    display: block;
-}
+
+
 #saved_courses_detail_div {
     line-height: 1.5em;
 }

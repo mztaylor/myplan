@@ -1,8 +1,9 @@
 body {
     font-size: 12px;
-    line-height: 1em;
+    line-height: 1.2em;
     font-family: helvetica,arial,clean,sans-serif;
 }
+/* Overwrite KRAD Styles ########################################################################### */
 #view_div {
 	margin:0 auto;
 	padding: 10px 0 10px 10px;
@@ -28,6 +29,14 @@ body {
 .myplan-view #viewnavigation_div {
 	display: none;
 }
+.myplan-view .uif-pageHeaderField .uif-header {
+    border: none;
+    font-weight: bold;
+    font-family: "Times New Roman",Georgia,Serif;
+    font-size: 1.72em !important;
+    line-height: 1.5em;
+    padding: 0;
+}
 .myplan-view .kr-breadcrumbs {
     margin: 0 0 1em 0;
     padding: 0;
@@ -42,25 +51,22 @@ body {
 	margin: 0 10px 0 0;
     padding: 0;
 }
-.myplan-button {
-	color: #fff;
-	line-height: 1em;
+.myplan-view .uif-instructionalMessage {
+	max-width: none;
+    font-size: 1em;
+}
+.myplan-button,
+.myplan-button:hover {
+    line-height: 1em;
     text-shadow: none;
 	padding: 5px 20px;
     margin: 0;
     border: solid 1px #969696;
     border-radius: 4px;
-    background: #007dd6;
-    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* IE10+ */
-    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
 }
-.myplan-button:hover {
-    border: solid 1px #969696;
+.myplan-button-blue,
+.myplan-button-blue:hover {
+	color: #FFF;
     background: #007DD6;
     background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
@@ -70,11 +76,18 @@ body {
     background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
 }
-.myplan-view .uif-instructionalMessage {
-	max-width: none;
-    font-size: 1em;
+.myplan-button-gray,
+.myplan-button-gray:hover {
+    color: #333;
+    background: #EBEBEB;
+    background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #FDFDFD 0%,#EBEBEB 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* IE10+ */
+    background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);  /* IE6-9 */
 }
-
 
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
@@ -94,6 +107,9 @@ body {
 /* Text styles ########################################################################### */
 .myplan-text-italic {
     font-style: italic !important;
+}
+.myplan-text-align-left {
+    text-align: left !important;
 }
 .myplan-text-nowrap {
     white-space: nowrap !important;
@@ -305,7 +321,7 @@ body {
 	text-decoration: underline;
 }
 
-/* Styles for empty result set page */
+/* Styles for empty result set page ########################################################################### */
 .myplan-course-search-results .myplan-course-search-empty {
     border: solid 1px #a9a9a9;
     padding: 10px 10px 0 10px;
@@ -321,7 +337,13 @@ body {
     list-style-type: disc;
     list-style-position: inside;
 }
-
+/* Course Details Styles ########################################################################### */
+.myplan-course-details table td, .myplan-course-details table th {
+    padding-bottom: 1.8em;
+}
+.myplan-course-details table td .boxLayoutHorizontalItem {
+    margin: 0 0.33em 0 0;
+}
 
 
 
@@ -345,14 +367,16 @@ body {
     content: "";
     margin-right: 0;
 }
-.myplan-data-list .scheduled, .myplan-data-list .projected {
+.myplan-data-list .scheduled,
+.myplan-data-list .projected {
     clear: both;
 }
 .myplan-data-list .scheduled:after {
     margin: 0;
     content: "";
 }
-.myplan-data-list .scheduled dl dd {
+.myplan-data-list .scheduled dl dd,
+.myplan-data-list dl.scheduled dd {
     background: #ccc;
     color: #333;
     border-radius: 3px;
@@ -361,8 +385,10 @@ body {
     padding: 0 4px;
     clear: none;
     margin-right: 0.33em;
+    line-height: 1.8em;
 }
-.myplan-data-list .scheduled dl dd:after {
+.myplan-data-list .scheduled dl dd:after,
+.myplan-data-list dl.scheduled dd:after {
     content: "";
     margin: 0;
 }
