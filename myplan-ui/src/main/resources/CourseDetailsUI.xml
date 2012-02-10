@@ -241,20 +241,20 @@
 
     <bean id="course_details_back_link" parent="Uif-ViewHeaderField">
         <property name="items">
-            <bean parent="Uif-Link" p:linkLabel="Back to Previous Page" p:title="Back to Previous Page" p:hrefText="#"
-                  p:onClickScript="history.go(-1)" p:styleClasses="link_back" />
+            <bean parent="Uif-ActionLink" p:actionLabel="Back to Search Results" p:title="Back to Search Results"
+                  p:clientSideJs="history.go(-1)" p:styleClasses="link_back" />
         </property>
     </bean>
 
      <bean id="course_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
-         <property name="styleClasses">
-            <list merge="true">
-                <value>myplan-container-720</value>
-            </list>
-        </property>
-         <property name="items">
+        <property name="items">
             <list>
                  <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-course-search-panel</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ActionFieldBase" p:actionLabel="Add this Course"
@@ -268,9 +268,10 @@
         </property>
     </bean>
 
-    <bean id="course_details_overview" parent="Uif-GridGroup" p:errorsField.render="false">
+    <bean id="course_details_overview" parent="Uif-GridGroup">
         <property name="layoutManager.numberOfColumns" value="2"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <!-- Course Description -->
@@ -288,20 +289,21 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-LinkGroup" p:errorsField.render="false"
-                                  p:groupBeginDelimiter="(Source:" p:groupEndDelimiter=")" p:linkSeparator="">
+
+                            <bean parent="Uif-VerticalFieldGroup" p:labelField.render="false">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>fl-text-gray</value>
+                                        <value>source</value>
                                     </list>
                                 </property>
                                 <property name="items">
-                                <list>
-                                  <bean parent="Uif-Link" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
-                                        p:title="Course Catalog" p:target="" p:labelField.render="false"/>
-                                </list>
-                              </property>
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="(Source:"/>
+                                        <bean parent="Uif-Link" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
+                                              p:title="Course Catalog" p:target="" p:labelField.render="false"/>
+                                        <bean parent="Uif-MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -309,11 +311,6 @@
 
                 <!-- Quarters -->
                 <bean parent="Uif-VerticalFieldGroup" p:label="Quarters">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>myplan-remove-margin</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
                              <bean parent="Uif-DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:escapeHtmlInPropertyValue="false">
@@ -324,21 +321,22 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-LinkGroup" p:errorsField.render="false"
-                                  p:groupBeginDelimiter="(Source:" p:groupEndDelimiter=")" p:linkSeparator="">
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>fl-text-gray</value>
+                                        <value>source</value>
                                     </list>
                                 </property>
                                 <property name="items">
-                                <list>
-                                  <bean parent="Uif-Link" p:linkLabel="Time Schedule" p:title="Time Schedule"
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="(Source:"/>
+                                        <bean parent="Uif-Link" p:linkLabel="Time Schedule" p:title="Time Schedule"
                                               p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0).substring(0,1) + '/' } "
                                               p:target="" p:labelField.render="false"/>
-                                </list>
-                              </property>
+                                        <bean parent="Uif-MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -346,14 +344,9 @@
 
                 <!-- Terms -->
                 <bean parent="Uif-VerticalFieldGroup" p:label="">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>myplan-remove-margin</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="Projected to be offered in " p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? 'No projected quarter information is available' : 'Projected to be offered in '}"/>
                             <bean parent="Uif-DataField" p:propertyName="termsOffered" p:labelField.render="false">
                                 <property name="propertyEditor" ref="terms_formatter"/>
                                 <property name="styleClasses">
@@ -362,21 +355,22 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:messageText="quarters" p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"/>
-                            <bean parent="Uif-LinkGroup" p:errorsField.render="false"
-                                  p:groupBeginDelimiter="(Source:" p:groupEndDelimiter=")" p:linkSeparator="">
+                            <bean parent="Uif-MessageField" p:messageText="@{dataObject.termsOffered.size() eq 0 ? '' : 'quarters'}"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>fl-text-gray</value>
+                                        <value>source</value>
                                     </list>
                                 </property>
+                                <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
-                                <list>
-                                  <bean parent="Uif-Link" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
-                                        p:title="Course Catalog" p:target="" p:labelField.render="false"/>
-                                </list>
-                              </property>
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="(Source:"/>
+                                        <bean parent="Uif-Link" p:linkLabel="Course Catalog" p:hrefText="http://www.washington.edu/students/crscat/"
+                                              p:title="Course Catalog" p:target="" p:labelField.render="false"/>
+                                        <bean parent="Uif-MessageField" p:messageText=")"/>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -393,7 +387,7 @@
                         </list>
                     </property>
                     <property name="propertyEditor" ref="data_list_formatter"/>
-                    <!--<property name="render" value="@{dataObject.genEdRequirements.size() gt 0 ? true : false}"/>-->
+                    <property name="render" value="@{dataObject.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
                 </bean>
 
                 <!-- Campus Locations -->
@@ -418,7 +412,7 @@
     </bean>
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="No projected quarter information is available" />
+        <property name="emptyListMessage" value="" />
     </bean>
 
 </beans>
