@@ -1,7 +1,7 @@
 body {
     font-size: 12px;
     line-height: 1.2em;
-    font-family: helvetica,arial,clean,sans-serif;
+    font-family: Helvetica, Arial, clean, sans-serif;
 }
 /* Overwrite KRAD Styles ########################################################################### */
 #view_div {
@@ -32,7 +32,7 @@ body {
 .myplan-view .uif-pageHeaderField .uif-header {
     border: none;
     font-weight: bold;
-    font-family: "Times New Roman",Georgia,Serif;
+    font-family: Georgia, "Times New Roman", Serif;
     font-size: 1.72em !important;
     line-height: 1.5em;
     padding: 0;
@@ -58,7 +58,6 @@ body {
 .myplan-button,
 .myplan-button:hover {
     line-height: 1em;
-    text-shadow: none;
 	padding: 5px 20px;
     margin: 0;
     border: solid 1px #969696;
@@ -67,6 +66,7 @@ body {
 .myplan-button-blue,
 .myplan-button-blue:hover {
 	color: #FFF;
+    text-shadow: 0px 1px 0px #333;
     background: #007DD6;
     background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
@@ -79,6 +79,7 @@ body {
 .myplan-button-gray,
 .myplan-button-gray:hover {
     color: #333;
+    text-shadow: 0px 1px 0px #FFF;
     background: #EBEBEB;
     background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB)); /* Chrome,Safari4+ */
@@ -88,7 +89,53 @@ body {
     background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);  /* IE6-9 */
 }
-
+.myplan-button-transparent,
+.myplan-button-transparent:hover {
+    color: #1D8FD9;
+    text-shadow: none;
+    border-color: transparent;
+    background: none;
+}
+.myplan-data-list dl, .myplan-data-list dl dd {
+    margin: 0;
+    padding: 0;
+}
+.myplan-data-list dl dd {
+    display: inline-block;
+}
+.myplan-data-list dl dd:after {
+    content: ",";
+    margin-right: 0.33em;
+}
+.myplan-data-list dl dd:last-child:after {
+    content: "";
+    margin-right: 0;
+}
+.myplan-data-list dd.scheduled,
+.myplan-data-list dd.projected {
+    clear: both;
+}
+.myplan-data-list .scheduled:after {
+    margin: 0;
+    content: "";
+}
+.myplan-data-list .scheduled dl dd,
+.myplan-data-list dl.scheduled dd {
+    background: #ccc;
+    color: #333;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 80%;
+    padding: 0 4px;
+    clear: none;
+    margin-right: 0.33em;
+    line-height: 1.8em;
+}
+.myplan-data-list .scheduled dl dd:after,
+.myplan-data-list dl.scheduled dd:after {
+    content: "";
+    margin: 0;
+}
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
     width: 720px;
@@ -103,6 +150,13 @@ body {
 .myplan-remove-margin span.boxLayoutVerticalItem, .myplan-remove-margin span.boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
+}
+.msg-success {
+    height: 24px;
+    line-height: 24px;
+    padding: 0 0 0 36px;
+    background: url(../images/iconSuccess.png) no-repeat;
+    font-size: 120%;
 }
 /* Text styles ########################################################################### */
 .myplan-text-italic {
@@ -125,13 +179,6 @@ body {
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
-}
-.msg-success {
-    height: 24px;
-    line-height: 24px;
-    padding: 0 0 0 36px;
-    background: url(../images/iconSuccess.png) no-repeat;
-    font-size: 120%;
 }
 /* Hide search results until load finish, js fade in ######################################################### */
 #course_search_results_panel_div {
@@ -351,47 +398,7 @@ body {
 
 
 
-.myplan-data-list dl, .myplan-data-list dl dd {
-    margin: 0;
-    padding: 0;
-}
-.myplan-data-list dl dd {
-    display: block;
-    float: left;
-}
-.myplan-data-list dl dd:after {
-    content: ",";
-    margin-right: 0.33em;
-}
-.myplan-data-list dl dd:last-child:after {
-    content: "";
-    margin-right: 0;
-}
-.myplan-data-list .scheduled,
-.myplan-data-list .projected {
-    clear: both;
-}
-.myplan-data-list .scheduled:after {
-    margin: 0;
-    content: "";
-}
-.myplan-data-list .scheduled dl dd,
-.myplan-data-list dl.scheduled dd {
-    background: #ccc;
-    color: #333;
-    border-radius: 3px;
-    font-weight: bold;
-    font-size: 80%;
-    padding: 0 4px;
-    clear: none;
-    margin-right: 0.33em;
-    line-height: 1.8em;
-}
-.myplan-data-list .scheduled dl dd:after,
-.myplan-data-list dl.scheduled dd:after {
-    content: "";
-    margin: 0;
-}
+
 
 
 /* My Stuff */
@@ -422,6 +429,11 @@ body {
 #watch_list_empty_div .kr-section-subhead
 {
     background: #e4e4e4;
+}
+
+/* Saved Courses Summary Styles ########################################################################### */
+.myplan-saved-courses-summary {
+
 }
 #saved_courses_summary_list_empty_div .boxLayoutVerticalItem,
 #saved_courses_summary_list_empty_div .boxLayoutHorizontalItem {
@@ -465,11 +477,30 @@ body {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
-span.link_viewall {
-    display:block;
-    text-align:right;
-    padding:6px;
+/* Saved Courses Detail Styles ########################################################################### */
+.myplan-saved-courses-detail {
+    line-height: 1.8em;
 }
+.myplan-saved-courses-detail ul,
+.myplan-saved-courses-detail ul li,
+.myplan-saved-courses-detail ul li dl,
+.myplan-saved-courses-detail ul li dl dd {
+    margin: 0;
+    padding: 0;
+}
+.myplan-saved-courses-detail .uif-sectionHeaderField .uif-header {
+    font-size: 1.25em;
+    font-weight: normal;
+    margin-bottom: 1em;
+    border: none;
+    font-family: Helvetica, Arial, clean, sans-serif;
+}
+.myplan-saved-courses-detail ul li {
+    border-top: dotted 1px #aaaaaa;
+    padding:10px;
+    display:block;
+}
+
 
 
 

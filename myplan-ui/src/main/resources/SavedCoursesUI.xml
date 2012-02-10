@@ -86,7 +86,7 @@
         <property name="singlePageView" value="true"/>
         <property name="styleClasses">
             <list merge="true">
-                <value>myplan</value>
+                <value>myplan-view</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -116,10 +116,7 @@
     </bean>
 
     <bean id="saved_courses_summary_list" parent="Uif-ListCollectionSection">
-        <property name="disclosure.render" value="false"/>
         <property name="header.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
@@ -210,7 +207,7 @@
         <property name="singlePageView" value="true"/>
         <property name="styleClasses">
             <list merge="true">
-                <value>myplan</value>
+                <value>myplan-view</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -245,9 +242,6 @@
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
@@ -255,10 +249,10 @@
         <property name="propertyName" value="searchResults"/>
         <property name="styleClasses">
             <list merge="true">
-                <value>fl-container-700</value>
+                <value>myplan-container-720</value>
+                <value>myplan-saved-courses-detail</value>
             </list>
         </property>
-        <!--<property name="onDocumentReadyScript" value="enableToggle('courseDescription');"/>-->
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
@@ -279,7 +273,7 @@
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseGenEduReq</value>
+                                        <value>myplan-data-list</value>
                                         <value>fl-text-gray</value>
                                         <value>myplan-text-italic</value>
                                     </list>
@@ -288,11 +282,10 @@
                                 <property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
-                                  p:labelField.renderColon="false"
+                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>dateAddedy</value>
                                         <value>fl-text-gray</value>
                                         <value>myplan-text-italic</value>
                                     </list>
@@ -306,42 +299,43 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Scheduled For" p:propertyName="courseDetails.scheduledTerms"
-                                p:labelField.styleClasses="fl-text-gray">
+                                p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseQuarterScheduled</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                                <property name="render" value="@{#line.courseDetails.scheduledTerms.size() gt 0 ? 'true' : 'false'}"/>
+                                <!--<property name="render" value="@{#line.courseDetails.scheduledTerms.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
-                            <bean parent="Uif-MessageField" p:label="Scheduled For" p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
+                            <!--<bean parent="Uif-MessageField" p:label="Scheduled For" p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
                                 <property name="messageText" value="Not Scheduled"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseQuarterScheduled</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
                                 <property name="render" value="@{#line.courseDetails.scheduledTerms.size() gt 0 ? 'false' : 'true'}"/>
-                            </bean>
-                            <bean parent="Uif-DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered" p:labelField.styleClasses="fl-text-gray">
+                            </bean>-->
+                            <bean parent="Uif-DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered"
+                                  p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor" ref="data_list_formatter"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseQuarterProjected</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                                <property name="render" value="@{#line.courseDetails.termsOffered.size() gt 0 ? 'true' : 'false'}"/>
+                                <!--<property name="render" value="@{#line.courseDetails.termsOffered.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
-                            <bean parent="Uif-MessageField" p:label="Projected For" p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
+                            <!--<bean parent="Uif-MessageField" p:label="Projected For" p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
                                 <property name="messageText" value="No Projection"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseQuarterProjected</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
                                 <property name="render" value="@{#line.courseDetails.termsOffered.size() gt 0 ? 'false' : 'true'}"/>
-                            </bean>
+                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -350,24 +344,25 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites" p:labelField.styleClasses="fl-text-gray">
+                            <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
+                                  p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor" ref="data_list_formatter"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseRequisites</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                                <property name="render" value="@{#line.courseDetails.requisites.size() gt 0 ? 'true' : 'false'}"/>
+                                <!--<property name="render" value="@{#line.courseDetails.requisites.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
-                            <bean parent="Uif-MessageField" p:label="Course Requisites" p:messageText="None"
+                            <!--<bean parent="Uif-MessageField" p:label="Course Requisites" p:messageText="None"
                                 p:labelField.render="true" p:labelField.styleClasses="fl-text-gray">
                                 <property name="render" value="@{#line.courseDetails.requisites.size() gt 0 ? 'false' : 'true'}"/>
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseRequisites</value>
+                                        <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                            </bean>
+                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -376,7 +371,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDetails.courseDescription"
-                                p:labelField.styleClasses="fl-text-gray" p:labelField.style="display:block;">
+                                p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="TOP">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>courseDescription</value>
@@ -391,10 +386,23 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan"
-                                  p:clientSideJs="alert('This course has been moved to your plan');"/>
-                            <bean parent="Uif-ActionLink" p:label="Delete" p:styleClasses="" p:labelField.render="false">
+                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan">
+                                <property name="clientSideJs" value="alert('This course has been moved to your plan');"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
                                 <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-transparent</value>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
