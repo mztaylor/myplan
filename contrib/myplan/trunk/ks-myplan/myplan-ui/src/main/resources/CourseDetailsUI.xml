@@ -458,18 +458,4 @@
             </list>
         </property>
     </bean>
-
-    <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="None" />
-    </bean>
-
-    <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
-        <property name="emptyListMessage" value="Not currently scheduled" />
-        <property name="styleClassName" value="scheduled"/>
-    </bean>
-
-    <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="No projected quarter information is available" />
-    </bean>
-
 </beans>
