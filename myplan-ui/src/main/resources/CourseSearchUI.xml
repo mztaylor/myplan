@@ -143,6 +143,7 @@
                         <list merge="true">
                             <value>course-search-submit</value>
                             <value>myplan-button</value>
+                            <value>myplan-button-blue</value>
                         </list>
                     </property>
                 </bean>
