@@ -87,6 +87,10 @@ body {
 	border-radius: 8px;
     overflow: hidden;
 }
+.myplan-remove-margin span.boxLayoutVerticalItem, .myplan-remove-margin span.boxLayoutHorizontalItem {
+    margin: 0;
+    padding: 0;
+}
 /* Text styles ########################################################################### */
 .myplan-text-italic {
     font-style: italic !important;
