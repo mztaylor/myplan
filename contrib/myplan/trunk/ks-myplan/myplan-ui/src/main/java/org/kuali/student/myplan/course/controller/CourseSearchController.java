@@ -42,6 +42,9 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
@@ -53,6 +56,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -191,6 +195,21 @@ public class CourseSearchController extends UifControllerBase {
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
        try {
+
+           DegreeAuditService degreeAuditService = (DegreeAuditService)
+                   GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                           DegreeAuditServiceConstants.SERVICE_NAME));
+           ContextInfo contextInfo = new ContextInfo();
+           String auditId = "xyz1327610950502";
+           AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport( auditId, contextInfo );
+           InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+           int c = 0;
+           while( ( c = in.read() ) != -1 ) {
+               System.out.append( (char) c );
+
+           }
+
+
             List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
