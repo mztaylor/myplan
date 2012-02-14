@@ -1,7 +1,5 @@
 body {
-    font-size: 12px;
-    line-height: 1.2em;
-    font-family: Helvetica, Arial, clean, sans-serif;
+    font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
 /* Overwrite KRAD Styles ########################################################################### */
 #view_div {
@@ -16,7 +14,7 @@ body {
     outline: 0;
     white-space: normal;
     overflow:  auto;
-    color:#1d8fd9;
+    color: #1d8fd9;
 }
 .myplan-view #viewpage_div,
 .myplan-view #viewheader_div,
@@ -31,10 +29,7 @@ body {
 }
 .myplan-view .uif-pageHeaderField .uif-header {
     border: none;
-    font-weight: bold;
-    font-family: Georgia, "Times New Roman", Serif;
-    font-size: 1.72em !important;
-    line-height: 1.5em;
+    font: bold 1.72em/1.5em Georgia, "Times New Roman", Serif !important;
     padding: 0;
 }
 .myplan-view .kr-breadcrumbs {
@@ -96,11 +91,10 @@ body {
     border-color: transparent;
     background: none;
 }
-.myplan-data-list dl, .myplan-data-list dl dd {
+.myplan-data-list dl,
+.myplan-data-list dl dd {
     margin: 0;
     padding: 0;
-}
-.myplan-data-list dl dd {
     display: inline-block;
 }
 .myplan-data-list dl dd:after {
@@ -114,6 +108,7 @@ body {
 .myplan-data-list dd.scheduled,
 .myplan-data-list dd.projected {
     clear: both;
+    display: block;
 }
 .myplan-data-list .scheduled:after {
     margin: 0;
@@ -147,7 +142,8 @@ body {
 	border-radius: 8px;
     overflow: hidden;
 }
-.myplan-remove-margin span.boxLayoutVerticalItem, .myplan-remove-margin span.boxLayoutHorizontalItem {
+.myplan-remove-margin span.boxLayoutVerticalItem,
+.myplan-remove-margin span.boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
 }
@@ -184,12 +180,16 @@ body {
 #course_search_results_panel_div {
     display:none;
 }
-
-/* Styles for Facet Panel ########################################################################### */
+/* Styles for Facet Panel ################################################################################## */
+.myplan-course-search-panel input[type='text'] {
+    border: solid 1px #969696;
+    padding: 4px;
+    width: 200px;
+}
+/* Styles for Facet Panel ################################################################################## */
 .myplan-facets-panel {
-	border-bottom: solid 1px #a9a9a9;
-    border-left: solid 1px #a9a9a9;
-    border-right: solid 1px #a9a9a9;
+	border: solid 1px #a9a9a9;
+    border-top: none;
     font-size: 90%;
     width: 128px;
 }
@@ -256,7 +256,6 @@ body {
 }
 .myplan-facets-panel .myplan-facets-group a.item.all {
 	margin-top: 3px;
-    /*display: none;*/
 }
 .myplan-facets-panel .myplan-facets-group a.item.checked {
     background-position: 0px -32px;
@@ -277,7 +276,6 @@ body {
     cursor: default;
     opacity: 0.33;
 }
-
 /* Styles for course search results ########################################################################### */
 .myplan-course-search-results {
     width: 568px;
@@ -313,7 +311,6 @@ body {
     border: none;
     padding: 4px;
     line-height: 1.5em;
-
 }
 .myplan-course-search-results .myplan-course-search-results-datatable thead tr th label {
     font-weight: bold;
@@ -325,6 +322,14 @@ body {
 	line-height: 1.8em;
     height: 1.8em;
     padding: 2px 4px;
+}
+.myplan-course-search-results .myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
 }
 .myplan-course-search-results .myplan-course-search-results-datatable .odd,
 .myplan-course-search-results .myplan-course-search-results-datatable .odd td[class^='sorting_'] {
@@ -367,7 +372,6 @@ body {
 .myplan-course-search-results .dataTables_paginate .paginate_button:hover {
 	text-decoration: underline;
 }
-
 /* Styles for empty result set page ########################################################################### */
 .myplan-course-search-results .myplan-course-search-empty {
     border: solid 1px #a9a9a9;
@@ -385,98 +389,67 @@ body {
     list-style-position: inside;
 }
 /* Course Details Styles ########################################################################### */
-.myplan-course-details table td, .myplan-course-details table th {
+.myplan-course-details table td,
+.myplan-course-details table th {
     padding-bottom: 1.8em;
 }
 .myplan-course-details table td .boxLayoutHorizontalItem {
     margin: 0 0.33em 0 0;
 }
-
-
-
-
-
-
-
-
-
-
-/* My Stuff */
-#mystuff_panel_div {
-	margin: 0;
+/* MyPan Section (right side container) ########################################################################### */
+.myplan-section {
     border: solid 1px #ccc;
+    border-bottom: none;
 }
-#mystuff_panel_div .kr-section-subhead {
-    display:block;
-    text-align:center;
-    background: #ccc;
-    font-weight: normal;
-    padding: 5px;
-    line-height: 1.5em;
-}
-#mystuff_panel_div .boxLayoutVerticalItem {
+.myplan-section .boxLayoutVerticalItem,
+.myplan-section .boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
 }
-
-
-/* Watch List */
-#watch_list_div {
-    border-bottom: solid 1px #ccc;
-    min-height: 50px;
-}
-#watch_list_div .kr-section-subhead,
-#watch_list_empty_div .kr-section-subhead
-{
+.myplan-section .uif-headerField {
+    font-weight: normal;
+    display: block;
+    text-align:center;
+    line-height: 1.5em;
+    padding: 5px;
     background: #e4e4e4;
 }
-
+.myplan-section .uif-headerField .uif-header {
+    font-weight: normal;
+    text-align: center;
+}
+.myplan-section .uif-headerField.uif-subSectionHeaderField {
+    background: #ccc;
+}
 /* Saved Courses Summary Styles ########################################################################### */
 .myplan-saved-courses-summary {
-
+	border-bottom: solid 1px #ccc;
 }
-#saved_courses_summary_list_empty_div .boxLayoutVerticalItem,
-#saved_courses_summary_list_empty_div .boxLayoutHorizontalItem {
-    margin:0;
-    padding: 0;
-    float: none;
-    display: inline;
-}
-#saved_courses_summary_list_empty_div>div>div>span {
-    text-align: center;
-    padding: 3em 6px;
-    line-height: 1.5em;
-    display: block;
-    overflow: auto;
-}
-#saved_courses_summary_list_empty_div span img {
-    vertical-align: text-bottom;
-}
-#saved_courses_summary_group ul,
-#saved_courses_summary_group ul li .boxLayoutVerticalItem,
-#saved_courses_summary_group ul li .boxLayoutHorizontalItem {
-    margin:0;
+.myplan-saved-courses-summary ul,
+.myplan-saved-courses-summary ul li {
+	margin: 0;
     padding: 0;
 }
-#saved_courses_summary_group ul li {
+.myplan-saved-courses-summary ul li {
     border-bottom:dotted 1px #aaaaaa;
-    padding:6px;
+    padding: 6px 4px;
     display: block;
     clear:both;
     cursor: pointer;
     font-size: 95%;
 }
-#saved_courses_summary_group ul li .boxLayoutHorizontalItem span {
+.myplan-saved-courses-summary ul li .boxLayoutHorizontalItem span {
     float: left;
     margin-right: 0.4em;
 }
-#saved_courses_summary_group ul li .boxLayoutHorizontalItem span.ellipsis {
+.myplan-saved-courses-summary ul li .boxLayoutHorizontalItem span.ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
+
 /* Saved Courses Detail Styles ########################################################################### */
 .myplan-saved-courses-detail {
     line-height: 1.8em;
@@ -500,36 +473,29 @@ body {
     padding:10px;
     display:block;
 }
-
-
-
-
-
-
-
-
-/* beginning of scrollbar */
-::-webkit-scrollbar{
+/* beginning of scrollbar ########################################################################### */
+::-webkit-scrollbar {
         width:8px;
-        height:8px;}
-
-::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment{
+        height:8px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
         display:block;
         height:0;
-        background-color:transparent;}
-
+        background-color:transparent;
+}
 ::-webkit-scrollbar-track {
-		margin: 2px;}
-
+		margin: 2px;
+}
 ::-webkit-scrollbar-track-piece{
         background-color:#eee;
-        -webkit-border-radius:8px;}
-
-::-webkit-scrollbar-thumb:vertical{
+        -webkit-border-radius:8px;
+}
+::-webkit-scrollbar-thumb:vertical {
         height:50px;background-color:#999;
-        -webkit-border-radius:8px;}
-
-::-webkit-scrollbar-thumb:horizontal{
+        -webkit-border-radius:8px;
+}
+::-webkit-scrollbar-thumb:horizontal {
         width:50px;background-color:#999;
-        -webkit-border-radius:8px;}
-/* end of scrollbar */
+        -webkit-border-radius:8px;
+}

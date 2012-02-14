@@ -40,14 +40,14 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
     var elementToBlock = jq("#" + id + "_form");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("[id^='add_plan_item_key']", htmlContent);
+		var component = jq("[id='add_plan_item_key']", htmlContent);
 		var addedId = jq.trim( jq(component).text() );
 		// TODO: Add validation for if there was an error adding - to be added later
         if (addedId.length > 0) {
 			elementToBlock.unblock();
 			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup', addedId);
-			jq("#" + e.toElement.id).parent().fadeOut(250, function() {
-				jq(this).addClass("courseSaved fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
+			jq(e.target).parent().fadeOut(250, function() {
+				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
 			});
 		} else {
 			// showGrowl('Error updating', 'Error', 'errorGrowl');
@@ -68,7 +68,7 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
 	jq(dialogConfirm).html('<p>Are you sure that you want to delete <strong>' + courseCode + '</strong>?</p><p>Once deleted, you cannot undo.</p>');
 	jq(dialogConfirm).dialog({
 		resizable: false,
-		height: 150,
+		height: 160,
 		width: 350,
 		dialogClass: 'dialogWithDropShadow',
 		modal: false,
@@ -91,9 +91,9 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
                         jq(planListItem).fadeOut(250, function() {
                             jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span style="color:#000;">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
                         });
-                        var planItemCount = jq("#saved_courses_detail_div .kr-section-subhead strong");
+                        var planItemCount = jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong");
                         jq(planItemCount).fadeOut(250, function() {
-                            jq(this).html(planItemCount.text() -1).fadeIn(250);
+                            jq(this).html(planItemCount.text() - 1).fadeIn(250);
                         });
                     }
 				};
@@ -178,7 +178,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 					}
 					else{
 						elementToBlock.block({
-			                message: '<img src="/myplan-embedded-dev/ks-myplan/images/ajaxLoader.gif" alt="loading..." />', // ' <img src="' + getConfigParam("kradImageLocation") + 'loading-bars.gif" alt="working..." /> Updating...',
+			                message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />', // ' <img src="' + getConfigParam("kradImageLocation") + 'loading-bars.gif" alt="working..." /> Updating...',
 			                /*
 			                fadeIn:  400,
 			                fadeOut:  800,
