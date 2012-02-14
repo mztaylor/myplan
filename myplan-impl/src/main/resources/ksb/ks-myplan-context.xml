@@ -59,7 +59,41 @@
     </property>
   </bean>
 
-  <tx:annotation-driven transaction-manager="JtaTxManager" order="1000" />
+
+    <!-- Stuff for uAchieve -->
+<!--
+    <import resource="classpath:uachieve/apis/context/uachieveapi_loaderContext.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_daoContext.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_dataAccessContext-local.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_hibernateContext.xml"/>
+
+    <bean id="uachieve.txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="uachieveapi.sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="uachieve.txManager"/>
+
+    <bean id="degreeAuditService" class="org.kuali.student.myplan.service.DegreeAuditServiceImpl">
+        <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
+    </bean>
+-->
+    <bean id="degreeAuditService" class="org.kuali.student.myplan.service.mock.DegreeAuditServiceMockImpl"/>
+
+    <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
+        <property name="serviceDefinition">
+            <bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition">
+                <property name="jaxWsService" value="true"/>
+                <property name="service" ref="degreeAuditService"/>
+                <property name="serviceInterface"
+                          value="org.kuali.student.myplan.audit.service.DegreeAuditService"/>
+                <property name="localServiceName" value="DegreeAuditService"/>
+                <property name="serviceNameSpaceURI" value="http://student.kuali.org/wsdl/da"/>
+                <property name="busSecurity" value="${ks.lum.bus.security}"/>
+            </bean>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="JtaTxManager" order="1000" />
 
   <!-- Exception mapping. This is needed because many operations are proxied and do not throw exceptions until a later time -->
   <bean id="mapExceptionAdvisor" class="org.kuali.student.common.util.ExceptionMappingAdvice">
