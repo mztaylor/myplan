@@ -26,11 +26,6 @@
         <property name="header">
             <bean parent="Uif-HeaderField-Two"/>
         </property>
-        <property name="additionalCssFiles">
-            <list>
-                <value>/ks-myplan/css/course-search.css</value>
-            </list>
-        </property>
         <property name="additionalScriptFiles">
             <list>
                 <value>/ks-myplan/scripts/course-search.js</value>
@@ -125,7 +120,13 @@
                 <bean parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
                       p:labelField.renderColon="false">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142"/>
+                        <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142">
+                            <property name="onDocumentReadyScript" value="
+                                jq(&quot;input[name='searchQuery'][type='text']&quot;).blur().bind('keypress', function(e) {
+	                                if ( e.keyCode === 13 ) jq(&quot;button.myplan-button.course-search-submit&quot;).click();
+	                            });
+	                        "/>
+                        </bean>
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="searchTerm" p:label="in"
@@ -139,6 +140,10 @@
                 </bean>
                 <bean parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"
                       p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP">
+                    <property name="onClickScript" value="
+                        jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
+                        jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
+                    "/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>course-search-submit</value>
@@ -244,6 +249,7 @@
 
     <bean id="course_search_results" parent="Uif-TableCollectionGroup"
           p:layoutManager.numberOfColumns="12">
+        <property name="onLoadScript" value="alert('Im running!');"/>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-course-search-results</value>
@@ -352,7 +358,7 @@
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
                 <bean parent="Uif-ActionImage" p:label="" p:styleClasses="fl-text-align-center" p:style="width:55px;">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
-                    <property name="onClickScript" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{#line.courseId}', e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{#line.courseId}', e);"/>
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
@@ -650,24 +656,27 @@
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-container-200</value>
+                <value>myplan-section</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <!--<bean id="mystuff_msg" parent="Uif-MessageField" p:messageText="MyStuff"/>-->
                 <ref bean="watch_list"/>
             </list>
         </property>
     </bean>
 
-
     <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Watch List (TBD)" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-saved-courses-summary</value>
+            </list>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderField-Five"/>
         </property>
         <property name="onDocumentReadyScript"
                   value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup');"/>
     </bean>
-
 
 </beans>

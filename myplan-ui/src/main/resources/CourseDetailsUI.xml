@@ -203,11 +203,6 @@
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="additionalCssFiles">
-            <list>
-                <value>/ks-myplan/css/course-search.css</value>
-            </list>
-        </property>
         <property name="additionalScriptFiles">
             <list>
                 <value>/ks-myplan/scripts/myplan.widgets.js</value>
@@ -272,8 +267,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save This Course"
-                      p:clientSideJs="alert('This course has been added successfully');">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save This Course">
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{dataObject.courseId}', e);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>

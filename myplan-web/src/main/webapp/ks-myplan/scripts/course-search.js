@@ -167,20 +167,8 @@ function calculateFacets(colSelected) {
 	});
 }
 
-jq(document).ready(function() {
-    jq("input[type='text']").blur();
-    jq("button.search-submit").click(function(){
-    	jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
-        jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
-    });
-    jq("input[name='searchQuery'][type='text']").bind('keypress', function(e) {
-	    if ( e.keyCode === 13 ) jq("button.course-search-submit").click();
-	});
-});
-
 jq(window).load(function(){
     if ( jq("#course_search_results_datatable").length > 0 ) {
-        oTable = jq("#course_search_results_datatable").dataTable();
         jq("#course_search_results_panel_div").fadeIn('fast');
         buildFacets();
     }
