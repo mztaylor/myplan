@@ -89,11 +89,6 @@
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>/ks-myplan/scripts/myplan.widgets.js</value>
-            </list>
-        </property>
         <property name="criteriaFields">
             <list/>
         </property>
@@ -211,6 +206,20 @@
             <list>
                 <value>/ks-myplan/scripts/myplan.widgets.js</value>
             </list>
+        </property>
+
+        <property name="page">
+            <bean parent="Uif-LookupPage">
+                <property name="layoutManager">
+                    <bean parent="Uif-HorizontalBoxLayout"/>
+                </property>
+                <property name="items">
+                    <list>
+                        <ref bean="saved_courses_detail_list"/>
+                        <ref bean="myplan_section"/>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="criteriaFields">
             <list/>
@@ -382,6 +391,120 @@
                             </bean>
                         </list>
                     </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SavedCoursesPopupView" parent="MyPlanInquiryView">
+        <property name="viewName" value="SavedCoursesPopupView"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.PlanItemInquiryViewHelperServiceImpl"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="Items">
+            <list>
+                <bean parent="Uif-Page" p:id="course_details_popup">
+                    <property name="items">
+                        <list>
+                            <ref bean="course_details_popup_info" />
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan">
+                                            <property name="clientSideJs" value="alert('This course has been moved to your plan');"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
+                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-transparent</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
+                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
+                                  p:labelField.render="true">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>myplan-text-italic</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_popup_info" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-details</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:target="">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                        </list>
+                    </property>
+                    <property name="linkLabel" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
+                    <property name="title" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                </bean>
+                <!-- Scheduled Quarters -->
+                <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.scheduledTerms"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
+                    <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                        </list>
+                    </property>
+                </bean>
+                <!-- Requisites -->
+                <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
+                    <property name="propertyEditor" ref="data_list_formatter"/>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Link" p:target="">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                        </list>
+                    </property>
+                    <property name="linkLabel" value="View more details"/>
+                    <property name="title" value="View more details about this course"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
             </list>
         </property>
