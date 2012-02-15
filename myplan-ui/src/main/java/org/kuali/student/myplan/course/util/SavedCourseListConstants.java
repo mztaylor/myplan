@@ -16,13 +16,14 @@ public class SavedCourseListConstants {
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 
+    public static final String ERROR_KEY_OPERATION_FAILED = "error.myplan.savedCoursesList.operationFailed";
+
     public static final String ERROR_KEY_DATA_VALIDATION_ERROR = "error.myplan.savedCoursesList.dataValidationError";
     public static final String ERROR_KEY_DUPLICATE_PLAN = "error.myplan.savedCoursesList.duplicatePlan";
     public static final String ERROR_KEY_DUPLICATE_PLAN_ITEM = "error.myplan.savedCoursesList.duplicatePlanItem";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "error.myplan.savedCoursesList.unknownPlanItem";
     public static final String ERROR_KEY_INVALID_PARAM = "error.myplan.savedCoursesList.invalidParameter";
     public static final String ERROR_KEY_MISSING_PARAM = "error.myplan.savedCoursesList.missingParameter";
-    public static final String ERROR_KEY_OPERATION_FAILED = "error.myplan.savedCoursesList.operationFailed";
     public static final String ERROR_KEY_PERMISSION_DENIED = "error.myplan.savedCoursesList.permissionDenied";
 
     //  Global context info for use in service methods which need caching, but don't use the context argument.

@@ -3,6 +3,7 @@ package org.kuali.student.myplan.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
@@ -21,19 +22,26 @@ import javax.persistence.Table;
 /**
  *
  */
+@SuppressWarnings({"JpaDataSourceORMInspection"})
 @Entity
 @Table(name = "KSPL_LRNG_PLAN_ITEM")
 @NamedQueries( {
     @NamedQuery(name = "LearningPlanItem.getLearningPlanItems",
-            query = "SELECT r FROM PlanItemEntity r WHERE r.refObjectTypeKey = :refObjectTypeKey and r.refObjectId = :refObjectId")
+            query = "SELECT r FROM PlanItemEntity r WHERE r.refObjectTypeKey = :refObjectTypeKey and r.refObjectId = :refObjectId"),
+    @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
+            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
+                    "pi.learningPlan = p " +
+                    "and p.id =:learningPlanId and pi.learningPlanItemType.id =:learningPlanItemType")
 })
+
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 
+    @NotNull
     @Column(name="REF_OBJ_TYPE_KEY")
 	private String refObjectTypeKey;
 
     @Column(name="REF_OBJ_ID")
-	private String refObjectId;
+    private String refObjectId;
 
     @ManyToOne()
     @JoinColumn(name = "TYPE_ID")

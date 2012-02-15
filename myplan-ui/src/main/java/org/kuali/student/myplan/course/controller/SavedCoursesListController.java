@@ -32,6 +32,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.course.form.SavedCoursesListForm;
 import org.kuali.student.myplan.course.util.SavedCourseListConstants;
 import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.RichText;
 import org.springframework.stereotype.Controller;
@@ -74,20 +75,20 @@ public class SavedCoursesListController extends UifControllerBase {
                     AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN, SavedCourseListConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Learning plan query failed.", e);
-            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
             hasError = true;
         }
 
         if (learningPlans == null) {
             logger.error("Learning Plans query produced null.");
-            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
             hasError = true;
         }
 
         //  There should currently only be a single learning plan. This may change in the future.
         if (learningPlans.size() > 1) {
             logger.error(String.format("Student [%s] has more than one plan.", user.getPrincipalId()));
-            GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
             hasError = true;
         }
 
@@ -103,22 +104,13 @@ public class SavedCoursesListController extends UifControllerBase {
             learningPlan = learningPlans.get(0);
         } else {
             try {
-                //  Assume an error here, but clear it if none occurs. This is to avoid flagging in every catch.
-                hasError = true;
                 learningPlan = createDefaultLearningPlan(user.getPrincipalId());
-                hasError = false;
-            } catch (AlreadyExistsException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_DUPLICATE_PLAN);
-            } catch (DataValidationErrorException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_DATA_VALIDATION_ERROR, e.getMessage());
-            } catch (InvalidParameterException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
-            } catch (MissingParameterException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_MISSING_PARAM, e.getMessage());
-            } catch (OperationFailedException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
-            } catch (PermissionDeniedException e) {
-                GlobalVariables.getMessageMap().putError("planId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
+            } catch (Exception e) {
+                //  End-users won't care about the details of what went wrong here, so provide a generic error message, but
+                //  log the exception.
+                hasError = true;
+                logger.error("Unable to create default learning plan.",  e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
             }
         }
 
@@ -134,6 +126,8 @@ public class SavedCoursesListController extends UifControllerBase {
             pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
             pii.setRefObjectId(courseId);
 
+            pii.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
             RichTextInfo rti = new RichTextInfo();
             rti.setFormatted("");
             rti.setPlain("");
@@ -144,17 +138,14 @@ public class SavedCoursesListController extends UifControllerBase {
                 newPlanItem = getAcademicPlanService().createPlanItem(pii, SavedCourseListConstants.CONTEXT_INFO);
                 newPlanItemId = newPlanItem.getId();
             } catch (AlreadyExistsException e) {
-                GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_DUPLICATE_PLAN_ITEM);
-            } catch (DataValidationErrorException e) {
-                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_DATA_VALIDATION_ERROR, e.getMessage());
-            } catch (InvalidParameterException e) {
-                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
-            } catch (MissingParameterException e) {
-                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_MISSING_PARAM, "courseId");
-            } catch (OperationFailedException e) {
-                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
-            } catch (PermissionDeniedException e) {
-                GlobalVariables.getMessageMap().putError("courseId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
+                //  The course id was already in the saved courses list. Let this error go unreported.
+                logger.warn("Item was already in wishlist.", e);
+            } catch (Exception e) {
+                //  Give the end-user a generic error message, but log the exception.
+                logger.error("Could not create plan item.", e);
+                //   Remove the errors, then add a more generic one.
+                GlobalVariables.getMessageMap().clearErrorMessages();
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
             }
         }
 
@@ -178,6 +169,7 @@ public class SavedCoursesListController extends UifControllerBase {
         rti.setPlain("");
         plan.setDescr(rti);
         plan.setStudentId(studentId);
+        plan.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
 
         LearningPlan newPlan = getAcademicPlanService().createLearningPlan(plan, SavedCourseListConstants.CONTEXT_INFO);
 
@@ -193,15 +185,14 @@ public class SavedCoursesListController extends UifControllerBase {
         try {
             getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
-        } catch (InvalidParameterException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, e.getMessage());
-        } catch (MissingParameterException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_INVALID_PARAM, "planItemId");
-        } catch (OperationFailedException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
-        } catch (PermissionDeniedException e) {
-            GlobalVariables.getMessageMap().putError("planItemId", SavedCourseListConstants.ERROR_KEY_PERMISSION_DENIED);
+            //  Assume the end-user already deleted this item and silently let this error go. Log it though.
+            logger.warn("Tried to delete a plan item that doesn't exist.", e);
+        } catch (Exception e) {
+            //  Give the end-user a generic error message, but log the exception.
+            logger.error("Could not delete plan item.", e);
+            //   Remove the errors, then add a more generic one.
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putErrorForSectionId("remove_plan_item_page", SavedCourseListConstants.ERROR_KEY_OPERATION_FAILED);
         }
 
         return getUIFModelAndView(form, SavedCourseListConstants.PLAN_ITEM_REMOVE_PAGE_ID);
@@ -220,5 +211,3 @@ public class SavedCoursesListController extends UifControllerBase {
         this.academicPlanService = academicPlanService;
     }
 }
-
-

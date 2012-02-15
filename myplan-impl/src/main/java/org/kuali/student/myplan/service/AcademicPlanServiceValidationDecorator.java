@@ -5,9 +5,10 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceDecorator;
-import org.kuali.student.myplan.dao.LearningPlanTypeDao;
-import org.kuali.student.myplan.model.LearningPlanTypeEntity;
+import org.kuali.student.myplan.dao.PlanItemDao;
+import org.kuali.student.myplan.model.PlanItemEntity;
 import org.kuali.student.r2.common.datadictionary.DataDictionaryValidator;
 import org.kuali.student.r2.common.datadictionary.service.DataDictionaryService;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -153,6 +154,7 @@ public class AcademicPlanServiceValidationDecorator
      */
     private void fullValidation(LearningPlanInfo learningPlanInfo, ContextInfo context)
     		throws DataValidationErrorException, OperationFailedException, InvalidParameterException, MissingParameterException {
+
         if (learningPlanInfo == null) {
             throw new MissingParameterException("learningPlanInfo was null.");
         }
