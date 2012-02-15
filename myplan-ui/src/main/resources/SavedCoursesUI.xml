@@ -219,6 +219,21 @@
             <list/>
         </property>
 
+
+       <property name="page">
+            <bean parent="Uif-LookupPage">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="saved_courses_summary_list"/>
+                            <ref bean="myplan_section"/>
+                        </list>
+                    </property>
+            </bean>
+        </property>
+
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
             <bean parent="Uif-VerticalBoxGroup"/>
