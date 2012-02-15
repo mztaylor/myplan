@@ -46,7 +46,8 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
         if (addedId.length > 0) {
 			elementToBlock.unblock();
 			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup', addedId);
-			jq(e.target).parent().fadeOut(250, function() {
+			targetId = jq(e.target).attr("id");
+            jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
                 // If on course details page
                 // jq(this).addClass("").html("This course is in your Watch List").fadeIn(250);
@@ -89,7 +90,8 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
                         showGrowl(errorText, 'Delete Item Error', 'errorGrowl');
                     } else {
                         elementToBlock.unblock();
-                        var planListItem = jq("#" + e.target).parents("li").children();
+                        targetId = jq(e.target).attr("id");
+                        var planListItem = jq("#" + targetId).parents("li").children();
                         jq(planListItem).fadeOut(250, function() {
                             jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
                         });
