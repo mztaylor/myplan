@@ -46,17 +46,17 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="PlanItemInfo.refObjectId" parent="PlanItemInfo.refObjectId-parent"/>
 	<bean id="PlanItemInfo.refObjectId-parent" abstract="true" parent="PlanItemInfo.refObjectId-generated">
-	<!-- insert any overrides to the generated attribute definitions here -->
+        <property name="required" value="true"/>
 	</bean>
 
 	<bean id="PlanItemInfo.refObjectType" parent="PlanItemInfo.refObjectType-parent"/>
 	<bean id="PlanItemInfo.refObjectType-parent" abstract="true" parent="PlanItemInfo.refObjectType-generated">
-	<!-- insert any overrides to the generated attribute definitions here -->
+        <property name="required" value="true"/>
 	</bean>
 
 	<bean id="PlanItemInfo.learningPlanId" parent="PlanItemInfo.learningPlanId-parent"/>
 	<bean id="PlanItemInfo.learningPlanId-parent" abstract="true" parent="PlanItemInfo.learningPlanId-generated">
-	<!-- insert any overrides to the generated attribute definitions here -->
+        <property name="required" value="true"/>
 	</bean>
 
 	<bean id="PlanItemInfo.planPeriods" parent="PlanItemInfo.planPeriods-parent"/>

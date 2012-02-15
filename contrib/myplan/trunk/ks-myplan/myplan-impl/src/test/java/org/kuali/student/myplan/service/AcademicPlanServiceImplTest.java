@@ -3,10 +3,6 @@ package org.kuali.student.myplan.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.student.common.util.UUIDHelper;
-import org.kuali.student.enrollment.courseoffering.dto.OfferingInstructorInfo;
-import org.kuali.student.enrollment.lui.dto.LuiInfo;
-import org.kuali.student.enrollment.lui.dto.LuiLuiRelationInfo;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -16,17 +12,14 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
-import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,7 +34,7 @@ public class AcademicPlanServiceImplTest {
     @Resource  // look up bean via variable name, then type
     private AcademicPlanService academicPlanService;
 
-    public static final String principalId = "testuser";
+    public static final String principalId = "student1";
     public ContextInfo context;
 
     @Before
@@ -108,6 +101,8 @@ public class AcademicPlanServiceImplTest {
         desc.setFormatted(formattedDesc);
         desc.setPlain(planDesc);
         learningPlan.setDescr(desc);
+
+        learningPlan.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
 
         LearningPlanInfo newLearningPlan = null;
         try {
@@ -181,6 +176,8 @@ public class AcademicPlanServiceImplTest {
         planItem.setRefObjectId(courseId);
         planItem.setRefObjectType(courseType);
 
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
         PlanItem newPlanItem = null;
         try {
             newPlanItem = academicPlanService.createPlanItem(planItem, context);
@@ -194,6 +191,169 @@ public class AcademicPlanServiceImplTest {
         assertEquals(planDesc, newPlanItem.getDescr().getPlain());
         assertEquals(courseId, newPlanItem.getRefObjectId());
         assertEquals(courseType, newPlanItem.getRefObjectType());
+    }
+
+    @Test
+    public void addPlanItemNullCourseType() {
+        String planId = "lp1";
+
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = null;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        try {
+            academicPlanService.createPlanItem(planItem, context);
+        } catch (DataValidationErrorException dvee) {
+            assertEquals(1, dvee.getValidationResults().size());
+            ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
+            assertEquals("refObjectType", resultInfo.getElement());
+            assertEquals("error.required", resultInfo.getMessage());
+            assertEquals(null, resultInfo.getInvalidData());
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public void addPlanItemNullLearningPlan() {
+        String planId = null;
+
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        try {
+            academicPlanService.createPlanItem(planItem, context);
+        } catch (DataValidationErrorException dvee) {
+            assertEquals(1, dvee.getValidationResults().size());
+            ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
+            assertEquals("learningPlanId", resultInfo.getElement());
+            assertEquals("error.required", resultInfo.getMessage());
+            assertEquals(null, resultInfo.getInvalidData());
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public void addPlanItemNullCourseId() {
+        String planId = "lp1";
+
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        String courseId = null;
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        try {
+            academicPlanService.createPlanItem(planItem, context);
+        } catch (DataValidationErrorException dvee) {
+            assertEquals(dvee.getValidationResults().size(), 1);
+            ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
+            assertEquals("refObjectId", resultInfo.getElement());
+            assertEquals("error.required", resultInfo.getMessage());
+            assertEquals(null, resultInfo.getInvalidData());
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+    }
+
+    @Test
+    public void addPlanItemToSavedCoursesListWithDuplicateCourseId() {
+        String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        PlanItem newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItem, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+
+        try {
+            List<PlanItem> x = academicPlanService.getPlanItemsInPlan(planId, context);
+            System.err.println();
+        } catch (DoesNotExistException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItem, context);
+        } catch (AlreadyExistsException e) {
+            //  This is what should should happen.
+            return;
+        } catch (Exception e) {
+            //  Do nothing.
+        }
+
+        fail("Was able to add a duplicate course id to saved courses list.");
+
     }
 
     @Test

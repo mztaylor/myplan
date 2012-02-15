@@ -30,7 +30,8 @@
      that is used in the rice dictionary validation service impl -->
     <bean name="allDictionaryFileLocations" class="java.util.ArrayList">
         <constructor-arg>
-            <list>
+            <!--  Looks like using merge here still clobbers the list -->
+            <list merge="true">
                 <bean parent="learningPlanInfoDictionaryLocation" />
                 <bean parent="planItemInfoDictionaryLocation" />
                 <bean parent="planItemSetInfoDictionaryLocation" />

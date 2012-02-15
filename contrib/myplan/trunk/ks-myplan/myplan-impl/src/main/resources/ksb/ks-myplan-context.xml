@@ -19,9 +19,13 @@
 
   <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
 
+
   <import resource="classpath:ks-data-dictionary-services-configuration.xml" />
   <import resource="classpath:ks-data-dictionary-validator-configuration.xml" />
-  <import resource="classpath:ks-myplan-daos.xml" />
+  <!-- Add the myplan data dictionaries -->
+  <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml" />
+  <import resource="classpath:ks-academic-plan-daos.xml" />
+
 
   <!-- JTA -->
   <tx:annotation-driven transaction-manager="transactionManager" />

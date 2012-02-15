@@ -11,7 +11,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
     <import resource="classpath:ks-data-dictionary-services-configuration.xml" />
     <import resource="classpath:ks-data-dictionary-validator-configuration.xml" />
-    <import resource="classpath:ks-myplan-daos.xml" />
+    <!-- Add the myplan data dictionaries -->
+    <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml" />
+    <import resource="classpath:ks-academic-plan-daos.xml" />
 
     <!-- Infrastructure code which handles invocation for all service impls -->
     <bean id="layeringAspects" class="org.kuali.student.enrollment.class1.lpr.service.aspect.ServiceAspects">
@@ -29,31 +31,23 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <bean id="kualiOperationFailedException" class="org.kuali.student.r2.common.exceptions.OperationFailedException" />
     <bean id="kualiReadOnlyException" class="org.kuali.student.r2.common.exceptions.ReadOnlyException" />
 
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
-        <property name="learningPlanDao" ref="learningPlanDao"/>
-        <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
-        <property name="planItemDao" ref="planItemDao"/>
-        <property name="planItemTypeDao" ref="planItemTypeDao"/>
-    </bean>
-
-    <!-- Academic Plan Service Decorators -->
-
-    <!--
-    Academic plan service with validator decorator.
-
+    <!-- Academic Plan Service -->
     <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
         <property name="planItemTypeDao" ref="planItemTypeDao"/>
+        <!-- <property name="courseService" ref="courseService" /> -->
     </bean>
 
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
+    <!-- Academic Plan Service Decorators -->
+    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
         <property name="nextDecorator" ref="academicPlanServicePersistence" />
+        <property name="validator" ref="validator"/>
+        <property name="dataDictionaryService" ref="dataDictionaryServiceForAcademicPlanService"/>
     </bean>
 
-    -->
-
+    <alias name="academicPlanServiceValidator" alias="academicPlanService" />
 
     <!--  Wait on authorization decorator for now.
     <bean id="permissionService" class="org.kuali.rice.kim.service.impl.PermissionServiceImpl" />

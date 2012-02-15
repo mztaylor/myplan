@@ -1,6 +1,8 @@
 package org.kuali.student.myplan.service;
 
+import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
+import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
@@ -14,15 +16,21 @@ import org.kuali.student.myplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.dao.PlanItemDao;
 import org.kuali.student.myplan.dao.PlanItemTypeDao;
 import org.kuali.student.myplan.model.*;
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.infc.Attribute;
-import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +43,15 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private LearningPlanTypeDao learningPlanTypeDao;
     private PlanItemDao planItemDao;
     private PlanItemTypeDao planItemTypeDao;
+    private CourseService courseService;
+
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
+    public CourseService getCourseService() {
+        return this.courseService;
+    }
 
     public PlanItemDao getPlanItemDao() {
         return planItemDao;
@@ -104,7 +121,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         List<PlanItem> dtos = new ArrayList<PlanItem>();
 
-        List<PlanItemEntity> planItems = planItemDao.getPlanItems(learningPlanId);
+        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(learningPlanId);
         for (PlanItemEntity pie : planItems) {
             dtos.add(pie.toDto());
         }
@@ -186,6 +203,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
                 OperationFailedException, PermissionDeniedException {
 
+        /*
+         *  Validate that the course exists.
+         * TODO: Move this validation to the data dictionary.
+         */
+        //try {
+        //    this.courseService.getCourse(planItem.getRefObjectId());
+        //} catch (Exception e) {
+        //    System.err.println();
+        //}
+
+
         PlanItemEntity pie = new PlanItemEntity();
         String planItemId = UUIDHelper.genStringUUID();
         pie.setId(planItemId);
@@ -221,6 +249,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
         }
         pie.setLearningPlan(plan);
+
+        /*
+         * Make sure a saved courses item with this course id doesn't already exist.
+         * TODO: Move this validation to the data dictionary.
+         */
+        if (planItem.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            List<PlanItemEntity> savedCourseListItems =
+                this.planItemDao.getLearningPlanItems(plan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+
+            for (PlanItemEntity p : savedCourseListItems) {
+                if (p.getRefObjectId().equals(planItem.getRefObjectId())) {
+                    throw new AlreadyExistsException("This course id already exists in the user's saved course list.");
+                }
+            }
+        }
 
         PlanItemEntity existing = planItemDao.find(planItemId);
         if (existing != null) {
@@ -349,7 +392,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         //  Delete plan items.
-        List<PlanItemEntity> pies = planItemDao.getPlanItems(learningPlanId);
+        List<PlanItemEntity> pies = planItemDao.getLearningPlanItems(learningPlanId);
         for (PlanItemEntity pie : pies) {
             //  TODO: May need to manually remove items from the ATP join table once that is implemented.
             planItemDao.remove(pie);
@@ -413,6 +456,4 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return  new ArrayList<ValidationResultInfo>();
     }
-
-
 }

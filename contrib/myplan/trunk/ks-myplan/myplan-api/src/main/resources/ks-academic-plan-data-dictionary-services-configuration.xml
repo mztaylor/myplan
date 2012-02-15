@@ -4,18 +4,12 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <import resource="classpath:ks-dictionary-file-locations.xml"/>
+    <import resource="classpath:ks-academic-plan-dictionary-file-locations.xml"/>
 
     <!-- Academic Plan Service -->
     <bean id="dataDictionaryServiceForAcademicPlanService"
           class="org.kuali.student.r2.common.datadictionary.DataDictionaryServiceImpl">
         <property name="serviceNamespaceSuffix" value="AcademicPlanService" />
         <property name="dictionaryLocations" ref="academicPlanServiceDictionaryLocations" />
-    </bean>
-   
-    <!--All Objects Data Dictionary Service used by Rice-->
-    <bean id="dataDictionaryServiceForAllUsedByRice" class="org.kuali.student.r2.common.datadictionary.DataDictionaryServiceImpl">
-        <property name="serviceNamespaceSuffix" value="shouldNotMatter" />
-        <property name="dictionaryLocations" ref="allDictionaryFileLocations" />
     </bean>
 </beans>

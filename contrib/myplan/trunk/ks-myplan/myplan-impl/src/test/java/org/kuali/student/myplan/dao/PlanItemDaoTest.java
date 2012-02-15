@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @PersistenceFileLocation("classpath:META-INF/lp-persistence.xml")
 public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
@@ -28,9 +29,29 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
 	private LearningPlanDao learningPlanDao;
 
     @Test
-    public void testGetAllLearningPlans() {
-        List<PlanItemEntity> obj = planItemDao.findAll();
-        assertEquals(14, obj.size());
+    public void testGetAllLearningPlanItems() {
+        List<PlanItemEntity> objs = planItemDao.findAll();
+        assertEquals(14, objs.size());
+    }
+
+    @Test
+    public void testGetPlanItemsByType() {
+
+        String planId = "lp1";
+
+        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(planId, AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        assertEquals(3, planItems.size());
+        for (PlanItemEntity pie : planItems) {
+            assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, pie.getLearningPlanItemType().getId());
+            assertEquals("student1", pie.getLearningPlan().getStudentId());
+        }
+
+        planItems = planItemDao.getLearningPlanItems(planId, AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        assertEquals(3, planItems.size());
+        for (PlanItemEntity pie : planItems) {
+            assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, pie.getLearningPlanItemType().getId());
+            assertEquals("student1", pie.getLearningPlan().getStudentId());
+        }
     }
 
     @Test
