@@ -155,7 +155,7 @@ public class AcademicPlanServiceImplTest {
     }
 
     @Test
-    public void addPlanItem() {
+    public void addAndGetPlanItem() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
         String planId = "lp1";
 
         // Create a new plan item.
@@ -191,6 +191,20 @@ public class AcademicPlanServiceImplTest {
         assertEquals(planDesc, newPlanItem.getDescr().getPlain());
         assertEquals(courseId, newPlanItem.getRefObjectId());
         assertEquals(courseType, newPlanItem.getRefObjectType());
+
+
+        // Test getPlanItem
+
+        PlanItem fetchedPlanItem =  academicPlanService.getPlanItem(newPlanItem.getId(), context);
+
+        assertNotNull(fetchedPlanItem);
+        assertNotNull(fetchedPlanItem.getId());
+        assertEquals(planId, fetchedPlanItem.getLearningPlanId());
+        assertEquals(formattedDesc, fetchedPlanItem.getDescr().getFormatted());
+        assertEquals(planDesc, fetchedPlanItem.getDescr().getPlain());
+        assertEquals(courseId, fetchedPlanItem.getRefObjectId());
+        assertEquals(courseType, fetchedPlanItem.getRefObjectType());
+
     }
 
     @Test
