@@ -27,7 +27,28 @@ public interface StudentServiceClient {
 	 */
 	public abstract List<String> getAvailableVersions() throws ServiceException;
 
+    /**
+     * Query the student web service (term service) for information about the current term
+     * and return the response as an XML String.
+     * @return The XML response as a String
+     */
+    public abstract String getCurrentTerm() throws ServiceException;
+
+    /**
+     * Query the student web service (term service) for information about a particular term
+     * and return the response as an XML String.
+     * @param year YYYY
+     * @param term spring, summer, winter, autumn
+     * @return The XML response as a String
+     */
     public abstract String getTermInfo(String year, String term) throws ServiceException;
 
+    /**
+     * Query the student web service (section service) for information about a particular term and curriculum.
+     * @param year
+     * @param term
+     * @param curriculumCode
+     * @return The XML response as a String.
+     */
     public abstract String getSectionInfo(String year, String term, String curriculumCode) throws ServiceException;
 }

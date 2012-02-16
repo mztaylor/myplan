@@ -346,7 +346,6 @@ public class AcademicPlanServiceImplTest {
 
         try {
             List<PlanItem> x = academicPlanService.getPlanItemsInPlan(planId, context);
-            System.err.println();
         } catch (DoesNotExistException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (InvalidParameterException e) {

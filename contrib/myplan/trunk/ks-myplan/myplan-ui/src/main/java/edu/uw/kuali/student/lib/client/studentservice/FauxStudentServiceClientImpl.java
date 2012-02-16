@@ -56,14 +56,35 @@ public class FauxStudentServiceClientImpl
 	}
 
     @Override
+    public String getCurrentTerm() throws ServiceException {
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/public/term/current.xml
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_current_term_response.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
+    }
+
+    @Override
     public String getTermInfo(String year, String term) throws ServiceException {
-        //  Only return the elements that are used.
-        //  https://ucswseval1.cac.washington.edu/student/v4/public/term/2011,autumn.xml
-        StringBuilder sb = new StringBuilder();
-        sb.append("<Term xmlns=\"http://webservices.washington.edu/student/\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance/\">")
-            .append("<LastDropDay>2011-11-13</LastDropDay>")
-            .append("</Term>");
-        return sb.toString();
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/public/term/2012,spring.xml
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_term_response_spring_2012.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
+
+
     }
 
     @Override
