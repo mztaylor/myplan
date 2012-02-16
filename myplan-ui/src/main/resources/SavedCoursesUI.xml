@@ -208,26 +208,6 @@
             </list>
         </property>
 
-        <property name="page">
-            <bean parent="Uif-LookupPage">
-                <property name="layoutManager">
-                    <bean parent="Uif-HorizontalBoxLayout"/>
-                </property>
-                <property name="items">
-                    <list>
-                        <ref bean="saved_courses_detail_list"/>
-                        <ref bean="myplan_section"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-
 
        <property name="page">
             <bean parent="Uif-LookupPage">
@@ -430,7 +410,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{dataObject.id}', '@{dataObject.courseDetails.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
