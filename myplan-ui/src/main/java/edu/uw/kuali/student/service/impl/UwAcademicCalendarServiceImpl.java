@@ -4,6 +4,7 @@ import edu.uw.kuali.student.myplan.util.CircularTermList;
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -33,7 +34,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
      * The number of terms to inspect when looking for section data.
      */
     private static final short PUBLISHED_QUARTER_COUNT = 3;
-    private static final String DEFAULT_CURRICULUM = "chem";
+
     private static final String TERM_KEY_PREFIX = "kuali.uw.atp.";
 
     private SAXReader reader;
@@ -64,37 +65,12 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         List<TermInfo> termInfos = new ArrayList<TermInfo>();
 
         /*
-         *  Estimate the current term.
-         */
-        DateTime now = new DateTime();
-        String currentTerm = null;
-        int month = now.getMonthOfYear();
-        switch (month) {
-            case 1: case 2: case 3:
-                currentTerm = "Winter";
-                break;
-            case 4: case 5: case 6:
-                currentTerm = "Spring";
-                break;
-            case 7: case 8: case 9:
-                currentTerm = "Summer";
-                break;
-            case 10: case 11: case 12:
-                currentTerm = "Autumn";
-                break;
-        }
-
-        String year = String.valueOf(now.getYear());
-        logger.info(String.format("Current estimated as: %s %s", currentTerm, year));
-        //  Go ahead and initialize the term list.
-        CircularTermList ccl = new CircularTermList(currentTerm, now.getYear());
-
-        /*
-         *  Query the student term service to get the last drop date.
+         *  Query the student web service for the current term. If the last drop date has passed
+         *  then make the next term the current term.
          */
         String responseText = null;
         try {
-            responseText = studentServiceClient.getTermInfo(year, currentTerm);
+            responseText = studentServiceClient.getCurrentTerm();
         } catch (ServiceException e) {
             throw new RuntimeException("Query to Student Term Service failed.", e);
         }
@@ -107,31 +83,35 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         }
 
         String lastDropDayDateString =  termDocument.getRootElement().element("LastDropDay").getTextTrim();
+        String currentTerm = termDocument.getRootElement().element("Quarter").getTextTrim();
+        String year = termDocument.getRootElement().element("Year").getTextTrim();
+
+        CircularTermList ccl = new CircularTermList(currentTerm, Integer.valueOf(year));
+
         DateTime lastDropDay = new DateTime(lastDropDayDateString);
 
-        logger.info(String.format("Last drop day for %s %s is: %s",
-            ccl.getQuarter(), ccl.getYear(), lastDropDayDateString));
+        logger.info(String.format("The Student Term Service reports [%s] [%s] is the current term with last drop day [%s].",
+                ccl.getQuarter(), ccl.getYear(), lastDropDayDateString));
 
         /*
          *  If the last drop day has passed then increment to the next term.
          */
         if (lastDropDay.isBeforeNow()) {
-            logger.info("The last drop day has passed. Incrementing to the next term.");
             ccl.incrementQuarter();
+            logger.info(String.format("The last drop day has passed, so the current term has been incremented to [%s] [%s].",
+               ccl.getQuarter(), ccl.getYear()));
         }
 
         /*
-         *  Query the section service for available calendar info.
-         *  Stop processing if any service exceptions are encountered.
+         *  Query the term service and determine which terms are published.
          */
         for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
-            responseText = null;
             try {
-                logger.info(String.format("Querying the Student Section Service for: %s - %s %s",
-                    DEFAULT_CURRICULUM, ccl.getQuarter(), ccl.getYear()));
-                responseText = studentServiceClient.getSectionInfo(String.valueOf(ccl.getYear()), ccl.getQuarter(), DEFAULT_CURRICULUM);
+                logger.info(String.format("Querying the Student Term Service for quarter [%s] year [%s] to determine if section information as been published.",
+                    ccl.getQuarter(), ccl.getYear()));
+                responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarter());
             } catch (ServiceException e) {
-                logger.error("Call to Student Section Service failed.", e);
+                logger.error("Call to Student Term Service failed.", e);
                 break;
             }
 
@@ -139,19 +119,42 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             try {
                 termDocument = reader.read(new StringReader(responseText));
             } catch (Exception e) {
-                logger.error("Could not parse reply from the Student Section Service.", e);
+                logger.error("Could not parse reply from the Student Term Service.", e);
                 break;
             }
 
-            TermInfo ti = new TermInfo();
-            ti.setId(TERM_KEY_PREFIX + ccl.getQuarter().toLowerCase() + ccl.getYear());
-            ti.setName(ccl.getQuarter() + " " + ccl.getYear());
-            termInfos.add(ti);
+            //  If the time schedule for any campus is published then create a TermInfo and continue.
+            //  Otherwise, stop processing.
+            Element timeSchedulePublished =  termDocument.getRootElement().element("TimeSchedulePublished");
+            if (isTrue(timeSchedulePublished.element("Bothell").getText())
+                || isTrue(timeSchedulePublished.element("Seattle").getText())
+                || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
 
-            ccl.incrementQuarter();
+                TermInfo ti = new TermInfo();
+                ti.setId(TERM_KEY_PREFIX + ccl.getQuarter().toLowerCase() + ccl.getYear());
+                ti.setName(ccl.getQuarter() + " " + ccl.getYear());
+                termInfos.add(ti);
+
+                ccl.incrementQuarter();
+            } else {
+                break;
+            }
+
         }
-
         return termInfos;
+    }
+
+    /**
+     * Tests a String representation of an Integer ("0" or "1") for truth or falsity.
+     * @param value
+     * @return
+     */
+    private boolean isTrue(String value) {
+        boolean rVal = false;
+        if (value.trim().equals("1")) {
+            rVal = true;
+        }
+        return rVal;
     }
 
     @Override

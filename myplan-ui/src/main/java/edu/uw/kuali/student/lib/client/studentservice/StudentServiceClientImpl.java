@@ -48,7 +48,7 @@ public class StudentServiceClientImpl
 	public StudentServiceClientImpl(String baseUrl) {
 		this();
 		
-		logger.info("Initializing for [" + baseUrl + "] version [" + SERVICE_VERSION + "]");
+		logger.info("Initializing for [" + baseUrl + "] version [" + SERVICE_VERSION + "].");
 		
 		setBaseUrl(baseUrl);
 		
@@ -112,6 +112,7 @@ public class StudentServiceClientImpl
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public List<String> getAvailableVersions() throws ServiceException {
 		Request request = new Request(Method.GET, getBaseUrl() + "/");
 
@@ -160,7 +161,7 @@ public class StudentServiceClientImpl
      * @return
      * @throws ServiceException
      */
-
+    @Override
     public String getSectionInfo(String year, String quarter, String curriculum) throws ServiceException {
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
@@ -172,8 +173,26 @@ public class StudentServiceClientImpl
     }
 
     /**
+     * @inheritDoc
+     *
+     * "/student/v4/public/term/current.xml"
+     *
+     * @return
+     */
+    @Override
+    public String getCurrentTerm() throws ServiceException {
+        StringBuilder url = new StringBuilder(getBaseUrl());
+        url.append("/").append(getServiceVersion())
+            .append("/").append("public/term/current.xml");
+        return sendQuery(url.toString());
+    }
+
+    /**
+     * @inheritDoc
+     *
      * Query the term service as /student/v4/public/term/2009,winter.xml
      */
+    @Override
     public String getTermInfo(String year, String quarter) throws ServiceException {
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/")
