@@ -209,7 +209,7 @@
         </property>
 
 
-       <property name="page">
+       <!--<property name="page">
             <bean parent="Uif-LookupPage">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
@@ -221,7 +221,7 @@
                         </list>
                     </property>
             </bean>
-        </property>
+        </property>-->
 
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
@@ -385,6 +385,11 @@
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/jquery.autoellipsis.min.js</value>
+            </list>
+        </property>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -393,6 +398,11 @@
         <property name="Items">
             <list>
                 <bean parent="Uif-Page" p:id="course_details_popup">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="course_details_popup_info" />
@@ -423,7 +433,7 @@
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
-                                  p:labelField.render="true">
+                                  p:labelField.render="true" p:style="float:right;">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>
@@ -473,15 +483,11 @@
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-data-list</value>
+                            <value>myplan-multiline-ellipsis</value>
                         </list>
                     </property>
                 </bean>
                 <bean parent="Uif-Link" p:target="">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>fl-text-bold</value>
-                        </list>
-                    </property>
                     <property name="linkLabel" value="View more details"/>
                     <property name="title" value="View more details about this course"/>
                     <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
