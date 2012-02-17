@@ -305,6 +305,21 @@ body {
 .myplan-course-search-results .myplan-course-search-results-datatable td {
     vertical-align: middle;
 }
+.myplan-course-search-results-datatable .sorting,
+.myplan-course-search-results-datatable .sorting_asc,
+.myplan-course-search-results-datatable .sorting_desc {
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+.myplan-course-search-results-datatable .sorting {
+    background-image: url('../images/sortBoth.png');
+}
+.myplan-course-search-results-datatable .sorting_asc {
+    background-image: url('../images/sortAsc.png');
+}
+.myplan-course-search-results-datatable .sorting_desc {
+    background-image: url('../images/sortDesc.png');
+}
 .myplan-course-search-results .myplan-course-search-results-datatable thead tr {
 	background: #d6d6d6;
 }
