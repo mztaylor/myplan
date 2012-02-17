@@ -74,7 +74,7 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesSummaryView" parent="MyPlanLookupView">
+    <bean id="savedCoursesSummaryView" parent="MyPlanLookupView">
         <property name="title" value="Saved Courses Summary"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
@@ -118,7 +118,7 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
                     <!--
-                    <property name="clientSideJs" value="openPopUp('@{#line.id}', 'course_details_popup_div', 'inquiry', 'start', 'SavedCoursesPopupView', e, '@{#line.id}');"/>
+                    <property name="clientSideJs" value="openPopUp('@{#line.id}', 'course_details_popup_div', 'inquiry', 'start', 'savedCoursesPopupView', e, '@{#line.id}');"/>
                     -->
                     <property name="items">
                         <list>
@@ -166,7 +166,7 @@
                     </property>
                     <property name="linkLabel" value="View @{searchResults.size() lt 2 ? 'course' : 'all '+searchResults.size()+' courses'} in full details"/>
                     <property name="title" value="View @{searchResults.size() lt 2 ? 'course' : 'all '+searchResults.size()+' courses'} in full details"/>
-                    <property name="hrefText" value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetailView"/>
+                    <property name="hrefText" value="lookup?methodToCall=search&amp;viewId=savedCoursesDetailView"/>
                     <property name="render" value="@{searchResults.size() gt 0 ? 'true' : 'false'}"/>
                     <property name="target" value=""/>
                 </bean>
@@ -187,9 +187,9 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesDetailView" parent="MyPlanLookupView">
+    <bean id="savedCoursesDetailView" parent="MyPlanLookupView">
         <property name="page.title" value="Watch List"/>
-        <property name="viewName" value="SavedCoursesDetailView"/>
+        <property name="viewName" value="savedCoursesDetailView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName"
@@ -265,7 +265,7 @@
                                 </property>
                                 <property name="linkLabel" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
                                 <property name="title" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
-                                <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{#line.courseDetails.courseId}"/>
+                                <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
@@ -379,8 +379,8 @@
         </property>
     </bean>
 
-    <bean id="SavedCoursesPopupView" parent="MyPlanInquiryView">
-        <property name="viewName" value="SavedCoursesPopupView"/>
+    <bean id="savedCoursesPopupView" parent="MyPlanInquiryView">
+        <property name="viewName" value="savedCoursesPopupView"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.PlanItemInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -467,7 +467,7 @@
                     </property>
                     <property name="linkLabel" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
                     <property name="title" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
                 <!-- Scheduled Quarters -->
                 <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.scheduledTerms"
@@ -493,7 +493,7 @@
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkLabel" value="View more details"/>
                     <property name="title" value="View more details about @{dataObject.courseDetails.code}"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
             </list>
         </property>

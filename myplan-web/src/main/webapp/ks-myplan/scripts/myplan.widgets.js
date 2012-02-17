@@ -109,7 +109,7 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 		// TODO: Add validation for if there was an error adding - to be added later
         if (addedId.length > 0) {
 			elementToBlock.unblock();
-			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','SavedCoursesSummaryView','search','lookup', addedId);
+			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','savedCoursesSummaryView','search','lookup', addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
@@ -187,7 +187,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 	var data;
     //methodToCall checks
 	if(methodToCall != null){
-		data = {methodToCall: methodToCall, renderFullView: false, viewId: 'SavedCoursesSummaryView'};
+		data = {methodToCall: methodToCall, renderFullView: false, viewId: 'savedCoursesSummaryView'};
 	}
 	else{
         var methodToCallInput = jq("input[name='methodToCall']");
