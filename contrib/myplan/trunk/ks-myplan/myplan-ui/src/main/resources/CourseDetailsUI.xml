@@ -190,7 +190,7 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
-    <bean id="courseDetailsInquiryView" parent="MyPlanInquiryView">
+    <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -457,13 +457,26 @@
     <bean id="course_details_links" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
-                <!-- TODO: Time schedule links go here -->
-                <bean parent="Uif-Link" p:linkLabel="See full details about this course in *Quarter* *Year* Time Schedule"
+                <!-- TODO: Time schedule links go here
+                 http://www.washington.edu/students/timeschd/SPR2012/chem.html#chem142
+
+                <bean parent="Uif-Link"
+                      p:linkLabel="See full details about this course in *Quarter* *Year* Time Schedule"
                       p:title="See full details about this course in *Quarter* *Year* Time Schedule"
                       p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0).substring(0,1) + '/' } "
-                      p:target=""/>
+                      p:target="">
+                </bean> -->
+
+                <bean parent="Uif-DataField" p:propertyName="this" p:labelField.render="false">
+                    <property name="propertyEditor" ref="time_schedule_links_formatter"/>
+                </bean>
             </list>
         </property>
     </bean>
 
+    <bean id="time_schedule_links_formatter" class="org.kuali.student.myplan.course.util.TimeScheduleLinksListPropertyEditor">
+        <property name="baseUrl" value="http://www.washington.edu/students/timeschd/" />
+        <property name="label" value="See full details about this course in *Quarter* *Year* Time Schedule"/>
+        <property name="title" value="See full details about this course in *Quarter* *Year* Time Schedule"/>
+    </bean>
 </beans>
