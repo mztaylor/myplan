@@ -29,6 +29,12 @@
         <property name="additionalScriptFiles">
             <list>
                 <value>/ks-myplan/scripts/course-search.js</value>
+                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
             </list>
         </property>
         <property name="items">
@@ -275,7 +281,7 @@
         <property name="layoutManager.richTable.emptyTableMessage" value=""/>
         <!-- Have to enable disableTableSort, so that aoColumns option is not overridden by code -->
         <property name="layoutManager.richTable.disableTableSort"
-                  value="true"/>
+                  value="false"/>
         <property name="layoutManager.richTable.componentOptions">
             <map merge="true">
 
@@ -290,6 +296,8 @@
                 <entry key="bDeferRender" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="bStateSave" value="true"/>
+                <entry key="bSortClasses" value="false"/>
+                <entry key="aaSorting" value="[]"/>
                 <entry key="aoColumns"
                        value="[
                             {'bSortable':true, 'bSearchable':false},

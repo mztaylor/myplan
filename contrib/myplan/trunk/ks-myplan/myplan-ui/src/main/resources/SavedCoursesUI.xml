@@ -117,6 +117,9 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}">
                     <property name="group.errorsField.render" value="false"/>
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
+                    <!--
+                    <property name="clientSideJs" value="openPopUp('@{#line.id}', 'course_details_popup_div', 'inquiry', 'start', 'SavedCoursesPopupView', e, '@{#line.id}');"/>
+                    -->
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
@@ -489,7 +492,7 @@
                 </bean>
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkLabel" value="View more details"/>
-                    <property name="title" value="View more details about this course"/>
+                    <property name="title" value="View more details about @{dataObject.courseDetails.code}"/>
                     <property name="hrefText" value="inquiry?methodToCall=start&amp;dataObjectClassName=org.kuali.student.myplan.course.dataobject.CourseDetails&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
             </list>

@@ -53,7 +53,7 @@ body {
 .myplan-button,
 .myplan-button:hover {
     line-height: 1em;
-	padding: 5px 20px;
+	padding: 5px 10px;
     margin: 0;
     border: solid 1px #969696;
     border-radius: 4px;
@@ -95,7 +95,7 @@ body {
 .myplan-data-list dl dd {
     margin: 0;
     padding: 0;
-    display: inline-block;
+    display: inline;
 }
 .myplan-data-list dl dd:after {
     content: ",";
@@ -125,6 +125,7 @@ body {
     clear: none;
     margin-right: 0.33em;
     line-height: 1.8em;
+    display: inline-block;
 }
 .myplan-data-list .scheduled dl dd:after,
 .myplan-data-list dl.scheduled dd:after {
@@ -399,7 +400,6 @@ body {
 /* MyPan Section (right side container) ########################################################################### */
 .myplan-section {
     border: solid 1px #ccc;
-    border-bottom: none;
 }
 .myplan-section .boxLayoutVerticalItem,
 .myplan-section .boxLayoutHorizontalItem {
@@ -422,8 +422,14 @@ body {
     background: #ccc;
 }
 /* Saved Courses Summary Styles ########################################################################### */
-.myplan-saved-courses-summary {
-	border-bottom: solid 1px #ccc;
+.myplan-saved-courses-summary div.blockElement {
+    left: 92px !important;
+    top: 4px !important;
+    border: none;
+    width: 16px;
+}
+.myplan-saved-courses-summary > div[id$='_group']{
+    min-height: 24px;
 }
 .myplan-saved-courses-summary ul,
 .myplan-saved-courses-summary ul li {

@@ -1,7 +1,71 @@
+function openPopUp(id, getId, action, methodToCall, viewId, e, itemId) {
+    e.stopPropagation();
+
+	var optionsPopUp = {
+		innerHtml: '<div id="' + id + '" style="width: 300px; min-height: 16px;"><div></div></div>',
+		manageMouseEvents: true,
+		selectable: true,
+		tail: {align:'top',hidden: false},
+		distance: '0px',
+		openingSpeed: 0,
+        closingSpeed: 0,
+		position: 'left',
+		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+		themeName: 'grey'
+	};
+
+	//var targetId = jq(e.target).attr("id");
+	//var popUpBox = jq("#" + targetId).parents("li");
+	var popUpBox = jq(e.target).parents("li");
+	popUpBox.CreateBubblePopup({manageMouseEvents: false});
+	var popUpBoxId = popUpBox.GetBubblePopupID();
+	popUpBox.ShowBubblePopup(optionsPopUp, false);
+	popUpBox.FreezeBubblePopup();
+
+	jq("html").click(function() {
+		popUpBox.HideAllBubblePopups();
+		popUpBox.RemoveBubblePopup();
+	});
+
+
+    var tempForm = jq('<form></form>');
+	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
+	jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" />');
+    if (itemId) {
+        jq(tempForm).append('<input type="hidden" name="planItemId" value="' + itemId + '" />');
+    }
+    jq(tempForm).hide();
+    jq("body").append(tempForm);
+
+    var elementToBlock = jq("#" + id);
+
+	var updateRefreshableComponentCallback = function(htmlContent){
+
+		var component = jq("#" + getId, htmlContent);
+		elementToBlock.unblock({onUnblock: function(){
+				// replace component
+				if(jq("#" + id + ">div").length){
+					//jq("#" + id).animate({height: +"px"}, 250);
+					jq("#" + id + ">div").replaceWith(component);
+				}
+
+				runHiddenScripts(id + ">div");
+			}
+		});
+	};
+
+    if (!methodToCall) {
+        methodToCall = "start";
+    }
+
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    jq("form#"+ id + "_form").remove();
+}
+
 function loadSavedCoursesList(id, getId, viewId, methodToCall, action, highlightId) {
     var tempForm = jq('<form></form>');
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-	jq(tempForm).html('<input type="hidden" name="viewId" value="' + viewId + '" />').hide();
+	jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" />').hide();
     jq("body").append(tempForm);
 
     var elementToBlock = jq("#" + id);
@@ -34,7 +98,7 @@ function loadSavedCoursesList(id, getId, viewId, methodToCall, action, highlight
 function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 	var tempForm = jq('<form></form>');
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-    jq(tempForm).html('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" />').hide();
+    jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" />').hide();
     jq("body").append(tempForm);
 
     var elementToBlock = jq("#" + id + "_form");
@@ -77,8 +141,10 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
 		modal: false,
 		buttons: {
 			"Yes": function () {
-				var tempForm = jq('<form id="' + id + '_form" action="' + action + '" method="post"><input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="planItemId" value="' + planItemId + '" /></form>');
-				jq(tempForm).hide();
+				var tempForm = jq('<form></form>');
+                jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
+                jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="planItemId" value="' + planItemId + '" />');
+                jq(tempForm).hide();
 				jq("body").append(tempForm);
 
 				var elementToBlock = jq("#" + id + "_form");
@@ -183,14 +249,17 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 					else{
 						elementToBlock.block({
 			                message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />', // ' <img src="' + getConfigParam("kradImageLocation") + 'loading-bars.gif" alt="working..." /> Updating...',
-			                /*
-			                fadeIn:  400,
-			                fadeOut:  800,
-			                */
+			                fadeIn:  0,
+			                fadeOut:  0,
+			                overlayCSS:  {
+                                backgroundColor: '#fff',
+                                opacity: 0.5
+                            },
 			                css: {
-								border: 'none',
-								width: '16px',
-								margin: '4px'
+                                border: 'none',
+                                width: '100%',
+                                top: '0px',
+                                left: '0px'
     						}
 			            });
 					}
