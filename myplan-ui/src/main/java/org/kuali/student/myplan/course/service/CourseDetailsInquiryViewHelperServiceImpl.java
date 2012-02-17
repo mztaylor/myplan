@@ -184,7 +184,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.statementService;
     }
 
-
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
             this.enumService = (EnumerationManagementService) GlobalResourceLoader

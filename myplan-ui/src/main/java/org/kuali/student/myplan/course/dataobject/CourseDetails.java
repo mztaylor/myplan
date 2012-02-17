@@ -114,4 +114,8 @@ public class CourseDetails {
     public void setScheduledTerms(List<String> scheduledTerms) {
         this.scheduledTerms = scheduledTerms;
     }
+
+    public CourseDetails getThis() {
+        return this;
+    }
 }
