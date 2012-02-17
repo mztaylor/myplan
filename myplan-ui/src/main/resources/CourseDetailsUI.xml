@@ -190,7 +190,6 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
-
     <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>
@@ -247,8 +246,9 @@
                  <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <ref bean="course_details_actions" />
-                            <ref bean="course_details_overview" />
+                            <ref bean="course_details_actions"/>
+                            <ref bean="course_details_overview"/>
+                            <ref bean="course_details_links"/>
                         </list>
                     </property>
                 </bean>
@@ -453,4 +453,17 @@
             </list>
         </property>
     </bean>
+
+    <bean id="course_details_links" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="items">
+            <list>
+                <!-- TODO: Time schedule links go here -->
+                <bean parent="Uif-Link" p:linkLabel="See full details about this course in *Quarter* *Year* Time Schedule"
+                      p:title="See full details about this course in *Quarter* *Year* Time Schedule"
+                      p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0).substring(0,1) + '/' } "
+                      p:target=""/>
+            </list>
+        </property>
+    </bean>
+
 </beans>
