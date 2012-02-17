@@ -145,7 +145,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"
-                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP">
+                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 5px 30px;">
                     <property name="onClickScript" value="
                         jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
                         jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
