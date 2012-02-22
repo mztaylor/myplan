@@ -684,7 +684,7 @@
             <bean parent="Uif-HeaderField-Five"/>
         </property>
         <property name="onDocumentReadyScript"
-                  value="loadSavedCoursesList('watch_list_group','saved_courses_summary_div','savedCoursesSummaryView','search','lookup');"/>
+                  value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'savedCoursesSummaryView'});"/>
     </bean>
 
 </beans>

@@ -1,11 +1,19 @@
-function openPopUp(id, getId, action, methodToCall, viewId, e, itemId) {
+function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles, e, selector) {
     e.stopPropagation();
-
-	var optionsPopUp = {
-		innerHtml: '<div id="' + id + '" style="width: 300px; min-height: 16px;"><div></div></div>',
+    jq(".myplan-popup-box").each(function() {
+        jq(this).HideAllBubblePopups();
+        jq(this).RemoveBubblePopup();
+    });
+    var popupHtml = jq('<div />').attr("id",id);
+    jQuery.each(popupStyles, function(property, value) {
+        jq(popupHtml).css(property, value);
+    });
+    jq(popupHtml).append('<div id="' + id + '_group"></div>');
+	var popupOptions = {
+		innerHtml: jq(popupHtml).clone().wrap('<div>').parent().html(), // '<div id="' + id + '_div" style="width: 300px; min-height: 16px;"><div id="' + id + '_group"></div></div>',
 		manageMouseEvents: true,
 		selectable: true,
-		tail: {align:'top',hidden: false},
+		tail: {align:'top', hidden: false},
 		distance: '0px',
 		openingSpeed: 0,
         closingSpeed: 0,
@@ -13,72 +21,40 @@ function openPopUp(id, getId, action, methodToCall, viewId, e, itemId) {
 		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
 		themeName: 'grey'
 	};
-
-	//var targetId = jq(e.target).attr("id");
-	//var popUpBox = jq("#" + targetId).parents("li");
-	var popUpBox = jq(e.target).parents("li");
-	popUpBox.CreateBubblePopup({manageMouseEvents: false});
-	var popUpBoxId = popUpBox.GetBubblePopupID();
-	popUpBox.ShowBubblePopup(optionsPopUp, false);
-	popUpBox.FreezeBubblePopup();
+    jq(e.target).parents(selector).attr("class","myplan-popup-box");
+	var popupBox = jq(e.target).parents(selector);
+	popupBox.CreateBubblePopup({manageMouseEvents: false});
+	var popupBoxId = popupBox.GetBubblePopupID();
+	popupBox.ShowBubblePopup(popupOptions, false);
+	popupBox.FreezeBubblePopup();
 
 	jq("html").click(function() {
-		popUpBox.HideAllBubblePopups();
-		popUpBox.RemoveBubblePopup();
+		popupBox.HideAllBubblePopups();
+		popupBox.RemoveBubblePopup();
 	});
 
-
-    var tempForm = jq('<form></form>');
-	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-	jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" />');
-    if (itemId) {
-        jq(tempForm).append('<input type="hidden" name="planItemId" value="' + itemId + '" />');
-    }
-    jq(tempForm).hide();
-    jq("body").append(tempForm);
-
-    var elementToBlock = jq("#" + id);
-
-	var updateRefreshableComponentCallback = function(htmlContent){
-
-		var component = jq("#" + getId, htmlContent);
-		elementToBlock.unblock({onUnblock: function(){
-				// replace component
-				if(jq("#" + id + ">div").length){
-					//jq("#" + id).animate({height: +"px"}, 250);
-					jq("#" + id + ">div").replaceWith(component);
-				}
-
-				runHiddenScripts(id + ">div");
-			}
-		});
-	};
-
-    if (!methodToCall) {
-        methodToCall = "start";
-    }
-
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
-    jq("form#"+ id + "_form").remove();
+    myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions);
 }
 
-function loadSavedCoursesList(id, getId, viewId, methodToCall, action, highlightId) {
-    var tempForm = jq('<form></form>');
+function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
+    var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-	jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" />').hide();
+    jQuery.each(retrieveOptions, function(name, value) {
+        jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+    });
     jq("body").append(tempForm);
 
-    var elementToBlock = jq("#" + id);
+    var elementToBlock = jq("#" + id + "_group");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + getId, htmlContent);
+		var component = jq("#" + getId + "_group", htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
 				// replace component
-				if(jq("#" + id + ">div").length){
-					jq("#" + id + ">div").replaceWith(component);
+				if(jq("#" + id + "_group").length){
+					jq("#" + id + "_group").replaceWith(component);
 				}
 
-				runHiddenScripts(id + ">div");
+				runHiddenScripts(getId + "_group");
 
                 if(highlightId) {
                 	jq("[id^='" + highlightId + "']").parents('li').animate( { backgroundColor: "#ffffcc" }, 1 ).animate( { backgroundColor: "#ffffff" }, 3000 );
@@ -91,12 +67,13 @@ function loadSavedCoursesList(id, getId, viewId, methodToCall, action, highlight
         methodToCall = "search";
     }
 
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback,
+                         {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
 
 function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
-	var tempForm = jq('<form></form>');
+	var tempForm = jq('<form />');
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
     jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" />').hide();
     jq("body").append(tempForm);
@@ -109,7 +86,7 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 		// TODO: Add validation for if there was an error adding - to be added later
         if (addedId.length > 0) {
 			elementToBlock.unblock();
-			loadSavedCoursesList('watch_list_group','saved_courses_summary_div','savedCoursesSummaryView','search','lookup', addedId);
+			myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'savedCoursesSummaryView'},addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
@@ -130,18 +107,17 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 }
 
 function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseCode, e) {
-	var dialogConfirm = jq('<div></div>');
+	var dialogConfirm = jq('<div />');
 	jq(dialogConfirm).attr("id","dialog-confirm").attr("title","Delete Course");
 	jq(dialogConfirm).html('<p>Are you sure that you want to delete <strong>' + courseCode + '</strong>?</p><p>Once deleted, you cannot undo.</p>');
 	jq(dialogConfirm).dialog({
 		resizable: false,
 		height: 160,
 		width: 350,
-		dialogClass: 'dialogWithDropShadow',
 		modal: false,
 		buttons: {
 			"Yes": function () {
-				var tempForm = jq('<form></form>');
+				var tempForm = jq('<form />');
                 jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
                 jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="planItemId" value="' + planItemId + '" />');
                 jq(tempForm).hide();
@@ -183,11 +159,12 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
 	});
 }
 
-function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, id) {
+function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId) {
 	var data;
-    //methodToCall checks
+    // methodToCall checks
 	if(methodToCall != null){
-		data = {methodToCall: methodToCall, renderFullView: false, viewId: 'savedCoursesSummaryView'};
+		// data = {methodToCall: methodToCall, renderFullView: false, viewId: 'savedCoursesSummaryView'};
+        data = {methodToCall: methodToCall, renderFullView: false};
 	}
 	else{
         var methodToCallInput = jq("input[name='methodToCall']");
@@ -202,7 +179,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
             data = {methodToCall: methodToCall, renderFullView: false};
         }
 	}
-    //remove this since the methodToCall was passed in or extracted from the page, to avoid issues
+    // remove this since the methodToCall was passed in or extracted from the page, to avoid issues
     jq("input[name='methodToCall']").remove();
 
 	if(additionalData != null){
@@ -257,7 +234,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                             },
 			                css: {
                                 border: 'none',
-                                width: '100%',
+                                width: '16px',
                                 top: '0px',
                                 left: '0px'
     						}
@@ -280,7 +257,11 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 		};
 	}
 	jq.extend(submitOptions, elementBlockingOptions);
-	var form = jq("#" + id + "_form");
+	if (formId) {
+        var form = jq("#" + formId + "_form");
+    } else {
+        var form = jq("#kualiForm");
+    }
 	form.ajaxSubmit(submitOptions);
 }
 function truncateField(id) {
