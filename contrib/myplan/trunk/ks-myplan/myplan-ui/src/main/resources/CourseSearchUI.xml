@@ -346,7 +346,7 @@
                 -->
                 <bean parent="Uif-Link" p:label="Course Name" p:title="@{#line.courseName}" p:linkLabel="@{#line.courseName}"
                       p:styleClasses="myplan-text-ellipsis" p:style="width: 175px;"
-                      p:hrefText="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{#line.courseId}"/>
+                      p:hrefText="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
                 <!--
                 <bean parent="InputField" p:propertyName="courseName" p:label="Course Name" p:styleClasses="courseName" p:readOnly="true">
                     <property name="control">

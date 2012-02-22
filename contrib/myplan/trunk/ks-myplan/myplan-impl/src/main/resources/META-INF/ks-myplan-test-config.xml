@@ -16,7 +16,6 @@
 -->
 
 <config>
-
     <param name="module.name">myplan-impl</param>
 
     <param name="db.vendor">oracle</param>

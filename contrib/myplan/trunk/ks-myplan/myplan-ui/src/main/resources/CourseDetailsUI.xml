@@ -476,7 +476,5 @@
 
     <bean id="time_schedule_links_formatter" class="org.kuali.student.myplan.course.util.TimeScheduleLinksListPropertyEditor">
         <property name="baseUrl" value="http://www.washington.edu/students/timeschd/" />
-        <property name="label" value="See full details about this course in *Quarter* *Year* Time Schedule"/>
-        <property name="title" value="See full details about this course in *Quarter* *Year* Time Schedule"/>
     </bean>
 </beans>

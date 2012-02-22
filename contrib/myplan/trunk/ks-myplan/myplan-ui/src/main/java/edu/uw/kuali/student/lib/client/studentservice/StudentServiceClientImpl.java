@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.restlet.Client;
@@ -19,6 +20,7 @@ import org.restlet.representation.Representation;
 import org.restlet.util.Series;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +137,6 @@ public class StudentServiceClientImpl
 			throw new ServiceException("Could not read the reply.", e);               
 		}
 
-        Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//x:a[@class='version']");
         Map<String,String> namespaces = new HashMap<String,String>();
         namespaces.put("x","http://www.w3.org/1999/xhtml");
@@ -170,6 +171,74 @@ public class StudentServiceClientImpl
             .append("quarter=").append(quarter).append("&")
             .append("curriculum_abbreviation=").append(curriculum);
         return sendQuery(url.toString());
+    }
+
+    @Override
+    public String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException {
+        /*
+         *  First get the section info for the given term and curriculum.
+         */
+        String sectionXml = getSectionInfo(year, term, curriculumCode);
+        Document document;
+        try {
+			document = reader.read(new StringReader(sectionXml));
+		} catch (Exception e) {
+			throw new ServiceException("Could not read the reply.", e);
+		}
+
+        /*
+         *  Parse a section href out of the response.
+         */
+        Map<String,String> namespaces = new HashMap<String,String>();
+        namespaces.put("sws","http://webservices.washington.edu/student/");
+
+        String xpathExpression = "//sws:Section/sws:Href";
+        DefaultXPath xpath = new DefaultXPath(xpathExpression);
+        xpath.setNamespaceURIs(namespaces);
+
+        Node node = xpath.selectSingleNode(document);
+        if (node == null) {
+            throw new ServiceException(String.format("XPath query for [%s] produced no results.", xpathExpression));
+        }
+
+        Element e = null;
+        try {
+            e = (Element) node;
+        } catch (ClassCastException cce) {
+            throw new ServiceException("Href was not an Element.", cce);
+        }
+
+        /*
+         *  Query up the section and read the TimeScheduleLinkAbbreviation from the response.
+         */
+        String sectionUrl = e.getTextTrim();
+        //  Get rid of the service name since we supply it in the baseUrl.
+        sectionUrl = sectionUrl.replace("student/", "");
+        String url =  baseUrl + sectionUrl;
+
+        logger.info("Querying SWS section service at [" + url + "].");
+        String sectionInfoXml = sendQuery(baseUrl + sectionUrl);
+        try {
+			document = reader.read(new StringReader(sectionInfoXml));
+		} catch (Exception ex) {
+			throw new ServiceException("Could not read the reply.", ex);
+		}
+
+        xpathExpression = "/sws:Section/sws:Curriculum/sws:TimeScheduleLinkAbbreviation";
+        xpath = new DefaultXPath(xpathExpression);
+        xpath.setNamespaceURIs(namespaces);
+        node = xpath.selectSingleNode(document);
+        if (node == null) {
+            throw new ServiceException(String.format("XPath query for [%s] produced no results.", xpathExpression));
+        }
+
+        try {
+            e = (Element) node;
+        } catch (ClassCastException cce) {
+            throw new ServiceException("TimeScheduleLinkAbbreviation was not an Element.", cce);
+        }
+
+        return e.getTextTrim();
     }
 
     /**

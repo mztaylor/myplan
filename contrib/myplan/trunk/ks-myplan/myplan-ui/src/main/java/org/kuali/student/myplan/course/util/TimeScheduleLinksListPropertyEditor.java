@@ -16,8 +16,12 @@ package org.kuali.student.myplan.course.util;
  */
 
 
+import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 import java.beans.PropertyEditorSupport;
@@ -29,8 +33,11 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     private final static Logger logger = Logger.getLogger(TimeScheduleLinksListPropertyEditor.class);
 
+
+    private StudentServiceClient studentServiceClient;
+
     private String baseUrl = "";
-    private String label = "";
+    private String label = "See full details about this course in {timeScheduleName} Time Schedule";
     private String title = label;
 
     private List<String> styleClasses;
@@ -59,7 +66,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     @Override
     public String getAsText() {
         CourseDetails courseDetails = (CourseDetails) super.getValue();
-
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
          *  Otherwise, add an empty list message to the list.
@@ -72,13 +78,13 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
 
         for (String scheduledTerm : scheduledTerms) {
-            String url = makeUrl(scheduledTerm, courseDetails.getCode());
+            String url = makeTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
+            String t = title.replace("{timeScheduleName}", scheduledTerm);
+            String l = label.replace("{timeScheduleName}", scheduledTerm);
             formattedText
                 .append("<" + listType.getListItemElementName() + ">")
-                .append("<a href=\"" + url + "' title='" + title + "\">")
-                .append(label)
-                .append(" ")
-                .append(scheduledTerm)
+                .append("<a href=\"" + url + "\" title=\"" + t + "\">")
+                .append(l)
                 .append("</a>")
                 .append("</" + listType.getListItemElementName() + ">");
         }
@@ -95,19 +101,34 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
      * @param courseCode
      * @return
      */
-    private String makeUrl(String term, String courseCode) {
+    private String makeTimeScheduleUrl(String term, String courseCode) {
         StringBuilder url = new StringBuilder(baseUrl);
-        //  Convert term to SWS format
-        String swsTerm = "SPR2012";
+
+        //  Parse out all of the necessary params.
+        String year = term.replaceAll("\\D+", "");
+        String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
+        String courseNumber = courseCode.replaceAll("^\\D+", "");
+        String curriculumCode = courseCode.replaceAll("\\d+$", "").trim();
+
+        //  Convert term to SWS format "SPR2012"
+        String swsTerm = termName.substring(0,3).toUpperCase() + year;
+
+        // Build the URL: SPR2012/chem.html#chem142
         url.append(swsTerm).append("/");
 
-        // SPR2012/chem.html#chem142
+        //  Query the student web service to convert the curriculum abbreviation to a TimeScheduleLinkAbbreviation.
+        String timeScheduleLinkAbbreviation = null;
+        try {
+            timeScheduleLinkAbbreviation = getStudentServiceClient().getTimeScheduleLinkAbbreviation(year, termName, curriculumCode);
+        } catch (ServiceException e) {
+            logger.error("Call to SWS failed.", e);
+            //  TODO: Is this the right thing to do?
+            return "";
+        }
 
-        String curriculumAbbreviation = "chem";
-        url.append(curriculumAbbreviation);
+        url.append(timeScheduleLinkAbbreviation);
         url.append(".html#");
-        url.append(curriculumAbbreviation);
-        String courseNumber = "142";
+        url.append(timeScheduleLinkAbbreviation);
         url.append(courseNumber);
         return url.toString();
     }
@@ -142,26 +163,22 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         return "";
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
     public String getBaseUrl() {
         return baseUrl;
     }
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public StudentServiceClient getStudentServiceClient() {
+        if (studentServiceClient == null) {
+            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService("{MyPlan}StudentServiceClient");
+        }
+        return studentServiceClient;
+    }
+
+    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
+        this.studentServiceClient = studentServiceClient;
     }
 }

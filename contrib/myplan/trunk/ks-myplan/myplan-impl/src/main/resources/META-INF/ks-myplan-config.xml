@@ -1,0 +1,41 @@
+<!--
+
+    Copyright 2010 The Kuali Foundation Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+
+<config>
+
+    <!-- TODO: UW SPECIFIC - UW Service Service Rest client defaults.
+    <param name="uw.studentservice.impl">edu.uw.kuali.student.lib.client.studentservice.FauxStudentServiceClientImpl</param>
+    <param name="uw.studentservice.url">https://ucswseval1.cac.washington.edu</param>
+    <param name="uw.keystore.filename">null</param>
+    <param name="uw.keystore.password">null</param>
+    <param name="uw.truststore.filename">null</param>
+    <param name="uw.truststore.password">null</param>
+    -->
+
+    <param name="uw.studentservice.impl">edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl</param>
+    <param name="uw.studentservice.url">https://ucswseval1.cac.washington.edu/student</param>
+    <param name="uw.keystore.filename">/home/sudduth/kuali/main/dev/uw.jts</param>
+    <param name="uw.keystore.password">secret</param>
+    <param name="uw.truststore.filename">/home/sudduth/kuali/main/dev/uw.jts</param>
+    <param name="uw.truststore.password">secret</param>
+
+    <!-- Rice URLS
+    <param name="ks.rice.personLookup.serviceAddress">http://localhost:8081/ks-embedded-dev/kr/lookup.do</param>
+	<param name="ks.rice.actionList.serviceAddress">http://localhost:8081/ks-embedded-dev/kew/ActionList.do</param>
+	-->
+
+</config>
