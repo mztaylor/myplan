@@ -51,4 +51,9 @@ public interface StudentServiceClient {
      * @return The XML response as a String.
      */
     public abstract String getSectionInfo(String year, String term, String curriculumCode) throws ServiceException;
+
+    /**
+     * Query the student web service (course service) to convert a course abbreviation to a TimeScheduleLinkAbbreviation
+     */
+    public abstract String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException;
 }

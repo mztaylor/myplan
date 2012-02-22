@@ -101,4 +101,10 @@ public class FauxStudentServiceClientImpl
         }
         return out;
     }
+
+    @Override
+    public String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException {
+        //  The TimeScheduleLinkAbbreviation often doesn't match the curriculum code, but sometimes it does.
+        return curriculumCode;
+    }
 }

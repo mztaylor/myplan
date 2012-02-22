@@ -15,7 +15,6 @@ package org.kuali.student.myplan.course.util;
  * limitations under the License.
  */
 
-
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -37,7 +36,7 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
 
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
-         *  Otherwise, add an empty list message to the list.
+         *  Otherwise, determine the style class.
          */
         String styleClassNames = "";
         if (collection.isEmpty()) {
@@ -45,7 +44,6 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
                 return "";
             } else {
                 styleClassNames = getEmptyListStyleClassesAsString();
-                collection.add(this.emptyListMessage);
             }
         } else {
             styleClassNames = getStyleClassesAsString();
@@ -57,20 +55,26 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
         Element listElement = DocumentHelper.createElement(listType.getListElementName());
         listElement.addAttribute("class", styleClassNames);
 
-        Iterator<Object> i = collection.iterator();
-        while (i.hasNext()) {
-            String term = (String) i.next();
-            String elemTxt = term;
-
-            // Convert Winter 2012 to WI 12
-            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
-            if(m.matches()) {
-                elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
-            }
-
+        if (collection.isEmpty()) {
             Element itemElement = listElement.addElement(listType.getListItemElementName());
-            itemElement.setText(elemTxt);
+            itemElement.setText(this.emptyListMessage);
+        } else {
+            Iterator<Object> i = collection.iterator();
+            while (i.hasNext()) {
+                String term = (String) i.next();
+                String elemTxt = term;
+
+                // Convert Winter 2012 to WI 12
+                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+                if(m.matches()) {
+                    elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
+                }
+
+                Element itemElement = listElement.addElement(listType.getListItemElementName());
+                itemElement.setText(elemTxt);
+            }
         }
+
         return listElement.asXML();
     }
 }

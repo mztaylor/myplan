@@ -19,7 +19,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
     -->
-
     <bean id="MyPlanTheme" abstract="true" parent="MyPlanTheme-parentBean"/>
     <bean id="MyPlanTheme-parentBean" parent="Uif-KradTheme">
         <property name="stylesheets">
