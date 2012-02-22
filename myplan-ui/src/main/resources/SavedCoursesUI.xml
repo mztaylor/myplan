@@ -117,9 +117,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}">
                     <property name="group.errorsField.render" value="false"/>
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
-                    <!--
-                    <property name="clientSideJs" value="openPopUp('@{#line.id}', 'course_details_popup_div', 'inquiry', 'start', 'savedCoursesPopupView', e, '@{#line.id}');"/>
-                    -->
+                    <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'savedCoursesPopupView',planItemId:'@{#line.id}'}, e);"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
