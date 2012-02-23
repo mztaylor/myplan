@@ -284,7 +284,6 @@
                   value="false"/>
         <property name="layoutManager.richTable.componentOptions">
             <map merge="true">
-
                 <entry key="oLanguage"
                        value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'0 results found', 'sZeroRecords':'0 results found', 'sProcessing':'DataTables is currently busy', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
                 <entry key="iDisplayLength" value="20"/>

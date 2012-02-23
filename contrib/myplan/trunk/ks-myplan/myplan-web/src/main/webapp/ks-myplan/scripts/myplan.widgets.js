@@ -1,4 +1,4 @@
-function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles, e, selector) {
+function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions) {
     e.stopPropagation();
 
     var popupHtml = jq('<div />').attr("id",id);
@@ -6,7 +6,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles
         jq(popupHtml).css(property, value);
     });
 
-	var popupOptions = {
+	var popupOptionsDefault = {
 		innerHtml: jq(popupHtml).clone().wrap('<div>').parent().html(),
 		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
 		manageMouseEvents: true,
@@ -14,6 +14,12 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles
 		tail: {align:'middle', hidden: false},
 		position: 'left'
 	};
+
+    if (popupOptions) {
+        var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    } else {
+        var popupSettings = popupOptionsDefault;
+    }
 
     jq(e.target).parents(selector).attr("class","myplan-popup-box");
 
@@ -24,7 +30,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles
 
 	var popupBox = jq(e.target).parents(selector);
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
-    popupBox.ShowBubblePopup(popupOptions, false);
+    popupBox.ShowBubblePopup(popupSettings, false);
 	popupBox.FreezeBubblePopup();
     var popupBoxId = popupBox.GetBubblePopupID();
 
