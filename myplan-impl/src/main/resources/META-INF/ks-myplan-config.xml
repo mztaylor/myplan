@@ -17,21 +17,13 @@
 
 <config>
 
-    <!-- TODO: UW SPECIFIC - UW Service Service Rest client defaults.
+    <!-- TODO: UW SPECIFIC - UW Service Service Rest client defaults.   -->
     <param name="uw.studentservice.impl">edu.uw.kuali.student.lib.client.studentservice.FauxStudentServiceClientImpl</param>
     <param name="uw.studentservice.url">https://ucswseval1.cac.washington.edu</param>
     <param name="uw.keystore.filename">null</param>
     <param name="uw.keystore.password">null</param>
     <param name="uw.truststore.filename">null</param>
     <param name="uw.truststore.password">null</param>
-    -->
-
-    <param name="uw.studentservice.impl">edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl</param>
-    <param name="uw.studentservice.url">https://ucswseval1.cac.washington.edu/student</param>
-    <param name="uw.keystore.filename">/home/sudduth/kuali/main/dev/uw.jts</param>
-    <param name="uw.keystore.password">secret</param>
-    <param name="uw.truststore.filename">/home/sudduth/kuali/main/dev/uw.jts</param>
-    <param name="uw.truststore.password">secret</param>
 
     <!-- Rice URLS
     <param name="ks.rice.personLookup.serviceAddress">http://localhost:8081/ks-embedded-dev/kr/lookup.do</param>
