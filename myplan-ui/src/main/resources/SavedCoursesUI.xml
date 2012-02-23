@@ -117,32 +117,35 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}">
                     <property name="group.errorsField.render" value="false"/>
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
-                    <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',planItemId:'@{#line.id}'}, e);"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
                                 <property name="styleClasses">
                                     <list merge="true">
-                                        <value>courseCode</value>
                                         <value>fl-text-bold</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.courseTitle}">
+                            <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}">
+                                <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',planItemId:'@{#line.id}'}, e, 'li',{width:'300px',minHeight:'16px'});"/>
+                                <property name="target" value=""/>
+                                <property name="hrefText" value="#"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-ellipsis</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!--<bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.courseTitle}">
+                                <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',planItemId:'@{#line.id}'}, e, 'li',{width:'300px',minHeight:'16px'});"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>courseName</value>
                                         <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
-                            </bean>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.credit}">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>courseCredits</value>
-                                    </list>
-                                </property>
-                            </bean>
+                            </bean>-->
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.credit}"/>
                         </list>
                     </property>
                 </bean>
