@@ -74,7 +74,7 @@
         </property>
     </bean>
 
-    <bean id="savedCoursesSummaryView" parent="MyPlanLookupView">
+    <bean id="SavedCoursesSummary-LookupView" parent="MyPlanLookupView">
         <property name="title" value="Saved Courses Summary"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
@@ -117,7 +117,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}">
                     <property name="group.errorsField.render" value="false"/>
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
-                    <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'savedCoursesPopupView',planItemId:'@{#line.id}'}, e);"/>
+                    <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',planItemId:'@{#line.id}'}, e);"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
@@ -164,7 +164,7 @@
                     </property>
                     <property name="linkLabel" value="View @{searchResults.size() lt 2 ? 'course' : 'all '+searchResults.size()+' courses'} in full details"/>
                     <property name="title" value="View @{searchResults.size() lt 2 ? 'course' : 'all '+searchResults.size()+' courses'} in full details"/>
-                    <property name="hrefText" value="lookup?methodToCall=search&amp;viewId=savedCoursesDetailView"/>
+                    <property name="hrefText" value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                     <property name="render" value="@{searchResults.size() gt 0 ? 'true' : 'false'}"/>
                     <property name="target" value=""/>
                 </bean>
@@ -185,9 +185,9 @@
         </property>
     </bean>
 
-    <bean id="savedCoursesDetailView" parent="MyPlanLookupView">
+    <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
         <property name="page.title" value="Watch List"/>
-        <property name="viewName" value="savedCoursesDetailView"/>
+        <property name="viewName" value="SavedCoursesDetail-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName"
@@ -263,7 +263,7 @@
                                 </property>
                                 <property name="linkLabel" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
                                 <property name="title" value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
-                                <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+                                <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
@@ -362,7 +362,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
+                                <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'SavedCoursesListActions-FormView', '@{#line.id}', '@{#line.courseDetails.code}', e);"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
@@ -377,8 +377,8 @@
         </property>
     </bean>
 
-    <bean id="savedCoursesPopupView" parent="MyPlanInquiryView">
-        <property name="viewName" value="savedCoursesPopupView"/>
+    <bean id="SavedCoursesPopup-InquiryView" parent="MyPlanInquiryView">
+        <property name="viewName" value="SavedCoursesPopup-InquiryView"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.PlanItemInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -421,7 +421,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'savedCoursesListActionsView', '@{dataObject.id}', '@{dataObject.courseDetails.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'SavedCoursesListActions-FormView', '@{dataObject.id}', '@{dataObject.courseDetails.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -438,6 +438,7 @@
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>
+                                        <value>fl-font-size-90</value>
                                         <value>myplan-text-italic</value>
                                     </list>
                                 </property>
@@ -465,7 +466,7 @@
                     </property>
                     <property name="linkLabel" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
                     <property name="title" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
                 <!-- Scheduled Quarters -->
                 <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.scheduledTerms"
@@ -491,15 +492,15 @@
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkLabel" value="View more details"/>
                     <property name="title" value="View more details about @{dataObject.courseDetails.code}"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=courseDetailsInquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
                 </bean>
             </list>
         </property>
     </bean>
 
     <!-- Saved courses actions view and response pages -->
-    <bean id="savedCoursesListActionsView" parent="MyPlanFormView">
-        <property name="id" value="savedCoursesListActionsView"/>
+    <bean id="SavedCoursesListActions-FormView" parent="MyPlanFormView">
+        <property name="id" value="SavedCoursesListActions-FormView"/>
         <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>

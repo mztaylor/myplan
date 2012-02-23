@@ -14,7 +14,7 @@
          and limitations under the License. -->
 
 
-    <bean id="degreeAuditView" parent="MyPlanFormView">
+    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="id" value="degreeAuditView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="styleClasses" value="myplan"/>

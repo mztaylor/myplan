@@ -91,6 +91,17 @@ body {
     border-color: transparent;
     background: none;
 }
+.myplan-stacked-list,
+.myplan-stacked-list ul,
+.myplan-stacked-list li,
+.myplan-stacked-list ul li {
+    margin: 0;
+    padding: 0;
+}
+.myplan-stacked-list li,
+.myplan-stacked-list ul li {
+    display: block;
+}
 .myplan-data-list dl,
 .myplan-data-list dl dd {
     margin: 0;
