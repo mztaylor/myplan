@@ -1,39 +1,68 @@
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, popupStyles, e, selector) {
     e.stopPropagation();
-    jq(".myplan-popup-box").each(function() {
-        jq(this).HideAllBubblePopups();
-        jq(this).RemoveBubblePopup();
-    });
+
     var popupHtml = jq('<div />').attr("id",id);
     jQuery.each(popupStyles, function(property, value) {
         jq(popupHtml).css(property, value);
     });
-    jq(popupHtml).append('<div id="' + id + '_group"></div>');
+
 	var popupOptions = {
-		innerHtml: jq(popupHtml).clone().wrap('<div>').parent().html(), // '<div id="' + id + '_div" style="width: 300px; min-height: 16px;"><div id="' + id + '_group"></div></div>',
+		innerHtml: jq(popupHtml).clone().wrap('<div>').parent().html(),
+		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
 		manageMouseEvents: true,
 		selectable: true,
-		tail: {align:'top', hidden: false},
-		distance: '0px',
-		openingSpeed: 0,
-        closingSpeed: 0,
-		position: 'left',
-		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-		themeName: 'grey'
+		tail: {align:'middle', hidden: false},
+		position: 'left'
 	};
+
     jq(e.target).parents(selector).attr("class","myplan-popup-box");
+
+    jq(".myplan-popup-box").each(function() {
+        jq(this).HideAllBubblePopups();
+        jq(this).RemoveBubblePopup();
+    });
+
 	var popupBox = jq(e.target).parents(selector);
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
-	var popupBoxId = popupBox.GetBubblePopupID();
-	popupBox.ShowBubblePopup(popupOptions, false);
+    popupBox.ShowBubblePopup(popupOptions, false);
 	popupBox.FreezeBubblePopup();
+    var popupBoxId = popupBox.GetBubblePopupID();
 
-	jq("html").click(function() {
+    jq("html").click(function() {
 		popupBox.HideAllBubblePopups();
 		popupBox.RemoveBubblePopup();
 	});
 
-    myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions);
+    var tempForm = jq('<form />').hide();
+	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
+    jQuery.each(retrieveOptions, function(name, value) {
+        jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+    });
+    jq("body").append(tempForm);
+
+    var elementToBlock = jq("#" + id);
+
+	var updateRefreshableComponentCallback = function(htmlContent){
+		var component = jq("#" + getId + "_div", htmlContent);
+		elementToBlock.unblock({onUnblock: function(){
+				// replace component
+				if(jq("#" + id).length){
+					popupBox.SetBubblePopupInnerHtml(component);
+				}
+
+				runHiddenScripts(getId + "_div");
+
+			}
+		});
+	};
+
+    if (!methodToCall) {
+        methodToCall = "search";
+    }
+
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback,
+                         {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    jq("form#"+ id + "_form").remove();
 }
 
 function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
@@ -86,7 +115,7 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 		// TODO: Add validation for if there was an error adding - to be added later
         if (addedId.length > 0) {
 			elementToBlock.unblock();
-			myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'savedCoursesSummaryView'},addedId);
+			myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
@@ -163,7 +192,6 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 	var data;
     // methodToCall checks
 	if(methodToCall != null){
-		// data = {methodToCall: methodToCall, renderFullView: false, viewId: 'savedCoursesSummaryView'};
         data = {methodToCall: methodToCall, renderFullView: false};
 	}
 	else{

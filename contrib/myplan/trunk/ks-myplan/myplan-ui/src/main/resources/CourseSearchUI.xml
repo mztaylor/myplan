@@ -14,8 +14,8 @@
          and limitations under the License. -->
 
 
-    <bean id="courseSearchView" parent="MyPlanFormView">
-        <property name="id" value="courseSearchView"/>
+    <bean id="CourseSearch-FormView" parent="MyPlanFormView">
+        <property name="id" value="CourseSearch-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
         <property name="styleClasses">
@@ -366,7 +366,7 @@
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
                 <bean parent="Uif-ActionImage" p:label="" p:styleClasses="fl-text-align-center" p:style="width:55px;">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
-                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{#line.courseId}', e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'SavedCoursesListActions-FormView', '@{#line.courseId}', e);"/>
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
@@ -684,7 +684,7 @@
             <bean parent="Uif-HeaderField-Five"/>
         </property>
         <property name="onDocumentReadyScript"
-                  value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'savedCoursesSummaryView'});"/>
+                  value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});"/>
     </bean>
 
 </beans>

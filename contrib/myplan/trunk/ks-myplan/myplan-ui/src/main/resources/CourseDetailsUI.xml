@@ -268,7 +268,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-ActionFieldBase" p:actionLabel="Save This Course">
-                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'savedCoursesListActionsView', '@{dataObject.courseId}', e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('add_saved_course', 'plan', 'addItem', 'SavedCoursesListActions-FormView', '@{dataObject.courseId}', e);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -460,6 +460,11 @@
                 <!-- The propertyEditor renders the time schedule info as a list of links. -->
                 <bean parent="Uif-DataField" p:propertyName="this" p:labelField.render="false">
                     <property name="propertyEditor" ref="time_schedule_links_formatter"/>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-stacked-list</value>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>
