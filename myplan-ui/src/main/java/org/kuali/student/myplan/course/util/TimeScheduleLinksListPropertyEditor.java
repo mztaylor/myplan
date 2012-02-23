@@ -51,12 +51,13 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     @Override
     public void setValue(Object value) {
 	    if (value == null) {
-            throw new IllegalArgumentException("CourseDetails object was null.");
+            logger.error("Collection was null.");
+            return;
         }
 
         if ( ! (value instanceof CourseDetails)) {
-            throw new IllegalArgumentException("Value was not an instance of CourseDetails, instead was: "
-                    + (value == null ? null : value.getClass()));
+            logger.error(String.format("Value was thype [%s] instead of CourseDetails.", value.getClass()));
+            return;
         }
         super.setValue(value);
     }
@@ -65,6 +66,11 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     public String getAsText() {
         //  Don't alter course details.
         final CourseDetails courseDetails = (CourseDetails) super.getValue();
+
+        if (courseDetails == null) {
+            return "";
+        }
+
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
          *  Otherwise, add an empty list message to the list.
@@ -72,6 +78,9 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         String styleClassNames = getEmptyListStyleClassesAsString();
 
         List<String> scheduledTerms = courseDetails.getScheduledTerms();
+        if (scheduledTerms == null) {
+            return "";
+        }
 
         StringBuffer formattedText = new StringBuffer();
         formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
