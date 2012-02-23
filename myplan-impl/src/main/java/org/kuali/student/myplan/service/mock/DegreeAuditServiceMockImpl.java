@@ -45,7 +45,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     }
 
     @Override
-    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String html = "DegreeAuditServiceMockImpl";
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         AuditDataSource dataSource = new AuditDataSource(html, auditId);

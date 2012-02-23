@@ -4,31 +4,42 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 public class DegreeAuditForm extends UifFormBase {
 
-    public String getAuditText() {
-        String text =
-            "<div><pre>\n" +
-            "this is\n" +
-            "the textual\n" +
-            "audit report\n" +
+    private String auditText =
+            "<div><pre>\n"+
+            "this is\n"+
+            "the textual\n"+
+            "audit report\n"+
             "</pre></div>";
-        return text;
+
+    public String getAuditText() {
+        return auditText;
     }
 
-    public String getAuditHtml() {
-        String html =
+    public void setAuditText( String auditText )
+    {
+        this.auditText = auditText;
+    }
+
+    private String auditHtml =
             "<div>" +
-            "<ul>\n" +
-            "<li>\n" +
-            "this is\n" +
-            "</li>\n" +
-            "<li>\n" +
-            "the textual\n" +
-            "</li>\n" +
-            "<li>\n" +
-            "audit report\n" +
-            "</li>\n" +
-            "</ul>\n" +
-            "</div>";
-        return html;
+                    "<ul>\n" +
+                    "<li>\n" +
+                    "this is\n" +
+                    "</li>\n" +
+                    "<li>\n" +
+                    "the textual\n" +
+                    "</li>\n" +
+                    "<li>\n" +
+                    "audit report\n" +
+                    "</li>\n" +
+                    "</ul>\n" +
+                    "</div>";
+
+    public String getAuditHtml() {
+        return auditHtml;
+    }
+
+    public void setAuditHtml( String auditHtml ) {
+        this.auditHtml = auditHtml;
     }
 }
