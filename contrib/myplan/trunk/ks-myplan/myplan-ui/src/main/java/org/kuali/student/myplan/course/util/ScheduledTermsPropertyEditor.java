@@ -32,7 +32,11 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
     @Override
     public String getAsText() {
 
-        Collection<Object> collection = (Collection<Object>) super.getValue();
+        final Collection<Object> collection = (Collection<Object>) super.getValue();
+
+        if (collection == null) {
+            return "";
+        }
 
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.

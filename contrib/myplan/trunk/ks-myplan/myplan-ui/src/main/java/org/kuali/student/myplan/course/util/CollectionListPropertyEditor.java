@@ -47,13 +47,15 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
     @Override
     public void setValue(Object value) {
 	    if (value == null) {
-            throw new IllegalArgumentException("Collection was null.");
+            logger.error("Collection was null.");
+            return;
         }
 
         if ( ! (value instanceof Collection)) {
-            throw new IllegalArgumentException("Value was not an instance of Collection, instead was: "
-                    + (value == null ? null : value.getClass()));
+            logger.error(String.format("Value was thype [%s] instead of Collection.", value.getClass()));
+            return;
         }
+
         super.setValue(value);
     }
 
@@ -61,6 +63,10 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
     public String getAsText() {
         //  Don't alter the collection.
         final Collection<Object> collection = (Collection<Object>) super.getValue();
+
+        if (collection == null) {
+            return "";
+        }
 
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
