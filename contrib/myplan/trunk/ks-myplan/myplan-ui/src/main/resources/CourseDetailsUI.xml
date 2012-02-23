@@ -457,16 +457,7 @@
     <bean id="course_details_links" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
-                <!-- TODO: Time schedule links go here
-                 http://www.washington.edu/students/timeschd/SPR2012/chem.html#chem142
-
-                <bean parent="Uif-Link"
-                      p:linkLabel="See full details about this course in *Quarter* *Year* Time Schedule"
-                      p:title="See full details about this course in *Quarter* *Year* Time Schedule"
-                      p:hrefText="http://www.washington.edu/students/timeschd/@{dataObject.campusLocations.contains('Seattle') ? '' : dataObject.campusLocations.get(0).substring(0,1) + '/' } "
-                      p:target="">
-                </bean> -->
-
+                <!-- The propertyEditor renders the time schedule info as a list of links. -->
                 <bean parent="Uif-DataField" p:propertyName="this" p:labelField.render="false">
                     <property name="propertyEditor" ref="time_schedule_links_formatter"/>
                 </bean>
@@ -474,6 +465,7 @@
         </property>
     </bean>
 
+    <!-- TODO: UW specific. Uses the student web service. -->
     <bean id="time_schedule_links_formatter" class="org.kuali.student.myplan.course.util.TimeScheduleLinksListPropertyEditor">
         <property name="baseUrl" value="http://www.washington.edu/students/timeschd/" />
     </bean>
