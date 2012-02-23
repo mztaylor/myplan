@@ -190,7 +190,7 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
-    <bean id="courseDetailsInquiryView" parent="MyPlanInquiryView">
+    <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
