@@ -18,7 +18,6 @@ package org.kuali.student.myplan.course.util;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -32,7 +31,6 @@ import java.util.List;
 public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport implements Serializable {
 
     private final static Logger logger = Logger.getLogger(TimeScheduleLinksListPropertyEditor.class);
-
 
     private StudentServiceClient studentServiceClient;
 
@@ -65,7 +63,8 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     @Override
     public String getAsText() {
-        CourseDetails courseDetails = (CourseDetails) super.getValue();
+        //  Don't alter course details.
+        final CourseDetails courseDetails = (CourseDetails) super.getValue();
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
          *  Otherwise, add an empty list message to the list.
@@ -81,8 +80,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
             String url = makeTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
             String t = title.replace("{timeScheduleName}", scheduledTerm);
             String l = label.replace("{timeScheduleName}", scheduledTerm);
-            formattedText
-                .append("<" + listType.getListItemElementName() + ">")
+            formattedText.append("<" + listType.getListItemElementName() + ">")
                 .append("<a href=\"" + url + "\" title=\"" + t + "\">")
                 .append(l)
                 .append("</a>")
@@ -121,15 +119,15 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         try {
             timeScheduleLinkAbbreviation = getStudentServiceClient().getTimeScheduleLinkAbbreviation(year, termName, curriculumCode);
         } catch (ServiceException e) {
+            //  If the service call fails just return the base URL.
             logger.error("Call to SWS failed.", e);
-            //  TODO: Is this the right thing to do?
-            return "";
+            return baseUrl;
         }
 
-        url.append(timeScheduleLinkAbbreviation);
-        url.append(".html#");
-        url.append(timeScheduleLinkAbbreviation);
-        url.append(courseNumber);
+        url.append(timeScheduleLinkAbbreviation)
+            .append(".html#")
+            .append(timeScheduleLinkAbbreviation)
+            .append(courseNumber);
         return url.toString();
     }
 
@@ -173,7 +171,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     public StudentServiceClient getStudentServiceClient() {
         if (studentServiceClient == null) {
-            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService("{MyPlan}StudentServiceClient");
+            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService(StudentServiceClient.SERVICE_NAME);
         }
         return studentServiceClient;
     }

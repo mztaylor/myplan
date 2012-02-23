@@ -5,6 +5,9 @@ import org.restlet.representation.Representation;
 import java.util.List;
 
 public interface StudentServiceClient {
+
+    public static final String SERVICE_NAME = "{MyPlan}StudentServiceClient";
+
     /**
      * Set the base URL for the service.
      * @param baseUri A

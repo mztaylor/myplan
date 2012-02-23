@@ -59,7 +59,8 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
 
     @Override
     public String getAsText() {
-        Collection<Object> collection = (Collection<Object>) super.getValue();
+        //  Don't alter the collection.
+        final Collection<Object> collection = (Collection<Object>) super.getValue();
 
         /*
          *  If the collection is empty and no empty list message is defined then return an empty string.
