@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
@@ -18,8 +21,6 @@ import org.kuali.student.core.statement.service.StatementService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
-import org.kuali.student.enrollment.courseoffering.infc.CourseOffering;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
@@ -27,9 +28,14 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.academicplan.infc.PlanItem;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
+import org.kuali.student.r2.common.dto.ContextInfo;
 
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
@@ -47,6 +53,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient AtpService atpService;
 
     private transient EnumerationManagementService enumService;
+
+    private transient AcademicPlanService academicPlanService;
 
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
@@ -75,6 +83,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCourseDescription(course.getDescr().getFormatted());
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
+        //
+
 
         // Terms Offered
         initializeAtpTypesCache();
@@ -107,7 +117,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         for (StatementTreeViewInfo stvi : statements) {
             String statement = null;
             try {
-                statement = getStatementService().translateStatementTreeViewToNL(stvi, "KUALI.RULE.PREVIEW", "en");
+                statement = getStatementService().translateStatementTreeViewToNL(stvi, "kuali.uw.rule.crsRequisite.myplan", "en");
             } catch (Exception e) {
                 logger.error("Translation of Course Statement to natural language failed.", e);
                 //  TODO: How should this be handled?
@@ -156,6 +166,36 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
 
             courseDetails.setScheduledTerms(scheduledTerms);
+
+
+            //---------------------------------------------------------- added 2/23 10:33am yunas
+
+            AcademicPlanService academicPlanService = getAcademicPlanService();
+
+            Person user = GlobalVariables.getUserSession().getPerson();
+
+            ContextInfo context = new ContextInfo();
+            String studentID = user.getPrincipalId();
+
+            String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+
+            List<LearningPlan> plans = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
+            if (plans.size() > 0) {
+                LearningPlan plan = plans.get(0);
+                List<PlanItem> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
+                courseDetails.setInSavedCourseList(false);
+                for (PlanItem planItemInPlanTemp : planItemsInPlan) {
+                    if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
+                        courseDetails.setInSavedCourseList(true);
+                        courseDetails.setSavedCourseItemId(planItemInPlanTemp.getId());
+                        courseDetails.setSavedCourseDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
+                        break;
+                    }
+                }
+            }
+
+            // ----------------------------------------------------------------------------------
+
 
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode());
@@ -270,4 +310,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
     }
 
+    public AcademicPlanService getAcademicPlanService() {
+        return academicPlanService;
+    }
 }

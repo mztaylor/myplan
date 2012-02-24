@@ -127,7 +127,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}">
-                                <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',planItemId:'@{#line.id}'}, e, 'li',{width:'300px',minHeight:'16px'});"/>
+                                <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'SavedCoursesPopup-InquiryView',courseId:'@{#line.courseDetails.courseId}'}, e, 'li',{width:'300px',minHeight:'16px'});"/>
                                 <property name="target" value=""/>
                                 <property name="hrefText" value="#"/>
                                 <property name="styleClasses">
@@ -382,8 +382,8 @@
 
     <bean id="SavedCoursesPopup-InquiryView" parent="MyPlanInquiryView">
         <property name="viewName" value="SavedCoursesPopup-InquiryView"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
-        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.PlanItemInquiryViewHelperServiceImpl"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
@@ -424,7 +424,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'SavedCoursesListActions-FormView', '@{dataObject.id}', '@{dataObject.courseDetails.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('remove_saved_course', 'plan', 'removeItem', 'SavedCoursesListActions-FormView', '@{dataObject.savedCourseItemId}', '@{dataObject.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -435,7 +435,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
+                            <bean parent="Uif-DataField" p:propertyName="savedCourseDateCreated" p:label="Added on"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true" p:style="float:right;">
                                 <property name="styleClasses">
@@ -467,12 +467,12 @@
                             <value>fl-text-bold</value>
                         </list>
                     </property>
-                    <property name="linkLabel" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
-                    <property name="title" value="@{dataObject.courseDetails.code} @{dataObject.courseDetails.courseTitle} (@{dataObject.courseDetails.credit})"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="linkLabel" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
+                    <property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseId}"/>
                 </bean>
                 <!-- Scheduled Quarters -->
-                <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.scheduledTerms"
+                <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="scheduledTerms"
                       p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                     <property name="styleClasses">
@@ -482,7 +482,7 @@
                     </property>
                 </bean>
                 <!-- Requisites -->
-                <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="courseDetails.requisites"
+                <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="requisites"
                       p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                     <property name="propertyEditor" ref="data_list_formatter"/>
                     <property name="styleClasses">
@@ -494,8 +494,8 @@
                 </bean>
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkLabel" value="View more details"/>
-                    <property name="title" value="View more details about @{dataObject.courseDetails.code}"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseDetails.courseId}"/>
+                    <property name="title" value="View more details about @{dataObject.code}"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseId}"/>
                 </bean>
             </list>
         </property>
