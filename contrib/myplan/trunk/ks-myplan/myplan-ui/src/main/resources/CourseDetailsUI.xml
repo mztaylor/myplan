@@ -296,6 +296,7 @@
         <property name="items">
             <list>
                 <!-- Course Description -->
+                <!-- TODO: figure out way to display empty messaging when there is no course description -->
                 <bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
@@ -303,6 +304,8 @@
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
+                    <!-- TODO: checking field length to set render property, commenting out until solution found for empty messaging -->
+                    <!--<property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>-->
                 </bean>
 
                 <!-- Requisites -->
@@ -586,6 +589,7 @@
         <property name="items">
             <list>
                 <!-- If course is not in saved course list -->
+                <!-- TODO: boolean for inSavedCourseList does not appear to be returning expected results -->
                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? true : false}">
                     <property name="items">
                         <list>
@@ -650,6 +654,7 @@
                                     </list>
                                 </property>
                             </bean>
+                            <!-- TODO: savedCourseDateCreated is returning blank -->
                             <bean parent="Uif-DataField" p:propertyName="savedCourseDateCreated" p:label="Added on"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true" p:style="float:right;">
