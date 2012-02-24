@@ -1,8 +1,7 @@
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions) {
-
     e.stopPropagation();
 
-    var popupHtml = jq('<div />').attr("id",id);
+    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-box");
     jQuery.each(popupStyles, function(property, value) {
         jq(popupHtml).css(property, value);
     });
@@ -30,9 +29,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         var popupBox = jq(e.target).parents(selector);
     }
 
-    popupBox.attr("class","myplan-popup-box");
+    popupBox.attr("class","myplan-popup-target");
 
-    jq(".myplan-popup-box").each(function() {
+    jq(".myplan-popup-target").each(function() {
         jq(this).HideAllBubblePopups();
         jq(this).RemoveBubblePopup();
     });
