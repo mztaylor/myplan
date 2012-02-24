@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.dataobject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,6 +13,13 @@ public class CourseDetails {
     private String courseTitle;
     private String credit;
     private String courseDescription;
+
+
+    // Saved course properties
+    private boolean inSavedCourseList;
+    private String savedCourseItemId;
+    private Date savedCourseDateCreated;
+
 
     private List<String> campusLocations;
     private List<String> termsOffered;
@@ -74,6 +82,29 @@ public class CourseDetails {
 
     public void setCourseDescription(String courseDescription) {
         this.courseDescription = courseDescription;
+    }
+     public boolean isInSavedCourseList() {
+        return inSavedCourseList;
+    }
+
+    public void setInSavedCourseList(boolean inSavedCourseList) {
+        this.inSavedCourseList = inSavedCourseList;
+    }
+
+    public String getSavedCourseItemId() {
+        return savedCourseItemId;
+    }
+
+    public void setSavedCourseItemId(String savedCourseItemId) {
+        this.savedCourseItemId = savedCourseItemId;
+    }
+
+    public Date getSavedCourseDateCreated() {
+        return savedCourseDateCreated;
+    }
+
+    public void setSavedCourseDateCreated(Date savedCourseDateCreated) {
+        this.savedCourseDateCreated = savedCourseDateCreated;
     }
 
     public List<String> getGenEdRequirements() {

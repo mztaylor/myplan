@@ -1,4 +1,5 @@
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions) {
+
     e.stopPropagation();
 
     var popupHtml = jq('<div />').attr("id",id);
@@ -12,7 +13,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		manageMouseEvents: true,
 		selectable: true,
 		tail: {align:'middle', hidden: false},
-		position: 'left'
+		position: 'left',
+        align: 'center',
+        alwaysVisible: false
 	};
 
     if (popupOptions) {
@@ -21,14 +24,19 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         var popupSettings = popupOptionsDefault;
     }
 
-    jq(e.target).parents(selector).attr("class","myplan-popup-box");
+    if (selector == window.event.target) {
+        var popupBox = jq(selector);
+    } else {
+        var popupBox = jq(e.target).parents(selector);
+    }
+
+    popupBox.attr("class","myplan-popup-box");
 
     jq(".myplan-popup-box").each(function() {
         jq(this).HideAllBubblePopups();
         jq(this).RemoveBubblePopup();
     });
 
-	var popupBox = jq(e.target).parents(selector);
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
     popupBox.ShowBubblePopup(popupSettings, false);
 	popupBox.FreezeBubblePopup();
