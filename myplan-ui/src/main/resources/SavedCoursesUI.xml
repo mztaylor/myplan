@@ -136,6 +136,7 @@
                                     </list>
                                 </property>
                             </bean>
+                            <!-- TODO: currently using link on course title in order to set onClickScript for popup -->
                             <!--<bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.courseTitle}">
                                 <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'CourseDetailsPopup-InquiryView',planItemId:'@{#line.id}'}, e, 'li',{width:'300px',minHeight:'16px'});"/>
                                 <property name="styleClasses">
