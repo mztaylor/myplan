@@ -52,7 +52,7 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
         }
 
         if ( ! (value instanceof Collection)) {
-            logger.error(String.format("Value was thype [%s] instead of Collection.", value.getClass()));
+            logger.error(String.format("Value was type [%s] instead of Collection.", value.getClass()));
             return;
         }
 
@@ -61,11 +61,11 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
 
     @Override
     public String getAsText() {
-        //  Don't alter the collection.
-        final Collection<Object> collection = (Collection<Object>) super.getValue();
+        Collection<Object> collection = (Collection<Object>) super.getValue();
 
-        if (collection == null) {
-            return "";
+        boolean isCollectionNullOrEmpty = false;
+        if (collection == null || collection.isEmpty()) {
+            isCollectionNullOrEmpty = true;
         }
 
         /*
@@ -73,12 +73,11 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
          *  Otherwise, add an empty list message to the list.
          */
         String styleClassNames = "";
-        if (collection.isEmpty()) {
+        if (isCollectionNullOrEmpty) {
             if (this.emptyListMessage.length() == 0) {
                 return "";
             } else {
                 styleClassNames = getEmptyListStyleClassesAsString();
-                collection.add(this.emptyListMessage);
             }
         } else {
             styleClassNames = getStyleClassesAsString();
@@ -87,16 +86,33 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
         StringBuffer formattedText = new StringBuffer();
         formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
 
-        Iterator<Object> i = collection.iterator();
-        while (i.hasNext()) {
-            Object elem = i.next();
-            formattedText.append("<" + listType.getListItemElementName() + ">");
-            formattedText.append(elem.toString());
-            formattedText.append("</" + listType.getListItemElementName() + ">");
+        if (isCollectionNullOrEmpty) {
+            formattedText.append(wrapListItem(emptyListMessage));
+        } else {
+            formattedText.append(makeHtmlList(collection));
         }
 
         formattedText.append("</" + listType.getListElementName() + ">");
         return formattedText.toString();
+    }
+
+
+    protected String makeHtmlList(Collection c) {
+        StringBuilder list = new StringBuilder();
+        Iterator<Object> i = c.iterator();
+        while (i.hasNext()) {
+            Object elem = i.next();
+            list.append(wrapListItem(elem.toString()));
+        }
+        return list.toString();
+    }
+
+    protected String wrapListItem(String value) {
+        StringBuilder elementText = new StringBuilder();
+        elementText.append("<" + listType.getListItemElementName() + ">");
+        elementText.append(value);
+        elementText.append("</" + listType.getListItemElementName() + ">");
+        return elementText.toString();
     }
 
     /**
