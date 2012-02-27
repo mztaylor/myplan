@@ -58,9 +58,9 @@ public class CourseSearchStrategyTest {
         param = params.get( 0 );
         assertEquals( CourseSearchStrategy.SEATTLE_CAMPUS, param.getValue() );
         param = params.get( 1 );
-        assertEquals( CourseSearchStrategy.TACOMA_CAMPUS, param.getValue() );
-        param = params.get( 2 );
         assertEquals( CourseSearchStrategy.BOTHELL_CAMPUS, param.getValue() );
+        param = params.get( 2 );
+        assertEquals( CourseSearchStrategy.TACOMA_CAMPUS, param.getValue() );
     }
 
     @Test
