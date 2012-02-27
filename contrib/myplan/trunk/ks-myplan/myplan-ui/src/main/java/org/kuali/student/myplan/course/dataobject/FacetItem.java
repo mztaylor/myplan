@@ -10,6 +10,8 @@ public class FacetItem implements Comparable<FacetItem> {
 
     /* The name which will be displayed */
     private String displayName;
+    
+    private String title;
 
     public FacetItem() {}
 
@@ -19,6 +21,7 @@ public class FacetItem implements Comparable<FacetItem> {
     public FacetItem(String key, String displayName) {
         setKey(key);
         setDisplayName(displayName);
+        setTitle(title);
     }
 
     public String getKey() {
@@ -27,6 +30,14 @@ public class FacetItem implements Comparable<FacetItem> {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDisplayName() {
