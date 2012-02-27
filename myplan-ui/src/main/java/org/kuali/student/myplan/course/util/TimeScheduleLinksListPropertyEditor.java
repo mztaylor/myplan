@@ -51,7 +51,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     @Override
     public void setValue(Object value) {
 	    if (value == null) {
-            logger.error("Collection was null.");
+            logger.error("Object was null.");
             return;
         }
 

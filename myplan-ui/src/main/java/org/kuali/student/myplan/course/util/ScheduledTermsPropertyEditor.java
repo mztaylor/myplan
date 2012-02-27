@@ -30,55 +30,21 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
     private final static Logger logger = Logger.getLogger(ScheduledTermsPropertyEditor.class);
 
     @Override
-    public String getAsText() {
+    protected String makeHtmlList(Collection c) {
+        StringBuilder list = new StringBuilder();
+        Iterator<Object> i = c.iterator();
+        while (i.hasNext()) {
+            String term = (String) i.next();
+            String elemTxt = term;
 
-        final Collection<Object> collection = (Collection<Object>) super.getValue();
-
-        if (collection == null) {
-            return "";
-        }
-
-        /*
-         *  If the collection is empty and no empty list message is defined then return an empty string.
-         *  Otherwise, determine the style class.
-         */
-        String styleClassNames = "";
-        if (collection.isEmpty()) {
-            if (this.emptyListMessage.length() == 0) {
-                return "";
-            } else {
-                styleClassNames = getEmptyListStyleClassesAsString();
+            // Convert Winter 2012 to WI 12
+            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+            if(m.matches()) {
+                elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
             }
-        } else {
-            styleClassNames = getStyleClassesAsString();
+            list.append(wrapListItem(elemTxt));
         }
-
-        StringBuffer formattedText = new StringBuffer();
-        formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
-
-        Element listElement = DocumentHelper.createElement(listType.getListElementName());
-        listElement.addAttribute("class", styleClassNames);
-
-        if (collection.isEmpty()) {
-            Element itemElement = listElement.addElement(listType.getListItemElementName());
-            itemElement.setText(this.emptyListMessage);
-        } else {
-            Iterator<Object> i = collection.iterator();
-            while (i.hasNext()) {
-                String term = (String) i.next();
-                String elemTxt = term;
-
-                // Convert Winter 2012 to WI 12
-                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
-                if(m.matches()) {
-                    elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
-                }
-
-                Element itemElement = listElement.addElement(listType.getListItemElementName());
-                itemElement.setText(elemTxt);
-            }
-        }
-
-        return listElement.asXML();
+        return list.toString();
     }
+
 }
