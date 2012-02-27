@@ -92,7 +92,7 @@ public class DegreeAuditController extends UifControllerBase {
 
         catch( Exception e )
         {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
 
         return getUIFModelAndView(form);

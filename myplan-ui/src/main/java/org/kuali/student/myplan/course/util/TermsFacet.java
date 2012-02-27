@@ -137,6 +137,6 @@ public class TermsFacet extends AbstractFacet {
         AU,
         WI,
         SP,
-        SU;
+        SU
     }
 }
