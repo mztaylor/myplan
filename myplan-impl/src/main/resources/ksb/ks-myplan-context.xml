@@ -6,66 +6,65 @@
   governing permissions and limitations under the License. -->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-    <!-- This context requires that a spring Transaction Manager named 'transactionManager' be defined -->
-    <import resource="classpath:org/kuali/rice/krad/uif/UifControlDefinitions.xml"/>
+  <!-- This context requires that a spring Transaction Manager named 'transactionManager' be defined -->
+  <import resource="classpath:org/kuali/rice/krad/uif/UifControlDefinitions.xml" />
 
-    <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
+  <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
+
+  <import resource="classpath:ks-data-dictionary-services-configuration.xml" />
+  <import resource="classpath:ks-data-dictionary-validator-configuration.xml" />
+  <!-- Add the myplan data dictionaries -->
+  <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml" />
+  <import resource="classpath:ks-academic-plan-daos.xml" />
 
 
-    <import resource="classpath:ks-data-dictionary-services-configuration.xml"/>
-    <import resource="classpath:ks-data-dictionary-validator-configuration.xml"/>
-    <!-- Add the myplan data dictionaries -->
-    <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml"/>
-    <import resource="classpath:ks-academic-plan-daos.xml"/>
+  <!-- JTA -->
+  <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean id="myplanDataSource" class="org.kuali.rice.student.core.database.DerbyXAPoolDataSource">
+    <property name="transactionManager" ref="userTransaction" />
+    <property name="driverClassName" value="${ks.myplan.datasource.driver.name}" />
+    <property name="maxSize" value="${ks.myplan.datasource.maxSize}" />
+    <property name="minSize" value="${ks.myplan.datasource.minSize}" />
+    <property name="maxWait" value="${ks.myplan.datasource.maxWait}" />
+    <property name="validationQuery" value="${ks.myplan.datasource.validationQuery}" />
+    <property name="url" value="${ks.myplan.datasource.url}" />
+    <property name="username" value="${ks.myplan.datasource.username}" />
+    <property name="password" value="${ks.myplan.datasource.password}" />
+  </bean>
 
-    <!-- JTA -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <bean id="myplanDataSource" class="org.kuali.rice.student.core.database.DerbyXAPoolDataSource">
-        <property name="transactionManager" ref="userTransaction"/>
-        <property name="driverClassName" value="${ks.myplan.datasource.driver.name}"/>
-        <property name="maxSize" value="${ks.myplan.datasource.maxSize}"/>
-        <property name="minSize" value="${ks.myplan.datasource.minSize}"/>
-        <property name="maxWait" value="${ks.myplan.datasource.maxWait}"/>
-        <property name="validationQuery" value="${ks.myplan.datasource.validationQuery}"/>
-        <property name="url" value="${ks.myplan.datasource.url}"/>
-        <property name="username" value="${ks.myplan.datasource.username}"/>
-        <property name="password" value="${ks.myplan.datasource.password}"/>
-    </bean>
-
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+     <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
-        <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
-        <property name="planItemDao" ref="planItemDao"/>
-        <property name="planItemTypeDao" ref="planItemTypeDao"/>
+	  	<property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
+	  	<property name="planItemDao" ref="planItemDao"/>
+	  	<property name="planItemTypeDao" ref="planItemTypeDao"/>
     </bean>
 
 
-    <bean id="ks.exp.academicPlanService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
-        <property name="serviceDefinition">
-            <bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition">
-                <property name="jaxWsService" value="true"/>
-                <property name="service" ref="academicPlanService"/>
-                <property name="serviceInterface"
-                          value="org.kuali.student.myplan.academicplan.service.AcademicPlanService"/>
-                <property name="localServiceName" value="AcademicPlanService"/>
-                <property name="serviceNameSpaceURI" value="http://student.kuali.org/wsdl/acadplan"/>
-                <property name="busSecurity" value="${ks.lum.bus.security}"/>
-            </bean>
-        </property>
-    </bean>
+  <bean id="ks.exp.academicPlanService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
+    <property name="serviceDefinition">
+      <bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition">
+        <property name="jaxWsService" value="true" />
+        <property name="service" ref="academicPlanService" />
+        <property name="serviceInterface" value="org.kuali.student.myplan.academicplan.service.AcademicPlanService" />
+        <property name="localServiceName" value="AcademicPlanService" />
+        <property name="serviceNameSpaceURI" value="http://student.kuali.org/wsdl/acadplan" />
+        <property name="busSecurity" value="${ks.lum.bus.security}" />
+      </bean>
+    </property>
+  </bean>
+
 
     <!-- Stuff for uAchieve -->
+<!--
     <import resource="classpath:uachieve/apis/context/uachieveapi_loaderContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_daoContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_dataAccessContext-local.xml"/>
@@ -80,9 +79,8 @@
     <bean id="degreeAuditService" class="org.kuali.student.myplan.service.DegreeAuditServiceImpl">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
     </bean>
-    <!--
-        <bean id="degreeAuditService" class="org.kuali.student.myplan.service.mock.DegreeAuditServiceMockImpl"/>
-    -->
+-->
+    <bean id="degreeAuditService" class="org.kuali.student.myplan.service.mock.DegreeAuditServiceMockImpl"/>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
         <property name="serviceDefinition">
@@ -98,25 +96,21 @@
         </property>
     </bean>
 
-    <tx:annotation-driven transaction-manager="JtaTxManager" order="1000"/>
-
-    <!-- Exception mapping. This is needed because many operations are proxied and do not throw exceptions until a later time -->
-    <bean id="mapExceptionAdvisor" class="org.kuali.student.common.util.ExceptionMappingAdvice">
-        <property name="defaultException" value="org.kuali.student.common.exceptions.OperationFailedException"/>
-        <property name="exceptionMapping">
-            <map>
-                <entry key="javax.persistence.EntityExistsException"
-                       value="org.kuali.student.common.exceptions.AlreadyExistsException"/>
-                <entry key="org.hibernate.exception.ConstraintViolationException"
-                       value="org.kuali.student.common.exceptions.AlreadyExistsException"/>
-            </map>
-        </property>
-    </bean>
-    <aop:config>
-        <aop:aspect id="dataAccessToBusinessException" ref="mapExceptionAdvisor">
-            <aop:after-throwing pointcut="execution(* org.kuali.student.myplan.service.AcademicPlanServiceImpl.*(..))"
-                                method="afterThrowing" throwing="ex"/>
-        </aop:aspect>
-    </aop:config>
+  <!-- Exception mapping. This is needed because many operations are proxied and do not throw exceptions until a later time -->
+  <bean id="mapExceptionAdvisor" class="org.kuali.student.common.util.ExceptionMappingAdvice">
+    <property name="defaultException" value="org.kuali.student.common.exceptions.OperationFailedException" />
+    <property name="exceptionMapping">
+      <map>
+        <entry key="javax.persistence.EntityExistsException" value="org.kuali.student.common.exceptions.AlreadyExistsException" />
+        <entry key="org.hibernate.exception.ConstraintViolationException" value="org.kuali.student.common.exceptions.AlreadyExistsException" />
+      </map>
+    </property>
+  </bean>
+  <aop:config>
+    <aop:aspect id="dataAccessToBusinessException" ref="mapExceptionAdvisor">
+      <aop:after-throwing pointcut="execution(* org.kuali.student.myplan.service.AcademicPlanServiceImpl.*(..))"
+        method="afterThrowing" throwing="ex" />
+    </aop:aspect>
+  </aop:config>
 
 </beans>

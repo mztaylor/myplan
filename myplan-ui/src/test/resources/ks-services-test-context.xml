@@ -13,96 +13,16 @@
           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <bean id="jotm" class="org.springframework.transaction.jta.JotmFactoryBean">
-        <property name="defaultTimeout" value="${transaction.timeout}"/>
-    </bean>
+    <import resource="classpath:ks-myplan-test-dao-context.xml"/>
 
-    <bean id="userTransaction" class="org.kuali.rice.core.framework.persistence.jta.UserTransactionFactoryBean">
-        <property name="defaultUserTransaction">
-            <ref local="jotm"/>
-        </property>
-    </bean>
-    <bean id="jtaTransactionManager"
-          class="org.kuali.rice.core.framework.persistence.jta.TransactionManagerFactoryBean">
-        <property name="defaultTransactionManager">
-            <ref local="jotm"/>
-        </property>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" depends-on="jotm">
-        <property name="userTransaction">
-            <ref local="userTransaction"/>
-        </property>
-        <property name="transactionManager">
-            <ref local="jtaTransactionManager"/>
-        </property>
-        <property name="defaultTimeout" value="${transaction.timeout}"/>
-    </bean>
-
-    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
-        <property name="transactionManager">
-            <ref bean="transactionManager"/>
-        </property>
-    </bean>
-
-    <bean id="dataSource" class="org.kuali.rice.core.framework.persistence.jdbc.datasource.XAPoolDataSource">
-        <property name="transactionManager">
-            <ref local="jtaTransactionManager"/>
-        </property>
-        <property name="driverClassName" value="${datasource.driver.name}"/>
-        <property name="url" value="${datasource.url}"/>
-        <property name="maxSize" value="${datasource.pool.maxSize}"/>
-        <property name="minSize" value="${datasource.pool.minSize}"/>
-        <property name="maxWait" value="${datasource.pool.maxWait}"/>
-        <property name="validationQuery" value="${datasource.pool.validationQuery}"/>
-        <property name="username" value="${datasource.username}"/>
-        <property name="password" value="${datasource.password}"/>
-    </bean>
-
-    <bean id="nonTransactionalDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${datasource.driver.name}"/>
-        <property name="url" value="${datasource.url}"/>
-        <property name="maxActive" value="${datasource.pool.maxSize}"/>
-        <property name="minIdle" value="${datasource.pool.minSize}"/>
-        <property name="initialSize" value="${datasource.pool.minSize}"/>
-        <property name="validationQuery" value="${datasource.pool.validationQuery}"/>
-        <property name="username" value="${datasource.username}"/>
-        <property name="password" value="${datasource.password}"/>
-        <property name="accessToUnderlyingConnectionAllowed" value="true"/>
-    </bean>
-
-
-    <bean id="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="databasePlatform"
-                  value="${jpa.databasePlatform}"/>
-        <property name="showSql" value="${jpa.showSql}"/>
-        <property name="generateDdl" value="${jpa.generateDdl}"/>
-    </bean>
-
-    <!-- Default JPA EntityManagerFactory -->
-    <bean id="defaultEntityManagerFactory" abstract="true"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" autowire-candidate="false"
-          autowire="byType">
-        <property name="jpaVendorAdapter" ref="vendorAdapter"/>
-        <property name="dataSource" ref="dataSource"/>
-             <property name="jpaPropertyMap">
-            <map>
-                <entry key="hibernate.transaction.manager_lookup_class" value="${ks.core.jpa.JpaProperties.hibernate.transaction.manager_lookup_class}"/>
-                <entry key="hibernate.hbm2ddl.auto" value="${ks.core.jpa.JpaProperties.hibernate.hbm2ddl.auto}"/>
-                <entry key="hibernate.connection.release_mode" value="${ks.core.jpa.JpaProperties.hibernate.connection.release_mode}"/>
-               	<!--<entry key="hibernate.connection.autocommit" value="${ks.core.jpa.JpaProperties.hibernate.connection.autocommit}"/>-->
-            </map>
-        </property>
-        <!--<property name="persistenceUnitPostProcessors" ref="postProcessorList" />-->
-    </bean>
-
-    <!-- Atp Service Config -->
-    <bean id="atpEntityManagerFactory" parent="defaultEntityManagerFactory">
+   <bean id="atpEntityManagerFactory" parent="defaultEntityManagerFactory" autowire-candidate="false" autowire="no">
         <property name="persistenceUnitName" value="Atp"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/atp-persistence.xml"/>
+        <property name="dataSource" ref="myplanDataSourceXAPool"/>
     </bean>
 
-    <bean id="atpEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+    <bean id="atpEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean"
+          autowire-candidate="false" autowire="no">
         <property name="entityManagerFactory" ref="atpEntityManagerFactory"/>
     </bean>
 
@@ -125,6 +45,7 @@
     <bean id="luEntityManagerFactory" parent="defaultEntityManagerFactory">
         <property name="persistenceUnitName" value="Lu"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/lu-persistence.xml"/>
+        <property name="dataSource" ref="myplanDataSourceXAPool"/>
     </bean>
 
     <bean id="luEntityManager"
@@ -185,6 +106,35 @@
         <property name="luService" ref="luServiceImpl"/>
         <!--<property name="loService" ref="loClient"/>-->
         <!--<property name="lrcService" ref="lrcClient"/>-->
+    </bean>
+
+
+
+    <!-- Enumeration Service Config -->
+    <bean id="emEntityManagerFactory" parent="defaultEntityManagerFactory">
+        <property name="persistenceUnitName" value="EnumerationManagement"/>
+        <property name="persistenceXmlLocation"
+            value="classpath:META-INF/enumeration-persistence.xml" />
+        <property name="dataSource" ref="myplanDataSourceXAPool" />
+    </bean>
+
+    <bean id="emEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="emEntityManagerFactory" />
+    </bean>
+
+    <bean id="emDao"
+        class="org.kuali.student.core.enumerationmanagement.dao.impl.EnumerationManagementDAOImpl">
+        <property name="em" ref="emEntityManager" />
+    </bean>
+
+    <bean id="emSearchManager" class="org.kuali.student.common.search.service.impl.SearchManagerImpl">
+        <constructor-arg index="0" value="classpath:em-search-config.xml" />
+    </bean>
+
+    <bean id="emServiceImpl"
+        class="org.kuali.student.core.enumerationmanagement.service.impl.EnumerationManagementServiceImpl">
+        <property name="enumDAO" ref="emDao" />
+        <property name="searchManager" ref="emSearchManager"/>
     </bean>
 
 </beans>

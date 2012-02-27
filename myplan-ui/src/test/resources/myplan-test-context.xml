@@ -15,30 +15,8 @@
 
     <context:annotation-config/>
 
-    <bean id="config" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
-        <property name="configLocations">
-            <list>
-                <value>classpath:META-INF/myplan-test-config.xml</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize" />
-        <property name="arguments">
-            <list><ref bean="config"/></list>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="properties" value="#{config.getProperties()}" />
-	</bean>
-
     <import resource="classpath:myplan-search-config.xml"/>
-
     <import resource="classpath:ks-services-test-context.xml"/>
-    <!--<import resource="classpath:ksb/ks-lu-context.xml"/>-->
-
 
     <bean id="searchController" class="org.kuali.student.myplan.course.controller.CourseSearchController">
         <property name="luService" ref="luServiceImpl"/>
@@ -94,6 +72,7 @@
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>
+        <property name="enumService" ref="emServiceImpl"/>
     </bean>
 
     <bean id="coursePreReqSearch" class="org.kuali.student.myplan.course.service.CoursePreReqSearch">

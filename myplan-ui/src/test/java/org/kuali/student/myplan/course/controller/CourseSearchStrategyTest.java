@@ -56,11 +56,11 @@ public class CourseSearchStrategyTest {
 
         SearchParam param = null;
         param = params.get( 0 );
-        assertEquals( CourseSearchStrategy.SEATTLE_CAMPUS, param.getValue() );
+        assertEquals( "0", param.getValue() );
         param = params.get( 1 );
-        assertEquals( CourseSearchStrategy.BOTHELL_CAMPUS, param.getValue() );
+        assertEquals( "1", param.getValue() );
         param = params.get( 2 );
-        assertEquals( CourseSearchStrategy.TACOMA_CAMPUS, param.getValue() );
+        assertEquals( "2", param.getValue() );
     }
 
     @Test
