@@ -1,10 +1,14 @@
 package org.kuali.student.myplan.course.controller;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.*;
+import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
+import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -14,6 +18,19 @@ import java.util.List;
 
 public class CourseSearchStrategy
 {
+    private final Logger logger = Logger.getLogger(CourseSearchStrategy.class);
+
+    private transient EnumerationManagementService enumService;
+    
+
+    protected synchronized EnumerationManagementService getEnumerationService() {
+        if (this.enumService == null) {
+            this.enumService = (EnumerationManagementService) GlobalResourceLoader
+                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
+        }
+        return this.enumService;
+    }
+    
     public HashMap<String,String> fetchCourseDivisions()
     {
         HashMap<String,String> map = new HashMap<String,String>();
@@ -46,21 +63,52 @@ public class CourseSearchStrategy
 
     // TODO: Fetch these from the enumeration service, ala CourseDetailsInquiryViewHelperServiceImpl.initializeCampusLocations
     public final static String NO_CAMPUS = "-1";
-    public final static String SEATTLE_CAMPUS = "0";
-    public final static String BOTHELL_CAMPUS = "1";
-    public final static String TACOMA_CAMPUS = "2";
-
     public void addCampusParams( ArrayList<SearchRequest> requests, CourseSearchForm form )
     {
-        String campus1 = form.getCampusSeattle() ? SEATTLE_CAMPUS : NO_CAMPUS;
-        String campus2 = form.getCampusTacoma() ? TACOMA_CAMPUS : NO_CAMPUS;
-        String campus3 = form.getCampusBothell() ? BOTHELL_CAMPUS : NO_CAMPUS;
-        for( SearchRequest request : requests )
-        {
-            request.addParam("campus1", campus1);
-            request.addParam("campus2", campus2);
-            request.addParam("campus3", campus3);
-        }
+        String str = form.getCampusSelect();
+        String[] results=null;
+                if(!str.equalsIgnoreCase(""))
+                {
+                    results = str.split(",");
+                }
+
+        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
+                try{
+
+                    enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
+                }
+                catch (Exception e)
+                {
+                    logger.error("No Values for campuses found",e);
+                }
+        String[] campus = new String[enumeratedValueInfoList.size()-1];
+                for(int k=0;k<campus.length;k++)
+                {
+                    campus[k]=NO_CAMPUS;
+                }
+        if(results!=null){
+                for(int i=0;i<results.length;i++)
+                {
+                    for(EnumeratedValueInfo enumeratedValueInfo: enumeratedValueInfoList)
+                    {
+                        if(results[i].equalsIgnoreCase(enumeratedValueInfo.getCode()))
+                        {
+                            campus[i]=results[i];
+                            break;
+                        }
+                    }
+                }
+         }
+        //  Add the individual term items.
+            for( SearchRequest request : requests )
+            {
+                for(int j=0;j<campus.length;j++)
+                {
+                    int count=j+1;
+                    String campusKey="campus"+count;
+                    request.addParam(campusKey,campus[j]);
+                }
+            }
     }
 
     /**
