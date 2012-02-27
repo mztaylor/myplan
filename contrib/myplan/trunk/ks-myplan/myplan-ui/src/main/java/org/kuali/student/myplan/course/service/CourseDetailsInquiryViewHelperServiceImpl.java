@@ -60,6 +60,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
 
+    private static final String EMPTY_COURSE_DESCRIPTION_TEXT =  "No description is available";
+
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
         return retrieveCourseDetails((String) fieldValues.get("courseId"));
@@ -80,11 +82,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
-        courseDetails.setCourseDescription(course.getDescr().getFormatted());
+
+        String desc = course.getDescr().getFormatted();
+        if (desc == null || desc.trim().equals("")) {
+            desc = EMPTY_COURSE_DESCRIPTION_TEXT;
+        }
+        courseDetails.setCourseDescription(desc);
+
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
-        //
-
 
         // Terms Offered
         initializeAtpTypesCache();

@@ -127,7 +127,7 @@ public class CourseSearchItem {
         this.creditMax = creditMax;
     }
 
-    public enum CreditType { fixed, range, multiple, unknown };
+    public enum CreditType { fixed, range, multiple, unknown }
 
     public CreditType getCreditType() {
         return creditType;
