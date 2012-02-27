@@ -167,27 +167,20 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="campusSeattle" p:label="Seattle campus"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
+                <bean parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" p:defaultValue="0">
                     <property name="control">
-                        <bean parent="Uif-CheckboxControl"/>
+                        <bean parent="Uif-HorizontalCheckboxesControl"/>
                     </property>
-                </bean>
-                <bean parent="Uif-InputField" p:propertyName="campusTacoma" p:label="Tacoma campus"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
-                    <property name="control">
-                        <bean parent="Uif-CheckboxControl"/>
-                    </property>
-                </bean>
-                <bean parent="Uif-InputField" p:propertyName="campusBothell" p:label="Bothell campus"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelPlacement="RIGHT" p:defaultValue="true">
-                    <property name="control">
-                        <bean parent="Uif-CheckboxControl"/>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.CampusSearch"/>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
+
+
+
 
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
@@ -645,7 +638,7 @@
         <property name="propertyName" value="curriculumFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:title="@{#line.displayName}"
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:title="@{#line.title}"
                       p:onClickScript="facetFilter('facetCurriculum', '@{#line.key}', this);" p:hrefText="#"
                       p:labelField.render="false">
                     <property name="styleClasses">
