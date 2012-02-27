@@ -296,7 +296,7 @@
         <property name="items">
             <list>
                 <!-- Course Description -->
-                <bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
+                <!--<bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -304,8 +304,9 @@
                         </list>
                     </property>
                     <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>
-                </bean>
-                <bean parent="Uif-MessageField" p:label="Course Description" p:labelField.renderColon="false" p:messageText="No description is available">
+                </bean>-->
+                <bean parent="Uif-MessageField" p:label="Course Description" p:labelField.renderColon="false"
+                      p:messageText="No description is available">
                     <!--<property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -456,7 +457,6 @@
                         </list>
                     </property>
                     <property name="propertyEditor" ref="data_list_formatter"/>
-                    <!--<property name="render" value="@{dataObject.genEdRequirements.size() gt 0 ? true : false}"/>-->
                 </bean>
 
                 <!-- Campus Locations -->

@@ -140,7 +140,12 @@
     </bean>
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="" />
+        <property name="emptyListMessage" value="No projected quarter information is available" />
+        <property name="emptyListStyleClasses">
+            <list merge="true">
+                <value>empty</value>
+            </list>
+        </property>
     </bean>
 
 </beans>
