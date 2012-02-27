@@ -31,12 +31,9 @@ public class CourseSearchForm extends UifFormBase {
     public static final String SEARCH_TERM_ANY_ITEM = "any";
 
     /** Form fields */
-    private boolean campusBothell;
-    private boolean campusSeattle;
-    private boolean campusTacoma;
-
     private String searchQuery;
     private String searchTerm = SEARCH_TERM_ANY_ITEM;
+    private String campusSelect;
 
     /** Search results list. */
     private List<CourseSearchItem> courseSearchResults;
@@ -47,6 +44,14 @@ public class CourseSearchForm extends UifFormBase {
     private List<FacetItem> termsFacetItems;
     private List<FacetItem> genEduReqFacetItems;
     private List<FacetItem> creditsFacetItems;
+
+    public String getCampusSelect() {
+        return campusSelect;
+    }
+
+    public void setCampusSelect(String campusSelect) {
+        this.campusSelect = campusSelect;
+    }
 
     public CourseSearchForm() {
         super();
@@ -59,30 +64,6 @@ public class CourseSearchForm extends UifFormBase {
     public void setCourseSearchResults(List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> courseSearchResults) {
         this.courseSearchResults = courseSearchResults;
     }
-
-    public Boolean getCampusBothell() {
-		return campusBothell;
-	}
-
-	public void setCampusBothell(Boolean campusBothell) {
-		this.campusBothell = campusBothell;
-	}
-
-	public Boolean getCampusSeattle() {
-		return campusSeattle;
-	}
-
-	public void setCampusSeattle(Boolean campusSeattle) {
-		this.campusSeattle = campusSeattle;
-	}
-
-	public Boolean getCampusTacoma() {
-		return campusTacoma;
-	}
-
-	public void setCampusTacoma(Boolean campusTacoma) {
-		this.campusTacoma = campusTacoma;
-	}
 
     public String getSearchQuery() {
         return searchQuery;
@@ -150,5 +131,6 @@ public class CourseSearchForm extends UifFormBase {
     public void setSavedCoursesItemList( List<SavedCoursesItem> savedCoursesItemList ) {
         this.savedCoursesItemList = savedCoursesItemList;
     }
+
 
 }
