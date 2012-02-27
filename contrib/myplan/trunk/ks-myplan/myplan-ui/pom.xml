@@ -26,6 +26,13 @@
             <artifactId>myplan-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.kuali.student.myplan</groupId>
+            <artifactId>myplan-impl</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.kuali.student.myplan</groupId>
@@ -76,6 +83,14 @@
             <artifactId>ks-enroll-impl</artifactId>
             <version>${kuali.student.enroll.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kuali.student.common</groupId>
+            <artifactId>ks-common-test</artifactId>
+            <version>${kuali.student.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!--  End Kuali Student Dependencies -->
 
         <!--  Local KS-Enroll-Impl dependencies-->
