@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.student.common.search.dto.SearchParam;
 import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,9 +42,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddCampusParams() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
-        form.setCampusSeattle( true );
-        form.setCampusTacoma( true );
-        form.setCampusBothell( true );
+        form.setCampusSelect("0,1,2");
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add( new SearchRequest( "test" ));
@@ -67,9 +66,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddCampusParams2() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
-        form.setCampusSeattle( false );
-        form.setCampusTacoma( false );
-        form.setCampusBothell( false );
+        form.setCampusSelect("");
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add( new SearchRequest( "test" ));
@@ -89,6 +86,7 @@ public class CourseSearchStrategyTest {
         param = params.get( 2 );
         assertEquals( CourseSearchStrategy.NO_CAMPUS, param.getValue() );
     }
+
 
     @Test
     public void testAddDivisionSearchesNothing()
