@@ -296,7 +296,6 @@
         <property name="items">
             <list>
                 <!-- Course Description -->
-                <!-- TODO: figure out way to display empty messaging when there is no course description -->
                 <bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
@@ -304,8 +303,16 @@
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
-                    <!-- TODO: checking field length to set render property, commenting out until solution found for empty messaging -->
-                    <!--<property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>-->
+                    <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>
+                </bean>
+                <bean parent="Uif-MessageField" p:label="Course Description" p:labelField.renderColon="false" p:messageText="No description is available">
+                    <!--<property name="labelField.styleClasses">
+                        <list merge="true">
+                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-nowrap</value>
+                        </list>
+                    </property>-->
+                    <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? false : true}"/>
                 </bean>
 
                 <!-- Requisites -->
