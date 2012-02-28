@@ -176,6 +176,9 @@ body {
 .myplan-text-nowrap {
     white-space: nowrap !important;
 }
+.myplan-text-wrap {
+    white-space: normal !important;
+}
 .myplan-text-normal,
 .myplan-text-normal label {
     font-weight: normal !important;
@@ -508,10 +511,15 @@ body {
 /* Course Details Popup ########################################################################### */
 .myplan-popup-box {
 	min-height: 24px !important;
+    position: relative;
+    padding: 5px;
 }
 .myplan-popup-close {
     float: right;
     cursor: pointer;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 .myplan-popup-box div.blockElement {
     left: 142px !important;

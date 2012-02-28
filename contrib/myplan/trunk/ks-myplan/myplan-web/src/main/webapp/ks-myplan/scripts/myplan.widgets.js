@@ -60,8 +60,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		elementToBlock.unblock({onUnblock: function(){
             // replace component
             if(jq("#" + id).length){
-                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<div><img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/></div>'));
-                jq("#" + popupBoxId + " .myplan-popup-close").click(function() {
+                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>'));
+                jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
                     popupBox.RemoveBubblePopup();
                 });

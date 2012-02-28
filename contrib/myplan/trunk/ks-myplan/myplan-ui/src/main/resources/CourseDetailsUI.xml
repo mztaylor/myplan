@@ -525,6 +525,7 @@
                         <list>
                             <ref bean="course_details_popup_info" />
                             <ref bean="course_details_popup_actions" />
+                            <bean parent="Uif-MessageField" p:messageText="inSavedCourseList - @{dataObject.inSavedCourseList ? 'true' : 'false'}"/>
                         </list>
                     </property>
                 </bean>
@@ -540,10 +541,19 @@
         </property>
         <property name="items">
             <list>
+                <!--<bean parent="Uif-ImageField" p:labelField.render="false" p:altText="Close"
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnClose.png">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-popup-close</value>
+                        </list>
+                    </property>
+                </bean>-->
                 <bean parent="Uif-Link" p:target="">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-text-bold</value>
+                            <value>myplan-text-wrap</value>
                         </list>
                     </property>
                     <property name="linkLabel" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
