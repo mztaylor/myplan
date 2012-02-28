@@ -96,6 +96,10 @@
             <artifactId>uachieve-apis</artifactId>
             <version>4.0.14</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
 
         <!-- TODO: Fix this -->
         <dependency>

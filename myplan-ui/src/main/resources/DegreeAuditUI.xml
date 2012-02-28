@@ -95,7 +95,7 @@
                  <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditText()}" p:style="display:block;">                            </bean>
+                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}" p:style="display:block;">                            </bean>
                         </list>
                     </property>
                 </bean>
