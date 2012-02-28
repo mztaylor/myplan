@@ -181,8 +181,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 LearningPlan plan = plans.get(0);
                 List<PlanItem> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
                 courseDetails.setInSavedCourseList(false);
+
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {
+
                     if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
+
                         courseDetails.setInSavedCourseList(true);
                         courseDetails.setSavedCourseItemId(planItemInPlanTemp.getId());
                         courseDetails.setSavedCourseDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
@@ -191,6 +194,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
+            // ----------------------------------------------------------------------------------
             // ----------------------------------------------------------------------------------
 
 
@@ -308,6 +312,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
     public AcademicPlanService getAcademicPlanService() {
+       if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
+                    AcademicPlanServiceConstants.SERVICE_NAME));
+        }
         return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
     }
 }
