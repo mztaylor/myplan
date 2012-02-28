@@ -64,7 +64,7 @@
 
 
     <!-- Stuff for uAchieve -->
-<!--
+
     <import resource="classpath:uachieve/apis/context/uachieveapi_loaderContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_daoContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_dataAccessContext-local.xml"/>
@@ -79,8 +79,8 @@
     <bean id="degreeAuditService" class="org.kuali.student.myplan.service.DegreeAuditServiceImpl">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
     </bean>
--->
-    <bean id="degreeAuditService" class="org.kuali.student.myplan.service.mock.DegreeAuditServiceMockImpl"/>
+
+<!--    <bean id="degreeAuditService" class="org.kuali.student.myplan.service.mock.DegreeAuditServiceMockImpl"/> -->
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
         <property name="serviceDefinition">
