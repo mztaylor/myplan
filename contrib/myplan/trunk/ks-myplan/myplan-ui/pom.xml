@@ -26,6 +26,7 @@
             <artifactId>myplan-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kuali.student.myplan</groupId>
             <artifactId>myplan-impl</artifactId>

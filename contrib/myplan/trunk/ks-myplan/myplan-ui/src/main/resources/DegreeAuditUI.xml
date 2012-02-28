@@ -14,7 +14,7 @@
          and limitations under the License. -->
 
 
-    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
+    <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
         <property name="id" value="degreeAuditView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="styleClasses" value="myplan"/>
@@ -39,5 +39,72 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.course.form.DegreeAuditForm"/>
     </bean>
+
+
+    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
+        <property name="id" value="DegreeAudit-FormView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="entryPageId" value="course_search"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Two"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
+                    <property name="instructionalText"
+                              value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="audit_report_section"/>
+                            <ref bean="myplan_section"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.course.form.DegreeAuditForm"/>
+    </bean>
+
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+         <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
+         <property name="items">
+            <list>
+                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditText()}" p:style="display:block;">                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+
+
 
 </beans>
