@@ -525,7 +525,6 @@
                         <list>
                             <ref bean="course_details_popup_info" />
                             <ref bean="course_details_popup_actions" />
-                            <bean parent="Uif-MessageField" p:messageText="inSavedCourseList - @{dataObject.inSavedCourseList ? 'true' : 'false'}"/>
                         </list>
                     </property>
                 </bean>
@@ -606,8 +605,7 @@
         <property name="items">
             <list>
                 <!-- If course is not in saved course list -->
-                <!-- TODO: boolean for inSavedCourseList does not appear to be returning expected results -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? true : false}">
+                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
@@ -641,7 +639,7 @@
                     </property>
                 </bean>
                 <!-- If course is in saved course list -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? false : true}">
+                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? true : false}">
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
