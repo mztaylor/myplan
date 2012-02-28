@@ -58,13 +58,16 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jq("#" + getId + "_div", htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
-				// replace component
-				if(jq("#" + id).length){
-					popupBox.SetBubblePopupInnerHtml(component);
-				}
+            // replace component
+            if(jq("#" + id).length){
+                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<div><img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/></div>'));
+                jq("#" + popupBoxId + " .myplan-popup-close").click(function() {
+                    popupBox.HideAllBubblePopups();
+                    popupBox.RemoveBubblePopup();
+                });
+            }
 
-				runHiddenScripts(getId + "_div");
-
+            runHiddenScripts(getId + "_div");
 			}
 		});
 	};
@@ -73,8 +76,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         methodToCall = "search";
     }
 
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback,
-                         {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
 
@@ -109,15 +111,16 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         methodToCall = "search";
     }
 
-	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback,
-                         {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
 
-function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
-	var tempForm = jq('<form />');
+function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
+	var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-    jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="courseId" value="' + courseId + '" />').hide();
+	jQuery.each(retrieveOptions, function(name, value) {
+        jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+    });
     jq("body").append(tempForm);
 
     var elementToBlock = jq("#" + id + "_form");
@@ -125,10 +128,9 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jq("[id='add_plan_item_key']", htmlContent);
 		var addedId = jq.trim( jq(component).text() );
-		// TODO: Add validation for if there was an error adding - to be added later
         if (addedId.length > 0) {
 			elementToBlock.unblock();
-			myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
+			myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
@@ -148,7 +150,7 @@ function addSavedCourse(id, action, methodToCall, viewId, courseId, e) {
     jq("form#" + id + "_form").remove();
 }
 
-function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseCode, e) {
+function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode, e) {
 	var dialogConfirm = jq('<div />');
 	jq(dialogConfirm).attr("id","dialog-confirm").attr("title","Delete Course");
 	jq(dialogConfirm).html('<p>Are you sure that you want to delete <strong>' + courseCode + '</strong>?</p><p>Once deleted, you cannot undo.</p>');
@@ -159,31 +161,26 @@ function removeSavedCourse(id, action, methodToCall, viewId, planItemId, courseC
 		modal: false,
 		buttons: {
 			"Yes": function () {
-				var tempForm = jq('<form />');
+				var tempForm = jq('<form />').hide();
                 jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
-                jq(tempForm).append('<input type="hidden" name="viewId" value="' + viewId + '" /><input type="hidden" name="planItemId" value="' + planItemId + '" />');
-                jq(tempForm).hide();
-				jq("body").append(tempForm);
+                jQuery.each(retrieveOptions, function(name, value) {
+                    jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+                });
+                jq("body").append(tempForm);
 
 				var elementToBlock = jq("#" + id + "_form");
 
 				var updateRefreshableComponentCallback = function(htmlContent){
-					// TODO: Add validation for if there was an error deleting - to be added later
-                    if ( jq("#remove_plan_item_result_group .kr-errorsField ul.errorLines li", htmlContent).size() > 0 ) {
-                        var errorText = '<ul>' + jq("#remove_plan_item_result_group .kr-errorsField ul.errorLines", htmlContent).html() + '</ul>';
-                        showGrowl(errorText, 'Delete Item Error', 'errorGrowl');
-                    } else {
-                        elementToBlock.unblock();
-                        targetId = jq(e.target).attr("id");
-                        var planListItem = jq("#" + targetId).parents("li").children();
-                        jq(planListItem).fadeOut(250, function() {
-                            jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
-                        });
-                        var planItemCount = jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong");
-                        jq(planItemCount).fadeOut(250, function() {
-                            jq(this).html(planItemCount.text() - 1).fadeIn(250);
-                        });
-                    }
+                    elementToBlock.unblock();
+                    targetId = jq(e.target).attr("id");
+                    var planListItem = jq("#" + targetId).parents("li").children();
+                    jq(planListItem).fadeOut(250, function() {
+                        jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
+                    });
+                    var planItemCount = jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong");
+                    jq(planItemCount).fadeOut(250, function() {
+                        jq(this).html(planItemCount.text() - 1).fadeIn(250);
+                    });
 				};
 
                 if (!methodToCall) {
