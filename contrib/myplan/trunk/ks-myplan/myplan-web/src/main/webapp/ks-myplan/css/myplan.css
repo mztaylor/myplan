@@ -509,6 +509,10 @@ body {
 .myplan-popup-box {
 	min-height: 24px !important;
 }
+.myplan-popup-close {
+    float: right;
+    cursor: pointer;
+}
 .myplan-popup-box div.blockElement {
     left: 142px !important;
     top: 4px !important;
