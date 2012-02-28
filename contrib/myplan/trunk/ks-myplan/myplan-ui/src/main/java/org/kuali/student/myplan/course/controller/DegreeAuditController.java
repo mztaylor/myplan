@@ -37,7 +37,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 
-// URL: http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=degreeAuditView
+// URL: http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
 @Controller
 @RequestMapping(value = "/audit")
@@ -61,7 +61,7 @@ public class DegreeAuditController extends UifControllerBase {
                     GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
                             DegreeAuditServiceConstants.SERVICE_NAME));
             ContextInfo contextInfo = new ContextInfo();
-            String auditId = "xyz1327610950502";
+            String auditId = "abc001";
             {
                 AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
                 InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
