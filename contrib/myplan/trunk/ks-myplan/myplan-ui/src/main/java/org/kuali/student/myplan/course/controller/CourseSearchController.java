@@ -52,6 +52,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.InputStream;
@@ -82,6 +83,19 @@ public class CourseSearchController extends UifControllerBase {
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new CourseSearchForm();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+        HttpServletRequest request, HttpServletResponse response) {
+
+        super.start(form, result, request, response);
+
+        CourseSearchForm searchForm = (CourseSearchForm) form;
+        form.setViewId("CourseSearch-FormView");
+        form.setView(super.getViewService().getViewById("CourseSearch-FormView"));
+
+        return getUIFModelAndView(form);
     }
 
     @RequestMapping(params = "methodToCall=start")
