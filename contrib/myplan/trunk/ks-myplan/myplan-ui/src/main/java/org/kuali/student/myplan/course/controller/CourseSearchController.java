@@ -15,14 +15,17 @@
  */
 package org.kuali.student.myplan.course.controller;
 
+import javax.annotation.RegEx;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.POST;
 import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
@@ -49,17 +52,21 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.core.enumerationmanagement.service.EnumerationManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
-@RequestMapping(value = "/course")
+@RequestMapping(value = "/course/**")
 public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
@@ -80,17 +87,79 @@ public class CourseSearchController extends UifControllerBase {
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
 
+    private  CampusSearch campusSearch = new CampusSearch();
+
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new CourseSearchForm();
     }
 
+    @RequestMapping(value="/course/{courseCd}", method = RequestMethod.GET)
+    public String get(@PathVariable("courseCd") String courseCd,@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+                            HttpServletRequest request, HttpServletResponse response) {
+        String number="";
+        String subject="";
+        String courseId="";
+        courseCd = courseCd.toUpperCase();
+        StringBuffer campus= new StringBuffer();
+        List<KeyValue> campusKeys=campusSearch.getKeyValues();
+            for(KeyValue k:campusKeys)
+            {
+                 campus.append(k.getKey().toString());
+                 campus.append(",") ;
+            }
+        String[] splitStr=courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            if(splitStr.length==2){
+            number=splitStr[1];
+            subject=splitStr[0];
+            }else {
+                StringBuffer splitBuff=new StringBuffer();
+                for(int i=0;i<splitStr.length;i++)
+                {
+                    splitBuff.append(splitStr[i]);
+                }
+                return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery="+splitBuff+"&searchTerm=any&campusSelect="+campus;
+
+            }
+        HashMap<String, String> divisionMap = fetchCourseDivisions();
+
+        ArrayList<String> divisions = new ArrayList<String>();
+        extractDivisions(divisionMap, subject, divisions);
+            if(divisions.size()>0)
+            {
+                subject=divisions.get(0);
+            }
+        SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
+        SearchResult searchResult=null;
+            try{
+                searchRequest.addParam("number",number);
+                searchRequest.addParam("subject",subject.trim());
+
+            searchResult = getLuService().search(searchRequest);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+            for (SearchResultRow row : searchResult.getRows()) {
+                courseId = getCellValue( row, "lu.resultColumn.cluId" );
+            }
+             if(courseId.equalsIgnoreCase(""))
+             {
+                 return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery="+courseCd+"&searchTerm=any&campusSelect="+campus;
+
+             }
+
+
+        return "redirect:/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
+
+
+    }
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-        HttpServletRequest request, HttpServletResponse response) {
+                            HttpServletRequest request, HttpServletResponse response) {
 
         super.start(form, result, request, response);
-
         CourseSearchForm searchForm = (CourseSearchForm) form;
         form.setViewId("CourseSearch-FormView");
         form.setView(super.getViewService().getViewById("CourseSearch-FormView"));
@@ -98,12 +167,17 @@ public class CourseSearchController extends UifControllerBase {
         return getUIFModelAndView(form);
     }
 
+
+
+
+
+
     @RequestMapping(params = "methodToCall=start")
+
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
 
         super.start(form, result, request, response);
-
         CourseSearchForm searchForm = (CourseSearchForm) form;
         return getUIFModelAndView(form);
     }
@@ -207,7 +281,7 @@ public class CourseSearchController extends UifControllerBase {
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
        try {
-           List<SearchRequest> requests = searcher.queryToRequests(form);
+            List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
 
@@ -234,7 +308,6 @@ public class CourseSearchController extends UifControllerBase {
             }
 
             populateFacets( form, courseList );
-
 
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
@@ -461,6 +534,56 @@ public class CourseSearchController extends UifControllerBase {
         form.setTermsFacetItems(termsFacet.getFacetItems());
     }
 
+    public HashMap<String, String> fetchCourseDivisions() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        try {
+            SearchRequest request = new SearchRequest("myplan.distinct.clu.divisions");
+
+            SearchResult result = getLuService().search(request);
+
+            for (SearchResultRow row : result.getRows()) {
+                for (SearchResultCell cell : row.getCells()) {
+                    String division = cell.getValue();
+                    // Store both trimmed and original, because source data
+                    // is sometimes space padded.
+                    String key = division.trim().replaceAll("\\s+", "");
+                    map.put(key, division);
+                }
+            }
+        } catch (Exception e) {
+            // TODO: Handle this exception better
+            e.printStackTrace();
+        }
+        return map;
+    }
+    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions) {
+        boolean match = true;
+        while (match) {
+            match = false;
+            // Retokenize after each division found is removed
+            // Remove extra spaces to normalize input
+            query = query.trim().replaceAll("\\s+", " ");
+            List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
+            List<String> list = QueryTokenizer.toStringList(tokens);
+            List<String> pairs = TokenPairs.toPairs(list);
+            TokenPairs.sortedLongestFirst(pairs);
+
+            Iterator<String> i = pairs.iterator();
+            while (match == false && i.hasNext()) {
+                String pair = i.next();
+
+                String key = pair.replace(" ", "");
+                if (divisionMap.containsKey(key)) {
+                    String division = divisionMap.get(key);
+                    divisions.add(division);
+                    query = query.replace(pair, "");
+                    match = true;
+                }
+            }
+        }
+        return query;
+    }
+
     //TODO: Change this to using the Enumeration Service to get the Gen Edd Display Value
     private String formatGenEduReq(List<String> genEduRequirements) {
 
@@ -551,6 +674,13 @@ public class CourseSearchController extends UifControllerBase {
         this.searcher = searcher;
     }
 
+    public CampusSearch getCampusSearch() {
+        return campusSearch;
+    }
+
+    public void setCampusSearch(CampusSearch campusSearch) {
+        this.campusSearch = campusSearch;
+    }
 }
 
 
