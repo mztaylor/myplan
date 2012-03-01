@@ -1,3 +1,6 @@
+body * {
+	outline: 0;
+}
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
@@ -9,6 +12,17 @@ pre {
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
+a,
+a:hover,
+a:active,
+a:visited,
+a:focus {
+    outline: 0;
+    border: none;
+    /*white-space: normal;
+    overflow:  auto;*/
+    color: #1d8fd9;
+}
 /* Overwrite KRAD Styles ########################################################################### */
 #view_div {
 	margin:0 auto;
@@ -18,10 +32,9 @@ pre {
 .myplan-view a,
 .myplan-view a:hover,
 .myplan-view a:active,
+.myplan-view a:selected,
+.myplan-view a:visited,
 .myplan-view a:focus {
-    outline: 0;
-    white-space: normal;
-    overflow:  auto;
     color: #1d8fd9;
 }
 .myplan-view #viewpage_div,
