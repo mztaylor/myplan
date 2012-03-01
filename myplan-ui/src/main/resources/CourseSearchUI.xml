@@ -29,12 +29,6 @@
         <property name="additionalScriptFiles">
             <list>
                 <value>/ks-myplan/scripts/course-search.js</value>
-                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
-            </list>
-        </property>
-        <property name="additionalCssFiles">
-            <list>
-                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
             </list>
         </property>
         <property name="items">

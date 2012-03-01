@@ -24,11 +24,13 @@
         <property name="stylesheets">
             <list merge="true">
                 <value>/ks-myplan/css/myplan.css</value>
+                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
             </list>
         </property>
         <property name="jsFiles">
             <list merge="true">
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
+                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
             </list>
         </property>
     </bean>
