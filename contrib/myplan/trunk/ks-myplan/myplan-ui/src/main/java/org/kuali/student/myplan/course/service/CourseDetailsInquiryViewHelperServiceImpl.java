@@ -147,6 +147,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Web service call failed.", e);
+                //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
+                termInfos = new ArrayList<TermInfo>();
             }
 
             List<String> scheduledTerms = new ArrayList<String>();
