@@ -40,8 +40,8 @@
     <bean id="SavedCoursesItem.id-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="id"/>
         <property name="dataType" value="STRING"/>
-        <property name="label" value="Watch List Item ID"/>
-        <property name="shortLabel" value="Watch List Item ID"/>
+        <property name="label" value="Your Courses List Item ID"/>
+        <property name="shortLabel" value="Your Courses List Item ID"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="10"/>
         <property name="validCharactersConstraint">
@@ -190,7 +190,7 @@
     </bean>
 
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
-        <property name="page.title" value="Watch List"/>
+        <property name="page.title" value="Your Courses List"/>
         <property name="viewName" value="SavedCoursesDetail-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>

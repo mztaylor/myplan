@@ -262,7 +262,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save This Course">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List">
                     <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                     <property name="styleClasses">
                         <list merge="true">
@@ -604,7 +604,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Save This Course">
+                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
                                             <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">

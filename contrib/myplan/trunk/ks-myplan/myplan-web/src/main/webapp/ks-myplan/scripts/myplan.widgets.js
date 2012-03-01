@@ -149,7 +149,7 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
             jq("#" + targetId).parent().fadeOut(250, function() {
 				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
                 // If on course details page
-                // jq(this).addClass("").html("This course is in your Watch List").fadeIn(250);
+                // jq(this).addClass("").html("This course is in Your Courses List").fadeIn(250);
 			});
 		} else {
 			// showGrowl('Error updating', 'Error', 'errorGrowl');

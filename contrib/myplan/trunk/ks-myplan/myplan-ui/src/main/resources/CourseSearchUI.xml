@@ -117,8 +117,7 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
-                      p:labelField.renderColon="false">
+                <bean parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for" p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142">
                             <property name="onDocumentReadyScript" value="
@@ -356,7 +355,7 @@
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
-                              p:altText="Save to the Watch List (TBD)" p:title="Save to the Watch List (TBD)"/>
+                              p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
                 </bean>
                 <bean parent="Uif-MessageField" p:messageText="Watching" p:style="width:55px;"
@@ -660,7 +659,7 @@
         </property>
     </bean>
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Watch List (TBD)" p:errorsField.render="false">
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Your Courses List" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
