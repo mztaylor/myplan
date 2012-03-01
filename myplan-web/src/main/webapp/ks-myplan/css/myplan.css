@@ -1,6 +1,14 @@
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
+pre {
+    overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
 /* Overwrite KRAD Styles ########################################################################### */
 #view_div {
 	margin:0 auto;
@@ -88,8 +96,9 @@ body {
 .myplan-button-transparent:hover {
     color: #1D8FD9;
     text-shadow: none;
-    border-color: transparent;
-    background: none;
+    border-color: transparent !important;
+    background: transparent !important;
+    filter: none;
 }
 .myplan-stacked-list,
 .myplan-stacked-list ul,
@@ -97,6 +106,7 @@ body {
 .myplan-stacked-list ul li {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 .myplan-stacked-list li,
 .myplan-stacked-list ul li {
@@ -512,7 +522,7 @@ body {
 .myplan-popup-box {
 	min-height: 24px !important;
     position: relative;
-    padding: 5px;
+    padding: 5px 5px 0 5px;
 }
 .myplan-popup-close {
     float: right;
@@ -552,14 +562,4 @@ body {
 ::-webkit-scrollbar-thumb:horizontal {
         width:50px;background-color:#999;
         -webkit-border-radius:8px;
-}
-
-pre {
- overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
- white-space: pre-wrap; /* css-3 */
- white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
- white-space: -pre-wrap; /* Opera 4-6 */
- white-space: -o-pre-wrap; /* Opera 7 */
- /* width: 99%; */
- word-wrap: break-word; /* Internet Explorer 5.5+ */
 }

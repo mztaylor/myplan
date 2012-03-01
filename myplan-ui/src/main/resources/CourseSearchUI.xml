@@ -670,6 +670,7 @@
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
+                <value>myplan-stacked-list</value>
             </list>
         </property>
         <property name="header">
