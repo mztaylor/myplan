@@ -28,4 +28,16 @@ public class Course {
     public void setNumber(String number) {
         this.number = number;
     }
+
+    public void setCluId(String courseId) {
+       this.cluid = courseId;
+    }
+
+    public String getDept() {
+        return this.dept;
+    }
+
+    public String getNumber() {
+        return this.number;
+    }
 }

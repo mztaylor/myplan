@@ -218,7 +218,7 @@
                         <tbody>
 #foreach( $course in $subreq.courseList )
                             <tr>
-                                <td>${course.quarter}</td><td><a href="/${course.cluid}">${course.description}</a></td><td>${course.credits}</td><td>${course.grade}</td>
+                                <td>${course.quarter}</td><td><a href="course/${course.dept}${course.number}">${course.dept} ${course.number}</a></td><td>${course.credits}</td><td>${course.grade}</td>
                             </tr>
 #end
                         </tbody>

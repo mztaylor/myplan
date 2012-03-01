@@ -87,71 +87,65 @@ public class CourseSearchController extends UifControllerBase {
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
 
-    private  CampusSearch campusSearch = new CampusSearch();
+    private CampusSearch campusSearch = new CampusSearch();
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new CourseSearchForm();
     }
 
-    @RequestMapping(value="/course/{courseCd}", method = RequestMethod.GET)
-    public String get(@PathVariable("courseCd") String courseCd,@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-                            HttpServletRequest request, HttpServletResponse response) {
-        String number="";
-        String subject="";
-        String courseId="";
+    @RequestMapping(value = "/course/{courseCd}", method = RequestMethod.GET)
+    public String get(@PathVariable("courseCd") String courseCd, @ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
+                      HttpServletRequest request, HttpServletResponse response) {
+        String number = "";
+        String subject = "";
+        String courseId = "";
         courseCd = courseCd.toUpperCase();
-        StringBuffer campus= new StringBuffer();
-        List<KeyValue> campusKeys=campusSearch.getKeyValues();
-            for(KeyValue k:campusKeys)
-            {
-                 campus.append(k.getKey().toString());
-                 campus.append(",") ;
+        StringBuffer campus = new StringBuffer();
+        List<KeyValue> campusKeys = campusSearch.getKeyValues();
+        for (KeyValue k : campusKeys) {
+            campus.append(k.getKey().toString());
+            campus.append(",");
+        }
+        String[] splitStr = courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+        if (splitStr.length == 2) {
+            number = splitStr[1];
+            subject = splitStr[0];
+        } else {
+            StringBuffer splitBuff = new StringBuffer();
+            for (int i = 0; i < splitStr.length; i++) {
+                splitBuff.append(splitStr[i]);
             }
-        String[] splitStr=courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            if(splitStr.length==2){
-            number=splitStr[1];
-            subject=splitStr[0];
-            }else {
-                StringBuffer splitBuff=new StringBuffer();
-                for(int i=0;i<splitStr.length;i++)
-                {
-                    splitBuff.append(splitStr[i]);
-                }
-                return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery="+splitBuff+"&searchTerm=any&campusSelect="+campus;
+            return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus;
 
-            }
+        }
         HashMap<String, String> divisionMap = fetchCourseDivisions();
 
         ArrayList<String> divisions = new ArrayList<String>();
         extractDivisions(divisionMap, subject, divisions);
-            if(divisions.size()>0)
-            {
-                subject=divisions.get(0);
-            }
+        if (divisions.size() > 0) {
+            subject = divisions.get(0);
+        }
         SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-        SearchResult searchResult=null;
-            try{
-                searchRequest.addParam("number",number);
-                searchRequest.addParam("subject",subject.trim());
+        SearchResult searchResult = null;
+        try {
+            searchRequest.addParam("number", number);
+            searchRequest.addParam("subject", subject.trim());
 
             searchResult = getLuService().search(searchRequest);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-            for (SearchResultRow row : searchResult.getRows()) {
-                courseId = getCellValue( row, "lu.resultColumn.cluId" );
-            }
-             if(courseId.equalsIgnoreCase(""))
-             {
-                 return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery="+courseCd+"&searchTerm=any&campusSelect="+campus;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for (SearchResultRow row : searchResult.getRows()) {
+            courseId = getCellValue(row, "lu.resultColumn.cluId");
+        }
+        if (courseId.equalsIgnoreCase("")) {
+            return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus;
 
-             }
+        }
 
 
-        return "redirect:/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
+        return "redirect:/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
 
 
     }
@@ -170,7 +164,7 @@ public class CourseSearchController extends UifControllerBase {
 
     @RequestMapping(value = "/course/", method = RequestMethod.GET)
     public String doGet(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                            HttpServletRequest request, HttpServletResponse response) {
+                        HttpServletRequest request, HttpServletResponse response) {
 
         return "redirect:/myplan/course";
     }
@@ -195,8 +189,8 @@ public class CourseSearchController extends UifControllerBase {
         }
 
         @Override
-        public boolean equals( Object other ) {
-            return courseID.equals( ((Hit)other).courseID );
+        public boolean equals(Object other) {
+            return courseID.equals(((Hit) other).courseID);
         }
 
         @Override
@@ -208,8 +202,8 @@ public class CourseSearchController extends UifControllerBase {
     public static class HitComparator implements Comparator<Hit> {
         @Override
         public int compare(Hit x, Hit y) {
-            if( x == null ) return -1;
-            if( y == null ) return 1;
+            if (x == null) return -1;
+            if (y == null) return 1;
             return y.count - x.count;
         }
     }
@@ -223,13 +217,13 @@ public class CourseSearchController extends UifControllerBase {
         CourseSearchItem.CreditType type;
     }
 
-    public String getCellValue( SearchResultRow row, String key ) {
-        for( SearchResultCell cell : row.getCells() ) {
-            if( key.equals( cell.getKey() )) {
+    public String getCellValue(SearchResultRow row, String key) {
+        for (SearchResultCell cell : row.getCells()) {
+            if (key.equals(cell.getKey())) {
                 return cell.getValue();
             }
         }
-        throw new RuntimeException( "cell result '" + key + "' not found" );
+        throw new RuntimeException("cell result '" + key + "' not found");
     }
 
     public HashMap<String, Credit> getCreditMap() {
@@ -241,10 +235,10 @@ public class CourseSearchController extends UifControllerBase {
             searchRequest.setParams(params);
             SearchResult searchResult = getLuService().search(searchRequest);
             for (SearchResultRow row : searchResult.getRows()) {
-                String id = getCellValue( row, "credit.id" );
-                String type = getCellValue( row, "credit.type" );
-                String min = getCellValue( row, "credit.min" );
-                String max = getCellValue( row, "credit.max" );
+                String id = getCellValue(row, "credit.id");
+                String type = getCellValue(row, "credit.type");
+                String min = getCellValue(row, "credit.min");
+                String max = getCellValue(row, "credit.max");
                 Credit credit = new Credit();
                 credit.id = id;
                 credit.min = Float.valueOf(min);
@@ -268,9 +262,9 @@ public class CourseSearchController extends UifControllerBase {
         }
     }
 
-    public Credit getCreditByID( String id ) {
+    public Credit getCreditByID(String id) {
         Credit credit;
-        HashMap<String, Credit> creditMap  = getCreditMap();
+        HashMap<String, Credit> creditMap = getCreditMap();
         if (getCreditMap().containsKey(id)) {
             credit = creditMap.get(id);
         } else {
@@ -283,23 +277,22 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-       try {
+        try {
             List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
 
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
 
-           Set<String> savedCourseSet = getSavedCourseSet();
-           for (Hit hit : hits) {
+            Set<String> savedCourseSet = getSavedCourseSet();
+            for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo(hit.courseID);
-                if( isCourseOffered(form, course)) {
+                if (isCourseOffered(form, course)) {
                     loadScheduledTerms(course);
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
-                    if( savedCourseSet.contains( course.getCourseId() ))
-                    {
-                        course.setStatus( CourseSearchItem.PlanState.SAVED );
+                    if (savedCourseSet.contains(course.getCourseId())) {
+                        course.setStatus(CourseSearchItem.PlanState.SAVED);
                     }
 
                     courseList.add(course);
@@ -310,27 +303,26 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
 
-            populateFacets( form, courseList );
+            populateFacets(form, courseList);
 
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
 
             return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public void hitCourseID( Map<String, Hit> courseMap, String id ) {
+    public void hitCourseID(Map<String, Hit> courseMap, String id) {
         Hit hit = null;
-        if( courseMap.containsKey( id )) {
-            hit = courseMap.get( id );
+        if (courseMap.containsKey(id)) {
+            hit = courseMap.get(id);
             hit.count++;
         } else {
-            hit = new Hit( id );
-            courseMap.put( id, hit );
+            hit = new Hit(id);
+            courseMap.put(id, hit);
         }
     }
 
@@ -340,12 +332,12 @@ public class CourseSearchController extends UifControllerBase {
         for (SearchRequest request : requests) {
             SearchResult searchResult = getLuService().search(request);
             for (SearchResultRow row : searchResult.getRows()) {
-                String id = getCellValue( row, "lu.resultColumn.cluId" );
-                hitCourseID( courseMap, id );
+                String id = getCellValue(row, "lu.resultColumn.cluId");
+                hitCourseID(courseMap, id);
             }
         }
 
-        ArrayList<Hit> hits = new ArrayList<Hit>( courseMap.values() );
+        ArrayList<Hit> hits = new ArrayList<Hit>(courseMap.values());
         Collections.sort(hits, new HitComparator());
         return hits;
     }
@@ -358,7 +350,7 @@ public class CourseSearchController extends UifControllerBase {
          */
         String term = form.getSearchTerm();
 
-        if( CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals( term )) return true;
+        if (CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals(term)) return true;
 
         /*
           Use the course offering service to see if the course is being offered in the selected term.
@@ -368,7 +360,7 @@ public class CourseSearchController extends UifControllerBase {
 
         String subject = course.getSubject();
         List<String> codes = service
-            .getCourseOfferingIdsByTermAndSubjectArea(term, subject, CourseSearchConstants.CONTEXT_INFO);
+                .getCourseOfferingIdsByTermAndSubjectArea(term, subject, CourseSearchConstants.CONTEXT_INFO);
 
         //  The course code is not in the list, so move on to the next item.
         String code = course.getCode();
@@ -383,7 +375,7 @@ public class CourseSearchController extends UifControllerBase {
             AcademicCalendarService atpService = getAcademicCalendarService();
 
             List<TermInfo> terms = atpService
-                .getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
+                    .getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
 
             CourseOfferingService offeringService = getCourseOfferingService();
 
@@ -398,7 +390,7 @@ public class CourseSearchController extends UifControllerBase {
                 List<String> offerings = offeringService
                         .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
                 if (offerings.contains(code)) {
-                    course.addScheduledTerm( term.getName() );
+                    course.addScheduledTerm(term.getName());
                 }
             }
         } catch (Exception e) {
@@ -415,7 +407,7 @@ public class CourseSearchController extends UifControllerBase {
         List<AtpTypeInfo> termsOffered = new ArrayList<AtpTypeInfo>();
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String id = getCellValue( row, "atp.id" );
+            String id = getCellValue(row, "atp.id");
 
             // Don't add the terms that are not found
             AtpTypeInfo atpType = getATPType(id);
@@ -435,7 +427,7 @@ public class CourseSearchController extends UifControllerBase {
         List<String> reqs = new ArrayList<String>();
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String genEd = getCellValue( row, "gened.name");
+            String genEd = getCellValue(row, "gened.name");
             reqs.add(genEd);
         }
         String formatted = formatGenEduReq(reqs);
@@ -447,8 +439,8 @@ public class CourseSearchController extends UifControllerBase {
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
             academicPlanService = (AcademicPlanService)
-                GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
-                    AcademicPlanServiceConstants.SERVICE_NAME));
+                    GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
+                            AcademicPlanServiceConstants.SERVICE_NAME));
         }
         return academicPlanService;
     }
@@ -475,7 +467,7 @@ public class CourseSearchController extends UifControllerBase {
 
             for (PlanItem planItem : planItemList) {
                 String courseID = planItem.getRefObjectId();
-                savedCourseSet.add( courseID );
+                savedCourseSet.add(courseID);
             }
         }
         return savedCourseSet;
@@ -484,16 +476,16 @@ public class CourseSearchController extends UifControllerBase {
     private CourseSearchItem getCourseInfo(String courseId) throws MissingParameterException {
         CourseSearchItem course = new CourseSearchItem();
 
-        SearchRequest request = new SearchRequest( "myplan.course.info" );
+        SearchRequest request = new SearchRequest("myplan.course.info");
         request.addParam("courseID", courseId);
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String name = getCellValue( row, "course.name" );
-            String number = getCellValue( row, "course.number" );
-            String subject = getCellValue( row, "course.subject" );
-            String level = getCellValue( row, "course.level" );
-            String creditsID = getCellValue( row, "course.credits" );
-            String code = getCellValue( row, "course.code" );
+            String name = getCellValue(row, "course.name");
+            String number = getCellValue(row, "course.number");
+            String subject = getCellValue(row, "course.subject");
+            String level = getCellValue(row, "course.level");
+            String creditsID = getCellValue(row, "course.credits");
+            String code = getCellValue(row, "course.code");
 
             course.setCourseId(courseId);
             course.setSubject(subject);
@@ -502,7 +494,7 @@ public class CourseSearchController extends UifControllerBase {
             course.setCourseName(name);
             course.setCode(code);
 
-            Credit credit = getCreditByID( creditsID );
+            Credit credit = getCreditByID(creditsID);
             course.setCreditMin(credit.min);
             course.setCreditMax(credit.max);
             course.setCreditType(credit.type);
@@ -512,7 +504,7 @@ public class CourseSearchController extends UifControllerBase {
         return course;
     }
 
-    public void populateFacets( CourseSearchForm form, List<CourseSearchItem> courses ) {
+    public void populateFacets(CourseSearchForm form, List<CourseSearchItem> courses) {
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
         CreditsFacet creditsFacet = new CreditsFacet();
@@ -521,7 +513,7 @@ public class CourseSearchController extends UifControllerBase {
         TermsFacet termsFacet = new TermsFacet();
 
         //  Update facet info and code the item.
-        for( CourseSearchItem course : courses ) {
+        for (CourseSearchItem course : courses) {
             curriculumFacet.process(course);
             courseLevelFacet.process(course);
             genEduReqFacet.process(course);
@@ -632,7 +624,7 @@ public class CourseSearchController extends UifControllerBase {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
             this.courseOfferingService = (CourseOfferingService)
-                GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+                    GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return this.courseOfferingService;
     }
