@@ -358,7 +358,7 @@
                               p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="Watching" p:style="width:55px;"
+                <bean parent="Uif-MessageField" p:messageText="In List" p:style="width:55px;"
                       p:styleClasses="fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}"/>
                 <bean parent="Uif-DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true"/>

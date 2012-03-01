@@ -225,8 +225,7 @@
 
     <bean id="course_details_back_link" parent="Uif-ViewHeaderField">
         <property name="items">
-            <bean parent="Uif-Link" p:linkLabel="Back to Previous Page" p:title="Back to Previous Page" p:hrefText="#"
-                  p:onClickScript="history.go(-1)"/>
+            <bean parent="Uif-Link" p:linkLabel="Back to Previous Page" p:title="Back to Previous Page" p:hrefText="javascript:history.go(-1)"/>
         </property>
     </bean>
 

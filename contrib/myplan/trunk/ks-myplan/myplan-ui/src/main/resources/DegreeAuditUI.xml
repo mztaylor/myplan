@@ -61,6 +61,7 @@
         <property name="additionalCssFiles">
             <list>
                 <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
+                <value>/ks-myplan/css/audit.css</value>
             </list>
         </property>
         <property name="items">
