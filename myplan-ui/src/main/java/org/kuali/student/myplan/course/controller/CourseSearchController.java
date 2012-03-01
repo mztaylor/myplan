@@ -155,6 +155,7 @@ public class CourseSearchController extends UifControllerBase {
 
 
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                             HttpServletRequest request, HttpServletResponse response) {
@@ -167,10 +168,12 @@ public class CourseSearchController extends UifControllerBase {
         return getUIFModelAndView(form);
     }
 
+    @RequestMapping(value = "/course/", method = RequestMethod.GET)
+    public String doGet(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                            HttpServletRequest request, HttpServletResponse response) {
 
-
-
-
+        return "redirect:/myplan/course";
+    }
 
     @RequestMapping(params = "methodToCall=start")
 
@@ -551,11 +554,12 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
         } catch (Exception e) {
-            // TODO: Handle this exception better
+
             e.printStackTrace();
         }
         return map;
     }
+
     public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions) {
         boolean match = true;
         while (match) {
@@ -584,7 +588,7 @@ public class CourseSearchController extends UifControllerBase {
         return query;
     }
 
-    //TODO: Change this to using the Enumeration Service to get the Gen Edd Display Value
+
     private String formatGenEduReq(List<String> genEduRequirements) {
 
         //  Make the order predictable.
