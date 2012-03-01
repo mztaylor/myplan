@@ -296,7 +296,7 @@
         <property name="items">
             <list>
                 <!-- Course Description -->
-                <!--<bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
+                <bean parent="Uif-DataField" p:label="Course Description" p:propertyName="courseDescription" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -304,7 +304,7 @@
                         </list>
                     </property>
                     <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>
-                </bean>-->
+                </bean>
                 <bean parent="Uif-MessageField" p:label="Course Description" p:labelField.renderColon="false"
                       p:messageText="No description is available">
                     <!--<property name="labelField.styleClasses">
@@ -540,14 +540,6 @@
         </property>
         <property name="items">
             <list>
-                <!--<bean parent="Uif-ImageField" p:labelField.render="false" p:altText="Close"
-                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnClose.png">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>myplan-popup-close</value>
-                        </list>
-                    </property>
-                </bean>-->
                 <bean parent="Uif-Link" p:target="">
                     <property name="styleClasses">
                         <list merge="true">
@@ -573,7 +565,7 @@
                 <!-- Projected Quarters -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="termsOffered"
                       p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
-                    <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                    <property name="propertyEditor" ref="terms_formatter"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-data-list</value>
@@ -582,7 +574,7 @@
                     <property name="render" value="@{dataObject.scheduledTerms.size() gt 0 ? false : true}"/>
                 </bean>
                 <!-- Requisites -->
-                <bean parent="Uif-DataField" p:label="Course Requisites" p:propertyName="requisites"
+                <bean id="course_details_popup_requisites" parent="Uif-DataField" p:label="Course Requisites" p:propertyName="requisites"
                       p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                     <property name="propertyEditor" ref="data_list_formatter"/>
                     <property name="styleClasses">

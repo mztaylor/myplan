@@ -1,4 +1,15 @@
+function openCourse(courseId, e) {
+    if (!e) var e = window.event;
+
+    if (jq(e.target).parents("#course_details_popup_requisites").length > 0) {
+        window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
+    } else {
+    	openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+    }
+}
+
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions) {
+    if (!e) var e = window.event;
     e.stopPropagation();
 
     var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-box");
@@ -23,8 +34,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         var popupSettings = popupOptionsDefault;
     }
 
-    if (selector == window.event.target) {
-        var popupBox = jq(selector);
+    if (selector == null) {
+        var popupBox = jq(e.target);
     } else {
         var popupBox = jq(e.target).parents(selector);
     }
@@ -45,6 +56,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		popupBox.HideAllBubblePopups();
 		popupBox.RemoveBubblePopup();
 	});
+    jq('#' + popupBoxId).click(function(event){
+    	event.stopPropagation();
+ 	});
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
@@ -101,7 +115,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 				runHiddenScripts(getId + "_group");
 
                 if(highlightId) {
-                	jq("[id^='" + highlightId + "']").parents('li').animate( { backgroundColor: "#ffffcc" }, 1 ).animate( { backgroundColor: "#ffffff" }, 3000 );
+                	jq("[id^='" + highlightId + "']").parents('li').animate( {backgroundColor:"#ffffcc"}, 1 ).animate( {backgroundColor:"#ffffff"}, 3000 );
                 }
 			}
 		});
