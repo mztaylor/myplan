@@ -23,6 +23,49 @@ a:focus {
     overflow:  auto;*/
     color: #1d8fd9;
 }
+#appheader_div {
+    margin:0 auto;
+	padding: 10px 10px 0px 10px;
+	width: 940px;
+}
+#appheader_div #appheading_div {
+    overflow:auto;
+}
+#appheader_div #applogo_div,
+#appheader_div #appuser_div {
+    width:50%;
+    float:left;
+    overflow:auto;
+}
+#appheader_div #applogo_div {
+    font-size: 3em;
+    line-height: normal;
+}
+#appheader_div #applogo_div span{
+    font-size: 50%;
+    color: #999999;
+}
+#appheader_div #appuser_div {
+    text-align:right;
+}
+#appheader_div #appuser_div .links ul,
+#appheader_div #appuser_div .links ul li {
+    list-style:none;
+    margin: 0;
+    padding: 0;
+}
+#appheader_div #appuser_div .links ul li {
+    display:inline-block;
+}
+#appheader_div #appnav_div {
+    clear: both;
+    border: solid 1px #e5e5e5;
+    background: #f5f5f5;
+    color: #999999;
+    padding: 15px;
+    margin: 10px 0px 0px 0px;
+}
+
 /* Overwrite KRAD Styles ########################################################################### */
 #view_div {
 	margin:0 auto;
@@ -550,6 +593,7 @@ a:focus {
     border: none;
     width: 16px;
 }
+/*
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
         width:8px;
