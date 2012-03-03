@@ -135,7 +135,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
         url.append(timeScheduleLinkAbbreviation)
             .append(".html#")
-            .append(timeScheduleLinkAbbreviation)
+            .append(curriculumCode.toLowerCase())
             .append(courseNumber);
         return url.toString();
     }

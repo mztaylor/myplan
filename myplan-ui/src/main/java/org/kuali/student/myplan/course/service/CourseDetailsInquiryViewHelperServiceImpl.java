@@ -166,9 +166,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             courseDetails.setScheduledTerms(scheduledTerms);
 
-
-            //---------------------------------------------------------- added 2/23 10:33am yunas
-
             AcademicPlanService academicPlanService = getAcademicPlanService();
 
             Person user = GlobalVariables.getUserSession().getPerson();
@@ -185,7 +182,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 courseDetails.setInSavedCourseList(false);
 
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {
-
                     if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
 
                         courseDetails.setInSavedCourseList(true);
@@ -195,11 +191,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     }
                 }
             }
-
-            // ----------------------------------------------------------------------------------
-            // ----------------------------------------------------------------------------------
-
-
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode());
         }
