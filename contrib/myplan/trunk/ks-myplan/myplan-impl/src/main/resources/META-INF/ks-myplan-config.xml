@@ -106,6 +106,4 @@
        <param name="uachieveapi.hibernate.use_second_level_cache">false</param>
        <param name="uachieveapi.hibernate.generate_statistics">false</param>
        <param name="uachieveapi.hibernate.use_structured_entries">true</param>
-
-
 </config>
