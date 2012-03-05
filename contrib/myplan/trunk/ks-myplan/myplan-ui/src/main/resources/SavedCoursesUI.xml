@@ -264,11 +264,25 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}" p:style="display:block;">
+                    <!-- Javascript applies the width styling to the parent span -->
+                    <property name="onDocumentReadyScript" value="
+                        jq(&quot;[id^='@{#line.id}'] span.boxLayoutHorizontalItem&quot;).each(function() {
+                            jq(this).parent('div').removeAttr('style');
+                            var style = jq(this).children('span').attr('style');
+                            jq(this).attr('style', style);
+                            jq(this).children('span').removeAttr('style');
+                        });
+                    "/>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-remove-margin</value>
+                        </list>
+                    </property>
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:target="">
+                            <bean parent="Uif-Link" p:target="" p:style="width:69%;">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-text-bold</value>
@@ -279,7 +293,7 @@
                                 <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements" p:style="width:12%;">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -290,7 +304,7 @@
                                 <property name="propertyEditor" ref="data_list_formatter"/>
                                 <property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
+                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"  p:style="width:19%;"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true">
                                 <property name="styleClasses">
