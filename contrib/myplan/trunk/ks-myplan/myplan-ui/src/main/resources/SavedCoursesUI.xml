@@ -190,13 +190,13 @@
     </bean>
 
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
-        <property name="page.title" value="Your Courses List"/>
         <property name="viewName" value="SavedCoursesDetail-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="viewHelperServiceClassName"
                   value="org.kuali.student.myplan.course.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
+        <property name="page.header.render" value="false"/>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -208,19 +208,23 @@
             </list>
         </property>
 
-       <!--<property name="page">
-            <bean parent="Uif-LookupPage">
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:title="Your Courses List">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="saved_courses_summary_list"/>
-                            <ref bean="myplan_section"/>
+                            <ref bean="saved_courses_detail_list"/>
+                            <ref bean="saved_course_myplan_section"/>
                         </list>
                     </property>
-            </bean>
-        </property>-->
+                </bean>
+            </list>
+        </property>
+
         <property name="criteriaFields">
             <list/>
         </property>
@@ -228,16 +232,21 @@
             <list/>
         </property>
         <!-- Not Displaying any criteria -->
+        <!--
         <property name="criteriaGroup">
             <bean parent="Uif-VerticalBoxGroup"/>
         </property>
+
         <property name="resultsGroup">
             <bean id="saved_courses_detail" parent="saved_courses_detail_list"/>
         </property>
-        <property name="footer">
-            <bean parent="Uif-FooterBase"/>
-        </property>
+        -->
+
+        <property name="footer.render" value="false"/>
     </bean>
+
+
+
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
@@ -418,6 +427,21 @@
         <property name="items">
             <list>
                  <bean id="remove_plan_item_key" parent="Uif-MessageField" p:messageText=""/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-200</value>
+                <value>myplan-section</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+
             </list>
         </property>
     </bean>
