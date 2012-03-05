@@ -259,6 +259,7 @@
             <list merge="true">
                 <value>myplan-container-720</value>
                 <value>myplan-saved-courses-detail</value>
+                <value>myplan-stacked-list</value>
             </list>
         </property>
         <property name="items">
