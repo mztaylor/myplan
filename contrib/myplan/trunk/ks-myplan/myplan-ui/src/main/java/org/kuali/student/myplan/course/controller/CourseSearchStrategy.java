@@ -61,33 +61,37 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-        String str = form.getCampusSelect();
-        String[] results = null;
-        if (!str.equalsIgnoreCase("")) {
-            results = str.split(",");
-        }
-
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        try {
-
-            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
-        } catch (Exception e) {
-            logger.error("No Values for campuses found", e);
-        }
-        String[] campus = new String[enumeratedValueInfoList.size() - 1];
-        for (int k = 0; k < campus.length; k++) {
-            campus[k] = NO_CAMPUS;
-        }
-        if (results != null) {
-            for (int i = 0; i < results.length; i++) {
-                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
-                        campus[i] = results[i];
-                        break;
-                    }
-                }
-            }
-        }
+//        String str = form.getCampusSelect();
+//        String[] results = null;
+//        if (!str.equalsIgnoreCase("")) {
+//            results = str.split(",");
+//        }
+//
+//        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+//        try {
+//
+//            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
+//        } catch (Exception e) {
+//            logger.error("No Values for campuses found", e);
+//        }
+//        String[] campus = new String[enumeratedValueInfoList.size() - 1];
+//        for (int k = 0; k < campus.length; k++) {
+//            campus[k] = NO_CAMPUS;
+//        }
+//        if (results != null) {
+//            for (int i = 0; i < results.length; i++) {
+//                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+//                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
+//                        campus[i] = results[i];
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+        String[] campus = new String[3];
+        campus[0] = "0";
+        campus[1] = "1";
+        campus[2] = "2";
         //  Add the individual term items.
         for (SearchRequest request : requests) {
             for (int j = 0; j < campus.length; j++) {

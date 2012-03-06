@@ -42,6 +42,10 @@ public class Subrequirement {
         return count;
     }
 
+    public void setCount(Count count) {
+        this.count = count;
+    }
+
     public boolean hasGPA() {
         return gpa != null;
     }
@@ -74,8 +78,6 @@ public class Subrequirement {
         this.gpa = gpa;
     }
 
-    public ArrayList<Course> courseList = new ArrayList<Course>();
-
     public boolean hasCourseFilter() {
         return courseFilter != null;
     }
@@ -84,20 +86,36 @@ public class Subrequirement {
         return courseFilter;
     }
 
-    public boolean hasCourseList() {
-        return courseList.size() > 0;
+    public ArrayList<CourseAcceptable> courseAcceptableList = new ArrayList<CourseAcceptable>();
+
+    public boolean hasCourseAcceptableList() {
+        return courseAcceptableList.size() > 0;
     }
 
-    public ArrayList<Course> getCourseList() {
-        return courseList;
+    public int getCourseAcceptableListCount() {
+        return courseAcceptableList.size();
     }
 
-    public void addCourse(Course course) {
-        courseList.add(course);
+    public ArrayList<CourseAcceptable> getCourseAcceptableList() {
+        return courseAcceptableList;
     }
 
-
-    public void setCount(Count count) {
-        this.count = count;
+    public void addCourseAcceptable(CourseAcceptable course) {
+        courseAcceptableList.add(course);
     }
+
+    public ArrayList<CourseTaken> courseTakenList = new ArrayList<CourseTaken>();
+
+    public boolean hasCourseTakenList() {
+        return courseTakenList.size() > 0;
+    }
+
+    public ArrayList<CourseTaken> getCourseTakenList() {
+        return courseTakenList;
+    }
+
+    public void addCourseTaken(CourseTaken course) {
+        courseTakenList.add(course);
+    }
+
 }

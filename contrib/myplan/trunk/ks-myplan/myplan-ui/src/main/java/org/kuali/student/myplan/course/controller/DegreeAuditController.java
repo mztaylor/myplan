@@ -38,6 +38,7 @@ import java.io.StringWriter;
 
 
 // URL: http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
+// URL: http://localhost:8080/student/myplan/audit/audit&viewId=DegreeAudit-FormView
 
 @Controller
 @RequestMapping(value = "/audit")

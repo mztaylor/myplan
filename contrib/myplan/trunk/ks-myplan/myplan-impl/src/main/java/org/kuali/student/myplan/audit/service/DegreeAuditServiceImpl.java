@@ -7,14 +7,32 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.common.exceptions.*;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportSummaryInfo;
-import org.kuali.student.myplan.audit.service.model.*;
+import org.kuali.student.myplan.audit.service.model.Count;
+import org.kuali.student.myplan.audit.service.model.Credits;
+import org.kuali.student.myplan.audit.service.model.GPA;
+import org.kuali.student.myplan.audit.service.model.Report;
+import org.kuali.student.myplan.audit.service.model.Requirement;
+import org.kuali.student.myplan.audit.service.model.Section;
+import org.kuali.student.myplan.audit.service.model.Subrequirement;
+import org.kuali.student.myplan.audit.service.model.CourseAcceptable;
+import org.kuali.student.myplan.audit.service.model.CourseTaken;
 import org.kuali.student.myplan.model.AuditDataSource;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uachieve.apis.audit.JobQueueRun;
@@ -28,18 +46,38 @@ import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
+import javax.xml.namespace.QName;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.kuali.student.common.search.dto.*;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceImpl implements DegreeAuditService {
 
+    private transient LuService luService;
+    private transient CourseOfferingService courseOfferingService;
     private JobQueueRunLoader jobQueueRunLoader;
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            this.courseOfferingService = (CourseOfferingService)
+                    GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, CourseOfferingServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return this.courseOfferingService;
+    }
+
+    protected LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
 
     public JobQueueRunLoader getJobQueueRunLoader()
     {
@@ -149,10 +187,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         JobQueueRunLoader jqrl = getJobQueueRunLoader();
         JobQueueRun run = jqrl.loadJobQueueRun(auditid);
 
-
         report.setStudentName(run.getStuno());
         report.setWebTitle(run.getWebtitle());
         report.setDegreeProgram(run.getDprog());
+
+        Timestamp runDate = run.getRundate();
+        report.setDatePrepared(runDate.toString());
 
         Section section = new Section();
         report.addSection(section);
@@ -318,24 +358,97 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     }
                 }
 
+//                LuService luService = getLuService();
+
                 // Acceptable courses
                 List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
                 for (JobQueueAccept accept : acceptList) {
                     String dept = accept.getDept();
-                    String number = accept.getCrsno();
-
-                    if (number.length() == 0) continue;
                     if (dept.startsWith("**")) continue;
-                    Course course = new Course();
-                    course.setDept(dept);
-                    course.setNumber(number);
-                    subrequirement.addCourse(course);
+                    String number = accept.getCrsno();
+                    if (number.length() == 0) continue;
+
+                    CourseAcceptable courseAcceptable = new CourseAcceptable();
+                    courseAcceptable.setDept(dept);
+                    courseAcceptable.setNumber(number);
+                    subrequirement.addCourseAcceptable(courseAcceptable);
+
+                    {
+                        SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
+                        searchRequest.addParam("number", number);
+                        searchRequest.addParam("subject", dept.trim());
+                        try {
+
+                            SearchResult searchResult = getLuService().search(searchRequest);
+                            for (SearchResultRow row : searchResult.getRows()) {
+                                String courseId = getCellValue(row, "lu.resultColumn.cluId");
+                                courseAcceptable.setCluId( courseId );
+//                            CourseOfferingService courseOfferingService = getCourseOfferingService();
+
+//                            try {
+//
+//                                ContextInfo contextInfo = new ContextInfo();
+//                                CourseOfferingInfo coi = courseOfferingService.getCourseOffering(courseId, contextInfo);
+//
+//                                String title = coi.getCourseTitle();
+//                                courseAcceptable.setDescription( title );
+//
+//                            } catch ( DoesNotExistException e) {
+//                                throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+//                            } catch (Exception e) {
+//                                throw new RuntimeException("Query failed.", e);
+//                            }
+                            break;
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+
+                    {
+                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+                        searchRequest.addParam("courseID", courseAcceptable.getCluid() );
+                        try {
+
+                            SearchResult searchResult = getLuService().search(searchRequest);
+                            for (SearchResultRow row : searchResult.getRows()) {
+                                String name = getCellValue(row, "course.name");
+                                courseAcceptable.setDescription(name);
+
+                                break;
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    {
+
+                    }
+
+                }
+                {
+                    subrequirement.addCourseTaken( new CourseTaken() );
+                    subrequirement.addCourseTaken(new CourseTaken());
+                    subrequirement.addCourseTaken(new CourseTaken());
+                    subrequirement.addCourseTaken(new CourseTaken());
                 }
             }
         }
 
         return report;
     }
+
+    public String getCellValue(SearchResultRow row, String key) {
+        for (SearchResultCell cell : row.getCells()) {
+            if (key.equals(cell.getKey())) {
+                return cell.getValue();
+            }
+        }
+        throw new RuntimeException("cell result '" + key + "' not found");
+    }
+
 
     @Override
     public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {

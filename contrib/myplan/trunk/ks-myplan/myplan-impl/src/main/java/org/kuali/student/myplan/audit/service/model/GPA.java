@@ -1,7 +1,7 @@
 package org.kuali.student.myplan.audit.service.model;
 
 public class GPA {
-    public String caption = "* gpa caption *";
+    public String caption = "XX GPA CAPTION XX";
     public float required;
     public float earned;
 
