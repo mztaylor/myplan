@@ -1,5 +1,11 @@
+#txtaudit_span table {
+	margin: 0;
+}
 #txtaudit_span .control-toolbar {
-	margin-bottom: 1em;
+
+}
+#txtaudit_span .requirement-group {
+	margin-top: 1em;
 }
 #txtaudit_span .group-heading {
 	background: #e9e9e9;
@@ -52,9 +58,6 @@
 	text-overflow: ellipsis;
 	width: 100%;
 	white-space: nowrap;
-}
-#txtaudit_span .requirement .requirement-content {
-	clear:both;
 }
 #txtaudit_span .subrequirement-courses-acceptable table{
 	/*display: none;*/
