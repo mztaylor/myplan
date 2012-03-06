@@ -1,6 +1,6 @@
 
-
-<h1>${report.degreeProgram}</h1>
+<div>
+<h1>${report.webTitle}</h1>
 
 
 <h2>Degree Audit Summary</h2>
@@ -28,56 +28,18 @@
 			</table>
 		</td>
 	</tr>
-	<!-- We may not be doing summary, commented out
-	<tr>
-		<td>
-			<table class="uw-requirements">
-				<caption>UW Requirements</caption>
-				<tr>
-					<td colspan="2" align="right">${report.requirementUW.count.earned} of ${report.requirementUW.count.required} are met<td>
-				</tr>
-				<tr>
-					<th>CUMULATIVE GPA:<br />${report.requirementUW.GPA.required} required</th>
-					<td>${report.requirementUW.GPA.earned}</td>
-				</tr>
-				<tr>
-					<th>Credits:<br />Minimum ${report.requirementProgram.credits.minimum} credits</th>
-					<td>
-						<div class="needs"><label>Needs:</label> ${report.requirementUW.credits.required}</div>
-						<div class="inprogress"><label>In-progress:</label> ${report.requirementUW.credits.inprogress}</div>
-						<div class="earned"><label>Earned:</label> ${report.requirementUW.credits.earned}</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td>
-			<table class="dept-requirements">
-				<caption>Departmental Requirements</caption>
-				<tr>
-					<td colspan="2" align="right">${report.requirementProgram.count.earned} of ${report.requirementProgram.count.required} are met<td>
-				</tr>
-				<tr>
-					<th>GPA:<br />${report.requirementProgram.GPA.required} required</th>
-					<td>${report.requirementProgram.GPA.earned}</td>
-				</tr>
-				<tr>
-					<th>Credits:<br />Minimum ${report.requirementProgram.credits.minimum} credits</th>
-					<td>
-						<div class="needs"><label>Needs:</label> ${report.requirementProgram.credits.required}</div>
-						<div class="inprogress"><label>In-progress:</label> ${report.requirementProgram.credits.inprogress}</div>
-						<div class="earned"><label>Earned:</label> ${report.requirementProgram.credits.earned}</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-    -->
 </table>
 
 
 <h2>Detailed Degree Audit</h2>
-<p>THIS REPORT IS AN ADVISING TOOL USED TO TRACK DEGREE PROGRESS. FINAL CONFIRMATION OF DEGREE REQUIREMENTS IS SUBJECT TO DEPARTMENT OR COLLEGE AND UNIVERSITY APPROVAL.</p>
-<p>Please review this audit carefully and bring any questions to your adviser in the Communications Advising Office, 118 Communications, BOX 353740, 543-8860.</p>
+<p>
+THIS REPORT IS AN ADVISING TOOL USED TO TRACK DEGREE PROGRESS. FINAL CONFIRMATION OF DEGREE
+REQUIREMENTS IS SUBJECT TO DEPARTMENT OR COLLEGE AND UNIVERSITY APPROVAL.
+</p>
+<p>
+Please review this audit carefully and bring any questions to your adviser in the
+Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
+</p>
 
 <div class="control-toolbar">
 	<label for="requirement_status">Show</label>
@@ -90,12 +52,12 @@
 </div>
 
 
-
+#set( $courseAcceptableCounter = 0 )
 
 #foreach( $section in $report.sectionList )
 #if( ${section.hasCaption()} )
-<div class="section">
-	<div class="section-heading">
+<div class="requirement-group">
+	<div class="group-heading">
 		<h2>${section.caption}</h2>
 		<a href="#" class="jump">Jump to the next section</a>
 		<a href="#top" class="back">Back to top</a>
@@ -105,44 +67,28 @@
 		<div class="requirement-heading">
 			<div class="${req.status}">
                 <h3>${req.caption}</h3>
-				<div class="progress">
-#if( ${req.hasCredits()} )
-					<div class="required">${req.credits.required}</div>
-					<div class="inprogress">${req.credits.inprogress}</div>
-					<div class="earned">${req.credits.earned}</div>
-#end
-#if( ${req.hasGPA()} )
-					<div class="required">${req.gpa.required}</div>
-					<div class="earned">${req.gpa.earned}</div>
-#end
-#if( ${req.hasCount()} )
-					<div class="required">${req.count.required}</div>
-					<div class="inprogress">${req.count.inprogress}</div>
-					<div class="earned">${req.count.earned}</div>
-#end
-				</div>
 			</div>
 		</div>
 		<div class="requirement-content">
 #if( ${req.hasCredits()} )
 			<div class="requirement-key">
-				<div class="required-key"><label>Required:</label> ${req.credits.required} credits</div>
+				<div class="needs-key"><label>Needs:</label> ${req.credits.needs} credits</div>
 				<div class="inprogress-key"><label>In-progress:</label> ${req.credits.inprogress} credits</div>
 				<div class="earned-key"><label>Earned:</label> ${req.credits.earned} credits</div>
-				<div class="needs-key"><label>Needs:</label> ${req.credits.needs} credits</div>
+				<div class="required-key"><label>Required:</label> ${req.credits.required} credits</div>
 			</div>
 #end
 #if( ${req.hasGPA()} )
 			<div class="requirement-key">
-				<div class="required-key">GPA: ${req.gpa.earned} </div>
 				<div class="earned-key">${req.gpa.required} required</div>
+				<div class="required-key">GPA: ${req.gpa.earned} </div>
 			</div>
 #end
 #if( ${req.hasCount()} )
 			<div class="requirement-key">
-				<div class="required-key"><label>Required:</label> ${req.count.required} credits</div>
-				<div class="earned-key"><label>Earned:</label> ${req.count.earned} credits</div>
 				<div class="needs-key"><label>Needs:</label> ${req.count.needs} credits</div>
+				<div class="earned-key"><label>Earned:</label> ${req.count.earned} credits</div>
+				<div class="required-key"><label>Required:</label> ${req.count.required} credits</div>
 			</div>
 #end
 			<div class="requirement-info">
@@ -158,44 +104,28 @@
 #if( ${subreq.hasCaption()} )
                     <h3>${subreq.caption}</h3>
 #end
-                    <div class="progress">
-#if( ${subreq.hasCredits()} )
-                        <div class="required">${subreq.credits.required}</div>
-                        <div class="inprogress">${subreq.credits.inprogress}</div>
-                        <div class="earned">${subreq.credits.earned}</div>
-#end
-#if( ${subreq.hasGPA()} )
-                        <div class="required">${subreq.gpa.required}</div>
-                        <div class="earned">${subreq.gpa.earned}</div>
-#end
-#if( ${subreq.hasCount()} )
-                        <div class="required">${subreq.count.required}</div>
-                        <div class="needs">${subreq.count.needs}</div>
-                        <div class="earned">${subreq.count.earned}</div>
-#end
-                    </div>
                 </div>
             </div>
             <div class="subrequirement-content">
 #if( ${subreq.hasCredits()} )
                 <div class="subrequirement-key">
-                    <div class="required-key"><label>Required:</label> ${subreq.credits.required} credits</div>
+                    <div class="needs-key"><label>Needs:</label> ${subreq.credits.needs} credits</div>
                     <div class="inprogress-key"><label>In-progress:</label> ${subreq.credits.inprogress} credits</div>
                     <div class="earned-key"><label>Earned:</label> ${subreq.credits.earned} credits</div>
-                    <div class="needs-key"><label>Needs:</label> ${subreq.credits.needs} credits</div>
+                    <div class="required-key"><label>Required:</label> ${subreq.credits.required} credits</div>
                 </div>
 #end
 #if( ${subreq.hasGPA()} )
                 <div class="subrequirement-key">
-                    <div class="required-key">GPA: ${subreq.gpa.earned} </div>
                     <div class="earned-key">${subreq.gpa.required} required</div>
+                    <div class="required-key">GPA: ${subreq.gpa.earned} </div>
                 </div>
 #end
 #if( ${subreq.hasCount()} )
                 <div class="requirement-key">
-                    <div class="required-key"><label>Required:</label> ${subreq.count.required} credits</div>
-                    <div class="earned-key"><label>Earned:</label> ${subreq.count.earned} credits</div>
                     <div class="needs-key"><label>Needs:</label> ${subreq.count.needs} credits</div>
+                    <div class="earned-key"><label>Earned:</label> ${subreq.count.earned} credits</div>
+                    <div class="required-key"><label>Required:</label> ${subreq.count.required} credits</div>
                 </div>
 #end
 		    	<div class="subrequirement-info">
@@ -207,8 +137,24 @@
 #end
 		    	</div>
 
-#if( ${subreq.hasCourseList()} )
-                <div class="subrequirement-courses">
+#if( ${subreq.hasCourseAcceptableList()} )
+#set( $courseAcceptableCounter = 0 )
+                <div id="subrequirement-courses-acceptable-${courseAcceptableCounter}" class="subrequirement-courses-acceptable">
+                    <span>Courses fulfill this requirement</span>
+                    <table>
+                        <tbody>
+#foreach( $acceptable in $subreq.courseAcceptableList )
+                            <tr>
+                                <td><a href="course/${acceptable.dept}${acceptable.number}">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td><td>${acceptable.quarter}</td>
+                            </tr>
+#end
+                        </tbody>
+                    </table>
+                    <a href="#">View all ${subreq.courseAcceptableListCount} courses</a>
+                </div>
+#end
+#if( ${subreq.hasCourseTakenList()} )
+                <div class="subrequirement-courses-taken">
                     <table>
                         <thead>
                             <tr>
@@ -216,9 +162,9 @@
                             </tr>
                         </thead>
                         <tbody>
-#foreach( $course in $subreq.courseList )
+#foreach( $taken in $subreq.courseTakenList )
                             <tr>
-                                <td>${course.quarter}</td><td><a href="course/${course.dept}${course.number}">${course.dept} ${course.number}</a></td><td>${course.credits}</td><td>${course.grade}</td>
+                                <td>${taken.quarter}</td><td><a href="course/${taken.dept}${taken.number}">${taken.dept} ${taken.number} ${taken.description}</a></td><td>${taken.credits}</td><td>${taken.grade}</td>
                             </tr>
 #end
                         </tbody>
@@ -233,3 +179,4 @@
 </div>
 #end ## if section.hasCaption
 #end ## foreach section
+</div>

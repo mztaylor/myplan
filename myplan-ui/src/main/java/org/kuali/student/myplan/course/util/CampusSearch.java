@@ -50,23 +50,23 @@ public class CampusSearch extends KeyValuesBase {
         if(blankOption){
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
-        try{
-
-        enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
-        }
-        catch (Exception e)
-        {
-            logger.error("No Values for campuses found",e);
-        }
-        if (enumeratedValueInfoList != null) {
-            //  Add the individual term items.
-            for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                if(!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
-                keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()+" campus"));
-                }
-            }
-        }
+//        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
+//        try{
+//
+//        enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
+//        }
+//        catch (Exception e)
+//        {
+//            logger.error("No Values for campuses found",e);
+//        }
+//        if (enumeratedValueInfoList != null) {
+//            //  Add the individual term items.
+//            for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+//                if(!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
+//                keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()+" campus"));
+//                }
+//            }
+//        }
 
         return keyValues;
     }

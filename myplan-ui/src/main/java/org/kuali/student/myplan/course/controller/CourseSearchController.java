@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 
+import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.kim.api.identity.Person;
@@ -622,9 +623,8 @@ public class CourseSearchController extends UifControllerBase {
 
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
-            //   TODO: Use constants for namespace.
             this.courseOfferingService = (CourseOfferingService)
-                    GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+                    GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, CourseOfferingServiceConstants.SERVICE_NAME_LOCAL_PART));
         }
         return this.courseOfferingService;
     }

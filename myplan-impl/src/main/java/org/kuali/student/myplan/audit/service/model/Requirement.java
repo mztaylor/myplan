@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Requirement {
 
     // complete, inprogress
-    public String status = "complete";
-    public String caption = "* requirement caption *";
+    public String status = "XX complete XX";
+    public String caption = "XX requirement caption XX";
     public Count count;
     public GPA gpa;
     public Credits credits;
