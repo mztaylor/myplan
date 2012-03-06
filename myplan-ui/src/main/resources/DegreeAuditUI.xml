@@ -55,20 +55,17 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
+                <value>/ks-myplan/scripts/audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
             <list>
-                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
                 <value>/ks-myplan/css/audit.css</value>
             </list>
         </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
-                    <property name="instructionalText"
-                              value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>

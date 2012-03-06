@@ -208,7 +208,6 @@
             </list>
         </property>
 
-
         <property name="items">
             <list>
                 <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:title="Your Courses List">
@@ -217,7 +216,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="saved_courses_detail_list"/>
+                            <ref bean="saved_courses_detail"/>
                             <ref bean="saved_course_myplan_section"/>
                         </list>
                     </property>
@@ -245,7 +244,20 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-
+    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+                <value>myplan-saved-courses-detail</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="saved_courses_detail_list"/>
+                <ref bean="saved_courses_detail_list_empty"/>
+            </list>
+        </property>
+    </bean>
 
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
@@ -255,10 +267,9 @@
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
         <property name="propertyName" value="searchResults"/>
+        <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="styleClasses">
             <list merge="true">
-                <value>myplan-container-720</value>
-                <value>myplan-saved-courses-detail</value>
                 <value>myplan-stacked-list</value>
             </list>
         </property>
@@ -266,23 +277,24 @@
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}" p:style="display:block;">
                     <!-- Javascript applies the width styling to the parent span -->
-                    <property name="onDocumentReadyScript" value="
+                    <!--<property name="onDocumentReadyScript" value="
                         jq(&quot;[id^='@{#line.id}'] span.boxLayoutHorizontalItem&quot;).each(function() {
                             jq(this).parent('div').removeAttr('style');
                             var style = jq(this).children('span').attr('style');
                             jq(this).attr('style', style);
                             jq(this).children('span').removeAttr('style');
                         });
-                    "/>
+                    "/>-->
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-remove-margin</value>
+                            <value>myplan-saved-courses-detail-heading</value>
                         </list>
                     </property>
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:target="" p:style="width:69%;">
+                            <bean parent="Uif-Link" p:target="">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-text-bold</value>
@@ -293,7 +305,7 @@
                                 <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements" p:style="width:12%;">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -301,10 +313,12 @@
                                         <value>myplan-text-italic</value>
                                     </list>
                                 </property>
-                                <property name="propertyEditor" ref="data_list_formatter"/>
-                                <property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>
+                                <property name="propertyEditor">
+                                    <bean parent="data_list_formatter" p:emptyListMessage="&amp;nbsp;"/>
+                                </property>
+                                <!--<property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"  p:style="width:19%;"
+                            <bean parent="Uif-DataField" p:propertyName="dateAdded" p:label="Added on"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true">
                                 <property name="styleClasses">
@@ -332,7 +346,9 @@
                             </bean>
                             <bean parent="Uif-DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered"
                                   p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
-                                <property name="propertyEditor" ref="data_list_formatter"/>
+                                <property name="propertyEditor">
+                                    <bean parent="terms_formatter" p:emptyListMessage="No projected quarter"/>
+                                </property>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -394,6 +410,52 @@
                                     <list merge="true">
                                         <value>myplan-button</value>
                                         <value>myplan-button-transparent</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Empty Result Set -->
+    <bean id="saved_courses_detail_list_empty" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
+        <property name="render" value="@{searchResults.size() gt 0 ? false : true}"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Your List Is Empty. Find Courses and Save them to your list.">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-font-size-150</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-course-search-empty</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="With Your Courses List, you can">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-150</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Track courses via email notification when they become available to register"/>
+                                        <bean parent="Uif-MessageField"
+                                              p:messageText="Save courses before moving to Plan to sleep on"/>
+                                        <bean parent="Uif-MessageField" p:messageText="Share your list with friends &amp; advisors"/>
                                     </list>
                                 </property>
                             </bean>

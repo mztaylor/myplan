@@ -222,7 +222,7 @@
                             </bean>
                             <bean id="empty_table_message2" parent="Uif-MessageField"
                                   p:messageText="A few suggestions:"/>
-                            <bean id="empty_table_message_list" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
+                            <bean id="empty_table_message_list" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="Check your spelling"/>
