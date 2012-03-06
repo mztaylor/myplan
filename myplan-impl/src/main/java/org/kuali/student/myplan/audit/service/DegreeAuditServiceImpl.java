@@ -50,6 +50,7 @@ import javax.xml.namespace.QName;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -192,7 +193,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         report.setDegreeProgram(run.getDprog());
 
         Timestamp runDate = run.getRundate();
-        report.setDatePrepared(runDate.toString());
+        SimpleDateFormat formatter = new SimpleDateFormat( "MMM d, yyyy h:mm a");
+        report.setDatePrepared(formatter.format(runDate));
+//        report.setDatePrepared(runDate.toString());
 
         Section section = new Section();
         report.addSection(section);
