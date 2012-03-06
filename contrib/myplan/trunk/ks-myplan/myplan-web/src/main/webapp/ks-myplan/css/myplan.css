@@ -474,16 +474,16 @@ a:focus {
 	text-decoration: underline;
 }
 /* Styles for empty result set page ########################################################################### */
-.myplan-course-search-results .myplan-course-search-empty {
+.myplan-course-search-empty {
     border: solid 1px #a9a9a9;
     padding: 10px 10px 0 10px;
 }
-.myplan-course-search-results .myplan-course-search-empty > div[id$='_group'] {
+.myplan-course-search-empty > div[id$='_group'] {
     margin: 0 auto;
-    width: 70%;
+    width: 80%;
     padding: 25px 0;
 }
-.myplan-course-search-results .myplan-course-search-empty #empty_table_message_list_group>div>span>span{
+.myplan-course-search-empty > div[id$='_group'] div[id$='_group']>div>span>span {
     display: list-item;
     margin: 0;
     list-style-type: disc;
