@@ -66,7 +66,7 @@ public class DegreeAuditInquiryViewHelperServiceImpl extends KualiInquirableImpl
         }
 
         DegreeAuditItem degreeAuditItem = new DegreeAuditItem();
-        degreeAuditItem.setId(degreeAuditReport.getAuditId());
+        degreeAuditItem.setId("a1");
         //  TODO: Get the run date from the report.
         degreeAuditItem.setRunDate(new java.util.Date());
 
