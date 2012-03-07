@@ -53,14 +53,18 @@
         <property name="name" value="runDate"/>
         <property name="dataType" value="DATE"/>
         <property name="label" value="Run Date"/>
+        <property name="summary" value="&amp;nbsp;"/>
+        <property name="description" value="The date and time the audit was initiated."/>
         <property name="shortLabel" value="Ran"/>
         <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="16"/>
+        <property name="maxLength" value="21"/>
+        <!-- TODO: THis is busted. Need to display date to minute AM/PM -->
+        <property name="formatterClass" value="org.kuali.rice.core.web.format.TimestampAMPMFormatter"/>
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
         <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="20"/>
+            <bean parent="Uif-TextControl" p:size="21"/>
         </property>
     </bean>
 
@@ -108,7 +112,7 @@
                     <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:title="@{#line.id}" p:linkLabel="@{#line.id}"
+                            <bean parent="Uif-Link" p:label="Audit" p:title="@{#line.id}" p:linkLabel="@{#line.id}"
                                 p:hrefText="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView"/>
 
                             <bean parent="Uif-DataField" p:propertyName="runDate" p:label="Run Date"

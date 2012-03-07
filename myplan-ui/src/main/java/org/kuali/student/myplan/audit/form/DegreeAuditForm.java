@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.course.form;
+package org.kuali.student.myplan.audit.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
 

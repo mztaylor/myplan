@@ -13,16 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.myplan.course.controller;
+package org.kuali.student.myplan.audit.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
-import org.kuali.student.myplan.course.form.DegreeAuditForm;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
