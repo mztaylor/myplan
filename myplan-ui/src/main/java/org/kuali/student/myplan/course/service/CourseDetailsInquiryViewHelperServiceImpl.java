@@ -204,20 +204,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         String subject = splitStr[0];
         String value = getTitle(subject);
 
-
-
         //Convert to title case
-        String tempValue = "";
-        BreakIterator wordBreaker = BreakIterator.getWordInstance();
-        wordBreaker.setText(value);
-        int end = 0;
-        for(int start = wordBreaker.first(); (end= wordBreaker.next()) != BreakIterator.DONE; start=end){
-            String tempTitleCase = value.substring(start, end);
-            tempTitleCase = tempTitleCase.toLowerCase();
-            tempTitleCase = tempTitleCase.substring(0,1).toUpperCase() + tempTitleCase.substring(1);
-            tempValue = tempValue + tempTitleCase;
-        }
-        value = tempValue + " (" + subject.trim() + ")";
+//        String tempValue = "";
+//        BreakIterator wordBreaker = BreakIterator.getWordInstance();
+//        wordBreaker.setText(value);
+//        int end = 0;
+//        for(int start = wordBreaker.first(); (end= wordBreaker.next()) != BreakIterator.DONE; start=end){
+//            String tempTitleCase = value.substring(start, end);
+//            tempTitleCase = tempTitleCase.toLowerCase();
+//            tempTitleCase = tempTitleCase.substring(0,1).toUpperCase() + tempTitleCase.substring(1);
+//            tempValue = tempValue + tempTitleCase;
+//        }
+        value = value + " (" + subject.trim() + ")";
         courseDetails.setTitleValue(value);
 
 
