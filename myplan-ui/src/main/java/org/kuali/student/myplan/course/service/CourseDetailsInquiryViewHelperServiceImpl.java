@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.service;
 
 import java.lang.String;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,10 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
+import org.kuali.student.myplan.course.util.CurriculumFacet;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 
@@ -195,7 +198,56 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             logger.error("Exception loading course offering for:" + course.getCode());
         }
 
+        //Curriculum
+        String courseCode=courseDetails.getCode();
+        String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+        String subject = splitStr[0];
+        String value = getTitle(subject);
+
+
+
+        //Convert to title case
+        String tempValue = "";
+        BreakIterator wordBreaker = BreakIterator.getWordInstance();
+        wordBreaker.setText(value);
+        int end = 0;
+        for(int start = wordBreaker.first(); (end= wordBreaker.next()) != BreakIterator.DONE; start=end){
+            String tempTitleCase = value.substring(start, end);
+            tempTitleCase = tempTitleCase.toLowerCase();
+            tempTitleCase = tempTitleCase.substring(0,1).toUpperCase() + tempTitleCase.substring(1);
+            tempValue = tempValue + tempTitleCase;
+        }
+        value = tempValue + " (" + subject.trim() + ")";
+        courseDetails.setTitleValue(value);
+
+
         return courseDetails;
+    }
+
+     /**
+     * To get the title for the respective display name
+     * @param display
+     * @return
+     */
+    protected String getTitle(String display) {
+             String titleValue=null;
+              try {
+                List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
+                for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
+                {
+                    String code= enumVal.getCode().trim();
+                    if(code.equalsIgnoreCase(display.trim()))
+                    {
+                        titleValue=enumVal.getValue().trim();
+                        break;
+                    }
+                }
+
+            } catch (Exception e) {
+                logger.error("Could not load title value");
+            }
+
+        return titleValue;
     }
 
     protected synchronized CourseService getCourseService() {
