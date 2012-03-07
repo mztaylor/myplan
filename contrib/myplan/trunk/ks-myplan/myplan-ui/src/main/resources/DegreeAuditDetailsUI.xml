@@ -37,7 +37,7 @@
 
 
         <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.course.form.DegreeAuditForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
 
 
@@ -79,7 +79,7 @@
             </list>
         </property>
         <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.course.form.DegreeAuditForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
