@@ -19,14 +19,6 @@
 
     <context:annotation-config/>
 
-    <bean id="transactionManagerXAPool" class="org.springframework.transaction.jta.JotmFactoryBean">
-      <property name="defaultTimeout" value="${transaction.timeout}"/>
-    </bean>
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties" value="#{bootstrapConfig.getProperties()}" />
-    </bean>
-
     <bean id="bootstrapConfig" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
         <property name="configLocations">
             <list>
@@ -35,6 +27,13 @@
         </property>
     </bean>
 
+    <bean id="transactionManagerXAPool" class="org.springframework.transaction.jta.JotmFactoryBean">
+        <property name="defaultTimeout" value="${transaction.timeout}"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{bootstrapConfig.getProperties()}" />
+    </bean>
 
     <bean id="JtaTxManager" class="org.springframework.transaction.jta.JtaTransactionManager">
         <property name="userTransaction">
@@ -56,9 +55,9 @@
         <property name="transactionManager" ref="transactionManagerXAPool"/>
         <property name="driverClassName" value="${ks.myplan.datasource.driver.name}"/>
         <property name="url" value="${ks.myplan.datasource.url}"/>
-        <property name="maxSize" value="${datasource.pool.maxSize}"/>
-        <property name="minSize" value="${datasource.pool.minSize}"/>
-        <property name="maxWait" value="${datasource.pool.maxWait}"/>
+        <property name="maxSize" value="${ks.myplan.datasource.maxSize}"/>
+        <property name="minSize" value="${ks.myplan.datasource.minSize}"/>
+        <property name="maxWait" value="${ks.myplan.datasource.maxWait}"/>
         <property name="validationQuery" value="${ks.myplan.datasource.validationQuery}"/>
         <property name="username" value="${ks.myplan.datasource.username}"/>
         <property name="password" value="${ks.myplan.datasource.password}"/>
