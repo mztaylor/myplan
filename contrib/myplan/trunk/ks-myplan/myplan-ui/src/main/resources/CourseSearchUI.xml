@@ -655,6 +655,7 @@
         <property name="items">
             <list>
                 <ref bean="watch_list"/>
+                <ref bean="degree_audits_list"/>
             </list>
         </property>
     </bean>
@@ -671,6 +672,22 @@
         </property>
         <property name="onDocumentReadyScript"
                   value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});"/>
+    </bean>
+
+     <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-saved-courses-summary</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Five"/>
+        </property>
+
+        <property name="onDocumentReadyScript"
+                  value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});"/>
+
     </bean>
 
 </beans>
