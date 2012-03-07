@@ -45,9 +45,9 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 	<label for="requirement_status">Show</label>
 	<select id="requirement_status">
 		<option value="all">All Requirements</option>
-		<option value="incomplete">Incomplete Only</option>
-		<option value="inprogress">In-Progress Only</option>
-		<option value="complete">Complete Only</option>
+		<option value="N">Incomplete Only</option>
+		<option value="I">In-Progress Only</option>
+		<option value="C">Complete Only</option>
 	</select>
 </div>
 
@@ -58,76 +58,76 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #if( ${section.hasCaption()} )
 <div class="requirement-group">
 	<div class="group-heading">
-		<h2>${section.caption}</h2>
-		<a href="#" class="jump">Jump to the next section</a>
+		<h3>${section.caption}</h3>
+		<a href="#jump" class="jump">Jump to the next section</a>
 		<a href="#top" class="back">Back to top</a>
 	</div>
 #foreach( $req in $section.requirementList )
-	<div class="requirement">
+	<div class="requirement ${req.status}">
 		<div class="requirement-heading">
 			<div class="${req.status}">
-                <h3>${req.caption}</h3>
+                <h4>${req.caption}</h4>
 			</div>
 		</div>
 		<div class="requirement-body">
 		    <div class="requirement-content">
-#if( ${req.hasCredits()} )
-                <div class="requirement-key">
-                    <div class="needs-key"><label>Needs:</label> ${req.credits.needs} credits</div>
-                    <div class="inprogress-key"><label>In-progress:</label> ${req.credits.inprogress} credits</div>
-                    <div class="earned-key"><label>Earned:</label> ${req.credits.earned} credits</div>
-                    <div class="required-key"><label>Required:</label> ${req.credits.required} credits</div>
-                </div>
-#end
-#if( ${req.hasGPA()} )
-                <div class="requirement-key">
-                    <div class="earned-key">${req.gpa.required} required</div>
-                    <div class="required-key">GPA: ${req.gpa.earned} </div>
-                </div>
-#end
-#if( ${req.hasCount()} )
-                <div class="requirement-key">
-                    <div class="needs-key"><label>Needs:</label> ${req.count.needs} credits</div>
-                    <div class="earned-key"><label>Earned:</label> ${req.count.earned} credits</div>
-                    <div class="required-key"><label>Required:</label> ${req.count.required} credits</div>
-                </div>
-#end
-    			<div class="requirement-info">
+                <div class="requirement-info">
 #if( ${req.hasInfo()} )
 	    			<p>${req.info}</p>
 #end
                 </div>
+#if( ${req.hasCredits()} )
+                <ul class="progress">
+                    <li class="required"><label>Required:</label> ${req.credits.required} credits</li>
+                    <li class="earned"><label>Earned:</label> ${req.credits.earned} credits</li>
+                    <li class="inprogress"><label>In-progress:</label> ${req.credits.inprogress} credits</li>
+                    <li class="needs"><label>Needs:</label> ${req.credits.needs} credits</li>
+                </ul>
+#end
+#if( ${req.hasGPA()} )
+                <ul class="progress">
+                    <li class="required">GPA: ${req.gpa.earned} required</li>
+                    <li class="earned">${req.gpa.required}</li>
+                </ul>
+#end
+#if( ${req.hasCount()} )
+                <ul class="progress">
+                    <li class="required"><label>Required:</label> ${req.count.required} credits</li>
+                    <li class="earned"><label>Earned:</label> ${req.count.earned} credits</li>
+                    <li class="needs"><label>Needs:</label> ${req.count.needs} credits</li>
+                </ul>
+#end
             </div>
 #foreach( $subreq in $req.subrequirementList ) ## subreq
             <div class="subrequirement">
                 <div class="subrequirement-heading">
                     <div class="${subreq.status}">
 #if( ${subreq.hasCaption()} )
-                        <h3>${subreq.caption}</h3>
+                        <h5>${subreq.caption}</h5>
 #end
                     </div>
                 </div>
                 <div class="subrequirement-content">
 #if( ${subreq.hasCredits()} )
-                    <div class="subrequirement-key">
-                        <div class="needs-key"><label>Needs:</label> ${subreq.credits.needs} credits</div>
-                        <div class="inprogress-key"><label>In-progress:</label> ${subreq.credits.inprogress} credits</div>
-                        <div class="earned-key"><label>Earned:</label> ${subreq.credits.earned} credits</div>
-                        <div class="required-key"><label>Required:</label> ${subreq.credits.required} credits</div>
-                    </div>
+                    <ul class="progress">
+                        <li class="required"><label>Required:</label> ${subreq.credits.required} credits</li>
+                        <li class="earned"><label>Earned:</label> ${subreq.credits.earned} credits</li>
+                        <li class="inprogress"><label>In-progress:</label> ${subreq.credits.inprogress} credits</li>
+                        <li class="needs"><label>Needs:</label> ${subreq.credits.needs} credits</li>
+                    </ul>
 #end
 #if( ${subreq.hasGPA()} )
-                    <div class="subrequirement-key">
-                        <div class="earned-key">${subreq.gpa.required} required</div>
-                        <div class="required-key">GPA: ${subreq.gpa.earned} </div>
-                    </div>
+                    <ul class="progress">
+                        <li class="required">GPA: ${subreq.gpa.earned} required</li>
+                        <li class="earned">${subreq.gpa.required}</li>
+                    </ul>
 #end
 #if( ${subreq.hasCount()} )
-                    <div class="requirement-key">
-                        <div class="needs-key"><label>Needs:</label> ${subreq.count.needs} credits</div>
-                        <div class="earned-key"><label>Earned:</label> ${subreq.count.earned} credits</div>
-                        <div class="required-key"><label>Required:</label> ${subreq.count.required} credits</div>
-                    </div>
+                    <ul class="progress">
+                        <li class="required"><label>Required:</label> ${subreq.count.required} credits</li>
+                        <li class="earned"><label>Earned:</label> ${subreq.count.earned} credits</li>
+                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} credits</li>
+                    </ul>
 #end
 	    	    	<div class="subrequirement-info">
 #if( ${subreq.hasInfo()} )

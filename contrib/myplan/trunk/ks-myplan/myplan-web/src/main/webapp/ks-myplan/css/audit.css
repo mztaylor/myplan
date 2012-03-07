@@ -24,9 +24,11 @@
 #txtaudit_span .group-heading a.back {
 	top:30px;
 }
-#txtaudit_span .group-heading h2 {
+#txtaudit_span .group-heading h3 {
 	font-weight: bold;
 	margin: 0;
+	font-family: Helvetica, Arial, clean, sans-serif;
+	font-size: 1.6em !important;
 }
 #txtaudit_span .requirement {
 	margin:0 20px;
@@ -50,15 +52,40 @@
 	background: url('../images/iconIncomplete.png') no-repeat 20px 0px;
 	padding-left: 68px;
 }
-#txtaudit_span .requirement .requirement-heading .N h3 {
+#txtaudit_span .requirement .requirement-heading .C {
+	background: url('../images/iconComplete.png') no-repeat 20px 0px;
+	padding-left: 68px;
+}
+#txtaudit_span .requirement .requirement-heading div h4 {
 	font: 12px/20px Helvetica, Arial, clean, sans-serif !important;
 	margin: 0;
+	padding: 0;
 	height: 20px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	width: 100%;
 	white-space: nowrap;
 }
-#txtaudit_span .subrequirement-courses-acceptable table{
+#txtaudit_span .requirement .requirement-body {
+    padding: 10px 20px;
+}
+#txtaudit_span .subrequirement-courses-acceptable table {
 	/*display: none;*/
+}
+#txtaudit_span .requirement .progress {
+	margin: 0;
+	padding: 0;
+}
+#txtaudit_span .requirement .progress li {
+	margin-left: 1.5em;
+}
+#txtaudit_span .requirement .progress li:first-child {
+	margin-left: 0;
+}
+#txtaudit_span .requirement .progress label {
+    font-weight: normal;
+}
+#txtaudit_span .requirement .progress .needs,
+#txtaudit_span .requirement .progress .needs label {
+    font-weight: bold;
 }

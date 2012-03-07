@@ -21,7 +21,7 @@ a:focus {
     border: none;
     color: #1d8fd9;
 }
-#app {
+#view_div {
 	margin:0 auto;
 	padding: 10px 0 10px 10px;
 	width: 950px;
