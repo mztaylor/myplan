@@ -55,7 +55,6 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-
         try
         {
             DegreeAuditService degreeAuditService = (DegreeAuditService)

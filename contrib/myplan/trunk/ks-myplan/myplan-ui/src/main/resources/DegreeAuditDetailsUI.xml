@@ -102,7 +102,91 @@
     </bean>
 
 
+    <bean id="DegreeAuditDetails-InquiryView" parent="MyPlanInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="page.header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <!--
+        <property name="header">
+            <ref bean="course_details_back_link"/>
+        </property>
+        -->
+        <property name="Items">
+            <list>
+                <bean parent="Uif-Page" p:id="degree_audit_details_page"
+                      p:title="@{dataObject.id} (@{dataObject.runDate})">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="degree_audit_details_section" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+     <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+         <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
+         <property name="items">
+            <list>
+                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="items">
+                        <list>
+                            <ref bean="degree_audit_details_overview"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
 
+    <bean id="degree_audit_details_overview" parent="Uif-GridGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-details</value>
+            </list>
+        </property>
+        <property name="layoutManager.numberOfColumns" value="2"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="items">
+            <list>
+                <!-- Degree Audit ID -->
+                <bean parent="Uif-DataField" p:propertyName="id" p:label="Audit Id" p:labelField.renderColon="false">
+                    <property name="labelField.styleClasses">
+                        <list merge="true">
+                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-nowrap</value>
+                        </list>
+                    </property>
+                </bean>
+
+                <!-- Run Date -->
+                <bean parent="Uif-DataField" p:propertyName="runDate" p:label="Run Date" p:labelField.renderColon="false">
+                    <property name="labelField.styleClasses">
+                        <list merge="true">
+                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-nowrap</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
 </beans>
