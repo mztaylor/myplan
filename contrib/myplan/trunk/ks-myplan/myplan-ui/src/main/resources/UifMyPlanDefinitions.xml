@@ -40,18 +40,54 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
+                  p:styleClasses="fl-container-flex"/>
+        </property>
+
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
+                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+        </property>
+
     </bean>
 
     <bean id="MyPlanLookupView" abstract="true" parent="Uif-LookupView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
+                  p:styleClasses="fl-container-flex"/>
+        </property>
+
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
+                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+        </property>
+
+
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="Uif-InquiryView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
+                  p:styleClasses="fl-container-flex"/>
+        </property>
+
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
+                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+        </property>
+
     </bean>
 
     <bean id="MyPlanMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
@@ -59,6 +95,18 @@
             <bean parent="MyPlanTheme"/>
         </property>
         <property name="footer" ref="MyPlanFooterDocument"/>
+
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
+                  p:styleClasses="fl-container-flex"/>
+        </property>
+
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
+                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+        </property>
+
     </bean>
 
     <bean id="MyPlanFooterDocument" parent="Uif-FooterBase">
@@ -100,14 +148,15 @@
     </bean>
 
     <bean id="MyPlanFooter_SubmitCancel" parent="MyPlanFooterDocument">
-      <property name="items">
-        <list>
-            <bean parent="Uif-PrimaryActionButton" p:clientSideJs="validateAndSubmit('route', replacePage);" p:actionLabel="Submit"
-                p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE]}"/>
-            <bean parent="Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
-                p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}"/>
-        </list>
-      </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-PrimaryActionButton" p:clientSideJs="validateAndSubmit('route', replacePage);"
+                      p:actionLabel="Submit"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE]}"/>
+                <bean parent="Uif-ActionLink" p:methodToCall="cancel" p:actionLabel="Cancel"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="MyPlanHeader_Empty" parent="Uif-HeaderField-One">
@@ -117,7 +166,7 @@
     </bean>
 
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="None" />
+        <property name="emptyListMessage" value="None"/>
         <!-- This is available too
         <property name="emptyListStyleClasses">
             <list merge="true">
@@ -128,7 +177,7 @@
     </bean>
 
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
-        <property name="emptyListMessage" value="Not currently scheduled" />
+        <property name="emptyListMessage" value="Not currently scheduled"/>
         <property name="emptyListStyleClasses">
             <list merge="true">
                 <value>empty</value>
@@ -142,7 +191,7 @@
     </bean>
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="No projected quarter information is available" />
+        <property name="emptyListMessage" value="No projected quarter information is available"/>
         <property name="emptyListStyleClasses">
             <list merge="true">
                 <value>empty</value>
