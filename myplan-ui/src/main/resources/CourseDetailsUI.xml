@@ -619,7 +619,7 @@
                         </list>
                     </property>
                     <property name="linkLabel" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
-                    <property name="title" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>
+                    <property name="title" value="@{dataObject.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{dataObject.courseTitle} (@{dataObject.credit})"/>
                     <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{dataObject.courseId}"/>
                 </bean>
                 <!-- Scheduled Quarters -->
