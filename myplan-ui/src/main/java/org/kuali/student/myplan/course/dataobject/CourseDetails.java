@@ -13,13 +13,12 @@ public class CourseDetails {
     private String courseTitle;
     private String credit;
     private String courseDescription;
-
+    private String titleValue;
 
     // Saved course properties
     private boolean inSavedCourseList;
     private String savedCourseItemId;
     private Date savedCourseDateCreated;
-
 
     private List<String> campusLocations;
     private List<String> termsOffered;
@@ -32,6 +31,16 @@ public class CourseDetails {
         requisites = new ArrayList<String>();
         termsOffered = new ArrayList<String>();
     }
+
+    public String getTitleValue() {
+        return titleValue;
+    }
+
+    public void setTitleValue(String titleValue) {
+        this.titleValue = titleValue;
+    }
+
+
 
     public String getCourseId() {
         return courseId;
