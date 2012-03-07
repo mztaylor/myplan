@@ -88,6 +88,13 @@ public class CourseSearchStrategy {
 //                }
 //            }
 //        }
+
+        String campusSelectValue = form.getCampusSelect().trim();
+        boolean noCampus = false;
+        if (campusSelectValue == null || campusSelectValue.equals("")) {
+            noCampus = true;
+        }
+
         String[] campus = new String[3];
         campus[0] = "0";
         campus[1] = "1";
@@ -97,7 +104,11 @@ public class CourseSearchStrategy {
             for (int j = 0; j < campus.length; j++) {
                 int count = j + 1;
                 String campusKey = "campus" + count;
-                request.addParam(campusKey, campus[j]);
+                String campusValue = campus[j];
+                if (noCampus) {
+                    campusValue = NO_CAMPUS;
+                }
+                request.addParam(campusKey, campusValue);
             }
         }
     }
