@@ -24,6 +24,15 @@ public class CurriculumFacet extends AbstractFacet {
     private final Logger logger = Logger.getLogger(CurriculumFacet.class);
 
     private transient EnumerationManagementService enumService;
+    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+
+    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
+        return hashMap;
+    }
+
+    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+        this.hashMap = hashMap;
+    }
 
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
@@ -92,8 +101,15 @@ public class CurriculumFacet extends AbstractFacet {
      */
     protected String getTitle(String display) {
              String titleValue=null;
+        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
               try {
-                List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
+                  if(!this.getHashMap().containsKey("kuali.lu.subjectArea")) {
+                 enumeratedValueInfoList=getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
+                      hashMap.put("kuali.lu.subjectArea",enumeratedValueInfoList);
+                  }
+                  else {
+                      enumeratedValueInfoList=this.hashMap.get("kuali.lu.subjectArea");
+                  }
                 for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
                 {
                     String code= enumVal.getCode().trim();
