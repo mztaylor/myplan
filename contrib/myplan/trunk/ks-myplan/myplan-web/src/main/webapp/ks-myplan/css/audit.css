@@ -69,8 +69,8 @@
 #txtaudit_span .requirement .requirement-body {
     padding: 10px 20px;
 }
-#txtaudit_span .subrequirement-courses-acceptable table {
-	/*display: none;*/
+#txtaudit_span .subrequirement-courses-acceptable {
+	display: none;
 }
 #txtaudit_span .requirement .progress {
 	margin: 0;
