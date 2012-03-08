@@ -72,7 +72,7 @@ public class CourseSearchStrategy {
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
         String str = form.getCampusSelect();
         String[] results = null;
-        if (str!=null || !str.equalsIgnoreCase("")) {
+        if (str!=null) {
             results = str.split(",");
         }
 
@@ -240,7 +240,7 @@ public class CourseSearchStrategy {
 
     public List<SearchRequest> queryToRequests(CourseSearchForm form)
             throws Exception {
-        logger.info("query to request method start time :"+System.currentTimeMillis());
+
         String query = form.getSearchQuery().toUpperCase();
 
         List<String> levels = QueryTokenizer.extractCourseLevels(query);
@@ -268,7 +268,7 @@ public class CourseSearchStrategy {
         addCampusParams(requests, form);
 
         processRequests(requests, form);
-        logger.info("Query to request end Time"+System.currentTimeMillis());
+
             return requests;
     }
 
@@ -280,7 +280,7 @@ public class CourseSearchStrategy {
     //To process the Request with search key as division or full Text
   public void processRequests(ArrayList<SearchRequest> requests,CourseSearchForm form)
     {
-        logger.info("ProcessRequests start Time:"+System.currentTimeMillis());
+
         List<EnumeratedValueInfo> enumeratedValueInfoList =null;
         int size=requests.size();
         for(int i=0;i<size;i++)
@@ -390,7 +390,7 @@ public class CourseSearchStrategy {
         }
         }
 
-     logger.info("ProcessRequests End Time:"+System.currentTimeMillis());
+
     }
 
     public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
