@@ -503,7 +503,7 @@
     <bean id="remove_plan_item_page" parent="Uif-VerticalBoxSection" p:errorsField.render="true">
         <property name="items">
             <list>
-                 <bean id="remove_plan_item_key" parent="Uif-MessageField" p:messageText=""/>
+                 <bean id="remove_plan_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
             </list>
         </property>
     </bean>

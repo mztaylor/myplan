@@ -78,13 +78,6 @@ a:focus {
 	min-height: 450px;
 }
 /* Overwrite KRAD Styles ########################################################################### */
-.myplan-view a,
-.myplan-view a:hover,
-.myplan-view a:active,
-.myplan-view a:visited,
-.myplan-view a:focus {
-    color: #1d8fd9;
-}
 .myplan-view #viewpage_div,
 .myplan-view #viewheader_div,
 .myplan-view #viewfooter_div {
@@ -109,11 +102,9 @@ a:focus {
 }
 .myplan-view .boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
-    padding: 0;
 }
 .myplan-view .boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
-    padding: 0;
 }
 .myplan-view .uif-instructionalMessage {
 	max-width: none;
@@ -121,8 +112,9 @@ a:focus {
 }
 .myplan-button,
 .myplan-button:hover {
-    line-height: 1em;
-	padding: 5px 10px;
+    line-height: 22px;
+    height: 24px;
+	padding: 0px 10px;
     margin: 0;
     border: solid 1px #969696;
     border-radius: 4px;
@@ -164,13 +156,18 @@ a:focus {
 .myplan-stacked-list,
 .myplan-stacked-list ul,
 .myplan-stacked-list li,
-.myplan-stacked-list ul li {
+.myplan-stacked-list ul li,
+.myplan-stacked-list dl,
+.myplan-stacked-list dd,
+.myplan-stacked-list dl dd {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 .myplan-stacked-list li,
-.myplan-stacked-list ul li {
+.myplan-stacked-list ul li,
+.myplan-stacked-list dd,
+.myplan-stacked-list dl dd {
     display: block;
 }
 .myplan-data-list dl,
@@ -230,12 +227,29 @@ a:focus {
     margin: 0;
     padding: 0;
 }
-.msg-success {
+.myplan-message-border {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 10px 0 36px;
+    border: solid 1px #d7d7d7;
+    display: block;
+    margin: 0;
+}
+.myplan-message-noborder {
     height: 24px;
     line-height: 24px;
     padding: 0 0 0 36px;
-    background: url(../images/iconSuccess.png) no-repeat;
-    font-size: 120%;
+    display: block;
+    margin: 0;
+}
+.myplan-message-success {
+    background: #e4e4e4 url(../images/iconSuccess16.png) no-repeat 7px center;
+}
+.myplan-message-info {
+    background: #e4e4e4 url(../images/iconInfo16.png) no-repeat 7px center;
+}
+.myplan-action-success {
+    background: transparent url(../images/iconSuccess.png) no-repeat 0px center;
 }
 /* Text styles ########################################################################### */
 .myplan-text-italic {
@@ -262,9 +276,17 @@ a:focus {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
-/* Hide search results until load finish, js fade in ######################################################### */
-#course_search_results_panel_div {
-    display:none;
+#course_search_results_datatable td.myplan-text-ellipsis {
+    display: table-cell;
+}
+/* Hide search results hidden columns ######################################################### */
+#course_search_results_datatable .col7,
+#course_search_results_datatable .col8,
+#course_search_results_datatable .col9,
+#course_search_results_datatable .col10,
+#course_search_results_datatable .col11,
+#course_search_results_datatable .col12 {
+	display: none;
 }
 /* Styles for Facet Panel ################################################################################## */
 .myplan-course-search-panel input[type='text'] {
@@ -578,6 +600,15 @@ a:focus {
     border-top: dotted 1px #aaaaaa;
     padding:10px;
     display:block;
+}
+.myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout {
+	float: none !important;
+}
+.myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout span.boxLayoutHorizontalItem {
+    width: 19%;
+}
+.myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout span.boxLayoutHorizontalItem:first-child {
+    width: 62%;
 }
 /* Course Details Popup ########################################################################### */
 .myplan-popup-box {

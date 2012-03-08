@@ -84,7 +84,10 @@ function applyHistory() {
     oTable.fnDraw(false);
 }
 
-function facetFilter(txtColumn, filterText, obj) {
+function facetFilter(txtColumn, filterText, e) {
+    if (!e) var e = window.event;
+    e.preventDefault();
+    var obj = e.target;
     if ( ( !jq(obj).is('.disabled') && !jq(obj).is('.static') ) || obj === null ){
         oTable = jq("#course_search_results_datatable").dataTable();
 	    var colIndex = oTable.fnGetColumnIndex(txtColumn);

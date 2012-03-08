@@ -147,9 +147,11 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
 			myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
-				jq(this).addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
-                // If on course details page
-                // jq(this).addClass("").html("This course is in Your Courses List").fadeIn(250);
+                if ( jq(e.target).parents("#course_details_actions_div").length > 0 || jq(e.target).parents("#course_details_popup_actions_div").length > 0 ) {
+                	jq(this).addClass("myplan-message-border myplan-message-success").html("Course successfully added").fadeIn(250);
+                } else {
+                	jq(this).attr("id",addedId+"_span").addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
+                }
 			});
 		} else {
 			// showGrowl('Error updating', 'Error', 'errorGrowl');
@@ -185,16 +187,34 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 				var elementToBlock = jq("#" + id + "_form");
 
 				var updateRefreshableComponentCallback = function(htmlContent){
-                    elementToBlock.unblock();
-                    targetId = jq(e.target).attr("id");
-                    var planListItem = jq("#" + targetId).parents("li").children();
-                    jq(planListItem).fadeOut(250, function() {
-                        jq(this).parent().html('<div class="msg-success fl-text-green fl-text-bold"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
-                    });
-                    var planItemCount = jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong");
-                    jq(planItemCount).fadeOut(250, function() {
-                        jq(this).html(planItemCount.text() - 1).fadeIn(250);
-                    });
+                    var component = jq("[id='remove_plan_item_key']", htmlContent);
+					var removedId = jq.trim( jq(component).text() );
+        			// TODO: add back after courseID is available from the remove view
+        			//if (removedId.length > 0) {
+						elementToBlock.unblock();
+						targetId = jq(e.target).attr("id");
+						if ( jq(e.target).parents("#saved_courses_detail_div").length > 0 ) {
+							var planListItem = jq("#" + targetId).parents("li").children();
+							jq(planListItem).fadeOut(250, function() {
+								jq(this).parent().html('<div class="myplan-message-noborder myplan-action-success fl-text-green fl-text-bold fl-font-size-120"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
+							});
+							var planItemCount = jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong");
+							jq(planItemCount).fadeOut(250, function() {
+								jq(this).html(planItemCount.text() - 1).fadeIn(250);
+							});
+						} else {
+							jq(e.target).parent().fadeOut(250, function() {
+								jq(this).addClass("myplan-message-border myplan-message-success").html("Course successfully removed").fadeIn(250);
+							});
+							myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+							// if courseId_span exists change from "in list" to add button
+							/*
+                            if ( jq(removedId + "_span").length > 0 ) {
+								alert('Yes');
+							}
+							*/
+						}
+					//}
 				};
 
                 if (!methodToCall) {
