@@ -132,6 +132,48 @@
     </search:searchType>
 
     <search:searchType id="myplan.lu.search.fulltext">
+    <search:searchResultTypeInfo>
+        <search:name/>
+        <search:desc/>
+        <search:resultColumns>
+            <ref bean="lu.resultColumn.cluId"/>
+        </search:resultColumns>
+    </search:searchResultTypeInfo>
+    <search:searchCriteriaTypeInfo>
+        <search:queryParams>
+        </search:queryParams>
+    </search:searchCriteriaTypeInfo>
+</search:searchType>
+
+    <search:searchType id="myplan.lu.search.title">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.lu.search.description">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.lu.search.divisionAndFulltext">
         <search:searchResultTypeInfo>
             <search:name/>
             <search:desc/>
@@ -174,6 +216,20 @@
     </search:searchType>
 
     <search:searchType id="myplan.lu.search.division">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <search:searchType id="myplan.lu.search.additionalDivision">
         <search:searchResultTypeInfo>
             <search:name/>
             <search:desc/>
@@ -258,6 +314,57 @@
                     </value>
                 </entry>
 
+                <entry key="myplan.lu.search.title">
+                    <value>
+                        SELECT
+                        clu.id
+                        FROM CluCampusLocation loc
+                        JOIN loc.clu clu
+                        JOIN clu.officialIdentifier ident
+                        JOIN clu.descr cludesc
+                        WHERE
+                        clu.version.currentVersionStart &lt;= CURRENT_DATE
+                        AND
+                        (
+                        clu.version.currentVersionEnd &gt; CURRENT_DATE
+                        OR
+                        clu.version.currentVersionEnd IS NULL
+                        )
+                        AND
+                        (
+                        UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
+                        )
+                        AND
+                        loc.campusLocation IN ( :campus1, :campus2, :campus3 ) ORDER BY
+                        ident.code
+                    </value>
+                </entry>
+                <entry key="myplan.lu.search.description">
+                    <value>
+                        SELECT
+                        clu.id
+                        FROM CluCampusLocation loc
+                        JOIN loc.clu clu
+                        JOIN clu.officialIdentifier ident
+                        JOIN clu.descr cludesc
+                        WHERE
+                        clu.version.currentVersionStart &lt;= CURRENT_DATE
+                        AND
+                        (
+                        clu.version.currentVersionEnd &gt; CURRENT_DATE
+                        OR
+                        clu.version.currentVersionEnd IS NULL
+                        )
+                        AND
+                        (
+                        UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
+                        )
+                        AND
+                        loc.campusLocation IN ( :campus1, :campus2, :campus3 ) ORDER BY
+                        ident.code
+                    </value>
+                </entry>
+
                 <entry key="myplan.lu.search.fulltext">
                     <value>
                         SELECT
@@ -276,9 +383,9 @@
                         )
                         AND
                         (
-                        UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||' %'
+                        UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
                         OR
-                        UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||' %'
+                        UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
                         loc.campusLocation IN ( :campus1, :campus2, :campus3 )
@@ -329,6 +436,29 @@
                         ident.division = :division
                         AND
                         ident.level = :level
+                        AND
+                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        ORDER BY
+                        ident.suffixCode
+                    </value>
+                </entry>
+                <entry key="myplan.lu.search.additionalDivision">
+                    <value>
+                        SELECT
+                        clu.id
+                        FROM CluCampusLocation loc
+                        JOIN loc.clu clu
+                        JOIN clu.officialIdentifier ident
+                        WHERE
+                        clu.version.currentVersionStart &lt;= CURRENT_DATE
+                        AND
+                        (
+                        clu.version.currentVersionEnd &gt; CURRENT_DATE
+                        OR
+                        clu.version.currentVersionEnd IS NULL
+                        )
+                        AND
+                        ident.division IN (:divisions)
                         AND
                         loc.campusLocation IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
