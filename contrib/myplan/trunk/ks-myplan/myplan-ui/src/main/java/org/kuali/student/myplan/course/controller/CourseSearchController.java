@@ -50,7 +50,6 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.core.enumerationmanagement.service.EnumerationManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -330,16 +329,24 @@ public class CourseSearchController extends UifControllerBase {
     public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
         HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
 
+        ArrayList<Hit> hits = new ArrayList<Hit>();
+        ArrayList<Hit> tempHits = new ArrayList<Hit>();
         for (SearchRequest request : requests) {
             SearchResult searchResult = getLuService().search(request);
             for (SearchResultRow row : searchResult.getRows()) {
                 String id = getCellValue(row, "lu.resultColumn.cluId");
-                hitCourseID(courseMap, id);
+               /* hitCourseID(courseMap, id);*/
+                Hit hit= new Hit(id);
+                tempHits.add(hit);
+
             }
+            tempHits.removeAll(hits);
+            hits.addAll(tempHits);
+            tempHits.clear();
         }
 
-        ArrayList<Hit> hits = new ArrayList<Hit>(courseMap.values());
-        Collections.sort(hits, new HitComparator());
+//        ArrayList<Hit> hits = new ArrayList<Hit>(courseMap.values());
+//        Collections.sort(hits, new HitComparator());
         return hits;
     }
 
