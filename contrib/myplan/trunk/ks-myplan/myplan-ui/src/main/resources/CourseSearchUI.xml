@@ -228,7 +228,7 @@
                                         <bean parent="Uif-MessageField" p:messageText="Check your spelling"/>
                                         <bean parent="Uif-MessageField"
                                               p:messageText="Try a more general search (Any quarter, ENGL 1xx)"/>
-                                        <bean parent="Uif-MessageField" p:messageText="Use at least 2 characters"/>
+                                        <bean parent="Uif-MessageField" p:messageText="Use at least 3 characters"/>
                                     </list>
                                 </property>
                             </bean>
