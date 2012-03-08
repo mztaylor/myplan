@@ -17,6 +17,8 @@ package org.kuali.student.myplan.audit.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -35,10 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.List;
 
 
-// URL: http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
-// URL: http://localhost:8080/student/myplan/audit/audit&viewId=DegreeAudit-FormView
+// http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
+
 
 @Controller
 @RequestMapping(value = "/audit")
@@ -46,6 +49,16 @@ public class DegreeAuditController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
+    private transient DegreeAuditService degreeAuditService;
+
+    public DegreeAuditService getDegreeAuditService() {
+        if (degreeAuditService == null) {
+            degreeAuditService = (DegreeAuditService)
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
+        }
+        return degreeAuditService;
+    }
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
@@ -55,42 +68,31 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-        try
-        {
-            DegreeAuditService degreeAuditService = (DegreeAuditService)
-                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
-                            DegreeAuditServiceConstants.SERVICE_NAME));
+        try {
+            Person user = GlobalVariables.getUserSession().getPerson();
+            String studentID = user.getPrincipalId();
+            studentID = "000083856";
+
+            DegreeAuditService degreeAuditService = getDegreeAuditService();
+
             ContextInfo contextInfo = new ContextInfo();
             String auditId = "abc001";
-            {
-                AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
-                InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                StringWriter sw = new StringWriter();
-                sw.append("<div><pre>\n");
-                int c = 0;
-                while ((c = in.read()) != -1) {
-                    sw.append( (char) c );
-                }
-                sw.append("\n</pre></div>");
-                String dars = sw.toString();
-                form.setAuditText(dars);
-            }
-            {
-                AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
-                InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                StringWriter sw = new StringWriter();
-                sw.append( "<div>\n" );
-                int c = 0;
-                while ((c = in.read()) != -1) {
-                    sw.append((char) c);
-                }
-                sw.append("\n</div>");
-                String html = sw.toString();
-                form.setAuditHtml(html);
-            }
-        }
 
-        catch( Exception e )
+
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
+            InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+            StringWriter sw = new StringWriter();
+
+            int c = 0;
+            while ((c = in.read()) != -1) {
+                sw.append( (char) c );
+            }
+
+            String html = sw.toString();
+            form.setAuditHtml(html);
+
+
+        } catch( Exception e )
         {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package org.kuali.student.myplan.audit.infc;
 import org.kuali.student.r2.common.infc.TypeStateEntity;
 
 import javax.activation.DataHandler;
+import java.util.Date;
 
 
 /**
@@ -18,11 +19,12 @@ public interface AuditReport extends TypeStateEntity {
      */
     public String getAuditId();
 
+    public String getReportType();
 
-    /**
-     * Content type of the audit report data
-     * @name Report Content Type
-     */
+        /**
+         * Content type of the audit report data
+         * @name Report Content Type
+         */
     public String getReportContentTypeKey();
 
     /**
@@ -31,6 +33,11 @@ public interface AuditReport extends TypeStateEntity {
      */
     public DataHandler getReport();
 
+    public String getRequirementsSatisfied();
 
+    public String getStudentID();
 
+    public String getProgramID();
+
+    public Date getRunDate();
 }

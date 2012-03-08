@@ -42,6 +42,7 @@ import uachieve.apis.audit.JobQueueReq;
 import uachieve.apis.audit.JobQueueReqText;
 import uachieve.apis.audit.JobQueueSubreqText;
 import uachieve.apis.audit.JobQueueAccept;
+import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
@@ -51,6 +52,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +66,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     private transient LuService luService;
     private transient CourseOfferingService courseOfferingService;
     private JobQueueRunLoader jobQueueRunLoader;
+
+    private JobQueueRunDao jobQueueRunDao;
+
+    public JobQueueRunDao getJobQueueRunDao() {
+        return jobQueueRunDao;
+    }
+
+    public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {
+        this.jobQueueRunDao = jobQueueRunDao;
+    }
 
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
@@ -88,9 +100,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public void setJobQueueRunLoader( JobQueueRunLoader loader )
     {
     	this.jobQueueRunLoader = loader;
-    }
-
-    public void displayReqsEtc(@WebParam(name = "jobid") String jobid) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
     }
 
     String join( Object... args )
@@ -453,14 +462,45 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
-    @Override
-    public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+//    @Override
+//    public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
 
     @Override
     public List<String> getAuditIdsForStudentInDateRange(@WebParam(name = "studentId") String studentId, @WebParam(name = "startDate") Date startDate, @WebParam(name = "endDate") Date endDate, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    // TODO: add type for summary, check with Kamal
+    @Override
+    public List<AuditReportInfo> getRecentAuditsForStudent(@WebParam(name = "studentId") String studentId, @WebParam(name = "studentId") String reportType, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
+        JobQueueRunDao runrun = getJobQueueRunDao();
+
+        // TODO: configurable constant for UW
+        String instid = "4854";
+        // TODO: configurable constant for UW
+        String instidq = "72";
+        // I have no idea what 'instcd' list does
+        List<String> instcd = new ArrayList<String>();
+        instcd.add("");
+        List<JobQueueRun> load = runrun.load(instid, instidq, instcd, studentId);
+
+        for (JobQueueRun jqr : load) {
+            AuditReportInfo audit = new AuditReportInfo();
+            audit.setReportType(reportType );
+            audit.setAuditId(jqr.getJobid());
+            audit.setStudentID(studentId);
+            audit.setProgramID(jqr.getWebtitle());
+            audit.setRunDate(jqr.getRundate());
+            audit.setStateKey("XX");
+            audit.setRequirementsSatisfied("XX");
+            list.add(audit);
+        }
+
+        return list;
     }
 
     @Override

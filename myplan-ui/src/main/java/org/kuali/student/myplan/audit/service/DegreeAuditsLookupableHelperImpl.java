@@ -8,11 +8,13 @@ import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,22 +28,26 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
     protected List<?> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         List<DegreeAuditItem> degreeAuditsList = new ArrayList<DegreeAuditItem>();
         try {
+            Person user = GlobalVariables.getUserSession().getPerson();
+            String studentID = user.getPrincipalId();
+            studentID = "000083856";
+
             DegreeAuditService degreeAuditService = getDegreeAuditService();
 
-            Person user = GlobalVariables.getUserSession().getPerson();
-
+            HashSet<String> programSet = new HashSet<String>();
             ContextInfo context = new ContextInfo();
-            String studentID = user.getPrincipalId();
-
-            DegreeAuditItem da1 = new DegreeAuditItem();
-            da1.setId("Audit 1");
-            da1.setRunDate(new java.util.Date());
-            DegreeAuditItem da2 = new DegreeAuditItem();
-            da2.setId("Audit 2");
-            da2.setRunDate(new java.util.Date());
-
-            degreeAuditsList.add(da1);
-            degreeAuditsList.add(da2);
+            List<AuditReportInfo> auditList = degreeAuditService.getRecentAuditsForStudent(studentID, DegreeAuditServiceConstants.AUDIT_REPORT_TYPE_KEY_SUMMARY, context);
+            for (AuditReportInfo audit : auditList) {
+                String programID = audit.getProgramID();
+                if( !programSet.contains( programID ))
+                {
+                    DegreeAuditItem da = new DegreeAuditItem();
+                    da.setId( programID );
+                    da.setRunDate(audit.getRunDate());
+                    degreeAuditsList.add(da);
+                    programSet.add( programID );
+                }
+            }
 
         } catch (Exception e) {
             logger.error("Could not retrieve degree audit items.", e);
