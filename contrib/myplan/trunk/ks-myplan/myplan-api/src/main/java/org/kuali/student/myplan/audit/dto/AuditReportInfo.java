@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import javax.activation.DataHandler;
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,11 +20,14 @@ import java.util.List;
  * Date: 2/13/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements"})
+@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentID", "programID", "runDate"})
 public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport {
 
     @XmlAttribute
     private String auditId;
+
+    @XmlAttribute
+    private String reportType;
 
     @XmlElement
     private String reportContentTypeKey;
@@ -33,6 +37,18 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
 
     @XmlAnyElement
     private List<Element> _futureElements;
+
+    @XmlElement
+    private String requirementsSatisfied;
+
+    @XmlElement
+    private String studentID;
+
+    @XmlElement
+    private String programID;
+
+    @XmlElement
+    private Date runDate;
 
 
     public AuditReportInfo() {
@@ -58,6 +74,7 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
         this.auditId = auditId;
     }
 
+    @Override
     public String getReportContentTypeKey() {
         return reportContentTypeKey;
     }
@@ -73,5 +90,50 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
 
     public void setReport(DataHandler report) {
         this.report = report;
+    }
+
+    @Override
+    public String getRequirementsSatisfied() {
+        return requirementsSatisfied;
+    }
+
+    public void setRequirementsSatisfied( String requirementsSatisfied ) {
+        this.requirementsSatisfied = requirementsSatisfied;
+    }
+
+    @Override
+    public String getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID( String studentID ) {
+        this.studentID = studentID;
+    }
+
+    @Override
+    public String getProgramID() {
+        return programID;
+    }
+
+    public void setProgramID(String programID) {
+        this.programID = programID;
+    }
+
+    @Override
+    public Date getRunDate() {
+        return runDate;
+    }
+
+    public void setRunDate(Date runDate) {
+        this.runDate = runDate;
+    }
+
+    @Override
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType( String reportType ) {
+        this.reportType = reportType;
     }
 }

@@ -15,12 +15,14 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uachieve.apis.audit.*;
+import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,14 +57,29 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         return auditReportInfo;
     }
 
-    @Override
-    public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+//    @Override
+//    public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
 
     @Override
     public List<String> getAuditIdsForStudentInDateRange(@WebParam(name = "studentId") String studentId, @WebParam(name = "startDate") Date startDate, @WebParam(name = "endDate") Date endDate, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<AuditReportInfo> getRecentAuditsForStudent(@WebParam(name = "studentId") String studentId, @WebParam(name = "reportType") String reportType, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
+
+        AuditReportInfo audit = new AuditReportInfo();
+        audit.setStudentID(studentId);
+        audit.setProgramID("programId");
+        audit.setRunDate( new Date());
+        audit.setStateKey("XX");
+        audit.setRequirementsSatisfied("XX");
+        list.add(audit);
+        return list;
     }
 
     @Override

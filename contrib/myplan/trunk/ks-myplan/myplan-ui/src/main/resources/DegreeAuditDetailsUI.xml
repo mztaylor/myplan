@@ -13,7 +13,7 @@
          express or implied. See the License for the specific language governing permissions
          and limitations under the License. -->
 
-
+ <!--
     <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
         <property name="id" value="degreeAuditView"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -24,10 +24,7 @@
                 <bean parent="Uif-Page" p:id="degree_audit" p:title="Degree Audit">
                     <property name="items">
                         <list>
-
-                            <bean id="whoops" parent="Uif-MessageField" p:messageText="@{getAuditText()}"/>
                             <bean id="yippee" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"/>
-
                         </list>
                     </property>
                 </bean>
@@ -39,7 +36,7 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
-
+ -->
 
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="id" value="DegreeAudit-FormView"/>
