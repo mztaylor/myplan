@@ -86,8 +86,8 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #end
 #if( ${req.hasGPA()} )
                 <ul class="progress">
-                    <li class="required">GPA: ${req.gpa.earned} required</li>
-                    <li class="earned">${req.gpa.required}</li>
+                    <li class="required"><label>Required:</label> ${req.gpa.earned} GPA</li>
+                    <li class="earned"><label>Earned:</label> ${req.gpa.required} GPA</li>
                 </ul>
 #end
 #if( ${req.hasCount()} )
@@ -108,6 +108,14 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                     </div>
                 </div>
                 <div class="subrequirement-content">
+                    <div class="subrequirement-info">
+#if( ${subreq.hasInfo()} )
+		    	    	<p>${req.info}</p>
+#end
+#if( ${subreq.hasCourseFilter()} )
+			        	<p><a href="/${subreq.courseFilter}">View courses that fulfills this requirement</a></p>
+#end
+		    	    </div>
 #if( ${subreq.hasCredits()} )
                     <ul class="progress">
                         <li class="required"><label>Required:</label> ${subreq.credits.required} credits</li>
@@ -118,8 +126,8 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #end
 #if( ${subreq.hasGPA()} )
                     <ul class="progress">
-                        <li class="required">GPA: ${subreq.gpa.earned} required</li>
-                        <li class="earned">${subreq.gpa.required}</li>
+                        <li class="required"><label>Required:</label> ${subreq.gpa.earned} GPA</li>
+                        <li class="earned"><label>Earned:</label>${subreq.gpa.required} GPA</li>
                     </ul>
 #end
 #if( ${subreq.hasCount()} )
@@ -129,19 +137,12 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                         <li class="needs"><label>Needs:</label> ${subreq.count.needs} credits</li>
                     </ul>
 #end
-	    	    	<div class="subrequirement-info">
-#if( ${subreq.hasInfo()} )
-		    	    	<p>${req.info}</p>
-#end
-#if( ${subreq.hasCourseFilter()} )
-			        	<p><a href="/${subreq.courseFilter}">View courses that fulfills this requirement</a></p>
-#end
-		    	    </div>
 
 #if( ${subreq.hasCourseAcceptableList()} )
 #set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
-                    <div id="subrequirement-courses-acceptable-${courseAcceptableCounter}" class="subrequirement-courses-acceptable">
-                        <span>Courses fulfill this requirement</span>
+                    <a href="#subreq${courseAcceptableCounter}" class="subrequirement-courses-acceptable-link">View courses that fulfill this requirement</a>
+                    <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
+                        <h6>Courses fulfill this requirement</h6>
                         <table>
                             <tbody>
 #foreach( $acceptable in $subreq.courseAcceptableList )

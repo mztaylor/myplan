@@ -38,8 +38,7 @@ jq(document).ready(function(){
         });
     });
     jq("a.jump").click(function(e) {
-    	e.stopPropagation();
-    	//console.log( jq(this).parents(".requirement-group").next(".requirement-group").offset() );
+    	e.preventDefault();
     	var jump = jq(this).parents(".requirement-group").next(".requirement-group").offset();
     	if ( jump != null ) {
     		window.scrollTo(jump.left,jump.top);
@@ -47,5 +46,10 @@ jq(document).ready(function(){
     		window.scrollTo(0,0);
     	}
     	return false;
+    });
+    jq("a.subrequirement-courses-acceptable-link").click(function(e) {
+    	e.preventDefault();
+    	var id = jq(this).attr("href");
+    	openPopUp(id+'_popup', id, 'audit', 'audit', {viewId:'DegreeAudit-FormView'}, event, null, {width:'400px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
     });
 });
