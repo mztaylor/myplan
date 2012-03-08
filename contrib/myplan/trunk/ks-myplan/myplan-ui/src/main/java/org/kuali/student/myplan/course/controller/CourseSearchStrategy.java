@@ -22,7 +22,16 @@ public class CourseSearchStrategy {
     private transient EnumerationManagementService enumService;
 
     private transient LuService luService;
+    /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
+    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
 
+    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
+        return hashMap;
+    }
+
+    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+        this.hashMap = hashMap;
+    }
 
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
@@ -61,58 +70,86 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-//        String str = form.getCampusSelect();
-//        String[] results = null;
-//        if (!str.equalsIgnoreCase("")) {
-//            results = str.split(",");
-//        }
-//
-//        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-//        try {
-//
-//            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
-//        } catch (Exception e) {
-//            logger.error("No Values for campuses found", e);
-//        }
-//        String[] campus = new String[enumeratedValueInfoList.size() - 1];
-//        for (int k = 0; k < campus.length; k++) {
-//            campus[k] = NO_CAMPUS;
-//        }
-//        if (results != null) {
-//            for (int i = 0; i < results.length; i++) {
-//                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-//                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
-//                        campus[i] = results[i];
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-
-        String campusSelectValue = form.getCampusSelect().trim();
-        boolean noCampus = false;
-        if (campusSelectValue == null || campusSelectValue.equals("")) {
-            noCampus = true;
+        String str = form.getCampusSelect();
+        String[] results = null;
+        if (str!=null || !str.equalsIgnoreCase("")) {
+            results = str.split(",");
         }
 
-        String[] campus = new String[3];
-        campus[0] = "0";
-        campus[1] = "1";
-        campus[2] = "2";
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+         if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
+            enumeratedValueInfoList =getEnumerationValueInfoList("kuali.lu.campusLocation");
+
+         }
+        else
+         {
+             enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
+         }
+
+        String[] campus = new String[enumeratedValueInfoList.size() - 1];
+        for (int k = 0; k < campus.length; k++) {
+            campus[k] = NO_CAMPUS;
+        }
+        if (results != null) {
+            for (int i = 0; i < results.length; i++) {
+                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
+                        campus[i] = results[i];
+                        break;
+                    }
+                }
+            }
+        }
         //  Add the individual term items.
         for (SearchRequest request : requests) {
             for (int j = 0; j < campus.length; j++) {
                 int count = j + 1;
                 String campusKey = "campus" + count;
-                String campusValue = campus[j];
-                if (noCampus) {
-                    campusValue = NO_CAMPUS;
-                }
-                request.addParam(campusKey, campusValue);
+                request.addParam(campusKey, campus[j]);
             }
         }
     }
 
+
+    public void addCampusParam(SearchRequest request, CourseSearchForm form) {
+        String str = form.getCampusSelect();
+        String[] results = null;
+        if (str!=null) {
+            results = str.split(",");
+        }
+
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
+            enumeratedValueInfoList =getEnumerationValueInfoList("kuali.lu.campusLocation");
+
+        }
+        else
+        {
+            enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
+        }
+        String[] campus = new String[enumeratedValueInfoList.size() - 1];
+        for (int k = 0; k < campus.length; k++) {
+            campus[k] = NO_CAMPUS;
+        }
+        if (results != null) {
+            for (int i = 0; i < results.length; i++) {
+                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
+                        campus[i] = results[i];
+                        break;
+                    }
+                }
+            }
+        }
+
+
+            for (int j = 0; j < campus.length; j++) {
+                int count = j + 1;
+                String campusKey = "campus" + count;
+                request.addParam(campusKey, campus[j]);
+            }
+
+    }
     /**
      * @param divisionMap for reference
      * @param query       initial query
@@ -203,6 +240,7 @@ public class CourseSearchStrategy {
 
     public List<SearchRequest> queryToRequests(CourseSearchForm form)
             throws Exception {
+        logger.info("query to request method start time :"+System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
 
         List<String> levels = QueryTokenizer.extractCourseLevels(query);
@@ -229,8 +267,149 @@ public class CourseSearchStrategy {
 
         addCampusParams(requests, form);
 
-        return requests;
+        processRequests(requests, form);
+        logger.info("Query to request end Time"+System.currentTimeMillis());
+            return requests;
     }
+
+    /**
+     *
+     * @param requests
+     * @param form
+     */
+    //To process the Request with search key as division or full Text
+  public void processRequests(ArrayList<SearchRequest> requests,CourseSearchForm form)
+    {
+        logger.info("ProcessRequests start Time:"+System.currentTimeMillis());
+        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
+        int size=requests.size();
+        for(int i=0;i<size;i++)
+        {
+            if(requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division"))
+            {
+                String queryText=(String)requests.get(i).getParams().get(0).getValue();
+                String key=(String)requests.get(i).getParams().get(0).getValue();
+                if(form.getSearchQuery().length()<=2){
+                    break;
+                }
+                else{
+                SearchRequest request0=new SearchRequest("myplan.lu.search.title");
+                request0.addParam("queryText", queryText.trim());
+                addCampusParam(request0,form);
+                requests.add(request0);
+                try{
+
+                    enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
+                }
+                catch (Exception e)
+                {
+                    logger.error("No Values for campuses found",e);
+                }
+                StringBuffer additionalDivisions=new StringBuffer();
+                if (enumeratedValueInfoList != null) {
+                    //  Add the individual term items.
+                    for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                        if(enumeratedValueInfo.getCode().trim().contains(key.trim())){
+                            if(!enumeratedValueInfo.getCode().equalsIgnoreCase(queryText)){
+                            additionalDivisions.append(enumeratedValueInfo.getCode()+",");
+                            }
+                        }
+
+                    }
+                }
+                if(additionalDivisions.length()>0){
+                    String div=additionalDivisions.substring(0,additionalDivisions.length()-1);
+                    SearchRequest request1=new SearchRequest("myplan.lu.search.additionalDivision");
+                    request1.addParam("divisions", div);
+                    addCampusParam(request1,form);
+                    requests.add(request1);
+                }
+                SearchRequest request2=new SearchRequest("myplan.lu.search.description");
+                request2.addParam("queryText", queryText.trim());
+                addCampusParam(request2,form);
+                requests.add(request2);
+
+                }
+
+            }
+            if(requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")){
+                String key=(String)requests.get(i).getParams().get(0).getValue();
+                String division=null;
+                if(key.length()<=2)
+                {
+                    requests.get(i).getParams().get(0).setValue("null");
+                    break;
+                }
+                else{
+                    if(key.length()>2){
+
+                            if(!this.getHashMap().containsKey("kuali.lu.subjectArea")){
+                            enumeratedValueInfoList = getEnumerationValueInfoList("kuali.lu.subjectArea");
+
+                            }
+                            else
+                            {
+                                enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
+                            }
+
+
+                if (enumeratedValueInfoList != null) {
+                    //  Add the individual term items.
+                    for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                        if(enumeratedValueInfo.getValue().trim().equalsIgnoreCase(key)){
+                            division=enumeratedValueInfo.getCode();
+
+                        }
+
+                    }
+                }
+                if(division!=null){
+                requests.get(i).setSearchKey("myplan.lu.search.division");
+                requests.get(i).getParams().get(0).setKey("division");
+                requests.get(i).getParams().get(0).setValue(division);
+
+                SearchRequest request1=new SearchRequest("myplan.lu.search.title");
+                request1.addParam("queryText", key.trim());
+                addCampusParam(request1,form);
+                requests.add(request1);
+                SearchRequest request2=new SearchRequest("myplan.lu.search.description");
+                request2.addParam("queryText", key.trim());
+                addCampusParam(request2,form);
+                requests.add(request2);
+                }
+                    else {
+                    requests.get(i).setSearchKey("myplan.lu.search.title");
+                    SearchRequest request2=new SearchRequest("myplan.lu.search.description");
+                    request2.addParam("queryText", key.trim());
+                    addCampusParam(request2,form);
+                    requests.add(request2);
+                }
+            }
+
+        }
+        }
+        }
+
+     logger.info("ProcessRequests End Time:"+System.currentTimeMillis());
+    }
+
+    public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+       
+        List<EnumeratedValueInfo> enumeratedValueInfoList=null;
+
+        try{
+
+            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
+            hashMap.put(param,enumeratedValueInfoList);
+        }
+        catch (Exception e)
+        {
+            logger.error("No Values for campuses found",e);
+        }
+
+        return enumeratedValueInfoList;
+    }
+
 
 
 
