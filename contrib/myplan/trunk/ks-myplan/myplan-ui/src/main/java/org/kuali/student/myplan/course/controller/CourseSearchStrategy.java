@@ -240,7 +240,7 @@ public class CourseSearchStrategy {
 
     public List<SearchRequest> queryToRequests(CourseSearchForm form)
             throws Exception {
-
+        logger.info("Start Of Method queryToRequests in CourseSearchStrategy:"+System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
 
         List<String> levels = QueryTokenizer.extractCourseLevels(query);
@@ -259,16 +259,20 @@ public class CourseSearchStrategy {
 
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
-
+        logger.info("Start of method addDivisionSearches of CourseSearchStrategy:"+System.currentTimeMillis());
         // Order is important, more exact search results appear at top of list
         addDivisionSearches(divisions, codes, levels, requests);
-
+        logger.info("End of method addDivisionSearches of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:"+System.currentTimeMillis());
         addFullTextSearches(query, requests);
-
+        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Start of method addCampusParams of CourseSearchStrategy:"+System.currentTimeMillis());
         addCampusParams(requests, form);
-
+        logger.info("Start of method addCampusParams of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Count of No of Query Tokens:"+requests.size());
         processRequests(requests, form);
-
+        logger.info("No of Requests after processRequest method:"+requests.size());
+        logger.info("End Of Method queryToRequests in CourseSearchStrategy:"+System.currentTimeMillis());
             return requests;
     }
 
@@ -280,7 +284,7 @@ public class CourseSearchStrategy {
     //To process the Request with search key as division or full Text
   public void processRequests(ArrayList<SearchRequest> requests,CourseSearchForm form)
     {
-
+        logger.info("Start of method processRequests in CourseSearchStrategy:"+System.currentTimeMillis());
         List<EnumeratedValueInfo> enumeratedValueInfoList =null;
         int size=requests.size();
         for(int i=0;i<size;i++)
@@ -390,7 +394,7 @@ public class CourseSearchStrategy {
         }
         }
 
-
+    logger.info("End of processRequests method in CourseSearchStrategy:"+System.currentTimeMillis());
     }
 
     public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
