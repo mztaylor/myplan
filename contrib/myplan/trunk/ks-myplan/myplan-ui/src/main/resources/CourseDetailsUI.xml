@@ -489,7 +489,7 @@
                     </property>
                     <property name="styleClasses">
                         <list merge="true">
-                            <value>myplan-data-list</value>
+                            <value>myplan-stacked-list</value>
                         </list>
                     </property>
                     <property name="propertyEditor" ref="data_list_formatter"/>
