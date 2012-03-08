@@ -137,8 +137,8 @@
                         <bean class="org.kuali.student.myplan.course.util.PublishedTermsListBuilder"/>
                     </property>
                 </bean>
-                <bean parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"
-                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 5px 30px;">
+                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"
+                      p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
                     <property name="onClickScript" value="
                         jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
                         jq.cookie( 'SpryMedia_DataTables_course_search_results_datatable_course', null, { expires: -1, path: '/student/myplan/' } );
@@ -279,6 +279,7 @@
                 <entry key="bRetrieve" value="true"/>
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bDeferRender" value="true"/>
+                <entry key="bProcessing" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="bStateSave" value="true"/>
                 <entry key="bSortClasses" value="false"/>
@@ -358,7 +359,7 @@
                               p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="In List" p:style="width:55px;"
+                <bean parent="Uif-MessageField" p:messageText="In List" p:style="width:55px;" p:id="@{#line.courseId}"
                       p:styleClasses="fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}"/>
                 <bean parent="Uif-DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true"/>
@@ -411,7 +412,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="All"
-                      p:onClickScript="facetFilter('facetQuarter', 'All', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetQuarter', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetQuarter</value>
@@ -434,7 +435,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
-                      p:onClickScript="facetFilter('facetQuarter', '@{#line.key}', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetQuarter', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetQuarter</value>
@@ -460,7 +461,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="All"
-                      p:onClickScript="facetFilter('facetGenEduReq', 'All', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetGenEduReq', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetGenEduReq</value>
@@ -484,7 +485,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
-                      p:onClickScript="facetFilter('facetGenEduReq', '@{#line.key}', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetGenEduReq', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetGenEduReq</value>
@@ -510,7 +511,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="All"
-                      p:onClickScript="facetFilter('facetCredits', 'All', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetCredits', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetCredits</value>
@@ -534,7 +535,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
-                      p:onClickScript="facetFilter('facetCredits', '@{#line.key}', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetCredits', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetCredits</value>
@@ -559,7 +560,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetLevel', 'All', this);" p:hrefText="#">
+                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetLevel', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetLevel</value>
@@ -583,7 +584,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
-                      p:onClickScript="facetFilter('facetLevel', '@{#line.key}', this);" p:hrefText="#">
+                      p:onClickScript="facetFilter('facetLevel', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetLevel</value>
@@ -608,7 +609,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetCurriculum', 'All', this);" p:hrefText="#">
+                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetCurriculum', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetCurriculum</value>
@@ -632,7 +633,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:title="@{#line.title}"
-                      p:onClickScript="facetFilter('facetCurriculum', '@{#line.key}', this);" p:hrefText="#"
+                      p:onClickScript="facetFilter('facetCurriculum', '@{#line.key}', e);" p:hrefText="#"
                       p:labelField.render="false">
                     <property name="styleClasses">
                         <list merge="true">

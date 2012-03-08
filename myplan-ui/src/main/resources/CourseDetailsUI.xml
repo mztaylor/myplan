@@ -280,7 +280,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                     <property name="styleClasses">
                         <list merge="true">
@@ -288,6 +288,21 @@
                             <value>myplan-button-gray</value>
                         </list>
                     </property>
+                </bean>
+                <bean parent="Uif-LinkGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? true : false}"
+                      p:groupBeginDelimiter="This course is in " p:groupEndDelimiter="" p:linkSeparator="">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-message-border</value>
+                            <value>myplan-message-info</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                    <list>
+                      <bean parent="Uif-Link" p:linkLabel="Your Courses List" p:hrefText="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"
+                            p:title="Saved Courses List" p:target="" p:labelField.render="false"/>
+                    </list>
+                  </property>
                 </bean>
             </list>
         </property>
@@ -675,7 +690,7 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
+                                        <bean p:id="addToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
                                             <property name="clientSideJs" value="alert('This course has been added to your plan');"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
@@ -685,7 +700,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
+                                        <bean p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
                                             <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
@@ -709,7 +724,7 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan">
+                                        <bean p:id="moveToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan">
                                             <property name="clientSideJs" value="alert('This course has been moved to your plan');"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
@@ -719,7 +734,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
+                                        <bean p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
                                             <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
