@@ -66,7 +66,7 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddCampusParams2() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
-        form.setCampusSelect("");
+        form.setCampusSelect(null);
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add( new SearchRequest( "test" ));
