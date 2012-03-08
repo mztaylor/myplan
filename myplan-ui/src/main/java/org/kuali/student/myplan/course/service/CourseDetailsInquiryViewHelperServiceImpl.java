@@ -129,14 +129,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         //  Get general education requirements.
         List<String> genEdReqs = new ArrayList<String>();
+
         Map<String, String> attributes = course.getAttributes();
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
+
             if (entry.getValue().equals("true") && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
-                String r = entry.getKey().replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
+                String keyTemp = entry.getKey().replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
+                String r = getGenEdReqValue(keyTemp);
+                r = r + " (" + entry.getKey().replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "") + ")";
                 genEdReqs.add(r);
             }
         }
         courseDetails.setGenEdRequirements(genEdReqs);
+
+
+
 
         /*
           Use the course offering service to see if the course is being offered in the selected term.
@@ -221,6 +228,39 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         return courseDetails;
     }
+
+
+     /**
+     * To get the full text for gen ed requirements
+     * @param key
+     * @return genEdReqValue
+     */
+
+    protected String getGenEdReqValue(String key) {
+
+             String genEdReqValue=null;
+
+             try {
+                List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
+                for(EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+                    String abbr = enumVal.getAbbrevValue();
+
+                    if(abbr.equalsIgnoreCase(key))
+                    {
+                        genEdReqValue=enumVal.getValue();
+                        break;
+                    }
+                }
+
+            } catch (Exception e) {
+                logger.error("Could not load genEdReqValue");
+            }
+
+        return genEdReqValue;
+    }
+
+
+
 
      /**
      * To get the title for the respective display name
