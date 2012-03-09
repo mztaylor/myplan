@@ -111,15 +111,10 @@
                 <value>myplan-view</value>
             </list>
         </property>
-        <!--
-        <property name="header">
-            <ref bean="course_details_back_link"/>
-        </property>
-        -->
         <property name="Items">
             <list>
                 <bean parent="Uif-Page" p:id="degree_audit_details_page"
-                      p:title="@{dataObject.id} (@{dataObject.runDate})">
+                      p:title="@{dataObject.report.auditId} (@{dataObject.report.runDate})">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -164,7 +159,7 @@
         <property name="items">
             <list>
                 <!-- Degree Audit ID -->
-                <bean parent="Uif-DataField" p:propertyName="id" p:label="Audit Id" p:labelField.renderColon="false">
+                <bean parent="Uif-DataField" p:propertyName="report.auditId" p:label="Audit Id" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -174,7 +169,7 @@
                 </bean>
 
                 <!-- Run Date -->
-                <bean parent="Uif-DataField" p:propertyName="runDate" p:label="Run Date" p:labelField.renderColon="false">
+                <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label="Run Date" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>

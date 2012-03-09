@@ -3,8 +3,8 @@ package org.kuali.student.myplan.audit.service.mock;
 
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.dto.AuditReportSummaryInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.model.AuditDataSource;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -14,14 +14,9 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uachieve.apis.audit.*;
-import uachieve.apis.audit.dao.JobQueueRunDao;
-import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
-import java.io.PrintStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +24,6 @@ import java.util.List;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceMockImpl implements DegreeAuditService {
-
 
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -48,12 +42,22 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        String html = "DegreeAuditServiceMockImpl";
+
+        String html = "<span>Degree Audit Service Mock Impl</span>";
+
         AuditReportInfo auditReportInfo = new AuditReportInfo();
+
         AuditDataSource dataSource = new AuditDataSource(html, auditId);
         DataHandler handler = new DataHandler(dataSource);
+
         auditReportInfo.setAuditId(auditId);
+        auditReportInfo.setReportType(auditTypeKey);
         auditReportInfo.setReport(handler);
+        auditReportInfo.setProgramID("programId");
+        auditReportInfo.setRunDate(new java.util.Date());
+        auditReportInfo.setReportContentTypeKey("html");
+        auditReportInfo.setRequirementsSatisfied("Yes!");
+
         return auditReportInfo;
     }
 
@@ -72,13 +76,15 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
-        AuditReportInfo audit = new AuditReportInfo();
-        audit.setStudentID(studentId);
-        audit.setProgramID("programId");
-        audit.setRunDate( new Date());
-        audit.setStateKey("XX");
-        audit.setRequirementsSatisfied("XX");
-        list.add(audit);
+        try {
+            AuditReportInfo ari1 = getAuditReport("a1", DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY, new ContextInfo());
+            AuditReportInfo ari2 = getAuditReport("a2", DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY, new ContextInfo());
+            list.add(ari1);
+            list.add(ari2);
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException("Trouble creating fake audits.", e);
+        }
+
         return list;
     }
 

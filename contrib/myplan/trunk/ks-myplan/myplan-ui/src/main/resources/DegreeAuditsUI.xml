@@ -25,46 +25,55 @@
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
-                <ref bean="DegreeAuditItem.id"/>
-                <ref bean="DegreeAuditItem.runDate"/>
+                <ref bean="DegreeAuditItem.programTitle"/>
+                <ref bean="DegreeAuditItem.programType"/>
+
+            </list>
+        </property>
+        <property name="complexAttributes">
+            <list>
+                <ref bean="DegreeAuditItem.report"/>
             </list>
         </property>
     </bean>
 
-    <bean id="DegreeAuditItem.id" parent="DegreeAuditItem.id-parentBean"/>
-    <bean id="DegreeAuditItem.id-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="id"/>
+    <bean id="DegreeAuditItem.report" parent="ComplexAttributeDefinition">
+        <property name="name" value="report"/>
+        <property name="dataObjectEntry" ref="AuditReportInfo"/>
+    </bean>
+
+    <bean id="DegreeAuditItem.programTitle" parent="DegreeAuditItem.programTitle-parentBean"/>
+    <bean id="DegreeAuditItem.programTitle-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="programTitle"/>
         <property name="dataType" value="STRING"/>
-        <property name="label" value="Your Courses List Item ID"/>
-        <property name="shortLabel" value="Your Courses List Item ID"/>
+        <property name="label" value="Program Title"/>
+        <property name="description" value="Program Title."/>
+        <property name="shortLabel" value="Title"/>
         <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="10"/>
+        <property name="maxLength" value="50"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
         <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
+            <bean parent="Uif-TextControl" p:size="50"/>
         </property>
     </bean>
 
 
-    <bean id="DegreeAuditItem.runDate" parent="DegreeAuditItem.runDate-parentBean"/>
-    <bean id="DegreeAuditItem.runDate-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="runDate"/>
-        <property name="dataType" value="DATE"/>
-        <property name="label" value="Run Date"/>
-        <property name="summary" value="&amp;nbsp;"/>
-        <property name="description" value="The date and time the audit was initiated."/>
-        <property name="shortLabel" value="Ran"/>
+    <bean id="DegreeAuditItem.programType" parent="DegreeAuditItem.programType-parentBean"/>
+    <bean id="DegreeAuditItem.programType-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="programType"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Program Type"/>
+        <property name="description" value="Program Type."/>
+        <property name="shortLabel" value="Type"/>
         <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="21"/>
-        <!-- TODO: THis is busted. Need to display date to minute AM/PM -->
-        <property name="formatterClass" value="org.kuali.rice.core.web.format.TimestampAMPMFormatter"/>
+        <property name="maxLength" value="50"/>
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
         <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="21"/>
+            <bean parent="Uif-TextControl" p:size="50"/>
         </property>
     </bean>
 
@@ -107,15 +116,15 @@
         <property name="propertyName" value="searchResults"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.id}">
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.report.auditId}">
                     <property name="group.errorsField.render" value="false"/>
-                    <property name="onDocumentReadyScript" value="truncateField('@{#line.id}');"/>
+                    <property name="onDocumentReadyScript" value="truncateField('@{#line.report.auditId}');"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:label="Audit" p:title="@{#line.id}" p:linkLabel="@{#line.id}"
-                                p:hrefText="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView"/>
+                            <bean parent="Uif-Link" p:linkLabel="@{#line.programTitle}"
+                                p:hrefText="inquiry?methodToCall=start&amp;viewId=DegreeAuditDetails-InquiryView&amp;auditId=@{#line.report.auditId}"/>
 
-                            <bean parent="Uif-DataField" p:propertyName="runDate" p:label="Run Date"
+                            <bean parent="Uif-DataField" p:propertyName="report.runDate"
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
                                   p:labelField.render="true">
                                 <property name="styleClasses">

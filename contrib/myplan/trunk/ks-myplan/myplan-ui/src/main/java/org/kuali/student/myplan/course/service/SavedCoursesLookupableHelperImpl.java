@@ -34,6 +34,7 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
             Person user = GlobalVariables.getUserSession().getPerson();
 
+            //  TODO: This should be static.
             ContextInfo context = new ContextInfo();
             String studentID = user.getPrincipalId();
 
