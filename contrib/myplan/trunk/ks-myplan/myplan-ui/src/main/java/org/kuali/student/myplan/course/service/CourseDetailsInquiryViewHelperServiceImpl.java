@@ -129,6 +129,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         courseDetails.setRequisites(reqs);
 
+
+
+        // Get only the abbre_val of gen ed requirements
+
+        List<String> abbrGenEdReqs = new ArrayList<String>();
+        Map<String, String> abbrAttributes = course.getAttributes();
+        for (Map.Entry<String, String> entry : abbrAttributes.entrySet()) {
+            if (entry.getValue().equals("true") && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
+                String r = entry.getKey().replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
+                abbrGenEdReqs.add(r);
+            }
+        }
+        courseDetails.setAbbrGenEdRequirements(abbrGenEdReqs);
+
+
         //  Get general education requirements.
         List<String> genEdReqs = new ArrayList<String>();
 
@@ -143,6 +158,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
         }
         courseDetails.setGenEdRequirements(genEdReqs);
+
+
+
+
 
 
 
@@ -226,7 +245,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 //        }
         value = value + " (" + subject.trim() + ")";
         courseDetails.setTitleValue(value);
-
 
         return courseDetails;
     }
