@@ -280,7 +280,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:render="@{dataObject.inSavedCourseList ? false : true}">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}" p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                     <property name="styleClasses">
                         <list merge="true">
@@ -289,7 +289,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-LinkGroup" p:errorsField.render="false" p:render="@{dataObject.inSavedCourseList ? true : false}"
+                <bean parent="Uif-LinkGroup" p:errorsField.render="false" p:id="@{dataObject.courseId}" p:render="@{dataObject.inSavedCourseList ? true : false}"
                       p:groupBeginDelimiter="This course is in " p:groupEndDelimiter="" p:linkSeparator="">
                     <property name="styleClasses">
                         <list merge="true">
