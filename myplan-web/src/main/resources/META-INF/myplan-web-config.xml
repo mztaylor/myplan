@@ -17,7 +17,7 @@
 
 <config>
 
-    <param name="module.name">myplan-ui</param>
+    <param name="module.name">myplan-web</param>
     
     <param name="css.files" override="true">${css.files},ks-myplan/css/course.css</param>
     <param name="javascript.files" override="true">${javascript.files}</param>

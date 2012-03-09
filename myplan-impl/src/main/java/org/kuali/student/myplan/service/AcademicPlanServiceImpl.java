@@ -86,7 +86,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public LearningPlan getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+    public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                         @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
@@ -100,7 +100,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public PlanItem getPlanItem(@WebParam(name = "planItemId") String planItemId,
+    public PlanItemInfo getPlanItem(@WebParam(name = "planItemId") String planItemId,
                                 @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
@@ -113,7 +113,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
                                                    @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -121,11 +121,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                              @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        List<PlanItem> dtos = new ArrayList<PlanItem>();
+        List<PlanItemInfo> dtos = new ArrayList<PlanItemInfo>();
 
         List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(learningPlanId);
         for (PlanItemEntity pie : planItems) {
@@ -135,7 +135,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
                                                   @WebParam(name = "atpKey") String atpKey,
                                                   @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                   @WebParam(name = "context") ContextInfo context)
@@ -144,28 +144,28 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public PlanItemSet getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
+    public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
+    public List<PlanItemInfo> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                             @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<LearningPlan> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId,
+    public List<LearningPlanInfo> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId,
                                                                @WebParam(name = "planTypeKey") String planTypeKey,
                                                                @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<LearningPlanEntity> lpeList = learningPlanDao.getLearningPlansByType(studentId, planTypeKey);
 
-        List<LearningPlan> learningPlanDtos = new ArrayList<LearningPlan>();
+        List<LearningPlanInfo> learningPlanDtos = new ArrayList<LearningPlanInfo>();
         for (LearningPlanEntity lpe : lpeList) {
             learningPlanDtos.add(lpe.toDto());
         }

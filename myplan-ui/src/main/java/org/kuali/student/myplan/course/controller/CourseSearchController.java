@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
@@ -481,10 +483,10 @@ public class CourseSearchController extends UifControllerBase {
 
         Set<String> savedCourseSet = new HashSet<String>();
 
-        List<LearningPlan> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
+        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
         for (LearningPlan learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
-            List<PlanItem> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
+            List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
 
             for (PlanItem planItem : planItemList) {
                 String courseID = planItem.getRefObjectId();

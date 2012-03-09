@@ -29,6 +29,8 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -185,10 +187,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 
-            List<LearningPlan> plans = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
+            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
             if (plans.size() > 0) {
                 LearningPlan plan = plans.get(0);
-                List<PlanItem> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
+                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
                 courseDetails.setInSavedCourseList(false);
 
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {

@@ -6,6 +6,7 @@ import org.kuali.student.enrollment.lui.dto.LuiCapacityInfo;
 import org.kuali.student.enrollment.lui.dto.LuiInfo;
 import org.kuali.student.enrollment.lui.dto.LuiLuiRelationInfo;
 import org.kuali.student.enrollment.lui.service.LuiServiceDecorator;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
@@ -35,7 +36,7 @@ public class AcademicPlanServiceAuthorizationDecorator
 	}
 
      @Override
-    public LearningPlan getLearningPlan(String learningPlanId, ContextInfo context)
+    public LearningPlanInfo getLearningPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         if (null == context) {
