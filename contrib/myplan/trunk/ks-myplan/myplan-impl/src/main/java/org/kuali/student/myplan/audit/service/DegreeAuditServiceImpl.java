@@ -479,9 +479,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (JobQueueRun jqr : load) {
             AuditReportInfo audit = new AuditReportInfo();
             audit.setAuditId(jqr.getJobid());
+            audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
             audit.setStudentId(studentId);
             audit.setProgramId(jqr.getWebtitle());
             audit.setRunDate(jqr.getRundate());
+            audit.setRequirementsSatisfied("Unknown");
             list.add(audit);
         }
 
