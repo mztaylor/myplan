@@ -350,7 +350,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
-                <bean parent="Uif-ActionImage" p:label="" p:styleClasses="fl-text-align-center" p:style="width:55px;">
+                <bean parent="Uif-ActionImage" p:label="" p:id="@{#line.courseId}" p:styleClasses="fl-text-align-center" p:style="width:55px;">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
                     <property name="clientSideJs" value="addSavedCourse('@{#line.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{#line.courseId}'}, e);"/>
                     <property name="actionImage">
