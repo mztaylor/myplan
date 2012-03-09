@@ -305,7 +305,7 @@
                                 <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="labelField.render" value="false"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.genEdRequirements">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
