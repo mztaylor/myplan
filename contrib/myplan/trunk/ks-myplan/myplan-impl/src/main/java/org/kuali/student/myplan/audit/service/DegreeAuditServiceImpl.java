@@ -8,9 +8,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.exceptions.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -56,7 +54,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.kuali.student.common.search.dto.*;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -416,7 +413,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-
                     {
                         SearchRequest searchRequest = new SearchRequest("myplan.course.info");
                         searchRequest.addParam("courseID", courseAcceptable.getCluid() );
@@ -432,10 +428,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    }
-
-                    {
-
                     }
 
                 }
@@ -467,13 +459,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 //    }
 
     @Override
-    public List<String> getAuditIdsForStudentInDateRange(@WebParam(name = "studentId") String studentId, @WebParam(name = "startDate") Date startDate, @WebParam(name = "endDate") Date endDate, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    // TODO: add type for summary, check with Kamal
-    @Override
-    public List<AuditReportInfo> getRecentAuditsForStudent(@WebParam(name = "studentId") String studentId, @WebParam(name = "studentId") String reportType, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<AuditReportInfo> getAuditsForStudentInDateRange(@WebParam(name = "studentId") String studentId,
+                                                                @WebParam(name = "startDate") Date startDate,
+                                                                @WebParam(name = "endDate") Date endDate,
+                                                                @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
         JobQueueRunDao runrun = getJobQueueRunDao();
@@ -489,13 +478,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         for (JobQueueRun jqr : load) {
             AuditReportInfo audit = new AuditReportInfo();
-            audit.setReportType(reportType );
             audit.setAuditId(jqr.getJobid());
-            audit.setStudentID(studentId);
-            audit.setProgramID(jqr.getWebtitle());
+            audit.setStudentId(studentId);
+            audit.setProgramId(jqr.getWebtitle());
             audit.setRunDate(jqr.getRundate());
-            audit.setStateKey("XX");
-            audit.setRequirementsSatisfied("XX");
             list.add(audit);
         }
 

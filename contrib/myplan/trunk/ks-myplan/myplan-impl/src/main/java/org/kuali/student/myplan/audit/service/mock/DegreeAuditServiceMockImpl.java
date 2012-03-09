@@ -41,7 +41,10 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     }
 
     @Override
-    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId,
+                                          @WebParam(name = "auditTypeKey") String auditTypeKey,
+                                          @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         String html = "<span>Degree Audit Service Mock Impl</span>";
 
@@ -53,7 +56,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         auditReportInfo.setAuditId(auditId);
         auditReportInfo.setReportType(auditTypeKey);
         auditReportInfo.setReport(handler);
-        auditReportInfo.setProgramID("programId");
+        auditReportInfo.setProgramId("programId");
         auditReportInfo.setRunDate(new java.util.Date());
         auditReportInfo.setReportContentTypeKey("html");
         auditReportInfo.setRequirementsSatisfied("Yes!");
@@ -67,12 +70,11 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
 //    }
 
     @Override
-    public List<String> getAuditIdsForStudentInDateRange(@WebParam(name = "studentId") String studentId, @WebParam(name = "startDate") Date startDate, @WebParam(name = "endDate") Date endDate, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public List<AuditReportInfo> getRecentAuditsForStudent(@WebParam(name = "studentId") String studentId, @WebParam(name = "reportType") String reportType, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<AuditReportInfo> getAuditsForStudentInDateRange(@WebParam(name = "studentId") String studentId,
+                                                                @WebParam(name = "startDate") Date startDate,
+                                                                @WebParam(name = "endDate") Date endDate,
+                                                                @WebParam(name = "context") ContextInfo context)
+            throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 

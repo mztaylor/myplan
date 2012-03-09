@@ -20,7 +20,7 @@ import java.util.List;
  * Date: 2/13/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentID", "programID", "runDate"})
+@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "runDate"})
 public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport {
 
     @XmlAttribute
@@ -42,10 +42,10 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     private String requirementsSatisfied;
 
     @XmlElement
-    private String studentID;
+    private String studentId;
 
     @XmlElement
-    private String programID;
+    private String programId;
 
     @XmlElement
     private Date runDate;
@@ -102,21 +102,21 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     }
 
     @Override
-    public String getStudentID() {
-        return studentID;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudentID( String studentID ) {
-        this.studentID = studentID;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     @Override
-    public String getProgramID() {
-        return programID;
+    public String getProgramId() {
+        return programId;
     }
 
-    public void setProgramID(String programID) {
-        this.programID = programID;
+    public void setProgramId(String programId) {
+        this.programId = programId;
     }
 
     @Override

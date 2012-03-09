@@ -7,15 +7,10 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
+import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
-import org.kuali.student.r2.common.dto.ContextInfo;
 
 import org.apache.log4j.Logger;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -33,11 +28,11 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
 
         Person person = GlobalVariables.getUserSession().getPerson();
 
-        String studentID = person.getPrincipalId();
+        String studentId = person.getPrincipalId();
 
 
         //  TODO: Determine where this info lives.
-        studentID = "000083856";
+        studentId = "000083856";
 
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
@@ -46,8 +41,11 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
         }
 
         List <AuditReportInfo> audits;
+        //  TODO: Calculate dates that make sense.
+        Date begin = new Date();
+        Date end = new Date();
         try {
-            audits = degreeAuditService.getRecentAuditsForStudent(studentID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY, DegreeAuditConstants.CONTEXT_INFO);
+            audits = degreeAuditService.getAuditsForStudentInDateRange(studentId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
         } catch (Exception e) {
             throw new RuntimeException("Request for audit ids failed.", e);
         }
@@ -57,10 +55,10 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
          */
         Set<String> programSet = new HashSet<String>();
         for (AuditReportInfo audit : audits) {
-            String programId = audit.getProgramID();
+            String programId = audit.getProgramId();
             if ( ! programSet.contains(programId)) {
                 programSet.add(programId);
-                degreeAuditItems.add(DegreeAuditHelper.makeDegreeAuditDataObject(audit));
+                degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
             }
         }
         return degreeAuditItems;

@@ -5,7 +5,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
+import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 
 import javax.xml.namespace.QName;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class DegreeAuditInquiryViewHelperServiceImpl extends KualiInquirableImpl
             throw new RuntimeException(String.format("Failed to fetch audit report [%s].", degreeAuditId), e);
         }
 
-        return DegreeAuditHelper.makeDegreeAuditDataObject(degreeAuditReport);
+        return DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(degreeAuditReport);
     }
 
     public DegreeAuditService getDegreeAuditService() {
