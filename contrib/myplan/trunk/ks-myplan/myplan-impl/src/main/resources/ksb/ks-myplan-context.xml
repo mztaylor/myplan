@@ -78,14 +78,13 @@
     <tx:annotation-driven transaction-manager="uachieve.txManager"/>
 
     <!--
-    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl">
+    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
+        <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
     </bean>
 -->
     <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl">
     </bean>
-
-    <!-- <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl"/> -->
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
         <property name="serviceDefinition">
