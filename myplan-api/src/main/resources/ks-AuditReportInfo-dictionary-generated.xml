@@ -60,8 +60,8 @@ AuditReport message structure
 				<ref bean="AuditReportInfo.reportType"/>
 				<ref bean="AuditReportInfo.reportContentTypeKey"/>
 				<ref bean="AuditReportInfo.requirementsSatisfied"/>
-                <ref bean="AuditReportInfo.studentID"/>
-                <ref bean="AuditReportInfo.programID"/>
+                <ref bean="AuditReportInfo.studentId"/>
+                <ref bean="AuditReportInfo.programId"/>
                 <ref bean="AuditReportInfo.runDate"/>
 			</list>
 		</property>
@@ -139,9 +139,9 @@ Requirements Satisfied
 		<property name="required" value="false"/>
 	</bean>
 
-     <bean id="AuditReportInfo.studentID-generated" abstract="true" parent="BaseKuali.string">
-		<property name="name" value="studentID"/>
-		<property name="shortLabel" value="Student ID"/>
+     <bean id="AuditReportInfo.studentId-generated" abstract="true" parent="BaseKuali.string">
+		<property name="name" value="studentId"/>
+		<property name="shortLabel" value="Student Id"/>
 		<property name="summary">
 			<value>
 Student ID
@@ -156,9 +156,9 @@ Student ID
 		<property name="required" value="false"/>
 	</bean>
 
-    <bean id="AuditReportInfo.programID-generated" abstract="true" parent="BaseKuali.string">
-		<property name="name" value="programID"/>
-		<property name="shortLabel" value="Program ID"/>
+    <bean id="AuditReportInfo.programId-generated" abstract="true" parent="BaseKuali.string">
+		<property name="name" value="programId"/>
+		<property name="shortLabel" value="Program Id"/>
 		<property name="summary">
 			<value>
 Program ID
@@ -172,7 +172,6 @@ Program ID
 		</property>
 		<property name="required" value="false"/>
 	</bean>
-
 
 
 	<bean id="AuditReportInfo.runDate-generated" abstract="true" parent="BaseKuali.dateTime">

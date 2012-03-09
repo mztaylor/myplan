@@ -42,8 +42,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- insert any overrides to the generated object definitions here -->
 	</bean>
 
-
-
 	<bean id="AuditReportInfo.auditId" parent="AuditReportInfo.auditId-parent"/>
 	<bean id="AuditReportInfo.auditId-parent" abstract="true" parent="AuditReportInfo.auditId-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->
@@ -64,13 +62,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
-	<bean id="AuditReportInfo.studentID" parent="AuditReportInfo.studentID-parent"/>
-	<bean id="AuditReportInfo.studentID-parent" abstract="true" parent="AuditReportInfo.studentID-generated">
+	<bean id="AuditReportInfo.studentId" parent="AuditReportInfo.studentId-parent"/>
+	<bean id="AuditReportInfo.studentId-parent" abstract="true" parent="AuditReportInfo.studentId-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
-	<bean id="AuditReportInfo.programID" parent="AuditReportInfo.programID-parent"/>
-	<bean id="AuditReportInfo.programID-parent" abstract="true" parent="AuditReportInfo.programID-generated">
+	<bean id="AuditReportInfo.programId" parent="AuditReportInfo.programId-parent"/>
+	<bean id="AuditReportInfo.programId-parent" abstract="true" parent="AuditReportInfo.programId-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 

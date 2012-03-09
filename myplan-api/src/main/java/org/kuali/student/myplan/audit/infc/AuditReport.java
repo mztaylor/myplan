@@ -35,9 +35,9 @@ public interface AuditReport extends TypeStateEntity {
 
     public String getRequirementsSatisfied();
 
-    public String getStudentID();
+    public String getStudentId();
 
-    public String getProgramID();
+    public String getProgramId();
 
     public Date getRunDate();
 }
