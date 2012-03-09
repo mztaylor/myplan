@@ -496,6 +496,7 @@
         <property name="items">
             <list>
                 <bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
+                <bean id="course_id_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
             </list>
         </property>
     </bean>

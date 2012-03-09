@@ -140,7 +140,8 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
     var elementToBlock = jq("#" + id + "_form");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("[id='add_plan_item_key']", htmlContent);
+		var component = jq("#add_plan_item_key", htmlContent);
+        var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
 		var addedId = jq.trim( jq(component).text() );
         if (addedId.length > 0) {
 			elementToBlock.unblock();
@@ -150,7 +151,7 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
                 if ( jq(e.target).parents("#course_details_actions_div").length > 0 || jq(e.target).parents("#course_details_popup_actions_div").length > 0 ) {
                 	jq(this).addClass("myplan-message-border myplan-message-success").html("Course successfully added").fadeIn(250);
                 } else {
-                	jq(this).attr("id",addedId+"_span").addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
+                	jq(this).attr("id",courseId+"_span").addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
                 }
 			});
 		} else {
@@ -189,8 +190,7 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 				var updateRefreshableComponentCallback = function(htmlContent){
                     var component = jq("[id='remove_plan_item_key']", htmlContent);
 					var removedId = jq.trim( jq(component).text() );
-        			// TODO: add back after courseID is available from the remove view
-        			//if (removedId.length > 0) {
+        			if (removedId.length > 0) {
 						elementToBlock.unblock();
 						targetId = jq(e.target).attr("id");
 						if ( jq(e.target).parents("#saved_courses_detail_div").length > 0 ) {
@@ -208,13 +208,13 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 							});
 							myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
 							// if courseId_span exists change from "in list" to add button
-							/*
-                            if ( jq(removedId + "_span").length > 0 ) {
-								alert('Yes');
+                            if ( jq('#course_search_results_datatable').length > 0 ) {
+								var oTable = jq('#course_search_results_datatable').dataTable();
+								var nNodes = oTable.fnGetNodes();
+								jq(nNodes).find("#" + removedId + "_span").html("<input type=\"image\" id=\""+removedId+"_button\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" onclick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[selectedCollectionPath]','courseSearchResults');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false'); writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "_button');writeHiddenToForm('jumpToId','" + removedId + "_button');addSavedCourse('" + removedId + "','addItem','plan',{viewId:'SavedCoursesListActions-FormView', courseId:'" + removedId + "'},event);\" />");
 							}
-							*/
 						}
-					//}
+					}
 				};
 
                 if (!methodToCall) {
