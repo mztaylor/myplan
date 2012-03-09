@@ -41,11 +41,11 @@
     <property name="password" value="${ks.myplan.datasource.password}" />
   </bean>
 
-     <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
-	  	<property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
-	  	<property name="planItemDao" ref="planItemDao"/>
-	  	<property name="planItemTypeDao" ref="planItemTypeDao"/>
+        <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
+        <property name="planItemDao" ref="planItemDao"/>
+        <property name="planItemTypeDao" ref="planItemTypeDao"/>
     </bean>
 
 
@@ -65,7 +65,6 @@
 
     <!-- Stuff for uAchieve -->
 
-
     <import resource="classpath:uachieve/apis/context/uachieveapi_loaderContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_daoContext.xml"/>
     <import resource="classpath:uachieve/apis/context/uachieveapi_dataAccessContext-local.xml"/>
@@ -82,8 +81,10 @@
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
     </bean>
--->
-    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl">
+    -->
+    <bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">
+        <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
+        <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
     </bean>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
