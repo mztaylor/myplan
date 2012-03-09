@@ -1,35 +1,46 @@
 package org.kuali.student.myplan.audit.dataobject;
 
 import org.kuali.student.myplan.audit.infc.AuditReport;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
-
-import java.util.Date;
 
 public class DegreeAuditItem implements Comparable {
 
-    private String id;
-    private Date runDate;
-    private AuditReport report;
+    private AuditReport auditReport;
 
-    public String getId() {
-        return id;
+    private String programTitle;
+    private String programType;
+
+    public String getProgramType() {
+        return programType;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setProgramType(String programType) {
+        this.programType = programType;
     }
 
-    public Date getRunDate() {
-        return runDate;
+    public String getProgramTitle() {
+        return programTitle;
     }
 
-    public void setRunDate(Date runDate) {
-        this.runDate = runDate;
+    public void setProgramTitle(String programTitle) {
+        this.programTitle = programTitle;
+    }
+
+    public AuditReport getReport() {
+        return auditReport;
+    }
+
+    public void setReport(AuditReport report) {
+        this.auditReport = report;
+    }
+
+    public String getReportAsText(){
+        return "The Report!";
     }
 
     @Override
     public int compareTo( Object object ) {
         DegreeAuditItem that = (DegreeAuditItem) object;
-        return this.getRunDate().compareTo(that.getRunDate()) * -1;
+        //  TODO: Check for nulls.
+        return this.getReport().getRunDate().compareTo(that.getReport().getRunDate()) * -1;
     }
 }

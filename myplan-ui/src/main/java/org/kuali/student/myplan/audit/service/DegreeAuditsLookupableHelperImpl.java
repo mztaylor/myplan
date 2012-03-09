@@ -6,17 +6,19 @@ import org.kuali.rice.krad.lookup.LookupableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
+import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 
 import org.apache.log4j.Logger;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
 
@@ -25,36 +27,43 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
     private transient DegreeAuditService degreeAuditService;
 
     @Override
-    protected List<?> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        List<DegreeAuditItem> degreeAuditsList = new ArrayList<DegreeAuditItem>();
-        try {
-            Person user = GlobalVariables.getUserSession().getPerson();
-            String studentID = user.getPrincipalId();
-            studentID = "000083856";
+    protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
-            DegreeAuditService degreeAuditService = getDegreeAuditService();
+        List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
 
-            HashSet<String> programSet = new HashSet<String>();
-            ContextInfo context = new ContextInfo();
-            List<AuditReportInfo> auditList = degreeAuditService.getRecentAuditsForStudent(studentID, DegreeAuditServiceConstants.AUDIT_REPORT_TYPE_KEY_SUMMARY, context);
-            for (AuditReportInfo audit : auditList) {
-                String programID = audit.getProgramID();
-                if( !programSet.contains( programID ))
-                {
-                    DegreeAuditItem da = new DegreeAuditItem();
-                    da.setId( programID );
-                    da.setRunDate(audit.getRunDate());
-                    degreeAuditsList.add(da);
-                    programSet.add( programID );
-                }
-            }
+        Person person = GlobalVariables.getUserSession().getPerson();
 
-        } catch (Exception e) {
-            logger.error("Could not retrieve degree audit items.", e);
-            //throw new RuntimeException(e);
+        String studentID = person.getPrincipalId();
+
+
+        //  TODO: Determine where this info lives.
+        studentID = "000083856";
+
+        DegreeAuditService degreeAuditService = getDegreeAuditService();
+
+        if (degreeAuditService == null) {
+            throw new RuntimeException("Degree audit service handle was null.");
         }
 
-        return degreeAuditsList;
+        List <AuditReportInfo> audits;
+        try {
+            audits = degreeAuditService.getRecentAuditsForStudent(studentID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY, DegreeAuditConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Request for audit ids failed.", e);
+        }
+
+        /**
+         *  Make a list of DegreeAuditItem, but only include the most recent audit for a particular program.
+         */
+        Set<String> programSet = new HashSet<String>();
+        for (AuditReportInfo audit : audits) {
+            String programId = audit.getProgramID();
+            if ( ! programSet.contains(programId)) {
+                programSet.add(programId);
+                degreeAuditItems.add(DegreeAuditHelper.makeDegreeAuditDataObject(audit));
+            }
+        }
+        return degreeAuditItems;
     }
 
     public DegreeAuditService getDegreeAuditService() {

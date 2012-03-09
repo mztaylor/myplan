@@ -1,18 +1,9 @@
 package org.kuali.student.myplan.audit.service;
 
-import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
-import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.academicplan.infc.PlanItem;
-import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.dto.AuditReportSummaryInfo;
-import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 
 import javax.jws.WebParam;

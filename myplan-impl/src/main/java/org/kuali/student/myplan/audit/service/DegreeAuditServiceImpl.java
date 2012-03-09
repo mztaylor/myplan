@@ -15,7 +15,6 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.dto.AuditReportSummaryInfo;
 import org.kuali.student.myplan.audit.service.model.Count;
 import org.kuali.student.myplan.audit.service.model.Credits;
 import org.kuali.student.myplan.audit.service.model.GPA;

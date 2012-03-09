@@ -12,6 +12,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <import resource="classpath:ks-data-dictionary-services-configuration.xml" />
     <import resource="classpath:ks-data-dictionary-validator-configuration.xml" />
     <!-- Add the myplan data dictionaries -->
+    <import resource="classpath:ks-degree-audit-data-dictionary-services-configuration.xml" />
     <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml" />
     <import resource="classpath:ks-academic-plan-daos.xml" />
 
