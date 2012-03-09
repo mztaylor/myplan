@@ -148,10 +148,12 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
 			myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
 			targetId = jq(e.target).attr("id");
             jq("#" + targetId).parent().fadeOut(250, function() {
-                if ( jq(e.target).parents("#course_details_actions_div").length > 0 || jq(e.target).parents("#course_details_popup_actions_div").length > 0 ) {
-                	jq(this).addClass("myplan-message-border myplan-message-success").html("Course successfully added").fadeIn(250);
-                } else {
+                if ( jq('#viewId').val() == "CourseSearch-FormView" ) {
                 	jq(this).attr("id",courseId+"_span").addClass("fl-text-align-center fl-text-green").html("Saved").fadeIn(250);
+                } else {
+                    var tempDiv = jq('<div />');
+                    jq(tempDiv).attr("id",courseId+"_div").addClass("myplan-message-border myplan-message-success").html("Course successfully added");
+                    jq(this).html(tempDiv).fadeIn(250);
                 }
 			});
 		} else {
@@ -193,7 +195,7 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
         			if (removedId.length > 0) {
 						elementToBlock.unblock();
 						targetId = jq(e.target).attr("id");
-						if ( jq(e.target).parents("#saved_courses_detail_div").length > 0 ) {
+						if ( jq('#viewId').val() == "SavedCoursesDetail-LookupView" ) {
 							var planListItem = jq("#" + targetId).parents("li").children();
 							jq(planListItem).fadeOut(250, function() {
 								jq(this).parent().html('<div class="myplan-message-noborder myplan-action-success fl-text-green fl-text-bold fl-font-size-120"><span class="fl-text-black">' + courseCode + '</span> has been deleted successfully!</div>').fadeIn(250).delay(2000).fadeOut(250);
@@ -203,16 +205,30 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 								jq(this).html(planItemCount.text() - 1).fadeIn(250);
 							});
 						} else {
-							jq(e.target).parent().fadeOut(250, function() {
+                            switch ( jq('#viewId').val() ) {
+                                case "CourseSearch-FormView":
+								    var oTable = jq('#course_search_results_datatable').dataTable();
+								    var nodes = oTable.fnGetNodes();
+                                    if ( jq(nodes).find("#" + removedId + "_span").length ) {
+								        jq(nodes).find("#" + removedId + "_span").parent().fadeOut(250, function() {
+                                            jq(nodes).find("#" + removedId + "_span").html("<input type=\"image\" id=\""+removedId+"_button\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" onclick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[selectedCollectionPath]','courseSearchResults');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false'); writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "_button');writeHiddenToForm('jumpToId','" + removedId + "_button');addSavedCourse('" + removedId + "','addItem','plan',{viewId:'SavedCoursesListActions-FormView', courseId:'" + removedId + "'},event);\" />");
+                                            jq(this).fadeIn(250);
+                                        });
+                                    }
+                                    break;
+                                case "CourseDetails-InquiryView":
+                                    if ( jq("#" + removedId + "_div").length ) {
+                                        jq("#" + removedId + "_div").parent().fadeOut(250, function() {
+                                            jq("#" + removedId + "_div").replaceWith("<button id=\"" + removedId + "\" class=\"uif-field uif-action myplan-button myplan-button-gray\" onClick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false');writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "');writeHiddenToForm('jumpToId','" + removedId + "');addSavedCourse('" + removedId + "','addItem','plan',{viewId:'SavedCoursesListActions-FormView',courseId:'" + removedId + "'}, event);\">Save to Your Courses List</button>");
+                                            jq(this).fadeIn(250);
+                                        });
+                                    }
+                                    break;
+                            }
+                            jq(e.target).parent().fadeOut(250, function() {
 								jq(this).addClass("myplan-message-border myplan-message-success").html("Course successfully removed").fadeIn(250);
 							});
-							myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-							// if courseId_span exists change from "in list" to add button
-                            if ( jq('#course_search_results_datatable').length > 0 ) {
-								var oTable = jq('#course_search_results_datatable').dataTable();
-								var nNodes = oTable.fnGetNodes();
-								jq(nNodes).find("#" + removedId + "_span").html("<input type=\"image\" id=\""+removedId+"_button\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" onclick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[selectedCollectionPath]','courseSearchResults');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false'); writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "_button');writeHiddenToForm('jumpToId','" + removedId + "_button');addSavedCourse('" + removedId + "','addItem','plan',{viewId:'SavedCoursesListActions-FormView', courseId:'" + removedId + "'},event);\" />");
-							}
+                            myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
 						}
 					}
 				};
