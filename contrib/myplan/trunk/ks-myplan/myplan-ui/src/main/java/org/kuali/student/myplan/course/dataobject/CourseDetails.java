@@ -25,6 +25,7 @@ public class CourseDetails {
     private List<String> scheduledTerms;
     private List<String> requisites;
     private List<String> genEdRequirements;
+    private List<String> abbrGenEdRequirements;
 
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
@@ -39,8 +40,6 @@ public class CourseDetails {
     public void setTitleValue(String titleValue) {
         this.titleValue = titleValue;
     }
-
-
 
     public String getCourseId() {
         return courseId;
@@ -122,6 +121,14 @@ public class CourseDetails {
 
     public void setGenEdRequirements(List<String> genEdRequirements) {
         this.genEdRequirements = genEdRequirements;
+    }
+
+    public List<String> getAbbrGenEdRequirements() {
+        return abbrGenEdRequirements;
+    }
+
+    public void setAbbrGenEdRequirements(List<String> abbrGenEdRequirements) {
+        this.abbrGenEdRequirements = abbrGenEdRequirements;
     }
 
     public List<String> getRequisites() {
