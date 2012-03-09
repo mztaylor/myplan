@@ -14,6 +14,8 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uachieve.apis.audit.dao.JobQueueRunDao;
+import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
@@ -24,6 +26,10 @@ import java.util.List;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceMockImpl implements DegreeAuditService {
+
+    //  These keep the spring bean definitions consistent between mock and real impls.
+    public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {}
+    public void setJobQueueRunLoader(JobQueueRunLoader loader) {}
 
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
