@@ -52,21 +52,21 @@ public class AcademicPlanServiceValidationDecorator
     }
 
     @Override
-    public LearningPlan getLearningPlan(String learningPlanId, ContextInfo context)
+    public LearningPlanInfo getLearningPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         validateNullOrEmptyArgument("learningPlanId", learningPlanId);
         return getNextDecorator().getLearningPlan(learningPlanId, context);
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlan(String learningPlanId, ContextInfo context)
+    public List<PlanItemInfo> getPlanItemsInPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
          validateNullOrEmptyArgument("learningPlanId", learningPlanId);
          return getNextDecorator().getPlanItemsInPlan(learningPlanId, context);
     }
 
     @Override
-    public List<LearningPlan> getLearningPlansForStudentByType(String studentId, String planTypeKey, ContextInfo context)
+    public List<LearningPlanInfo> getLearningPlansForStudentByType(String studentId, String planTypeKey, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         validateNullOrEmptyArgument("studentId", studentId);
         validateNullOrEmptyArgument("planTypeKey", planTypeKey);

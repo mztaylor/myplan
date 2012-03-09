@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.audit.dataobject;
 
+import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 import java.util.Date;
@@ -8,6 +9,7 @@ public class DegreeAuditItem implements Comparable {
 
     private String id;
     private Date runDate;
+    private AuditReport report;
 
     public String getId() {
         return id;

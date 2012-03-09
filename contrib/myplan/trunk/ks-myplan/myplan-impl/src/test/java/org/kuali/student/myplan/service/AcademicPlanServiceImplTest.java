@@ -73,7 +73,7 @@ public class AcademicPlanServiceImplTest {
     public void getLearningPlans() {
         String studentId = "student1";
 
-        List<LearningPlan> learningPlans = null;
+        List<LearningPlanInfo> learningPlans = null;
         try {
             learningPlans = academicPlanService.getLearningPlansForStudentByType(studentId, AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN, context);
         } catch (Exception e) {
@@ -345,7 +345,7 @@ public class AcademicPlanServiceImplTest {
         }
 
         try {
-            List<PlanItem> x = academicPlanService.getPlanItemsInPlan(planId, context);
+            List<PlanItemInfo> x = academicPlanService.getPlanItemsInPlan(planId, context);
         } catch (DoesNotExistException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (InvalidParameterException e) {
@@ -381,7 +381,7 @@ public class AcademicPlanServiceImplTest {
             fail(e.getLocalizedMessage());
         }
 
-        List<PlanItem> planItems = null;
+        List<PlanItemInfo> planItems = null;
         try {
             planItems = academicPlanService.getPlanItemsInPlan(id, context);
         } catch (Exception e) {

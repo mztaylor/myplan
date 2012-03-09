@@ -69,7 +69,7 @@ public class SavedCoursesListController extends UifControllerBase {
         /*
          *  First fetch the student's learning plan. If they don't have a plan then create one.
          */
-        List<LearningPlan> learningPlans = null;
+        List<LearningPlanInfo> learningPlans = null;
         try {
             learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(user.getPrincipalId(),
                     AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN, SavedCourseListConstants.CONTEXT_INFO);
@@ -183,6 +183,12 @@ public class SavedCoursesListController extends UifControllerBase {
         String planItemId = form.getPlanItemId();
 
         try {
+
+            // First load the plan item and retrieve the courseId
+            PlanItemInfo planItem = getAcademicPlanService().getPlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
+            form.setCourseId(planItem.getRefObjectId());
+
+            // Now delete the plan item
             getAcademicPlanService().deletePlanItem(planItemId, SavedCourseListConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
             //  Assume the end-user already deleted this item and silently let this error go. Log it though.

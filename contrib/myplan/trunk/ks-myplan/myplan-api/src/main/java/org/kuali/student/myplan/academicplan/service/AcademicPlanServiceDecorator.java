@@ -31,21 +31,21 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
     }
 
     @Override
-    public LearningPlan getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+    public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                         @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().getLearningPlan(learningPlanId, context);
     }
 
     @Override
-    public PlanItem getPlanItem(@WebParam(name = "planItemId") String planItemId,
+    public PlanItemInfo getPlanItem(@WebParam(name = "planItemId") String planItemId,
                                 @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().getPlanItem(planItemId, context);
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
                                                    @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -53,14 +53,14 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
                                              @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().getPlanItemsInPlan(learningPlanId, context);
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
+    public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
                                                   @WebParam(name = "atpKey") String atpKey,
                                                   @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                   @WebParam(name = "context") ContextInfo context)
@@ -69,21 +69,21 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
     }
 
     @Override
-    public PlanItemSet getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
+    public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().getPlanItemSet(planItemSetId, context);
     }
 
     @Override
-    public List<PlanItem> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
+    public List<PlanItemInfo> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                             @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().getPlanItemsInSet(planItemSetId, context);
     }
 
     @Override
-    public List<LearningPlan> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId,
+    public List<LearningPlanInfo> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId,
                                                                @WebParam(name = "planTypeKey") String planTypeKey,
                                                                @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {

@@ -6,6 +6,8 @@ import org.kuali.rice.krad.lookup.LookupableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -37,12 +39,12 @@ public class SavedCoursesLookupableHelperImpl extends LookupableImpl {
 
             String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 
-            List<LearningPlan> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
-            for (LearningPlan learningPlan : learningPlanList) {
+            List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
+            for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
-                List<PlanItem> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
+                List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
 
-                for (PlanItem planItem : planItemList) {
+                for (PlanItemInfo planItem : planItemList) {
                     String courseID = planItem.getRefObjectId();
 
                     SavedCoursesItem item = new SavedCoursesItem();
