@@ -361,7 +361,7 @@ function truncateField(id) {
         jq(this).find("span.boxLayoutHorizontalItem span").not(".myplan-text-ellipsis").each(function() {
         	fixed = fixed + jq(this).width();
         });
-        var ellipsis = jq(this).width() - ( fixed + ( margin * fields ) );
+        var ellipsis = jq(this).width() - ( ( fixed + 1 ) + ( margin * fields ) );
         jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
         jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
     });
