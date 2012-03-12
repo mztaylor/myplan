@@ -484,7 +484,7 @@
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false" p:title="@{#line.title}"
                       p:onClickScript="facetFilter('facetGenEduReq', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
