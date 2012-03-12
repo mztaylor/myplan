@@ -519,7 +519,7 @@
         </property>
         <property name="items">
             <list>
-
+                   <ref bean="degree_audits_list"/>
             </list>
         </property>
     </bean>
