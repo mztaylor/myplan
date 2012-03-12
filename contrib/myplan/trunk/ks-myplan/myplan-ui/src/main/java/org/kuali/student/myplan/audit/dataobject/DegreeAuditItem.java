@@ -2,6 +2,10 @@ package org.kuali.student.myplan.audit.dataobject;
 
 import org.kuali.student.myplan.audit.infc.AuditReport;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+
 public class DegreeAuditItem implements Comparable {
 
     private AuditReport auditReport;
@@ -33,8 +37,29 @@ public class DegreeAuditItem implements Comparable {
         this.auditReport = report;
     }
 
-    public String getReportAsText(){
-        return "The Report!";
+    /**
+     * Returns the audit content as HTML.
+     */
+    public String getReportAsHtml(){
+        InputStream in = null;
+        try {
+            in = this.auditReport.getReport().getDataSource().getInputStream();
+        } catch (IOException e) {
+            return "Could not read report contents.";
+        }
+        StringWriter sw = new StringWriter();
+
+        int c = 0;
+        try {
+            while ((c = in.read()) != -1) {
+                sw.append( (char) c );
+            }
+        } catch (IOException e) {
+            return "Could not read report contents.";
+        }
+
+        String html = sw.toString();
+        return html;
     }
 
     @Override
