@@ -88,7 +88,7 @@
         <kuali.javadoc.link.9>http://ws.apache.org/wss4j/apidocs/</kuali.javadoc.link.9>
 
 
-        <kuali.student.version>1.3.0-SNAPSHOT</kuali.student.version>
+        <kuali.student.version>1.3.0-MyPlan</kuali.student.version>
         <kuali.student.enroll.version>2.0.0-M1-SNAPSHOT</kuali.student.enroll.version>
 
         <!-- artifact versions -->
