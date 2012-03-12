@@ -48,6 +48,7 @@ a:focus {
 }
 #appheader_div #appuser_div {
     text-align:right;
+    overflow: hidden;
 }
 #appheader_div #appuser_div .links ul,
 #appheader_div #appuser_div .links ul li {
@@ -191,7 +192,8 @@ a:focus {
     clear: both;
     display: block;
 }
-.myplan-data-list .scheduled:after {
+.myplan-data-list .scheduled:after,
+.myplan-data-list dl.scheduled:after {
     margin: 0;
     content: "";
 }
