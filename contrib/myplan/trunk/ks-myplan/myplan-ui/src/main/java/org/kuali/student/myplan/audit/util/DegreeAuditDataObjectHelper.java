@@ -10,8 +10,8 @@ public class DegreeAuditDataObjectHelper {
     public static DegreeAuditItem makeDegreeAuditDataObject(AuditReportInfo auditReportInfo) {
         DegreeAuditItem degreeAuditItem = new DegreeAuditItem();
         degreeAuditItem.setReport(auditReportInfo);
-        degreeAuditItem.setProgramTitle("Unset");
-        degreeAuditItem.setProgramType("Unset");
+        degreeAuditItem.setProgramTitle("Program Title");
+        degreeAuditItem.setProgramType("Program Type");
         return degreeAuditItem;
     }
 }
