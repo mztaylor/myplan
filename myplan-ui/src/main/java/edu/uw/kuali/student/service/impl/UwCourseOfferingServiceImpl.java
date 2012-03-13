@@ -429,7 +429,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented.");
     }
 
-    public enum terms{autum,winter,spring,summer};
+    public enum terms{autumn,winter,spring,summer};
 
     @Override
     public List<CourseOfferingInfo> searchForCourseOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
@@ -476,12 +476,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         String actualYear=null;
         String actualQuarter=null;
         int resultQuarter=0;
+        int count=0;
         for (Object node : sections) {
+
             Element section = (Element) node;
 
-            resultYear[((Element) node).nodeCount()]= Integer.parseInt(section.elementText("Year"));
-            tempYear[((Element) node).nodeCount()]= Integer.parseInt(section.elementText("Year"));
-            quarters[((Element) node).nodeCount()] = section.elementText("Quarter");
+            resultYear[count]= Integer.parseInt(section.elementText("Year"));
+            tempYear[count]= Integer.parseInt(section.elementText("Year"));
+            quarters[count] = section.elementText("Quarter");
+            count++;
         }
         Arrays.sort(tempYear);
         actualYear=tempYear[tempYear.length-1].toString();
@@ -490,12 +493,12 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String tempQuarter=quarters[i];
             terms fd=terms.valueOf(quarters[i]);
             switch(fd) {
-                case autum:resultQuarter=1;break;
+                case autumn:resultQuarter=1;break;
                 case winter:resultQuarter=2;break;
                 case spring:resultQuarter=3;break;
                 case summer:resultQuarter=4;break;
             }
-            if(resultYear[i].equals(actualYear)&& resultQuarter>maxQ){
+            if(resultYear[i].toString().equalsIgnoreCase(actualYear)&& resultQuarter>maxQ){
                 maxQ=resultQuarter;
                 actualQuarter=tempQuarter;
 
