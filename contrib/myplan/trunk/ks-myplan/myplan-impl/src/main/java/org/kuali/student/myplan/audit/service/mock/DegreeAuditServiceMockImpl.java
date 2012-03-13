@@ -59,7 +59,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_current_term_response.xml");
+        InputStream in = this.getClass().getResourceAsStream("/txt/static_audit_content.txt");
         String html = null;
         try {
             html = IOUtils.toString(in, "UTF-8");

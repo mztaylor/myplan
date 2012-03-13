@@ -73,8 +73,8 @@
 	-->
 
     <!-- stuff for uAchieve Degree Audit -->
-    <!--<param name="ks.myplan.degreeAudit.impl">org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl</param>-->
-    <param name="ks.myplan.degreeAudit.impl">org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl</param>
+    <param name="ks.myplan.degreeAudit.impl">org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl</param>
+    <!--<param name="ks.myplan.degreeAudit.impl">org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl</param> -->
 
     <!--# jTDS-->
     <param name="uachieveapi.jdbc.driver">net.sourceforge.jtds.jdbc.Driver</param>
