@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+<!--
+     Copyright 2007-2009 The Kuali Foundation
+
+     Licensed under the Educational Community License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.opensource.org/licenses/ecl2.php
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    -->
+
+    <!--
+       Dictionary for DegreeAuditItem data object.
+    -->
+    <bean id="DegreeAuditItem" parent="DegreeAuditItem-parentBean"/>
+    <bean id="DegreeAuditItem-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Recent Audits"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="DegreeAuditItem.programTitle" />
+                <ref bean="DegreeAuditItem.programType" />
+                <ref bean="DegreeAuditItem.reportAsHtml" />
+
+            </list>
+        </property>
+        <property name="complexAttributes">
+            <list>
+                <ref bean="DegreeAuditItem.report"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="DegreeAuditItem.report" parent="ComplexAttributeDefinition">
+        <property name="name" value="report"/>
+        <property name="dataObjectEntry" ref="AuditReportInfo"/>
+    </bean>
+
+    <bean id="DegreeAuditItem.programTitle" parent="DegreeAuditItem.programTitle-parentBean"/>
+    <bean id="DegreeAuditItem.programTitle-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="programTitle"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Program Title"/>
+        <property name="description" value="Program Title."/>
+        <property name="shortLabel" value="Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="50"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="50"/>
+        </property>
+    </bean>
+
+
+    <bean id="DegreeAuditItem.programType" parent="DegreeAuditItem.programType-parentBean"/>
+    <bean id="DegreeAuditItem.programType-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="programType"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Program Type"/>
+        <property name="description" value="Program Type."/>
+        <property name="shortLabel" value="Type"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="50"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="50"/>
+        </property>
+    </bean>
+
+    <bean id="DegreeAuditItem.reportAsHtml" parent="DegreeAuditItem.reportAsHtml-parentBean"/>
+    <bean id="DegreeAuditItem.reportAsHtml-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="reportAsHtml"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Audit Report"/>
+        <property name="description" value="Audit Report Content as HTML."/>
+        <property name="shortLabel" value="Audit"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="50000"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="50000"/>
+        </property>
+    </bean>
+
+    <!-- Inquiry View -->
+    <bean id="DegreeAuditDetails-InquiryView" parent="MyPlanInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="page.header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Two"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/audit.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>/ks-myplan/css/audit.css</value>
+            </list>
+        </property>
+        <property name="Items">
+            <list>
+                <!-- <bean parent="Uif-Page" p:id="degree_audit_details_page"
+                      p:title="@{dataObject.report.auditId} (@{dataObject.report.runDate})"> -->
+                <bean parent="Uif-Page" p:id="degree_audit_details_page" p:title="Degree Audit">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="degree_audit_details_section" />
+                            <ref bean="myplan_section" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+         <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
+         <property name="items">
+            <list>
+                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="txtaudit2" parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="degree_audit_details_overview" parent="Uif-GridGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-course-details</value>
+            </list>
+        </property>
+        <property name="layoutManager.numberOfColumns" value="2"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="items">
+            <list>
+                <!-- Report Body -->
+                <bean parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Lookup View -->
+    <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanLookupView">
+        <property name="title" value="Recent Audit Reports"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+
+        <!-- Not Displaying any criteria -->
+        <property name="criteriaGroup">
+            <bean parent="Uif-VerticalBoxGroup"/>
+        </property>
+        <property name="resultsGroup">
+            <bean id="degree_audits_summary" parent="degree_audits_summary_list"/>
+        </property>
+    </bean>
+
+    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection">
+        <property name="header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="propertyName" value="searchResults"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.report.auditId}">
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="onDocumentReadyScript" value="truncateField('@{#line.report.auditId}');"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Link" p:linkLabel="@{#line.programTitle}"
+                                p:hrefText="inquiry?methodToCall=start&amp;viewId=DegreeAuditDetails-InquiryView&amp;auditId=@{#line.report.auditId}"/>
+
+                            <bean parent="Uif-DataField" p:propertyName="report.runDate"
+                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
+                                  p:labelField.render="true">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>myplan-text-italic</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>
