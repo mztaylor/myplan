@@ -13,8 +13,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Rest client for the Student Service.
  */
-public class FauxStudentServiceClientImpl
-	implements StudentServiceClient {
+public class FauxStudentServiceClientImpl	implements StudentServiceClient {
 
     private static Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
@@ -91,6 +90,20 @@ public class FauxStudentServiceClientImpl
     public String getSectionInfo(String year, String term, String curriculumCode) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2011&quarter=winter&curriculum_abbreviation=chem
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
+    }
+
+    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException{
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/public/section?year=2002&quarter=&curriculum_abbreviation=ESS&course_number=101&reg_id=&search_by=Instructor
         //  ... from a text file.
         InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
         String out = null;

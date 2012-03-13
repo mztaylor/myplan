@@ -6,6 +6,8 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.xpath.DefaultXPath;
+import org.joda.time.YearMonth;
+import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
@@ -181,7 +183,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         return courseCodes;
     }
-
+   
     @Override
     public CourseOfferingInfo getCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
          throw new RuntimeException("Not implemented.");
@@ -427,9 +429,84 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented.");
     }
 
+    public enum terms{autum,winter,spring,summer};
+
     @Override
     public List<CourseOfferingInfo> searchForCourseOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
+        List<CourseOfferingInfo> courseOfferingInfos=new ArrayList<CourseOfferingInfo>();
+        CourseOfferingInfo courseOfferingInfo = new CourseOfferingInfo();
+        // The right strategy would be using the multiple equal predicates joined using an and
+        Predicate p= criteria.getPredicate();
+        String str=p.toString();
+        String responseText=null;
+        str=str.substring(24,str.length()-1);
+        String[] strings=str.split(",");
+        String year=strings[0].trim();
+        String curriculum=strings[1].trim();
+        String courseCode=strings[2].trim();
+        try{
+        responseText = studentServiceClient.getSections(year,curriculum,courseCode);
+        }
+        catch (Exception e)
+        {
+            logger.error(e);
+        }
+        Document document = null;
+        try {
+            document = reader.read(new StringReader(responseText));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+        }
+        Map map = new HashMap();
+        DefaultXPath xpath = new DefaultXPath("//s:Section");
+        Map<String,String> namespaces = new HashMap<String,String>();
+        namespaces.put("s", "http://webservices.washington.edu/student/");
+        xpath.setNamespaceURIs(namespaces);
+
+        List<String> lastOffered = new ArrayList<String>();
+
+        List sections = xpath.selectNodes(document);
+
+
+        String cc=null;
+        int maxQ=0;
+        String[] quarters=new String[sections.size()];
+        Integer[] resultYear=new Integer[sections.size()];
+        Integer[] tempYear=new Integer[sections.size()];
+        String actualYear=null;
+        String actualQuarter=null;
+        int resultQuarter=0;
+        for (Object node : sections) {
+            Element section = (Element) node;
+
+            resultYear[((Element) node).nodeCount()]= Integer.parseInt(section.elementText("Year"));
+            tempYear[((Element) node).nodeCount()]= Integer.parseInt(section.elementText("Year"));
+            quarters[((Element) node).nodeCount()] = section.elementText("Quarter");
+        }
+        Arrays.sort(tempYear);
+        actualYear=tempYear[tempYear.length-1].toString();
+
+        for(int i=0;i<quarters.length;i++){
+            String tempQuarter=quarters[i];
+            terms fd=terms.valueOf(quarters[i]);
+            switch(fd) {
+                case autum:resultQuarter=1;break;
+                case winter:resultQuarter=2;break;
+                case spring:resultQuarter=3;break;
+                case summer:resultQuarter=4;break;
+            }
+            if(resultYear[i].equals(actualYear)&& resultQuarter>maxQ){
+                maxQ=resultQuarter;
+                actualQuarter=tempQuarter;
+
+            }
+        }
+        actualQuarter=actualQuarter.substring(0,1).toUpperCase().concat(actualQuarter).substring(2,actualQuarter.length());
+        cc=actualQuarter+" "+actualYear;
+         courseOfferingInfo.setTermId(cc.toString().trim());
+        courseOfferingInfos.add(courseOfferingInfo);
+
+        return courseOfferingInfos;
     }
 
     @Override

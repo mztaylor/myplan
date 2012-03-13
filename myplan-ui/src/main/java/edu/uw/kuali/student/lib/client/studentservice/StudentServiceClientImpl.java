@@ -272,6 +272,29 @@ public class StudentServiceClientImpl
         return sendQuery(url.toString());
     }
 
+    /**
+     *
+     * @param year
+     * @param Curriculum
+     * @param courseNo
+     * @return
+     * @throws ServiceException
+     */
+    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException{
+        StringBuilder url = new StringBuilder(getBaseUrl());
+        url.append("/").append(getServiceVersion())
+                .append("/").append("public/section.xml?")
+                .append("year=").append(year).append("&")
+                .append("quarter=").append("&")
+                .append("curriculum_abbreviation=").append(Curriculum).append("&")
+        .append("course_number=").append(courseNo);
+        return  sendQuery(url.toString().trim());
+
+
+
+
+    }
+
     private String sendQuery(String url) throws ServiceException {
         Request request = new Request(Method.GET, url);
 
