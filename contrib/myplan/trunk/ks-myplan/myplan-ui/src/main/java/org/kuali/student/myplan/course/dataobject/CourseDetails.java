@@ -14,6 +14,7 @@ public class CourseDetails {
     private String credit;
     private String courseDescription;
     private String titleValue;
+    private String lastOffered;
 
     // Saved course properties
     private boolean inSavedCourseList;
@@ -26,6 +27,14 @@ public class CourseDetails {
     private List<String> requisites;
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
+
+    public String getLastOffered() {
+        return lastOffered;
+    }
+
+    public void setLastOffered(String lastOffered) {
+        this.lastOffered = lastOffered;
+    }
 
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
@@ -40,6 +49,8 @@ public class CourseDetails {
     public void setTitleValue(String titleValue) {
         this.titleValue = titleValue;
     }
+
+
 
     public String getCourseId() {
         return courseId;
