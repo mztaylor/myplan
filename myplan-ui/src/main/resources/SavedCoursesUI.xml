@@ -344,6 +344,16 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <!--Last Offered -->
+
+                            <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="courseDetails.lastOffered"
+                                  p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:render="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
+                            <bean parent="Uif-MessageField" p:label="Last Offered" p:messageText="Not offered for more than 10 years."
+                                  p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:render="@{#line.courseDetails.lastOffered eq null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
+
+
+
                             <bean parent="Uif-DataField" p:label="Projected For" p:propertyName="courseDetails.termsOffered"
                                   p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor">
