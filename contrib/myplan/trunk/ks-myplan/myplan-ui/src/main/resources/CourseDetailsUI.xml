@@ -33,6 +33,7 @@
                 <ref bean="CourseDetails.credit"/>
                 <ref bean="CourseDetails.courseDescription"/>
                 <ref bean="CourseDetails.titleValue"/>
+                <ref bean="CourseDetails.lastOffered"/>
             </list>
         </property>
 
@@ -165,6 +166,21 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
+    <bean id="CourseDetails.lastOffered" parent="CourseDetails.lastOffered-parentBean"/>
+    <bean id="CourseDetails.lastOffered-parentBean" abstract="true" parent="BaseKuali.stringLong">
+        <property name="name" value="lastOffered"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Last Offered"/>
+        <property name="shortLabel" value="Last Offered"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="200"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="200"/>
+        </property>
+    </bean>
 
     <bean id="CourseDetails.requisites" parent="CourseDetails.requisites-parentBean"/>
     <bean id="CourseDetails.requisites-parentBean" abstract="true" parent="CollectionDefinition">
@@ -398,7 +414,7 @@
                     </property>
                     <property name="items">
                         <list>
-                             <bean parent="Uif-DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="Uif-DataField" p:propertyName="scheduledTerms" p:labelField.render="false" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -441,12 +457,25 @@
                             </bean>-->
                         </list>
                     </property>
+
+                </bean>
+
+                <!--Last Offered -->
+                <bean parent="Uif-HorizontalFieldGroup" p:label="" p:render="@{dataObject.scheduledTerms.size() gt 0 ? false : true}">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="lastOffered" p:label="Last offered in " p:render="@{dataObject.lastOffered ne null ? true : false}"
+                                  p:labelField.renderColon="false"  p:labelField.styleClasses="myplan-text-normal"/>
+                            <bean parent="Uif-MessageField" p:messageText="Not offered for more than 10 years." p:render="@{dataObject.lastOffered eq null ? true : false}"/>
+                        </list>
+                    </property>
                 </bean>
 
                 <!-- Terms -->
                 <bean parent="Uif-HorizontalFieldGroup" p:label="">
                     <property name="items">
                         <list>
+
                             <bean parent="Uif-MessageField" p:messageText="Projected to be offered in " p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"/>
                             <bean parent="Uif-DataField" p:propertyName="termsOffered" p:labelField.render="false">
                                 <property name="propertyEditor" ref="terms_formatter"/>
@@ -483,7 +512,6 @@
                         </list>
                     </property>
                 </bean>
-
                 <!-- Credits -->
                 <bean parent="Uif-DataField" p:propertyName="credit" p:label="Credits" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
@@ -648,6 +676,22 @@
                     </property>
                     <property name="render" value="@{dataObject.scheduledTerms.size() gt 0 ? true : false}"/>
                 </bean>
+                <bean parent="Uif-MessageField" p:label="Scheduled for" p:messageText="Not currently scheduled"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:render="@{dataObject.scheduledTerms.size() eq 0 ? true : false}"/>
+                <!-- Last Offered -->
+                <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="lastOffered"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:render="@{dataObject.lastOffered ne null and dataObject.scheduledTerms.size() eq 0 ? true : false}"/>
+                <bean parent="Uif-MessageField" p:label="Last Offered" p:messageText="Not offered for more than 10 years"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:render="@{dataObject.lastOffered eq null and dataObject.scheduledTerms.size() eq 0 ? true : false}"/>
+
+               <!-- <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="lastOffered"
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
+                    <property name="render" value="@{dataObject.lastOffered ne null and dataObject.scheduledTerms.size() eq 0 ? true : false}"/>
+               </bean>
+                <bean parent="Uif-DataField" p:label="Last Offered" p:messageText="Not offered for more than 10 years."
+                      p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
+                <property name="render" value="@{dataObject.lastOffered eq null and dataObject.scheduledTerms.size() eq 0 ? true : false}"/>
+                 </bean>-->
                 <!-- Projected Quarters -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="termsOffered"
                       p:labelField.styleClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
