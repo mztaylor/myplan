@@ -2,14 +2,16 @@ package org.kuali.student.myplan.course.service;
 
 import java.lang.String;
 import java.text.BreakIterator;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.aegis.type.java5.XmlParamType;
 import org.apache.log4j.Logger;
 
+
+import org.joda.time.YearMonth;
+import org.kuali.rice.core.api.criteria.EqualPredicate;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
@@ -22,10 +24,12 @@ import org.kuali.student.core.statement.service.StatementService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
+
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
@@ -40,7 +44,10 @@ import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.course.util.CurriculumFacet;
+import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.student.r2.common.dto.ContextInfo;
+
+import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
 
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
@@ -230,6 +237,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         String courseCode=courseDetails.getCode();
         String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         String subject = splitStr[0];
+        String number=splitStr[1];
         String value = getTitle(subject);
 
         //Convert to title case
@@ -245,7 +253,24 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 //        }
         value = value + " (" + subject.trim() + ")";
         courseDetails.setTitleValue(value);
+        //If course not scheduled for future terms, Check for the last term when course was offered
+        if(courseDetails.getScheduledTerms().size()==0){
+            int year= Calendar.getInstance().get(Calendar.YEAR)-10;
+            List<CourseOfferingInfo> courseOfferingInfo=null;
+                 try{
+                     // The right strategy would be using the multiple equal predicates joined using an and
+                    courseOfferingInfo=getCourseOfferingService().searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values",""+year+","+subject+","+number+"")),CourseSearchConstants.CONTEXT_INFO);
+                 }catch (Exception e)
+                 {
+                   logger.error("could not load courseOfferingInfo list");
+                 }
+                         if(courseOfferingInfo!=null){
+                            String lastOffered=courseOfferingInfo.get(0).getTermId();
+                            lastOffered=lastOffered.substring(0,1).toUpperCase().concat(lastOffered.substring(1,lastOffered.length()));
+                            courseDetails.setLastOffered(lastOffered);
+                        }
 
+        }
         return courseDetails;
     }
 
