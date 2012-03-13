@@ -111,6 +111,14 @@
                 <value>myplan-view</value>
             </list>
         </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Two"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/audit.js</value>
+            </list>
+        </property>
         <property name="additionalCssFiles">
             <list>
                 <value>/ks-myplan/css/audit.css</value>
@@ -135,7 +143,7 @@
         </property>
     </bean>
 
-     <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
          <property name="styleClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
@@ -146,7 +154,7 @@
                  <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                            <bean id="txtaudit2" parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
                         </list>
                     </property>
                 </bean>

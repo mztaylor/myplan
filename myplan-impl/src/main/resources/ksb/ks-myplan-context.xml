@@ -76,12 +76,6 @@
 
     <tx:annotation-driven transaction-manager="uachieve.txManager"/>
 
-    <!--
-    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.mock.DegreeAuditServiceMockImpl">
-        <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
-        <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
-    </bean>
-    -->
     <bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
