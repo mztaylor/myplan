@@ -163,6 +163,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         try {
             Velocity.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             Velocity.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+            Velocity.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
             Velocity.init();
 
             Template template = Velocity.getTemplate("org/kuali/student/myplan/audit/service/report.vm");
