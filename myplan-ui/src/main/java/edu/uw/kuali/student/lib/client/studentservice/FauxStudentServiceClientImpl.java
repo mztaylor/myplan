@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class FauxStudentServiceClientImpl	implements StudentServiceClient {
 
-    private static Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
+    private static final Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     public FauxStudentServiceClientImpl() {}
 

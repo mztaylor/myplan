@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.audit.service.mock;
 
 
+import org.apache.commons.io.IOUtils;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -19,13 +20,19 @@ import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceMockImpl implements DegreeAuditService {
+
+    private static final Log logger = LogFactory.getLog(DegreeAuditServiceMockImpl.class);
 
     //  These keep the spring bean definitions consistent between mock and real impls.
     public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {}
@@ -52,7 +59,13 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        String html = "<span>Degree Audit Service Mock Impl</span>";
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_current_term_response.xml");
+        String html = null;
+        try {
+            html = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
 
         AuditReportInfo auditReportInfo = new AuditReportInfo();
 
