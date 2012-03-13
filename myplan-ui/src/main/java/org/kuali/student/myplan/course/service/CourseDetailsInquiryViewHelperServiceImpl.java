@@ -68,6 +68,17 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AcademicPlanService academicPlanService;
 
+    /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
+    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+
+    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
+        return hashMap;
+    }
+
+    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+        this.hashMap = hashMap;
+    }
+
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
@@ -286,15 +297,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
              String genEdReqValue=null;
 
              try {
-                List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
+                 List<EnumeratedValueInfo> enumeratedValueInfoList=null;
+                 if(!hashMap.containsKey("kuali.uw.lu.genedreq")) {
+                     enumeratedValueInfoList= getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
+                 }
+                 else {
+                     enumeratedValueInfoList=hashMap.get("kuali.uw.lu.genedreq");
+                 }
                 for(EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
                     String abbr = enumVal.getAbbrevValue();
 
                     if(abbr.equalsIgnoreCase(key))
-                    {
+        {
                         genEdReqValue=enumVal.getValue();
                         break;
-                    }
+        }
                 }
 
             } catch (Exception e) {
@@ -315,15 +332,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     protected String getTitle(String display) {
              String titleValue=null;
               try {
-                List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
+                List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+                  if(!hashMap.containsKey("kuali.lu.subjectArea")){
+                      enumeratedValueInfoList=getEnumerationValueInfoList("kuali.lu.subjectArea");
+                  }
+                  else {
+                      enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
+                  }
                 for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
-                {
+        {
                     String code= enumVal.getCode().trim();
                     if(code.equalsIgnoreCase(display.trim()))
                     {
                         titleValue=enumVal.getValue().trim();
                         break;
-                    }
+        }
                 }
 
             } catch (Exception e) {
@@ -404,7 +427,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     protected synchronized void initializeCampusLocations() {
         if (null == campusLocationCache || campusLocationCache.isEmpty()) {
             try {
-                List<EnumeratedValueInfo> campusLocations = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
+                List<EnumeratedValueInfo> campusLocations=null;
+                if(!hashMap.containsKey("kuali.lu.campusLocation")) {
+                    campusLocations = getEnumerationValueInfoList("kuali.lu.campusLocation");
+                }
+                else {
+                    campusLocations =hashMap.get("kuali.lu.campusLocation");
+                }
                 if (this.campusLocationCache == null) {
                     this.campusLocationCache = new HashMap<String, String>();
                 }
@@ -416,6 +445,23 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 logger.error("Could not load campus locations..");
             }
         }
+    }
+
+    public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+
+        List<EnumeratedValueInfo> enumeratedValueInfoList=null;
+
+        try{
+
+            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
+            hashMap.put(param,enumeratedValueInfoList);
+        }
+        catch (Exception e)
+        {
+            logger.error("No Values for campuses found",e);
+        }
+
+        return enumeratedValueInfoList;
     }
 
     /**
