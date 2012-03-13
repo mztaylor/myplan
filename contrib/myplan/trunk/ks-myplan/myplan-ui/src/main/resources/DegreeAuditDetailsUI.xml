@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- Copyright 2007-2009 The Kuali Foundation Licensed under the Educational
+         Community License, Version 2.0 (the "License"); you may not use this file
+         except in compliance with the License. You may obtain a copy of the License
+         at http://www.opensource.org/licenses/ecl2.php Unless required by applicable
+         law or agreed to in writing, software distributed under the License is distributed
+         on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+         express or implied. See the License for the specific language governing permissions
+         and limitations under the License. -->
+
+ <!--
+    <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
+        <property name="id" value="degreeAuditView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="styleClasses" value="myplan"/>
+        <property name="entryPageId" value="degree_audit"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="degree_audit" p:title="Degree Audit">
+                    <property name="items">
+                        <list>
+                            <bean id="yippee" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+
+
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
+    </bean>
+ -->
+
+    <!-- Not used to view audit reports. -->
+    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
+        <property name="id" value="DegreeAudit-FormView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="entryPageId" value="course_search"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Two"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/audit.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>/ks-myplan/css/audit.css</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="audit_report_section"/>
+                            <ref bean="myplan_section"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
+    </bean>
+
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+         <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
+         <property name="items">
+            <list>
+                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}" p:style="display:block;">                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>
