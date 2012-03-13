@@ -33,13 +33,13 @@ public class DegreeAuditInquiryViewHelperServiceImpl extends KualiInquirableImpl
         }
 
         if (auditType == null) {
-            auditType = DegreeAuditConstants.AUDIT_TYPE_KEY_SUMMARY;
+            auditType = DegreeAuditConstants.AUDIT_TYPE_KEY_HTML;
         }
 
         AuditReportInfo degreeAuditReport = null;
         try {
             degreeAuditReport = getDegreeAuditService().getAuditReport(degreeAuditId,
-                DegreeAuditConstants.AUDIT_TYPE_KEY_SUMMARY, DegreeAuditConstants.CONTEXT_INFO);
+                    auditType, DegreeAuditConstants.CONTEXT_INFO);
         } catch (Exception e) {
             throw new RuntimeException(String.format("Failed to fetch audit report [%s].", degreeAuditId), e);
         }
