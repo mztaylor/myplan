@@ -146,7 +146,7 @@
                                     </list>
                                 </property>
                             </bean>-->
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.credit}"/>
+                            <bean parent="Uif-MessageField" p:messageText="(@{#line.courseDetails.credit})"/>
                         </list>
                     </property>
                 </bean>
