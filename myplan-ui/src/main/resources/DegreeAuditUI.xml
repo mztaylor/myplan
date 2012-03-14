@@ -229,8 +229,8 @@
                                 p:hrefText="inquiry?methodToCall=start&amp;viewId=DegreeAuditDetails-InquiryView&amp;auditId=@{#line.report.auditId}"/>
 
                             <bean parent="Uif-DataField" p:propertyName="report.runDate"
-                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"
-                                  p:labelField.render="true">
+                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"  p:labelField.render="true">
+                                <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>
@@ -244,4 +244,5 @@
             </list>
         </property>
     </bean>
+
 </beans>
