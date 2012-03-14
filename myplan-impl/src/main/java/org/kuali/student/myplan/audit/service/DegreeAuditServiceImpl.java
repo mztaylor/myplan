@@ -13,6 +13,10 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvc;
+import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvcSoap;
+import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvcSoap_AuditRequestSvcSoap_Client;
+import org.kuali.student.myplan.audit.service.darsws.MPAuditResponse;
 import org.kuali.student.myplan.audit.service.model.Count;
 import org.kuali.student.myplan.audit.service.model.Credits;
 import org.kuali.student.myplan.audit.service.model.GPA;
@@ -39,14 +43,18 @@ import uachieve.apis.audit.JobQueueReq;
 import uachieve.apis.audit.JobQueueReqText;
 import uachieve.apis.audit.JobQueueSubreqText;
 import uachieve.apis.audit.JobQueueAccept;
+import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,6 +72,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     private JobQueueRunLoader jobQueueRunLoader;
 
     private JobQueueRunDao jobQueueRunDao;
+
+    private JobQueueListDao jobQueueListDao;
+
+
+    public JobQueueListDao getJobQueueListDao() {
+        return jobQueueListDao;
+    }
+
+    public void setJobQueueListDao(JobQueueListDao jobQueueListDao) {
+        this.jobQueueListDao = jobQueueListDao;
+    }
 
     public JobQueueRunDao getJobQueueRunDao() {
         return jobQueueRunDao;
@@ -109,9 +128,45 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return sb.toString();
     }
 
+    public final static String WSDL_LOCATION = "http://isntsis.cac.washington.edu/sisMyPlanws/MPAuditRequestSvc.asmx?wsdl";
+    private static final QName AUDIT_SERVICE_NAME = AuditRequestSvc.SERVICE;
+
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try
+        {
+            URL wsdlURL = new URL( WSDL_LOCATION );
+
+            AuditRequestSvc ss = new AuditRequestSvc(wsdlURL, AUDIT_SERVICE_NAME);
+            AuditRequestSvcSoap port = ss.getAuditRequestSvcSoap();
+
+
+            System.out.println("Invoking mpRequestAudit...");
+            studentId = "0";
+            int tempId = Integer.parseInt( studentId );
+            programId = "0ENGL  0011";
+            int lineNo = 0;
+            int systemKey = 190981;
+            String origin = "M";
+            MPAuditResponse response = port.mpRequestAudit(tempId, programId, lineNo, systemKey, origin);
+            System.out.println("error code: " + response.getErrorCode());
+            System.out.println("error msg: " + response.getErrorMsg());
+            System.out.println("audit id: " + response.getAuditText());
+
+            AuditReportInfo auditReportInfo = new AuditReportInfo();
+            String auditID = response.getAuditText().trim();
+            if( auditID.length() == 0 )
+            {
+                auditID = null;
+            }
+            auditReportInfo.setAuditId( auditID );
+            return auditReportInfo;
+
+        }
+        catch( Exception e )
+        {
+            throw new OperationFailedException("velocity error", e);
+        }
     }
 
     @Override
@@ -121,7 +176,31 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public StatusInfo getAuditRunStatus(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String instcd = "";
+        String instid = "4854";
+        String instidq = "72";
+        int status = jobQueueListDao.checkJobQueueStatus(instidq, instid, instcd, auditId);
+        StatusInfo info = new StatusInfo();
+        info.setSuccess( status == 1 );
+
+        switch( status )
+        {
+            case -2:
+                info.setMessage("audit request not found");
+                break;
+            case -1:
+                info.setMessage( "completed with errors" );
+                break;
+            case 0:
+                info.setMessage("not finished processing");
+                break;
+            case 1:
+                info.setMessage("complete");
+                break;
+            default:
+                break;
+        }
+        return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

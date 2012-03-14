@@ -78,6 +78,7 @@
     <bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
+        <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
     </bean>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
