@@ -77,14 +77,14 @@ public class CourseSearchStrategy {
         }
 
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-         if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
+        if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
             enumeratedValueInfoList =getEnumerationValueInfoList("kuali.lu.campusLocation");
 
-         }
+        }
         else
-         {
-             enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
-         }
+        {
+            enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
+        }
 
         String[] campus = new String[enumeratedValueInfoList.size() - 1];
         for (int k = 0; k < campus.length; k++) {
@@ -289,6 +289,7 @@ public class CourseSearchStrategy {
         int size=requests.size();
         for(int i=0;i<size;i++)
         {
+            if (requests.get(i).getSearchKey()!=null){
             if(requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division"))
             {
                 String queryText=(String)requests.get(i).getParams().get(0).getValue();
@@ -301,14 +302,14 @@ public class CourseSearchStrategy {
                 request0.addParam("queryText", queryText.trim());
                 addCampusParam(request0,form);
                 requests.add(request0);
-                try{
+                    if(!this.getHashMap().containsKey("kuali.lu.subjectArea")){
+                        enumeratedValueInfoList = getEnumerationValueInfoList("kuali.lu.subjectArea");
 
-                    enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
-                }
-                catch (Exception e)
-                {
-                    logger.error("No Values for campuses found",e);
-                }
+                    }
+                    else
+                    {
+                        enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
+                    }
                 StringBuffer additionalDivisions=new StringBuffer();
                 if (enumeratedValueInfoList != null) {
                     //  Add the individual term items.
@@ -393,6 +394,8 @@ public class CourseSearchStrategy {
         }
         }
         }
+        }
+    
 
     logger.info("End of processRequests method in CourseSearchStrategy:"+System.currentTimeMillis());
     }
