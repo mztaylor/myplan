@@ -51,23 +51,23 @@ public class AuditRequestSvc extends Service {
     //This constructor requires JAX-WS API 2.2. You will need to endorse the 2.2
     //API jar or re-run wsdl2java with "-frontend jaxws21" to generate JAX-WS 2.1
     //compliant code instead.
-    public AuditRequestSvc(WebServiceFeature ... features) {
-        super(WSDL_LOCATION, SERVICE, features);
-    }
+//    public AuditRequestSvc(WebServiceFeature ... features) {
+//        super(WSDL_LOCATION, SERVICE, features);
+//    }
 
     //This constructor requires JAX-WS API 2.2. You will need to endorse the 2.2
     //API jar or re-run wsdl2java with "-frontend jaxws21" to generate JAX-WS 2.1
     //compliant code instead.
-    public AuditRequestSvc(URL wsdlLocation, WebServiceFeature ... features) {
-        super(wsdlLocation, SERVICE, features);
-    }
+//    public AuditRequestSvc(URL wsdlLocation, WebServiceFeature ... features) {
+//        super(wsdlLocation, SERVICE, features);
+//    }
 
     //This constructor requires JAX-WS API 2.2. You will need to endorse the 2.2
     //API jar or re-run wsdl2java with "-frontend jaxws21" to generate JAX-WS 2.1
     //compliant code instead.
-    public AuditRequestSvc(URL wsdlLocation, QName serviceName, WebServiceFeature ... features) {
-        super(wsdlLocation, serviceName, features);
-    }
+//    public AuditRequestSvc(URL wsdlLocation, QName serviceName, WebServiceFeature ... features) {
+//        super(wsdlLocation, serviceName, features);
+//    }
 
     /**
      *
