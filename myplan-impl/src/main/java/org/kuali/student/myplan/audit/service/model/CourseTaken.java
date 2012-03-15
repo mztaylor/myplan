@@ -8,7 +8,7 @@ private String number = "000";
 
 
 String description="Xxxxx xx Xxxxx";
-float credits;
+String credits;
 
 // IP, CR, 0.0,
 String grade="X.X";
@@ -30,8 +30,8 @@ public void setNumber( String number ) { this.number = number; }
 public String getDescription() { return description; }
 public void setDescription( String description ) { this.description = description; }
 
-public float getCredits(){return credits;}
-public void setCredits( float credits ) {
+public String getCredits(){return credits;}
+public void setCredits( String credits ) {
         this.credits = credits;
         }
 

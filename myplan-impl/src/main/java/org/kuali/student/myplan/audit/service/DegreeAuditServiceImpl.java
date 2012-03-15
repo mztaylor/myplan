@@ -36,13 +36,7 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uachieve.apis.audit.JobQueueRun;
-import uachieve.apis.audit.JobQueueSubreq;
-import uachieve.apis.audit.JobQueueOut;
-import uachieve.apis.audit.JobQueueReq;
-import uachieve.apis.audit.JobQueueReqText;
-import uachieve.apis.audit.JobQueueSubreqText;
-import uachieve.apis.audit.JobQueueAccept;
+import uachieve.apis.audit.*;
 import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
@@ -511,11 +505,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     }
 
                 }
+                List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
+                for(JobQueueCourse taken : takenList )
                 {
-                    subrequirement.addCourseTaken( new CourseTaken() );
-                    subrequirement.addCourseTaken(new CourseTaken());
-                    subrequirement.addCourseTaken(new CourseTaken());
-                    subrequirement.addCourseTaken(new CourseTaken());
+                    CourseTaken temp = new CourseTaken();
+                    String course = taken.getCourse();
+//                    System.out.println( "course taken: " + course );
+                    String dept = course.substring(1, 7).trim();
+                    String number = course.substring(7, 10);
+                    temp.setDept( dept );
+                    temp.setNumber( number );
+                    temp.setGrade( taken.getGpa().toString() );
+                    temp.setDescription( taken.getCtitle() );
+                    temp.setCredits( taken.getCredit().toString() );
+                    temp.setQuarter( taken.getEditYt() );
+
+                    subrequirement.addCourseTaken(temp );
                 }
             }
         }

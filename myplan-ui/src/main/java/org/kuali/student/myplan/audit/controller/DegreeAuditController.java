@@ -76,7 +76,7 @@ public class DegreeAuditController extends UifControllerBase {
             DegreeAuditService degreeAuditService = getDegreeAuditService();
 
             ContextInfo contextInfo = new ContextInfo();
-            String auditId = "abc001";
+            String auditId = "2012031415260132";
 
 
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
