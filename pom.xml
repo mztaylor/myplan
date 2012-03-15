@@ -779,11 +779,6 @@
                 <artifactId>atomikos-util</artifactId>
                 <version>${atomikos.version}</version>
             </dependency>
-	    <dependency>
-		<groupId>com.atomikos</groupId>
-                <artifactId>atomikos-jdbc</artifactId>
-                <version>${atomikos.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.atomikos</groupId>
                 <artifactId>transactions-hibernate3</artifactId>
