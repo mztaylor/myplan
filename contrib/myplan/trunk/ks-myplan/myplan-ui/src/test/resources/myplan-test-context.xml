@@ -22,6 +22,7 @@
         <property name="luService" ref="luServiceImpl"/>
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="courseOfferingService" ref="coService"/>
+        <property name="personImpl" ref="personimpl"/>
         <property name="academicCalendarService" ref="acalService"/>
         <property name="atpTypeComparator" ref="atpTypeComparator"/>
     </bean>
@@ -48,6 +49,8 @@
     <bean id="acalService" class="edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl">
         <property name="studentServiceClient" ref="studentServiceClient"/>
     </bean>
+    <bean id="personimpl" class="org.kuali.rice.kim.impl.identity.PersonImpl">
+    </bean>
 
     <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
     <bean id="coService" class="edu.uw.kuali.student.myplan.tests.unit.FakeCourseOfferingService">
@@ -67,7 +70,7 @@
     </bean>
 
     -->
-
+    <bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>
     <bean id="academicPlanService" class="org.kuali.student.myplan.service.mock.AcademicPlanServiceMockImpl"/>
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
