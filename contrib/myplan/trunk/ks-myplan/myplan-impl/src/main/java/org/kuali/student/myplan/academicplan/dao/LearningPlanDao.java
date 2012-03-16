@@ -1,7 +1,7 @@
 package org.kuali.student.myplan.academicplan.dao;
 
 import org.kuali.student.enrollment.dao.GenericEntityDao;
-import org.kuali.student.myplan.model.LearningPlanEntity;
+import org.kuali.student.myplan.academicplan.model.LearningPlanEntity;
 
 import java.util.List;
 
