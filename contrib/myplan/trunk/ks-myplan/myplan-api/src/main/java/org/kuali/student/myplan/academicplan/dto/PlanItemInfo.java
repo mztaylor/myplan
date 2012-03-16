@@ -8,7 +8,9 @@ import org.w3c.dom.Element;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * PlanItem message structure
@@ -37,7 +39,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     private String learningPlanId;
 
     @XmlElement
-    private List<AtpInfo> planPeriods;
+    private Set<String> planPeriods;
 
     @XmlAnyElement
     private List<Element> _futureElements;
@@ -49,7 +51,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.refObjectId = null;
         this.refObjectType = null;
         this.learningPlanId = null;
-        this.planPeriods = new ArrayList<AtpInfo> ();
+        this.planPeriods = new HashSet<String>();
         this._futureElements = null;
     }
 
@@ -63,9 +65,8 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
             this.learningPlanId = item.getLearningPlanId();
 
             if(null != item.getPlanPeriods()) {
-                for(AtpInfo atp : item.getPlanPeriods()) {
-                    //TODO: Change this to copy constructor of ATP after student team changes it to use the R2 format
-                    this.planPeriods.add(atp);
+                for(String atpId : item.getPlanPeriods()) {
+                    this.planPeriods.add(atpId);
                 }
             }
 
@@ -114,11 +115,11 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.learningPlanId = learningPlanId;
     }
 
-    public List<AtpInfo> getPlanPeriods() {
+    public Set<String> getPlanPeriods() {
         return planPeriods;
     }
 
-    public void setPlanPeriods(List<AtpInfo> planPeriods) {
+    public void setPlanPeriods(Set<String> planPeriods) {
         this.planPeriods = planPeriods;
     }
 }

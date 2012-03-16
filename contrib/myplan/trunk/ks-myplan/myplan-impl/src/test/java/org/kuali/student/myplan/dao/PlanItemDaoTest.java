@@ -10,7 +10,7 @@ import org.kuali.student.myplan.model.LearningPlanEntity;
 import org.kuali.student.myplan.model.PlanItemEntity;
 import org.kuali.student.myplan.model.PlanItemTypeEntity;
 
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -55,7 +55,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     }
 
     @Test
-    public void testGetLearningPlanById() {
+    public void testGetLearningPlanItemById() {
         String id = "lp1-i1";
         PlanItemEntity pie = planItemDao.find(id);
         assertNotNull(pie);
@@ -65,7 +65,41 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     }
 
     @Test
-    public void testSavePlanItem() {
+    public void testCheckAtpIdsSingle() {
+        String id = "lp1-i4";
+        PlanItemEntity pie = planItemDao.find(id);
+        assertNotNull(pie);
+        assertEquals(id, pie.getId());
+        assertEquals(1, pie.getPlanPeriods().size());
+        assertTrue(pie.getPlanPeriods().contains("testTermId3"));
+    }
+
+    @Test
+    public void testCheckAtpIdsMultiple() {
+        String id = "lp1-i6";
+        PlanItemEntity pie = planItemDao.find(id);
+        assertNotNull(pie);
+        assertEquals(id, pie.getId());
+        assertEquals(3, pie.getPlanPeriods().size());
+        Set<String> atpIds = pie.getPlanPeriods();
+
+        assertTrue(pie.getPlanPeriods().contains("testTermId1"));
+        assertTrue(pie.getPlanPeriods().contains("testTermId2"));
+        assertTrue(pie.getPlanPeriods().contains("testTermId3"));
+    }
+
+    @Test
+    public void testCheckAtpNoIds() {
+        String id = "lp1-i1";
+        PlanItemEntity pie = planItemDao.find(id);
+        assertNotNull(pie);
+        assertEquals(id, pie.getId());
+        assertNotNull(pie.getPlanPeriods());
+        assertEquals(0, pie.getPlanPeriods().size());
+    }
+
+    @Test
+    public void testSavePlanItem_wishlist() {
         LearningPlanEntity learningPlanEntity = learningPlanDao.find("lp1");
         PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
 
@@ -86,5 +120,40 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         assertEquals(planItemTypeEntity.getId(), newPie.getLearningPlanItemType().getId());
         assertEquals(pie.getRefObjectId(), newPie.getRefObjectId());
         assertEquals(pie.getRefObjectTypeKey(), newPie.getRefObjectTypeKey());
+    }
+
+     @Test
+    public void testSavePlanItem_planned() {
+        LearningPlanEntity learningPlanEntity = learningPlanDao.find("lp1");
+        PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+
+        PlanItemEntity pie = new PlanItemEntity();
+        String id = UUIDHelper.genStringUUID();
+        pie.setId(id);
+        pie.setLearningPlan(learningPlanEntity);
+        pie.setLearningPlanItemType(planItemTypeEntity);
+        pie.setRefObjectId("02711400-c66d-4ecb-aca5-565118f167cf");
+        pie.setRefObjectTypeKey("kuali.lu.type.CreditCourse");
+
+        Set<String> atps = new HashSet<String>();
+        atps.add("atp1");
+        atps.add("atp2");
+        pie.setPlanPeriods(atps);
+
+        planItemDao.persist(pie);
+
+        PlanItemEntity newPie = planItemDao.find(id);
+        assertNotNull(newPie);
+        assertEquals(id, newPie.getId());
+        assertEquals(learningPlanEntity.getId(), newPie.getLearningPlan().getId());
+        assertEquals(planItemTypeEntity.getId(), newPie.getLearningPlanItemType().getId());
+        assertEquals(pie.getRefObjectId(), newPie.getRefObjectId());
+        assertEquals(pie.getRefObjectTypeKey(), newPie.getRefObjectTypeKey());
+
+        atps = newPie.getPlanPeriods();
+        assertNotNull(atps);
+        assertEquals(2, atps.size());
+        assertTrue(atps.contains("atp1"));
+        assertTrue(atps.contains("atp2"));
     }
 }

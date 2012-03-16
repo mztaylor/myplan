@@ -66,7 +66,4 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         }
         return this.academicCalendarService;
     }
-
-
-
 }

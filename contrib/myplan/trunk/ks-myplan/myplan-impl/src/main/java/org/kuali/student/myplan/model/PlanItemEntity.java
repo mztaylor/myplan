@@ -1,7 +1,6 @@
 package org.kuali.student.myplan.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -11,7 +10,6 @@ import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
 import org.kuali.student.r2.core.class1.atp.model.AtpEntity;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -33,7 +31,6 @@ import javax.persistence.Table;
                     "pi.learningPlan = p " +
                     "and p.id =:learningPlanId and pi.learningPlanItemType.id =:learningPlanItemType")
 })
-
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 
     @NotNull
@@ -59,10 +56,12 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @JoinColumn(name = "OWNER")
     private List<PlanItemAttributeEntity> attributes;
 
-    // TODO: This field isn't needed for wishlist items, so hold for now.
-    //@ManyToMany(cascade = CascadeType.ALL)
-    //@JoinTable(name = "KSPL_LRNG_PL_IT_ATP_RELTN", joinColumns = @JoinColumn(name = "PLAN_ITEM_ID"), inverseJoinColumns = @JoinColumn(name = "ATP_ID"))
-    //private List<AtpEntity> planPeriods;
+    @ElementCollection (fetch=FetchType.EAGER)
+    @CollectionTable(name="KSPL_LRNG_PLAN_ITEM_ATP_ID",
+        joinColumns=@JoinColumn(name="PLAN_ITEM_ID"))
+    @Column(name="ATP_ID")
+    //  TODO: I believe this should be a Set.
+    private Set<String> planPeriods;
 
     public PlanItemEntity(){
         super();
@@ -117,13 +116,36 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     public void setDescr(PlanItemRichTextEntity descr) {
         this.descr = descr;
     }
-   /* public List<AtpEntity> getPlanPeriods() {
+
+    public Set<String> getPlanPeriods() {
         return planPeriods;
     }
 
-    public void setPlanPeriods(List<AtpEntity> planPeriods) {
+    public void setPlanPeriods(Set<String> planPeriods) {
         this.planPeriods = planPeriods;
-    }*/
+    }
+
+    /**
+     * Add an ATP id to the set. No nulls or empty strings.
+     *
+     * @return
+     */
+    public boolean addPlanPeriod(String atpId) {
+        if (atpId == null || atpId.trim().equals("")) {
+            return false;
+        }
+        return this.planPeriods.add(atpId);
+    }
+
+    /**
+     * Remove an ATP id from the Set.
+     *
+     * @param atpId
+     * @return
+     */
+    public boolean removePlanPeriod(String atpId) {
+        return this.planPeriods.remove(atpId);
+    }
 
     /**
      * Provides and data transfer object representation of the plan item.
@@ -143,7 +165,7 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
         dto.setMeta(super.toDTO());
 
-        // FIXME: dto.setPlanPeriods();
+        dto.setPlanPeriods(this.getPlanPeriods());
 
         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
         if (getAttributes() != null) {

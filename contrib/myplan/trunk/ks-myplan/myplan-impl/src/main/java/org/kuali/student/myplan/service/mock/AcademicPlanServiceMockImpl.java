@@ -13,9 +13,7 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.core.atp.dto.AtpInfo;
 
 import javax.jws.WebParam;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     @Override
@@ -47,14 +45,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            List<AtpInfo> atpList = new ArrayList<AtpInfo>();
-            AtpInfo atp = new AtpInfo();
-            atp.setName( "atp1" );
-            atp.setId( "atp1" );
-            atp.setType( "atpType" );
-            atp.setStartDate( new Date() );
-            atp.setEndDate( new Date() );
-            atpList.add( atp );
+            Set<String> atpList = new HashSet<String>();
+            atpList.add("atp1");
             plan.setPlanPeriods( atpList );
 
             plan.setId( "1" );
@@ -71,13 +63,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            List<AtpInfo> atpList = new ArrayList<AtpInfo>();
-            AtpInfo atp = new AtpInfo();
-            atp.setName( "atp2" );
-            atp.setId( "atp2" );
-            atp.setType( "atpType" );
-            atp.setStartDate( new Date() );
-            atp.setEndDate( new Date() );
+            Set<String> atpList = new HashSet<String>();
+            String atp = "atp2";
             atpList.add( atp );
             plan.setPlanPeriods( atpList );
 
@@ -95,14 +82,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            List<AtpInfo> atpList = new ArrayList<AtpInfo>();
+            Set<String> atpList = new HashSet<String>();
             AtpInfo atp = new AtpInfo();
-            atp.setName( "atp1" );
-            atp.setId( "atp1" );
-            atp.setType( "atpType" );
-            atp.setStartDate( new Date() );
-            atp.setEndDate( new Date() );
-            atpList.add( atp );
+            atpList.add("atp1");
             plan.setPlanPeriods( atpList );
 
             plan.setId( "1" );
@@ -119,14 +101,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            List<AtpInfo> atpList = new ArrayList<AtpInfo>();
-            AtpInfo atp = new AtpInfo();
-            atp.setName( "atp1" );
-            atp.setId( "atp1" );
-            atp.setType( "atpType" );
-            atp.setStartDate( new Date() );
-            atp.setEndDate( new Date() );
-            atpList.add( atp );
+            Set<String> atpList = new HashSet<String>();
+            atpList.add("atp1");
             plan.setPlanPeriods( atpList );
 
             plan.setId( "1" );
@@ -143,14 +119,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            List<AtpInfo> atpList = new ArrayList<AtpInfo>();
-            AtpInfo atp = new AtpInfo();
-            atp.setName( "atp1" );
-            atp.setId( "atp1" );
-            atp.setType( "atpType" );
-            atp.setStartDate( new Date() );
-            atp.setEndDate( new Date() );
-            atpList.add( atp );
+            Set<String> atpList = new HashSet<String>();
+            atpList.add( "atp1" );
             plan.setPlanPeriods( atpList );
 
             plan.setId( "1" );

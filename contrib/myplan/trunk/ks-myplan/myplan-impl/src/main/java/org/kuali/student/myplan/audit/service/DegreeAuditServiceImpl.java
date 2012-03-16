@@ -511,8 +511,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     CourseTaken temp = new CourseTaken();
                     String course = taken.getCourse();
 //                    System.out.println( "course taken: " + course );
-                    String dept = course.substring(1, 7).trim();
-                    String number = course.substring(7, 10);
+//                    String dept = course.substring(1, 7).trim();
+                        String dept = "Dept";
+//                    String number = course.substring(7, 10);
+                        String number = "No.";
                     temp.setDept( dept );
                     temp.setNumber( number );
                     temp.setGrade( taken.getGpa().toString() );
