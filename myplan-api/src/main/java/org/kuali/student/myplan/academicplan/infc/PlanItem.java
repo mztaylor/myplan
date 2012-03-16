@@ -6,6 +6,7 @@ import org.kuali.student.r2.common.infc.RichText;
 import org.kuali.student.r2.common.infc.TypeStateEntity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * A single plan item. Plan items can link to different entities in the system based on the refObjectType.
@@ -36,7 +37,7 @@ public interface PlanItem extends HasId, TypeStateEntity {
      * Time Periods for which the item is planned for
      * @name  Time Periods
      */
-    public List<AtpInfo> getPlanPeriods();
+    public Set<String> getPlanPeriods();
 
     /**
      * Containing learning plan
