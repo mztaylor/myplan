@@ -6,7 +6,7 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
-import org.kuali.student.myplan.model.AuditDataSource;
+import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
