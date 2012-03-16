@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.model;
+package org.kuali.student.myplan.academicplan.model;
 
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.entity.RichTextEntity;

@@ -5,27 +5,27 @@
 
     <import resource="classpath:ks-myplan-services-commons.xml"/>
 
-    <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
+    <bean id="learningPlanDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 
-    <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.dao.LearningPlanRichTextDao">
+    <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanRichTextDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 
-    <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.dao.LearningPlanTypeDao">
+    <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 
-    <bean id="planItemDao" class="org.kuali.student.myplan.dao.PlanItemDao">
+    <bean id="planItemDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 
-    <bean id="planItemTypeDao" class="org.kuali.student.myplan.dao.PlanItemTypeDao">
+    <bean id="planItemTypeDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 
-    <bean id="planItemRichTextDao" class="org.kuali.student.myplan.dao.PlanItemRichTextDao">
+    <bean id="planItemRichTextDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemRichTextDao">
         <property name="em" ref="myplanEntityManager"/>
     </bean>
 </beans>

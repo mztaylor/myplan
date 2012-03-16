@@ -1,7 +1,7 @@
-package org.kuali.student.myplan.dao;
+package org.kuali.student.myplan.academicplan.dao;
 
 import org.kuali.student.enrollment.dao.GenericEntityDao;
-import org.kuali.student.myplan.model.PlanItemRichTextEntity;
+import org.kuali.student.myplan.academicplan.model.PlanItemRichTextEntity;
 
 /**
  *

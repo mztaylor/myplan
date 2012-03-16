@@ -71,7 +71,7 @@
 
     -->
     <bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.mock.AcademicPlanServiceMockImpl"/>
+    <bean id="academicPlanService" class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>

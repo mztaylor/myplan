@@ -1,7 +1,8 @@
-package org.kuali.student.myplan.dao;
+package org.kuali.student.myplan.academicplan.dao;
 
 import org.kuali.student.enrollment.dao.GenericEntityDao;
-import org.kuali.student.myplan.model.PlanItemEntity;
+import org.kuali.student.myplan.academicplan.model.PlanItemEntity;
+
 import javax.persistence.Query;
 
 import java.util.List;

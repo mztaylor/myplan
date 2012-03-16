@@ -5,13 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import org.kuali.student.common.util.UUIDHelper;
-import org.kuali.student.myplan.model.LearningPlanEntity;
+import org.kuali.student.myplan.academicplan.dao.LearningPlanDao;
+import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
+import org.kuali.student.myplan.academicplan.model.LearningPlanEntity;
 
 import org.kuali.student.common.test.spring.AbstractTransactionalDaoTest;
 import org.kuali.student.common.test.spring.Dao;
 import org.kuali.student.common.test.spring.PersistenceFileLocation;
-import org.kuali.student.myplan.model.LearningPlanRichTextEntity;
-import org.kuali.student.myplan.model.LearningPlanTypeEntity;
+import org.kuali.student.myplan.academicplan.model.LearningPlanRichTextEntity;
+import org.kuali.student.myplan.academicplan.model.LearningPlanTypeEntity;
 
 import java.util.Date;
 import java.util.List;
@@ -19,10 +21,10 @@ import java.util.List;
 @PersistenceFileLocation("classpath:META-INF/lp-persistence.xml")
 public class LearningPlanDaoTest extends AbstractTransactionalDaoTest {
                                                                           // "classpath:ks-atp.sql,learning_plan.sql"
-    @Dao(value = "org.kuali.student.myplan.dao.LearningPlanDao", testSqlFile = "classpath:learning_plan.sql")
+    @Dao(value = "org.kuali.student.myplan.academicplan.dao.LearningPlanDao", testSqlFile = "classpath:learning_plan.sql")
 	private LearningPlanDao learningPlanDao;
 
-    @Dao(value = "org.kuali.student.myplan.dao.LearningPlanTypeDao")
+    @Dao(value = "org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao")
 	private LearningPlanTypeDao typeDao;
 
     @Test

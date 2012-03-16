@@ -1,14 +1,8 @@
-package org.kuali.student.myplan.service;
+package org.kuali.student.myplan.academicplan.service;
 
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.academicplan.infc.PlanItem;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceDecorator;
-import org.kuali.student.myplan.dao.PlanItemDao;
-import org.kuali.student.myplan.model.PlanItemEntity;
 import org.kuali.student.r2.common.datadictionary.DataDictionaryValidator;
 import org.kuali.student.r2.common.datadictionary.service.DataDictionaryService;
 import org.kuali.student.r2.common.dto.ContextInfo;

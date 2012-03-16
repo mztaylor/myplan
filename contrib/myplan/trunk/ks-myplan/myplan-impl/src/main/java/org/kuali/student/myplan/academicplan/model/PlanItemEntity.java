@@ -1,14 +1,12 @@
-package org.kuali.student.myplan.model;
+package org.kuali.student.myplan.academicplan.model;
 
 import java.util.*;
 
 import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
-import org.kuali.student.r2.core.class1.atp.model.AtpEntity;
 
 import java.util.List;
 

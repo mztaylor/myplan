@@ -40,7 +40,7 @@
     <property name="password" value="${ks.myplan.datasource.password}" />
   </bean>
 
-    <bean id="academicPlanService" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+    <bean id="academicPlanService" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
@@ -107,7 +107,7 @@
   </bean>
   <aop:config>
     <aop:aspect id="dataAccessToBusinessException" ref="mapExceptionAdvisor">
-      <aop:after-throwing pointcut="execution(* org.kuali.student.myplan.service.AcademicPlanServiceImpl.*(..))"
+      <aop:after-throwing pointcut="execution(* org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl.*(..))"
         method="afterThrowing" throwing="ex" />
     </aop:aspect>
   </aop:config>

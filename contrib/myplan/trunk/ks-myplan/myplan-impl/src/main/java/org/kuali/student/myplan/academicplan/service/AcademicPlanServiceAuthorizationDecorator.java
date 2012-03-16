@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.service;
+package org.kuali.student.myplan.academicplan.service;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.kim.api.permission.PermissionService;

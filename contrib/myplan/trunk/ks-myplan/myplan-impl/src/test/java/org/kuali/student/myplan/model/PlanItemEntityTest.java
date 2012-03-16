@@ -1,11 +1,7 @@
 package org.kuali.student.myplan.model;
 
 import org.junit.Test;
-import org.kuali.student.common.util.UUIDHelper;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.dao.LearningPlanDao;
-import org.kuali.student.myplan.dao.PlanItemDao;
-import org.kuali.student.myplan.dao.PlanItemTypeDao;
+import org.kuali.student.myplan.academicplan.model.PlanItemEntity;
 
 import java.util.*;
 
