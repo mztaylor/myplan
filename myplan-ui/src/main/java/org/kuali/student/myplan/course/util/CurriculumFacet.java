@@ -41,6 +41,11 @@ public class CurriculumFacet extends AbstractFacet {
         }
         return this.enumService;
     }
+
+    public void setEnumService(EnumerationManagementService enumService) {
+        this.enumService = enumService;
+    }
+
     public CurriculumFacet() {
         super();
     }
