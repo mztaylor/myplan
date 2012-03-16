@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.model;
+package org.kuali.student.myplan.audit.service.model;
 
 import javax.activation.DataSource;
 import java.io.ByteArrayInputStream;
