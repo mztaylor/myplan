@@ -1,21 +1,15 @@
-package org.kuali.student.myplan.service;
+package org.kuali.student.myplan.academicplan.service;
 
-import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.academicplan.infc.PlanItem;
-import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.dao.LearningPlanDao;
-import org.kuali.student.myplan.dao.LearningPlanTypeDao;
-import org.kuali.student.myplan.dao.PlanItemDao;
-import org.kuali.student.myplan.dao.PlanItemTypeDao;
-import org.kuali.student.myplan.model.*;
+import org.kuali.student.myplan.academicplan.dao.LearningPlanDao;
+import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
+import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
+import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
+import org.kuali.student.myplan.academicplan.model.*;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -25,8 +19,6 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.dto.*;
-import org.kuali.student.r2.common.exceptions.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;

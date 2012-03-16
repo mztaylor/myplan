@@ -42,27 +42,27 @@
     <import resource="classpath:ks-myplan-test-dao-context.xml" />
 
     <!-- Pull in the DAOs -->
-    <bean id="learningPlanDao" class="org.kuali.student.myplan.dao.LearningPlanDao">
+    <bean id="learningPlanDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
-    <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.dao.LearningPlanRichTextDao">
+    <bean id="learningPlanRichTextDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanRichTextDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
-    <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.dao.LearningPlanTypeDao">
+    <bean id="learningPlanTypeDao" class="org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
-    <bean id="planItemDao" class="org.kuali.student.myplan.dao.PlanItemDao">
+    <bean id="planItemDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
-    <bean id="planItemTypeDao" class="org.kuali.student.myplan.dao.PlanItemTypeDao">
+    <bean id="planItemTypeDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
-    <bean id="planItemRichTextDao" class="org.kuali.student.myplan.dao.PlanItemRichTextDao">
+    <bean id="planItemRichTextDao" class="org.kuali.student.myplan.academicplan.dao.PlanItemRichTextDao">
         <property name="em" ref="lpEntityManager"/>
     </bean>
 
@@ -79,7 +79,7 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
@@ -87,7 +87,7 @@
     </bean>
 
     <!-- Academic Plan Service Decorators -->
-    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
+    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceValidationDecorator">
         <property name="nextDecorator" ref="academicPlanServicePersistence"/>
         <property name="validator" ref="validator"/>
         <property name="dataDictionaryService" ref="dataDictionaryServiceForAcademicPlanService"/>

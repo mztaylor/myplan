@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.service.mock;
+package org.kuali.student.myplan.academicplan.service.mock;
 
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;

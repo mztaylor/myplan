@@ -33,7 +33,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <bean id="kualiReadOnlyException" class="org.kuali.student.r2.common.exceptions.ReadOnlyException" />
 
     <!-- Academic Plan Service -->
-    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.service.AcademicPlanServiceImpl">
+    <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
@@ -42,7 +42,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </bean>
 
     <!-- Academic Plan Service Decorators -->
-    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.service.AcademicPlanServiceValidationDecorator">
+    <bean id="academicPlanServiceValidator" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceValidationDecorator">
         <property name="nextDecorator" ref="academicPlanServicePersistence" />
         <property name="validator" ref="validator"/>
         <property name="dataDictionaryService" ref="dataDictionaryServiceForAcademicPlanService"/>
