@@ -45,9 +45,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atpList = new HashSet<String>();
-            atpList.add("atp1");
-            plan.setPlanPeriods( atpList );
+            Set<String> atps = new HashSet<String>();
+            atps.add("kuali.uw.atp.autumn2011");
+            plan.setPlanPeriods( atps );
 
             plan.setId( "1" );
             list.add( plan );
@@ -82,10 +82,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atpList = new HashSet<String>();
-            AtpInfo atp = new AtpInfo();
-            atpList.add("atp1");
-            plan.setPlanPeriods( atpList );
+            Set<String> atps = new HashSet<String>();
+            atps.add("kuali.uw.atp.autumn2011");
+            plan.setPlanPeriods( atps );
 
             plan.setId( "1" );
             list.add( plan );
@@ -101,9 +100,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atpList = new HashSet<String>();
-            atpList.add("atp1");
-            plan.setPlanPeriods( atpList );
+            Set<String> atps = new HashSet<String>();
+            atps.add("kuali.uw.atp.spring2011");
+            plan.setPlanPeriods( atps );
 
             plan.setId( "1" );
             list.add( plan );
@@ -119,9 +118,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atpList = new HashSet<String>();
-            atpList.add( "atp1" );
-            plan.setPlanPeriods( atpList );
+            Set<String> atps = new HashSet<String>();
+            atps.add("kuali.uw.atp.winter2011");
+            plan.setPlanPeriods( atps );
 
             plan.setId( "1" );
             list.add( plan );
