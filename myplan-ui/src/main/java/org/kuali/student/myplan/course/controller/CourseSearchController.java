@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
-
+import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
@@ -82,6 +82,26 @@ public class CourseSearchController extends UifControllerBase {
     private transient CourseOfferingService courseOfferingService;
 
     private transient AcademicCalendarService academicCalendarService;
+
+    private transient Person person;
+
+    private transient PersonImpl personImpl;
+
+    public PersonImpl getPersonImpl() {
+        return personImpl;
+    }
+
+    public void setPersonImpl(PersonImpl personImpl) {
+        this.personImpl = personImpl;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     @Autowired
     private TermInfoComparator atpTypeComparator;
@@ -281,7 +301,7 @@ public class CourseSearchController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         try {
             logger.info("Start Of Method searchForCourses in CourseSearchController:"+System.currentTimeMillis());
-            List<SearchRequest> requests = searcher.queryToRequests(form);
+                List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
             logger.info("No of actual records pulled in:"+hits.size());
@@ -471,10 +491,18 @@ public class CourseSearchController extends UifControllerBase {
         this.academicPlanService = academicPlanService;
     }
 
+    public Person getUser() {
+        if (person == null) {
+            person = GlobalVariables.getUserSession().getPerson();
+        }
+        return person;
+    }
+
     private Set<String> getSavedCourseSet() throws Exception {
         logger.info("Start of method getSavedCourseSet of CourseSearchController:"+System.currentTimeMillis());
         AcademicPlanService academicPlanService = getAcademicPlanService();
-        Person user = GlobalVariables.getUserSession().getPerson();
+
+        Person user = getUser();
 
         ContextInfo context = new ContextInfo();
         String studentID = user.getPrincipalId();
