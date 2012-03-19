@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.audit.audit;
+package org.kuali.student.myplan.audit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
