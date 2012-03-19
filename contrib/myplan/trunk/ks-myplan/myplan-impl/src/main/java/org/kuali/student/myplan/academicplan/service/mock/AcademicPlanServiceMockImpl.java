@@ -45,7 +45,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atps = new HashSet<String>();
+            List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.autumn2011");
             plan.setPlanPeriods( atps );
 
@@ -63,7 +63,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atpList = new HashSet<String>();
+            List<String> atpList = new ArrayList<String>();
             String atp = "atp2";
             atpList.add( atp );
             plan.setPlanPeriods( atpList );
@@ -82,7 +82,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atps = new HashSet<String>();
+            List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.autumn2011");
             plan.setPlanPeriods( atps );
 
@@ -100,7 +100,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atps = new HashSet<String>();
+            List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.spring2011");
             plan.setPlanPeriods( atps );
 
@@ -118,7 +118,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             plan.setRefObjectId( cluID );
             String type = "";
             plan.setRefObjectType( type );
-            Set<String> atps = new HashSet<String>();
+            List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.winter2011");
             plan.setPlanPeriods( atps );
 

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -225,6 +226,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
         pie.setLearningPlanItemType(planItemTypeEntity);
 
+        //  Convert the List of plan periods to a Set.
+        pie.setPlanPeriods(new HashSet<String>(planItem.getPlanPeriods()));
+
         //  Set attributes.
         pie.setAttributes(new ArrayList<PlanItemAttributeEntity>());
         if (planItem.getAttributes() != null) {
@@ -328,12 +332,18 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         planItemEntity.setRefObjectTypeKey(planItem.getRefObjectType());
 
         //  Update the plan item type if it has changed.
-        if (!planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
+        if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
             PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(planItem.getTypeKey());
             if (planItemTypeEntity == null) {
                 throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
             }
             planItemEntity.setLearningPlanItemType(planItemTypeEntity);
+        }
+
+        //  Update plan periods.
+        if (planItem.getPlanPeriods() != null) {
+            //  Convert from List to Set.
+            planItemEntity.setPlanPeriods(new HashSet<String>(planItem.getPlanPeriods()));
         }
 
         //  Update attributes.

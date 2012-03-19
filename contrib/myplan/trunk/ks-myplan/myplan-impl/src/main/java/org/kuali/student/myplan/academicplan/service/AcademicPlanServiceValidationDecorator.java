@@ -48,22 +48,18 @@ public class AcademicPlanServiceValidationDecorator
     @Override
     public LearningPlanInfo getLearningPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        validateNullOrEmptyArgument("learningPlanId", learningPlanId);
         return getNextDecorator().getLearningPlan(learningPlanId, context);
     }
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         validateNullOrEmptyArgument("learningPlanId", learningPlanId);
          return getNextDecorator().getPlanItemsInPlan(learningPlanId, context);
     }
 
     @Override
     public List<LearningPlanInfo> getLearningPlansForStudentByType(String studentId, String planTypeKey, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        validateNullOrEmptyArgument("studentId", studentId);
-        validateNullOrEmptyArgument("planTypeKey", planTypeKey);
         return getNextDecorator().getLearningPlansForStudentByType(studentId, planTypeKey, context);
     }
 
@@ -189,7 +185,6 @@ public class AcademicPlanServiceValidationDecorator
     public LearningPlanInfo updateLearningPlan(String learningPlanId, LearningPlanInfo learningPlan, ContextInfo context)
             throws DataValidationErrorException, InvalidParameterException,
                 MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
-        validateNullOrEmptyArgument("learningPlanId", learningPlanId);
         fullValidation(learningPlan, context);
 		return getNextDecorator().updateLearningPlan(learningPlanId, learningPlan, context);
     }
@@ -198,7 +193,6 @@ public class AcademicPlanServiceValidationDecorator
     public PlanItemInfo updatePlanItem(String planItemId, PlanItemInfo planItem, ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
                     MissingParameterException, OperationFailedException, PermissionDeniedException {
-        validateNullOrEmptyArgument("planItemId", planItemId);
         fullValidation(planItem, context);
         return getNextDecorator().updatePlanItem(planItemId, planItem, context);
     }
@@ -207,7 +201,6 @@ public class AcademicPlanServiceValidationDecorator
     public StatusInfo deleteLearningPlan(String learningPlanId, ContextInfo context)
         throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException,
             PermissionDeniedException {
-        validateNullOrEmptyArgument("learningPlanId", learningPlanId);
         return getNextDecorator().deleteLearningPlan(learningPlanId, context);
     }
 
@@ -215,19 +208,6 @@ public class AcademicPlanServiceValidationDecorator
     public StatusInfo deletePlanItem(String planItemId, ContextInfo context)
         throws OperationFailedException, InvalidParameterException, MissingParameterException, DoesNotExistException,
             PermissionDeniedException {
-        validateNullOrEmptyArgument("planItemId", planItemId);
         return getNextDecorator().deletePlanItem(planItemId, context);
     }
-
-    private void validateNullOrEmptyArgument(String fieldName, String id)
-        throws MissingParameterException, InvalidParameterException {
-        if (id == null) {
-            throw new MissingParameterException(fieldName + " was Null");
-        }
-
-        if (StringUtils.isEmpty(id)) {
-            throw new MissingParameterException(fieldName + " was an empty string.");
-        }
-    }
-
 }

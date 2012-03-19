@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
@@ -156,6 +157,8 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         dto.setLearningPlanId(this.getLearningPlan().getId());
         dto.setRefObjectId(this.getRefObjectId());
         dto.setRefObjectType(this.getRefObjectTypeKey());
+        dto.setTypeKey(this.getLearningPlanItemType().getId());
+        dto.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
         if (this.getDescr() != null) {
             dto.setDescr(this.getDescr().toDto());
@@ -163,7 +166,8 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
         dto.setMeta(super.toDTO());
 
-        dto.setPlanPeriods(this.getPlanPeriods());
+        //  Convert the Set to a List.
+        dto.setPlanPeriods(new ArrayList<String>(this.getPlanPeriods()));
 
         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
         if (getAttributes() != null) {

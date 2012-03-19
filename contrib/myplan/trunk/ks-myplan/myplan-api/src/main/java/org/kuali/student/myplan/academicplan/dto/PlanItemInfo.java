@@ -39,7 +39,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     private String learningPlanId;
 
     @XmlElement
-    private Set<String> planPeriods;
+    private List<String> planPeriods;
 
     @XmlAnyElement
     private List<Element> _futureElements;
@@ -51,7 +51,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.refObjectId = null;
         this.refObjectType = null;
         this.learningPlanId = null;
-        this.planPeriods = new HashSet<String>();
+        this.planPeriods = new ArrayList<String>();
         this._futureElements = null;
     }
 
@@ -115,11 +115,11 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.learningPlanId = learningPlanId;
     }
 
-    public Set<String> getPlanPeriods() {
+    public List<String> getPlanPeriods() {
         return planPeriods;
     }
 
-    public void setPlanPeriods(Set<String> planPeriods) {
+    public void setPlanPeriods(List<String> planPeriods) {
         this.planPeriods = planPeriods;
     }
 }
