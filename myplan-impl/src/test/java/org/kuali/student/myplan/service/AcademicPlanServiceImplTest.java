@@ -349,50 +349,7 @@ public class AcademicPlanServiceImplTest {
         assertTrue(updatedPlanItem.getPlanPeriods().contains("kuali.uw.atp.autumn2011"));
     }
 
-    ////// @Test
-    public void addWishListWithPlanPeriod()
-            throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
-       String planId = "lp1";
-
-        // Create a new plan item.
-        PlanItemInfo planItem = new PlanItemInfo();
-
-        RichTextInfo desc = new RichTextInfo();
-        String formattedDesc = "<span>My Comment</span>";
-        String planDesc = "My Comment";
-        desc.setFormatted(formattedDesc);
-        desc.setPlain(planDesc);
-        planItem.setDescr(desc);
-
-        planItem.setLearningPlanId(planId);
-        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
-        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
-
-        planItem.setRefObjectId(courseId);
-        planItem.setRefObjectType(courseType);
-
-         //  Wishlist items should not have ATP info associated with them, so this should throw a validation exception.
-        List<String> planPeriods = new ArrayList<String>();
-        planPeriods.add("kuali.uw.atp.winter2011");
-        planPeriods.add("kuali.uw.atp.autumn2011");
-        planItem.setPlanPeriods(planPeriods);
-
-        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
-
-        PlanItem newPlanItem = null;
-        try {
-            newPlanItem = academicPlanService.createPlanItem(planItem, context);
-        } catch (Exception e) {
-            //  TODO: Verify the correct exception was thrown.
-            return;
-        }
-
-        fail("A validation error should have been thrown.");
-
-    }
-
-    ////// @Test
+    @Test
     public void addPlannedCourseWithoutPlanPeriod()
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 

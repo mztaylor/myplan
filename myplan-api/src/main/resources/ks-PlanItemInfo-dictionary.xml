@@ -14,9 +14,9 @@
  limitations under the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- ********************************************************
 		                       NOTE
@@ -41,7 +41,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- PlanItemInfo-->
 	<bean id="PlanItemInfo" parent="PlanItemInfo-parent"/>
 	<bean id="PlanItemInfo-parent" abstract="true" parent="PlanItemInfo-generated">
-	<!-- insert any overrides to the generated object definitions here -->
+
 	</bean>
 
 	<bean id="PlanItemInfo.refObjectId" parent="PlanItemInfo.refObjectId-parent"/>
@@ -61,7 +61,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="PlanItemInfo.planPeriods" parent="PlanItemInfo.planPeriods-parent"/>
 	<bean id="PlanItemInfo.planPeriods-parent" abstract="true" parent="PlanItemInfo.planPeriods-generated">
-	<!-- insert any overrides to the generated attribute definitions here -->
+        <!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
 	<bean id="PlanItemInfo.id" parent="PlanItemInfo.id-parent"/>
@@ -71,7 +71,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
 	<bean id="PlanItemInfo.typeKey" parent="PlanItemInfo.typeKey-parent"/>
 	<bean id="PlanItemInfo.typeKey-parent" abstract="true" parent="PlanItemInfo.typeKey-generated">
-	<!-- insert any overrides to the generated attribute definitions here -->
+    <!-- Overrides here -->
 	</bean>
 
 	<bean id="PlanItemInfo.stateKey" parent="PlanItemInfo.stateKey-parent"/>
