@@ -19,6 +19,7 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.dto.*;
+import org.kuali.student.r2.common.infc.ValidationResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
@@ -454,7 +455,22 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                        @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
                                                        @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return new ArrayList<ValidationResultInfo>();
+
+        List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
+
+        //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
+        //  Make sure a plan period exists if type is planned course.
+        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
+                ValidationResultInfo vri = new ValidationResultInfo();
+                vri.setError(String.format("Plan Item Type was [%s], but no plan periods were defined.",
+                        AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED));
+                vri.setElement("typeKey");
+                vri.setLevel(ValidationResult.ErrorLevel.ERROR);
+                validationResultInfos.add(vri);
+            }
+        }
+        return validationResultInfos;
     }
 
     @Override

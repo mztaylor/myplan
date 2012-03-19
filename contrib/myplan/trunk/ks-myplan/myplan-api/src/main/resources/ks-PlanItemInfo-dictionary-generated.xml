@@ -133,18 +133,18 @@ Containing learning plan
 		<property name="shortLabel" value="Plan Periods"/>
 		<property name="summary">
 			<value>
-Time Periods for which the item is planned for
+Time Periods for which the item is planned.
 			</value>
 		</property>
 		<property name="label" value="Time Periods"/>
 		<property name="elementLabel" value="Plan Period"/>
 		<property name="description">
 			<value>
-Time Periods for which the item is planned for
+Academic Time Period keys for which the item is planned.
 			</value>
 		</property>
 		<property name="minOccurs" value="0"/>
-		<property name="dataObjectClass" value="org.kuali.student.core.atp.dto.AtpInfo"/>
+		<property name="dataObjectClass" value="java.lang.String"/>
 	</bean>
 
 	<bean id="PlanItemInfo.id-generated" abstract="true" parent="BaseKuali.id">
