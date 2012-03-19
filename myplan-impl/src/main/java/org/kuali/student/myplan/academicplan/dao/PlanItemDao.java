@@ -20,7 +20,7 @@ public class PlanItemDao extends GenericEntityDao<PlanItemEntity> {
      * TODO: Refactor one of these as a named query or a regular query.
      */
     public List<PlanItemEntity> getLearningPlanItems(String learningPlanId) {
-        return em.createQuery("from PlanItemEntity pie where pie.learningPlan.id =:learningPlanId")
+        return em.createQuery("select pie from PlanItemEntity pie where pie.learningPlan.id =:learningPlanId")
             .setParameter("learningPlanId", learningPlanId).getResultList();
     }
 

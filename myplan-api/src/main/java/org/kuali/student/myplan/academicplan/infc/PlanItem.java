@@ -37,7 +37,7 @@ public interface PlanItem extends HasId, TypeStateEntity {
      * Time Periods for which the item is planned for
      * @name  Time Periods
      */
-    public Set<String> getPlanPeriods();
+    public List<String> getPlanPeriods();
 
     /**
      * Containing learning plan

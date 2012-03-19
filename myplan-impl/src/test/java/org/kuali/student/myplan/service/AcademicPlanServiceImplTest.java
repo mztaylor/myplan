@@ -3,6 +3,7 @@ package org.kuali.student.myplan.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -20,7 +21,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -155,7 +159,7 @@ public class AcademicPlanServiceImplTest {
     }
 
     @Test
-    public void addAndGetPlanItem() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+    public void addAndGetPlanItemWishlist() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
         String planId = "lp1";
 
         // Create a new plan item.
@@ -176,6 +180,8 @@ public class AcademicPlanServiceImplTest {
         planItem.setRefObjectId(courseId);
         planItem.setRefObjectType(courseType);
 
+        //  Type wishlist has no ATP associated with it so leave plan periods null.
+
         planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
         PlanItem newPlanItem = null;
@@ -192,9 +198,67 @@ public class AcademicPlanServiceImplTest {
         assertEquals(courseId, newPlanItem.getRefObjectId());
         assertEquals(courseType, newPlanItem.getRefObjectType());
 
-
         // Test getPlanItem
+        PlanItem fetchedPlanItem =  academicPlanService.getPlanItem(newPlanItem.getId(), context);
 
+        assertNotNull(fetchedPlanItem);
+        assertNotNull(fetchedPlanItem.getId());
+        assertEquals(planId, fetchedPlanItem.getLearningPlanId());
+        assertEquals(formattedDesc, fetchedPlanItem.getDescr().getFormatted());
+        assertEquals(planDesc, fetchedPlanItem.getDescr().getPlain());
+        assertEquals(courseId, fetchedPlanItem.getRefObjectId());
+        assertEquals(courseType, fetchedPlanItem.getRefObjectType());
+    }
+
+    @Test
+    public void addAndGetPlanItemPlannedCourse() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+        String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+
+        //  Set some ATP info since this is a planned course.
+        List<String> planPeriods = new ArrayList<String>();
+        planPeriods.add("kuali.uw.atp.winter2011");
+        planPeriods.add("kuali.uw.atp.autumn2011");
+        planItem.setPlanPeriods(planPeriods);
+
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        //   Verify the object returned by createPlanItem.
+        PlanItem newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItem, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+        assertNotNull(newPlanItem);
+        assertNotNull(newPlanItem.getId());
+        assertEquals(planId, newPlanItem.getLearningPlanId());
+        assertEquals(formattedDesc, newPlanItem.getDescr().getFormatted());
+        assertEquals(planDesc, newPlanItem.getDescr().getPlain());
+        assertEquals(courseId, newPlanItem.getRefObjectId());
+        assertEquals(courseType, newPlanItem.getRefObjectType());
+
+        assertEquals(2, newPlanItem.getPlanPeriods().size());
+
+        //  Verify the object returned by getPlanItem().
         PlanItem fetchedPlanItem =  academicPlanService.getPlanItem(newPlanItem.getId(), context);
 
         assertNotNull(fetchedPlanItem);
@@ -205,6 +269,168 @@ public class AcademicPlanServiceImplTest {
         assertEquals(courseId, fetchedPlanItem.getRefObjectId());
         assertEquals(courseType, fetchedPlanItem.getRefObjectType());
 
+        assertEquals(2, fetchedPlanItem.getPlanPeriods().size());
+    }
+
+    @Test
+    public void updatePlanItemPlannedCoursePlanPeriods()
+            throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+
+        String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItemInfo = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItemInfo.setDescr(desc);
+
+        planItemInfo.setLearningPlanId(planId);
+
+        //  Set some ATP info since this is a planned course.
+        List<String> planPeriods = new ArrayList<String>();
+        planPeriods.add("kuali.uw.atp.winter2011");
+        planPeriods.add("kuali.uw.atp.autumn2011");
+        planItemInfo.setPlanPeriods(planPeriods);
+
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItemInfo.setRefObjectId(courseId);
+        planItemInfo.setRefObjectType(courseType);
+
+        planItemInfo.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        planItemInfo.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        //  Create the plan item
+        PlanItemInfo newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItemInfo, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+        String planItemId = newPlanItem.getId();
+
+        //  Verify the object returned by getPlanItem().
+        PlanItemInfo fetchedPlanItem =  academicPlanService.getPlanItem(planItemId, context);
+
+        assertNotNull(fetchedPlanItem);
+        assertEquals(planItemId, fetchedPlanItem.getId());
+        assertEquals(planId, fetchedPlanItem.getLearningPlanId());
+        assertEquals(courseId, fetchedPlanItem.getRefObjectId());
+        assertEquals(courseType, fetchedPlanItem.getRefObjectType());
+        assertEquals(planItemInfo.getTypeKey(), fetchedPlanItem.getTypeKey());
+        assertEquals(planItemInfo.getStateKey(), fetchedPlanItem.getStateKey());
+        assertEquals(2, fetchedPlanItem.getPlanPeriods().size());
+
+        //  Update and save.
+        List<String> periods = fetchedPlanItem.getPlanPeriods();
+        periods.remove("kuali.uw.atp.winter2011");
+        fetchedPlanItem.setPlanPeriods(periods);
+
+        PlanItemInfo updatedPlanItem = null;
+        try {
+            updatedPlanItem = academicPlanService.updatePlanItem(planItemId, fetchedPlanItem, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+
+        assertNotNull(updatedPlanItem);
+        assertEquals(planItemId, updatedPlanItem.getId());
+        assertEquals(planId, updatedPlanItem.getLearningPlanId());
+        assertEquals(formattedDesc, updatedPlanItem.getDescr().getFormatted());
+        assertEquals(planDesc, updatedPlanItem.getDescr().getPlain());
+        assertEquals(courseId, updatedPlanItem.getRefObjectId());
+        assertEquals(courseType, updatedPlanItem.getRefObjectType());
+        assertEquals(1, updatedPlanItem.getPlanPeriods().size());
+        assertTrue(updatedPlanItem.getPlanPeriods().contains("kuali.uw.atp.autumn2011"));
+    }
+
+    ////// @Test
+    public void addWishListWithPlanPeriod()
+            throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+       String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+
+         //  Wishlist items should not have ATP info associated with them, so this should throw a validation exception.
+        List<String> planPeriods = new ArrayList<String>();
+        planPeriods.add("kuali.uw.atp.winter2011");
+        planPeriods.add("kuali.uw.atp.autumn2011");
+        planItem.setPlanPeriods(planPeriods);
+
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        PlanItem newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItem, context);
+        } catch (Exception e) {
+            //  TODO: Verify the correct exception was thrown.
+            return;
+        }
+
+        fail("A validation error should have been thrown.");
+
+    }
+
+    ////// @Test
+    public void addPlannedCourseWithoutPlanPeriod()
+            throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+
+        String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItemInfo = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItemInfo.setDescr(desc);
+
+        planItemInfo.setLearningPlanId(planId);
+
+        //  Don't set any plan periods. This should cause a validation error.
+
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItemInfo.setRefObjectId(courseId);
+        planItemInfo.setRefObjectType(courseType);
+
+        planItemInfo.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        planItemInfo.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        //  Create the plan item
+        PlanItemInfo newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItemInfo, context);
+        } catch (Exception e) {
+            //  TODO: Verify the correct exception was thrown.
+            return;
+        }
+
+        fail("A validation exception should have been thrown.");
     }
 
     @Test
