@@ -500,12 +500,36 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 for(JobQueueCourse taken : takenList )
                 {
                     CourseTaken temp = new CourseTaken();
-                    String course = taken.getCourse();
-//                    System.out.println( "course taken: " + course );
-//                    String dept = course.substring(1, 7).trim();
-                        String dept = "Dept";
-//                    String number = course.substring(7, 10);
-                        String number = "No.";
+                    String dept = "";
+                    String number = "";
+
+                    String course = taken.getCourse().trim();
+                    if( "FL-HS".equals( course ))
+                    {
+                        dept = course;
+                    }
+                    else if( "NATSPEAK".equals( course ))
+                    {
+                        dept = course;
+                    }
+                    else
+                    {
+                        course = course.substring( 1 );
+                        if( course.length() > 6 )
+                        {
+                            dept = course.substring( 0, 6 ).trim();
+                            number = course.substring( 6 ).trim();
+                            if( number.length() > 3 )
+                            {
+                                number = number.substring( 0, 3 ).trim();
+                            }
+
+                        }
+                        else
+                        {
+                            dept = course.trim();
+                        }
+                    }
                     temp.setDept( dept );
                     temp.setNumber( number );
                     temp.setGrade( taken.getGpa().toString() );
