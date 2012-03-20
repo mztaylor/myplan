@@ -79,11 +79,20 @@
         <!--</property>-->
     <!--</bean>-->
 
+    <bean id="courseServiceMock" class="org.kuali.student.myplan.service.mock.CourseServiceMockImpl">
+        <property name="validCourses">
+            <set>
+                <value>02711400-c66d-4ecb-aca5-565118f167cf</value>
+            </set>
+        </property>
+    </bean>
+
     <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
         <property name="planItemTypeDao" ref="planItemTypeDao"/>
+        <property name="courseService" ref="courseServiceMock"/>
     </bean>
 
     <!-- Academic Plan Service Decorators -->
