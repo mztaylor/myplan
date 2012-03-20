@@ -82,7 +82,7 @@ public class DegreeAuditController extends UifControllerBase {
             Date startDate=new Date();
             Date endDate=new Date();
             List<AuditReportInfo> auditReportInfos=  degreeAuditService.getAuditsForStudentInDateRange(studentID,startDate,endDate,contextInfo);
-            String auditId = auditReportInfos.get(auditReportInfos.size()-1).getAuditId();
+            String auditId = auditReportInfos.get(0).getAuditId();
 
 
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
