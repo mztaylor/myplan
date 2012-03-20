@@ -165,7 +165,22 @@
         </property>
     </bean>
 
+    <bean id="audit_section" parent="Uif-VerticalBoxSubSection" p:title="AUDIT (TBD)" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-200</value>
+                <value>myplan-section</value>
+            </list>
+        </property>
 
+        <property name="items">
+             <list>
+
+                <ref bean="run_degree_audits"/>
+
+            </list>
+        </property>
+    </bean>
     <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
@@ -195,7 +210,7 @@
                   value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});"/>
     </bean>
 
-     <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports" p:errorsField.render="false">
+    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
@@ -207,7 +222,65 @@
         </property>
 
         <property name="onDocumentReadyScript"
-            value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});"/>
+                  value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});"/>
+    </bean>
+    <bean id="text1">
+        <property name="instructionalText"
+                  value="Select the campus and enter degree program to run audit"/>
+        </bean>
+
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-saved-courses-summary</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Five"/>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="campus_params"/>
+                <ref bean="program_params"/>
+                <ref bean="degree_audit_run"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="program_params" parent="Uif-InputField" p:propertyName="programParam"
+          p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+        <property name="control">
+            <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="optionsFinder">
+            <bean class="org.kuali.student.myplan.course.util.AuditRunProgramParam"/>
+        </property>
+    </bean>
+    <bean id="campus_params" parent="Uif-HorizontalFieldGroup">
+        <property name="group.errorsField.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="campusParam" p:width="auto" p:defaultValue="0">
+                    <property name="control">
+                        <bean parent="Uif-HorizontalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit"
+          p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
+       <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-button</value>
+                <value>myplan-button-blue</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
