@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.academicplan.service;
 
+import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -10,6 +11,7 @@ import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
 import org.kuali.student.myplan.academicplan.model.*;
+import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -100,7 +102,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         PlanItemEntity planItem = planItemDao.find(planItemId);
         if (null == planItem) {
-            throw new DoesNotExistException("Plan item with Id " + planItemId + " does not exist");
+            throw new DoesNotExistException(String.format("Plan item with Id [%s] does not exist", planItemId));
         }
 
         return planItem.toDto();
@@ -203,17 +205,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
-        /*
-         *  Validate that the course exists.
-         * TODO: Move this validation to the data dictionary.
-         */
-        //try {
-        //    this.courseService.getCourse(planItem.getRefObjectId());
-        //} catch (Exception e) {
-        //    System.err.println();
-        //}
-
-
         PlanItemEntity pie = new PlanItemEntity();
         String planItemId = UUIDHelper.genStringUUID();
         pie.setId(planItemId);
@@ -252,26 +243,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
         }
         pie.setLearningPlan(plan);
-
-        /*
-         * Make sure a saved courses item with this course id doesn't already exist.
-         * TODO: Move this validation to the data dictionary.
-         */
-        if (planItem.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-            List<PlanItemEntity> savedCourseListItems =
-                    this.planItemDao.getLearningPlanItems(plan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-
-            for (PlanItemEntity p : savedCourseListItems) {
-                if (p.getRefObjectId().equals(planItem.getRefObjectId())) {
-                    throw new AlreadyExistsException("This course id already exists in the user's saved course list.");
-                }
-            }
-        }
-
-        PlanItemEntity existing = planItemDao.find(planItemId);
-        if (existing != null) {
-            throw new AlreadyExistsException();
-        }
 
         planItemDao.persist(pie);
 
@@ -458,16 +429,45 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
 
+        /*
+         * Make sure a saved courses item with this course id doesn't already exist.
+         * TODO: Move this validation to the data dictionary.
+         */
+        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            List<PlanItemEntity> savedCourseListItems =
+                    this.planItemDao.getLearningPlanItems(planItemInfo.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+
+            for (PlanItemEntity p : savedCourseListItems) {
+                if (p.getRefObjectId().equals(planItemInfo.getRefObjectId())) {
+                    validationResultInfos.add(makeValidationResultInfo(
+                        String.format("An item with this course id already exists in the user's saved courses list.", planItemInfo.getRefObjectId()),
+                        "refObjectId", ValidationResult.ErrorLevel.ERROR ));
+                }
+            }
+        }
+
+        /*
+         *  Validate that the course exists.
+         * TODO: Move this validation to the data dictionary.
+         */
+        try {
+            getCourseService().getCourse(planItemInfo.getRefObjectId());
+        } catch (org.kuali.student.common.exceptions.DoesNotExistException e) {
+            validationResultInfos.add(makeValidationResultInfo(
+                String.format("Could not find course with ID [%s].", planItemInfo.getRefObjectId()),
+                "refObjectId", ValidationResult.ErrorLevel.ERROR));
+        } catch (Exception e) {
+            validationResultInfos.add(makeValidationResultInfo(e.getLocalizedMessage(),
+                "refObjectId", ValidationResult.ErrorLevel.ERROR));
+        }
+
         //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
         //  Make sure a plan period exists if type is planned course.
         if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
             if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
-                ValidationResultInfo vri = new ValidationResultInfo();
-                vri.setError(String.format("Plan Item Type was [%s], but no plan periods were defined.",
-                        AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED));
-                vri.setElement("typeKey");
-                vri.setLevel(ValidationResult.ErrorLevel.ERROR);
-                validationResultInfos.add(vri);
+                validationResultInfos.add(makeValidationResultInfo(
+                    String.format("Plan Item Type was [%s], but no plan periods were defined.", AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED),
+                    "typeKey", ValidationResult.ErrorLevel.ERROR));
             }
         }
         return validationResultInfos;
@@ -479,5 +479,13 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return new ArrayList<ValidationResultInfo>();
+    }
+
+    private ValidationResultInfo makeValidationResultInfo(String errorMessage, String element, ValidationResult.ErrorLevel errorLevel) {
+        ValidationResultInfo vri = new ValidationResultInfo();
+        vri.setError(errorMessage);
+        vri.setElement(element);
+        vri.setLevel(errorLevel);
+        return vri;
     }
 }
