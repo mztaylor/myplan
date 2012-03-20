@@ -16,6 +16,7 @@
 
   <!-- This context requires that a spring Transaction Manager named 'transactionManager' be defined -->
   <import resource="classpath:org/kuali/rice/krad/uif/UifControlDefinitions.xml" />
+  <import resource="classpath:ksb/ks-lu-context.xml"/>
 
   <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
 
