@@ -4,6 +4,7 @@ import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -51,7 +52,7 @@ import org.kuali.student.common.search.dto.*;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceImpl implements DegreeAuditService {
-
+    private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
     private transient LuService luService;
     private transient CourseOfferingService courseOfferingService;
     private JobQueueRunLoader jobQueueRunLoader;
@@ -126,23 +127,23 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             AuditRequestSvcSoap port = ss.getAuditRequestSvcSoap();
 
 
-            System.out.println("Invoking mpRequestAudit...");
-            studentId = "0";
+           logger.info("Invoking mpRequestAudit...");
+            /*studentId = "000083856";*/
             int tempId = Integer.parseInt( studentId );
-            programId = "0ENGL  0011";
+            /*programId = "0ENGL  0011";*/
             int lineNo = 0;
             int systemKey = 190981;
             String origin = "M";
             MPAuditResponse response = port.mpRequestAudit(tempId, programId, lineNo, systemKey, origin);
-            System.out.println("error code: " + response.getErrorCode());
-            System.out.println("error msg: " + response.getErrorMsg());
-            System.out.println("audit id: " + response.getAuditText());
+            logger.info("error code: " + response.getErrorCode());
+            logger.info("error msg: " + response.getErrorMsg());
+            logger.info("audit id: " + response.getAuditText());
 
             AuditReportInfo auditReportInfo = new AuditReportInfo();
             String auditID = response.getAuditText().trim();
-            if( auditID.length() == 0 )
+            if( auditID.length() == 0)
             {
-                auditID = null;
+                auditID=null;
             }
             auditReportInfo.setAuditId( auditID );
             return auditReportInfo;
@@ -190,6 +191,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        try{
+        while( true )
+        {
+            StatusInfo info = this.getAuditRunStatus(auditId, context);
+            logger.info( info.getMessage() );
+            if( info.getIsSuccess() ) break;
+        }
+        }
+        catch (Exception e){
+           logger.error(e);
+        }
         if(AUDIT_TYPE_KEY_DEFAULT.equals( auditTypeKey )) {
             return getDARSReport( auditId );
         }
