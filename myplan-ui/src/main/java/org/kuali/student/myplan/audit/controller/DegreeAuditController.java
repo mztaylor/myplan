@@ -99,6 +99,43 @@ public class DegreeAuditController extends UifControllerBase {
 
         return getUIFModelAndView(form);
     }
+
+    @RequestMapping(params = "methodToCall=runAudit")
+    public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
+                              HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Person user = GlobalVariables.getUserSession().getPerson();
+            String studentID = user.getPrincipalId();
+            DegreeAuditService degreeAuditService = getDegreeAuditService();
+            String studentId = "0";
+            String programId = form.getProgramParam();
+            String auditTypeKey = "blah";
+            ContextInfo context = new ContextInfo();
+
+            AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
+            String auditID = report.getAuditId();
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, context);
+            InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+            StringWriter sw = new StringWriter();
+
+            int c = 0;
+            while ((c = in.read()) != -1) {
+                sw.append( (char) c );
+            }
+
+            String html = sw.toString();
+            form.setAuditHtml(html);
+
+        }
+        catch (Exception e){
+            logger.error("Could not complete audit run");
+        }
+
+        return getUIFModelAndView(form);
+    }
+
+
+
 }
 
 
