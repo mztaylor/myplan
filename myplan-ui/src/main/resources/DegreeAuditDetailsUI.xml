@@ -70,6 +70,7 @@
                     <property name="items">
                         <list>
                             <ref bean="audit_report_section"/>
+                            <ref bean="audit_section"/>
                             <ref bean="myplan_section"/>
                         </list>
                     </property>

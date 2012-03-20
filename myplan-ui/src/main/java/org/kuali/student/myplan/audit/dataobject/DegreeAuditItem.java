@@ -12,6 +12,24 @@ public class DegreeAuditItem implements Comparable {
 
     private String programTitle;
     private String programType;
+    private String programParam;
+    private String campusParam;
+
+    public String getProgramParam() {
+        return programParam;
+    }
+
+    public void setProgramParam(String programParam) {
+        this.programParam = programParam;
+    }
+
+    public String getCampusParam() {
+        return campusParam;
+    }
+
+    public void setCampusParam(String campusParam) {
+        this.campusParam = campusParam;
+    }
 
     public String getProgramType() {
         return programType;
