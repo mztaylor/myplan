@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})
@@ -533,7 +534,10 @@ public class CourseSearchStrategyTest {
             assertEquals(4,params.size());
         param=params.get(0);
             assertEquals("divisions",param.getKey());
-            assertEquals("THIST ,T HIST",param.getValue());
+        String str=(String)param.getValue();
+        boolean t1=str.contains("THIST ");
+        boolean t2=str.contains("T HIST");
+        assertTrue(t1&&t2);
         param=params.get(1);
             assertEquals("campus1",param.getKey());
             assertEquals("0",param.getValue());
