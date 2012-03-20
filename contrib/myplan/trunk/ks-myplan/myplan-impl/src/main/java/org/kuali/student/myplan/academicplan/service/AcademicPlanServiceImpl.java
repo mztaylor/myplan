@@ -2,7 +2,9 @@ package org.kuali.student.myplan.academicplan.service;
 
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
+
 import org.kuali.student.lum.course.service.CourseService;
+
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
@@ -11,6 +13,7 @@ import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
 import org.kuali.student.myplan.academicplan.model.*;
+
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
@@ -434,13 +437,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
          * TODO: Move this validation to the data dictionary.
          */
         if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+
             List<PlanItemEntity> savedCourseListItems =
-                    this.planItemDao.getLearningPlanItems(planItemInfo.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+                    this.planItemDao.getLearningPlanItems(planItemInfo.getLearningPlanId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
 
             for (PlanItemEntity p : savedCourseListItems) {
                 if (p.getRefObjectId().equals(planItemInfo.getRefObjectId())) {
                     validationResultInfos.add(makeValidationResultInfo(
-                        String.format("An item with this course id already exists in the user's saved courses list.", planItemInfo.getRefObjectId()),
+                        String.format("An item with this course id [%s] already exists in the user's saved courses list.", planItemInfo.getRefObjectId()),
                         "refObjectId", ValidationResult.ErrorLevel.ERROR ));
                 }
             }

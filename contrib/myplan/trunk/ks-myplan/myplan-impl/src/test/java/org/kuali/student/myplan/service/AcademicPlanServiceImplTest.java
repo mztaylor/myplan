@@ -3,7 +3,9 @@ package org.kuali.student.myplan.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
+import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -15,16 +17,18 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -486,7 +490,8 @@ public class AcademicPlanServiceImplTest {
         try {
             academicPlanService.createPlanItem(planItem, context);
         } catch (DataValidationErrorException dvee) {
-            assertEquals(dvee.getValidationResults().size(), 1);
+            assertEquals(2, dvee.getValidationResults().size());
+            List<ValidationResultInfo> results = dvee.getValidationResults();
             ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
             assertEquals("refObjectId", resultInfo.getElement());
             assertEquals("error.required", resultInfo.getMessage());
@@ -497,7 +502,7 @@ public class AcademicPlanServiceImplTest {
     }
 
     @Test
-    public void addPlanItemToSavedCoursesListWithDuplicateCourseId() {
+    public void addPlanItemToSavedCoursesListWithDuplicateCourseId() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
         String planId = "lp1";
 
         // Create a new plan item.
@@ -527,22 +532,25 @@ public class AcademicPlanServiceImplTest {
             fail(e.getLocalizedMessage());
         }
 
-        try {
-            List<PlanItemInfo> x = academicPlanService.getPlanItemsInPlan(planId, context);
-        } catch (DoesNotExistException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (InvalidParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OperationFailedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        //  Make sure the item was saved.
+        List<PlanItemInfo> savedCourses = academicPlanService.getPlanItemsInPlan(planId, context);
+        boolean exists = false;
+        for (PlanItemInfo pii : savedCourses) {
+            if (pii.getRefObjectId().equals(courseId)) {
+                exists = true;
+                break;
+            }
+        }
+
+        if ( ! exists) {
+            fail("Unable to retrieve plan item.");
         }
 
         try {
-            newPlanItem = academicPlanService.createPlanItem(planItem, context);
-        } catch (AlreadyExistsException e) {
-            //  This is what should should happen.
+            //  Make sure the id of the plan item isn't a factor.
+            planItem.setId(null);
+            academicPlanService.createPlanItem(planItem, context);
+        } catch (DataValidationErrorException e) {
             return;
         } catch (Exception e) {
             //  Do nothing.

@@ -45,6 +45,7 @@
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
         <property name="planItemTypeDao" ref="planItemTypeDao"/>
+        <property name="courseService" ref="courseService" />
     </bean>
 
 
