@@ -32,7 +32,7 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
 
 
         //  TODO: Determine where this info lives.
-        studentId = "000083856";
+        studentId = "100190981";
 
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
