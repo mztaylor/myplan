@@ -21,10 +21,12 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.List;
 
 
@@ -50,8 +53,8 @@ public class DegreeAuditController extends UifControllerBase {
     private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
     private transient DegreeAuditService degreeAuditService;
-
-    public DegreeAuditService getDegreeAuditService() {
+    
+      public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
             degreeAuditService = (DegreeAuditService)
                     GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
@@ -71,12 +74,15 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
             String studentID = user.getPrincipalId();
-            studentID = "000083856";
+            studentID = "100190981";
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
 
             ContextInfo contextInfo = new ContextInfo();
-            String auditId = "2012031415260132";
+            Date startDate=new Date();
+            Date endDate=new Date();
+            List<AuditReportInfo> auditReportInfos=  degreeAuditService.getAuditsForStudentInDateRange(studentID,startDate,endDate,contextInfo);
+            String auditId = auditReportInfos.get(auditReportInfos.size()-1).getAuditId();
 
 
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
@@ -112,7 +118,7 @@ public class DegreeAuditController extends UifControllerBase {
             String auditTypeKey = "blah";
             ContextInfo context = new ContextInfo();
 
-            AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
+            AuditReportInfo report = degreeAuditService.runAudit(studentId, programId, auditTypeKey, context);
             String auditID = report.getAuditId();
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, context);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
