@@ -1,10 +1,12 @@
 package org.kuali.student.myplan.academicplan.service;
 
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
 
 import org.kuali.student.lum.course.service.CourseService;
 
+import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
@@ -28,6 +30,7 @@ import org.kuali.student.r2.common.infc.ValidationResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,11 +47,19 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private PlanItemTypeDao planItemTypeDao;
     private CourseService courseService;
 
+    /**
+     * This method provides a way to manually provide a CourseService implementation during testing.
+     * @param courseService
+     */
     public void setCourseService(CourseService courseService) {
         this.courseService = courseService;
     }
 
-    public CourseService getCourseService() {
+    protected synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
         return this.courseService;
     }
 
