@@ -15,6 +15,7 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
@@ -37,6 +38,8 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     //  These keep the spring bean definitions consistent between mock and real impls.
     public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {}
     public void setJobQueueRunLoader(JobQueueRunLoader loader) {}
+    public void setJobQueueListDao(JobQueueListDao jobQueueListDao) {}
+
 
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -128,5 +131,4 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     public String runEmptyAuditAsync(@WebParam(name = "programId") String programId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
-
 }
