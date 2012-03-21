@@ -16,7 +16,6 @@
 
   <!-- This context requires that a spring Transaction Manager named 'transactionManager' be defined -->
   <import resource="classpath:org/kuali/rice/krad/uif/UifControlDefinitions.xml" />
-  <import resource="classpath:ksb/ks-lu-context.xml"/>
 
   <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
 
@@ -46,9 +45,7 @@
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
         <property name="planItemTypeDao" ref="planItemTypeDao"/>
-        <property name="courseService" ref="courseService" />
     </bean>
-
 
   <bean id="ks.exp.academicPlanService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
     <property name="serviceDefinition">
