@@ -234,7 +234,7 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 				};
 
                 if (!methodToCall) {
-                    methodToCall = "removeSavedCourse";
+                    methodToCall = "removeItem";
                 }
 
 				myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);

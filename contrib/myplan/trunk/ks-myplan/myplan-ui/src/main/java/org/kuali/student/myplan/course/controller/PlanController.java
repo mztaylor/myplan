@@ -44,9 +44,9 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "/plan")
-public class PlanActionsController extends UifControllerBase {
+public class PlanController extends UifControllerBase {
 
-    private final Logger logger = Logger.getLogger(PlanActionsController.class);
+    private final Logger logger = Logger.getLogger(PlanController.class);
 
     private transient AcademicPlanService academicPlanService;
 
@@ -172,7 +172,7 @@ public class PlanActionsController extends UifControllerBase {
         return newPlan;
     }
 
-    @RequestMapping(params = "methodToCall=removeSavedCourse")
+    @RequestMapping(params = "methodToCall=removeItem")
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanActionsForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 

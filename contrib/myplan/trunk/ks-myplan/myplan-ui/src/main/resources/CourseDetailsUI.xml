@@ -779,7 +779,7 @@
                                             </property>
                                         </bean>
                                         <bean p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
