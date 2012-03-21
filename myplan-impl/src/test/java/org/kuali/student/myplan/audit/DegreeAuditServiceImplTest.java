@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.audit;
 
 import org.junit.Test;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -12,6 +13,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:degree-audit-test-context.xml"})
@@ -29,6 +32,14 @@ public class DegreeAuditServiceImplTest {
         this.degreeAuditService = degreeAuditService;
     }
 
+    @Test
+    public void intellijSucks() {
+        String courseCd = "PSYCH 2XX01   ";
+        String[] splitStr = courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+        for( String ugh : splitStr ) {
+            System.out.println( ugh );
+        }
+    }
     @Test
     public void requestDegreeAudit() {
         try
@@ -61,6 +72,29 @@ public class DegreeAuditServiceImplTest {
         {
             System.out.println("ugh");
 
+        }
+    }
+
+    @Test
+    public void runRecentAuditList() {
+        try
+        {
+        String studentId = "100190981";
+        Date startDate = new Date();
+        Date endDate = new Date();
+        ContextInfo context = new ContextInfo();
+        DegreeAuditService degreeAuditService = getDegreeAuditService();
+        List<AuditReportInfo> list = degreeAuditService.getAuditsForStudentInDateRange
+        ( studentId,  startDate, endDate,null);
+
+            for(AuditReportInfo info : list)
+            {
+                      System.out.println( info.getProgramId());
+            }
+        }
+        catch( Exception e )
+        {
+            Assert.fail("ugh");
         }
     }
 }

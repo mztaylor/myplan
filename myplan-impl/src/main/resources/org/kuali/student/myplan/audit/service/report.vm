@@ -166,9 +166,18 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                             <tbody>
 #foreach( $taken in $subreq.courseTakenList )
                                 <tr>
-                                    <td>${taken.quarter}</td><td><a href="course/${taken.dept}${taken.number}">${taken.dept} ${taken.number} ${taken.description}</a></td><td>${taken.credits}</td><td>${taken.grade}</td>
+#if( ${taken.hasCluid()} )
+                                    <td>${taken.quarter}</td><td><a href="course?methodToCall=start&viewId=CourseSearch-FormView&cluid=${taken.cluid}#">${taken.dept} ${taken.number} ${taken.description}</a></td>
+#if( $taken.inProgress} )
+                                    <td>In Progress</td><td></td>
+#else
+                                    <td>${taken.credits}</td><td>${taken.grade}</td>
+#end ## if inprogress
+#else
+                                    <td>${taken.quarter}</td><td>${taken.dept} ${taken.number} ${taken.description}</td><td>${taken.credits}</td><td>${taken.grade}</td>
+#end ## if hasCluid
                                 </tr>
-#end
+#end ## foreach taken
                             </tbody>
                         </table>
                     </div>

@@ -93,23 +93,19 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return this.luService;
     }
 
-    public JobQueueRunLoader getJobQueueRunLoader()
-    {
-    	return jobQueueRunLoader;
+    public JobQueueRunLoader getJobQueueRunLoader() {
+        return jobQueueRunLoader;
     }
 
-    public void setJobQueueRunLoader( JobQueueRunLoader loader )
-    {
-    	this.jobQueueRunLoader = loader;
+    public void setJobQueueRunLoader(JobQueueRunLoader loader) {
+        this.jobQueueRunLoader = loader;
     }
 
-    String join( Object... args )
-    {
+    String join(Object... args) {
         StringBuilder sb = new StringBuilder();
-        for( Object item : args )
-        {
-            sb.append( item.toString() );
-            sb.append( "\t" );
+        for (Object item : args) {
+            sb.append(item.toString());
+            sb.append("\t");
         }
         return sb.toString();
     }
@@ -119,17 +115,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        try
-        {
-            URL wsdlURL = new URL( WSDL_LOCATION );
+        try {
+            URL wsdlURL = new URL(WSDL_LOCATION);
 
             AuditRequestSvc ss = new AuditRequestSvc(wsdlURL, AUDIT_SERVICE_NAME);
             AuditRequestSvcSoap port = ss.getAuditRequestSvcSoap();
 
 
-           logger.info("Invoking mpRequestAudit...");
+            logger.info("Invoking mpRequestAudit...");
             /*studentId = "000083856";*/
-            int tempId = Integer.parseInt( studentId );
+            int tempId = Integer.parseInt(studentId);
             /*programId = "0ENGL  0011";*/
             int lineNo = 0;
             int systemKey = 190981;
@@ -141,16 +136,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             AuditReportInfo auditReportInfo = new AuditReportInfo();
             String auditID = response.getAuditText().trim();
-            if( auditID.length() == 0)
-            {
-                auditID=null;
+            if (auditID.length() == 0) {
+                auditID = null;
             }
-            auditReportInfo.setAuditId( auditID );
+            auditReportInfo.setAuditId(auditID);
             return auditReportInfo;
 
-        }
-        catch( Exception e )
-        {
+        } catch (Exception e) {
             throw new OperationFailedException("velocity error", e);
         }
     }
@@ -167,15 +159,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String instidq = "72";
         int status = jobQueueListDao.checkJobQueueStatus(instidq, instid, instcd, auditId);
         StatusInfo info = new StatusInfo();
-        info.setSuccess( status == 1 );
+        info.setSuccess(status == 1);
 
-        switch( status )
-        {
+        switch (status) {
             case -2:
                 info.setMessage("audit request not found");
                 break;
             case -1:
-                info.setMessage( "completed with errors" );
+                info.setMessage("completed with errors");
                 break;
             case 0:
                 info.setMessage("not finished processing");
@@ -191,19 +182,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        try{
-        while( true )
-        {
-            StatusInfo info = this.getAuditRunStatus(auditId, context);
-            logger.info( info.getMessage() );
-            if( info.getIsSuccess() ) break;
+        try {
+            while (true) {
+                StatusInfo info = this.getAuditRunStatus(auditId, context);
+                logger.info(info.getMessage());
+                if (info.getIsSuccess()) break;
+            }
+        } catch (Exception e) {
+            logger.error(e);
         }
-        }
-        catch (Exception e){
-           logger.error(e);
-        }
-        if(AUDIT_TYPE_KEY_DEFAULT.equals( auditTypeKey )) {
-            return getDARSReport( auditId );
+        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey)) {
+            return getDARSReport(auditId);
         }
         if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
             return getHTMLReport(auditId);
@@ -211,7 +200,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey)) {
             return getDARSReport(auditId);
         }
-        throw new InvalidParameterException( "auditTypeKey: " + auditTypeKey );
+        throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
 
     public AuditReportInfo getDARSReport(String auditId) {
@@ -223,7 +212,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         List<JobQueueOut> outList = (List<JobQueueOut>) run.getJobQueueOuts();
         for (JobQueueOut out : outList) {
             String dar = out.getDarout();
-            pw.println( dar );
+            pw.println(dar);
         }
         String html = sw.toString();
         AuditReportInfo auditReportInfo = new AuditReportInfo();
@@ -235,7 +224,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     }
 
-    public AuditReportInfo getHTMLReport( String auditId ) throws OperationFailedException {
+    public AuditReportInfo getHTMLReport(String auditId) throws OperationFailedException {
         try {
             Velocity.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             Velocity.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -245,7 +234,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Template template = Velocity.getTemplate("org/kuali/student/myplan/audit/service/report.vm");
             VelocityContext context = new VelocityContext();
             Report report = getAuditReport(auditId);
-            context.put("report", report );
+            context.put("report", report);
 
             StringWriter sw = new StringWriter();
             template.merge(context, sw);
@@ -256,10 +245,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             auditReportInfo.setAuditId(auditId);
             auditReportInfo.setReport(handler);
             return auditReportInfo;
-        }
-        catch( Exception e )
-        {
-            throw new OperationFailedException( "velocity error", e );
+        } catch (Exception e) {
+            throw new OperationFailedException("velocity error", e);
         }
     }
 
@@ -275,9 +262,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         report.setDegreeProgram(run.getDprog());
 
         Timestamp runDate = run.getRundate();
-        SimpleDateFormat formatter = new SimpleDateFormat( "MMM d, yyyy h:mm a");
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy h:mm a");
         report.setDatePrepared(formatter.format(runDate));
-//        report.setDatePrepared(runDate.toString());
 
         Section section = new Section();
         report.addSection(section);
@@ -458,98 +444,65 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     courseAcceptable.setNumber(number);
                     subrequirement.addCourseAcceptable(courseAcceptable);
 
+                    String courseID = getCourseID( dept.trim(), number );
+                    if( courseID != null )
                     {
-                        SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-                        searchRequest.addParam("number", number);
-                        searchRequest.addParam("subject", dept.trim());
-                        try {
+                        courseAcceptable.setCluId(courseID);
+                        {
+                            SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+                            searchRequest.addParam("courseID", courseAcceptable.getCluid());
+                            try {
 
-                            SearchResult searchResult = getLuService().search(searchRequest);
-                            for (SearchResultRow row : searchResult.getRows()) {
-                                String courseId = getCellValue(row, "lu.resultColumn.cluId");
-                                courseAcceptable.setCluId( courseId );
-//                            CourseOfferingService courseOfferingService = getCourseOfferingService();
+                                SearchResult searchResult = getLuService().search(searchRequest);
+                                for (SearchResultRow row : searchResult.getRows()) {
+                                    String name = getCellValue(row, "course.name");
+                                    courseAcceptable.setDescription(name);
 
-//                            try {
-//
-//                                ContextInfo contextInfo = new ContextInfo();
-//                                CourseOfferingInfo coi = courseOfferingService.getCourseOffering(courseId, contextInfo);
-//
-//                                String title = coi.getCourseTitle();
-//                                courseAcceptable.setDescription( title );
-//
-//                            } catch ( DoesNotExistException e) {
-//                                throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
-//                            } catch (Exception e) {
-//                                throw new RuntimeException("Query failed.", e);
-//                            }
-                            break;
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    {
-                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
-                        searchRequest.addParam("courseID", courseAcceptable.getCluid() );
-                        try {
-
-                            SearchResult searchResult = getLuService().search(searchRequest);
-                            for (SearchResultRow row : searchResult.getRows()) {
-                                String name = getCellValue(row, "course.name");
-                                courseAcceptable.setDescription(name);
-
-                                break;
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
                         }
                     }
 
                 }
                 List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
-                for(JobQueueCourse taken : takenList )
-                {
+                for (JobQueueCourse taken : takenList) {
                     CourseTaken temp = new CourseTaken();
                     String dept = "";
                     String number = "";
 
                     String course = taken.getCourse().trim();
-                    if( "FL-HS".equals( course ))
-                    {
+                    if ("FL-HS".equals(course)) {
                         dept = course;
-                    }
-                    else if( "NATSPEAK".equals( course ))
-                    {
+                    } else if ("NATSPEAK".equals(course)) {
                         dept = course;
-                    }
-                    else
-                    {
-                        course = course.substring( 1 );
-                        if( course.length() > 6 )
-                        {
-                            dept = course.substring( 0, 6 ).trim();
-                            number = course.substring( 6 ).trim();
-                            if( number.length() > 3 )
-                            {
-                                number = number.substring( 0, 3 ).trim();
+                    } else {
+                        course = course.substring(1);
+                        if (course.length() > 6) {
+                            dept = course.substring(0, 6).trim();
+                            number = course.substring(6).trim();
+                            if (number.length() > 3) {
+                                number = number.substring(0, 3).trim();
                             }
 
-                        }
-                        else
-                        {
+                        } else {
                             dept = course.trim();
                         }
                     }
-                    temp.setDept( dept );
-                    temp.setNumber( number );
-                    temp.setGrade( taken.getGpa().toString() );
-                    temp.setDescription( taken.getCtitle() );
-                    temp.setCredits( taken.getCredit().toString() );
-                    temp.setQuarter( taken.getEditYt() );
+                    temp.setDept(dept);
+                    temp.setNumber(number);
+                    temp.setGrade(taken.getGpa().toString());
+                    temp.setDescription(taken.getCtitle());
+                    temp.setCredits(taken.getCredit().toString());
+                    temp.setQuarter(taken.getEditYt());
+                    boolean inProgress = "I".equals(taken.getIp());
+                    temp.setInProgress(inProgress);
+                    String courseID = getCourseID( dept, number );
+                    temp.setCluid( courseID );
 
-                    subrequirement.addCourseTaken(temp );
+                    subrequirement.addCourseTaken(temp);
                 }
             }
         }
@@ -624,4 +577,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+
+    public String getCourseID( String dept, String number )
+    {
+        try {
+            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
+            searchRequest.addParam("number", number);
+            searchRequest.addParam("subject", dept.trim());
+            SearchResult searchResult = getLuService().search(searchRequest);
+            for (SearchResultRow row : searchResult.getRows()) {
+                String courseID = getCellValue(row, "lu.resultColumn.cluId");
+                return courseID;
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
