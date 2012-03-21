@@ -415,7 +415,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                <property name="clientSideJs" value="removeSavedCourse('@{#line.id}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{#line.id}'}, '@{#line.courseDetails.code}', e);"/>
+                                <property name="clientSideJs" value="removeSavedCourse('@{#line.id}', 'removeSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{#line.id}'}, '@{#line.courseDetails.code}', e);"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
@@ -479,7 +479,7 @@
     <!-- Saved courses actions view and response pages -->
     <bean id="SavedCoursesListActions-FormView" parent="MyPlanFormView">
         <property name="id" value="SavedCoursesListActions-FormView"/>
-        <property name="formClass" value="org.kuali.student.myplan.course.form.SavedCoursesListForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.course.form.PlanActionsForm"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="items">

@@ -297,7 +297,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}" p:render="@{dataObject.inSavedCourseList ? false : true}">
-                    <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -745,7 +745,7 @@
                                             </property>
                                         </bean>
                                         <bean p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
-                                            <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addItem', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
+                                            <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -779,7 +779,7 @@
                                             </property>
                                         </bean>
                                         <bean p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>

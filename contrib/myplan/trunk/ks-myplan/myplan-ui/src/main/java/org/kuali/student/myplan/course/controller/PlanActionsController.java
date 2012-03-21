@@ -17,10 +17,8 @@ package org.kuali.student.myplan.course.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.core.api.util.RiceKeyConstants;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.rice.krad.util.KRADConstants;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -29,12 +27,10 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.course.form.SavedCoursesListForm;
+import org.kuali.student.myplan.course.form.PlanActionsForm;
 import org.kuali.student.myplan.course.util.SavedCourseListConstants;
 import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
-import org.kuali.student.r2.common.infc.RichText;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,19 +44,19 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "/plan")
-public class SavedCoursesListController extends UifControllerBase {
+public class PlanActionsController extends UifControllerBase {
 
-    private final Logger logger = Logger.getLogger(SavedCoursesListController.class);
+    private final Logger logger = Logger.getLogger(PlanActionsController.class);
 
     private transient AcademicPlanService academicPlanService;
 
     @Override
-    protected SavedCoursesListForm createInitialForm(HttpServletRequest request) {
-        return new SavedCoursesListForm();
+    protected PlanActionsForm createInitialForm(HttpServletRequest request) {
+        return new PlanActionsForm();
     }
 
-    @RequestMapping(params = "methodToCall=addItem")
-    public ModelAndView addPlanItem(@ModelAttribute("KualiForm") SavedCoursesListForm form, BindingResult result,
+    @RequestMapping(params = "methodToCall=addSavedCourse")
+    public ModelAndView addPlanItem(@ModelAttribute("KualiForm") PlanActionsForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         Person user = GlobalVariables.getUserSession().getPerson();
@@ -176,8 +172,8 @@ public class SavedCoursesListController extends UifControllerBase {
         return newPlan;
     }
 
-    @RequestMapping(params = "methodToCall=removeItem")
-    public ModelAndView removePlanItem(@ModelAttribute("KualiForm") SavedCoursesListForm form, BindingResult result,
+    @RequestMapping(params = "methodToCall=removeSavedCourse")
+    public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanActionsForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
