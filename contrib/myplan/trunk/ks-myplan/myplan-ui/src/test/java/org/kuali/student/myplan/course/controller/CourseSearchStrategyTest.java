@@ -530,7 +530,7 @@ public class CourseSearchStrategyTest {
 
         request=requests.get(2);
         params=request.getParams();
-            assertEquals("myplan.lu.search.additionalDivision",requests.get(2).getSearchKey());
+            assertEquals("myplan.lu.search.additionalDivision",request.getSearchKey());
             assertEquals(4,params.size());
         param=params.get(0);
             assertEquals("divisions",param.getKey());
@@ -982,7 +982,10 @@ public class CourseSearchStrategyTest {
             assertEquals(4,params.size());
         param=params.get(0);
             assertEquals("divisions",param.getKey());
-            assertEquals("THIST ,T HIST",param.getValue());
+        String str=(String)param.getValue();
+        boolean t1=str.contains("THIST ");
+        boolean t2=str.contains("T HIST");
+        assertTrue(t1&&t2);
         param=params.get(1);
             assertEquals("campus1",param.getKey());
             assertEquals("0",param.getValue());
