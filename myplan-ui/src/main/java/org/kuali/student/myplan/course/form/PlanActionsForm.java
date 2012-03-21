@@ -21,13 +21,13 @@ import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 
 import java.util.List;
 
-public class SavedCoursesListForm extends UifFormBase {
+public class PlanActionsForm extends UifFormBase {
 
     private String planItemId;
     private String termId;
     private String courseId;
 
-    public SavedCoursesListForm() {
+    public PlanActionsForm() {
         super();
     }
 
