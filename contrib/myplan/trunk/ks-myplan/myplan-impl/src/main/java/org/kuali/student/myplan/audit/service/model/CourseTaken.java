@@ -14,7 +14,7 @@ public class CourseTaken {
     private String grade = "X.X";
     private boolean inProgress = false;
 
-    private String cluid = "XXXX";
+    private String cluid;
 
 
     public String getQuarter() {
