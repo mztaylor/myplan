@@ -5,7 +5,7 @@ public class CourseAcceptable {
     private String dept;
     private String number;
     String description = "Xxxxx xx Xxxxx";
-    String cluid = "XXXX";
+    String cluid;
     String quarter = "XX";
 
     public String getDept() {
@@ -39,5 +39,8 @@ public class CourseAcceptable {
 
     public void setCluId(String courseId) {
        this.cluid = courseId;
+    }
+    public boolean hasCluid() {
+        return cluid != null;
     }
 }
