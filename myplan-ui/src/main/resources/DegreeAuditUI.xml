@@ -227,7 +227,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Link" p:linkLabel="@{#line.programTitle}"
-                                p:hrefText="inquiry?methodToCall=start&amp;viewId=DegreeAuditDetails-InquiryView&amp;auditId=@{#line.report.auditId}"/>
+                                p:hrefText="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>
 
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
                                   p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"  p:labelField.render="true">
