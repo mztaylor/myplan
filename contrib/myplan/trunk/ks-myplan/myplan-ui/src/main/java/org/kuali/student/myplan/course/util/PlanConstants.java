@@ -1,15 +1,16 @@
 package org.kuali.student.myplan.course.util;
 
 import org.kuali.student.lum.lu.LUConstants;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import java.util.regex.Pattern;
 
-public class SavedCourseListConstants {
+public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PLAN_ITEM_ID_PARAM_NAME = "planItemId";
     public static final String COURSE_ID = "courseId";
-    public static final String TERM = "term";
+    public static final String TERM_ID = "term";
 
     public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_result";
     public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_result";

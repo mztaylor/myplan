@@ -83,7 +83,7 @@ public class AcademicPlanServiceValidationDecorator
 	public List<ValidationResultInfo> validateLearningPlan(String validationType, LearningPlanInfo learningPlanInfo, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        List<ValidationResultInfo> errors;
+        List<ValidationResultInfo> errors = null;
         try {
             errors = ValidationUtils.validateInfo(validator, validationType, learningPlanInfo, context);
 
@@ -101,8 +101,8 @@ public class AcademicPlanServiceValidationDecorator
 
     @Override
 	public List<ValidationResultInfo> validatePlanItem(String validationType, PlanItemInfo planItemInfo, ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<ValidationResultInfo> errors;
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
+        List<ValidationResultInfo> errors = null;
         try {
             errors = ValidationUtils.validateInfo(validator, validationType, planItemInfo, context);
 
@@ -123,7 +123,7 @@ public class AcademicPlanServiceValidationDecorator
                                                           @WebParam(name = "planItemSetInfo") PlanItemSetInfo planItemSetInfo,
                                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<ValidationResultInfo> errors;
+        List<ValidationResultInfo> errors = null;
         try {
             errors = ValidationUtils.validateInfo(validator, validationType, planItemSetInfo, context);
 
@@ -164,7 +164,7 @@ public class AcademicPlanServiceValidationDecorator
      * Data dictionary validation for PlanItemInfo.
      */
     private void fullValidation(PlanItemInfo planItemInfo, ContextInfo context)
-    		throws DataValidationErrorException, OperationFailedException, InvalidParameterException, MissingParameterException {
+            throws DataValidationErrorException, OperationFailedException, InvalidParameterException, MissingParameterException, AlreadyExistsException {
 
         if (planItemInfo == null) {
             throw new MissingParameterException("planItemInfo was null.");
@@ -172,7 +172,7 @@ public class AcademicPlanServiceValidationDecorator
 
         try {
             List<ValidationResultInfo> errors =
-                    this.validatePlanItem(DataDictionaryValidator.ValidationType.FULL_VALIDATION.toString(), planItemInfo, context);
+                this.validatePlanItem(DataDictionaryValidator.ValidationType.FULL_VALIDATION.toString(), planItemInfo, context);
             if ( ! errors.isEmpty()) {
                 throw new DataValidationErrorException("Error(s) validating plan item.", errors);
             }
@@ -192,7 +192,7 @@ public class AcademicPlanServiceValidationDecorator
     @Override
     public PlanItemInfo updatePlanItem(String planItemId, PlanItemInfo planItem, ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
-                    MissingParameterException, OperationFailedException, PermissionDeniedException {
+            MissingParameterException, OperationFailedException, PermissionDeniedException, AlreadyExistsException {
         fullValidation(planItem, context);
         return getNextDecorator().updatePlanItem(planItemId, planItem, context);
     }

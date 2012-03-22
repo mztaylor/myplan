@@ -78,7 +78,7 @@ public interface AcademicPlanService {
 
 
     public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem,
-                                       @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException;
+                                       @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, AlreadyExistsException;
 
 
     public PlanItemSetInfo updatePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "planItemSet") PlanItemSetInfo planItemSet, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
@@ -98,7 +98,7 @@ public interface AcademicPlanService {
     public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
                                                        @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
                                                        @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException;
 
 
     public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
