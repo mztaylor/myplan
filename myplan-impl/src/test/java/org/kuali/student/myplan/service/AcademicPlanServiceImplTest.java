@@ -17,6 +17,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -423,7 +424,6 @@ public class AcademicPlanServiceImplTest {
             ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
             assertEquals("refObjectType", resultInfo.getElement());
             assertEquals("error.required", resultInfo.getMessage());
-            assertEquals(null, resultInfo.getInvalidData());
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
@@ -459,7 +459,6 @@ public class AcademicPlanServiceImplTest {
             ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
             assertEquals("learningPlanId", resultInfo.getElement());
             assertEquals("error.required", resultInfo.getMessage());
-            assertEquals(null, resultInfo.getInvalidData());
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
@@ -495,7 +494,6 @@ public class AcademicPlanServiceImplTest {
             ValidationResultInfo resultInfo =  dvee.getValidationResults().get(0);
             assertEquals("refObjectId", resultInfo.getElement());
             assertEquals("error.required", resultInfo.getMessage());
-            assertEquals(null, resultInfo.getInvalidData());
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
@@ -550,10 +548,11 @@ public class AcademicPlanServiceImplTest {
             //  Make sure the id of the plan item isn't a factor.
             planItem.setId(null);
             academicPlanService.createPlanItem(planItem, context);
-        } catch (DataValidationErrorException e) {
+        } catch (AlreadyExistsException e) {
             return;
         } catch (Exception e) {
             //  Do nothing.
+            System.err.println();
         }
 
         fail("Was able to add a duplicate course id to saved courses list.");

@@ -479,7 +479,7 @@
     <!-- Saved courses actions view and response pages -->
     <bean id="SavedCoursesListActions-FormView" parent="MyPlanFormView">
         <property name="id" value="SavedCoursesListActions-FormView"/>
-        <property name="formClass" value="org.kuali.student.myplan.course.form.PlanActionsForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.course.form.PlanForm"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="items">

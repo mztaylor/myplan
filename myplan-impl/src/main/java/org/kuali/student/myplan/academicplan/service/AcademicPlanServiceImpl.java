@@ -1,7 +1,6 @@
 package org.kuali.student.myplan.academicplan.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.util.UUIDHelper;
 
 import org.kuali.student.lum.course.service.CourseService;
@@ -439,7 +438,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
                                                        @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
                                                        @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
 
         List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
 
@@ -454,9 +453,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
             for (PlanItemEntity p : savedCourseListItems) {
                 if (p.getRefObjectId().equals(planItemInfo.getRefObjectId())) {
-                    validationResultInfos.add(makeValidationResultInfo(
-                        String.format("An item with this course id [%s] already exists in the user's saved courses list.", planItemInfo.getRefObjectId()),
-                        "refObjectId", ValidationResult.ErrorLevel.ERROR ));
+                    throw new AlreadyExistsException(String.format("An item with this course id [%s] already exists in the user's saved courses list.", planItemInfo.getRefObjectId()));
                 }
             }
         }
