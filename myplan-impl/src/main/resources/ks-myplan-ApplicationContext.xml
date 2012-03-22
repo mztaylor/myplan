@@ -5,10 +5,6 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-    <import resource="classpath:org/kuali/rice/krad/uif/UifControlDefinitions.xml" />
-
-    <bean id="Uif-ControlBase" abstract="true" parent="Uif-ControlBase-parentBean"/>
-
     <import resource="classpath:ks-data-dictionary-services-configuration.xml" />
     <import resource="classpath:ks-data-dictionary-validator-configuration.xml" />
     <!-- Add the myplan data dictionaries -->

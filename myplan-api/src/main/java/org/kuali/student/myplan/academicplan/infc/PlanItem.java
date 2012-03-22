@@ -35,7 +35,7 @@ public interface PlanItem extends HasId, TypeStateEntity {
 
     /**
      * Time Periods for which the item is planned for
-     * @name  Time Periods
+     * @name  Time Periods ATPIds
      */
     public List<String> getPlanPeriods();
 
