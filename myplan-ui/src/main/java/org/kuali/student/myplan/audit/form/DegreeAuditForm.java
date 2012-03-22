@@ -21,6 +21,15 @@ public class DegreeAuditForm extends UifFormBase {
                 "</div>";
     private String programParam;
     private String campusParam;
+    private String auditId;
+
+    public String getAuditId() {
+        return auditId;
+    }
+
+    public void setAuditId(String auditId) {
+        this.auditId = auditId;
+    }
 
     public String getProgramParam() {
         return programParam;
