@@ -18,6 +18,7 @@ package org.kuali.student.myplan.audit.controller;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -47,14 +48,14 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping(value = "/audit")
+@RequestMapping(value = "/audit/**")
 public class DegreeAuditController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
     private transient DegreeAuditService degreeAuditService;
-    
-      public DegreeAuditService getDegreeAuditService() {
+
+    public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
             degreeAuditService = (DegreeAuditService)
                     GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
@@ -63,26 +64,54 @@ public class DegreeAuditController extends UifControllerBase {
         return degreeAuditService;
     }
 
+    public void setDegreeAuditService(DegreeAuditService degreeAuditService) {
+        this.degreeAuditService = degreeAuditService;
+    }
+
+    private transient Person person;
+
+    private transient PersonImpl personImpl;
+
+    public PersonImpl getPersonImpl() {
+        return personImpl;
+    }
+
+    public void setPersonImpl(PersonImpl personImpl) {
+        this.personImpl = personImpl;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new DegreeAuditForm();
     }
 
+
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         try {
-            Person user = GlobalVariables.getUserSession().getPerson();
+            Person user = getUser();
             String studentID = user.getPrincipalId();
             studentID = "100190981";
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-
+            String auditId = form.getAuditId();
             ContextInfo contextInfo = new ContextInfo();
-            Date startDate=new Date();
-            Date endDate=new Date();
-            List<AuditReportInfo> auditReportInfos=  degreeAuditService.getAuditsForStudentInDateRange(studentID,startDate,endDate,contextInfo);
-            String auditId = auditReportInfos.get(0).getAuditId();
+            Date startDate = new Date();
+            Date endDate = new Date();
+            if (auditId == null) {
+                List<AuditReportInfo> auditReportInfos = degreeAuditService.getAuditsForStudentInDateRange(studentID, startDate, endDate, contextInfo);
+                auditId = auditReportInfos.get(0).getAuditId();
+            }
 
 
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
@@ -91,15 +120,14 @@ public class DegreeAuditController extends UifControllerBase {
 
             int c = 0;
             while ((c = in.read()) != -1) {
-                sw.append( (char) c );
+                sw.append((char) c);
             }
 
             String html = sw.toString();
             form.setAuditHtml(html);
 
 
-        } catch( Exception e )
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -108,9 +136,9 @@ public class DegreeAuditController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=runAudit")
     public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
-                              HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response) {
         try {
-            Person user = GlobalVariables.getUserSession().getPerson();
+            Person user = getUser();
             String studentID = user.getPrincipalId();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String studentId = "0";
@@ -126,21 +154,25 @@ public class DegreeAuditController extends UifControllerBase {
 
             int c = 0;
             while ((c = in.read()) != -1) {
-                sw.append( (char) c );
+                sw.append((char) c);
             }
 
             String html = sw.toString();
             form.setAuditHtml(html);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("Could not complete audit run");
         }
 
         return getUIFModelAndView(form);
     }
 
-
+    public Person getUser() {
+        if (person == null) {
+            person = GlobalVariables.getUserSession().getPerson();
+        }
+        return person;
+    }
 
 }
 
