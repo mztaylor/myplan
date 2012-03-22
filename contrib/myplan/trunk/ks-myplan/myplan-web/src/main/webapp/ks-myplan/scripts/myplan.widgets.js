@@ -1,14 +1,22 @@
-function openCourse(courseId, e) {
+function openCourse(courseId, e, enrolled, quarter, credits) {
     if (!e) var e = window.event;
 
     if (jq(e.target).parents("#course_details_popup_requisites").length > 0) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
-    	openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+    	if ( enrolled ) {
+            var messaging = "You are currently enrolled in this course.";
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, messaging);
+        } else if (quarter != null && credits != null)  {
+            var messaging = "You already took this course on "+quarter+" and received "+credits;
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, messaging);
+        } else {
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+        }
     }
 }
 
-function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions) {
+function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, messaging) {
     if (!e) var e = window.event;
     e.stopPropagation();
 
@@ -74,7 +82,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		elementToBlock.unblock({onUnblock: function(){
             // replace component
             if(jq("#" + id).length){
-                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>'));
+                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>').append(messaging));
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
                     popupBox.RemoveBubblePopup();
