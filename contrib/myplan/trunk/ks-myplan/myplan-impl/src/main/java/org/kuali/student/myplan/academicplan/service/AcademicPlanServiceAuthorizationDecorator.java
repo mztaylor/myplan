@@ -44,7 +44,7 @@ public class AcademicPlanServiceAuthorizationDecorator
         }
 
         if (permissionService.isAuthorized(context.getPrincipalId(), AcademicPlanServiceConstants.NAMESPACE,
-                AcademicPlanServiceConstants.SERVICE_NAME + "/getLearningPlan", null, null)) {
+                AcademicPlanServiceConstants.SERVICE_NAME + "/getLearningPlan", null)) {
 	        return getNextDecorator().getLearningPlan(learningPlanId, context);
         } else {
         	throw new OperationFailedException("Permission Denied.");
