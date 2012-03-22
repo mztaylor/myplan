@@ -146,9 +146,17 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                         <table>
                             <tbody>
 #foreach( $acceptable in $subreq.courseAcceptableList )
-                                <tr>
-                                    <td><a href="course/${acceptable.dept}${acceptable.number}">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td><td>${acceptable.quarter}</td>
-                                </tr>
+
+#if( ${acceptable.hasCluid()} )
+                    <tr>
+                        <td><a href="#" onclick="openCourse('${acceptable.cluid}',event,true);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
+                    </tr>
+#else
+                    <tr>
+                        <td>${acceptable.dept} ${acceptable.number} ${acceptable.description}</td><td>${acceptable.quarter}</td>
+                    </tr>
+#end
+
 #end
                             </tbody>
                         </table>
@@ -167,8 +175,8 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #foreach( $taken in $subreq.courseTakenList )
                                 <tr>
 #if( ${taken.hasCluid()} )
-                                    <td>${taken.quarter}</td><td><a href="course?methodToCall=start&viewId=CourseSearch-FormView&cluid=${taken.cluid}#">${taken.dept} ${taken.number} ${taken.description}</a></td>
-#if( $taken.inProgress} )
+                                    <td>${taken.quarter}</td><td><a href="#" onclick="openCourse('${taken.cluid}',event,true);">${taken.dept} ${taken.number} ${taken.description}</a></td>
+#if( ${taken.inProgress} )
                                     <td>In Progress</td><td></td>
 #else
                                     <td>${taken.credits}</td><td>${taken.grade}</td>
