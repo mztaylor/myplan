@@ -30,4 +30,10 @@ public class CourseSearchConstants {
     public static final String PROCESS_KEY = "Null";
 
     public static final Pattern TERM_PATTERN = Pattern.compile("([a-zA-Z]+)[\\s]+[0-9][0-9]([0-9][0-9])");
+
+    public static final String SUBJECT_AREA = "kuali.lu.subjectArea";
+
+    public static final String CAMPUS_LOCATION = "kuali.lu.campusLocation";
+
+
 }
