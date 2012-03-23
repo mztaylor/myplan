@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *  Logic for building list of FacetItems and coding CourseSearchItems.
+ * Logic for building list of FacetItems and coding CourseSearchItems.
  */
 public class AuditRunCampusParam extends KeyValuesBase {
 
@@ -24,7 +24,7 @@ public class AuditRunCampusParam extends KeyValuesBase {
 
     private transient EnumerationManagementService enumService;
 
-    private HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -43,32 +43,28 @@ public class AuditRunCampusParam extends KeyValuesBase {
     }
 
 
-
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        if(blankOption){
+        if (blankOption) {
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
-        try{
-        if(!this.getHashMap().containsKey("kuali.lu.campusLocation")) {
-        enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.lu.campusLocation", null, null, null);
-            hashMap.put("kuali.lu.campusLocation",enumeratedValueInfoList);
-        }
-            else {
-            enumeratedValueInfoList=this.hashMap.get("kuali.lu.campusLocation");
-        }
-        }
-        catch (Exception e)
-        {
-            logger.error("No Values for campuses found",e);
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        try {
+            if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(CourseSearchConstants.CAMPUS_LOCATION, null, null, null);
+                hashMap.put(CourseSearchConstants.CAMPUS_LOCATION, enumeratedValueInfoList);
+            } else {
+                enumeratedValueInfoList = this.hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
+            }
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
         }
         if (enumeratedValueInfoList != null) {
             //  Add the individual term items.
             for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                if(!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
-                keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()));
+                if (!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
+                    keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()));
                 }
             }
         }
