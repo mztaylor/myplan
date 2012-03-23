@@ -47,18 +47,15 @@ public class AuditRunProgramParam extends KeyValuesBase {
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        keyValues.add(new ConcreteKeyValue("0CHEM  1015", "Chemistry (BS) ACS Cert"));
-        keyValues.add(new ConcreteKeyValue("0ESS   0011", "Earth and Space Sciences (BA)"));
+        keyValues.add(new ConcreteKeyValue("0CHEM  0011", "Chemistry (BA)"));
+        keyValues.add(new ConcreteKeyValue("0BIOL  0511", "Biology (BA)"));
         keyValues.add(new ConcreteKeyValue("0ECON  0011", "Economics (BA)"));
         keyValues.add(new ConcreteKeyValue("0ENGL  0011", "English"));
         keyValues.add(new ConcreteKeyValue("0HIST  0011", "History"));
         keyValues.add(new ConcreteKeyValue("0PHIL  0011", "Philosophy"));
-        keyValues.add(new ConcreteKeyValue("0ACMS  2015", "ACMS: Biological and Life Sciences"));
-        keyValues.add(new ConcreteKeyValue("0A A   0016", "Aeronautical & Astronautical Engineering"));
-        keyValues.add(new ConcreteKeyValue("0ANTH  2011", "Anthropology: AG Option"));
-        keyValues.add(new ConcreteKeyValue("0ART   0511", "Art: Design Studies" +
-                "" +
-                ""));
+        keyValues.add(new ConcreteKeyValue("0ART H 0011", "Art History"));
+        keyValues.add(new ConcreteKeyValue("0ART   2014", "Art: Fibers"));
+
 
 
 
