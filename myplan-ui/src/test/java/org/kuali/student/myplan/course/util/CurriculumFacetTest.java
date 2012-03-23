@@ -22,29 +22,29 @@ public class CurriculumFacetTest {
         CurriculumFacet facet = new CurriculumFacet();
         CourseSearchItem course1 = new CourseSearchItem();
         course1.setSubject("A S");
-        facet.process( course1 );
+        facet.process(course1);
         CourseSearchItem course2 = new CourseSearchItem();
         course2.setSubject("XYZ");
-        facet.process( course2 );
-        HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
-        List<EnumeratedValueInfo> enumeratedValueInfoList=new ArrayList<EnumeratedValueInfo>();
-        EnumeratedValueInfo enumeratedValueInfo=new EnumeratedValueInfo();
+        facet.process(course2);
+        HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+        List<EnumeratedValueInfo> enumeratedValueInfoList = new ArrayList<EnumeratedValueInfo>();
+        EnumeratedValueInfo enumeratedValueInfo = new EnumeratedValueInfo();
         enumeratedValueInfo.setCode("A S   ");
         enumeratedValueInfo.setAbbrevValue("A S   ");
         enumeratedValueInfo.setValue("AEROSPACE STUDIES (AIR FORCE ROTC)      ");
-        enumeratedValueInfo.setEnumerationKey("kuali.lu.subjectArea");
+        enumeratedValueInfo.setEnumerationKey(CourseSearchConstants.SUBJECT_AREA);
         enumeratedValueInfoList.add(enumeratedValueInfo);
-        hashMap.put("kuali.lu.subjectArea",enumeratedValueInfoList);
+        hashMap.put(CourseSearchConstants.SUBJECT_AREA, enumeratedValueInfoList);
         facet.setHashMap(hashMap);
         List<FacetItem> list = facet.getFacetItems();
 
-        assertTrue( list.size() == 2 );
-        assertEquals( list.get( 0 ).getDisplayName(), "A S" );
-        assertEquals( list.get( 0 ).getKey(), ";A S;" );
-        assertEquals(list.get(0).getTitle(),"AEROSPACE STUDIES (AIR FORCE ROTC)");
-        assertEquals( list.get( 1 ).getDisplayName(), "XYZ" );
-        assertEquals( list.get( 1 ).getKey(), ";XYZ;" );
-        assertEquals( list.get( 1 ).getTitle(), null );
+        assertTrue(list.size() == 2);
+        assertEquals(list.get(0).getDisplayName(), "A S");
+        assertEquals(list.get(0).getKey(), ";A S;");
+        assertEquals(list.get(0).getTitle(), "AEROSPACE STUDIES (AIR FORCE ROTC)");
+        assertEquals(list.get(1).getDisplayName(), "XYZ");
+        assertEquals(list.get(1).getKey(), ";XYZ;");
+        assertEquals(list.get(1).getTitle(), null);
 
     }
 
@@ -53,13 +53,13 @@ public class CurriculumFacetTest {
 
         CurriculumFacet facet = new CurriculumFacet();
         CourseSearchItem course = new CourseSearchItem();
-        course.setSubject( "ABC" );
-        facet.process( course );
+        course.setSubject("ABC");
+        facet.process(course);
 
         Set<String> keys = course.getCurriculumFacetKeys();
 
         assertFalse(keys.isEmpty());
         assertEquals(1, keys.size());
-        assertTrue( keys.contains( ";ABC;" ));
+        assertTrue(keys.contains(";ABC;"));
     }
 }
