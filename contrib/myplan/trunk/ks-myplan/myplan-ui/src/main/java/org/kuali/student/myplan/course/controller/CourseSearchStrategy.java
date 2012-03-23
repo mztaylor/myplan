@@ -23,7 +23,7 @@ public class CourseSearchStrategy {
 
     private transient LuService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
-    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -72,18 +72,16 @@ public class CourseSearchStrategy {
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
         String str = form.getCampusSelect();
         String[] results = null;
-        if (str!=null) {
+        if (str != null) {
             results = str.split(",");
         }
 
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
-            enumeratedValueInfoList =getEnumerationValueInfoList("kuali.lu.campusLocation");
+        if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
 
-        }
-        else
-        {
-            enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
+        } else {
+            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
         }
 
         String[] campus = new String[enumeratedValueInfoList.size() - 1];
@@ -114,18 +112,16 @@ public class CourseSearchStrategy {
     public void addCampusParam(SearchRequest request, CourseSearchForm form) {
         String str = form.getCampusSelect();
         String[] results = null;
-        if (str!=null) {
+        if (str != null) {
             results = str.split(",");
         }
 
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        if(!this.getHashMap().containsKey("kuali.lu.campusLocation")){
-            enumeratedValueInfoList =getEnumerationValueInfoList("kuali.lu.campusLocation");
+        if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
 
-        }
-        else
-        {
-            enumeratedValueInfoList=hashMap.get("kuali.lu.campusLocation");
+        } else {
+            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
         }
         String[] campus = new String[enumeratedValueInfoList.size() - 1];
         for (int k = 0; k < campus.length; k++) {
@@ -143,13 +139,14 @@ public class CourseSearchStrategy {
         }
 
 
-            for (int j = 0; j < campus.length; j++) {
-                int count = j + 1;
-                String campusKey = "campus" + count;
-                request.addParam(campusKey, campus[j]);
-            }
+        for (int j = 0; j < campus.length; j++) {
+            int count = j + 1;
+            String campusKey = "campus" + count;
+            request.addParam(campusKey, campus[j]);
+        }
 
     }
+
     /**
      * @param divisionMap for reference
      * @param query       initial query
@@ -240,7 +237,7 @@ public class CourseSearchStrategy {
 
     public List<SearchRequest> queryToRequests(CourseSearchForm form)
             throws Exception {
-        logger.info("Start Of Method queryToRequests in CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Start Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
 
         List<String> levels = QueryTokenizer.extractCourseLevels(query);
@@ -259,165 +256,149 @@ public class CourseSearchStrategy {
 
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
-        logger.info("Start of method addDivisionSearches of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Start of method addDivisionSearches of CourseSearchStrategy:" + System.currentTimeMillis());
         // Order is important, more exact search results appear at top of list
         addDivisionSearches(divisions, codes, levels, requests);
-        logger.info("End of method addDivisionSearches of CourseSearchStrategy:"+System.currentTimeMillis());
-        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("End of method addDivisionSearches of CourseSearchStrategy:" + System.currentTimeMillis());
+        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:" + System.currentTimeMillis());
         addFullTextSearches(query, requests);
-        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:"+System.currentTimeMillis());
-        logger.info("Start of method addCampusParams of CourseSearchStrategy:"+System.currentTimeMillis());
+        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:" + System.currentTimeMillis());
+        logger.info("Start of method addCampusParams of CourseSearchStrategy:" + System.currentTimeMillis());
         addCampusParams(requests, form);
-        logger.info("Start of method addCampusParams of CourseSearchStrategy:"+System.currentTimeMillis());
-        logger.info("Count of No of Query Tokens:"+requests.size());
+        logger.info("Start of method addCampusParams of CourseSearchStrategy:" + System.currentTimeMillis());
+        logger.info("Count of No of Query Tokens:" + requests.size());
         processRequests(requests, form);
-        logger.info("No of Requests after processRequest method:"+requests.size());
-        logger.info("End Of Method queryToRequests in CourseSearchStrategy:"+System.currentTimeMillis());
-            return requests;
+        logger.info("No of Requests after processRequest method:" + requests.size());
+        logger.info("End Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
+        return requests;
     }
 
     /**
-     *
      * @param requests
      * @param form
      */
     //To process the Request with search key as division or full Text
-  public void processRequests(ArrayList<SearchRequest> requests,CourseSearchForm form)
-    {
-        logger.info("Start of method processRequests in CourseSearchStrategy:"+System.currentTimeMillis());
-        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
-        int size=requests.size();
-        for(int i=0;i<size;i++)
-        {
-            if (requests.get(i).getSearchKey()!=null){
-            if(requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division"))
-            {
-                String queryText=(String)requests.get(i).getParams().get(0).getValue();
-                String key=(String)requests.get(i).getParams().get(0).getValue();
-                if(form.getSearchQuery().length()<=2){
-                    break;
-                }
-                else{
-                SearchRequest request0=new SearchRequest("myplan.lu.search.title");
-                request0.addParam("queryText", queryText.trim());
-                addCampusParam(request0,form);
-                requests.add(request0);
-                    if(!this.getHashMap().containsKey("kuali.lu.subjectArea")){
-                        enumeratedValueInfoList = getEnumerationValueInfoList("kuali.lu.subjectArea");
+    public void processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
+        logger.info("Start of method processRequests in CourseSearchStrategy:" + System.currentTimeMillis());
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        int size = requests.size();
+        for (int i = 0; i < size; i++) {
+            if (requests.get(i).getSearchKey() != null) {
+                if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
+                    String queryText = (String) requests.get(i).getParams().get(0).getValue();
+                    String key = (String) requests.get(i).getParams().get(0).getValue();
+                    if (form.getSearchQuery().length() <= 2) {
+                        break;
+                    } else {
+                        SearchRequest request0 = new SearchRequest("myplan.lu.search.title");
+                        request0.addParam("queryText", queryText.trim());
+                        addCampusParam(request0, form);
+                        requests.add(request0);
+                        if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+                            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
+
+                        } else {
+                            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.SUBJECT_AREA);
+                        }
+                        StringBuffer additionalDivisions = new StringBuffer();
+                        if (enumeratedValueInfoList != null) {
+                            //  Add the individual term items.
+                            for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                                if (enumeratedValueInfo.getCode().trim().contains(key.trim())) {
+                                    if (!enumeratedValueInfo.getCode().equalsIgnoreCase(queryText)) {
+                                        additionalDivisions.append(enumeratedValueInfo.getCode() + ",");
+                                    }
+                                }
+
+                            }
+                        }
+                        if (additionalDivisions.length() > 0) {
+                            String div = additionalDivisions.substring(0, additionalDivisions.length() - 1);
+                            SearchRequest request1 = new SearchRequest("myplan.lu.search.additionalDivision");
+                            request1.addParam("divisions", div);
+                            addCampusParam(request1, form);
+                            requests.add(request1);
+                        }
+                        SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                        request2.addParam("queryText", queryText.trim());
+                        addCampusParam(request2, form);
+                        requests.add(request2);
 
                     }
-                    else
-                    {
-                        enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
-                    }
-                StringBuffer additionalDivisions=new StringBuffer();
-                if (enumeratedValueInfoList != null) {
-                    //  Add the individual term items.
-                    for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                        if(enumeratedValueInfo.getCode().trim().contains(key.trim())){
-                            if(!enumeratedValueInfo.getCode().equalsIgnoreCase(queryText)){
-                            additionalDivisions.append(enumeratedValueInfo.getCode()+",");
+
+                }
+                if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")) {
+                    String key = (String) requests.get(i).getParams().get(0).getValue();
+                    String division = null;
+                    if (key.length() <= 2) {
+                        requests.get(i).getParams().get(0).setValue("null");
+                        break;
+                    } else {
+                        if (key.length() > 2) {
+
+                            if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+                                enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
+
+                            } else {
+                                enumeratedValueInfoList = hashMap.get(CourseSearchConstants.SUBJECT_AREA);
+                            }
+
+
+                            if (enumeratedValueInfoList != null) {
+                                //  Add the individual term items.
+                                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                                    if (enumeratedValueInfo.getValue().trim().equalsIgnoreCase(key)) {
+                                        division = enumeratedValueInfo.getCode();
+
+                                    }
+
+                                }
+                            }
+                            if (division != null) {
+                                requests.get(i).setSearchKey("myplan.lu.search.division");
+                                requests.get(i).getParams().get(0).setKey("division");
+                                requests.get(i).getParams().get(0).setValue(division);
+
+                                SearchRequest request1 = new SearchRequest("myplan.lu.search.title");
+                                request1.addParam("queryText", key.trim());
+                                addCampusParam(request1, form);
+                                requests.add(request1);
+                                SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                                request2.addParam("queryText", key.trim());
+                                addCampusParam(request2, form);
+                                requests.add(request2);
+                            } else {
+                                requests.get(i).setSearchKey("myplan.lu.search.title");
+                                SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                                request2.addParam("queryText", key.trim());
+                                addCampusParam(request2, form);
+                                requests.add(request2);
                             }
                         }
 
                     }
                 }
-                if(additionalDivisions.length()>0){
-                    String div=additionalDivisions.substring(0,additionalDivisions.length()-1);
-                    SearchRequest request1=new SearchRequest("myplan.lu.search.additionalDivision");
-                    request1.addParam("divisions", div);
-                    addCampusParam(request1,form);
-                    requests.add(request1);
-                }
-                SearchRequest request2=new SearchRequest("myplan.lu.search.description");
-                request2.addParam("queryText", queryText.trim());
-                addCampusParam(request2,form);
-                requests.add(request2);
-
-                }
-
             }
-            if(requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")){
-                String key=(String)requests.get(i).getParams().get(0).getValue();
-                String division=null;
-                if(key.length()<=2)
-                {
-                    requests.get(i).getParams().get(0).setValue("null");
-                    break;
-                }
-                else{
-                    if(key.length()>2){
-
-                            if(!this.getHashMap().containsKey("kuali.lu.subjectArea")){
-                            enumeratedValueInfoList = getEnumerationValueInfoList("kuali.lu.subjectArea");
-
-                            }
-                            else
-                            {
-                                enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
-                            }
-
-
-                if (enumeratedValueInfoList != null) {
-                    //  Add the individual term items.
-                    for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                        if(enumeratedValueInfo.getValue().trim().equalsIgnoreCase(key)){
-                            division=enumeratedValueInfo.getCode();
-
-                        }
-
-                    }
-                }
-                if(division!=null){
-                requests.get(i).setSearchKey("myplan.lu.search.division");
-                requests.get(i).getParams().get(0).setKey("division");
-                requests.get(i).getParams().get(0).setValue(division);
-
-                SearchRequest request1=new SearchRequest("myplan.lu.search.title");
-                request1.addParam("queryText", key.trim());
-                addCampusParam(request1,form);
-                requests.add(request1);
-                SearchRequest request2=new SearchRequest("myplan.lu.search.description");
-                request2.addParam("queryText", key.trim());
-                addCampusParam(request2,form);
-                requests.add(request2);
-                }
-                    else {
-                    requests.get(i).setSearchKey("myplan.lu.search.title");
-                    SearchRequest request2=new SearchRequest("myplan.lu.search.description");
-                    request2.addParam("queryText", key.trim());
-                    addCampusParam(request2,form);
-                    requests.add(request2);
-                }
-            }
-
         }
-        }
-        }
-        }
-    
 
-    logger.info("End of processRequests method in CourseSearchStrategy:"+System.currentTimeMillis());
+
+        logger.info("End of processRequests method in CourseSearchStrategy:" + System.currentTimeMillis());
     }
 
     public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
-       
-        List<EnumeratedValueInfo> enumeratedValueInfoList=null;
 
-        try{
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+
+        try {
 
             enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            hashMap.put(param,enumeratedValueInfoList);
-        }
-        catch (Exception e)
-        {
-            logger.error("No Values for campuses found",e);
+            hashMap.put(param, enumeratedValueInfoList);
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
         }
 
         return enumeratedValueInfoList;
     }
-
-
 
 
     //Note: here I am using r1 LuService implementation!!!
