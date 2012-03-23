@@ -136,6 +136,7 @@ public class PlanController extends UifControllerBase {
         LearningPlan learningPlan = getLearningPlan(user.getPrincipalId());
 
         String newPlanItemId = "";
+        boolean isDup = false;
 
         if (learningPlan != null) {
             PlanItemInfo pii = new PlanItemInfo();
@@ -156,8 +157,10 @@ public class PlanController extends UifControllerBase {
                 newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
                 newPlanItemId = newPlanItem.getId();
             } catch (AlreadyExistsException e) {
-                //  The course id was already in the saved courses list. Let this error go unreported.
+                //  The course id was already in the saved courses list log the error and set the isDup flag to trigger
+                //  a lookup which will find the id of the existing plan item.
                 logger.warn("Item was already in wishlist.", e);
+                isDup = true;
             } catch (Exception e) {
                 //  Give the end-user a generic error message, but log the exception.
                 logger.error("Could not create plan item.", e);
@@ -165,6 +168,43 @@ public class PlanController extends UifControllerBase {
                 GlobalVariables.getMessageMap().clearErrorMessages();
                 GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
             }
+        }
+
+        /*
+         *  If the wishlist item couldn't be added because the course already exists then lookup the id of the existing
+         *  plan item.
+         */
+        if (isDup) {
+            List<PlanItemInfo> planItems = null;
+            try {
+                planItems = getAcademicPlanService().getPlanItemsInPlan(learningPlan.getId(), PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                GlobalVariables.getMessageMap().clearErrorMessages();
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            }
+
+            if (planItems == null || planItems.isEmpty()) {
+                GlobalVariables.getMessageMap().clearErrorMessages();
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            } else {
+                for (PlanItem p : planItems) {
+                    if (p.getRefObjectId().equals(courseId) && p.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+                        newPlanItemId = p.getId();
+                        break;
+                    }
+                }
+                //  A null here means that the duplicate plan item couldn't be found.
+                if (newPlanItemId == null) {
+                    GlobalVariables.getMessageMap().clearErrorMessages();
+                    //  TODO: Put in a more specific error message?
+                    GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+                }
+            }
+        }
+
+        //  If the id remains unset then make it an empty string.
+        if (newPlanItemId == null) {
+            newPlanItemId = "";
         }
 
         form.setPlanItemId(newPlanItemId);
