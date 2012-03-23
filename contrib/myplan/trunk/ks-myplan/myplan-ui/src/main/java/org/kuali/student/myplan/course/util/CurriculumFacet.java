@@ -108,12 +108,12 @@ public class CurriculumFacet extends AbstractFacet {
              String titleValue=null;
         List<EnumeratedValueInfo> enumeratedValueInfoList =null;
               try {
-                  if(!this.getHashMap().containsKey("kuali.lu.subjectArea")) {
-                 enumeratedValueInfoList=getEnumerationService().getEnumeratedValues("kuali.lu.subjectArea", null, null, null);
-                      hashMap.put("kuali.lu.subjectArea",enumeratedValueInfoList);
+                  if(!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+                 enumeratedValueInfoList=getEnumerationService().getEnumeratedValues(CourseSearchConstants.SUBJECT_AREA, null, null, null);
+                      hashMap.put(CourseSearchConstants.SUBJECT_AREA,enumeratedValueInfoList);
                   }
                   else {
-                      enumeratedValueInfoList=this.hashMap.get("kuali.lu.subjectArea");
+                      enumeratedValueInfoList=this.hashMap.get(CourseSearchConstants.SUBJECT_AREA);
                   }
                 for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
                 {
