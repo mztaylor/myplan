@@ -69,7 +69,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient AcademicPlanService academicPlanService;
 
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
-    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -148,7 +148,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setRequisites(reqs);
 
 
-
         // Get only the abbre_val of gen ed requirements
 
         List<String> abbrGenEdReqs = new ArrayList<String>();
@@ -176,12 +175,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
         }
         courseDetails.setGenEdRequirements(genEdReqs);
-
-
-
-
-
-
 
 
         /*
@@ -245,113 +238,98 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         //Curriculum
-        String courseCode=courseDetails.getCode();
+        String courseCode = courseDetails.getCode();
         String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         String subject = splitStr[0];
-        String number=splitStr[1];
-        String value = getTitle(subject);
+        String number = splitStr[1];
+        String temp = getTitle(subject);
+        StringBuffer value = new StringBuffer();
+        value = value.append(temp);
+        value = value.append(" (").append(subject.trim()).append(")");
 
-        //Convert to title case
-//        String tempValue = "";
-//        BreakIterator wordBreaker = BreakIterator.getWordInstance();
-//        wordBreaker.setText(value);
-//        int end = 0;
-//        for(int start = wordBreaker.first(); (end= wordBreaker.next()) != BreakIterator.DONE; start=end){
-//            String tempTitleCase = value.substring(start, end);
-//            tempTitleCase = tempTitleCase.toLowerCase();
-//            tempTitleCase = tempTitleCase.substring(0,1).toUpperCase() + tempTitleCase.substring(1);
-//            tempValue = tempValue + tempTitleCase;
-//        }
-        value = value + " (" + subject.trim() + ")";
-        courseDetails.setTitleValue(value);
+        courseDetails.setTitleValue(value.toString());
         //If course not scheduled for future terms, Check for the last term when course was offered
-        if(courseDetails.getScheduledTerms().size()==0){
-            int year= Calendar.getInstance().get(Calendar.YEAR)-10;
-            List<CourseOfferingInfo> courseOfferingInfo=null;
-                 try{
-                     // The right strategy would be using the multiple equal predicates joined using an and
-                    courseOfferingInfo=getCourseOfferingService().searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values",""+year+","+subject+","+number+"")),CourseSearchConstants.CONTEXT_INFO);
-                 }catch (Exception e)
-                 {
-                   logger.error("could not load courseOfferingInfo list");
-                 }
-                         if(courseOfferingInfo!=null){
-                            String lastOffered=courseOfferingInfo.get(0).getTermId();
-                            lastOffered=lastOffered.substring(0,1).toUpperCase().concat(lastOffered.substring(1,lastOffered.length()));
-                            courseDetails.setLastOffered(lastOffered);
-                        }
+        if (courseDetails.getScheduledTerms().size() == 0) {
+            int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+            List<CourseOfferingInfo> courseOfferingInfo = null;
+            try {
+                // The right strategy would be using the multiple equal predicates joined using an and
+                courseOfferingInfo = getCourseOfferingService().searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", "" + year + "," + subject + "," + number + "")), CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("could not load courseOfferingInfo list");
+            }
+            if (courseOfferingInfo != null) {
+                String lastOffered = courseOfferingInfo.get(0).getTermId();
+                lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
+                courseDetails.setLastOffered(lastOffered);
+            }
 
         }
         return courseDetails;
     }
 
 
-     /**
+    /**
      * To get the full text for gen ed requirements
+     *
      * @param key
      * @return genEdReqValue
      */
 
     protected String getGenEdReqValue(String key) {
 
-             String genEdReqValue=null;
+        String genEdReqValue = null;
 
-             try {
-                 List<EnumeratedValueInfo> enumeratedValueInfoList=null;
-                 if(!hashMap.containsKey("kuali.uw.lu.genedreq")) {
-                     enumeratedValueInfoList= getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
-                 }
-                 else {
-                     enumeratedValueInfoList=hashMap.get("kuali.uw.lu.genedreq");
-                 }
-                for(EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                    String abbr = enumVal.getAbbrevValue();
-
-                    if(abbr.equalsIgnoreCase(key))
-        {
-                        genEdReqValue=enumVal.getValue();
-                        break;
-        }
-                }
-
-            } catch (Exception e) {
-                logger.error("Could not load genEdReqValue");
+        try {
+            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+            if (!hashMap.containsKey("kuali.uw.lu.genedreq")) {
+                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
+            } else {
+                enumeratedValueInfoList = hashMap.get("kuali.uw.lu.genedreq");
             }
+            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+                String abbr = enumVal.getAbbrevValue();
+
+                if (abbr.equalsIgnoreCase(key)) {
+                    genEdReqValue = enumVal.getValue();
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Could not load genEdReqValue");
+        }
 
         return genEdReqValue;
     }
 
 
-
-
-     /**
+    /**
      * To get the title for the respective display name
+     *
      * @param display
      * @return
      */
     protected String getTitle(String display) {
-             String titleValue=null;
-              try {
-                List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-                  if(!hashMap.containsKey("kuali.lu.subjectArea")){
-                      enumeratedValueInfoList=getEnumerationValueInfoList("kuali.lu.subjectArea");
-                  }
-                  else {
-                      enumeratedValueInfoList=hashMap.get("kuali.lu.subjectArea");
-                  }
-                for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
-        {
-                    String code= enumVal.getCode().trim();
-                    if(code.equalsIgnoreCase(display.trim()))
-                    {
-                        titleValue=enumVal.getValue().trim();
-                        break;
-        }
-                }
-
-            } catch (Exception e) {
-                logger.error("Could not load title value");
+        String titleValue = null;
+        try {
+            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+            if (!hashMap.containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+                enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
+            } else {
+                enumeratedValueInfoList = hashMap.get(CourseSearchConstants.SUBJECT_AREA);
             }
+            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+                String code = enumVal.getCode().trim();
+                if (code.equalsIgnoreCase(display.trim())) {
+                    titleValue = enumVal.getValue().trim();
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Could not load title value");
+        }
 
         return titleValue;
     }
@@ -364,7 +342,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return this.courseService;
     }
 
-    public synchronized void setCourseService( CourseService courseService ) {
+    public synchronized void setCourseService(CourseService courseService) {
         this.courseService = courseService;
     }
 
@@ -427,12 +405,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     protected synchronized void initializeCampusLocations() {
         if (null == campusLocationCache || campusLocationCache.isEmpty()) {
             try {
-                List<EnumeratedValueInfo> campusLocations=null;
-                if(!hashMap.containsKey("kuali.lu.campusLocation")) {
-                    campusLocations = getEnumerationValueInfoList("kuali.lu.campusLocation");
-                }
-                else {
-                    campusLocations =hashMap.get("kuali.lu.campusLocation");
+                List<EnumeratedValueInfo> campusLocations = null;
+                if (!hashMap.containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+                    campusLocations = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
+                } else {
+                    campusLocations = hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
                 }
                 if (this.campusLocationCache == null) {
                     this.campusLocationCache = new HashMap<String, String>();
@@ -449,16 +426,14 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
 
-        List<EnumeratedValueInfo> enumeratedValueInfoList=null;
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
 
-        try{
+        try {
 
             enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            hashMap.put(param,enumeratedValueInfoList);
-        }
-        catch (Exception e)
-        {
-            logger.error("No Values for campuses found",e);
+            hashMap.put(param, enumeratedValueInfoList);
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
         }
 
         return enumeratedValueInfoList;
@@ -486,10 +461,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
     public AcademicPlanService getAcademicPlanService() {
-       if (academicPlanService == null) {
+        if (academicPlanService == null) {
             academicPlanService = (AcademicPlanService)
-                GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
-                    AcademicPlanServiceConstants.SERVICE_NAME));
+                    GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
+                            AcademicPlanServiceConstants.SERVICE_NAME));
         }
         return academicPlanService;
     }
