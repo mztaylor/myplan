@@ -41,6 +41,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     private static Pattern patternTerm;
     private static Pattern patternYear;
 
+    private static int CRITERIA_LENGTH = 24;
+
     private SAXReader reader;
 
     private StudentServiceClient studentServiceClient;
@@ -64,17 +66,16 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
      * @param termId
      * @param context
      * @return
-     *
      */
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsForCourseAndTerm(@WebParam(name = "courseId") String courseId,
-            @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
+                                                                       @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
         List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
 
-        String subjectArea = courseId.substring(0,6).trim();
+        String subjectArea = courseId.substring(0, 6).trim();
 
         List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
 
@@ -93,8 +94,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     /**
      * This implementation actually returns course code ...
-     *    Student Service: curriculum abbreviation _ course number
-     *    MyPlan: subject _ number.
+     * Student Service: curriculum abbreviation _ course number
+     * MyPlan: subject _ number.
      *
      * @param termId
      * @param subjectArea
@@ -106,7 +107,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                                                                  @WebParam(name = "subjectArea") String subjectArea,
                                                                  @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
-                OperationFailedException, PermissionDeniedException {
+            OperationFailedException, PermissionDeniedException {
 
         List<String> ids = new ArrayList<String>(100);
 
@@ -127,7 +128,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     /**
      * Queries the student service and creates a collection of courseCodes for a given termKey (term, year)
      * and subject area (curriculum abbreviation)
-     * @param termId  A term key like 'kuali.uw.atp.winter1970'.
+     *
+     * @param termId      A term key like 'kuali.uw.atp.winter1970'.
      * @param subjectArea A subject area like 'chem'.
      * @return A Set of course Codes.
      */
@@ -161,7 +163,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//s:Section");
-        Map<String,String> namespaces = new HashMap<String,String>();
+        Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("s", "http://webservices.washington.edu/student/");
         xpath.setNamespaceURIs(namespaces);
 
@@ -183,55 +185,55 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         return courseCodes;
     }
-   
+
     @Override
     public CourseOfferingInfo getCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsByIdList(@WebParam(name = "courseOfferingIds") List<String> courseOfferingIds, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> getCourseOfferingIdsForTerm(@WebParam(name = "termKey") String termKey, @WebParam(name = "useIncludedTerm") Boolean useIncludedTerm, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> getCourseOfferingIdsByTermAndInstructorId(@WebParam(name = "termKey") String termKey, @WebParam(name = "instructorId") String instructorId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<String> getCourseOfferingIdsByTermAndUnitContentOwner(@WebParam(name = "termKey") String termKey, @WebParam(name = "unitOwnerId") String unitOwnerId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public CourseOfferingInfo createCourseOfferingFromCanonical(@WebParam(name = "courseId") String courseId, @WebParam(name = "termKey") String termKey, @WebParam(name = "formatIdList") List<String> formatIdList, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public CourseOfferingInfo updateCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "courseOfferingInfo") CourseOfferingInfo courseOfferingInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public CourseOfferingInfo updateCourseOfferingFromCanonical(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<ValidationResultInfo> validateCourseOffering(@WebParam(name = "validationType") String validationType, @WebParam(name = "courseOfferingInfo") CourseOfferingInfo courseOfferingInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -421,7 +423,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     public SeatPoolDefinitionInfo updateSeatPoolDefinition(@WebParam(name = "seatPoolDefinitionId") String seatPoolDefinitionId, @WebParam(name = "seatPoolDefinitionInfo") SeatPoolDefinitionInfo seatPoolDefinitionInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -429,26 +431,33 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented.");
     }
 
-    public enum terms{autumn,winter,spring,summer};
+    public enum terms {autumn, winter, spring, summer}
+
+    ;
 
     @Override
     public List<CourseOfferingInfo> searchForCourseOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        List<CourseOfferingInfo> courseOfferingInfos=new ArrayList<CourseOfferingInfo>();
+        List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
         CourseOfferingInfo courseOfferingInfo = new CourseOfferingInfo();
         // The right strategy would be using the multiple equal predicates joined using an and
-        Predicate p= criteria.getPredicate();
-        String str=p.toString();
-        String responseText=null;
-        str=str.substring(24,str.length()-1);
-        String[] strings=str.split(",");
-        String year=strings[0].trim();
-        String curriculum=strings[1].trim();
-        String courseCode=strings[2].trim();
-        try{
-        responseText = studentServiceClient.getSections(year,curriculum,courseCode);
+        Predicate p = criteria.getPredicate();
+        String str = p.toString();
+        String responseText = null;
+        str = str.substring(CRITERIA_LENGTH, str.length() - 1);
+        String[] strings = null;
+        String year = null;
+        String curriculum = null;
+        String courseCode = null;
+        strings = str.split(",");
+        if (strings != null && strings.length == 3) {
+            year = strings[0].trim();
+            curriculum = strings[1].trim();
+            courseCode = strings[2].trim();
         }
-        catch (Exception e)
-        {
+
+        try {
+            responseText = studentServiceClient.getSections(year, curriculum, courseCode);
+        } catch (Exception e) {
             logger.error(e);
         }
         Document document = null;
@@ -459,55 +468,63 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
         Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//s:Section");
-        Map<String,String> namespaces = new HashMap<String,String>();
+        Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("s", "http://webservices.washington.edu/student/");
         xpath.setNamespaceURIs(namespaces);
 
-        List<String> lastOffered = new ArrayList<String>();
-
         List sections = xpath.selectNodes(document);
+        //From the sections last offered for the course is figured out
+        if (sections != null) {
+            StringBuffer cc = new StringBuffer();
+            int maxQ = 0;
+            String[] quarters = new String[sections.size()];
+            Integer[] resultYear = new Integer[sections.size()];
+            //Logical implementation to get the last offered year
+            int actualYear = -1;
+            String actualQuarter = null;
+            int resultQuarter = 0;
+            int count = 0;
+            for (Object node : sections) {
 
+                Element section = (Element) node;
 
-        String cc=null;
-        int maxQ=0;
-        String[] quarters=new String[sections.size()];
-        Integer[] resultYear=new Integer[sections.size()];
-        Integer[] tempYear=new Integer[sections.size()];
-        String actualYear=null;
-        String actualQuarter=null;
-        int resultQuarter=0;
-        int count=0;
-        for (Object node : sections) {
-
-            Element section = (Element) node;
-
-            resultYear[count]= Integer.parseInt(section.elementText("Year"));
-            tempYear[count]= Integer.parseInt(section.elementText("Year"));
-            quarters[count] = section.elementText("Quarter");
-            count++;
-        }
-        Arrays.sort(tempYear);
-        actualYear=tempYear[tempYear.length-1].toString();
-
-        for(int i=0;i<quarters.length;i++){
-            String tempQuarter=quarters[i];
-            terms fd=terms.valueOf(quarters[i]);
-            switch(fd) {
-                case autumn:resultQuarter=1;break;
-                case winter:resultQuarter=2;break;
-                case spring:resultQuarter=3;break;
-                case summer:resultQuarter=4;break;
+                resultYear[count] = Integer.parseInt(section.elementText("Year"));
+                if (resultYear[count] > actualYear) {
+                    actualYear = resultYear[count];
+                }
+                quarters[count] = section.elementText("Quarter");
+                count++;
             }
-            if(resultYear[i].toString().equalsIgnoreCase(actualYear)&& resultQuarter>maxQ){
-                maxQ=resultQuarter;
-                actualQuarter=tempQuarter;
+            //Logical implementation to get the last offered quarter
+            for (int i = 0; i < quarters.length; i++) {
+                String tempQuarter = quarters[i];
+                terms fd = terms.valueOf(quarters[i]);
+                switch (fd) {
+                    case autumn:
+                        resultQuarter = 1;
+                        break;
+                    case winter:
+                        resultQuarter = 2;
+                        break;
+                    case spring:
+                        resultQuarter = 3;
+                        break;
+                    case summer:
+                        resultQuarter = 4;
+                        break;
+                }
+                if (resultYear[i].equals(actualYear) && resultQuarter > maxQ) {
+                    maxQ = resultQuarter;
+                    actualQuarter = tempQuarter;
 
+                }
             }
-        }
-        cc=actualQuarter+" "+actualYear;
-        courseOfferingInfo.setTermId(cc.toString().trim());
-        courseOfferingInfos.add(courseOfferingInfo);
 
+            cc = cc.append(actualQuarter).append(" ").append(actualYear);
+            courseOfferingInfo.setTermId(cc.toString().trim());
+            courseOfferingInfos.add(courseOfferingInfo);
+
+        }
         return courseOfferingInfos;
     }
 
