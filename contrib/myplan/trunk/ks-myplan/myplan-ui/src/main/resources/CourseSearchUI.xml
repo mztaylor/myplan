@@ -352,15 +352,15 @@
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
                 <bean parent="Uif-ActionImage" p:label="" p:id="@{#line.courseId}" p:styleClasses="fl-text-align-center" p:style="width:55px;">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
-                    <property name="clientSideJs" value="addSavedCourse('@{#line.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{#line.courseId}'}, e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('@{#line.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{#line.courseId}'}, e.srcElement.id);"/>
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
                               p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="In List" p:style="width:55px;" p:id="@{#line.courseId}"
-                      p:styleClasses="fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}"/>
+                <bean parent="Uif-MessageField" p:messageText="In List" p:id="@{#line.courseId}"
+                      p:styleClasses="fl-container-50 fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}"/>
                 <bean parent="Uif-DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true"/>
                 <bean parent="Uif-DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
