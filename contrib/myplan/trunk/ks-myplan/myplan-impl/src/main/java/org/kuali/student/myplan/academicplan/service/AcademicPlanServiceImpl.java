@@ -218,6 +218,10 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
+        //  FIXME: For a given plan there should be only one planned course item per course id. So, do a lookup to see
+        //  if a plan item exists if the type is "planned" and do an update of ATPid instead of creating a new plan item.
+
+
         PlanItemEntity pie = new PlanItemEntity();
         String planItemId = UUIDHelper.genStringUUID();
         pie.setId(planItemId);
@@ -443,20 +447,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
 
         /*
-         * Make sure a saved courses item with this course id doesn't already exist.
-         * TODO: Move this validation to the data dictionary.
+         * Check for duplicate list items:
+         *    Make sure a saved courses item with this course id doesn't already exist in the plan.
+         *    Make sure a planned course item with the same ATP id doesn't exist in the plan.
+         *
+         * TODO: Move these validations to the data dictionary.
          */
-        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+       if (isPlanItemDuplicate(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), planItemInfo.getTypeKey())) {
+           throw new AlreadyExistsException(String.format("An item with this course id [%s] already exists in the user's saved courses list.",
+                   planItemInfo.getRefObjectId()));
+       }
 
-            List<PlanItemEntity> savedCourseListItems =
-                    this.planItemDao.getLearningPlanItems(planItemInfo.getLearningPlanId(), AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-
-            for (PlanItemEntity p : savedCourseListItems) {
-                if (p.getRefObjectId().equals(planItemInfo.getRefObjectId())) {
-                    throw new AlreadyExistsException(String.format("An item with this course id [%s] already exists in the user's saved courses list.", planItemInfo.getRefObjectId()));
-                }
-            }
-        }
 
         /*
          *  Validate that the course exists.
@@ -491,6 +492,34 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return new ArrayList<ValidationResultInfo>();
+    }
+
+    private boolean isPlanItemDuplicate(String planId, String courseId, String planItemType) throws AlreadyExistsException {
+
+        boolean isDup = false;
+
+        List<PlanItemEntity> planItems =
+                this.planItemDao.getLearningPlanItems(planId, planItemType);
+        /**
+         * See if a duplicate item exits in the plan. If the type is wishlist then only the course id has to match to make
+         * it a duplicate. If the type is planned course then the ATP must match as well.
+         */
+        for (PlanItemEntity p : planItems) {
+            if (p.getRefObjectId().equals(courseId)) {
+                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                    if (p.getPlanPeriods().contains(p.getRefObjectId())) {
+                        if (p.getPlanPeriods().contains(p.getRefObjectId())) {
+                            isDup = true;
+                            break;
+                        }
+                    }
+                } else {
+                    isDup = true;
+                    break;
+                }
+            }
+        }
+        return isDup;
     }
 
     private ValidationResultInfo makeValidationResultInfo(String errorMessage, String element, ValidationResult.ErrorLevel errorLevel) {
