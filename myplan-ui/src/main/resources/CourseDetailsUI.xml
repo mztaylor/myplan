@@ -260,7 +260,7 @@
 
     <bean id="course_details_back_link" parent="Uif-ViewHeaderField">
         <property name="items">
-            <bean parent="Uif-Link" p:linkLabel="Back to Previous Page" p:title="Back to Previous Page" p:hrefText="javascript:history.go(-1)"/>
+            <bean parent="Uif-Link" p:linkLabel="Back to Previous Page" p:title="Back to Previous Page" p:hrefText="javascript:history.go(-1)" p:style="display:block; margin-top:1em;"/>
         </property>
     </bean>
 
@@ -297,7 +297,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}" p:render="@{dataObject.inSavedCourseList ? false : true}">
-                    <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
+                    <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e.srcElement.id);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -617,17 +617,12 @@
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>/ks-myplan/scripts/jquery.autoellipsis.min.js</value>
-            </list>
-        </property>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="Items">
+        <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="course_details_popup">
                     <property name="styleClasses">
@@ -772,7 +767,7 @@
                                 <property name="items">
                                     <list>
                                         <bean p:id="addToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
-                                            <property name="clientSideJs" value="alert('This course has been added to your plan');"/>
+                                            <property name="clientSideJs" value="addPlanCourse();"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -782,7 +777,7 @@
                                             </property>
                                         </bean>
                                         <bean p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
-                                            <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
+                                            <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e.srcElement.id);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -806,7 +801,7 @@
                                 <property name="items">
                                     <list>
                                         <bean p:id="moveToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Move to Plan">
-                                            <property name="clientSideJs" value="alert('This course has been moved to your plan');"/>
+                                            <property name="clientSideJs" value="addPlanCourse();"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>
@@ -816,7 +811,7 @@
                                             </property>
                                         </bean>
                                         <bean p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>
+                                            <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e.srcElement.id);"/>
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-button</value>

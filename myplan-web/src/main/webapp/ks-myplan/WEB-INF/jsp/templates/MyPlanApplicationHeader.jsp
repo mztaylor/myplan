@@ -31,6 +31,11 @@
         </div>
 
         <div id="appnav_div">
-            [ Global Navigation1 ]
+            <ul>
+                <li><a href="/student/">Home</a></li>
+                <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find a Course</a></li>
+                <li><a href="#">Explore Programs</a></li>
+                <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
+            </ul>
         </div>
   </div>

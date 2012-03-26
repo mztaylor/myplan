@@ -1,4 +1,6 @@
-body * {
+*,
+*:active,
+*:focus {
 	outline: 0;
 }
 body {
@@ -67,6 +69,23 @@ a:focus {
     padding: 15px;
     margin: 10px 0px 0px 0px;
 }
+#appnav_div ul,
+#appnav_div ul li,
+#appfooter_div ul,
+#appfooter_div ul li {
+    list-style: none;
+    margin:  0;
+    padding:  0;
+}
+#appnav_div ul li,
+#appfooter_div ul li {
+    display: inline-block;
+    margin-left: 2em;
+}
+#appnav_div ul li:first-child,
+#appfooter_div ul li:first-child {
+    margin:  0;
+}
 #appfooter_div {
 	border: solid 1px #e5e5e5;
     background: #f5f5f5;
@@ -75,7 +94,7 @@ a:focus {
     margin: 10px 0px 0px 0px;
     width: 908px;
 }
-.uif-page {
+.myplan-view #viewpage_div {
 	min-height: 450px;
 }
 /* Overwrite KRAD Styles ########################################################################### */
@@ -101,11 +120,13 @@ a:focus {
     width: auto;
     clear: both;
 }
-.myplan-view .boxLayoutVerticalItem {
+.myplan-view .boxLayoutVerticalItem,
+.jquerybubblepopup .boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
     padding: 0;
 }
-.myplan-view .boxLayoutHorizontalItem {
+.myplan-view .boxLayoutHorizontalItem,
+.jquerybubblepopup .boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
     padding:  0;
 }
@@ -179,23 +200,10 @@ a:focus {
     padding: 0;
     display: inline;
 }
-.myplan-data-list dl dd:after {
-    content: ",";
-    margin-right: 0.33em;
-}
-.myplan-data-list dl dd:last-child:after {
-    content: "";
-    margin-right: 0;
-}
 .myplan-data-list dd.scheduled,
 .myplan-data-list dd.projected {
     clear: both;
     display: block;
-}
-.myplan-data-list .scheduled:after,
-.myplan-data-list dl.scheduled:after {
-    margin: 0;
-    content: "";
 }
 .myplan-data-list .scheduled dl dd,
 .myplan-data-list dl.scheduled dd {
@@ -210,10 +218,15 @@ a:focus {
     line-height: 1.8em;
     display: inline-block;
 }
-.myplan-data-list .scheduled dl dd:after,
-.myplan-data-list dl.scheduled dd:after {
+.myplan-data-list dl dd:before {
+    content: ", ";
+}
+.myplan-data-list dl dd:first-child:before,
+.myplan-data-list .scheduled:before,
+.myplan-data-list .projected:before,
+.myplan-data-list .scheduled dl dd:before,
+.myplan-data-list dl.scheduled dd:before {
     content: "";
-    margin: 0;
 }
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
@@ -234,7 +247,7 @@ a:focus {
 .myplan-message-border {
     height: 22px;
     line-height: 22px;
-    padding: 0 10px 0 36px !important;
+    padding: 0 10px 0 32px !important;
     border: solid 1px #d7d7d7;
     display: block;
     margin: 0 !important;
@@ -242,7 +255,7 @@ a:focus {
 .myplan-message-noborder {
     height: 24px;
     line-height: 24px;
-    padding: 0 0 0 36px !important;
+    padding: 0 0 0 32px !important;
     display: block;
     margin: 0 !important;
 }
@@ -557,11 +570,6 @@ a:focus {
 .myplan-saved-courses-summary > div[id$='_group']{
     min-height: 24px;
 }
-.myplan-saved-courses-summary ul,
-.myplan-saved-courses-summary ul li {
-	margin: 0;
-    padding: 0;
-}
 .myplan-saved-courses-summary ul li {
     border-bottom:dotted 1px #aaaaaa;
     padding: 6px 4px;
@@ -569,6 +577,9 @@ a:focus {
     clear:both;
     cursor: pointer;
     font-size: 95%;
+}
+.myplan-saved-courses-summary ul li:hover {
+    background: #a9a9a9;
 }
 .myplan-saved-courses-summary ul li .boxLayoutHorizontalItem span {
     float: left;
@@ -616,9 +627,22 @@ a:focus {
 }
 /* Course Details Popup ########################################################################### */
 .myplan-popup-box {
-	min-height: 24px !important;
+	/*min-height: 24px !important;*/
     position: relative;
-    padding: 5px 5px 0 5px;
+    overflow: hidden;
+    /*padding: 5px 5px 0 5px;*/
+    width: 300px;
+    height: 275px;
+}
+.myplan-popup-box .uif-horizontalBoxLayout {
+    width: 20000em;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.myplan-popup-box .uif-horizontalBoxLayout .uif-boxSubSection {
+    width: 300px;
+    height: 275px;
 }
 .myplan-popup-close {
     float: right;
@@ -633,7 +657,35 @@ a:focus {
     border: none;
     width: 16px;
 }
-/*
+/* Recent Audit List Styles ########################################################################### */
+.myplan-recent-audit div.blockElement {
+    left: 92px !important;
+    top: 4px !important;
+    border: none;
+    width: 16px;
+}
+.myplan-recent-audit > div[id$='_group']{
+    min-height: 24px;
+}
+.myplan-recent-audit ul li {
+    border-top:dotted 1px #aaaaaa;
+    padding: 6px 4px;
+    display: block;
+    clear:both;
+    cursor: pointer;
+    font-size: 95%;
+}
+.myplan-recent-audit ul li:hover {
+    background: #a9a9a9;
+}
+.myplan-recent-audit ul li:first-child {
+    border: none;
+}
+.myplan-recent-audit ul li .boxLayoutHorizontalItem span {
+    float: left;
+    margin-right: 0.4em;
+}
+
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
         width:8px;

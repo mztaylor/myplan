@@ -49,7 +49,7 @@ jq(document).ready(function(){
     });
     jq("a.subrequirement-courses-acceptable-link").click(function(e) {
     	e.preventDefault();
-    	var id = jq(this).attr("href");
-    	openPopUp(id+'_popup', id, 'audit', 'audit', {viewId:'DegreeAudit-FormView'}, event, null, {width:'400px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+    	//var id = jq(this).attr("href");
+    	//openPopUp(id+'_popup', id, 'audit', 'audit', {viewId:'DegreeAudit-FormView'}, event, null, {width:'400px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
     });
 });

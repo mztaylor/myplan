@@ -17,5 +17,8 @@
 --%>
 
     <div id="appfooter_div">
-        [ Footer ]
+        <ul>
+            <li><a href="#">Help</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
     </div>
