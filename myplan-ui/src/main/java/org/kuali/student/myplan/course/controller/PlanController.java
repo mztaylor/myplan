@@ -103,8 +103,8 @@ public class PlanController extends UifControllerBase {
                 newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
                 newPlanItemId = newPlanItem.getId();
             } catch (AlreadyExistsException e) {
-                //  The course id was already in the saved courses list. Let this error go unreported.
-                logger.warn("Item was already in wishlist.", e);
+                //  FIXME: Lookup the duplicate plan item, get its id and store in newPlanItemId. (Same as saved courses below.)
+                logger.warn("Item was already in plan.", e);
             } catch (Exception e) {
                 //  Give the end-user a generic error message, but log the exception.
                 logger.error("Could not create plan item.", e);
