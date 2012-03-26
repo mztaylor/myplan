@@ -35,7 +35,7 @@ public class AcademicPlanServiceAuthorizationDecorator
 		this.permissionService = permissionService;
 	}
 
-     @Override
+    @Override
     public LearningPlanInfo getLearningPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
@@ -44,7 +44,7 @@ public class AcademicPlanServiceAuthorizationDecorator
         }
 
         if (permissionService.isAuthorized(context.getPrincipalId(), AcademicPlanServiceConstants.NAMESPACE,
-                AcademicPlanServiceConstants.SERVICE_NAME + "/getLearningPlan", null)) {
+                AcademicPlanServiceConstants.SERVICE_NAME + "/getLearningPlan", null, null)) {
 	        return getNextDecorator().getLearningPlan(learningPlanId, context);
         } else {
         	throw new OperationFailedException("Permission Denied.");
