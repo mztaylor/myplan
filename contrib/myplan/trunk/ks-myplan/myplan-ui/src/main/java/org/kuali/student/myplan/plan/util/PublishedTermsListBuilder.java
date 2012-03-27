@@ -8,7 +8,6 @@ import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  *  Assembles a list of published terms.
  *
- *  FIXME: This is very similar to the course.util.PublishedTermsListBuilder. They need to be combined.
+ *  FIXME: This is very similar to the course.util.PublishedTermsListBuilder. They needs to be combined.
  *
  */
 public class PublishedTermsListBuilder extends KeyValuesBase {
