@@ -34,7 +34,7 @@
         <property name="dataObjectEntry" ref="PlanItemInfo"/>
     </bean>
 
-    <bean id="AddSavedCourse-FormView" parent="MyPlanFormView">
+    <bean id="AddPlannedCourse-FormView" parent="MyPlanFormView">
         <property name="id" value="AddSavedCourse-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="add_planned_course"/>
