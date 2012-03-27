@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- Copyright 2007-2009 The Kuali Foundation Licensed under the Educational
+         Community License, Version 2.0 (the "License"); you may not use this file
+         except in compliance with the License. You may obtain a copy of the License
+         at http://www.opensource.org/licenses/ecl2.php Unless required by applicable
+         law or agreed to in writing, software distributed under the License is distributed
+         on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+         express or implied. See the License for the specific language governing permissions
+         and limitations under the License. -->
+
+    <bean id="PlannedCoursesItem" parent="SavedCoursesItem-parentBean"/>
+    <bean id="PlannedCoursesItem-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Planned Course"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedCoursesItem"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list/>
+        </property>
+
+         <property name="complexAttributes">
+            <list>
+                <ref bean="PlanItem"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PlanItem" parent="ComplexAttributeDefinition">
+        <property name="name" value="planItem"/>
+        <property name="dataObjectEntry" ref="PlanItemInfo"/>
+    </bean>
+
+    <bean id="AddSavedCourse-FormView" parent="MyPlanFormView">
+        <property name="id" value="AddSavedCourse-FormView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="entryPageId" value="add_planned_course"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Two"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="add_planned_course" p:title="">
+                    <property name="instructionalText" value="Select a quarter."/>
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="add_planned_course_section"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
+    </bean>
+
+    <!-- Layout for Empty Course Search Form Page  -->
+    <bean id="add_planned_course_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>FIXME</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="add_planned_course_panel"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Search Fields Container -->
+    <bean id="add_planned_course_panel" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>FIXME</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:label="Course" p:propertyName="courseId"/>
+                <ref bean="add_planned_course_fields"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for "Add Plan Item" inputs -->
+    <bean id="add_planned_course_fields" parent="Uif-VerticalFieldGroup">
+        <property name="group.errorsField.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Select a quarter: "/>
+
+                <bean parent="Uif-InputField" p:propertyName="termsList" p:width="auto" p:defaultValue="0">
+                    <property name="control">
+                        <bean parent="Uif-VerticalCheckboxesControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.plan.util.PublishedTermsListBuilder"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:label="Other" p:propertyName="other" p:defaultValue="false" p:width="auto"
+                       p:instructionalText="(The course may not be offered at the quarter you select)" >
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="quarter" p:label="Select Quarter"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.plan.util.QuartersListBuilder"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="year" p:label="Select Year"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
+                    </property>
+                </bean>
+
+                <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="addPlannedCourse"
+                      p:actionLabel="Add To Plan" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>course-search-submit</value>
+                            <value>myplan-button</value>
+                            <value>myplan-button-blue</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

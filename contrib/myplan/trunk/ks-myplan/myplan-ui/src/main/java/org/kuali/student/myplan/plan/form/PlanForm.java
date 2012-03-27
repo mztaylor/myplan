@@ -12,17 +12,44 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.myplan.course.form;
+package org.kuali.student.myplan.plan.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
 
 import java.util.List;
 
 public class PlanForm extends UifFormBase {
-
+    //  Saved courses params.
     private String planItemId;
     private String termId;
     private String courseId;
+
+    //  Form fields.
+    private String termsList;
+    private boolean other = false;
+
+    //  Additional fields needed for the Other option.
+    private String quarter;
+    private String year;
+
+    //  Not implemented: Half way between a saved course and a planned course.
+    private boolean backup;
+
+    public String getTermsList() {
+        return termsList;
+    }
+
+    public void setTermsList(String termsList) {
+        this.termsList = termsList;
+    }
+
+    public boolean isOther() {
+        return other;
+    }
+
+    public void setOther(boolean other) {
+        this.other = other;
+    }
 
     public PlanForm() {
         super();
@@ -50,5 +77,29 @@ public class PlanForm extends UifFormBase {
 
     public void setPlanItemId(String planItemId) {
         this.planItemId = planItemId;
+    }
+
+    public boolean isBackup() {
+        return backup;
+    }
+
+    public void setBackup(boolean backup) {
+        this.backup = backup;
+    }
+
+    public String getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(String quarter) {
+        this.quarter = quarter;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }

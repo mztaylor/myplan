@@ -148,17 +148,4 @@ public class CourseSearchForm extends UifFormBase {
     public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
         this.creditsFacetItems = creditsFacetItems;
     }
-
-    List<SavedCoursesItem> savedCoursesItemList;
-
-    public List<SavedCoursesItem> getSavedCoursesItemList()
-    {
-        return savedCoursesItemList;
-    }
-
-    public void setSavedCoursesItemList( List<SavedCoursesItem> savedCoursesItemList ) {
-        this.savedCoursesItemList = savedCoursesItemList;
-    }
-
-
 }

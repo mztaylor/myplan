@@ -192,12 +192,10 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=start")
-
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
 
         super.start(form, result, request, response);
-        CourseSearchForm searchForm = (CourseSearchForm) form;
         return getUIFModelAndView(form);
     }
 
