@@ -72,15 +72,22 @@ public class PlanController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String courseId = form.getCourseId();
-        //  TODO: This may need to be changed to be multivalued.
-        String termId = form.getTermId();
-
         if (StringUtils.isEmpty(courseId)) {
-            // DO ERROR.
+            //  DO ERROR.
+            throw new RuntimeException("Empty Course ID");
         }
 
-        if (StringUtils.isEmpty(termId)) {
+        String termIdString = form.getTermsList();
+        if (StringUtils.isEmpty(termIdString)) {
             //  DO ERROR.
+            throw new RuntimeException("Terms List was empty.");
+        }
+        String[] t = termIdString.split(",");
+        List<String> termIds = Arrays.asList(t);
+
+        if (termIds.isEmpty()) {
+            //  DO ERROR.
+            throw new RuntimeException("Couldn't parse terms list.");
         }
 
         Person user = GlobalVariables.getUserSession().getPerson();
@@ -106,9 +113,8 @@ public class PlanController extends UifControllerBase {
             pii.setDescr(rti);
 
             //  Set Term/ATP
-            List<String> atps = new ArrayList<String>();
-            atps.add(termId);
-            pii.setPlanPeriods(atps);
+            //  TODO: Validate term ids.
+            pii.setPlanPeriods(termIds);
 
             PlanItem newPlanItem = null;
             try {
