@@ -13,17 +13,17 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Rest client for the Student Service.
  */
-public class FauxStudentServiceClientImpl	implements StudentServiceClient {
+public class StudentServiceClientMockImpl implements StudentServiceClient {
 
     private static final Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
-    public FauxStudentServiceClientImpl() {}
+    public StudentServiceClientMockImpl() {}
 
     /**
      * This constructor is here to make the Spring config consistent with the other implementation.
      */
-    public FauxStudentServiceClientImpl(String baseUrl, String trustStoreFilename, String trustStorePasswd,
-        String keyStoreFilename, String keyStorePasswd) {
+    public StudentServiceClientMockImpl(String baseUrl, String trustStoreFilename, String trustStorePasswd,
+                                        String keyStoreFilename, String keyStorePasswd) {
     }
 
 	/**
