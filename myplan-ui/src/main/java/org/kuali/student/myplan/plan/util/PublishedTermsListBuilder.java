@@ -52,6 +52,8 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
                 keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName()));
             }
         }
+        // Added 'Other' option to list be default - Garett 3/27/12
+        keyValues.add(new ConcreteKeyValue("other", "Other"));
         return keyValues;
     }
 
