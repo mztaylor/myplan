@@ -9,7 +9,7 @@ function stopEvent(e) {
     }
     return false;
 }
-function openCourse(courseId, e, enrolled,quarter,credits) {
+function openCourse(courseId, e, enrolled, quarter, credits) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
@@ -29,10 +29,15 @@ function openCourse(courseId, e, enrolled,quarter,credits) {
 
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, messaging) {
     stopEvent(e);
-    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-box");
-    jQuery.each(popupStyles, function(property, value) {
-        jq(popupHtml).css(property, value);
-    });
+
+    var popupSlider = jq('<div />').attr("class","myplan-popup-slider");
+    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-frame").append(popupSlider);
+
+    if (popupStyles) {
+        jQuery.each(popupStyles, function(property, value) {
+            jq(popupHtml).css(property, value);
+        });
+    }
 
 	var popupOptionsDefault = {
 		innerHtml: jq(popupHtml).clone().wrap('<div>').parent().html(),
@@ -89,22 +94,46 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jq("#" + getId + "_div", htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
-            // replace component
             if(jq("#" + id).length){
+                jq("#" + id + " .myplan-popup-slider").append( component.addClass("myplan-popup-item") );
+                /*
                 popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>').append(messaging));
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
                     popupBox.RemoveBubblePopup();
                 });
+                */
             }
             runHiddenScripts(getId + "_div");
 			}
 		});
 	};
 
-    if (!methodToCall) {
-        methodToCall = "search";
-    }
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    jq("form#"+ id + "_form").remove();
+}
+
+function myplanAppendPopup(id, getId, methodToCall, action, retrieveOptions) {
+    var tempForm = jq('<form />').hide();
+	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
+    jQuery.each(retrieveOptions, function(name, value) {
+        jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+    });
+    jq("body").append(tempForm);
+    var tempDiv = jq('<div />').attr("id","tempDiv").addClass("myplan-popup-item");
+    jq("#" + id + " .myplan-popup-slider").append(tempDiv);
+
+    var elementToBlock = jq("#tempDiv");
+
+	var updateRefreshableComponentCallback = function(htmlContent){
+		var component = jq("#" + getId + "_div", htmlContent);
+		elementToBlock.unblock({onUnblock: function(){
+            if(jq("#tempDiv").length){
+                jq("#tempDiv").replaceWith( component.addClass("myplan-popup-item") );
+            }
+            runHiddenScripts(getId + "_div");
+		}});
+	};
 
 	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
@@ -133,8 +162,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
                 if(highlightId) {
                 	jq("[id^='" + highlightId + "']").parents('li').animate( {backgroundColor:"#ffffcc"}, 1 ).animate( {backgroundColor:"#ffffff"}, 3000 );
                 }
-			}
-		});
+		}});
 	};
 
     if (!methodToCall) {
@@ -176,10 +204,6 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, targetId) {
 			// showGrowl('Error updating', 'Error', 'errorGrowl');
 		}
 	};
-
-    if (!methodToCall) {
-        methodToCall = "addSavedCourse";
-    }
 
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#" + id + "_form").remove();
@@ -274,8 +298,8 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 }
 
 function addPlanCourse() {
-     var position = jq(".myplan-popup-box .uif-horizontalBoxLayout").position().left - ( jq(".myplan-popup-box .uif-horizontalBoxLayout .uif-boxSubSection").width() + parseFloat(jq(".myplan-popup-box .uif-horizontalBoxLayout .uif-boxSubSection").parent().css("margin-right")) );
-     jq(".myplan-popup-box .uif-horizontalBoxLayout").animate({
+     var position = jq(".myplan-popup-frame .myplan-popup-slider").position().left - jq(".myplan-popup-frame .myplan-popup-slider .myplan-popup-item").width();
+     jq(".myplan-popup-frame .myplan-popup-slider").animate({
         left: position + "px"
      }, 500);
 }
