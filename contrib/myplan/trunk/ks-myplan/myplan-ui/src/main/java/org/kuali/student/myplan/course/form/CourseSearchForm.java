@@ -18,10 +18,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
-import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class CourseSearchForm extends UifFormBase {

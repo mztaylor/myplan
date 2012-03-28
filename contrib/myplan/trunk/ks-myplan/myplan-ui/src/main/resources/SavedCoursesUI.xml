@@ -21,7 +21,7 @@
     <bean id="SavedCoursesItem" parent="SavedCoursesItem-parentBean"/>
     <bean id="SavedCoursesItem-parentBean" abstract="true" parent="DataObjectEntry">
         <property name="objectLabel" value="Saved Courses"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
@@ -80,9 +80,9 @@
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.course.service.SavedCoursesLookupableHelperImpl"/>
+                  value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="styleClasses">
             <list merge="true">
@@ -110,7 +110,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="propertyName" value="searchResults"/>
         <property name="filters">
             <list>
@@ -197,9 +197,9 @@
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
         <property name="viewName" value="SavedCoursesDetail-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.course.service.SavedCoursesLookupableHelperImpl"/>
+                  value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
         <property name="styleClasses">
@@ -259,13 +259,12 @@
         </property>
     </bean>
 
-
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.SavedCoursesItem"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="propertyName" value="searchResults"/>
         <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="styleClasses">

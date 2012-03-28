@@ -28,6 +28,8 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.r2.common.dto.RichTextInfo;
@@ -52,6 +54,8 @@ public class PlanController extends UifControllerBase {
 
     private transient AcademicPlanService academicPlanService;
 
+    private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
+
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
         return new PlanForm();
@@ -64,6 +68,8 @@ public class PlanController extends UifControllerBase {
         //  Initialize the form with a course Id.
         PlanForm planForm = (PlanForm) form;
         planForm.setCourseId(planForm.getCourseId());
+        planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
+
         return getUIFModelAndView(planForm);
     }
 
@@ -341,4 +347,12 @@ public class PlanController extends UifControllerBase {
     public void setAcademicPlanService(AcademicPlanService academicPlanService) {
         this.academicPlanService = academicPlanService;
     }
+
+    public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
+        if(this.courseDetailsInquiryService == null) {
+            this.courseDetailsInquiryService =  new CourseDetailsInquiryViewHelperServiceImpl();
+        }
+        return courseDetailsInquiryService;
+    }
+
 }

@@ -1,38 +1,22 @@
 package org.kuali.student.myplan.course;
 
-import org.apache.commons.httpclient.util.DateParseException;
-import org.apache.commons.httpclient.util.DateUtil;
-import org.hibernate.action.EntityIdentityInsertAction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.kim.api.identity.PersonService;
-import org.kuali.rice.kim.api.identity.principal.Principal;
 import org.kuali.rice.kim.impl.identity.PersonImpl;
-import org.kuali.rice.kim.impl.identity.PersonServiceImpl;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.controller.CourseSearchStrategy;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
-import org.kuali.student.myplan.course.dataobject.SavedCoursesItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.r2.common.datadictionary.RiceDataDictionaryValidatorImpl;
-import org.kuali.student.r2.common.datadictionary.service.DataDictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.kuali.rice.kim.impl.identity.PersonImpl;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

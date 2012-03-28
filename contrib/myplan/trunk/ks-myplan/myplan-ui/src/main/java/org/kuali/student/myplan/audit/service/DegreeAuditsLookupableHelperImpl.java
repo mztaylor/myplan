@@ -30,7 +30,6 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
 
         String studentId = person.getPrincipalId();
 
-
         //  TODO: Determine where this info lives.
         studentId = "100190981";
 

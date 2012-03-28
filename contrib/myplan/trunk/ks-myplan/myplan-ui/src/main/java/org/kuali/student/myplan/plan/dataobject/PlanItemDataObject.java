@@ -1,10 +1,10 @@
-package org.kuali.student.myplan.course.dataobject;
+package org.kuali.student.myplan.plan.dataobject;
 
-import org.aspectj.weaver.SimpleAnnotationValue;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 import java.util.Date;
 
-public class SavedCoursesItem implements Comparable {
+public class PlanItemDataObject implements Comparable {
 
     private String id;
     private CourseDetails courseDetails;
@@ -36,7 +36,7 @@ public class SavedCoursesItem implements Comparable {
 
     @Override
     public int compareTo( Object object ) {
-        SavedCoursesItem that = (SavedCoursesItem) object;
+        PlanItemDataObject that = (PlanItemDataObject) object;
         return this.getDateAdded().compareTo( that.getDateAdded() ) * -1;
     }
 }
