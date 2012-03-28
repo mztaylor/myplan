@@ -15,21 +15,24 @@
 package org.kuali.student.myplan.plan.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 import java.util.List;
 
 public class PlanForm extends UifFormBase {
     //  Saved courses params.
     private String planItemId;
-    private String termId;
     private String courseId;
+
+    private CourseDetails courseDetails;
 
     //  Form fields.
     private String termsList;
-    private boolean other = false;
 
+    private boolean other = false;
     //  Additional fields needed for the Other option.
     private String quarter;
+
     private String year;
 
     //  Not implemented: Half way between a saved course and a planned course.
@@ -63,14 +66,6 @@ public class PlanForm extends UifFormBase {
         this.courseId = courseId;
     }
 
-    public String getTermId() {
-        return termId;
-    }
-
-    public void setTermId(String termId) {
-        this.termId = termId;
-    }
-
     public String getPlanItemId() {
         return planItemId;
     }
@@ -101,5 +96,13 @@ public class PlanForm extends UifFormBase {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    public CourseDetails getCourseDetails() {
+        return this.courseDetails;
+    }
+
+    public void setCourseDetails(CourseDetails courseDetails) {
+        this.courseDetails = courseDetails;
     }
 }

@@ -13,25 +13,116 @@
          express or implied. See the License for the specific language governing permissions
          and limitations under the License. -->
 
-    <bean id="PlannedCoursesItem" parent="SavedCoursesItem-parentBean"/>
-    <bean id="PlannedCoursesItem-parentBean" abstract="true" parent="DataObjectEntry">
-        <property name="objectLabel" value="Planned Course"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedCoursesItem"/>
-        <property name="titleAttribute" value=""/>
-        <property name="attributes">
+    <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
+        <property name="viewName" value="PlannedCourses-LookupView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+        <property name="viewHelperServiceClassName"
+                  value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="page.header.render" value="false"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" p:id="planned_courses_detail_page" p:title="Your Planned Courses List">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="planned_courses_detail"/>
+                            <!-- <ref bean="saved_course_myplan_section"/> -->
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
             <list/>
         </property>
 
-         <property name="complexAttributes">
+        <property name="footer.render" value="false"/>
+    </bean>
+
+    <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+                <value>myplan-saved-courses-detail</value>
+            </list>
+        </property>
+        <property name="items">
             <list>
-                <ref bean="PlanItem"/>
+                <ref bean="planned_courses_detail_list"/>
+                <!-- <ref bean="saved_courses_detail_list_empty"/> -->
             </list>
         </property>
     </bean>
 
-    <bean id="PlanItem" parent="ComplexAttributeDefinition">
-        <property name="name" value="planItem"/>
-        <property name="dataObjectEntry" ref="PlanItemInfo"/>
+    <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection">
+        <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+        <property name="propertyName" value="searchResults"/>
+        <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.courseTitle}">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.credit}">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="Uif-MessageField" p:messageText="Spring 2012 (this is hardcoded)">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
     </bean>
 
     <bean id="AddPlannedCourse-FormView" parent="MyPlanFormView">
@@ -72,10 +163,10 @@
                             <value>myplan-text-wrap</value>
                         </list>
                     </property>
-                    <property name="linkLabel" value="Course Title Here"/>
-                    <!--<property name="linkLabel" value="@{dataObject.code} @{dataObject.courseTitle} (@{dataObject.credit})"/>-->
-                    <!--<property name="title" value="@{dataObject.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{dataObject.courseTitle} (@{dataObject.credit})"/>-->
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=courseId_goes_here"/>
+
+                    <property name="linkLabel" value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+                    <property name="title" value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
                 </bean>
 
                 <bean parent="Uif-MessageField" p:messageText="Which quarter would you like add?"/>
@@ -88,28 +179,6 @@
                         <bean class="org.kuali.student.myplan.plan.util.PublishedTermsListBuilder"/>
                     </property>
                 </bean>
-
-                <!--<bean parent="Uif-InputField" p:label="Other"
-					p:instructionalText="(The course may not be offered at the quarter you select)"
-					p:width="auto" p:propertyName="otherTerm">
-					<property name="control">
-						<bean parent="Uif-VerticalRadioControl">
-							<property name="options">
-								<list>
-									<bean parent="Uif-KeyLabelPair" p:key="show"
-										p:value="Show Group 1 - no ajax request" />
-								</list>
-							</property>
-						</bean>
-					</property>
-				</bean>-->
-
-               <!-- <bean parent="Uif-InputField" p:label="Other" p:propertyName="other" p:defaultValue="false" p:width="auto"
-                       p:instructionalText="(The course may not be offered at the quarter you select)" >
-                    <property name="control">
-                        <bean parent="Uif-CheckboxControl"/>
-                    </property>
-                </bean>-->
 
                 <ref bean="add_planned_course_other"/>
 
