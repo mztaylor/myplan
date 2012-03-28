@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
+<link href="/student/krad/css/global/fss-layout.css" rel="stylesheet" type="text/css">
+<link href="/student/krad/css/global/fss-text.css" rel="stylesheet" type="text/css">
+<link href="/student/krad/css/global/base.css" rel="stylesheet" type="text/css">
+<link href="/student/krad/plugins/rice/datatables/demo_table.css" rel="stylesheet" type="text/css">
+<link href="/student/krad/plugins/rice/datatables/TableTools.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/javascript" src="/student/krad/plugins/jquery/jquery-1.6.3.js"></script>
+<script language="JavaScript" type="text/javascript" src="/student/krad/scripts/krad.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="/student/krad/plugins/rice/datatables/jquery.dataTables.js"></script>
+<script language="JavaScript" type="text/javascript" src="/student/krad/plugins/rice/datatables/ZeroClipboard.js"></script>
+<script language="JavaScript" type="text/javascript" src="/student/krad/plugins/rice/datatables/TableTools.js"></script>
+<script type="text/javascript">
+    var jq = jQuery.noConflict();
+    jq(document).ready(function() {
+        // http://datatables.net/examples/examples_support/json_source.txt
+        createTable('course_search_results_datatable', {
+            oLanguage: {
+                'sLengthMenu': 'Show _MENU_',
+                'sEmptyTable': '0 results found',
+                'sZeroRecords': '0 results found',
+                'sProcessing': 'DataTables is currently busy',
+                'sInfo': 'Showing _START_-_END_ of _TOTAL_ results',
+                'sInfoFiltered': ''
+            },
+            iDisplayLength: 20,
+            aLengthMenu: [20, 50, 100],
+            sDom: "ilrtSp",
+            sPaginationType: "full_numbers",
+            bRetrieve: true,
+            bAutoWidth: false,
+            bDeferRender: true,
+            bProcessing: true,
+            bScrollCollapse: true,
+            bStateSave: true,
+            bSortClasses: false,
+            aaSorting: [],
+            aoColumns: [{
+                'bSortable': true,
+                'bSearchable': false
+            }, {
+                'bSortable': true,
+                'bSearchable': false,
+                'sWidth': '175px'
+            }, {
+                'bSortable': false,
+                'bSearchable': false
+            }, {
+                'bSortable': false,
+                'bSearchable': false
+            }, {
+                'bSortable': false,
+                'bSearchable': false
+            } /*, {
+                'bSortable': false,
+                'bSearchable': false
+            }, {
+                'sTitle': 'facetQuarter',
+                'bVisible': false
+            }, {
+                'sTitle': 'facetScheduled',
+                'bVisible': false
+            }, {
+                'sTitle': 'facetGenEduReq',
+                'bVisible': false
+            }, {
+                'sTitle': 'facetCredits',
+                'bVisible': false
+            }, {
+                'sTitle': 'facetLevel',
+                'bVisible': false
+            }, {
+                'sTitle': 'facetCurriculum',
+                'bVisible': false
+            } */ ],
+            fnDrawCallback: function () {
+                if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1) {
+                    jq('.dataTables_paginate span').not('.first, .last').show();
+                } else {
+                    jq('.dataTables_paginate span').hide();
+                }
+            },
+            oTableTools: {
+                "aButtons": ["csv", "xls"],
+                "sSwfPath": "http://69.91.238.239:8080/student/krad/scripts/jquery/copy_cvs_xls_pdf.swf"
+            },
+            sAjaxSource: "json.txt"
+        });
+    });
+</script>
+</head>
+<body>
+    <table id="course_search_results_datatable"></table>
+</body>
+</html>
