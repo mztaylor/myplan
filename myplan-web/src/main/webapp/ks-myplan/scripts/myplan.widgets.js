@@ -16,8 +16,8 @@ function openCourse(courseId, e, enrolled,quarter,credits) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
     	if ( enrolled ) {
-            var messaging = "You are currently enrolled in this course.";
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, messaging);
+            //var messaging = "You are currently enrolled in this course.";
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
         } else if (quarter != null && credits != null)  {
             var messaging = "You already took this course on "+quarter+" and received "+credits;
             openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, messaging);
