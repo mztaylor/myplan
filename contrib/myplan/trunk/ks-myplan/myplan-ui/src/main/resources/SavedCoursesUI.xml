@@ -414,7 +414,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
-                                <property name="clientSideJs" value="removeSavedCourse('@{#line.id}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{#line.id}'}, '@{#line.courseDetails.code}', e.srcElement.id);"/>
+                                <property name="clientSideJs" value="removeSavedCourse('@{#line.id}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{#line.id}'}, '@{#line.courseDetails.code}', e);"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
