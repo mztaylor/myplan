@@ -9,7 +9,7 @@ function stopEvent(e) {
     }
     return false;
 }
-function openCourse(courseId, e, enrolled) {
+function openCourse(courseId, e, enrolled,quarter,credits) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
