@@ -132,7 +132,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}">
-                                <property name="onClickScript" value="openPopUp('@{#line.id}','course_details_popup','start','inquiry',{viewId:'CourseDetailsPopup-InquiryView',courseId:'@{#line.courseDetails.courseId}'},e,'li',{width:'300px',minHeight:'24px',position:'relative'});"/>
+                                <property name="onClickScript" value="openPopUp('@{#line.courseDetails.courseId}','course_details_popup','start','inquiry',{viewId:'CourseDetailsPopup-InquiryView',courseId:'@{#line.courseDetails.courseId}'},e,'li');"/>
                                 <property name="target" value=""/>
                                 <property name="hrefText" value="#"/>
                                 <property name="styleClasses">

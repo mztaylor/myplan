@@ -626,14 +626,32 @@ a:focus {
     width: 62%;
 }
 /* Course Details Popup ########################################################################### */
-.myplan-popup-box {
-	/*min-height: 24px !important;*/
-    position: relative;
-    overflow: hidden;
-    /*padding: 5px 5px 0 5px;*/
+
+.myplan-popup-frame {
     width: 300px;
     height: 275px;
+    position: relative;
+    overflow: hidden;
 }
+.myplan-popup-slider {
+    width: 20000em;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.myplan-popup-close {
+    float: right;
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.myplan-popup-item {
+    width: 300px;
+    height: 275px;
+    float: left;
+}
+/*
 .myplan-popup-box .uif-horizontalBoxLayout {
     width: 20000em;
     position: absolute;
@@ -644,19 +662,14 @@ a:focus {
     width: 300px;
     height: 275px;
 }
-.myplan-popup-close {
-    float: right;
-    cursor: pointer;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-}
+
 .myplan-popup-box div.blockElement {
     left: 142px !important;
     top: 4px !important;
     border: none;
     width: 16px;
 }
+*/
 /* Recent Audit List Styles ########################################################################### */
 .myplan-recent-audit div.blockElement {
     left: 92px !important;
