@@ -139,6 +139,16 @@ function myplanAppendPopup(id, getId, methodToCall, action, retrieveOptions) {
     jq("form#"+ id + "_form").remove();
 }
 
+function myplanFormWrapper(id, methodToCall, action, retrieveOptions) {
+    if ( jq('#viewId').val() != "AddPlannedCourse-FormView" ) {
+        var tempForm = jq('<form />').attr("id",id + "_form").attr("action", action).attr("method", "post");
+        jq("#" + id + "_div").wrapInner(tempForm);
+        jQuery.each(retrieveOptions, function(name, value) {
+            jq("#" + id + "_form").append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+        });
+    }
+}
+
 function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
@@ -174,7 +184,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 }
 
 function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
-    var targetId = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var targetId = (e.currentTarget) ? e.currentTarget.id : e.srcElement.id;
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
 	jQuery.each(retrieveOptions, function(name, value) {
@@ -211,7 +221,7 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
 }
 
 function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode, e) {
-    var targetId = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var targetId = (e.currentTarget) ? e.currentTarget.id : e.srcElement.id;
     var dialogConfirm = jq('<div />');
 	jq(dialogConfirm).attr("id","dialog-confirm").attr("title","Delete Course");
 	jq(dialogConfirm).html('<p>Are you sure that you want to delete <strong>' + courseCode + '</strong>?</p><p>Once deleted, you cannot undo.</p>');
