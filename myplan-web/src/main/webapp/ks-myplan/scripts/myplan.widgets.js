@@ -173,7 +173,8 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
     jq("form#"+ id + "_form").remove();
 }
 
-function addSavedCourse(id, methodToCall, action, retrieveOptions, targetId) {
+function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
+    var targetId = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
 	jQuery.each(retrieveOptions, function(name, value) {
@@ -209,7 +210,8 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, targetId) {
     jq("form#" + id + "_form").remove();
 }
 
-function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode, targetId) {
+function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode, e) {
+    var targetId = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var dialogConfirm = jq('<div />');
 	jq(dialogConfirm).attr("id","dialog-confirm").attr("title","Delete Course");
 	jq(dialogConfirm).html('<p>Are you sure that you want to delete <strong>' + courseCode + '</strong>?</p><p>Once deleted, you cannot undo.</p>');
@@ -254,7 +256,7 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
                                                 if ( jq.trim( jq(this).text() ) === "In List" ) {
                                                     jq(this).parent().attr("id", removedId + "_cell");
                                                     jq(this).html("<input type=\"image\" id=\"" + removedId + "\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" />");
-                                                    jq(this).after("<input name=\"script\" type=\"hidden\" value=\"jq('#' + '" + removedId + "').click(function(e){e.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[selectedCollectionPath]','courseSearchResults');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false');writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "');writeHiddenToForm('jumpToId','" + removedId + "');addSavedCourse('" + removedId + "','addSavedCourse','plan',{viewId:'SavedCoursesListActions-FormView',courseId:'" + removedId + "'},e.srcElement.id);});\" script=\"first_run\">");
+                                                    jq(this).after("<input name=\"script\" type=\"hidden\" value=\"jq('#' + '" + removedId + "').click(function(e){e.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[selectedCollectionPath]','courseSearchResults');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false');writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "');writeHiddenToForm('jumpToId','" + removedId + "');addSavedCourse('" + removedId + "','addSavedCourse','plan',{viewId:'SavedCoursesListActions-FormView',courseId:'" + removedId + "'},e);});\" script=\"first_run\">");
                                                     runHiddenScripts(removedId + "_cell");
                                                 } else {
                                                     jq(this).find("#" + removedId + "_saved").remove();
@@ -268,7 +270,7 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
                                 case "CourseDetails-InquiryView":
                                     if ( jq("#" + removedId + "_div").length ) {
                                         jq("#" + removedId + "_div").parent().fadeOut(250, function() {
-                                            jq("#" + removedId + "_div").replaceWith("<button id=\"" + removedId + "\" class=\"uif-field uif-action myplan-button myplan-button-gray\" onClick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false');writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "');writeHiddenToForm('jumpToId','" + removedId + "');addSavedCourse('" + removedId + "','addSavedCourse','plan',{viewId:'SavedCoursesListActions-FormView',courseId:'" + removedId + "'},event.srcElement.id);\">Save to Your Courses List</button>");
+                                            jq("#" + removedId + "_div").replaceWith("<button id=\"" + removedId + "\" class=\"uif-field uif-action myplan-button myplan-button-gray\" onClick=\"event.preventDefault();writeHiddenToForm('actionParameters[showHistory]','false');writeHiddenToForm('actionParameters[showHome]','false');writeHiddenToForm('showHistory','false');writeHiddenToForm('showHome','false');writeHiddenToForm('focusId','" + removedId + "');writeHiddenToForm('jumpToId','" + removedId + "');addSavedCourse('" + removedId + "','addSavedCourse','plan',{viewId:'SavedCoursesListActions-FormView',courseId:'" + removedId + "'},event);\">Save to Your Courses List</button>");
                                             jq(this).fadeIn(250);
                                         });
                                     }
