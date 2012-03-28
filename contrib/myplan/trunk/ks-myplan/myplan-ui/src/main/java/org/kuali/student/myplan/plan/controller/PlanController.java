@@ -68,6 +68,8 @@ public class PlanController extends UifControllerBase {
         //  Initialize the form with a course Id.
         PlanForm planForm = (PlanForm) form;
         planForm.setCourseId(planForm.getCourseId());
+
+        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
 
         return getUIFModelAndView(planForm);

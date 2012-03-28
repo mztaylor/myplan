@@ -111,13 +111,12 @@
                                 </property>
                             </bean>
 
-                            <bean parent="Uif-MessageField" p:messageText="Spring 2012 (this is hardcoded)">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                    </list>
+                            <bean parent="Uif-DataField" p:propertyName="atpIds">
+                                <property name="propertyEditor">
+                                    <bean parent="data_list_formatter" p:emptyListMessage="n/a"/>
                                 </property>
                             </bean>
+
                         </list>
                     </property>
                 </bean>

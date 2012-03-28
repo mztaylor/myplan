@@ -7,9 +7,9 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -43,7 +43,7 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
 
         String studentID = user.getPrincipalId();
 
-        String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
 
         List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
         for (LearningPlanInfo learningPlan : learningPlanList) {
@@ -52,11 +52,16 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
 
             for (PlanItemInfo planItem : planItemList) {
                 String courseID = planItem.getRefObjectId();
+                //  Only create a data object for the specified type.
                 if (planItem.getTypeKey().equals(planItemType)) {
                     PlanItemDataObject item = new PlanItemDataObject();
                     item.setId(planItem.getId());
                     item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
                     item.setDateAdded(planItem.getMeta().getCreateTime());
+                    //  Only load ATP info for planned courses.
+                    if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                        item.setAtpIds(planItem.getPlanPeriods());
+                    }
                     plannedCoursesList.add(item);
                 }
             }
@@ -67,8 +72,7 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
             academicPlanService = (AcademicPlanService)
-                GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
-                    AcademicPlanServiceConstants.SERVICE_NAME));
+                GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
         }
         return academicPlanService;
     }
