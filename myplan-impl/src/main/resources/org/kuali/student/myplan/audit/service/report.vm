@@ -147,9 +147,9 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                             <tbody>
 #foreach( $acceptable in $subreq.courseAcceptableList )
 
-#if( ${acceptable.hasCluid()} )##Hardcoded the value true to show the message "You are currently enrolled on the popup" Replace the hard coded true value when the academic calender is mapped.
+#if( ${acceptable.hasCluid()} )
                     <tr>
-                        <td><a href="#" onclick="openCourse('${acceptable.cluid}',event,true);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
+                        <td><a href="#" onclick="openCourse('${acceptable.cluid}',event);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
                     </tr>
 #else
                     <tr>
@@ -174,8 +174,8 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                             <tbody>
 #foreach( $taken in $subreq.courseTakenList )
                                 <tr>
-#if( ${taken.hasCluid()} )##Hardcoded the value true to show the message "You are currently enrolled on the popup" Replace the hard coded true value when the academic calender is mapped.
-                                    <td>${taken.quarter}</td><td><a href="#" onclick="openCourse('${taken.cluid}',event,true);">${taken.dept} ${taken.number} ${taken.description}</a></td>
+#if( ${taken.hasCluid()} )
+                                    <td>${taken.quarter}</td><td><a href="#" onclick="openCourse('${taken.cluid}',event);">${taken.dept} ${taken.number} ${taken.description}</a></td>
 #if( ${taken.inProgress} )
                                     <td>In Progress</td><td></td>
 #else
