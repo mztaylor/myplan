@@ -31,7 +31,7 @@ public class PlanForm extends UifFormBase {
 
     private boolean other = false;
     //  Additional fields needed for the Other option.
-    private String quarter;
+    private String term;
 
     private String year;
 
@@ -82,12 +82,12 @@ public class PlanForm extends UifFormBase {
         this.backup = backup;
     }
 
-    public String getQuarter() {
-        return quarter;
+    public String getTerm() {
+        return term;
     }
 
-    public void setQuarter(String quarter) {
-        this.quarter = quarter;
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public String getYear() {

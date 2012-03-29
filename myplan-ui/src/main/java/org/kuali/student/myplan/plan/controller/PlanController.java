@@ -28,7 +28,6 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
@@ -38,7 +37,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +68,11 @@ public class PlanController extends UifControllerBase {
         planForm.setCourseId(planForm.getCourseId());
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
-        planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
+        try {
+            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
+        } catch(Exception e) {
+            //  TODO: Handle course details fetch blowing up.
+        }
 
         return getUIFModelAndView(planForm);
     }
@@ -93,6 +95,27 @@ public class PlanController extends UifControllerBase {
             //  DO ERROR.
             throw new RuntimeException("Couldn't parse terms list.");
         }
+
+        //  Check for an "other" item in the terms list.
+        if (termIds.contains(PlanConstants.OTHER_TERM_KEY)) {
+            //  Remove the "other" item from the list.
+            termIds.remove(termIds.indexOf(PlanConstants.OTHER_TERM_KEY));
+
+            //  Create an ATP id from the values in the year and term fields.
+            String year = form.getYear();
+            if (StringUtils.isBlank(year)) {
+                //  TODO: Determine how to blow up.
+            }
+
+            String term = form.getTerm();
+            if (StringUtils.isBlank(term)) {
+               //  TODO: Determine how to blow up.
+            }
+
+            String newTermId = PlanConstants.TERM_ID_PREFIX + term + year;
+            termIds.add(newTermId);
+        }
+
 
 
         PlanItem item = addPlanItem(courseId, termIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);

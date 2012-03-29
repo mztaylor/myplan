@@ -175,7 +175,13 @@
                         <bean parent="Uif-VerticalCheckboxesControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.plan.util.PublishedTermsListBuilder"/>
+                        <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
+                            <property name="additionalListItemsBottom">
+                                <map>
+                                    <entry key="other" value="Other" />
+                                </map>
+                            </property>
+                        </bean>
                     </property>
                 </bean>
 
@@ -199,13 +205,13 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="quarter" p:label="Select Quarter"
+                <bean parent="Uif-InputField" p:propertyName="term" p:label="Select Quarter"
                       p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false" p:labelPlacement="TOP">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.plan.util.QuartersListBuilder"/>
+                        <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
                     </property>
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="year" p:label="Select Year"
