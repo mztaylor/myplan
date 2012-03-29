@@ -134,7 +134,14 @@
                         <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.PublishedTermsListBuilder"/>
+                        <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
+                            <property name="suffix" value=" quarter only" />
+                            <property name="additionalListItemsTop">
+                                <map>
+                                    <entry key="any" value="Any quarter" />
+                                </map>
+                            </property>
+                        </bean>
                     </property>
                 </bean>
                 <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"

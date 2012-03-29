@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.plan.util;
+package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -8,21 +8,32 @@ import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Assembles a list of published terms.
- *
- *  FIXME: This is very similar to the course.util.PublishedTermsListBuilder. They needs to be combined.
- *
  */
 public class PublishedTermsListBuilder extends KeyValuesBase {
 
     private final Logger logger = Logger.getLogger(PublishedTermsListBuilder.class);
+
+    /**
+     * An optional suffix to add to each value in the list.
+     */
+    private String suffix = "";
+
+    /**
+     * An optional map of items to include in the list at the top or bottom.
+     * Note: The suffix doesn't get added to these items.
+     */
+    private Map<String, String> additionalListItemsTop;
+    private Map<String, String> additionalListItemsBottom;
 
     private AcademicCalendarService academicCalendarService;
 
@@ -45,16 +56,53 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
             logger.error("Web service call failed.", e);
         }
 
+        //  Prepend and additional items to the list.
+        if (additionalListItemsTop != null && additionalListItemsTop.size() > 0) {
+            for (Map.Entry<String, String> entry : additionalListItemsTop.entrySet()) {
+                keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
+            }
+        }
+
         //  Add term info to the list if the above service call was successful.
         if (termInfos != null) {
             //  Add the individual term items.
             for (TermInfo ti : termInfos) {
-                keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName()));
+                keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName() + suffix));
             }
         }
-        // Added 'Other' option to list be default - Garett 3/27/12
-        keyValues.add(new ConcreteKeyValue("other", "Other"));
+
+        //  Append and additional items to the list.
+        if (additionalListItemsBottom != null && additionalListItemsBottom.size() > 0) {
+            for (Map.Entry<String, String> entry : additionalListItemsBottom.entrySet()) {
+                keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
+            }
+        }
+
         return keyValues;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public Map<String, String> getAdditionalListItemsTop() {
+        return additionalListItemsTop;
+    }
+
+    public void setAdditionalListItemsTop(Map<String, String> additionalListItems) {
+        this.additionalListItemsTop = additionalListItems;
+    }
+
+    public Map<String, String> getAdditionalListItemsBottom() {
+        return additionalListItemsBottom;
+    }
+
+    public void setAdditionalListItemsBottom(Map<String, String> additionalListItems) {
+        this.additionalListItemsBottom = additionalListItems;
     }
 
     protected AcademicCalendarService getAcademicCalendarService() {
