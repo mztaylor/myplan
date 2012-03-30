@@ -775,7 +775,7 @@
                                                     <value>fl-font-size-90</value>
                                                 </list>
                                             </property>
-                                            <property name="onDocumentReadyScript" value="myplanAppendPopup('@{dataObject.courseId}', 'add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'AddPlannedCourse-FormView',courseId:'@{dataObject.courseId}'})"/>
+                                            <property name="onDocumentReadyScript" value="myplanAppendPopup('@{dataObject.courseId}', 'add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{dataObject.courseId}'})"/>
                                         </bean>
                                         <bean p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Save to Your Courses List">
                                             <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
@@ -810,7 +810,7 @@
                                                     <value>fl-font-size-90</value>
                                                 </list>
                                             </property>
-                                            <property name="onDocumentReadyScript" value="myplanAppendPopup('@{dataObject.courseId}', 'add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'AddPlannedCourse-FormView',courseId:'@{dataObject.courseId}'})"/>
+                                            <property name="onDocumentReadyScript" value="myplanAppendPopup('@{dataObject.courseId}', 'add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{dataObject.courseId}'})"/>
                                         </bean>
                                         <bean p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
                                             <property name="clientSideJs" value="removeSavedCourse('@{dataObject.savedCourseItemId}', 'removeItem', 'plan', {viewId:'SavedCoursesListActions-FormView', planItemId:'@{dataObject.savedCourseItemId}'}, '@{dataObject.code}', e);"/>

@@ -598,8 +598,8 @@
         </property>
     </bean>
 
-    <bean id="AddPlannedCourse-FormView" parent="MyPlanFormView">
-        <property name="id" value="AddPlannedCourse-FormView"/>
+    <bean id="PlannedCourse-FormView" parent="MyPlanFormView">
+        <property name="id" value="PlannedCourse-FormView"/>
         <property name="entryPageId" value="add_planned_course"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -685,7 +685,7 @@
                         </list>
                     </property>
                     <!--<property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse')"/>-->
-                    <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'AddPlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
+                    <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
                 </bean>
             </list>
         </property>
@@ -734,7 +734,6 @@
             </list>
         </property>
     </bean>
-
 
     <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
         <property name="styleClasses">

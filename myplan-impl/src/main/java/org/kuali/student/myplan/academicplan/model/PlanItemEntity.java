@@ -21,7 +21,8 @@ import javax.persistence.Table;
  */
 @SuppressWarnings({"JpaDataSourceORMInspection"})
 @Entity
-@Table(name = "KSPL_LRNG_PLAN_ITEM")
+@Table(name = "KSPL_LRNG_PLAN_ITEM",
+    uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ID", "TYPE_ID", "REF_OBJ_ID"}))
 @NamedQueries( {
     @NamedQuery(name = "LearningPlanItem.getLearningPlanItems",
             query = "SELECT r FROM PlanItemEntity r WHERE r.refObjectTypeKey = :refObjectTypeKey and r.refObjectId = :refObjectId"),
@@ -57,9 +58,9 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
     @ElementCollection (fetch=FetchType.EAGER)
     @CollectionTable(name="KSPL_LRNG_PLAN_ITEM_ATP_ID",
-        joinColumns=@JoinColumn(name="PLAN_ITEM_ID"))
+        joinColumns=@JoinColumn(name="PLAN_ITEM_ID"),
+            uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ITEM_ID", "ATP_ID"}))
     @Column(name="ATP_ID")
-    //  TODO: I believe this should be a Set.
     private Set<String> planPeriods;
 
     public PlanItemEntity(){

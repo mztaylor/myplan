@@ -23,6 +23,7 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -331,10 +332,9 @@ public class AcademicPlanServiceImplTest {
         assertEquals(planItemInfo.getStateKey(), fetchedPlanItem.getStateKey());
         assertEquals(2, fetchedPlanItem.getPlanPeriods().size());
 
-        //  Update and save.
-        List<String> periods = fetchedPlanItem.getPlanPeriods();
-        periods.remove("kuali.uw.atp.winter2011");
-        fetchedPlanItem.setPlanPeriods(periods);
+        //  Update the plan item and save.
+        fetchedPlanItem.getPlanPeriods().remove("kuali.uw.atp.winter2011");
+        assertEquals(1, fetchedPlanItem.getPlanPeriods().size());
 
         PlanItemInfo updatedPlanItem = null;
         try {
@@ -352,6 +352,48 @@ public class AcademicPlanServiceImplTest {
         assertEquals(courseType, updatedPlanItem.getRefObjectType());
         assertEquals(1, updatedPlanItem.getPlanPeriods().size());
         assertTrue(updatedPlanItem.getPlanPeriods().contains("kuali.uw.atp.autumn2011"));
+    }
+
+    @Test (expected = AlreadyExistsException.class)
+    public void addPlannedCourseViolateUnqiueContraint() throws InvalidParameterException, DataValidationErrorException, MissingParameterException, AlreadyExistsException, PermissionDeniedException, OperationFailedException {
+        String planId = "lp1";
+
+        // Create a new plan item.
+        PlanItemInfo planItem = new PlanItemInfo();
+
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Comment</span>";
+        String planDesc = "My Comment";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        planItem.setDescr(desc);
+
+        planItem.setLearningPlanId(planId);
+        planItem.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+
+        //  Set some ATP info since this is a planned course.
+        List<String> planPeriods = new ArrayList<String>();
+        planPeriods.add("kuali.uw.atp.winter2011");
+        planPeriods.add("kuali.uw.atp.autumn2011");
+        planItem.setPlanPeriods(planPeriods);
+
+        String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
+        String courseType = LUConstants.CLU_TYPE_CREDIT_COURSE;
+
+        planItem.setRefObjectId(courseId);
+        planItem.setRefObjectType(courseType);
+
+        planItem.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+
+        PlanItem newPlanItem = null;
+        try {
+            newPlanItem = academicPlanService.createPlanItem(planItem, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+
+        //  Now violate the plan, type, course id uniqiue constraint by re-adding the course.
+        academicPlanService.createPlanItem(planItem, context);
     }
 
     @Test
