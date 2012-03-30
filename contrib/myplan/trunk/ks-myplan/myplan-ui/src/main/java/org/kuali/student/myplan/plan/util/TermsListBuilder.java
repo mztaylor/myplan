@@ -28,10 +28,10 @@ public class TermsListBuilder extends KeyValuesBase {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
 
         //  FIXME: Get this from the term service.
-        keyValues.add(new ConcreteKeyValue("Autumn", "Autumn"));
-        keyValues.add(new ConcreteKeyValue("Winter", "Winter"));
-        keyValues.add(new ConcreteKeyValue("Spring", "Spring"));
-        keyValues.add(new ConcreteKeyValue("Summer", "Summer"));
+        keyValues.add(new ConcreteKeyValue("autumn", "Autumn"));
+        keyValues.add(new ConcreteKeyValue("winter", "Winter"));
+        keyValues.add(new ConcreteKeyValue("spring", "Spring"));
+        keyValues.add(new ConcreteKeyValue("summer", "Summer"));
 
         return keyValues;
     }

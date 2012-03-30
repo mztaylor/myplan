@@ -71,7 +71,7 @@ public class PlanController extends UifControllerBase {
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch(Exception e) {
-            //  TODO: Handle course details fetch blowing up.
+            //  TODO: Determine how to blow up.
         }
 
         return getUIFModelAndView(planForm);
@@ -82,14 +82,17 @@ public class PlanController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String courseId = form.getCourseId();
-
+        if (StringUtils.isEmpty(courseId)) {
+            //  TODO: DO ERROR.
+        }
         String termIdString = form.getTermsList();
         if (StringUtils.isEmpty(termIdString)) {
-            //  DO ERROR.
+            //  TODO: DO ERROR.
             throw new RuntimeException("Terms List was empty.");
         }
         String[] t = termIdString.split(",");
-        List<String> termIds = Arrays.asList(t);
+        //  Make this a linked list so that remove() is supported.
+        List<String> termIds = new LinkedList<String>(Arrays.asList(t));
 
         if (termIds.isEmpty()) {
             //  DO ERROR.
@@ -116,11 +119,10 @@ public class PlanController extends UifControllerBase {
             termIds.add(newTermId);
         }
 
-
-
         PlanItem item = addPlanItem(courseId, termIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
 
         form.setPlanItemId(item.getId());
+        form.setCourseId(item.getRefObjectId());
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
@@ -133,6 +135,7 @@ public class PlanController extends UifControllerBase {
         PlanItem item = addPlanItem(courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
 
         form.setPlanItemId(item.getId());
+        form.setCourseId(item.getRefObjectId());
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
@@ -140,7 +143,7 @@ public class PlanController extends UifControllerBase {
     protected PlanItem addPlanItem(String courseId, List<String> termIds, String planItemType) {
 
         if (StringUtils.isEmpty(courseId)) {
-            // DO ERROR.
+            // TODO: DO ERROR.
             throw new RuntimeException("Empty Course ID");
         }
 
@@ -167,7 +170,6 @@ public class PlanController extends UifControllerBase {
             rti.setPlain("");
             pii.setDescr(rti);
 
-
             if (null != termIds) {
                 pii.setPlanPeriods(termIds);
             }
@@ -175,9 +177,8 @@ public class PlanController extends UifControllerBase {
             try {
                 newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
             } catch (AlreadyExistsException e) {
-                //  The course id was already in the saved courses list log the error and set the isDup flag to trigger
-                //  a lookup which will find the id of the existing plan item.
-                logger.warn("Item was already in wishlist.", e);
+                //  The course id was already in the saved courses list.
+                logger.warn("This item was a duplicate. Fetching the existing plan item.", e);
                 newPlanItem = getPlanItemByCourseIdAndType(courseId, planItemType);
             } catch (Exception e) {
                 //  Give the end-user a generic error message, but log the exception.
@@ -193,10 +194,9 @@ public class PlanController extends UifControllerBase {
 
 
     /*
-         *  If the wishlist item couldn't be added because the course already exists then lookup the id of the existing
-         *  plan item.
-         */
-
+     *  If the wishlist item couldn't be added because the course already exists then lookup the id of the existing
+     *  plan item.
+     */
     protected PlanItem getPlanItemByCourseIdAndType(String courseId, String planItemType) {
 
         Person user = GlobalVariables.getUserSession().getPerson();
@@ -232,7 +232,6 @@ public class PlanController extends UifControllerBase {
 
         return item;
     }
-
 
     /**
      * Retrieve a student's LearningPlan or create one if it doesn't exist.
