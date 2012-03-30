@@ -140,7 +140,7 @@ function myplanAppendPopup(id, getId, methodToCall, action, retrieveOptions) {
 }
 
 function myplanFormWrapper(id, methodToCall, action, retrieveOptions) {
-    if ( jq('#viewId').val() != "AddPlannedCourse-FormView" ) {
+    if ( jq('#viewId').val() != "PlannedCourse-FormView" ) {
         var tempForm = jq('<form />').attr("id",id + "_form").attr("action", action).attr("method", "post");
         jq("#" + id + "_div").wrapInner(tempForm);
         jQuery.each(retrieveOptions, function(name, value) {

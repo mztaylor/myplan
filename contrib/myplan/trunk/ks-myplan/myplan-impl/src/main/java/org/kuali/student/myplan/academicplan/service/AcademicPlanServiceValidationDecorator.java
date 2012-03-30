@@ -193,7 +193,13 @@ public class AcademicPlanServiceValidationDecorator
     public PlanItemInfo updatePlanItem(String planItemId, PlanItemInfo planItem, ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
             MissingParameterException, OperationFailedException, PermissionDeniedException, AlreadyExistsException {
-        fullValidation(planItem, context);
+
+        //  Since this is an update we can ignore AlreadyExistsExceptions. That is the last validation which is performed.
+        try {
+            fullValidation(planItem, context);
+        } catch(AlreadyExistsException aee) {
+            //
+        }
         return getNextDecorator().updatePlanItem(planItemId, planItem, context);
     }
 

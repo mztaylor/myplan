@@ -339,12 +339,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         if (planItem.getAttributes() != null) {
             List<PlanItemAttributeEntity> attributeEntities = new ArrayList<PlanItemAttributeEntity>();
             for (AttributeInfo att : planItem.getAttributes()) {
-                PlanItemAttributeEntity ae = new PlanItemAttributeEntity();
-                ae.setId(att.getId());
-                ae.setKey(att.getKey());
-                ae.setValue(att.getValue());
-                ae.setOwner(planItemEntity);
-                attributeEntities.add(ae);
+                attributeEntities.add(new PlanItemAttributeEntity(att));
             }
             planItemEntity.setAttributes(attributeEntities);
         }
@@ -353,7 +348,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         planItemEntity.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
         //  Update the learning plan.
-        if (!planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
+        if ( ! planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
             String planId = planItem.getLearningPlanId();
             if (planId == null) {
                 throw new InvalidParameterException("Learning plan id was null.");
@@ -447,19 +442,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
 
         /*
-         * Check for duplicate list items:
-         *    Make sure a saved courses item with this course id doesn't already exist in the plan.
-         *    Make sure a planned course item with the same ATP id doesn't exist in the plan.
-         *
-         * TODO: Move these validations to the data dictionary.
-         */
-       if (isPlanItemDuplicate(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), planItemInfo.getTypeKey())) {
-           throw new AlreadyExistsException(String.format("An item with this course id [%s] already exists in the user's saved courses list.",
-                   planItemInfo.getRefObjectId()));
-       }
-
-
-        /*
          *  Validate that the course exists.
          * TODO: Move this validation to the data dictionary.
          */
@@ -483,6 +465,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                     "typeKey", ValidationResult.ErrorLevel.ERROR));
             }
         }
+
+        /*
+         * Check for duplicate list items:
+         *    Make sure a saved courses item with this course id doesn't already exist in the plan.
+         *    Make sure a planned course item with the same ATP id doesn't exist in the plan.
+         *
+         * Note: This validation is last to insure that all of the other validations are performed on "update" operations.
+         * The duplicate check throw an AlreadyExistsException on updates.
+         *
+         * TODO: Maybe there is a better way to deal with validating udpates?
+         *
+         * TODO: Move these validations to the data dictionary.
+         */
+        checkPlanItemDuplicate(planItemInfo);
+
         return validationResultInfos;
     }
 
@@ -494,32 +491,35 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return new ArrayList<ValidationResultInfo>();
     }
 
-    private boolean isPlanItemDuplicate(String planId, String courseId, String planItemType) throws AlreadyExistsException {
+    /**
+     * @throws AlreadyExistsException If the plan item is a duplicate.
+     */
+    private void checkPlanItemDuplicate(PlanItemInfo planItem) throws AlreadyExistsException {
 
-        boolean isDup = false;
+        String planItemId = planItem.getLearningPlanId();
+        String courseId = planItem.getRefObjectId();
+        String planItemType = planItem.getTypeKey();
 
-        List<PlanItemEntity> planItems =
-                this.planItemDao.getLearningPlanItems(planId, planItemType);
         /**
          * See if a duplicate item exits in the plan. If the type is wishlist then only the course id has to match to make
          * it a duplicate. If the type is planned course then the ATP must match as well.
          */
+        List<PlanItemEntity> planItems = this.planItemDao.getLearningPlanItems(planItemId, planItemType);
         for (PlanItemEntity p : planItems) {
             if (p.getRefObjectId().equals(courseId)) {
                 if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                    if (p.getPlanPeriods().contains(p.getRefObjectId())) {
-                        if (p.getPlanPeriods().contains(p.getRefObjectId())) {
-                            isDup = true;
-                            break;
+                    for (String atpId : planItem.getPlanPeriods()) {
+                        if (p.getPlanPeriods().contains(atpId)) {
+                            throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
+                                p.getLearningPlan().getId(), courseId, atpId));
                         }
                     }
                 } else {
-                    isDup = true;
-                    break;
+                     throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
+                        p.getLearningPlan().getId(), courseId));
                 }
             }
         }
-        return isDup;
     }
 
     private ValidationResultInfo makeValidationResultInfo(String errorMessage, String element, ValidationResult.ErrorLevel errorLevel) {
