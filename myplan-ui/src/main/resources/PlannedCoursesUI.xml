@@ -188,7 +188,7 @@
                 <ref bean="add_planned_course_other"/>
 
                 <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="addPlannedCourse"
-                      p:actionLabel="Add To Plan" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
+                      p:actionLabel="Add To Plan" p:style="padding: 0px 30px;">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
@@ -196,6 +196,8 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
+                    <!--<property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse')"/>-->
+                    <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'AddPlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
                 </bean>
             </list>
         </property>
