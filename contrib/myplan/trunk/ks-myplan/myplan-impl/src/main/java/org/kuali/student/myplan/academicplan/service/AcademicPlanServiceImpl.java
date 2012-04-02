@@ -153,6 +153,23 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId,
+                                                                             @WebParam(name = "refObjectId") String refObjectId,
+                                                                             @WebParam(name = "refObjectType") String refObjectType,
+                                                                             @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        List<PlanItemEntity> planItemsList = planItemDao.getLearningPlanItemsByRefObjectId(learningPlanId, refObjectId, refObjectType);
+
+        List<PlanItemInfo> planItemDtos = new ArrayList<PlanItemInfo>();
+        for (PlanItemEntity pie : planItemsList) {
+            planItemDtos.add(pie.toDto());
+        }
+
+        return planItemDtos;
+    }
+
+    @Override
     public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -511,7 +528,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                     for (String atpId : planItem.getPlanPeriods()) {
                         if (p.getPlanPeriods().contains(atpId)) {
                             throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
-                                p.getLearningPlan().getId(), courseId, atpId));
+                                    p.getLearningPlan().getId(), courseId, atpId));
                         }
                     }
                 } else {

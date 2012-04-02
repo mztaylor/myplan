@@ -55,6 +55,20 @@ public interface AcademicPlanService {
 
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
+    /**
+     * Gets plan items for a
+     * @param learningPlanId The id of the plan.
+     * @param refObjectId The id of the referenced object.
+     * @param refObjectType The type of the referenced object.
+     * @param context
+     * @return A list of plan items related to a particular course (refObjectId).
+     */
+    public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId,
+                                                                             @WebParam(name = "refObjectId") String refObjectId,
+                                                                             @WebParam(name = "refObjectType") String refObjectType,
+                                                                             @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
+
 
     public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 

@@ -31,4 +31,11 @@ public class PlanItemDao extends GenericEntityDao<PlanItemEntity> {
 		return query.getResultList();
 	}
 
+    public List<PlanItemEntity> getLearningPlanItemsByRefObjectId(String learningPlanId, String refObjectId, String refObjectTypeKey) {
+        Query query = em.createNamedQuery("LearningPlanItem.getPlanItemsByRefObjectId");
+		query.setParameter("learningPlanId", learningPlanId);
+        query.setParameter("refObjectId", refObjectId);
+        query.setParameter("refObjectTypeKey", refObjectTypeKey);
+		return query.getResultList();
+    }
 }

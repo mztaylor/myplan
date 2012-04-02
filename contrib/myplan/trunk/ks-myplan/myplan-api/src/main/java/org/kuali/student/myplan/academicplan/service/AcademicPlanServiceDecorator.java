@@ -69,6 +69,15 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
     }
 
     @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId,
+                                                                             @WebParam(name = "refObjectId") String refObjectId,
+                                                                             @WebParam(name = "refObjectType") String refObjectType,
+                                                                             @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().getPlanItemsInPlanByRefObjectIdByRefObjectType(learningPlanId, refObjectId, refObjectType, context);
+    }
+
+    @Override
     public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
