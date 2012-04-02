@@ -559,7 +559,7 @@
     </bean>
 
     <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection">
-        <property name="title" value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
+        <property name="title" value="@{searchResults.size()} courses"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
@@ -573,25 +573,11 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
-                    <property name="group.errorsField.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-DataField" p:propertyName="id"/>
-
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}"/>
-
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.courseTitle}"/>
-
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.credit}"/>
-
-                            <bean parent="Uif-DataField" p:propertyName="atpIds">
-                                <property name="propertyEditor">
-                                    <bean parent="data_list_formatter" p:emptyListMessage="n/a"/>
-                                </property>
-                            </bean>
-
-                        </list>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"
+                      p:title="@{#line.courseDetails.courseTitle}" p:target="" p:hrefText="#"/>
+                <bean parent="Uif-DataField" p:propertyName="atpIds">
+                    <property name="propertyEditor">
+                        <bean parent="data_list_formatter" p:emptyListMessage="n/a"/>
                     </property>
                 </bean>
             </list>
