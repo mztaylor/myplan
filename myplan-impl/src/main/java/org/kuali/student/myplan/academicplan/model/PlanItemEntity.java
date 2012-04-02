@@ -24,12 +24,17 @@ import javax.persistence.Table;
 @Table(name = "KSPL_LRNG_PLAN_ITEM",
     uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ID", "TYPE_ID", "REF_OBJ_ID"}))
 @NamedQueries( {
-    @NamedQuery(name = "LearningPlanItem.getLearningPlanItems",
-            query = "SELECT r FROM PlanItemEntity r WHERE r.refObjectTypeKey = :refObjectTypeKey and r.refObjectId = :refObjectId"),
     @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
             query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
                     "pi.learningPlan = p " +
-                    "and p.id =:learningPlanId and pi.learningPlanItemType.id =:learningPlanItemType")
+                    "and p.id =:learningPlanId " +
+                    "and pi.learningPlanItemType.id =:learningPlanItemType"),
+    @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectId",
+            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
+                    "pi.learningPlan = p " +
+                    "and p.id =:learningPlanId " +
+                    "and pi.refObjectTypeKey = :refObjectTypeKey " +
+                    "and pi.refObjectId = :refObjectId")
 })
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 

@@ -34,7 +34,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     @Test
     public void testGetAllLearningPlanItems() {
         List<PlanItemEntity> objs = planItemDao.findAll();
-        assertEquals(14, objs.size());
+        assertEquals(15, objs.size());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         String planId = "lp1";
 
         List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(planId, AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        assertEquals(3, planItems.size());
+        assertEquals(4, planItems.size());
         for (PlanItemEntity pie : planItems) {
             assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, pie.getLearningPlanItemType().getId());
             assertEquals("student1", pie.getLearningPlan().getStudentId());
@@ -55,6 +55,24 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
             assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, pie.getLearningPlanItemType().getId());
             assertEquals("student1", pie.getLearningPlan().getStudentId());
         }
+    }
+
+    @Test
+    public void testGetPlanItemsByCourse() {
+        String planId = "lp1";
+        String refObjectId = "006476b5-18d8-4830-bbb6-2bb9e79600fb";
+        String refObjectType1 = "kuali.lu.type.CreditCourse";
+        String refObjectType2 = "kuali.lu.type.NonCreditCourse";
+
+        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItemsByRefObjectId(planId, refObjectId, refObjectType1);
+        assertEquals(1, planItems.size());
+        assertEquals(refObjectId, planItems.get(0).getRefObjectId());
+        assertEquals(refObjectType1, planItems.get(0).getRefObjectTypeKey());
+
+        planItems = planItemDao.getLearningPlanItemsByRefObjectId(planId, refObjectId, refObjectType2);
+        assertEquals(1, planItems.size());
+        assertEquals(refObjectId, planItems.get(0).getRefObjectId());
+        assertEquals(refObjectType2, planItems.get(0).getRefObjectTypeKey());
     }
 
     @Test

@@ -12,10 +12,8 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.HoldsDataDictionaryService;
 import org.kuali.student.r2.common.infc.HoldsValidator;
 
-import org.apache.commons.lang.StringUtils;
 import org.kuali.student.r2.core.service.util.ValidationUtils;
 
-import javax.jws.WebParam;
 import java.util.List;
 
 public class AcademicPlanServiceValidationDecorator
@@ -55,6 +53,13 @@ public class AcademicPlanServiceValidationDecorator
     public List<PlanItemInfo> getPlanItemsInPlan(String learningPlanId, ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
          return getNextDecorator().getPlanItemsInPlan(learningPlanId, context);
+    }
+
+    @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(String learningPlanId, String refObjectId,
+                                                                             String refObjectType, ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().getPlanItemsInPlanByRefObjectIdByRefObjectType(learningPlanId, refObjectId, refObjectType, context);
     }
 
     @Override
@@ -119,9 +124,9 @@ public class AcademicPlanServiceValidationDecorator
 	}
 
     @Override
-    public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType,
-                                                          @WebParam(name = "planItemSetInfo") PlanItemSetInfo planItemSetInfo,
-                                                          @WebParam(name = "context") ContextInfo context)
+    public List<ValidationResultInfo> validatePlanItemSet(String validationType,
+                                                          PlanItemSetInfo planItemSetInfo,
+                                                          ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<ValidationResultInfo> errors = null;
         try {

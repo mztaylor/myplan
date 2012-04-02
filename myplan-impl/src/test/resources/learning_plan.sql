@@ -16,11 +16,13 @@ INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME
 INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.item.whatif', 'obj-plan-item-whatif', 0, 'What-if description', 'What-if Item');
 
 INSERT INTO KSPL_LRNG_PI_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp1-i1-Desc', '<p>Comment 1</p>',  'Comment 1', 0);
+INSERT INTO KSPL_LRNG_PI_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp1-i1.x-Desc', '<p>Comment 1.x</p>',  'Comment 1.x', 0);
 INSERT INTO KSPL_LRNG_PI_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp1-i6-Desc', '<p>Very Important</p>',  'Very Important', 0);
 INSERT INTO KSPL_LRNG_PI_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp3-i2-Desc', '<p>Maybe Spring 13</p>',  'Maybe Spring 13', 0);
 INSERT INTO KSPL_LRNG_PI_RICH_TEXT (ID, FORMATTED, PLAIN, VER_NBR) VALUES ('lp4-u1-Desc', '<p>Comment 2</p>',  'Comment 2', 0);
 
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID, RT_DESCR_ID) VALUES ('lp1-i1', 0, '006476b5-18d8-4830-bbb6-2bb9e79600fb', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.wishlist', 'lp1', 'lp1-i1-Desc');
+INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID, RT_DESCR_ID) VALUES ('lp1-i1.x', 0, '006476b5-18d8-4830-bbb6-2bb9e79600fb', 'kuali.lu.type.NonCreditCourse', 'kuali.academicplan.item.wishlist', 'lp1', 'lp1-i1.x-Desc');
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i2', 0, '008d8bea-d63d-43fc-8a77-e52634202f6e', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.wishlist', 'lp1');
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i3', 0, '00ac5436-7014-4d54-95d6-98a6aeaa70c7', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.wishlist', 'lp1');
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i4', 0, '00ee833d-f4d6-4aca-b40f-8f80854f8cb3', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.planned', 'lp1');

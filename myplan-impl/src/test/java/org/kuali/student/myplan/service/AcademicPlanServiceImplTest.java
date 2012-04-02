@@ -99,7 +99,6 @@ public class AcademicPlanServiceImplTest {
         assertEquals("lp2", lp.getId());
     }
 
-
     @Test
     public void addLearningPlan() {
         LearningPlanInfo learningPlan = new LearningPlanInfo();
@@ -162,6 +161,29 @@ public class AcademicPlanServiceImplTest {
                   throw e;
             }
         }
+    }
+
+    @Test
+    public void getPlanItemsByPlanIdByRefObjectIdByRefObjectType() throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+
+        String planId = "lp1";
+        String refObjectId = "006476b5-18d8-4830-bbb6-2bb9e79600fb";
+        String refObjectType1 = "kuali.lu.type.CreditCourse";
+        String refObjectType2 = "kuali.lu.type.NonCreditCourse";
+
+        List<PlanItemInfo> planItems = academicPlanService.getPlanItemsInPlanByRefObjectIdByRefObjectType(planId, refObjectId, refObjectType1, context);
+        assertEquals(1, planItems.size());
+        assertEquals(planId,  planItems.get(0).getLearningPlanId());
+        assertEquals(refObjectId, planItems.get(0).getRefObjectId());
+        assertEquals(refObjectType1, planItems.get(0).getRefObjectType());
+
+        /*  FIXME: This test depends on data that is not available in the CI database, so don't run it for now.
+        planItems = academicPlanService.getPlanItemsInPlanByRefObjectIdByRefObjectType(planId, refObjectId, refObjectType2, context);
+        assertEquals(1, planItems.size());
+        assertEquals(planId,  planItems.get(0).getLearningPlanId());
+        assertEquals(refObjectId, planItems.get(0).getRefObjectId());
+        assertEquals(refObjectType2, planItems.get(0).getRefObjectType());
+        */
     }
 
     @Test

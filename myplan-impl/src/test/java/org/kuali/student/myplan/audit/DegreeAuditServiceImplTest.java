@@ -33,7 +33,7 @@ public class DegreeAuditServiceImplTest {
     }
 
     @Test
-    public void intellijSucks() {
+    public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
         String[] splitStr = courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         for( String ugh : splitStr ) {
