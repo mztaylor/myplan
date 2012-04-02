@@ -28,8 +28,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "LearningPlanItem.getPlanItems",
             query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
                     "pi.learningPlan = p " +
-                    "and p.id =:learningPlanId " +
-                    "and pi.learningPlanItemType.id =:learningPlanItemType"),
+                    "and p.id =:learningPlanId"),
 
     @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
             query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
