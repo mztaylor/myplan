@@ -24,11 +24,19 @@ import javax.persistence.Table;
 @Table(name = "KSPL_LRNG_PLAN_ITEM",
     uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ID", "TYPE_ID", "REF_OBJ_ID"}))
 @NamedQueries( {
+
+    @NamedQuery(name = "LearningPlanItem.getPlanItems",
+            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
+                    "pi.learningPlan = p " +
+                    "and p.id =:learningPlanId " +
+                    "and pi.learningPlanItemType.id =:learningPlanItemType"),
+
     @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
             query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
                     "pi.learningPlan = p " +
                     "and p.id =:learningPlanId " +
                     "and pi.learningPlanItemType.id =:learningPlanItemType"),
+
     @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectId",
             query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
                     "pi.learningPlan = p " +

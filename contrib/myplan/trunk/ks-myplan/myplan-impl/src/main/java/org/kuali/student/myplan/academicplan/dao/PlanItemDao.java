@@ -13,17 +13,16 @@ import java.util.List;
 public class PlanItemDao extends GenericEntityDao<PlanItemEntity> {
     /**
      * Get all plan items for a particular learning plan.
-     *
-     * @param learningPlanId
-     * @return
-     *
-     * TODO: Refactor one of these as a named query or a regular query.
      */
     public List<PlanItemEntity> getLearningPlanItems(String learningPlanId) {
-        return em.createQuery("select pie from PlanItemEntity pie where pie.learningPlan.id =:learningPlanId")
-            .setParameter("learningPlanId", learningPlanId).getResultList();
+        Query query = em.createNamedQuery("LearningPlanItem.getPlanItems");
+        query.setParameter("learningPlanId", learningPlanId);
+        return query.getResultList();
     }
 
+    /**
+     * Get all plan items for a particular learning plan by type.
+     */
     public List<PlanItemEntity> getLearningPlanItems(String learningPlanId, String learningPlanItemType) {
 		Query query = em.createNamedQuery("LearningPlanItem.getPlanItemsByType");
 		query.setParameter("learningPlanId", learningPlanId);
@@ -31,6 +30,9 @@ public class PlanItemDao extends GenericEntityDao<PlanItemEntity> {
 		return query.getResultList();
 	}
 
+    /**
+     * Get all plan items for a particular learning plan by refObjectId.
+     */
     public List<PlanItemEntity> getLearningPlanItemsByRefObjectId(String learningPlanId, String refObjectId, String refObjectTypeKey) {
         Query query = em.createNamedQuery("LearningPlanItem.getPlanItemsByRefObjectId");
 		query.setParameter("learningPlanId", learningPlanId);
