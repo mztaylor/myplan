@@ -42,31 +42,41 @@ public class DegreeAuditServiceImplTest {
     }
     @Test
     public void requestDegreeAudit() {
+        if (true) return;
         try
         {
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String studentId = "0";
-            String programId = "0MATH  0011";
+            String programId = "0CHEM  0011";
+//            String programId = "0HIST  0011";
             String auditTypeKey = "blah";
             ContextInfo context = new ContextInfo();
 
+            long start = System.currentTimeMillis();
+            System.out.println("ugh");
             AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
             String auditID = report.getAuditId();
 
             // TODO: service only returns audittext field for new requests, pending requests don't have this field
             // asked Susan Archdeacon to add that field to all responses.
-            if( auditID == null )
-            {
-                auditID = "2012031413361642";
-            }
+//            if( auditID == null )
+//            {
+//                auditID = "2012031413361642";
+//            }
 
+            String message = null;
             while( true )
             {
                 StatusInfo info = degreeAuditService.getAuditRunStatus(auditID, context);
-                System.out.println( info.getMessage() );
+                String temp = info.getMessage();
+                if( !temp.equals( message ))
+                {
+                    message = temp;
+                    long elapsed = System.currentTimeMillis() - start;
+                    System.out.println( message + " " + elapsed );
+                }
                 if( info.getIsSuccess() ) break;
             }
-            System.out.println( "ugh" );
         }
         catch( Exception e )
         {
@@ -77,9 +87,12 @@ public class DegreeAuditServiceImplTest {
 
     @Test
     public void runRecentAuditList() {
+        if( true ) return;
+
         try
         {
-        String studentId = "100190981";
+//        String studentId = "100190981";
+        String studentId = "100190977";
         Date startDate = new Date();
         Date endDate = new Date();
         ContextInfo context = new ContextInfo();
