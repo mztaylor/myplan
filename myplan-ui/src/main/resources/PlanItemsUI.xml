@@ -670,7 +670,7 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
-                    <!--<property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse')"/>-->
+                    <property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse', e)"/>
                     <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
                 </bean>
             </list>
