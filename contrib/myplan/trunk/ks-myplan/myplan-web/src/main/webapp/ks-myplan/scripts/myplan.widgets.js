@@ -31,7 +31,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     stopEvent(e);
 
     var popupSlider = jq('<div />').attr("class","myplan-popup-slider");
-    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-frame").append(popupSlider);
+    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-frame").append(popupSlider).append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
 
     if (popupStyles) {
         jQuery.each(popupStyles, function(property, value) {
@@ -50,11 +50,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         alwaysVisible: false
 	};
 
-    if (popupOptions) {
-        var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
-    } else {
-        var popupSettings = popupOptionsDefault;
-    }
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
 
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
@@ -98,11 +94,11 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                 jq("#" + id + " .myplan-popup-slider").append( component.addClass("myplan-popup-item") );
                 /*
                 popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>').append(messaging));
+                */
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
                     popupBox.RemoveBubblePopup();
                 });
-                */
             }
             runHiddenScripts(getId + "_div");
 			}
@@ -183,6 +179,29 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
     jq("form#"+ id + "_form").remove();
 }
 
+function myplanFormSubmit(id, methodToCall, e) {
+    var targetId = (e.currentTarget) ? e.currentTarget.id : e.srcElement.id;
+    var tempDiv = jq("<div />").hide();
+    jq("body").append(tempDiv);
+    var elementToBlock = tempDiv;
+    var updateRefreshableComponentCallback = function(htmlContent){
+        var component = jq("#add_plan_item_key", htmlContent);
+        var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
+		var addedId = jq.trim( jq(component).text() );
+        if (addedId.length > 0) {
+			elementToBlock.unblock();
+            jq("#" + targetId).parent().fadeOut(250, function() {
+                jq("#" + targetId).hide();
+                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html("Saved to Your Plan");
+                jq("#" + targetId).parent().append(tempDiv);
+                jq(this).fadeIn(250);
+			});
+		}
+    };
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
+    tempDiv.remove();
+}
+
 function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
     var targetId = (e.currentTarget) ? e.currentTarget.id : e.srcElement.id;
     var tempForm = jq('<form />').hide();
@@ -211,8 +230,6 @@ function addSavedCourse(id, methodToCall, action, retrieveOptions, e) {
                 jq(this).fadeIn(250);
 			});
             myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},addedId);
-		} else {
-			// showGrowl('Error updating', 'Error', 'errorGrowl');
 		}
 	};
 
@@ -386,7 +403,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 			                fadeOut:  0,
 			                overlayCSS:  {
                                 backgroundColor: '#fff',
-                                opacity: 0.5
+                                opacity: 0
                             },
 			                css: {
                                 border: 'none',
@@ -433,25 +450,4 @@ function truncateField(id) {
         jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
         jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
     });
-}
-function enableToggle(styleClass) {
-	jq("." + styleClass).each(function() {
-		jq(this).hide();
-		var link = jq("<div>Show</div>");
-		jq(link).click(function() {
-			jq(this).siblings("." + styleClass).slideDown(500);
-		});
-		jq(this).parent().append(link);
-	});
-}
-function toggleItem() {
-	jq(this).click(function() {
-		if ( jq(this).hasClass("show") ) {
-			jq(this).prev().slideDown(500);
-			jq(this).removeClass("show").addClass("hide");
-		} else {
-			jq(this).prev().slideUp(500);
-			jq(this).removeClass("hide").addClass("show");
-		}
-	});
 }

@@ -650,11 +650,6 @@
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>/ks-myplan/scripts/jquery.autoellipsis.min.js</value>
-            </list>
-        </property>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>

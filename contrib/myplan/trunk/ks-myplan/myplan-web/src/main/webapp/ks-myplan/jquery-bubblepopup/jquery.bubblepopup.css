@@ -54,7 +54,8 @@
 	.jquerybubblepopup-grey   .jquerybubblepopup-innerHtml,
 	.jquerybubblepopup-orange .jquerybubblepopup-innerHtml,
 	.jquerybubblepopup-violet .jquerybubblepopup-innerHtml, 
-	.jquerybubblepopup-yellow .jquerybubblepopup-innerHtml
+	.jquerybubblepopup-yellow .jquerybubblepopup-innerHtml,
+    .jquerybubblepopup-myplan .jquerybubblepopup-innerHtml
 	{
 		font-weight:normal;
 		color:#000000;
