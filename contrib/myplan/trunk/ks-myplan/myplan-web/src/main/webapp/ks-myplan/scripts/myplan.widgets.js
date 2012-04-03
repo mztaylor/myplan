@@ -31,7 +31,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     stopEvent(e);
 
     var popupSlider = jq('<div />').attr("class","myplan-popup-slider");
-    var popupHtml = jq('<div />').attr("id",id).attr("class","myplan-popup-frame").append(popupSlider).append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+    var popupHtml = jq('<div />').attr("id",id + "_popup").attr("class","myplan-popup-frame").append(popupSlider).append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
 
     if (popupStyles) {
         jQuery.each(popupStyles, function(property, value) {
@@ -85,13 +85,13 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     });
     jq("body").append(tempForm);
 
-    var elementToBlock = jq("#" + id);
+    var elementToBlock = jq("#" + id  + "_popup");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jq("#" + getId + "_div", htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
-            if(jq("#" + id).length){
-                jq("#" + id + " .myplan-popup-slider").append( component.addClass("myplan-popup-item") );
+            if(jq("#" + id  + "_popup").length){
+                jq("#" + id + "_popup .myplan-popup-slider").append( component.addClass("myplan-popup-item") );
                 /*
                 popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>').append(messaging));
                 */
@@ -117,7 +117,7 @@ function myplanAppendPopup(id, getId, methodToCall, action, retrieveOptions) {
     });
     jq("body").append(tempForm);
     var tempDiv = jq('<div />').attr("id","tempDiv").addClass("myplan-popup-item");
-    jq("#" + id + " .myplan-popup-slider").append(tempDiv);
+    jq("#" + id + "_popup .myplan-popup-slider").append(tempDiv);
 
     var elementToBlock = jq("#tempDiv");
 
@@ -192,7 +192,7 @@ function myplanFormSubmit(id, methodToCall, e) {
 			elementToBlock.unblock();
             jq("#" + targetId).parent().fadeOut(250, function() {
                 jq("#" + targetId).hide();
-                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html("Saved to Your Plan");
+                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html('Saved to <a href="#" onclick="alert(&quot;Link to Your Plan&quot;);">Your Plan</a>');
                 jq("#" + targetId).parent().append(tempDiv);
                 jq(this).fadeIn(250);
 			});

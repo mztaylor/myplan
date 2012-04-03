@@ -586,10 +586,10 @@
                             e.preventDefault();
                             var id = jq(this).attr('href').split('#')[1];
                             switch (id) {
-                                case 'chem241':
+                                case 'com362':
                                     createLightBoxLink(jq(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
                                     break;
-                                case 'chem453':
+                                case '':
                                     window.open(jq(this).attr('href'),'_blank');
                                     break;
                                 default:
