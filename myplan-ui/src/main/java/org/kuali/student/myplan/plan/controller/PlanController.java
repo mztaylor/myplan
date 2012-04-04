@@ -87,22 +87,22 @@ public class PlanController extends UifControllerBase {
         }
         String termIdString = form.getTermsList();
         if (StringUtils.isEmpty(termIdString)) {
-            //  TODO: DO ERROR.
+            //  TODO: DO ERROR. NO FORM ELEMENTS WERE CHECKED>
             throw new RuntimeException("Terms List was empty.");
         }
         String[] t = termIdString.split(",");
-        //  Make this a linked list so that remove() is supported.
-        List<String> termIds = new LinkedList<String>(Arrays.asList(t));
+        //  Using LinkedList so that remove() is supported.
+        List<String> newTermIds = new LinkedList<String>(Arrays.asList(t));
 
-        if (termIds.isEmpty()) {
+        if (newTermIds.isEmpty()) {
             //  DO ERROR.
             throw new RuntimeException("Couldn't parse terms list.");
         }
 
         //  Check for an "other" item in the terms list.
-        if (termIds.contains(PlanConstants.OTHER_TERM_KEY)) {
+        if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {
             //  Remove the "other" item from the list.
-            termIds.remove(termIds.indexOf(PlanConstants.OTHER_TERM_KEY));
+            newTermIds.remove(newTermIds.indexOf(PlanConstants.OTHER_TERM_KEY));
 
             //  Create an ATP id from the values in the year and term fields.
             String year = form.getYear();
@@ -116,13 +116,110 @@ public class PlanController extends UifControllerBase {
             }
 
             String newTermId = PlanConstants.TERM_ID_PREFIX + term + year;
-            termIds.add(newTermId);
+            newTermIds.add(newTermId);
         }
 
-        PlanItem item = addPlanItem(courseId, termIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        /*
+         *  Before attempting to add a plan item, query for plan items for the requested course id. If a plan item of type
+         *  saved course already exists then make this operation an update which adds in any new ATP ids.
+         */
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String studentId = user.getPrincipalId();
 
-        form.setPlanItemId(item.getId());
-        form.setCourseId(item.getRefObjectId());
+        LearningPlan plan = null;
+        try {
+            //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
+            //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
+            plan = getLearningPlan(studentId);
+        } catch(RuntimeException e) {
+            logger.error("Query for default learning plan failed.", e);
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            //  TODO: Determine how to blow up.
+            return null;
+        }
+
+        /*
+         *  Create a default learning plan if there isn't one already and skip querying for plan items.
+         */
+        PlanItem planItem = null;
+        if (plan == null) {
+            try {
+                plan = createDefaultLearningPlan(studentId);
+            } catch (Exception e) {
+                logger.error("Unable to create learning plan.", e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+                //  TODO: Determine how to blow up.
+                return null;
+            }
+        } else {
+            /* Check for an existing plan item for the given course id (refObjectId). The planItems list should contain
+             * elements for a single course (refObjectId) and there should be only one item of planned course, so the
+             * iterator which adds ATP ids can break once that item is processed.
+             */
+            List<PlanItemInfo> planItems = null;
+            try {
+                planItems = getAcademicPlanService().getPlanItemsInPlanByRefObjectIdByRefObjectType(plan.getId(), courseId,
+                        LUConstants.CLU_TYPE_CREDIT_COURSE, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Unable to fetch plan items.", e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+                //  TODO: Determine how to blow up.
+                return null;
+            }
+
+            /*
+             *  Add the new ATP ids to the planned course.
+             */
+            for (PlanItemInfo pii : planItems) {
+                if (pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                    List<String> existingTermIds = pii.getPlanPeriods();
+                    //  If the existing and new term ids have no overlap just add them all.
+                    //  Otherwise, only add the non-duplicates.
+                    if (Collections.disjoint(existingTermIds, newTermIds)) {
+                        pii.getPlanPeriods().addAll(newTermIds);
+                        planItem = pii;
+                    } else {
+                        //  Make a new list of all term Ids, then clobber any dups by putting them into a set. Then
+                        //  add them to the plan item info.
+                        List<String> allTermIds = new ArrayList<String>(existingTermIds);
+                        allTermIds.addAll(newTermIds);
+                        pii.setPlanPeriods(new ArrayList<String>(new HashSet<String>(allTermIds)));
+                        planItem = pii;
+                    }
+
+                    if (planItem != null) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        //  If an update-able plan item was found then go ahead and do an update. Otherwise, do an add.
+        if (planItem != null) {
+            try {
+                academicPlanService.updatePlanItem(planItem.getId(), (PlanItemInfo) planItem, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Unable to update plan item.", e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+                //  TODO: Determine how to blow up.
+                return null;
+            }
+        } else {
+            planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        }
+
+        //  Pass the IDs of the updated items back to the UI.
+        form.setPlanItemId(planItem.getId());
+        form.setCourseId(planItem.getRefObjectId());
+
+        //  TODO: Hold on this for now. Unclear how meta data gets updated.
+        //  Update the timestamp on the plan.
+        //try {
+        //    academicPlanService.updateLearningPlan(plan.getId(), (LearningPlanInfo) plan, PlanConstants.CONTEXT_INFO);
+        //} catch (Exception e) {
+        //    logger.error("Unable to update the plan.", e);
+        //}
+
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
@@ -130,68 +227,84 @@ public class PlanController extends UifControllerBase {
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String studentId = user.getPrincipalId();
         String courseId = form.getCourseId();
 
-        PlanItem item = addPlanItem(courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        LearningPlan plan = null;
+        try {
+            //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
+            plan = getLearningPlan(studentId);
+        } catch(RuntimeException e) {
+            logger.error("Query for default learning plan failed.", e);
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            //  TODO: Determine how to blow up.
+            return null;
+        }
+
+        /*
+         *  Create a default learning plan if there isn't one already and skip querying for plan items.
+         */
+        if (plan == null) {
+            try {
+                plan = createDefaultLearningPlan(studentId);
+            } catch (Exception e) {
+                logger.error("Unable to create learning plan.", e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+                //  TODO: Determine how to blow up.
+            }
+        }
+
+        PlanItem item = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
 
         form.setPlanItemId(item.getId());
         form.setCourseId(item.getRefObjectId());
+
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
-
-    protected PlanItem addPlanItem(String courseId, List<String> termIds, String planItemType) {
+    protected PlanItem addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
 
         if (StringUtils.isEmpty(courseId)) {
             // TODO: DO ERROR.
             throw new RuntimeException("Empty Course ID");
         }
 
-        Person user = GlobalVariables.getUserSession().getPerson();
-
-        /*
-         * Get an existing plan or create a new one. This method will set error messages and return null if there are problems.
-         */
-        LearningPlan learningPlan = getLearningPlan(user.getPrincipalId());
-
         PlanItem newPlanItem = null;
 
-        if (learningPlan != null) {
-            PlanItemInfo pii = new PlanItemInfo();
-            pii.setLearningPlanId(learningPlan.getId());
-            pii.setTypeKey(planItemType);
-            pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
-            pii.setRefObjectId(courseId);
+        PlanItemInfo pii = new PlanItemInfo();
+        pii.setLearningPlanId(plan.getId());
+        pii.setTypeKey(planItemType);
+        pii.setRefObjectType(LUConstants.CLU_TYPE_CREDIT_COURSE);
+        pii.setRefObjectId(courseId);
 
-            pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+        pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
-            RichTextInfo rti = new RichTextInfo();
-            rti.setFormatted("");
-            rti.setPlain("");
-            pii.setDescr(rti);
+        RichTextInfo rti = new RichTextInfo();
+        rti.setFormatted("");
+        rti.setPlain("");
+        pii.setDescr(rti);
 
-            if (null != termIds) {
-                pii.setPlanPeriods(termIds);
-            }
+        if (null != termIds) {
+            pii.setPlanPeriods(termIds);
+        }
 
-            try {
-                newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
-            } catch (AlreadyExistsException e) {
-                //  The course id was already in the saved courses list.
-                logger.warn("This item was a duplicate. Fetching the existing plan item.", e);
-                newPlanItem = getPlanItemByCourseIdAndType(courseId, planItemType);
-            } catch (Exception e) {
-                //  Give the end-user a generic error message, but log the exception.
-                logger.error("Could not create plan item.", e);
-                //   Remove the errors, then add a more generic one.
-                GlobalVariables.getMessageMap().clearErrorMessages();
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            }
+        try {
+            newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
+        } catch (AlreadyExistsException e) {
+            //  The course id was already in the saved courses list.
+            logger.warn("This item was a duplicate. Fetching the existing plan item.", e);
+            newPlanItem = getPlanItemByCourseIdAndType(courseId, planItemType);
+        } catch (Exception e) {
+            //  Give the end-user a generic error message, but log the exception.
+            logger.error("Could not create plan item.", e);
+            //   Remove the errors, then add a more generic one.
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
         }
 
         return newPlanItem;
     }
-
 
     /*
      *  If the wishlist item couldn't be added because the course already exists then lookup the id of the existing
@@ -200,7 +313,13 @@ public class PlanController extends UifControllerBase {
     protected PlanItem getPlanItemByCourseIdAndType(String courseId, String planItemType) {
 
         Person user = GlobalVariables.getUserSession().getPerson();
-        LearningPlan learningPlan = getLearningPlan(user.getPrincipalId());
+        String studentId = user.getPrincipalId();
+        LearningPlan learningPlan = getLearningPlan(studentId);
+        if (learningPlan == null) {
+            logger.error(String.format("Could not find the default plan for [%].", studentId));
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            return null;
+        }
 
         List<PlanItemInfo> planItems = null;
         PlanItem item = null;
@@ -234,10 +353,11 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     * Retrieve a student's LearningPlan or create one if it doesn't exist.
+     * Retrieve a student's LearningPlan.
      *
      * @param studentId
      * @return A LearningPlan or null on errors.
+     * @throws RuntimeException if the query fails.
      */
     private LearningPlan getLearningPlan(String studentId) {
         /*
@@ -248,38 +368,23 @@ public class PlanController extends UifControllerBase {
             learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(studentId,
                     PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
-            logger.error("Learning plan query failed.", e);
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            return null;
+            throw new RuntimeException(String.format("Could not fetch plan for user [%s].", studentId), e);
         }
 
         if (learningPlans == null) {
-            logger.error("Learning Plans query produced null.");
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            return null;
+            throw new RuntimeException(String.format("Could not fetch plan for user [%s]. The query returned null.", studentId));
         }
 
         //  There should currently only be a single learning plan. This may change in the future.
         if (learningPlans.size() > 1) {
-            logger.error(String.format("Student [%s] has more than one plan.", studentId));
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            return null;
+            throw new RuntimeException(String.format("User [%s] has more than one plan.", studentId));
         }
 
-        //  Use an existing plan or create a new one.
         LearningPlan learningPlan = null;
         if (learningPlans.size() != 0) {
             learningPlan = learningPlans.get(0);
-        } else {
-            try {
-                learningPlan = createDefaultLearningPlan(studentId);
-            } catch (Exception e) {
-                //  End-users won't care about the details of what went wrong here, so provide a generic error message, but
-                //  log the exception.
-                logger.error("Unable to create learning plan.", e);
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            }
         }
+
         return learningPlan;
     }
 

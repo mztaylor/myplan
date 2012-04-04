@@ -11,7 +11,6 @@ import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.HoldsDataDictionaryService;
 import org.kuali.student.r2.common.infc.HoldsValidator;
-
 import org.kuali.student.r2.core.service.util.ValidationUtils;
 
 import java.util.List;
