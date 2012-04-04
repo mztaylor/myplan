@@ -30,7 +30,6 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
     @XmlAnyElement
     private List<Element> _futureElements;
 
-
     public LearningPlanInfo() {
         this.id = null;
         this.descr = null;

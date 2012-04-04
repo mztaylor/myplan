@@ -127,6 +127,46 @@ public class AcademicPlanServiceImplTest {
         assertEquals(planDesc, newLearningPlan.getDescr().getPlain());
     }
 
+    @Test
+    public void updateLearningPlanTimestamp() throws InvalidParameterException, DataValidationErrorException, MissingParameterException,
+            DoesNotExistException, PermissionDeniedException, OperationFailedException {
+
+        //   Create a new learning plan so that all the meta data is properly initialized.
+        LearningPlanInfo learningPlan = new LearningPlanInfo();
+        learningPlan.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN);
+        learningPlan.setStudentId(principalId);
+        RichTextInfo desc = new RichTextInfo();
+        String formattedDesc = "<span>My Plan</span>";
+        String planDesc = "My Plan";
+        desc.setFormatted(formattedDesc);
+        desc.setPlain(planDesc);
+        learningPlan.setDescr(desc);
+
+        learningPlan.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+
+        LearningPlanInfo plan = null;
+        try {
+            plan = academicPlanService.createLearningPlan(learningPlan, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+
+        assertNotNull(plan);
+
+        Date updated1 = plan.getMeta().getUpdateTime();
+        assertNotNull(updated1);
+
+        //  FIXME: Implement state.
+        plan.setStateKey("fixme");
+        plan = academicPlanService.updateLearningPlan(plan.getId(), plan, context);
+        Date updated2 = plan.getMeta().getUpdateTime();
+        assertNotNull(updated2);
+
+        //  TODO: FIXME: Determine how metadata is supposed to be updated during updates.
+       // assertFalse(updated1.equals(updated2));
+    }
+
+
     @Test (expected = DoesNotExistException.class)
     public void deleteLearningPlan() throws Exception {
         String id = "lp1";

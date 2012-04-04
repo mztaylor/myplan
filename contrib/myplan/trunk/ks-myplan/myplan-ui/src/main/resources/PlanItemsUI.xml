@@ -580,6 +580,9 @@
                         <bean parent="data_list_formatter" p:emptyListMessage="n/a"/>
                     </property>
                 </bean>
+                <bean parent="Uif-MessageField" p:messageText="COURSEID: @{#line.courseDetails.courseId}"/>
+                <bean parent="Uif-MessageField" p:messageText="PLANITID: @{#line.id}"/>
+
             </list>
         </property>
     </bean>
@@ -670,7 +673,9 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
+                    <!-- DON"T CHECK THIS IN   !!!!
                     <property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse', e)"/>
+                    -->
                     <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
                 </bean>
             </list>

@@ -50,8 +50,6 @@ public class CourseDetails {
         this.titleValue = titleValue;
     }
 
-
-
     public String getCourseId() {
         return courseId;
     }
