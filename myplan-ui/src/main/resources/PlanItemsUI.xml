@@ -494,7 +494,7 @@
                 <bean parent="Uif-Page" p:id="remove_plan_item_page">
                     <property name="items">
                         <list>
-                            <ref bean="remove_plan_item_page"/>
+                            <ref bean="remove_plan_item_section"/>
                         </list>
                     </property>
                 </bean>
