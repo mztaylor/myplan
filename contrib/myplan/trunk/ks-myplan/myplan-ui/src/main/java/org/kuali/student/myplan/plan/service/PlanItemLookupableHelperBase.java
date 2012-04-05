@@ -30,7 +30,7 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
 
-    protected List<PlanItemDataObject> getPlanItems(String planItemType)
+    protected List<PlanItemDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
         List<PlanItemDataObject> plannedCoursesList = new ArrayList<PlanItemDataObject>();
@@ -56,13 +56,19 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
                 if (planItem.getTypeKey().equals(planItemType)) {
                     PlanItemDataObject item = new PlanItemDataObject();
                     item.setId(planItem.getId());
-                    item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
                     item.setDateAdded(planItem.getMeta().getCreateTime());
                     //  Only load ATP info for planned courses.
                     if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
                         item.setAtpIds(planItem.getPlanPeriods());
                     }
                     plannedCoursesList.add(item);
+
+
+                    if(loadSummaryInfoOnly) {
+                        item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
+                    }    else {
+                        item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                    }
                 }
             }
         }
