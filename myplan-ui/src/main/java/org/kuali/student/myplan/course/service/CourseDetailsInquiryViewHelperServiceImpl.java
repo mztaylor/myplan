@@ -88,7 +88,17 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return retrieveCourseDetails((String) fieldValues.get("courseId"));
     }
 
-    public CourseDetails retrieveCourseDetails(String courseId) {
+
+    /**
+     * Populates course with catalog information (title, id, code, description) and next offering information.
+     * Other properties are left empty and a flag is set to indicate only summary view
+     * @param courseId
+     * @return
+     */
+    public CourseDetails retrieveCourseSummary(String courseId) {
+
+        CourseDetails courseDetails = new CourseDetails();
+        courseDetails.setSummaryOnly(true);
 
         CourseInfo course = null;
         try {
@@ -98,8 +108,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         } catch (Exception e) {
             throw new RuntimeException("Query failed.", e);
         }
-
-        CourseDetails courseDetails = new CourseDetails();
 
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
@@ -114,6 +122,26 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             termsOffered.add(atpCache.get(term));
         }
         courseDetails.setTermsOffered(termsOffered);
+
+
+        return courseDetails;
+
+    }
+
+
+    public CourseDetails retrieveCourseDetails(String courseId) {
+
+        CourseDetails courseDetails = retrieveCourseSummary(courseId);
+        courseDetails.setSummaryOnly(false);
+
+        CourseInfo course = null;
+        try {
+            course = getCourseService().getCourse(courseId);
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
 
         // Campus Locations
         initializeCampusLocations();

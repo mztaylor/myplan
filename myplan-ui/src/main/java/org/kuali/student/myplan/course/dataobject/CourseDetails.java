@@ -8,11 +8,22 @@ import java.util.List;
  *  Course Details
  */
 public class CourseDetails {
+
+    // Indicates if only summary information is stored in course details
+    private boolean summaryOnly = true;
+
+
+    // List of fileds populated when only summary information is loaded
     private String courseId;
     private String code;
     private String courseTitle;
     private String credit;
     private String courseDescription;
+    private List<String> termsOffered;
+
+
+    // Rest of these properties are populated as part of full details
+
     private String titleValue;
     private String lastOffered;
 
@@ -22,7 +33,6 @@ public class CourseDetails {
     private Date savedCourseDateCreated;
 
     private List<String> campusLocations;
-    private List<String> termsOffered;
     private List<String> scheduledTerms;
     private List<String> requisites;
     private List<String> genEdRequirements;
@@ -49,6 +59,8 @@ public class CourseDetails {
     public void setTitleValue(String titleValue) {
         this.titleValue = titleValue;
     }
+
+
 
     public String getCourseId() {
         return courseId;
@@ -171,7 +183,21 @@ public class CourseDetails {
         this.scheduledTerms = scheduledTerms;
     }
 
+    public boolean isSummaryOnly() {
+        return summaryOnly;
+    }
+
+    public void setSummaryOnly(boolean summaryOnly) {
+        this.summaryOnly = summaryOnly;
+    }
+
+
+
+    //TODO: Review why we really need this
     public CourseDetails getThis() {
         return this;
     }
+
+
+
 }

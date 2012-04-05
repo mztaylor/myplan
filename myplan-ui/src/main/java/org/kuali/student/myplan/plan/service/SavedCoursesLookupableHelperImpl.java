@@ -11,7 +11,7 @@ public class SavedCoursesLookupableHelperImpl extends PlanItemLookupableHelperBa
     @Override
     protected List<PlanItemDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         try {
-            List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+            List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, false);
             Collections.sort(plannedCoursesList);
             return plannedCoursesList;
         } catch (Exception e) {

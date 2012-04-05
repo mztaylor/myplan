@@ -20,6 +20,7 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class CourseSearchForm extends UifFormBase {
     private static final long serialVersionUID = 4898118410378641665L;
@@ -37,7 +38,7 @@ public class CourseSearchForm extends UifFormBase {
     private String campusSelect;
 
     /** Search results list. */
-    private List<CourseSearchItem> courseSearchResults;
+    private List<CourseSearchItem> courseSearchResults = new ArrayList<CourseSearchItem>();
 
     /** Facet data lists */
     private List<FacetItem> curriculumFacetItems;

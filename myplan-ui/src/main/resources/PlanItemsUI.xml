@@ -83,7 +83,7 @@
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
+                  value="org.kuali.student.myplan.plan.service.SavedCoursesSummaryLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="styleClasses">
             <list merge="true">
