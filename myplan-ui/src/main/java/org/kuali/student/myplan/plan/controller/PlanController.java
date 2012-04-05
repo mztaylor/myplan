@@ -63,15 +63,23 @@ public class PlanController extends UifControllerBase {
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
+
+        PlanForm planForm =  (PlanForm) form;
+
+        String courseId = planForm.getCourseId();
+        if (StringUtils.isEmpty(courseId)) {
+            //TODO: THis might not be the right thing to do.
+           return doAddPlanItemError(planForm, "Course ID was missing.", null);
+        }
+
         //  Initialize the form with a course Id.
-        PlanForm planForm = (PlanForm) form;
-        planForm.setCourseId(planForm.getCourseId());
+        planForm.setCourseId(courseId);
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch(Exception e) {
-            //  TODO: Determine how to blow up.
+
         }
 
         return getUIFModelAndView(planForm);
@@ -83,20 +91,17 @@ public class PlanController extends UifControllerBase {
 
         String courseId = form.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
-            //  TODO: DO ERROR.
+           return doAddPlanItemError(form, "Course ID was missing.", null);
         }
         String termIdString = form.getTermsList();
         if (StringUtils.isEmpty(termIdString)) {
-            //  TODO: DO ERROR. NO FORM ELEMENTS WERE CHECKED>
-            throw new RuntimeException("Terms List was empty.");
+            return doAddPlanItemError(form, "Term IDs were missing.", null);
         }
         String[] t = termIdString.split(",");
         //  Using LinkedList so that remove() is supported.
         List<String> newTermIds = new LinkedList<String>(Arrays.asList(t));
-
         if (newTermIds.isEmpty()) {
-            //  DO ERROR.
-            throw new RuntimeException("Couldn't parse terms list.");
+            return doAddPlanItemError(form, "Could not parse term IDs.", null);
         }
 
         //  Check for an "other" item in the terms list.
@@ -107,12 +112,12 @@ public class PlanController extends UifControllerBase {
             //  Create an ATP id from the values in the year and term fields.
             String year = form.getYear();
             if (StringUtils.isBlank(year)) {
-                //  TODO: Determine how to blow up.
+                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because year was blank.", null);
             }
 
             String term = form.getTerm();
             if (StringUtils.isBlank(term)) {
-               //  TODO: Determine how to blow up.
+                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
             }
 
             String newTermId = PlanConstants.TERM_ID_PREFIX + term + year;
@@ -132,10 +137,7 @@ public class PlanController extends UifControllerBase {
             //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
             plan = getLearningPlan(studentId);
         } catch(RuntimeException e) {
-            logger.error("Query for default learning plan failed.", e);
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            //  TODO: Determine how to blow up.
-            return null;
+            return doAddPlanItemError(form, "Query for default learning plan failed.", e);
         }
 
         /*
@@ -146,10 +148,7 @@ public class PlanController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                logger.error("Unable to create learning plan.", e);
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-                //  TODO: Determine how to blow up.
-                return null;
+                return doAddPlanItemError(form, "Unable to create learning plan.", e);
             }
         } else {
             /* Check for an existing plan item for the given course id (refObjectId). The planItems list should contain
@@ -161,10 +160,7 @@ public class PlanController extends UifControllerBase {
                 planItems = getAcademicPlanService().getPlanItemsInPlanByRefObjectIdByRefObjectType(plan.getId(), courseId,
                         LUConstants.CLU_TYPE_CREDIT_COURSE, PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error("Unable to fetch plan items.", e);
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-                //  TODO: Determine how to blow up.
-                return null;
+                return doAddPlanItemError(form, "Unable to fetch plan items.", e);
             }
 
             /*
@@ -199,13 +195,14 @@ public class PlanController extends UifControllerBase {
             try {
                 academicPlanService.updatePlanItem(planItem.getId(), (PlanItemInfo) planItem, PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error("Unable to update plan item.", e);
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-                //  TODO: Determine how to blow up.
-                return null;
+                return doAddPlanItemError(form, "Unable to update plan item.", e);
             }
         } else {
-            planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+            try {
+                 planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+            } catch(Exception e) {
+                 return doAddPlanItemError(form, "Unable to add plan item.", e);
+            }
         }
 
         //  Pass the IDs of the updated items back to the UI.
@@ -236,10 +233,7 @@ public class PlanController extends UifControllerBase {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
             plan = getLearningPlan(studentId);
         } catch(RuntimeException e) {
-            logger.error("Query for default learning plan failed.", e);
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            //  TODO: Determine how to blow up.
-            return null;
+            return doAddPlanItemError(form, "Query for default learning plan failed.", e);
         }
 
         /*
@@ -249,13 +243,16 @@ public class PlanController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                logger.error("Unable to create learning plan.", e);
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-                //  TODO: Determine how to blow up.
+                 return doAddPlanItemError(form, "Unable to create learning plan.", e);
             }
         }
 
-        PlanItem item = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        PlanItem item = null;
+        try {
+            item = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        } catch(Exception e) {
+             return doAddPlanItemError(form, "Unable to add plan item.", e);
+        }
 
         form.setPlanItemId(item.getId());
         form.setCourseId(item.getRefObjectId());
@@ -263,6 +260,29 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
+    /**
+     *  Blow up on failed plan adds.
+     */
+    private ModelAndView doAddPlanItemError(PlanForm form, String errorMessage, Exception e) {
+        if (e != null) {
+            logger.error(errorMessage, e);
+        } else {
+            logger.error(errorMessage);
+        }
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+    }
+
+    /**
+     * Adds a plan item for the given course id and ATPs.
+     *
+     * @param plan  The learning plan to add the item to.
+     * @param courseId  The id of the course.
+     * @param termIds A list of ATP/term ids if the plan item is a planned course.
+     * @param planItemType  Saved couse or planned course.
+     * @return  The newly created plan item or the existing plan item where a plan item already exists for the given course.
+     * @throws RuntimeException on errors.
+     */
     protected PlanItem addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
 
         if (StringUtils.isEmpty(courseId)) {
@@ -296,19 +316,17 @@ public class PlanController extends UifControllerBase {
             logger.warn("This item was a duplicate. Fetching the existing plan item.", e);
             newPlanItem = getPlanItemByCourseIdAndType(courseId, planItemType);
         } catch (Exception e) {
-            //  Give the end-user a generic error message, but log the exception.
-            logger.error("Could not create plan item.", e);
-            //   Remove the errors, then add a more generic one.
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            throw new RuntimeException("Could not create plan item.", e);
         }
 
         return newPlanItem;
     }
 
     /*
-     *  If the wishlist item couldn't be added because the course already exists then lookup the id of the existing
+     *  If the saved course item couldn't be added because the course already exists then lookup the id of the existing
      *  plan item.
+     *  @return Returns a plan item if one is found for the given courseId. Otherwise, returns null.
+     *  @throws RuntimeException on errors.
      */
     protected PlanItem getPlanItemByCourseIdAndType(String courseId, String planItemType) {
 
@@ -316,9 +334,7 @@ public class PlanController extends UifControllerBase {
         String studentId = user.getPrincipalId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
-            logger.error(String.format("Could not find the default plan for [%].", studentId));
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            return null;
+            throw new RuntimeException("Could not find the default plan for [%].");
         }
 
         List<PlanItemInfo> planItems = null;
@@ -327,13 +343,11 @@ public class PlanController extends UifControllerBase {
         try {
             planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), planItemType, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
         if (planItems == null || planItems.isEmpty()) {
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            throw new RuntimeException("Could not retrieve plan items.");
         } else {
             for (PlanItem p : planItems) {
                 if (p.getRefObjectId().equals(courseId)) {
@@ -341,14 +355,8 @@ public class PlanController extends UifControllerBase {
                     break;
                 }
             }
-            //  A null here means that the duplicate plan item couldn't be found.
-            if (item == null) {
-                GlobalVariables.getMessageMap().clearErrorMessages();
-                //  TODO: Put in a more specific error message?
-                GlobalVariables.getMessageMap().putErrorForSectionId("add_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
-            }
         }
-
+        //  A null here means that the duplicate plan item couldn't be found.
         return item;
     }
 
@@ -361,7 +369,7 @@ public class PlanController extends UifControllerBase {
      */
     private LearningPlan getLearningPlan(String studentId) {
         /*
-         *  First fetch the student's learning plan. If they don't have a plan then create one.
+         *  First fetch the student's learning plan.
          */
         List<LearningPlanInfo> learningPlans = null;
         try {
@@ -418,7 +426,6 @@ public class PlanController extends UifControllerBase {
         String planItemId = form.getPlanItemId();
 
         try {
-
             // First load the plan item and retrieve the courseId
             PlanItemInfo planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
             form.setCourseId(planItem.getRefObjectId());
@@ -433,7 +440,7 @@ public class PlanController extends UifControllerBase {
             logger.error("Could not delete plan item.", e);
             //   Remove the errors, then add a more generic one.
             GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId("remove_plan_item_page", PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
         }
 
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
@@ -457,5 +464,4 @@ public class PlanController extends UifControllerBase {
         }
         return courseDetailsInquiryService;
     }
-
 }
