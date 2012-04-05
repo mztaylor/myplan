@@ -32,7 +32,7 @@
                 <ref bean="CourseDetails.courseTitle"/>
                 <ref bean="CourseDetails.credit"/>
                 <ref bean="CourseDetails.courseDescription"/>
-                <ref bean="CourseDetails.titleValue"/>
+                <ref bean="CourseDetails.curriculumTitle"/>
                 <ref bean="CourseDetails.lastOffered"/>
             </list>
         </property>
@@ -208,9 +208,9 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
-    <bean id="CourseDetails.titleValue" parent="CourseDetails.titleValue-parentBean"/>
-    <bean id="CourseDetails.titleValue-parentBean" abstract="true" parent="BaseKuali.string">
-        <property name="name" value="titleValue"/>
+    <bean id="CourseDetails.curriculumTitle" parent="CourseDetails.curriculumTitle-parentBean"/>
+    <bean id="CourseDetails.curriculumTitle-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="curriculumTitle"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Curriculum"/>
         <property name="shortLabel" value="Curriculum"/>
@@ -539,7 +539,7 @@
                 </bean>
 
                 <!--Curriculum -->
-                <bean parent="Uif-DataField" p:propertyName="titleValue" p:label="Curriculum" p:labelField.renderColon="false">
+                <bean parent="Uif-DataField" p:propertyName="curriculumTitle" p:label="Curriculum" p:labelField.renderColon="false">
                     <property name="labelField.styleClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
