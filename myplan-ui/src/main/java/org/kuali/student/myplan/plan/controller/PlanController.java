@@ -68,8 +68,7 @@ public class PlanController extends UifControllerBase {
 
         String courseId = planForm.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
-            //TODO: THis might not be the right thing to do.
-           return doAddPlanItemError(planForm, "Course ID was missing.", null);
+           return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
 
         //  Initialize the form with a course Id.
