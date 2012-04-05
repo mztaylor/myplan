@@ -35,7 +35,26 @@
             </list>
         </property>
     </bean>
-
+    <bean id="PlannedTerm" parent="PlannedTerm-parentBean"/>
+    <bean id="PlannedTerm-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Saved Courses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+               <ref bean="PlannedTerm.planItemId"/>
+                <ref bean="PlannedTerm.qtrYear"/>
+             <ref bean="PlannedTerm.credits"/>
+                <!--<ref bean="PlannedTerm.isCurrentTerm"/>-->
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="PlannedTerm.plannedList"/>
+                <ref bean="PlannedTerm.backupList"/>
+            </list>
+        </property>
+    </bean>
     <bean id="PlanItem.id" parent="PlanItem.id-parentBean"/>
     <bean id="PlanItem.id-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="id"/>
@@ -51,13 +70,64 @@
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
     </bean>
+    <bean id="PlannedTerm.credits" parent="PlannedTerm.credits-parentBean"/>
+    <bean id="PlannedTerm.credits-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="credits"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="label" value="Total Credits"/>
+        <property name="shortLabel" value="Total Credits"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+    <bean id="PlannedTerm.qtrYear" parent="PlannedTerm.qtrYear-parentBean"/>
+    <bean id="PlannedTerm.qtrYear-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="qtrYear"/>
+        <property name="dataType" value="STRING"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+    <bean id="PlannedTerm.planItemId" parent="PlannedTerm.planItemId-parentBean"/>
+    <bean id="PlannedTerm.planItemId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="planItemId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Your Courses Atp ID"/>
+        <property name="shortLabel" value="Your Courses List Atp ID"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
 
 
     <bean id="PlanItem.courseDetails" parent="ComplexAttributeDefinition">
         <property name="name" value="courseDetails"/>
          <property name="dataObjectEntry" ref="CourseDetails"/>
     </bean>
+    <bean id="PlannedTerm.plannedList" parent="CollectionDefinition">
+        <property name="name" value="plannedList"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+    </bean>
 
+    <bean id="PlannedTerm.backupList" parent="CollectionDefinition">
+        <property name="name" value="backupList"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+    </bean>
     <bean id="PlanItem.dateAdded" parent="PlanItem.dateAdded-parentBean"/>
     <bean id="PlanItem.dateAdded-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="dateAdded"/>
@@ -563,7 +633,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="searchResults"/>
         <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="styleClasses">
@@ -571,19 +641,70 @@
                 <value>myplan-stacked-list</value>
             </list>
         </property>
-        <property name="items">
+        <property name="subCollections">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"
-                      p:title="@{#line.courseDetails.courseTitle}" p:target="" p:hrefText="#"/>
-                <bean parent="Uif-DataField" p:propertyName="atpIds">
-                    <property name="propertyEditor">
-                        <bean parent="data_list_formatter" p:emptyListMessage="n/a"/>
-                    </property>
-                </bean>
-                <bean parent="Uif-MessageField" p:messageText="COURSEID: @{#line.courseDetails.courseId}"/>
-                <bean parent="Uif-MessageField" p:messageText="PLANITID: @{#line.id}"/>
+                <ref bean="subCollection1" />
+                <ref bean="subCollection2" />
+
 
             </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="qtrYear"/>
+                <bean parent="Uif-DataField" p:propertyName="credits"/>
+               <!--<bean parent="Uif-MessageField" p:messageText="COURSEID: @{#line.courseDetails.courseId}"/>
+               <bean parent="Uif-MessageField" p:messageText="PLANITID: @{#line.id}"/>-->
+
+            </list>
+        </property>
+
+    </bean>
+    <bean id="subCollection1"  parent="Uif-StackedSubCollection-WithinSection">
+
+        <property name="styleClasses" value="group-border"/>
+        <property name="instructionalMessageField.styleClasses" value="font-bold"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
+        <property name="propertyName" value="plannedList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
+              p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"/>
+
+            </list>
+
+        </property>
+    </bean>
+
+    <bean id="subCollection2"  parent="Uif-StackedSubCollection-WithinSection">
+
+        <property name="styleClasses" value="group-border"/>
+        <property name="instructionalMessageField.styleClasses" value="font-bold"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
+        <property name="propertyName" value="plannedList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
+                      p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"/>
+
+            </list>
+
         </property>
     </bean>
 
