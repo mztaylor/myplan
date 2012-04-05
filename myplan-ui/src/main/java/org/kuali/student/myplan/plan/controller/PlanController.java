@@ -78,7 +78,7 @@ public class PlanController extends UifControllerBase {
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch(Exception e) {
-
+            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was unknown.", null);
         }
 
         return getUIFModelAndView(planForm);
