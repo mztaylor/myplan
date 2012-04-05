@@ -12,8 +12,10 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String COURSE_ID = "courseId";
     public static final String TERM_ID = "term";
 
-    public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_result";
-    public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_result";
+    public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_page";
+    public static final String PLAN_ITEM_ADD_SECTION_ID = "add_plan_item_section";
+    public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_page";
+    public static final String PLAN_ITEM_REMOVE_SECTION_ID = "remove_plan_item_section";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 

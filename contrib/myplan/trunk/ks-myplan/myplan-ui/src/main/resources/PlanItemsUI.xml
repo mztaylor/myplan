@@ -484,14 +484,14 @@
         <property name="footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="add_plan_item_result">
+                <bean parent="Uif-Page" p:id="add_plan_item_page">
                     <property name="items">
                         <list>
-                            <ref bean="add_plan_item_page"/>
+                            <ref bean="add_plan_item_section"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="remove_plan_item_result">
+                <bean parent="Uif-Page" p:id="remove_plan_item_page">
                     <property name="items">
                         <list>
                             <ref bean="remove_plan_item_page"/>
@@ -608,17 +608,17 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="add_plan_item_result">
+                <bean parent="Uif-Page" p:id="add_plan_item_page">
                     <property name="items">
                         <list>
-                            <ref bean="add_plan_item_page"/>
+                            <ref bean="add_plan_item_section"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="remove_plan_item_result">
+                <bean parent="Uif-Page" p:id="remove_plan_item_page">
                     <property name="items">
                         <list>
-                            <ref bean="remove_plan_item_page"/>
+                            <ref bean="remove_plan_item_section"/>
                         </list>
                     </property>
                 </bean>
@@ -709,7 +709,7 @@
     </bean>
 
     <!-- Common components -->
-    <bean id="add_plan_item_page"  parent="Uif-VerticalBoxSection" p:errorsField.render="true">
+    <bean id="add_plan_item_section"  parent="Uif-VerticalBoxSection" p:errorsField.render="true">
         <property name="items">
             <list>
                 <bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
@@ -718,7 +718,7 @@
         </property>
     </bean>
 
-    <bean id="remove_plan_item_page" parent="Uif-VerticalBoxSection" p:errorsField.render="true">
+    <bean id="remove_plan_item_section" parent="Uif-VerticalBoxSection" p:errorsField.render="true">
         <property name="items">
             <list>
                  <bean id="remove_plan_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
