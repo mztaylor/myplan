@@ -275,7 +275,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         value = value.append(temp);
         value = value.append(" (").append(subject.trim()).append(")");
 
-        courseDetails.setTitleValue(value.toString());
+        courseDetails.setCurriculumTitle(value.toString());
         //If course not scheduled for future terms, Check for the last term when course was offered
         if (courseDetails.getScheduledTerms().size() == 0) {
             int year = Calendar.getInstance().get(Calendar.YEAR) - 10;

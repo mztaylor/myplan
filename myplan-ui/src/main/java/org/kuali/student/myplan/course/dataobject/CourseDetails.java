@@ -24,7 +24,7 @@ public class CourseDetails {
 
     // Rest of these properties are populated as part of full details
 
-    private String titleValue;
+    private String curriculumTitle;
     private String lastOffered;
 
     // Saved course properties
@@ -52,15 +52,13 @@ public class CourseDetails {
         termsOffered = new ArrayList<String>();
     }
 
-    public String getTitleValue() {
-        return titleValue;
+    public String getCurriculumTitle() {
+        return curriculumTitle;
     }
 
-    public void setTitleValue(String titleValue) {
-        this.titleValue = titleValue;
+    public void setCurriculumTitle(String curriculumTitle) {
+        this.curriculumTitle = curriculumTitle;
     }
-
-
 
     public String getCourseId() {
         return courseId;
