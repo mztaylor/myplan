@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+        <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -35,6 +35,45 @@
             </list>
         </property>
     </bean>
+
+    <bean id="PlannedTerm.planItemId" parent="PlannedTerm.planItemId-parentBean"/>
+    <bean id="PlannedTerm.planItemId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="planItemId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Your Courses Atp ID"/>
+        <property name="shortLabel" value="Your Courses List Atp ID"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="PlanItem.dateAdded" parent="PlanItem.dateAdded-parentBean"/>
+    <bean id="PlanItem.dateAdded-parentBean" abstract="true" parent="AttributeDefinition">
+           <property name="name" value="dateAdded"/>
+           <property name="dataType" value="DATE"/>
+           <property name="label" value="Date Added"/>
+           <property name="shortLabel" value="Added"/>
+           <property name="forceUppercase" value="false"/>
+           <property name="maxLength" value="16"/>
+           <property name="validCharactersConstraint">
+               <bean parent="AnyCharacterPatternConstraint"/>
+           </property>
+           <property name="controlField">
+               <bean parent="Uif-TextControl" p:size="20"/>
+           </property>
+      </bean>
+
+    <bean id="PlanItem.courseDetails" parent="ComplexAttributeDefinition">
+        <property name="name" value="courseDetails"/>
+        <property name="dataObjectEntry" ref="CourseDetails"/>
+    </bean>
+
+
     <bean id="PlannedTerm" parent="PlannedTerm-parentBean"/>
     <bean id="PlannedTerm-parentBean" abstract="true" parent="DataObjectEntry">
         <property name="objectLabel" value="Saved Courses"/>
@@ -42,9 +81,9 @@
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
-               <ref bean="PlannedTerm.planItemId"/>
+                <ref bean="PlannedTerm.planItemId"/>
                 <ref bean="PlannedTerm.qtrYear"/>
-             <ref bean="PlannedTerm.credits"/>
+                <ref bean="PlannedTerm.credits"/>
                 <!--<ref bean="PlannedTerm.isCurrentTerm"/>-->
             </list>
         </property>
@@ -98,27 +137,7 @@
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
     </bean>
-    <bean id="PlannedTerm.planItemId" parent="PlannedTerm.planItemId-parentBean"/>
-    <bean id="PlannedTerm.planItemId-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="planItemId"/>
-        <property name="dataType" value="STRING"/>
-        <property name="label" value="Your Courses Atp ID"/>
-        <property name="shortLabel" value="Your Courses List Atp ID"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="10"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
-        </property>
-    </bean>
 
-
-    <bean id="PlanItem.courseDetails" parent="ComplexAttributeDefinition">
-        <property name="name" value="courseDetails"/>
-         <property name="dataObjectEntry" ref="CourseDetails"/>
-    </bean>
     <bean id="PlannedTerm.plannedList" parent="CollectionDefinition">
         <property name="name" value="plannedList"/>
         <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
@@ -127,21 +146,6 @@
     <bean id="PlannedTerm.backupList" parent="CollectionDefinition">
         <property name="name" value="backupList"/>
         <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
-    </bean>
-    <bean id="PlanItem.dateAdded" parent="PlanItem.dateAdded-parentBean"/>
-    <bean id="PlanItem.dateAdded-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="dateAdded"/>
-        <property name="dataType" value="DATE"/>
-        <property name="label" value="Date Added"/>
-        <property name="shortLabel" value="Added"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="16"/>
-        <property name="validCharactersConstraint">
-            <bean parent="AnyCharacterPatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="20"/>
-        </property>
     </bean>
 
     <!--  Saved Courses (wishlist) components -->
@@ -828,7 +832,7 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
-                    <!-- DON"T CHECK THIS IN   !!!!-->
+                    <!-- Comment this line out to make the form work outside the popup. -->
                     <property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse', e)"/>
 
                     <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
