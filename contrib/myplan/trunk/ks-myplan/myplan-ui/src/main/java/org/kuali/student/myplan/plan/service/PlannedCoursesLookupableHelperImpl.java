@@ -185,28 +185,28 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
     }
 
-    private void populateFutureData(List<PlannedTerm> plannedTerms) {
+    private void populateFutureData(List<PlannedTerm> orderedPlanTerms) {
 
         PlannedTerm pl = new PlannedTerm();
         if (counter2 == 0) {
             pl.setPlanItemId("kuali.uw.atp.sprnig2015");
 
-            pl.setQtrYear("Spring 2014");
+            pl.setQtrYear("Spring 2015");
         }
         if (counter2 == 1) {
             pl.setPlanItemId("kuali.uw.atp.summer2015");
 
-            pl.setQtrYear("Summer 2014");
+            pl.setQtrYear("Summer 2015");
         }
         if (counter2 == 2) {
             pl.setPlanItemId("kuali.uw.atp.autumn2015");
 
-            pl.setQtrYear("Autumn 2014");
+            pl.setQtrYear("Autumn 2015");
         }
         if (counter2 == 3) {
             pl.setPlanItemId("kuali.uw.atp.winter2015");
 
-            pl.setQtrYear("Winter 2014");
+            pl.setQtrYear("Winter 2015");
         }
         PlanItemDataObject planItemDataObject = new PlanItemDataObject();
         CourseDetails courseDetails = new CourseDetails();
@@ -214,7 +214,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
         planItemDataObjects.add(planItemDataObject);
         pl.setPlannedList(planItemDataObjects);
-        plannedTerms.add(pl);
+        orderedPlanTerms.add(pl);
         counter2++;
 
     }
