@@ -192,7 +192,7 @@ function myplanFormSubmit(id, methodToCall, e) {
 			elementToBlock.unblock();
             jq("#" + targetId).parent().fadeOut(250, function() {
                 jq("#" + targetId).hide();
-                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html('Saved to <a href="#" onclick="alert(&quot;Link to Your Plan&quot;);">Your Plan</a>');
+                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html('Saved to <a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Your Plan</a>');
                 jq("#" + targetId).parent().append(tempDiv);
                 jq(this).fadeIn(250);
 			});

@@ -232,15 +232,24 @@ a:focus {
 .myplan-data-list dl.scheduled dd:before {
     content: "";
 }
+.myplan-carousel-list > .uif-headerField .uif-header {
+    text-align: center;
+}
+.myplan-carousel-list > div[id$='_group'] {
+    overflow: hidden;
+}
 .myplan-carousel-list ul,
 .myplan-carousel-list ul li {
     margin: 0;
     padding: 0;
     list-style: none;
 }
+.myplan-carousel-list ul li {
+    float:left;
+}
 .myplan-carousel-list ul li > .uif-group {
     border:solid 1px #ccc;
-    width: 140px;
+    width: 160px;
     margin: 0 10px;
     border-radius: 4px;
 }

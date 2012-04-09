@@ -2,7 +2,6 @@ function fnBuildTitle(aView, termSelector, headerSelector) {
     var sText = 'Academic Year';
     var sFirst = jq.trim ( jq(aView[0]).find("." + termSelector).text() );
     var sLast = jq.trim ( jq(aView[aView.length-1]).find("." + termSelector).text() );
-    console.log(sFirst.substr(-4));
     jq("#" + headerSelector + " .uif-header").html(sText + ' ' + sFirst.substr(-4) + '-' + sLast.substr(-4));
 }
 
