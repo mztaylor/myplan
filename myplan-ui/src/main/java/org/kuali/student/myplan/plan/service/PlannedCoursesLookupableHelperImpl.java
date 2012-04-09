@@ -6,12 +6,14 @@ import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 
 import javax.xml.namespace.QName;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,12 +45,23 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     */
     private int atpPrefix = 13;
 
+    /* TODO: Remove these when implementation for getting the past records is included
+       These are used for populating the past and the future atps
+
+    */
+    private int counter = 0;
+    private int counter2 = 0;
+
+    public enum terms {Autumn, Winter, Spring, Summer} ;
+
     @Override
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         try {
 
             List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
             Collections.sort(plannedCoursesList);
+
+
             List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
             List<TermInfo> termInfos = null;
             try {
@@ -59,9 +72,18 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
                 termInfos = new ArrayList<TermInfo>();
             }
-            /*
-            Populating the PlannedTerm List
+            /* TODO: Remove these when implementation for getting the past records is included
+                These are hardcoded to show the past data in the list
+
              */
+
+            populatePreviousData(plannedTerms);
+            populatePreviousData(plannedTerms);
+
+
+            /*
+           Populating the PlannedTerm List
+            */
             for (PlanItemDataObject plan : plannedCoursesList) {
                 for (String atp : plan.getAtpIds()) {
                     boolean exists = false;
@@ -111,10 +133,153 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
             }
 
+            /*
+           Used for sorting the planItemDataobjects
+            */
+            List<PlannedTerm> orderedPlanTerms = new ArrayList<PlannedTerm>();
+            int size = plannedTerms.size();
+            for (int i = 0; i < size; i++) {
+                this.populateOrderedList(plannedTerms, orderedPlanTerms);
+                size--;
+                i--;
+            }
+            Collections.reverse(orderedPlanTerms);
 
-            return plannedTerms;
+
+            /* TODO: Remove these when implementation for getting the future records is included
+                These are hardcoded to show the future data in the list
+
+             */
+            populateFutureData(orderedPlanTerms);
+            populateFutureData(orderedPlanTerms);
+            populateFutureData(orderedPlanTerms);
+            populateFutureData(orderedPlanTerms);
+
+            return orderedPlanTerms;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void populatePreviousData(List<PlannedTerm> plannedTerms) {
+
+        PlannedTerm pl = new PlannedTerm();
+        if (counter == 0) {
+            pl.setPlanItemId("kuali.uw.atp.winter2009");
+
+            pl.setQtrYear("Winter 2009");
+        }
+        if (counter == 1) {
+            pl.setPlanItemId("kuali.uw.atp.spring2009");
+
+            pl.setQtrYear("Spring 2009");
+        }
+        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+        CourseDetails courseDetails = new CourseDetails();
+        planItemDataObject.setCourseDetails(courseDetails);
+        List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
+        planItemDataObjects.add(planItemDataObject);
+        pl.setPlannedList(planItemDataObjects);
+        plannedTerms.add(pl);
+        counter++;
+
+    }
+
+    private void populateFutureData(List<PlannedTerm> plannedTerms) {
+
+        PlannedTerm pl = new PlannedTerm();
+        if (counter2 == 0) {
+            pl.setPlanItemId("kuali.uw.atp.sprnig2015");
+
+            pl.setQtrYear("Spring 2014");
+        }
+        if (counter2 == 1) {
+            pl.setPlanItemId("kuali.uw.atp.summer2015");
+
+            pl.setQtrYear("Summer 2014");
+        }
+        if (counter2 == 2) {
+            pl.setPlanItemId("kuali.uw.atp.autumn2015");
+
+            pl.setQtrYear("Autumn 2014");
+        }
+        if (counter2 == 3) {
+            pl.setPlanItemId("kuali.uw.atp.winter2015");
+
+            pl.setQtrYear("Winter 2014");
+        }
+        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+        CourseDetails courseDetails = new CourseDetails();
+        planItemDataObject.setCourseDetails(courseDetails);
+        List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
+        planItemDataObjects.add(planItemDataObject);
+        pl.setPlannedList(planItemDataObjects);
+        plannedTerms.add(pl);
+        counter2++;
+
+    }
+
+    private void populateOrderedList(List<PlannedTerm> plannedTerms, List<PlannedTerm> orderedPlanTerms) {
+        if (plannedTerms != null) {
+            StringBuffer cc = new StringBuffer();
+            int maxQ = 0;
+            String[] quarters = new String[plannedTerms.size()];
+            Integer[] resultYear = new Integer[plannedTerms.size()];
+            //Logical implementation to get the last offered year
+            int actualYear = -1;
+            String actualQuarter = null;
+            int resultQuarter = 0;
+            int count = 0;
+            for (PlannedTerm pl : plannedTerms) {
+                String[] splitStr = pl.getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                int year = 0;
+                String quarter = null;
+                if (splitStr.length == 2) {
+                    resultYear[count] = Integer.parseInt(splitStr[1].trim());
+
+                    quarters[count] = splitStr[0].trim();
+                }
+
+
+                if (resultYear[count] > actualYear) {
+                    actualYear = resultYear[count];
+                }
+                count++;
+            }
+            //Logical implementation to get the last offered quarter
+            for (int i = 0; i < quarters.length; i++) {
+                String tempQuarter = quarters[i];
+                terms fd = terms.valueOf(quarters[i]);
+                switch (fd) {
+                    case Autumn:
+                        resultQuarter = 1;
+                        break;
+                    case Winter:
+                        resultQuarter = 2;
+                        break;
+                    case Spring:
+                        resultQuarter = 3;
+                        break;
+                    case Summer:
+                        resultQuarter = 4;
+                        break;
+                }
+                if (resultYear[i].equals(actualYear) && resultQuarter > maxQ) {
+                    maxQ = resultQuarter;
+                    actualQuarter = tempQuarter;
+
+                }
+            }
+
+            cc = cc.append(actualQuarter).append(" ").append(actualYear);
+            int size = plannedTerms.size();
+            for (int j = 0; j < size; j++) {
+                if (plannedTerms.get(j).getQtrYear().equalsIgnoreCase(cc.toString())) {
+                    orderedPlanTerms.add(plannedTerms.get(j));
+                    plannedTerms.remove(plannedTerms.get(j));
+                    break;
+                }
+            }
         }
     }
 }
