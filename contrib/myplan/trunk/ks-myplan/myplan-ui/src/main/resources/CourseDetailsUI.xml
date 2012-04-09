@@ -589,7 +589,7 @@
                                 case 'com362':
                                     createLightBoxLink(jq(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
                                     break;
-                                case '':
+                                case 'com389':
                                     window.open(jq(this).attr('href'),'_blank');
                                     break;
                                 default:

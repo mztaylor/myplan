@@ -7,6 +7,9 @@
 <link href="/student/krad/css/global/base.css" rel="stylesheet" type="text/css">
 <link href="/student/krad/plugins/rice/datatables/demo_table.css" rel="stylesheet" type="text/css">
 <link href="/student/krad/plugins/rice/datatables/TableTools.css" rel="stylesheet" type="text/css">
+<style>
+    #course_search_results_facets ul, #course_search_results_facets ul li{list-style: none; margin: 0; padding: 0; display: block;}
+</style>
 <script language="JavaScript" type="text/javascript" src="/student/krad/plugins/jquery/jquery-1.6.3.js"></script>
 <script language="JavaScript" type="text/javascript" src="/student/krad/scripts/krad.widget.js"></script>
 <script language="JavaScript" type="text/javascript" src="/student/krad/plugins/rice/datatables/jquery.dataTables.js"></script>
@@ -14,8 +17,125 @@
 <script language="JavaScript" type="text/javascript" src="/student/krad/plugins/rice/datatables/TableTools.js"></script>
 <script type="text/javascript">
     var jq = jQuery.noConflict();
+
+    (function($) {
+        $.fn.dataTableExt.oApi.fnGetColumnData = function(oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty) {
+            // check for column id
+            if (typeof iColumn == "undefined") return new Array();
+            // by default only use unique data
+            if (typeof bUnique == "undefined") bUnique = true;
+            // by default only look at filtered data
+            if (typeof bFiltered == "undefined") bFiltered = true;
+            // by default ignore empty values
+            if (typeof bIgnoreEmpty == "undefined") bIgnoreEmpty = true;
+
+            // list of rows which we're going to loop through
+            var aiRows;
+
+            // use only filtered rows
+            if (bFiltered == true) aiRows = oSettings.aiDisplay;
+            else aiRows = oSettings.aiDisplayMaster;
+            for (var key in oFacets[iColumn]) {
+                if (oFacets[iColumn].hasOwnProperty(key)) oFacets[iColumn][key].count = 0;
+            }
+            for (var i = 0, c = aiRows.length; i < c; i++) {
+                iRow = aiRows[i];
+                var aData = this.fnGetData(iRow);
+                var sValue = aData[iColumn].replace(/(<([^>]+)>)/ig,"").toString();
+                if (bIgnoreEmpty === true && sValue.length != 0) {
+                    var aTemp = sValue.match(/;[^;]*;/ig);
+                    if (!oFacets[iColumn]) oFacets[iColumn] = {};
+                    if (aTemp) {
+                        for (var n = 0; n < aTemp.length; n++) {
+                            var sTemp = aTemp[n];
+                            if (!oFacets[iColumn][sTemp]) oFacets[iColumn][sTemp] = {count: 0};
+                            if (!oFacets[iColumn][sTemp].checked) oFacets[iColumn][sTemp].checked = false;
+                            if (bUnique === true && oFacets[iColumn].hasOwnProperty(sTemp)) {
+                                ++oFacets[iColumn][sTemp].count;
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }(jQuery));
+
+    function fnBuildFacets () {
+        oFacets = new Object();
+        oTable = jq("#course_search_results_datatable").dataTable();
+        jq("#course_search_results_datatable thead th").each(function(i) {
+            if (oTable.fnSettings().aoColumns[i].bSearchable) {
+                oTable.fnGetColumnData(i)
+                //this.innerHTML = fnCreateFacets(oFacets[i]);
+                jq("#course_search_results_facets #"+oTable.fnSettings().aoColumns[i].sTitle).html( fnCreateFacets(oFacets[i]) );
+                jq('a', this).click(function() {
+                    fnFacetFilter(jq(this).text(), i);
+                });
+            }
+        });
+    }
+
+    function fnCreateFacets(oData) {
+        var jFacetSet = jq('<ul />').append('<li><a href="#">All</a></li>');
+        for (var key in oData) {
+            if (oData.hasOwnProperty(key)) {
+                var jItem = jq('<li />');
+                var jLink = jq('<a href="#">' + key + '</a>');
+                if (oData[key].checked) jLink.addClass("checked");
+                var jCount = jq('<span>(' + oData[key].count + ')</span>');
+                jFacetSet.append(jItem.append(jLink).append(jCount));
+            }
+        }
+        return jFacetSet.prop('outerHTML');
+    }
+
+    function fnFacetFilter(sFilter, i) {
+        if (sFilter === 'All') {
+            for (var key in oFacets[i]) {
+                if (oFacets[i].hasOwnProperty(key)) {
+                    oFacets[i][key].checked = false;
+                }
+            }
+            oTable.fnFilter('', i, true, false);
+            fnUpdateFacets(-1);
+        } else {
+            oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
+            var aSelections = [];
+            for (var key in oFacets[i]) {
+                if (oFacets[i].hasOwnProperty(key)) {
+                    if (oFacets[i][key].checked === true) {
+                        aSelections.push(key);
+                    }
+                }
+            }
+            oTable.fnFilter(aSelections.join("|"), i, true, false);
+            if (oFacets[i][sFilter].checked) {
+                fnUpdateFacets(i);
+            } else {
+                fnUpdateFacets(-1);
+            }
+        }
+    }
+
+    function fnUpdateFacets(n) {
+        jq("tfoot th").each(function(i) {
+            if (i != n) {
+                oTable.fnGetColumnData(i);
+            }
+            jq(this).find("li:gt(0) a").each(function() {
+                if (oFacets[i][jq(this).text()].checked) jq(this).addClass("checked");
+                else jq(this).removeClass("checked");
+                jq(this).next("span").text("("+oFacets[i][jq(this).text()].count+")");
+            });
+
+        });
+    }
+
     jq(document).ready(function() {
         // http://datatables.net/examples/examples_support/json_source.txt
+        Facets = new Object();
+
         createTable('course_search_results_datatable', {
             oLanguage: {
                 'sLengthMenu': 'Show _MENU_',
@@ -53,38 +173,41 @@
             }, {
                 'bSortable': false,
                 'bSearchable': false
-            } /*, {
+            }, {
                 'bSortable': false,
                 'bSearchable': false
             }, {
                 'sTitle': 'facetQuarter',
+                'bSearchable':true,
                 'bVisible': false
             }, {
                 'sTitle': 'facetScheduled',
+                'bSearchable': true,
                 'bVisible': false
             }, {
                 'sTitle': 'facetGenEduReq',
+                'bSearchable': true,
                 'bVisible': false
             }, {
                 'sTitle': 'facetCredits',
+                'bSearchable': true,
                 'bVisible': false
             }, {
                 'sTitle': 'facetLevel',
+                'bSearchable': true,
                 'bVisible': false
             }, {
                 'sTitle': 'facetCurriculum',
+                'bSearchable': true,
                 'bVisible': false
-            } */ ],
+            } ],
             fnDrawCallback: function () {
                 if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1) {
                     jq('.dataTables_paginate span').not('.first, .last').show();
                 } else {
                     jq('.dataTables_paginate span').hide();
                 }
-            },
-            oTableTools: {
-                "aButtons": ["csv", "xls"],
-                "sSwfPath": "http://69.91.238.239:8080/student/krad/scripts/jquery/copy_cvs_xls_pdf.swf"
+                fnBuildFacets();
             },
             sAjaxSource: "json.txt"
         });
@@ -92,6 +215,69 @@
 </script>
 </head>
 <body>
-    <table id="course_search_results_datatable"></table>
+    <div id="container">
+        <div style="float:left; width:20%;">
+            <table id="course_search_results_facets">
+                <tr><td id="facetQuarter"></td></tr>
+                <tr><td id="facetScheduled"></td></tr>
+                <tr><td id="facetGenEduReq"></td></tr>
+                <tr><td id="facetCredits"></td></tr>
+                <tr><td id="facetLevel"></td></tr>
+                <tr><td id="facetCurriculum"></td></tr>
+            </table>
+        </div>
+        <div style="float:left; width:80%;">
+            <table id="course_search_results_datatable">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Course Name</th>
+                        <th>Credit</th>
+                        <th>Quarter Offered</th>
+                        <th>Gen Edu Req</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
