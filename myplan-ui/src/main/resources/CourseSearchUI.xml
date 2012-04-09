@@ -418,7 +418,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All"
+                <bean parent="Uif-Link" p:linkLabel="All" p:title="See All Quarters"
                       p:onClickScript="facetFilter('facetQuarter', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
@@ -441,7 +441,7 @@
         <property name="propertyName" value="termsFacetItems"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false"
+                <bean parent="Uif-Link" p:linkLabel="@{#line.displayName}" p:labelField.render="false" p:title="@{#line.title}"
                       p:onClickScript="facetFilter('facetQuarter', '@{#line.key}', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
@@ -467,7 +467,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All"
+                <bean parent="Uif-Link" p:linkLabel="All" p:title="See All Gen. Edu. Req."
                       p:onClickScript="facetFilter('facetGenEduReq', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
@@ -517,7 +517,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All"
+                <bean parent="Uif-Link" p:linkLabel="All" p:title="See All Credits"
                       p:onClickScript="facetFilter('facetCredits', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
@@ -567,7 +567,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetLevel', 'All', e);" p:hrefText="#">
+                <bean parent="Uif-Link" p:linkLabel="All" p:title="See All Course Levels"
+                      p:onClickScript="facetFilter('facetLevel', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetLevel</value>
@@ -616,7 +617,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="All" p:onClickScript="facetFilter('facetCurriculum', 'All', e);" p:hrefText="#">
+                <bean parent="Uif-Link" p:linkLabel="All" p:title="See All Course Prefixes"
+                      p:onClickScript="facetFilter('facetCurriculum', 'All', e);" p:hrefText="#">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>facetCurriculum</value>
