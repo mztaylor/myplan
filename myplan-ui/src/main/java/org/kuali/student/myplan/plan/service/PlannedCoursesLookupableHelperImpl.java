@@ -150,10 +150,18 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 These are hardcoded to show the future data in the list
 
              */
-            populateFutureData(orderedPlanTerms);
-            populateFutureData(orderedPlanTerms);
-            populateFutureData(orderedPlanTerms);
-            populateFutureData(orderedPlanTerms);
+
+            String[] splitStr = orderedPlanTerms.get(orderedPlanTerms.size()-1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            int year = 0;
+            String quarter = null;
+            if (splitStr.length == 2) {
+                year= Integer.parseInt(splitStr[1].trim())+1;
+
+            }
+            populateFutureData(orderedPlanTerms,year);
+            populateFutureData(orderedPlanTerms,year);
+            populateFutureData(orderedPlanTerms,year);
+            populateFutureData(orderedPlanTerms,year);
 
             return orderedPlanTerms;
         } catch (Exception e) {
@@ -185,28 +193,28 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
     }
 
-    private void populateFutureData(List<PlannedTerm> orderedPlanTerms) {
+    private void populateFutureData(List<PlannedTerm> orderedPlanTerms, int year) {
 
         PlannedTerm pl = new PlannedTerm();
         if (counter2 == 0) {
-            pl.setPlanItemId("kuali.uw.atp.sprnig2015");
+            pl.setPlanItemId("kuali.uw.atp.spring"+year);
 
-            pl.setQtrYear("Spring 2015");
+            pl.setQtrYear("Spring "+year);
         }
         if (counter2 == 1) {
-            pl.setPlanItemId("kuali.uw.atp.summer2015");
+            pl.setPlanItemId("kuali.uw.atp.summer"+year);
 
-            pl.setQtrYear("Summer 2015");
+            pl.setQtrYear("Summer "+year);
         }
         if (counter2 == 2) {
-            pl.setPlanItemId("kuali.uw.atp.autumn2015");
+            pl.setPlanItemId("kuali.uw.atp.autumn"+year);
 
-            pl.setQtrYear("Autumn 2015");
+            pl.setQtrYear("Autumn "+year);
         }
         if (counter2 == 3) {
-            pl.setPlanItemId("kuali.uw.atp.winter2015");
+            pl.setPlanItemId("kuali.uw.atp.winter"+year);
 
-            pl.setQtrYear("Winter 2015");
+            pl.setQtrYear("Winter "+year);
         }
         PlanItemDataObject planItemDataObject = new PlanItemDataObject();
         CourseDetails courseDetails = new CourseDetails();
