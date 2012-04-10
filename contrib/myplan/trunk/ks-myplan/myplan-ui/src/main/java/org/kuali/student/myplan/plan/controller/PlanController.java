@@ -444,6 +444,23 @@ public class PlanController extends UifControllerBase {
 
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
+    @RequestMapping(params = "methodToCall=populateMenuItems")
+    public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                              HttpServletRequest request, HttpServletResponse response) {
+        super.start(form, result, request, response);
+
+        PlanForm planForm =  (PlanForm) form;
+
+        String courseId = planForm.getCourseId();
+        if (StringUtils.isEmpty(courseId)) {
+            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
+        }
+
+        //  Initialize the form with a course Id.
+        planForm.setCourseId(courseId);
+
+        return getUIFModelAndView(planForm);
+    }
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
