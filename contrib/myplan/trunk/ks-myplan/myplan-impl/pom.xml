@@ -39,11 +39,13 @@
             <artifactId>ks-enroll-api</artifactId>
             <version>${kuali.student.enroll.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kuali.student.enroll</groupId>
             <artifactId>ks-enroll-impl</artifactId>
             <version>${kuali.student.enroll.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kuali.student.common</groupId>
             <artifactId>ks-common-test</artifactId>
