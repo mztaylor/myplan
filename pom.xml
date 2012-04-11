@@ -25,6 +25,7 @@
         Kuali Student MyPlan Module
     </description>
     <url>http://${kuali.site.hostname}/CONTRIB/MyPlan+%28University+of+Washington%29/</url>
+
     <repositories>
         <repository>
             <id>kuali.nexus</id>
@@ -37,6 +38,14 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <!-- For Restlet dependency -->
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+
     </repositories>
     <ciManagement>
         <system>hudson</system>
@@ -131,7 +140,6 @@
         <tomcat.plugin.version>1.1</tomcat.plugin.version>
         <!--  <jetty.plugin.version>8.0.0.M2</jetty.plugin.version> -->
 
-        <!-- added by bonnie -->
         <jetty.plugin.version>7.3.1.v20110307</jetty.plugin.version>
         <jotm.version>2.1.10</jotm.version>
         <jsp-2.1-glassfish.version>2.1.v20100127</jsp-2.1-glassfish.version>
@@ -149,6 +157,9 @@
         <ks.java2ws.phase>none</ks.java2ws.phase>
         <ks.contractdoc.phase>site</ks.contractdoc.phase>
         <ks.dictionarydoc.phase>site</ks.dictionarydoc.phase>
+
+         <restlet.version>2.0.8</restlet.version>
+
     </properties>
     <build>
         <pluginManagement>
@@ -1101,6 +1112,23 @@
                 <version>1.2.1</version>
             </dependency>
 
+            <!-- Restlet stuff -->
+             <dependency>
+                     <groupId>org.restlet.jee</groupId>
+                     <artifactId>org.restlet</artifactId>
+                     <version>${restlet.version}</version>
+             </dependency>
+             <dependency>
+                     <groupId>org.restlet.jee</groupId>
+                     <artifactId>org.restlet.ext.servlet</artifactId>
+                    <version>${restlet.version}</version>
+             </dependency>
+             <dependency>
+                     <groupId>org.restlet.jee</groupId>
+                     <artifactId>org.restlet.ext.spring</artifactId>
+                     <version>${restlet.version}</version>
+             </dependency>
+             <!-- End restlet stuff -->
         </dependencies>
     </dependencyManagement>
     <dependencies>

@@ -37,10 +37,15 @@
     </bean>
 
 
-    <bean id="MyPlanFormView" abstract="true" parent="Uif-FormView">
+    <!-- View without the header and footer and just the theme -->
+    <bean id="MyPlanBaseFormView" abstract="true" parent="Uif-FormView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+    </bean>
+
+
+    <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -54,11 +59,33 @@
 
     </bean>
 
-    <bean id="MyPlanLookupView" abstract="true" parent="Uif-LookupView">
+    <bean id="MyPlanBaseLookupView" abstract="true" parent="Uif-LookupView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+    </bean>
 
+
+    <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
+                  p:styleClasses="fl-container-flex"/>
+        </property>
+
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
+                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -70,31 +97,15 @@
                   p:styleClasses="fl-container-flex ks-page-bottom"/>
         </property>
 
-
     </bean>
 
-    <bean id="MyPlanInquiryView" abstract="true" parent="Uif-InquiryView">
+    <bean id="MyPlanBaseMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
-
-        <property name="applicationHeader">
-            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
-                  p:styleClasses="fl-container-flex"/>
-        </property>
-
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:styleClasses="fl-container-flex ks-page-bottom"/>
-        </property>
-
     </bean>
 
-    <bean id="MyPlanMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
-        <property name="theme">
-            <bean parent="MyPlanTheme"/>
-        </property>
+    <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
         <property name="footer" ref="MyPlanFooterDocument"/>
 
         <property name="applicationHeader">
@@ -175,14 +186,15 @@
         </property>
 
         <property name="items">
-             <list>
+            <list>
 
                 <ref bean="run_degree_audits"/>
 
             </list>
         </property>
     </bean>
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)"
+          p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-container-200</value>
@@ -211,7 +223,8 @@
                   value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});"/>
     </bean>
 
-    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports" p:errorsField.render="false">
+    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports"
+          p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-recent-audit</value>
@@ -228,7 +241,7 @@
     <bean id="text1">
         <property name="instructionalText"
                   value="Select the campus and enter degree program to run audit"/>
-        </bean>
+    </bean>
 
     <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="styleClasses">
@@ -248,7 +261,7 @@
             </list>
         </property>
     </bean>
-    
+
     <bean id="program_params" parent="Uif-InputField" p:propertyName="programParam"
           p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
         <property name="control">
@@ -276,7 +289,7 @@
 
     <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit"
           p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
-       <property name="styleClasses">
+        <property name="styleClasses">
             <list merge="true">
                 <value>myplan-button</value>
                 <value>myplan-button-blue</value>
@@ -318,7 +331,7 @@
         </property>
     </bean>
 
-    <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor" />
+    <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor"/>
 
 
 </beans>
