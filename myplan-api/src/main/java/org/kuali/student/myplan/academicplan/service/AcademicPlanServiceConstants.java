@@ -16,6 +16,7 @@ public class AcademicPlanServiceConstants {
     public static final String LEARNING_PLAN_TYPE_PLAN_TEMPLATE = "kuali.academicplan.type.plan.template";
 
     public static final String LEARNING_PLAN_ITEM_TYPE_PLANNED = "kuali.academicplan.item.planned";
+    public static final String LEARNING_PLAN_ITEM_TYPE_BACKUP = "kuali.academicplan.item.backup";
     public static final String LEARNING_PLAN_ITEM_TYPE_WISHLIST = "kuali.academicplan.item.wishlist";
     public static final String LEARNING_PLAN_ITEM_TYPE_WHATIF = "'kuali.academicplan.item.whatif";
 
