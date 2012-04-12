@@ -61,7 +61,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
             Collections.sort(plannedCoursesList);
 
-
             List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
             List<TermInfo> termInfos = null;
             try {
@@ -132,6 +131,43 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
 
             }
+            /*
+           Populating the backup list for the Plans
+            */
+            List<PlanItemDataObject> backupCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
+
+            int count = plannedTerms.size();
+            for (PlanItemDataObject bl : backupCoursesList) {
+                for (String atp : bl.getAtpIds()) {
+
+                    boolean added = false;
+                    for (int i = 0; i < count; i++) {
+                        if (atp.equalsIgnoreCase(plannedTerms.get(i).getPlanItemId())) {
+                            List<PlanItemDataObject> backupLists = new ArrayList<PlanItemDataObject>();
+                            backupLists.add(bl);
+                            plannedTerms.get(i).setBackupList(backupLists);
+                            added = true;
+                        }
+                    }
+                    if (!added) {
+                        PlannedTerm plannedTerm = new PlannedTerm();
+                        plannedTerm.setPlanItemId(atp);
+                        StringBuffer str = new StringBuffer();
+                        String qtrYr = atp.substring(atpPrefix, atp.length());
+                        String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                        str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
+                        String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
+                        plannedTerm.setQtrYear(QtrYear);
+                        plannedTerm.getBackupList().add(bl);
+                        plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(bl.getCourseDetails().getCredit()));
+                        plannedTerm.setCurrentTerm(false);
+                        plannedTerms.add(plannedTerm);
+
+                    }
+                }
+
+
+            }
 
             /*
            Used for sorting the planItemDataobjects
@@ -151,17 +187,17 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
              */
 
-            String[] splitStr = orderedPlanTerms.get(orderedPlanTerms.size()-1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            String[] splitStr = orderedPlanTerms.get(orderedPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             int year = 0;
             String quarter = null;
             if (splitStr.length == 2) {
-                year= Integer.parseInt(splitStr[1].trim())+1;
+                year = Integer.parseInt(splitStr[1].trim()) + 1;
 
             }
-            populateFutureData(orderedPlanTerms,year);
-            populateFutureData(orderedPlanTerms,year);
-            populateFutureData(orderedPlanTerms,year);
-            populateFutureData(orderedPlanTerms,year);
+            populateFutureData(orderedPlanTerms, year);
+            populateFutureData(orderedPlanTerms, year);
+            populateFutureData(orderedPlanTerms, year);
+            populateFutureData(orderedPlanTerms, year);
 
             return orderedPlanTerms;
         } catch (Exception e) {
@@ -173,14 +209,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         PlannedTerm pl = new PlannedTerm();
         if (counter == 0) {
-            pl.setPlanItemId("kuali.uw.atp.winter2009");
+            pl.setPlanItemId("kuali.uw.atp.spring2011");
 
-            pl.setQtrYear("Winter 2009");
+            pl.setQtrYear("Spring 2011");
         }
         if (counter == 1) {
-            pl.setPlanItemId("kuali.uw.atp.spring2009");
+            pl.setPlanItemId("kuali.uw.atp.summer2011");
 
-            pl.setQtrYear("Spring 2009");
+            pl.setQtrYear("Summer 2011");
         }
         PlanItemDataObject planItemDataObject = new PlanItemDataObject();
         CourseDetails courseDetails = new CourseDetails();
@@ -197,24 +233,24 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         PlannedTerm pl = new PlannedTerm();
         if (counter2 == 0) {
-            pl.setPlanItemId("kuali.uw.atp.spring"+year);
+            pl.setPlanItemId("kuali.uw.atp.spring" + year);
 
-            pl.setQtrYear("Spring "+year);
+            pl.setQtrYear("Spring " + year);
         }
         if (counter2 == 1) {
-            pl.setPlanItemId("kuali.uw.atp.summer"+year);
+            pl.setPlanItemId("kuali.uw.atp.summer" + year);
 
-            pl.setQtrYear("Summer "+year);
+            pl.setQtrYear("Summer " + year);
         }
         if (counter2 == 2) {
-            pl.setPlanItemId("kuali.uw.atp.autumn"+year);
+            pl.setPlanItemId("kuali.uw.atp.autumn" + year);
 
-            pl.setQtrYear("Autumn "+year);
+            pl.setQtrYear("Autumn " + year);
         }
         if (counter2 == 3) {
-            pl.setPlanItemId("kuali.uw.atp.winter"+year);
+            pl.setPlanItemId("kuali.uw.atp.winter" + year);
 
-            pl.setQtrYear("Winter "+year);
+            pl.setQtrYear("Winter " + year);
         }
         PlanItemDataObject planItemDataObject = new PlanItemDataObject();
         CourseDetails courseDetails = new CourseDetails();
