@@ -602,6 +602,7 @@
                     </property>
                 </bean>
 
+
             </list>
                 </property>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
@@ -624,7 +625,7 @@
                     <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseId}"/>
 
                 </bean>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
+                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;" p:render="@{backup ? false : true}">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-text-bold</value>
@@ -633,6 +634,17 @@
                     </property>
                     <property name="linkLabel" value="Mark it as Backup course"/>
                     <property name="title" value="Mark it as Backup course"/>
+                    <property name="hrefText" value="#"/>
+                </bean>
+                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;" p:render="@{backup ? true : false}">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                            <value>myplan-text-wrap</value>
+                        </list>
+                    </property>
+                    <property name="linkLabel" value="Mark it as Planned course"/>
+                    <property name="title" value="Mark it as Planned course"/>
                     <property name="hrefText" value="#"/>
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
@@ -786,12 +798,12 @@
         </property>
         <property name="subCollections">
             <list>
-                <ref bean="subCollection1" />
-                <!--<ref bean="subCollection2" />-->
+                <ref bean="plannedCollection" />
+                <ref bean="backupCollection" />
             </list>
         </property>
     </bean>
-    <bean id="subCollection1"  parent="Uif-StackedCollectionGroup" p:title="Planned">
+    <bean id="plannedCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -813,7 +825,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
-              p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}'},e,'li');" p:hrefText="#" p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
+              p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'false'},e,'li');" p:hrefText="#" p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false" />
@@ -830,28 +842,33 @@
         </property>
     </bean>
 
-    <bean id="subCollection2"  parent="Uif-StackedSubCollection-WithinSection">
-
-        <property name="styleClasses" value="group-border"/>
-        <property name="instructionalMessageField.styleClasses" value="font-bold"/>
-        <property name="disclosure.render" value="false"/>
+    <bean id="backupCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                </property>
+            </bean>
+        </property>
+        <property name="styleClasses" value="myplan-carousel-term"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
-        <property name="propertyName" value="plannedList"/>
+        <property name="propertyName" value="backupList"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
-                      p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"/>
-
+                      p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'true'},e,'li');" p:hrefText="#" p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
-
         </property>
+        <property name="collectionLookup.quickfinderActionField.render" value="false" />
+
     </bean>
 
 
@@ -931,6 +948,16 @@
                 </bean>
 
                 <ref bean="add_planned_course_other"/>
+
+
+
+                <bean parent="Uif-InputField" p:propertyName="backup"  p:defaultValue="false">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
+                    </property>
+                    <property name="label" value="Mark it as 'Backup' course." />
+                </bean>
+
 
                 <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="addPlannedCourse"
                       p:actionLabel="Add To Plan" p:style="padding: 0px 30px;">
