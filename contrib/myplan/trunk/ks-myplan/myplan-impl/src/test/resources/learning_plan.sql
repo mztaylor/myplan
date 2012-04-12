@@ -12,6 +12,7 @@ INSERT INTO KSPL_LRNG_PLAN (ID, OBJ_ID, VER_NBR, STUDENT_ID, RT_DESCR_ID, TYPE_I
 INSERT INTO KSPL_LRNG_PLAN (ID, OBJ_ID, VER_NBR, STUDENT_ID, RT_DESCR_ID, TYPE_ID) values ('lp4', 'obj-lp4', 0, 'student2', 'lp4-Desc', 'kuali.academicplan.type.plan');
 
 INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.item.planned', 'obj-plan-item-planned', 0, 'Planned item description', 'Planned Item');
+INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.item.backup', 'obj-plan-item-backup', 0, 'Backup item description', 'Backup Item');
 INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.item.wishlist', 'obj-plan-item-wishlist', 0, 'Wishlist item description', 'Wishlist Item');
 INSERT INTO KSPL_LRNG_PLAN_ITEM_TYPE (TYPE_KEY, OBJ_ID, VER_NBR, TYPE_DESC, NAME) VALUES ('kuali.academicplan.item.whatif', 'obj-plan-item-whatif', 0, 'What-if description', 'What-if Item');
 
@@ -27,6 +28,8 @@ INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i3', 0, '00ac5436-7014-4d54-95d6-98a6aeaa70c7', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.wishlist', 'lp1');
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i4', 0, '00ee833d-f4d6-4aca-b40f-8f80854f8cb3', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.planned', 'lp1');
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i5', 0, '0005df5d-82e9-4663-8440-aee5ad8046d4', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.planned', 'lp1');
+INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp1-i7', 0, '0005df5d-82e9-4663-8440-aee5ad8046d4', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.backup', 'lp1');
+
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID, RT_DESCR_ID) VALUES ('lp1-i6', 0, '00edd03d-d7c0-4151-b7f0-8977951c75bd', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.planned', 'lp1', 'lp1-i6-Desc');
 
 INSERT INTO KSPL_LRNG_PLAN_ITEM (ID, VER_NBR, REF_OBJ_ID, REF_OBJ_TYPE_KEY, TYPE_ID, PLAN_ID) VALUES ('lp2-i1', 0, '00b3683b-fd14-4771-af6c-3c69a43f4592', 'kuali.lu.type.CreditCourse', 'kuali.academicplan.item.planned', 'lp2');
