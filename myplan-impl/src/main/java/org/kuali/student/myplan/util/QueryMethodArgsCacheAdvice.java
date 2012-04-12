@@ -1,4 +1,4 @@
-package edu.uw.kuali.student.myplan.util;
+package org.kuali.student.myplan.util;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
