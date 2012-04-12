@@ -64,11 +64,11 @@ public class PlanController extends UifControllerBase {
                               HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
 
-        PlanForm planForm =  (PlanForm) form;
+        PlanForm planForm = (PlanForm) form;
 
         String courseId = planForm.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
-           return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
+            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
 
         //  Initialize the form with a course Id.
@@ -77,7 +77,7 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
-        } catch(Exception e) {
+        } catch (Exception e) {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was unknown.", null);
         }
 
@@ -90,7 +90,7 @@ public class PlanController extends UifControllerBase {
 
         String courseId = form.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
-           return doAddPlanItemError(form, "Course ID was missing.", null);
+            return doAddPlanItemError(form, "Course ID was missing.", null);
         }
         String termIdString = form.getTermsList();
         if (StringUtils.isEmpty(termIdString)) {
@@ -135,7 +135,7 @@ public class PlanController extends UifControllerBase {
             //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
             //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
             plan = getLearningPlan(studentId);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doAddPlanItemError(form, "Query for default learning plan failed.", e);
         }
 
@@ -186,6 +186,26 @@ public class PlanController extends UifControllerBase {
                         break;
                     }
                 }
+                if (pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                    List<String> existingTermIds = pii.getPlanPeriods();
+                    //  If the existing and new term ids have no overlap just add them all.
+                    //  Otherwise, only add the non-duplicates.
+                    if (Collections.disjoint(existingTermIds, newTermIds)) {
+                        pii.getPlanPeriods().addAll(newTermIds);
+                        planItem = pii;
+                    } else {
+                        //  Make a new list of all term Ids, then clobber any dups by putting them into a set. Then
+                        //  add them to the plan item info.
+                        List<String> allTermIds = new ArrayList<String>(existingTermIds);
+                        allTermIds.addAll(newTermIds);
+                        pii.setPlanPeriods(new ArrayList<String>(new HashSet<String>(allTermIds)));
+                        planItem = pii;
+                    }
+
+                    if (planItem != null) {
+                        break;
+                    }
+                }
             }
         }
 
@@ -198,9 +218,14 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             try {
-                 planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
-            } catch(Exception e) {
-                 return doAddPlanItemError(form, "Unable to add plan item.", e);
+                if (form.isBackup()) {
+                    planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+
+                } else {
+                    planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+                }
+            } catch (Exception e) {
+                return doAddPlanItemError(form, "Unable to add plan item.", e);
             }
         }
 
@@ -231,7 +256,7 @@ public class PlanController extends UifControllerBase {
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
             plan = getLearningPlan(studentId);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doAddPlanItemError(form, "Query for default learning plan failed.", e);
         }
 
@@ -242,15 +267,15 @@ public class PlanController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                 return doAddPlanItemError(form, "Unable to create learning plan.", e);
+                return doAddPlanItemError(form, "Unable to create learning plan.", e);
             }
         }
 
         PlanItem item = null;
         try {
             item = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        } catch(Exception e) {
-             return doAddPlanItemError(form, "Unable to add plan item.", e);
+        } catch (Exception e) {
+            return doAddPlanItemError(form, "Unable to add plan item.", e);
         }
 
         form.setPlanItemId(item.getId());
@@ -260,7 +285,7 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     *  Blow up on failed plan adds.
+     * Blow up on failed plan adds.
      */
     private ModelAndView doAddPlanItemError(PlanForm form, String errorMessage, Exception e) {
         if (e != null) {
@@ -275,11 +300,11 @@ public class PlanController extends UifControllerBase {
     /**
      * Adds a plan item for the given course id and ATPs.
      *
-     * @param plan  The learning plan to add the item to.
-     * @param courseId  The id of the course.
-     * @param termIds A list of ATP/term ids if the plan item is a planned course.
-     * @param planItemType  Saved couse or planned course.
-     * @return  The newly created plan item or the existing plan item where a plan item already exists for the given course.
+     * @param plan         The learning plan to add the item to.
+     * @param courseId     The id of the course.
+     * @param termIds      A list of ATP/term ids if the plan item is a planned course.
+     * @param planItemType Saved couse or planned course.
+     * @return The newly created plan item or the existing plan item where a plan item already exists for the given course.
      * @throws RuntimeException on errors.
      */
     protected PlanItem addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
@@ -444,18 +469,21 @@ public class PlanController extends UifControllerBase {
 
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
+
     @RequestMapping(params = "methodToCall=populateMenuItems")
     public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                              HttpServletRequest request, HttpServletResponse response) {
+                                          HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
 
-        PlanForm planForm =  (PlanForm) form;
+        PlanForm planForm = (PlanForm) form;
 
         String courseId = planForm.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
-
+        if (((PlanForm) form).isBackup()) {
+            planForm.setBackup(true);
+        }
         //  Initialize the form with a course Id.
         planForm.setCourseId(courseId);
 
@@ -475,9 +503,13 @@ public class PlanController extends UifControllerBase {
     }
 
     public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
-        if(this.courseDetailsInquiryService == null) {
-            this.courseDetailsInquiryService =  new CourseDetailsInquiryViewHelperServiceImpl();
+        if (this.courseDetailsInquiryService == null) {
+            this.courseDetailsInquiryService = new CourseDetailsInquiryViewHelperServiceImpl();
         }
         return courseDetailsInquiryService;
+    }
+
+    public void setCourseDetailsInquiryService(CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService) {
+        this.courseDetailsInquiryService = courseDetailsInquiryService;
     }
 }
