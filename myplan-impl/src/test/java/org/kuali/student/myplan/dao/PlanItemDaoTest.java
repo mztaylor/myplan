@@ -34,7 +34,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     @Test
     public void testGetAllLearningPlanItems() {
         List<PlanItemEntity> objs = planItemDao.findAll();
-        assertEquals(15, objs.size());
+        assertEquals(16, objs.size());
     }
 
     @Test
@@ -53,6 +53,12 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         assertEquals(3, planItems.size());
         for (PlanItemEntity pie : planItems) {
             assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, pie.getLearningPlanItemType().getId());
+            assertEquals("student1", pie.getLearningPlan().getStudentId());
+        }
+        planItems = planItemDao.getLearningPlanItems(planId, AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+        assertEquals(1, planItems.size());
+        for (PlanItemEntity pie : planItems) {
+            assertEquals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, pie.getLearningPlanItemType().getId());
             assertEquals("student1", pie.getLearningPlan().getStudentId());
         }
     }
@@ -147,6 +153,40 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     public void testSavePlanItem_planned() {
         LearningPlanEntity learningPlanEntity = learningPlanDao.find("lp1");
         PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+
+        PlanItemEntity pie = new PlanItemEntity();
+        String id = UUIDHelper.genStringUUID();
+        pie.setId(id);
+        pie.setLearningPlan(learningPlanEntity);
+        pie.setLearningPlanItemType(planItemTypeEntity);
+        pie.setRefObjectId("02711400-c66d-4ecb-aca5-565118f167cf");
+        pie.setRefObjectTypeKey("kuali.lu.type.CreditCourse");
+
+        Set<String> atps = new HashSet<String>();
+        atps.add("atp1");
+        atps.add("atp2");
+        pie.setPlanPeriods(atps);
+
+        planItemDao.persist(pie);
+
+        PlanItemEntity newPie = planItemDao.find(id);
+        assertNotNull(newPie);
+        assertEquals(id, newPie.getId());
+        assertEquals(learningPlanEntity.getId(), newPie.getLearningPlan().getId());
+        assertEquals(planItemTypeEntity.getId(), newPie.getLearningPlanItemType().getId());
+        assertEquals(pie.getRefObjectId(), newPie.getRefObjectId());
+        assertEquals(pie.getRefObjectTypeKey(), newPie.getRefObjectTypeKey());
+
+        atps = newPie.getPlanPeriods();
+        assertNotNull(atps);
+        assertEquals(2, atps.size());
+        assertTrue(atps.contains("atp1"));
+        assertTrue(atps.contains("atp2"));
+    }
+    @Test
+    public void testSavePlanItem_backup() {
+        LearningPlanEntity learningPlanEntity = learningPlanDao.find("lp1");
+        PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
 
         PlanItemEntity pie = new PlanItemEntity();
         String id = UUIDHelper.genStringUUID();
