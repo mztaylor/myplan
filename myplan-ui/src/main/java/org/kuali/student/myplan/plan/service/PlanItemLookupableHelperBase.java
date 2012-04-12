@@ -61,6 +61,10 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
                     if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
                         item.setAtpIds(planItem.getPlanPeriods());
                     }
+                    //  Only load ATP info for backup courses.
+                    if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                        item.setAtpIds(planItem.getPlanPeriods());
+                    }
                     plannedCoursesList.add(item);
 
 
