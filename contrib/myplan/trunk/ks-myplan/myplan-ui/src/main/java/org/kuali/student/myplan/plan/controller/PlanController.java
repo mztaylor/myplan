@@ -54,6 +54,16 @@ public class PlanController extends UifControllerBase {
 
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
+    private transient Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
         return new PlanForm();
@@ -84,6 +94,12 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(planForm);
     }
 
+    public Person getUser() {
+        if (person == null) {
+            person = GlobalVariables.getUserSession().getPerson();
+        }
+        return person;
+    }
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
@@ -127,7 +143,7 @@ public class PlanController extends UifControllerBase {
          *  Before attempting to add a plan item, query for plan items for the requested course id. If a plan item of type
          *  saved course already exists then make this operation an update which adds in any new ATP ids.
          */
-        Person user = GlobalVariables.getUserSession().getPerson();
+        Person user = getUser();
         String studentId = user.getPrincipalId();
 
         LearningPlan plan = null;
@@ -248,7 +264,7 @@ public class PlanController extends UifControllerBase {
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-        Person user = GlobalVariables.getUserSession().getPerson();
+        Person user = getUser();
         String studentId = user.getPrincipalId();
         String courseId = form.getCourseId();
 

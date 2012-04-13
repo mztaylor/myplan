@@ -44,10 +44,10 @@
             <value>${uw.truststore.password}</value>
         </constructor-arg>
     </bean>
-
+    <bean name="StudentServiceClient" class="edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientMockImpl"/>
     <!-- Override acalService bean with UW implementation -->
     <bean id="acalService" class="edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl">
-        <property name="studentServiceClient" ref="studentServiceClient"/>
+        <property name="studentServiceClient" ref="StudentServiceClient"/>
     </bean>
     <bean id="personimpl" class="org.kuali.rice.kim.impl.identity.PersonImpl">
     </bean>
@@ -81,6 +81,24 @@
     <bean id="coursePreReqSearch" class="org.kuali.student.myplan.course.service.CoursePreReqSearch">
         <property name="luService" ref="luServiceImpl"/>
     </bean>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_loaderContext.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_daoContext.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_dataAccessContext-local.xml"/>
+    <import resource="classpath:uachieve/apis/context/uachieveapi_hibernateContext.xml"/>
+
+    <bean id="uachieve.txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="uachieveapi.sessionFactory"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="uachieve.txManager"/>
+    <bean id="velocity" class="org.apache.velocity.app.Velocity" />
+
+    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl">
+        <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
+        <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
+        <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
+        <!--<property name="velocity" ref="velocity"/>-->
+    </bean>
+
 
     <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
         <property name="atpService" ref="atpServiceImpl"/>
@@ -88,7 +106,37 @@
         <property name="academicCalendarService" ref="acalService"/>
         <property name="courseService" ref="courseServiceImpl"/>
     </bean>
+
+    <bean id="degreeAuditController" class="org.kuali.student.myplan.audit.controller.DegreeAuditController">
+        <property name="person" ref="personImpl"/>
+        <property name="degreeAuditService" ref="degreeAuditService" />
+    </bean>
+
+    <bean id="planController" class="org.kuali.student.myplan.plan.controller.PlanController">
+        <property name="courseDetailsInquiryService" ref="CourseDetailsInquiryViewHelperService"/>
+        <property name="person" ref="personimpl"/>
+        <property name="academicPlanService" ref="academicPlanService"/>
+
+    </bean>
+    <bean name="CourseDetailsInquiryViewHelperService" class=" org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
+                  <property name="courseService" ref="CourseService" />
+        <property name="atpService" ref="atpServiceImpl"/>
+        <property name="academicCalendarService" ref="acalService"/>
+        <property name="courseOfferingService" ref="coService"/>
+        <property name="academicPlanService" ref="academicPlanService"/>
+
+    </bean>
+    <bean name="CourseService" class="org.kuali.student.myplan.service.mock.CourseServiceMockImpl">
+        <property name="validCourses">
+            <set>
+                <value>e8a3fe1f-0592-4515-822c-4f806910775a</value>
+            </set>
+        </property>
+    </bean>
+
+
     <!--
+
 //    private transient CourseOfferingService courseOfferingService;
 
 //    private transient AcademicCalendarService academicCalendarService;

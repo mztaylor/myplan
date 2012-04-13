@@ -138,7 +138,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        throw new RuntimeException("Coming Soon!");
+        List<PlanItemInfo> planItemInfos=new ArrayList<PlanItemInfo>();
+        return planItemInfos;
     }
 
     @Override
@@ -168,7 +169,23 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PlanItemInfo plan = new PlanItemInfo();
+        plan.setId( "planItem1" );
+        RichTextInfo richText = new RichTextInfo();
+        plan.setDescr( richText );
+        // ENGL 101
+        String cluID = "05a2ec10-4c83-4f17-b3d1-938ffdab6ac6";
+        plan.setRefObjectId( cluID );
+        String type = "";
+        plan.setRefObjectType( type );
+        List<String> atps = new ArrayList<String>();
+        atps.add("kuali.uw.atp.autumn2011");
+        plan.setPlanPeriods( atps );
+
+        plan.setId( "1" );
+
+
+        return plan;
     }
 
     @Override

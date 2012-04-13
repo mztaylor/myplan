@@ -2,6 +2,7 @@ package org.kuali.student.myplan.service.mock;
 
 
 import org.kuali.student.common.dictionary.dto.ObjectStructureDefinition;
+import org.kuali.student.common.dto.RichTextInfo;
 import org.kuali.student.common.dto.StatusInfo;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.validation.dto.ValidationResultInfo;
@@ -14,10 +15,7 @@ import org.kuali.student.lum.course.dto.LoDisplayInfo;
 import org.kuali.student.lum.course.service.CourseService;
 
 import javax.jws.WebParam;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Mock CourseService to be use with AcademicPlanServiceImpl.
@@ -42,6 +40,8 @@ public class CourseServiceMockImpl implements CourseService {
         }
         CourseInfo courseInfo = new CourseInfo();
         courseInfo.setId(courseId);
+        RichTextInfo richTextInfo=new RichTextInfo();
+        courseInfo.setDescr(richTextInfo);
         return courseInfo;
     }
 
@@ -62,7 +62,9 @@ public class CourseServiceMockImpl implements CourseService {
 
     @Override
     public List<StatementTreeViewInfo> getCourseStatements(@WebParam(name = "courseId") String courseId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
+
+        List<StatementTreeViewInfo> statementTreeViewInfos=new ArrayList<StatementTreeViewInfo>();
+        return statementTreeViewInfos;
     }
 
     @Override
