@@ -53,8 +53,6 @@ public class PlanControllerTest {
     public void startAddPlannedCourseFormTest() {
         PlanForm planForm = new PlanForm();
         planForm.setCourseId("e8a3fe1f-0592-4515-822c-4f806910775a");
-        planForm.setViewId("PlannedCourse-FormView");
-        planForm.setMethodToCall("startAddPlannedCourseForm");
         PlanController controller = getPlanController();
         controller.start(planForm, null, null, null);
         assertTrue(planForm.getCourseDetails() != null);
