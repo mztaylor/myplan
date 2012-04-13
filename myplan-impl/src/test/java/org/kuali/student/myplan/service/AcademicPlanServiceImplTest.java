@@ -691,4 +691,75 @@ public class AcademicPlanServiceImplTest {
         }
         assertEquals(5, itemCount);
     }
+
+    @Test
+    public void validatePlanItemForCourse() throws InvalidParameterException, MissingParameterException, AlreadyExistsException, DoesNotExistException, OperationFailedException {
+        PlanItemInfo planItemInfo=new PlanItemInfo();
+        planItemInfo.setRefObjectId("XX");
+        planItemInfo.setTypeKey("YY");
+        ContextInfo contextInfo=new ContextInfo();
+        List <ValidationResultInfo> validationResultInfos=null;
+        try {
+            validationResultInfos = academicPlanService.validatePlanItem("FULL_VALIDATION", planItemInfo, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+            assertEquals("error.required",validationResultInfos.get(0).getMessage());
+            assertEquals("refObjectType",validationResultInfos.get(0).getElement());
+        assertEquals("error.required",validationResultInfos.get(1).getMessage());
+        assertEquals("learningPlanId",validationResultInfos.get(1).getElement());
+        assertEquals("error.required",validationResultInfos.get(2).getMessage());
+        assertEquals("stateKey",validationResultInfos.get(2).getElement());
+
+           assertEquals("Could not find course with ID [XX].",validationResultInfos.get(3).getMessage());
+        assertEquals("refObjectId",validationResultInfos.get(3).getElement());
+    }
+    @Test
+    public void validatePlanItemForPlannedItem() throws InvalidParameterException, MissingParameterException, AlreadyExistsException, DoesNotExistException, OperationFailedException {
+        PlanItemInfo planItemInfo=new PlanItemInfo();
+        planItemInfo.setRefObjectId("XX");
+        planItemInfo.setTypeKey("kuali.academicplan.item.planned");
+        ContextInfo contextInfo=new ContextInfo();
+        List <ValidationResultInfo> validationResultInfos=null;
+        try {
+            validationResultInfos = academicPlanService.validatePlanItem("FULL_VALIDATION", planItemInfo, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+       assertEquals("error.required",validationResultInfos.get(0).getMessage());
+        assertEquals("refObjectType",validationResultInfos.get(0).getElement());
+        assertEquals("error.required",validationResultInfos.get(1).getMessage());
+        assertEquals("learningPlanId",validationResultInfos.get(1).getElement());
+        assertEquals("error.required",validationResultInfos.get(2).getMessage());
+        assertEquals("stateKey",validationResultInfos.get(2).getElement());
+        assertEquals("Could not find course with ID [XX].",validationResultInfos.get(3).getMessage());
+        assertEquals("refObjectId",validationResultInfos.get(3).getElement());
+        assertEquals("Plan Item Type was [kuali.academicplan.item.planned], but no plan periods were defined.",validationResultInfos.get(4).getMessage());
+        assertEquals("typeKey",validationResultInfos.get(4).getElement());
+    }
+    @Test
+    public void validatePlanItemForBackupPlanItem() throws InvalidParameterException, MissingParameterException, AlreadyExistsException, DoesNotExistException, OperationFailedException {
+        PlanItemInfo planItemInfo=new PlanItemInfo();
+        planItemInfo.setRefObjectId("XX");
+        planItemInfo.setTypeKey("kuali.academicplan.item.backup");
+        ContextInfo contextInfo=new ContextInfo();
+        List <ValidationResultInfo> validationResultInfos=null;
+        try {
+            validationResultInfos = academicPlanService.validatePlanItem("FULL_VALIDATION", planItemInfo, context);
+        } catch (Exception e) {
+            fail(e.getLocalizedMessage());
+        }
+        assertEquals("error.required",validationResultInfos.get(0).getMessage());
+        assertEquals("refObjectType",validationResultInfos.get(0).getElement());
+        assertEquals("error.required",validationResultInfos.get(1).getMessage());
+        assertEquals("learningPlanId",validationResultInfos.get(1).getElement());
+        assertEquals("error.required",validationResultInfos.get(2).getMessage());
+        assertEquals("stateKey",validationResultInfos.get(2).getElement());
+        assertEquals("Could not find course with ID [XX].",validationResultInfos.get(3).getMessage());
+        assertEquals("refObjectId",validationResultInfos.get(3).getElement());
+        assertEquals("Plan Item Type was [kuali.academicplan.item.backup], but no backup plan periods were defined.",validationResultInfos.get(4).getMessage());
+        assertEquals("typeKey",validationResultInfos.get(4).getElement());
+    }
+
+
 }
