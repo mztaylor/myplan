@@ -180,7 +180,7 @@ public class AcademicPlanServiceImplTest {
         }
 
         int itemCount = academicPlanService.getPlanItemsInPlan(id, context).size();
-        assertEquals(6, itemCount);
+        assertEquals(7, itemCount);
 
         //  Delete the plan
         try {
@@ -672,7 +672,7 @@ public class AcademicPlanServiceImplTest {
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
-        assertEquals(6, planItems.size());
+        assertEquals(7, planItems.size());
 
         //  Delete a plan item.
         String planItemId = planItems.get(0).getId();
@@ -689,7 +689,7 @@ public class AcademicPlanServiceImplTest {
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
-        assertEquals(5, itemCount);
+        assertEquals(6, itemCount);
     }
 
     @Test
