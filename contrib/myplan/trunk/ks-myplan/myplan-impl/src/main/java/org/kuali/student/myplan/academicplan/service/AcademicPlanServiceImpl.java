@@ -483,6 +483,16 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             }
         }
 
+        //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
+        //  Make sure a plan period exists if type is backup Plan course.
+        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
+                validationResultInfos.add(makeValidationResultInfo(
+                        String.format("Plan Item Type was [%s], but no backup plan periods were defined.", AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP),
+                        "typeKey", ValidationResult.ErrorLevel.ERROR));
+            }
+        }
+
         /*
          * Check for duplicate list items:
          *    Make sure a saved courses item with this course id doesn't already exist in the plan.
@@ -524,7 +534,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<PlanItemEntity> planItems = this.planItemDao.getLearningPlanItems(planItemId, planItemType);
         for (PlanItemEntity p : planItems) {
             if (p.getRefObjectId().equals(courseId)) {
-                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)||planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     for (String atpId : planItem.getPlanPeriods()) {
                         if (p.getPlanPeriods().contains(atpId)) {
                             throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
