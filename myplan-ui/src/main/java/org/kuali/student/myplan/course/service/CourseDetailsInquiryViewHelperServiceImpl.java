@@ -68,6 +68,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AcademicPlanService academicPlanService;
 
+    private  transient CourseInfo courseInfo;
+
+    public CourseInfo getCourseInfo() {
+        return courseInfo;
+    }
+
+    public void setCourseInfo(CourseInfo courseInfo) {
+        this.courseInfo = courseInfo;
+    }
+
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
@@ -96,11 +106,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * @return
      */
     public CourseDetails retrieveCourseSummary(String courseId) {
-
         CourseDetails courseDetails = new CourseDetails();
         courseDetails.setSummaryOnly(true);
 
-        CourseInfo course = null;
+        CourseInfo course = getCourseInfo();
         try {
             course = getCourseService().getCourse(courseId);
         } catch (DoesNotExistException e) {
@@ -267,15 +276,19 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         //Curriculum
         String courseCode = courseDetails.getCode();
+        String subject=null;
+        String number=null;
+        if(courseCode!=null){
         String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        String subject = splitStr[0];
-        String number = splitStr[1];
+        subject = splitStr[0];
+        number = splitStr[1];
         String temp = getTitle(subject);
         StringBuffer value = new StringBuffer();
         value = value.append(temp);
         value = value.append(" (").append(subject.trim()).append(")");
 
         courseDetails.setCurriculumTitle(value.toString());
+        }
         //If course not scheduled for future terms, Check for the last term when course was offered
         if (courseDetails.getScheduledTerms().size() == 0) {
             int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
