@@ -158,7 +158,9 @@
         <ks.contractdoc.phase>site</ks.contractdoc.phase>
         <ks.dictionarydoc.phase>site</ks.dictionarydoc.phase>
 
-         <restlet.version>2.0.8</restlet.version>
+        <restlet.version>2.0.8</restlet.version>
+
+        <jackson.version>1.9.6</jackson.version>
 
     </properties>
     <build>

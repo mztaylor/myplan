@@ -15,6 +15,7 @@ import java.util.List;
  *
  */
 public class PlannedTerm {
+    // TODO: This is actually the ATPid. FIXME!
     private String planItemId;
     private String qtrYear;
 

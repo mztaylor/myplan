@@ -100,6 +100,7 @@ public class PlanController extends UifControllerBase {
         }
         return person;
     }
+
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
@@ -245,10 +246,6 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-        //  Pass the IDs of the updated items back to the UI.
-        form.setPlanItemId(planItem.getId());
-        form.setCourseId(planItem.getRefObjectId());
-
         //  TODO: Hold on this for now. Unclear how meta data gets updated.
         //  Update the timestamp on the plan.
         //try {
@@ -257,13 +254,12 @@ public class PlanController extends UifControllerBase {
         //    logger.error("Unable to update the plan.", e);
         //}
 
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+        return doAddPlanItemSuccess(form, planItem);
     }
 
     @RequestMapping(params = "methodToCall=addSavedCourse")
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
         Person user = getUser();
         String studentId = user.getPrincipalId();
         String courseId = form.getCourseId();
@@ -287,15 +283,39 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-        PlanItem item = null;
+        PlanItem planItem = null;
         try {
-            item = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+            planItem = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         } catch (Exception e) {
             return doAddPlanItemError(form, "Unable to add plan item.", e);
         }
 
-        form.setPlanItemId(item.getId());
-        form.setCourseId(item.getRefObjectId());
+        return doAddPlanItemSuccess(form, planItem);
+    }
+
+    /**
+     * Create success response for add plan item requests.
+     *
+     * @param form
+     * @return
+     */
+    private ModelAndView doAddPlanItemSuccess(PlanForm form, PlanItem planItem) {
+         //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        //  Queue the javascript event(s) that should be thrown in the UI.
+        Map<String, String> jsEventParams = new HashMap<String, String>();
+        jsEventParams.put("courseId", planItem.getRefObjectId());
+        jsEventParams.put("planItemId", planItem.getId());
+        jsEventParams.put("planItemType", planItem.getTypeKey());
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
+        form.setJavascriptEvents(events);
+        //  Set success text.
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
+
+        //  TODO: These can go away once the transition to JS events is complete.
+        form.setPlanItemId(planItem.getId());
+        form.setCourseId(planItem.getRefObjectId());
 
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
@@ -464,27 +484,49 @@ public class PlanController extends UifControllerBase {
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
+        form.setPlanItemId(planItemId);
 
         try {
             // First load the plan item and retrieve the courseId
             PlanItemInfo planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-            form.setCourseId(planItem.getRefObjectId());
+            String courseId = planItem.getRefObjectId();
+            form.setCourseId(courseId);
 
-            // Now delete the plan item
+            // Now Delete the plan item
             getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+
+            //  Set the status of the request for the UI.
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+            //  Queue the javascript event(s) that should be thrown in the UI.
+            Map<String, String> jsEventParams = new HashMap<String, String>();
+            jsEventParams.put("courseId", courseId);
+            Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+            form.setJavascriptEvents(events);
+            //  Set success text.
+            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
         } catch (DoesNotExistException e) {
             //  Assume the end-user already deleted this item and silently let this error go. Log it though.
             logger.warn("Tried to delete a plan item that doesn't exist.", e);
+            //  Set the status of the request for the UI.
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
+            //  Set the success message as well as a warning which explains why the request didn't complete successfully.
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
+            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
         } catch (Exception e) {
             //  Give the end-user a generic error message, but log the exception.
             logger.error("Could not delete plan item.", e);
-            //   Remove the errors, then add a more generic one.
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
             GlobalVariables.getMessageMap().clearErrorMessages();
             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
         }
 
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
+
+
 
     @RequestMapping(params = "methodToCall=populateMenuItems")
     public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
