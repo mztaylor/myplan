@@ -17,6 +17,7 @@ package org.kuali.student.myplan.plan.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -28,6 +29,7 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
@@ -55,6 +57,9 @@ public class PlanController extends UifControllerBase {
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
     private transient Person person;
+
+    //  Java to JSON outputter.
+    private transient ObjectMapper mapper = new ObjectMapper();
 
     public Person getPerson() {
         return person;
@@ -88,7 +93,7 @@ public class PlanController extends UifControllerBase {
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch (Exception e) {
-            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was unknown.", null);
+            return doAddPlanItemError(planForm, "Could retrieve Course Details.", null);
         }
 
         return getUIFModelAndView(planForm);
@@ -246,6 +251,51 @@ public class PlanController extends UifControllerBase {
             }
         }
 
+        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+        CourseDetails courseDetails = null;
+        try {
+           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+        } catch (Exception e) {
+            return doAddPlanItemError(form, "Unable to retrieve Course Details.", null);
+        }
+
+        String courseDetailsAsJson;
+        try {
+            //  Turn the list of javascript events into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+        } catch (Exception e) {
+            return doAddPlanItemError(form, "Could not convert javascript events to JSON.", e);
+        }
+
+        //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+        //  Set the javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        for (String termId : newTermIds) {
+            //  One "plan item added" for each new Term ID.
+            Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
+            addPlannedItemEventParams.put("planItemId", planItem.getId());
+            addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
+            addPlannedItemEventParams.put("atpId", termId);
+            addPlannedItemEventParams.put("courseDetails", courseDetailsAsJson);
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
+
+            //  One "update total credits" for each new Term ID.
+            Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
+            updateCreditsEventParams.put("atpId", termId);
+            updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+        }
+
+        form.setJavascriptEvents(events);
+        //  Set success text.
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.SUCCESS_KEY);
+
+        //  TODO: These can go away once the transition to JS events is complete.
+        form.setPlanItemId(planItem.getId());
+        form.setCourseId(planItem.getRefObjectId());
+
         //  TODO: Hold on this for now. Unclear how meta data gets updated.
         //  Update the timestamp on the plan.
         //try {
@@ -253,8 +303,7 @@ public class PlanController extends UifControllerBase {
         //} catch (Exception e) {
         //    logger.error("Unable to update the plan.", e);
         //}
-
-        return doAddPlanItemSuccess(form, planItem);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
     }
 
     @RequestMapping(params = "methodToCall=addSavedCourse")
@@ -290,23 +339,30 @@ public class PlanController extends UifControllerBase {
             return doAddPlanItemError(form, "Unable to add plan item.", e);
         }
 
-        return doAddPlanItemSuccess(form, planItem);
-    }
+         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+        CourseDetails courseDetails = null;
+        try {
+           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+        } catch (Exception e) {
+            return doAddPlanItemError(form, "Unable to retrieve Course Details.", null);
+        }
 
-    /**
-     * Create success response for add plan item requests.
-     *
-     * @param form
-     * @return
-     */
-    private ModelAndView doAddPlanItemSuccess(PlanForm form, PlanItem planItem) {
-         //  Set the status of the request for the UI.
+        String courseDetailsAsJson;
+        try {
+            //  Turn the list of javascript events into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+        } catch (Exception e) {
+            return doAddPlanItemError(form, "Could not convert javascript events to JSON.", e);
+        }
+
+        //  Set the status of the request for the UI.
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         //  Queue the javascript event(s) that should be thrown in the UI.
         Map<String, String> jsEventParams = new HashMap<String, String>();
-        jsEventParams.put("courseId", planItem.getRefObjectId());
         jsEventParams.put("planItemId", planItem.getId());
         jsEventParams.put("planItemType", planItem.getTypeKey());
+        jsEventParams.put("courseDetails", courseDetailsAsJson);
+
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
         form.setJavascriptEvents(events);
@@ -497,13 +553,7 @@ public class PlanController extends UifControllerBase {
 
             //  Set the status of the request for the UI.
             form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-
-            //  Queue the javascript event(s) that should be thrown in the UI.
-            Map<String, String> jsEventParams = new HashMap<String, String>();
-            jsEventParams.put("courseId", courseId);
-            Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
-            form.setJavascriptEvents(events);
+            form.setJavascriptEvents(makeRemoveEvents(planItem));
             //  Set success text.
             GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
         } catch (DoesNotExistException e) {
@@ -526,7 +576,36 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
     }
 
+    /**
+     * Creates events map for a remove.
+     * @param planItem
+     * @return
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvents(PlanItemInfo planItem) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
 
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            //  Queue the javascript event(s) that should be thrown in the UI.
+            Map<String, String> jsEventParams = new HashMap<String, String>();
+            jsEventParams.put("courseId", planItem.getRefObjectId());
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+        } else {
+            //  Create a delete event for all ATPs
+            for (String termId : planItem.getPlanPeriods()) {
+                //  Queue the javascript event(s) that should be thrown in the UI.
+                Map<String, String> jsEventParams = new HashMap<String, String>();
+                jsEventParams.put("courseId", planItem.getRefObjectId());
+                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+
+                //  One "update total credits" for each ATP id.
+                Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
+                updateCreditsEventParams.put("atpId", termId);
+                updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+                events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+            }
+        }
+        return events;
+    }
 
     @RequestMapping(params = "methodToCall=populateMenuItems")
     public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
