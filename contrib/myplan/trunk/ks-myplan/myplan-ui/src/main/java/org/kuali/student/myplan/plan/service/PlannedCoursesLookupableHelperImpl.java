@@ -91,7 +91,13 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
                             if (plannedTerm.getPlanItemId().equalsIgnoreCase(atp)) {
                                 plannedTerm.getPlannedList().add(plan);
+                                /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
+                                if(plan.getCourseDetails().getCredit().length()>2){
+                                    String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                    plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
+                                }else{
                                 plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
+                                }
                                 exists = true;
 
                             }
@@ -106,7 +112,13 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                             plannedTerm1.setQtrYear(QtrYear);
                             plannedTerm1.getPlannedList().add(plan);
-                            plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
+                            /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
+                            if(plan.getCourseDetails().getCredit().length()>2){
+                                String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(credit));
+                            }else{
+                                plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
+                            }
                             plannedTerm1.setCurrentTerm(false);
                             plannedTerms.add(plannedTerm1);
 
@@ -123,7 +135,13 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                         plannedTerm.setQtrYear(QtrYear);
                         plannedTerm.getPlannedList().add(plan);
-                        plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
+                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
+                        if(plan.getCourseDetails().getCredit().length()>2){
+                            String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
+                        }else{
+                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
+                        }
                         plannedTerm.setCurrentTerm(false);
                         plannedTerms.add(plannedTerm);
 
@@ -159,7 +177,13 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                         plannedTerm.setQtrYear(QtrYear);
                         plannedTerm.getBackupList().add(bl);
-                        plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(bl.getCourseDetails().getCredit()));
+                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
+                        if(bl.getCourseDetails().getCredit().length()>2){
+                            String credit=bl.getCourseDetails().getCredit().substring(2,bl.getCourseDetails().getCredit().length()) ;
+                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
+                        }else{
+                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(bl.getCourseDetails().getCredit()));
+                        }
                         plannedTerm.setCurrentTerm(false);
                         plannedTerms.add(plannedTerm);
 
