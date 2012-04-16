@@ -54,19 +54,19 @@
 
     <bean id="PlanItem.dateAdded" parent="PlanItem.dateAdded-parentBean"/>
     <bean id="PlanItem.dateAdded-parentBean" abstract="true" parent="AttributeDefinition">
-           <property name="name" value="dateAdded"/>
-           <property name="dataType" value="DATE"/>
-           <property name="label" value="Date Added"/>
-           <property name="shortLabel" value="Added"/>
-           <property name="forceUppercase" value="false"/>
-           <property name="maxLength" value="16"/>
-           <property name="validCharactersConstraint">
-               <bean parent="AnyCharacterPatternConstraint"/>
-           </property>
-           <property name="controlField">
-               <bean parent="Uif-TextControl" p:size="20"/>
-           </property>
-      </bean>
+       <property name="name" value="dateAdded"/>
+       <property name="dataType" value="DATE"/>
+       <property name="label" value="Date Added"/>
+       <property name="shortLabel" value="Added"/>
+       <property name="forceUppercase" value="false"/>
+       <property name="maxLength" value="16"/>
+       <property name="validCharactersConstraint">
+           <bean parent="AnyCharacterPatternConstraint"/>
+       </property>
+       <property name="controlField">
+           <bean parent="Uif-TextControl" p:size="20"/>
+       </property>
+    </bean>
 
     <bean id="PlanItem.courseDetails" parent="ComplexAttributeDefinition">
         <property name="name" value="courseDetails"/>
@@ -577,10 +577,7 @@
     </bean>
 
 
-   <!--
-   Populating the Contextual Menu items
-   -->
-
+    <!-- Populating the (Quarter View Actions Menu) Contextual Menu items -->
     <bean id="PlannedCourseMenuItem-FormView" parent="MyPlanFormView">
         <property name="id" value="PlannedCourseMenuItem-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -601,7 +598,6 @@
                         </list>
                     </property>
                 </bean>
-
 
             </list>
                 </property>
@@ -625,7 +621,7 @@
                     <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseId}"/>
 
                 </bean>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;" p:render="@{backup ? false : true}">
+                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-text-bold</value>
@@ -634,17 +630,6 @@
                     </property>
                     <property name="linkLabel" value="Mark it as Backup course"/>
                     <property name="title" value="Mark it as Backup course"/>
-                    <property name="hrefText" value="#"/>
-                </bean>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;" p:render="@{backup ? true : false}">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>fl-text-bold</value>
-                            <value>myplan-text-wrap</value>
-                        </list>
-                    </property>
-                    <property name="linkLabel" value="Mark it as Planned course"/>
-                    <property name="title" value="Mark it as Planned course"/>
                     <property name="hrefText" value="#"/>
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
@@ -871,8 +856,7 @@
 
     </bean>
 
-
-   <bean id="PlannedCourse-FormView" parent="MyPlanFormView">
+    <bean id="PlannedCourse-FormView" parent="MyPlanFormView">
         <property name="id" value="PlannedCourse-FormView"/>
         <property name="entryPageId" value="add_planned_course"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -885,21 +869,21 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="add_planned_course" p:title="">
+                <bean parent="Uif-Page" p:id="add_planned_course" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <ref bean="add_planned_course_fields"/>
+                            <ref bean="actions_group"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="add_plan_item_page">
+                <bean parent="Uif-Page" p:id="add_plan_item_page" p:errorsField.render="false">
                     <property name="items">
                         <list>
                             <ref bean="add_plan_item_section"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:id="remove_plan_item_page">
+                <bean parent="Uif-Page" p:id="remove_plan_item_page" p:errorsField.render="false" >
                     <property name="items">
                         <list>
                             <ref bean="remove_plan_item_section"/>
@@ -949,18 +933,16 @@
 
                 <ref bean="add_planned_course_other"/>
 
-
-
-                <bean parent="Uif-InputField" p:propertyName="backup"  p:defaultValue="false">
+                <!--  Backup checkbox -->
+                <bean parent="Uif-InputField" p:propertyName="backup" p:label="Backup" p:defaultValue="true"
+                      p:instructionalText="Should this course be marked as a backup.">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
-                    <property name="label" value="Mark it as 'Backup' course." />
                 </bean>
 
-
                 <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="addPlannedCourse"
-                      p:actionLabel="Add To Plan" p:style="padding: 0px 30px;">
+                    p:actionLabel="Add To Plan" p:style="padding: 0px 30px;">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
@@ -968,9 +950,9 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
-                    <!-- Comment this line out to make the form work outside the popup. -->
+                    <!-- Comment this line out to make the form work outside the popup.
                     <property name="clientSideJs" value="myplanFormSubmit('add_planned_course', 'addPlannedCourse', e)"/>
-
+                    -->
                     <property name="onDocumentReadyScript" value="myplanFormWrapper('add_planned_course', 'startAddPlannedCourseForm', 'plan', {viewId:'PlannedCourse-FormView',courseId:'@{courseDetails.courseId}'})"/>
                 </bean>
             </list>
@@ -1004,20 +986,42 @@
     </bean>
 
     <!-- Common components -->
-    <bean id="add_plan_item_section"  parent="Uif-VerticalBoxSection" p:errorsField.render="true">
+    <bean id="plan_item_actions_common" parent="Uif-VerticalBoxSection">
+        <property name="errorsField">
+            <bean parent="Uif-GroupValidationMessages">
+                <property name="displayMessages" value="true" />
+                <property name="displayCounts" value="false" />
+                <property name="displayFieldLabelWithMessages" value="false"/>
+                <property name="displayNestedMessages" value="false"/>
+                <property name="highlightOnError" value="false"/>
+                <property name="combineMessages" value="true"/>
+                <property name="allowMessageRepeat" value="false"/>
+                <property name="displayInfoMessages" value="true" />
+                <property name="displayWarningMessages" value="true" />
+                <property name="fireGrowlsForMessages" value="false" />
+            </bean>
+        </property>
         <property name="items">
             <list>
-                <bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
-                <bean id="course_id_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
-
+                <bean id="request_status_item_key" parent="Uif-DataField" p:propertyName="requestStatus"/>
+                <bean id="json_events_item_key" parent="Uif-DataField" p:propertyName="javascriptEventsAsJSON"/>
             </list>
         </property>
     </bean>
 
-    <bean id="remove_plan_item_section" parent="Uif-VerticalBoxSection" p:errorsField.render="true">
+    <bean id="add_plan_item_section"  parent="plan_item_actions_common">
         <property name="items">
-            <list>
-                 <bean id="remove_plan_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
+            <list merge="true">
+                <bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
+                <bean id="course_id_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="remove_plan_item_section" parent="plan_item_actions_common">
+        <property name="items">
+            <list merge="true">
+                <bean id="remove_plan_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
             </list>
         </property>
     </bean>
