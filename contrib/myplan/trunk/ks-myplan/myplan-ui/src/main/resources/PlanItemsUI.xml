@@ -148,6 +148,114 @@
         <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
     </bean>
 
+
+
+    <bean id="FullPlanTermItemsDataObject" parent="FullPlanTermItemsDataObject-parentBean"/>
+    <bean id="FullPlanTermItemsDataObject-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Saved Courses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="FullPlanTermItemsDataObject.term"/>
+                <ref bean="FullPlanTermItemsDataObject.totalCredits"/>
+
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="FullPlanTermItemsDataObject.planItemDataObjects"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="FullPlanTermItemsDataObject.term" parent="FullPlanTermItemsDataObject.term-parentBean"/>
+    <bean id="FullPlanTermItemsDataObject.term-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="term"/>
+        <property name="dataType" value="STRING"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="FullPlanTermItemsDataObject.totalCredits" parent="FullPlanTermItemsDataObject.totalCredits-parentBean"/>
+    <bean id="FullPlanTermItemsDataObject.totalCredits-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="totalCredits"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="label" value="Total Credits"/>
+        <property name="shortLabel" value="Total Credits"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="FullPlanTermItemsDataObject.planItemDataObjects" parent="CollectionDefinition">
+        <property name="name" value="planItemDataObjects"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+    </bean>
+
+
+
+
+
+
+    <bean id="FullPlanItemsDataObject" parent="FullPlanItemsDataObject-parentBean"/>
+    <bean id="FullPlanItemsDataObject-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Saved Courses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="FullPlanItemsDataObject.year"/>
+                <ref bean="FullPlanItemsDataObject.yearRange"/>
+
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="FullPlanItemsDataObject.terms"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="FullPlanItemsDataObject.year" parent="FullPlanItemsDataObject.year-parentBean"/>
+    <bean id="FullPlanItemsDataObject.year-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="year"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+    <bean id="FullPlanItemsDataObject.yearRange" parent="FullPlanItemsDataObject.yearRange-parentBean"/>
+    <bean id="FullPlanItemsDataObject.yearRange-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="yearRange"/>
+        <property name="dataType" value="STRING"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+    <bean id="FullPlanItemsDataObject.terms" parent="CollectionDefinition">
+        <property name="name" value="terms"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject"/>
+    </bean>
+
     <!--  Saved Courses (wishlist) components -->
     <bean id="SavedCoursesSummary-LookupView" parent="MyPlanLookupView">
         <property name="title" value="Saved Courses Summary"/>
@@ -753,6 +861,7 @@
                                     </list>
                                 </property>
                             </bean>
+                            <ref bean="linkLabel"/>
                         </list>
                     </property>
                 </bean>
@@ -760,7 +869,23 @@
             </list>
         </property>
     </bean>
+    <bean id="linkLabel" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-text-wrap</value>
+                        </list>
+                    </property>
+                    <property name="linkLabel" value="View Overall Academic Plan"/>
+                    <property name="title" value="View Overall Academic Plan"/>
+                    <property name="hrefText" value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
+                </bean>
 
+            </list>
+        </property>
+    </bean>
     <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection" p:title="Academic Year">
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
@@ -1039,5 +1164,145 @@
             </list>
         </property>
     </bean>
+
+    <!--Bena for the Full Academic Plan View 
+    -->
+    <bean id="FullPlannedCourses-LookupView" parent="MyPlanLookupView">
+        <property name="viewName" value="FullPlannedCourses-LookupView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+        <property name="viewHelperServiceClassName"
+                  value="org.kuali.student.myplan.plan.service.FullPlanItemsLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="page.header.render" value="false"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>/ks-myplan/scripts/myplan.manage.js</value>
+                <value>/ks-myplan/plugins/jcarousellite.js</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" p:id="full_planned_courses_detail_page" >
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="full_planned_courses_detail"/>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+
+        <property name="footer.render" value="false"/>
+    </bean>
+
+    <bean id="full_planned_courses_detail" parent="Uif-HorizontalBoxSubSection" p:errorsField.render="false"  >
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-container-720</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="collection1" />
+            </list>
+        </property>
+    </bean>
+
+    <!--Collection list of the Full Plan Items-->
+    <bean id="collection1" parent="Uif-Disclosure-StackedCollectionSection" >
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
+        <property name="propertyName" value="searchResults"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false" p:escapeHtmlInPropertyValue="false" p:width="100"/>
+            </list>
+        </property>
+        <property name="width" value="100"/>
+        <property name="subCollections">
+            <list>
+                <ref bean="termsCollection"/>
+
+            </list>
+        </property>
+     </bean>
+
+    <bean id="termsCollection"  parent="Uif-StackedSubCollection-WithinSection"  >
+
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject" />
+        <property name="propertyName" value="terms"/>
+
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="term" p:labelField.render="false" p:escapeHtmlInPropertyValue="false" p:width="100"/>
+                <bean parent="Uif-DataField" p:propertyName="totalCredits" p:labelField.render="false" p:escapeHtmlInPropertyValue="false" p:width="100"/>
+
+            </list>
+        </property>
+
+        <property name="subCollections">
+            <list>
+                            <ref bean="planItemDOCollection"/>
+            </list>
+        </property>
+        <property name="collectionLookup.quickfinderActionField.render" value="false" />
+
+    </bean>
+
+
+
+
+    <bean id="planItemDOCollection"  parent="Uif-StackedSubCollection-WithinSubSection"  >
+
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
+        <property name="propertyName" value="planItemDataObjects"/>
+
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-MessageField" p:messageText="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})" />
+            </list>
+        </property>
+
+
+        <property name="collectionLookup.quickfinderActionField.render" value="false" />
+
+    </bean>
+
 
 </beans>
