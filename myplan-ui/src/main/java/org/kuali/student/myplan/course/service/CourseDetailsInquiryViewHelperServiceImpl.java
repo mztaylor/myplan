@@ -299,7 +299,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             } catch (Exception e) {
                 logger.error("could not load courseOfferingInfo list");
             }
-            if (courseOfferingInfo != null) {
+            if (courseOfferingInfo.size()>0) {
                 String lastOffered = courseOfferingInfo.get(0).getTermId();
                 lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                 courseDetails.setLastOffered(lastOffered);
