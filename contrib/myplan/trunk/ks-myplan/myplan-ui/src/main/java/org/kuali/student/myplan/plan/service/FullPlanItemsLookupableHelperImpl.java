@@ -71,7 +71,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                                         fpt.getPlanItemDataObjects().add(planItemDataObject);
                                         /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                                         if(plan.getCourseDetails().getCredit().length()>2){
-                                            String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                            String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                            String credit=str[2] ;
                                             fpt.setTotalCredits(fpt.getTotalCredits() + Integer.parseInt(credit));
                                         }else{
                                             fpt.setTotalCredits(fpt.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -94,7 +95,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                                     fullPlanTermItemsDataObject.setTerm(quarter);
                                     /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                                     if(plan.getCourseDetails().getCredit().length()>2){
-                                        String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                        String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                        String credit=str[2] ;
                                         fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
                                     }else{
                                         fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -125,7 +127,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                             fullPlanTermItemsDataObject.setPlanItemDataObjects(planItemDataObjects);
                             /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                             if(plan.getCourseDetails().getCredit().length()>2){
-                                String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                String credit=str[2] ;
                                 fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
                             }else{
                                 fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -159,7 +162,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                         fullPlanTermItemsDataObject.setPlanItemDataObjects(planItemDataObjects);
                         /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                         if(plan.getCourseDetails().getCredit().length()>2){
-                            String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                            String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                            String credit=str[2] ;
                             fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
                         }else{
                             fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));

@@ -93,7 +93,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                                 plannedTerm.getPlannedList().add(plan);
                                 /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                                 if(plan.getCourseDetails().getCredit().length()>2){
-                                    String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                    String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                    String credit=str[2] ;
                                     plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
                                 }else{
                                 plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -114,7 +115,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                             plannedTerm1.getPlannedList().add(plan);
                             /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                             if(plan.getCourseDetails().getCredit().length()>2){
-                                String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                                String [] str2= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                String credit=str2[2] ;
                                 plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(credit));
                             }else{
                                 plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -137,7 +139,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         plannedTerm.getPlannedList().add(plan);
                         /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                         if(plan.getCourseDetails().getCredit().length()>2){
-                            String credit=plan.getCourseDetails().getCredit().substring(2,plan.getCourseDetails().getCredit().length()) ;
+                            String [] str3= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                            String credit=str3[2] ;
                             plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
                         }else{
                             plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
@@ -179,7 +182,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         plannedTerm.getBackupList().add(bl);
                         /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
                         if(bl.getCourseDetails().getCredit().length()>2){
-                            String credit=bl.getCourseDetails().getCredit().substring(2,bl.getCourseDetails().getCredit().length()) ;
+                            String [] str4= bl.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                            String credit=str4[2] ;
                             plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
                         }else{
                             plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(bl.getCourseDetails().getCredit()));
