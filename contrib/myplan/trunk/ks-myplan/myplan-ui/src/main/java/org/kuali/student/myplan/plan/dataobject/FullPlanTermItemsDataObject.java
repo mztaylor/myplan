@@ -14,10 +14,7 @@ import java.util.List;
 public class FullPlanTermItemsDataObject {
     private String term;
     private int totalCredits;
-    private List<PlanItemDataObject> planItemDataObjects=new ArrayList<PlanItemDataObject>();
-
-
-
+    private List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
 
     public List<PlanItemDataObject> getPlanItemDataObjects() {
         return planItemDataObjects;
