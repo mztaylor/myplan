@@ -14,7 +14,6 @@ public class CourseDetails {
     // Indicates if only summary information is stored in course details
     private boolean summaryOnly = true;
 
-
     // List of fileds populated when only summary information is loaded
     private String courseId;
     private String code;
@@ -28,6 +27,9 @@ public class CourseDetails {
 
     private String curriculumTitle;
     private String lastOffered;
+
+    //  Planned course properties
+    private boolean inPlannedCourseList;
 
     // Saved course properties
     private boolean inSavedCourseList;
@@ -112,7 +114,16 @@ public class CourseDetails {
     public void setCourseDescription(String courseDescription) {
         this.courseDescription = courseDescription;
     }
-     public boolean isInSavedCourseList() {
+
+    public boolean isInPlannedCourseList() {
+        return inPlannedCourseList;
+    }
+
+    public void setInPlannedCourseList(boolean inPlannedCourseList) {
+        this.inPlannedCourseList = inPlannedCourseList;
+    }
+
+    public boolean isInSavedCourseList() {
         return inSavedCourseList;
     }
 

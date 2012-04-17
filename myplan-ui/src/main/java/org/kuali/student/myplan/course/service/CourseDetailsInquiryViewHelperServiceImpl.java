@@ -45,6 +45,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.course.util.CurriculumFacet;
 import org.kuali.rice.core.api.criteria.Predicate;
+import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
@@ -252,26 +253,32 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             ContextInfo context = new ContextInfo();
             String studentID = user.getPrincipalId();
 
+            //   Get the first learning plan. There should only be one ...
             String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-
             List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
             if (plans.size() > 0) {
                 LearningPlan plan = plans.get(0);
+
+                //  Fetch the plan items which are associated with the plan.
                 List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
                 courseDetails.setInSavedCourseList(false);
 
+                //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {
                     if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
-
-                        courseDetails.setInSavedCourseList(true);
-                        courseDetails.setSavedCourseItemId(planItemInPlanTemp.getId());
-                        courseDetails.setSavedCourseDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
-                        break;
+                        //  Assuming type is planned or backup if not wishlist.
+                        if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+                            courseDetails.setInSavedCourseList(true);
+                            courseDetails.setSavedCourseItemId(planItemInPlanTemp.getId());
+                            courseDetails.setSavedCourseDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
+                        } else {
+                            courseDetails.setInPlannedCourseList(true);
+                        }
                     }
                 }
             }
         } catch (Exception e) {
-            logger.error("Exception loading course offering for:" + course.getCode());
+            logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
 
         //Curriculum
