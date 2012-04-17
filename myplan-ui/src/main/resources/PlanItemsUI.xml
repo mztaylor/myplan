@@ -699,7 +699,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="plan_items_action_menu_page" p:title="">
+                <bean parent="Uif-Page" p:id="add_planned_course" p:title="">
                     <property name="items">
                         <list>
                             <ref bean="add_menu_items"/>
@@ -899,7 +899,7 @@
             </list>
         </property>
         <property name="header">
-            <bean id="planned_courses_header" parent="Uif-HeaderField-Three"/>
+            <bean parent="Uif-HeaderField-Three"/>
         </property>
         <property name="items">
             <list>
@@ -912,6 +912,12 @@
                 <ref bean="backupCollection" />
             </list>
         </property>
+        <property name="onDocumentReadyScript" value="
+            jq('#planned_courses_detail_list_group')
+                .subscribe('evAddPlanItem', function(data){fnAddPlanItem(data.atpId, data.type, data.courseId, data.courseCode, data.courseTitle, data.courseCredits)})
+                .subscribe('evRemovePlanItem', function(data){fnRemovePlanItem(data.atpId, data.type, data.courseId)})
+                .subscribe('evUpdatePlanCredits', function(data){fnUpdateCredits(data.atpId, data.type, data.termCredits)});
+        "/>
     </bean>
     <bean id="plannedCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
         <property name="layoutManager">
@@ -921,7 +927,13 @@
                 </property>
             </bean>
         </property>
-        <property name="styleClasses" value="myplan-carousel-term"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-carousel-term</value>
+                <value>@{#line.planItemId.replaceAll("\.","-")}-planned</value>
+            </list>
+        </property>
+
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
         <property name="propertyName" value="plannedList"/>
@@ -934,8 +946,10 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
-              p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'false'},e,'li');" p:hrefText="#" p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
+                <bean p:id="@{#line.id}" parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
+              p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#" p:labelField.render="false"
+              p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}'},e,'li');"
+              p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false" />
@@ -944,15 +958,17 @@
         </property>
     </bean>
 
-    <bean id="term_total_credits" parent="Uif-VerticalBoxSection" p:errorsField.render="false" p:header.render="false">
+    <bean id="term_total_credits" parent="Uif-GridGroup" p:errorsField.render="false">
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="@{#line.credits}" p:labelField.render="true" p:label="Total Credits" p:labelField.renderColon="false"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.credits}" p:labelField.render="true" p:label="Total Credits"
+                      p:labelField.renderColon="false" p:styleClasses="myplan-carousel-term-credits"/>
             </list>
         </property>
     </bean>
 
-    <bean id="backupCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
+    <bean id="backupCollection"  parent="Uif-StackedCollectionGroup" p:title="Backup">
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -960,7 +976,12 @@
                 </property>
             </bean>
         </property>
-        <property name="styleClasses" value="myplan-carousel-term"/>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-carousel-term</value>
+                <value>@{#line.planItemId.replaceAll("\.","-")}-backup</value>
+            </list>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject" />
         <property name="propertyName" value="backupList"/>
@@ -973,8 +994,10 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
-                      p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'true'},e,'li');" p:hrefText="#" p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
+                <bean p:id="@{#line.id}" parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
+                      p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"
+                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'true'},e,null);"
+                      p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false" />
@@ -998,7 +1021,7 @@
                 <bean parent="Uif-Page" p:id="add_remove_course_popover_page" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <ref bean="course_popover_group"/>
+                            <ref bean="actions_group"/>
                         </list>
                     </property>
                 </bean>
@@ -1255,22 +1278,9 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>fl-text-bold</value>
-                            <value>myplan-text-wrap</value>
-                        </list>
-                    </property>
-
-                    <property name="linkLabel" value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                    <property name="title" value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
-                </bean>
-
                 <bean parent="Uif-MessageField" p:messageText="Which quarter would you like add?"/>
 
-                <bean parent="Uif-InputField" p:propertyName="termsList" p:width="auto" p:defaultValue="0">
+                <bean parent="Uif-InputField" p:propertyName="termsList" p:width="auto" p:defaultValue="">
                     <property name="control">
                         <bean parent="Uif-VerticalCheckboxesControl"/>
                     </property>

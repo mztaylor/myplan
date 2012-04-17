@@ -238,6 +238,9 @@ a:focus {
 .myplan-carousel-list > div[id$='_group'] {
     overflow: hidden;
 }
+.myplan-carousel-list > div[id$='_group'] ul {
+    width: 20000em;
+}
 .myplan-carousel-list ul,
 .myplan-carousel-list ul li {
     margin: 0;
@@ -261,6 +264,10 @@ a:focus {
     font-weight:bold;
     padding:5px 0px;
 }
+.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout {
+    height: 200px;
+    overflow: hidden;
+}
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
     border-top:dotted 1px #ccc;
     padding:5px;
@@ -273,10 +280,17 @@ a:focus {
     font-weight:bold;
     color:#666;
     font-size:90%;
-    text-align: right;
 }
-.myplan-carousel-term-total label {
-    float:left;
+.myplan-carousel-term-total table[role="presentation"] {
+    margin: 0;
+}
+.myplan-carousel-term-total table[role="presentation"] th {
+    text-align: left;
+    padding: 0;
+}
+.myplan-carousel-term-total table[role="presentation"] td {
+    text-align: right;
+    padding: 0;
 }
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
