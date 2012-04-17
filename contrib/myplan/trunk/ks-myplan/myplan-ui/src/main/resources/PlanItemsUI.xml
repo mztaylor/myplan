@@ -1203,20 +1203,6 @@
     </bean>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Group for "Add Plan Item" inputs -->
     <bean id="add_planned_course_fields" parent="Uif-VerticalFieldGroup">
         <property name="group.errorsField.render" value="false"/>
