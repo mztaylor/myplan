@@ -558,10 +558,11 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 }
             }
-
+            if(actualQuarter!=null&&actualYear!=-1){
             cc = cc.append(actualQuarter).append(" ").append(actualYear);
             courseOfferingInfo.setTermId(cc.toString().trim());
             courseOfferingInfos.add(courseOfferingInfo);
+            }
 
         }
         return courseOfferingInfos;
