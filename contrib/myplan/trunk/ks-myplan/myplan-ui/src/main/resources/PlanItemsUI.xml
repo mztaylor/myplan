@@ -1189,8 +1189,9 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="Saved Course Message"/>
-                                        <bean parent="Uif-MessageField" p:messageText="Saved List Message"/>
+                                        <bean parent="Uif-MessageField" p:messageText="Planned Course Message" />
+                                        <bean parent="Uif-MessageField" p:messageText="Saved List Message"
+                                            p:render="@{courseDetails.inSavedCourseList ? true : false}" />
                                     </list>
                                 </property>
                             </bean>
