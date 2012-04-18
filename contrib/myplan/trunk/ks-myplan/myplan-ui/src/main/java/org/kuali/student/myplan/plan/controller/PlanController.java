@@ -155,7 +155,7 @@ public class PlanController extends UifControllerBase {
         //  Make a delete event.  /* atpId, type, courseId */
         Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
         jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
@@ -165,13 +165,13 @@ public class PlanController extends UifControllerBase {
         addPlannedItemEventParams.put("planItemId", planItem.getId());
         addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
 
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         updateCreditsEventParams.put("totalCredits", "AA-ZZ");
         events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
 
@@ -222,7 +222,7 @@ public class PlanController extends UifControllerBase {
         //  Make a delete event.  /* atpId, type, courseId */
         Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
         jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
@@ -232,13 +232,13 @@ public class PlanController extends UifControllerBase {
         addPlannedItemEventParams.put("planItemId", planItem.getId());
         addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
 
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0).replaceAll("\\.", "-"));
         updateCreditsEventParams.put("totalCredits", "AA-ZZ");
         events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
 
@@ -303,7 +303,7 @@ public class PlanController extends UifControllerBase {
         //  Make a delete event for the old atp.  /* atpId, type, courseId */
         Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", oldAtpId);
+        jsDeleteEventParams.put("atpId", oldAtpId.replaceAll("\\.", "-"));
         jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
         jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
@@ -313,7 +313,7 @@ public class PlanController extends UifControllerBase {
         addPlannedItemEventParams.put("planItemId", planItem.getId());
         addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", newTermIds.get(0));
+        addPlannedItemEventParams.put("atpId", newTermIds.get(0).replaceAll(".", "-"));
         addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
 
@@ -321,20 +321,19 @@ public class PlanController extends UifControllerBase {
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
             //  Make an "Update total credits" for the old term.
             Map<String, String> updateCreditsEventParamsOld = new HashMap<String, String>();
-            updateCreditsEventParamsOld.put("atpId", oldAtpId);
+            updateCreditsEventParamsOld.put("atpId", oldAtpId.replaceAll("\\.", "-"));
             updateCreditsEventParamsOld.put("totalCredits", "AA-ZZ");
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsOld);
 
             //  Make an "Update total credits" for the new term.
             Map<String, String> updateCreditsEventParamsNew = new HashMap<String, String>();
-            updateCreditsEventParamsNew.put("atpId", oldAtpId);
+            updateCreditsEventParamsNew.put("atpId", oldAtpId.replaceAll("\\.", "-"));
             updateCreditsEventParamsNew.put("totalCredits", "AA-ZZ");
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsNew);
         }
 
         form.setJavascriptEvents(events);
 
-        //  Verify type planned, overwrite ATPids, events, update, make events (delete, add, update credits).
         return doPlanActionSuccess(form);
     }
 
@@ -510,20 +509,20 @@ public class PlanController extends UifControllerBase {
             Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
             addPlannedItemEventParams.put("planItemId", planItem.getId());
             addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
-            addPlannedItemEventParams.put("atpId", termId);
+            addPlannedItemEventParams.put("atpId", termId.replaceAll("\\.", "-"));
             addPlannedItemEventParams.put("courseDetails", courseDetailsAsJson);
             events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
 
             //  One "update total credits" for each new Term ID.
             Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-            updateCreditsEventParams.put("atpId", termId);
+            updateCreditsEventParams.put("atpId", termId.replaceAll("\\.", "-"));
             updateCreditsEventParams.put("totalCredits", "AA-ZZ");
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
         }
 
         form.setJavascriptEvents(events);
         //  Set success text.
-        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.SUCCESS_KEY);
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
 
         //  TODO: These can go away once the transition to JS events is complete.
         form.setPlanItemId(planItem.getId());
@@ -536,7 +535,7 @@ public class PlanController extends UifControllerBase {
         //} catch (Exception e) {
         //    logger.error("Unable to update the plan.", e);
         //}
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
     @RequestMapping(params = "methodToCall=addSavedCourse")
@@ -600,13 +599,13 @@ public class PlanController extends UifControllerBase {
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
         form.setJavascriptEvents(events);
         //  Set success text.
-        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.SUCCESS_KEY);
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
 
         //  TODO: These can go away once the transition to JS events is complete.
         form.setPlanItemId(planItem.getId());
         form.setCourseId(planItem.getRefObjectId());
 
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
     /**
@@ -619,8 +618,8 @@ public class PlanController extends UifControllerBase {
         } else {
             logger.error(errorMessage);
         }
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
     /**
@@ -642,10 +641,9 @@ public class PlanController extends UifControllerBase {
      */
     private ModelAndView doPlanActionSuccess(PlanForm form) {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
-
 
     private String getCourseDetailsAsJson(String courseId) {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
@@ -833,7 +831,7 @@ public class PlanController extends UifControllerBase {
             form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
             form.setJavascriptEvents(makeRemoveEvents(planItem));
             //  Set success text.
-            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
+            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
         } catch (DoesNotExistException e) {
             //  Assume the end-user already deleted this item and silently let this error go. Log it though.
             logger.warn("Tried to delete a plan item that doesn't exist.", e);
@@ -841,17 +839,17 @@ public class PlanController extends UifControllerBase {
             form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
             //  Set the success message as well as a warning which explains why the request didn't complete successfully.
             GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
-            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
+            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
+            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
         } catch (Exception e) {
             //  Give the end-user a generic error message, but log the exception.
             logger.error("Could not delete plan item.", e);
             form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
             GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
         }
 
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_REMOVE_PAGE_ID);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
     /**
@@ -873,14 +871,14 @@ public class PlanController extends UifControllerBase {
             for (String termId : planItem.getPlanPeriods()) {
                 //  Queue the javascript event(s) that should be thrown in the UI.
                 Map<String, String> jsEventParams = new HashMap<String, String>();
-                jsEventParams.put("atpId", termId);
+                jsEventParams.put("atpId", termId.replaceAll("\\.", "-"));
                 jsEventParams.put("planItemType", planItem.getTypeKey());
                 jsEventParams.put("courseId", planItem.getRefObjectId());
                 events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
 
                 //  One "update total credits" for each ATP id.
                 Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-                updateCreditsEventParams.put("atpId", termId);
+                updateCreditsEventParams.put("atpId", termId.replaceAll("\\.", "-"));
                 int totalCredits=this.getTotalCredits(termId);
                 updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
                 events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
