@@ -929,7 +929,7 @@ public class PlanController extends UifControllerBase {
     }
 
     private String formatTypeKey(String typeKey) {
-        return typeKey.substring(typeKey.lastIndexOf("."));
+        return typeKey.substring(typeKey.lastIndexOf(".") + 1);
     }
     
     private Integer getTotalCredits(String termId){
