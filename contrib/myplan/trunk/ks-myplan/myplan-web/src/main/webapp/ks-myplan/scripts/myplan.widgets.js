@@ -16,15 +16,18 @@ function openCourse(courseId, e, enrolled, quarter, credits) {
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
-    	if ( enrolled ) {
+    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
+        /*
+        if ( enrolled ) {
             //var messaging = "You are currently enrolled in this course.";
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true);
+            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
         } else if (quarter != null && credits != null)  {
-            var messaging = "You already took this course on "+quarter+" and received "+credits;
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true, messaging);
+            //var messaging = "You already took this course on "+quarter+" and received "+credits;
+            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
         } else {
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true);
+            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
         }
+        */
     }
 }
 
@@ -195,6 +198,7 @@ function myplanAjaxSubmitPlanItem(id, methodToCall) {
     jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
     jq('<input type="hidden" name="courseId" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
+    jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         console.log(htmlContent)
         /*
