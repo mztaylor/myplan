@@ -74,6 +74,10 @@ public class PlanController extends UifControllerBase {
     public void setPerson(Person person) {
         this.person = person;
     }
+    /*
+   atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
+    */
+    private int atpPrefix = 13;
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -86,8 +90,30 @@ public class PlanController extends UifControllerBase {
         super.start(form, result, request, response);
 
         PlanForm planForm = (PlanForm) form;
+        // First load the plan item and retrieve the courseId
+        PlanItemInfo planItem=new PlanItemInfo();
+        String courseId=null;
+        if(planForm.getPlanItemId()!=null){
+        try{
+            planItem= getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+            courseId= planItem.getRefObjectId();
+            planForm.setDateAdded(planItem.getMeta().getCreateTime().toString());
+            String atp=planItem.getPlanPeriods().get(0);
+            String qtrYr = atp.substring(atpPrefix, atp.length());
+            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            planForm.setTerm(splitStr[0]);
+            planForm.setYear(splitStr[1]);
+            planForm.getCourseDetails().setCourseId(courseId);
 
-        String courseId = planForm.getCourseId();
+        }
+        catch (Exception e){
+            logger.error("PlanItem not found");
+        }
+        }
+        else{
+            courseId=planForm.getCourseId();
+        }
+
         if (StringUtils.isEmpty(courseId)) {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
@@ -96,9 +122,7 @@ public class PlanController extends UifControllerBase {
         if (planForm.isBackup()) {
             planForm.setBackup(true);
         }
-        if(planForm.getPlanItemId()!=null){
-            planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
-        }
+
         if(planForm.getDateAdded()!=null){
             String dateStr=planForm.getDateAdded().substring(0,10);
             DateFormat dfYMD =
@@ -929,7 +953,7 @@ public class PlanController extends UifControllerBase {
     }
 
     private String formatTypeKey(String typeKey) {
-        return typeKey.substring(typeKey.lastIndexOf(".") + 1);
+        return typeKey.substring(typeKey.lastIndexOf(".")+1);
     }
     
     private Integer getTotalCredits(String termId){
