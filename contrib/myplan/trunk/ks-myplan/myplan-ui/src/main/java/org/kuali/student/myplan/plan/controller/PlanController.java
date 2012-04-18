@@ -47,6 +47,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -970,16 +973,30 @@ public class PlanController extends UifControllerBase {
         if(((PlanForm) form).getPlanItemId()!=null){
             planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
         }
+        String dateStr=((PlanForm) form).getDateAdded().substring(0,10);
+        DateFormat dfYMD =
+                new SimpleDateFormat("yyyy-MM-dd") ;
+        DateFormat dfDMY =
+                new SimpleDateFormat("dd/MM/yyyy") ;
+
+            try{
+                dateStr=dfDMY.format(dfYMD.parse(dateStr));
+            }
+            catch (Exception e){
+                logger.error("Cant parse date");
+            }
+        
+
+
+        planForm.setDateAdded(dateStr);
         //  Initialize the form with a course Id.
         planForm.setCourseId(courseId);
         CourseDetails courseDetails=new CourseDetails();
         courseDetails=getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         planForm.setCourseDetails(courseDetails);
-        List<String> scheduleTerms=new ArrayList<String>();
-        courseDetails.setScheduledTerms(scheduleTerms);
         return getUIFModelAndView(planForm);
     }
-    
+
     
 
 
