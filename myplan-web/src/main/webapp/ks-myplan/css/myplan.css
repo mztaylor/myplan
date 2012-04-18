@@ -703,7 +703,9 @@ a:focus {
     height: 275px;
     float: left;
 }
-
+.jquerybubblepopup-innerHtml div.blockElement {
+    top: 0px !important;
+}
 /* Recent Audit List Styles ########################################################################### */
 .myplan-recent-audit div.blockElement {
     left: 92px !important;
