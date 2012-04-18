@@ -92,6 +92,28 @@ public class PlanController extends UifControllerBase {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
 
+        //Following data used for the Dialog boxes
+        if (planForm.isBackup()) {
+            planForm.setBackup(true);
+        }
+        if(planForm.getPlanItemId()!=null){
+            planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
+        }
+        if(planForm.getDateAdded()!=null){
+            String dateStr=planForm.getDateAdded().substring(0,10);
+            DateFormat dfYMD =
+                    new SimpleDateFormat("yyyy-MM-dd") ;
+            DateFormat dfDMY =
+                    new SimpleDateFormat("dd/MM/yyyy") ;
+
+            try{
+                dateStr=dfDMY.format(dfYMD.parse(dateStr));
+            }
+            catch (Exception e){
+                logger.error("Cant parse date");
+            }
+            planForm.setDateAdded(dateStr);
+        }
         //  Initialize the form with a course Id.
         planForm.setCourseId(courseId);
 
@@ -953,51 +975,7 @@ public class PlanController extends UifControllerBase {
 
         return getUIFModelAndView(planForm);
     }
-    /*used for handling the menu actions to populate the dialog with coursedetails and planItemId*/
-    @RequestMapping(params = "methodToCall=populateDialogDetails")
-    public ModelAndView populateDialogDetails(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                            HttpServletRequest request, HttpServletResponse response) {
-        super.start(form, result, request, response);
 
-        PlanForm planForm = (PlanForm) form;
-
-        String courseId = planForm.getCourseId();
-        if (StringUtils.isEmpty(courseId)) {
-            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
-        }
-        if (planForm.isBackup()) {
-            planForm.setBackup(true);
-        }
-        if(planForm.getPlanItemId()!=null){
-            planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
-        }
-        if(planForm.getDateAdded()!=null){
-        String dateStr=planForm.getDateAdded().substring(0,10);
-        DateFormat dfYMD =
-                new SimpleDateFormat("yyyy-MM-dd") ;
-        DateFormat dfDMY =
-                new SimpleDateFormat("dd/MM/yyyy") ;
-
-            try{
-                dateStr=dfDMY.format(dfYMD.parse(dateStr));
-            }
-            catch (Exception e){
-                logger.error("Cant parse date");
-            }
-        
-
-
-        planForm.setDateAdded(dateStr);
-        }
-        //  Initialize the form with a course Id.
-        planForm.setCourseId(courseId);
-        CourseDetails courseDetails=new CourseDetails();
-        courseDetails=getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
-        planForm.setCourseDetails(courseDetails);
-        return getUIFModelAndView(planForm);
-    }
-
-    
 
 
     public AcademicPlanService getAcademicPlanService() {
