@@ -81,8 +81,8 @@ function fnRemovePlanItem (atpId, type, courseId) {
     });
 }
 
-function fnUpdateCredits (atpId, type, termCredits) {
-    jq("." + atpId + "-" + type + " .myplan-carousel-term-total span.myplan-carousel-term-credits").fadeOut(250, function() {
+function fnUpdateCredits (atpId, termCredits) {
+    jq("." + atpId + "-planned .myplan-carousel-term-total span.myplan-carousel-term-credits").fadeOut(250, function() {
         jq(this).html(termCredits).fadeIn(250);
     });
 }
