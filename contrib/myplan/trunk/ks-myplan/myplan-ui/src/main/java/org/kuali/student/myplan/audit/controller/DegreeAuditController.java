@@ -101,7 +101,6 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             Person user = getUser();
             String studentID = user.getPrincipalId();
-            studentID = "100190981";
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String auditId = form.getAuditId();
@@ -139,9 +138,8 @@ public class DegreeAuditController extends UifControllerBase {
                                  HttpServletRequest request, HttpServletResponse response) {
         try {
             Person user = getUser();
-            String studentID = user.getPrincipalId();
+            String studentId = user.getPrincipalId();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-            String studentId = "0";
             String programId = form.getProgramParam();
             String auditTypeKey = "blah";
             ContextInfo context = new ContextInfo();

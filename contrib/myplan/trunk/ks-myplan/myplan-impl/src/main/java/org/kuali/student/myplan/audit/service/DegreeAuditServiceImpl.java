@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.kuali.student.common.search.dto.*;
 
@@ -116,6 +117,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         try {
+            studentId = hardcodedStudentID(studentId);
+            if( studentId.startsWith( "1") && studentId.length() == 9 )
+            {
+                studentId = studentId.substring( 1 );
+            }
+            int systemKey = Integer.parseInt(studentId);
+
             URL wsdlURL = new URL(WSDL_LOCATION);
 
             AuditRequestSvc ss = new AuditRequestSvc(wsdlURL, AUDIT_SERVICE_NAME);
@@ -123,13 +131,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
 
             logger.info("Invoking mpRequestAudit...");
-            /*studentId = "000083856";*/
-            int tempId = Integer.parseInt(studentId);
-            /*programId = "0ENGL  0011";*/
+
             int lineNo = 0;
-            int systemKey = 190981;
             String origin = "M";
-            MPAuditResponse response = port.mpRequestAudit(tempId, programId, lineNo, systemKey, origin);
+            MPAuditResponse response = port.mpRequestAudit(systemKey, programId, lineNo, systemKey, origin);
             logger.info("error code: " + response.getErrorCode());
             logger.info("error msg: " + response.getErrorMsg());
             logger.info("audit id: " + response.getAuditText());
@@ -180,13 +185,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public int timeout = 30 * 1000; // 30 seconds
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        long giveup = System.currentTimeMillis() + timeout;
         try {
             while (true) {
                 StatusInfo info = this.getAuditRunStatus(auditId, context);
                 logger.info(info.getMessage());
                 if (info.getIsSuccess()) break;
+                Thread.currentThread().sleep( 200 );
+                if( System.currentTimeMillis() > giveup )
+                {
+                    throw new TimeoutException( "giving up after " + (timeout / 1000 ) + " seconds" );
+                }
             }
         } catch (Exception e) {
             logger.error(e);
@@ -520,10 +533,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
-//    @Override
-//    public AuditReportSummaryInfo getAuditSummaryReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-//        return null;  //To change body of implemented methods use File | Settings | File Templates.
-//    }
+    public String hardcodedStudentID( String studentId ) {
+        // Used by devs when logged in as admin
+        if( "admin".equals( studentId )) return "100190981";
+        // Used by Jill for demos
+        if( "jjulius".equals( studentId )) return "101167127";
+        // do nothing
+        return studentId;
+    }
 
     @Override
     public List<AuditReportInfo> getAuditsForStudentInDateRange(@WebParam(name = "studentId") String studentId,
@@ -531,6 +548,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                                                 @WebParam(name = "endDate") Date endDate,
                                                                 @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
+        studentId = hardcodedStudentID( studentId );
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
         JobQueueRunDao runrun = getJobQueueRunDao();
 

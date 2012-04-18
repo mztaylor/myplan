@@ -28,10 +28,9 @@ public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
 
         Person person = GlobalVariables.getUserSession().getPerson();
 
+        //  TODO: Determine where this info lives.
         String studentId = person.getPrincipalId();
 
-        //  TODO: Determine where this info lives.
-        studentId = "100190981";
 
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
