@@ -106,6 +106,41 @@ public class PlanController extends UifControllerBase {
         return person;
     }
 
+    @RequestMapping(params = "methodToCall=plannedToBackup")
+    public ModelAndView plannedToBackup(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        String planItemId = form.getPlanItemId();
+
+        //  Verify the type is planned, change to backup, update, make events (delete, add, update credits).
+
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @RequestMapping(params = "methodToCall=backupToPlanned")
+    public ModelAndView backupToPlanned(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        String planItemId = form.getPlanItemId();
+
+        //  Verify type backup, change to planned, update, make events (delete, add, update credits).
+
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @RequestMapping(params = "methodToCall=movePlannedCourse")
+    public ModelAndView movePlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        String planItemId = form.getPlanItemId();
+        String atpIds = form.getTermsList();
+
+        //  Verify type planned, overwrite ATPids, events, update, make events (delete, add, update credits).
+
+        throw new RuntimeException("Not implemented.");
+    }
+
+
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
