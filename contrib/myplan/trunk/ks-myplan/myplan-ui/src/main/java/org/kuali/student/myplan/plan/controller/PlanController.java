@@ -31,8 +31,11 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.stereotype.Controller;
@@ -635,12 +638,58 @@ public class PlanController extends UifControllerBase {
                 //  One "update total credits" for each ATP id.
                 Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
                 updateCreditsEventParams.put("atpId", termId);
-                updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+                int totalCredits=this.getTotalCredits(termId);
+                updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
                 events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
             }
         }
         return events;
     }
+    
+    private Integer getTotalCredits(String termId){
+        int totalCredits=0;
+        Person user = getUser();
+        String studentID = user.getPrincipalId();
+
+        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
+        ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
+        List<LearningPlanInfo> learningPlanList=null;
+        List<PlanItemInfo> planItemList=null;
+
+         try{
+             learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+
+
+        for (LearningPlanInfo learningPlan : learningPlanList) {
+            String learningPlanID = learningPlan.getId();
+
+                planItemList= getAcademicPlanService().getPlanItemsInPlan(learningPlanID, context);
+
+            for (PlanItemInfo planItem : planItemList) {
+                String courseID = planItem.getRefObjectId();
+                for(String atp:planItem.getPlanPeriods()){
+                if(atp.equalsIgnoreCase(termId)){
+                    CourseDetails courseDetails=new CourseDetails();
+                    courseDetails=getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
+                    if(courseDetails.getCredit().length()>2){
+                        String [] str= courseDetails.getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                        String credit=str[2] ;
+                        totalCredits=totalCredits+Integer.parseInt(credit);
+                    }  else{
+                    totalCredits=totalCredits+Integer.parseInt(courseDetails.getCredit());
+                    }
+                }
+                }
+                
+            }
+        }
+         }catch(Exception e){
+
+         }
+        return totalCredits;
+    }
+    
+    
 
     /*Used for populating the menu items to have the courseId and planItemId in the form*/
     @RequestMapping(params = "methodToCall=populateMenuItems")
@@ -690,6 +739,8 @@ public class PlanController extends UifControllerBase {
         courseDetails.setScheduledTerms(scheduleTerms);
         return getUIFModelAndView(planForm);
     }
+    
+    
 
 
     public AcademicPlanService getAcademicPlanService() {
