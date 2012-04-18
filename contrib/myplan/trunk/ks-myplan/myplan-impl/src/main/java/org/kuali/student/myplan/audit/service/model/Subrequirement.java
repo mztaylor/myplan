@@ -78,13 +78,13 @@ public class Subrequirement {
         this.gpa = gpa;
     }
 
-    public boolean hasCourseFilter() {
-        return courseFilter != null;
-    }
+//    public boolean hasCourseFilter() {
+//        return courseFilter != null;
+//    }
 
-    public String getCourseFilter() {
-        return courseFilter;
-    }
+//    public String getCourseFilter() {
+//        return courseFilter;
+//    }
 
     public ArrayList<CourseAcceptable> courseAcceptableList = new ArrayList<CourseAcceptable>();
 
@@ -92,9 +92,9 @@ public class Subrequirement {
         return courseAcceptableList.size() > 0;
     }
 
-    public int getCourseAcceptableListCount() {
-        return courseAcceptableList.size();
-    }
+//    public int getCourseAcceptableListCount() {
+//        return courseAcceptableList.size();
+//    }
 
     public ArrayList<CourseAcceptable> getCourseAcceptableList() {
         return courseAcceptableList;

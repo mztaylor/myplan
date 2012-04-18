@@ -108,14 +108,11 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                     </div>
                 </div>
                 <div class="subrequirement-content">
-                    <div class="subrequirement-info">
 #if( ${subreq.hasInfo()} )
+                    <div class="subrequirement-info">
 		    	    	<p>${req.info}</p>
-#end
-#if( ${subreq.hasCourseFilter()} )
-			        	<p><a href="/${subreq.courseFilter}">View courses that fulfills this requirement</a></p>
-#end
 		    	    </div>
+#end
 #if( ${subreq.hasCredits()} )
                     <ul class="progress">
                         <li class="required"><label>Required:</label> ${subreq.credits.required} credits</li>
@@ -140,7 +137,6 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 
 #if( ${subreq.hasCourseAcceptableList()} )
 #set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
-                    <a href="#subreq${courseAcceptableCounter}" class="subrequirement-courses-acceptable-link">View courses that fulfill this requirement</a>
                     <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
                         <h6>Courses fulfill this requirement</h6>
                         <table>
@@ -148,19 +144,18 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #foreach( $acceptable in $subreq.courseAcceptableList )
 
 #if( ${acceptable.hasCluid()} )##Hardcoded the value true to show the message "You are currently enrolled on the popup" Replace the hard coded true value when the academic calender is mapped.
-                    <tr>
-                        <td><a href="#" onclick="openCourse('${acceptable.cluid}',event,true);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
-                    </tr>
+                                <tr>
+                                    <td><a href="#" onclick="openCourse('${acceptable.cluid}',event,true);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
+                                </tr>
 #else
-                    <tr>
-                        <td>${acceptable.dept} ${acceptable.number} ${acceptable.description}</td><td>${acceptable.quarter}</td>
-                    </tr>
+                                <tr>
+                                    <td>${acceptable.dept} ${acceptable.number} ${acceptable.description}</td><td>${acceptable.quarter}</td>
+                                </tr>
 #end
 
 #end
                             </tbody>
                         </table>
-                        <a href="#">View all ${subreq.courseAcceptableListCount} courses</a>
                     </div>
 #end
 #if( ${subreq.hasCourseTakenList()} )

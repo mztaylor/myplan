@@ -86,3 +86,10 @@
 #txtaudit_span .requirement .progress .needs label {
     font-weight: bold;
 }
+#txtaudit_span .subrequirement-courses-acceptable {
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+#txtaudit_span .subrequirement-info {
+	padding-bottom: 12px;
+}
