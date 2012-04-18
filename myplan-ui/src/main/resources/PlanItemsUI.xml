@@ -1483,7 +1483,7 @@
 
     <!--Delete confirmation Dialog Box content -->
 
-    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection"  p:title="Delete from the Plan" p:instructionalText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo.">
+    <bean id="plan_item_delete_dialog" parent="Uif-HorizontalBoxSection"  p:title="Delete from the Plan" p:instructionalText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo.">
         <property name="items">
             <list>
                 <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="removeItem"
@@ -1497,6 +1497,10 @@
                     </property>
 
                 </bean>
+                <bean parent="Uif-MessageField" p:messageText="or"/>
+
+                <bean parent="Uif-Link" p:linkLabel="Cancel" p:hrefText="#" p:target=""/>
+
             </list>
         </property>
     </bean>
