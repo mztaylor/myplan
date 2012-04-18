@@ -1001,7 +1001,22 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-Page" p:id="plan_item_action_response_page" p:errorsField.render="false">
+                <!--  This page is returned in response to any action on a plan item. It passes data base to javascripts on the UI-->
+                <bean parent="Uif-Page" p:id="plan_item_action_response_page" >
+                    <property name="errorsField">
+                        <bean parent="Uif-GroupValidationMessages">
+                            <property name="displayMessages" value="true" />
+                            <property name="displayCounts" value="false" />
+                            <property name="displayFieldLabelWithMessages" value="false"/>
+                            <property name="displayNestedMessages" value="false"/>
+                            <property name="highlightOnError" value="false"/>
+                            <property name="combineMessages" value="true"/>
+                            <property name="allowMessageRepeat" value="false"/>
+                            <property name="displayInfoMessages" value="true" />
+                            <property name="displayWarningMessages" value="true" />
+                            <property name="fireGrowlsForMessages" value="false" />
+                        </bean>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="plan_item_actions_response"/>
@@ -1035,22 +1050,6 @@
                     </property>
                 </bean>
 
-
-                <!-- TODO: These two pages should be replaced by a single response page with events -->
-                <bean parent="Uif-Page" p:id="add_plan_item_page" p:errorsField.render="false">
-                    <property name="items">
-                        <list>
-                            <ref bean="add_plan_item_section"/>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Uif-Page" p:id="remove_plan_item_page" p:errorsField.render="false" >
-                    <property name="items">
-                        <list>
-                            <ref bean="remove_plan_item_section"/>
-                        </list>
-                    </property>
-                </bean>
             </list>
         </property>
     </bean>
@@ -1391,41 +1390,14 @@
 
     <!-- Common components -->
     <bean id="plan_item_actions_response" parent="Uif-VerticalBoxSection">
-        <property name="errorsField">
-            <bean parent="Uif-GroupValidationMessages">
-                <property name="displayMessages" value="true" />
-                <property name="displayCounts" value="false" />
-                <property name="displayFieldLabelWithMessages" value="false"/>
-                <property name="displayNestedMessages" value="false"/>
-                <property name="highlightOnError" value="false"/>
-                <property name="combineMessages" value="true"/>
-                <property name="allowMessageRepeat" value="false"/>
-                <property name="displayInfoMessages" value="true" />
-                <property name="displayWarningMessages" value="true" />
-                <property name="fireGrowlsForMessages" value="false" />
-            </bean>
-        </property>
         <property name="items">
             <list>
                 <bean id="request_status_item_key" parent="Uif-DataField" p:propertyName="requestStatus"/>
                 <bean id="json_events_item_key" parent="Uif-DataField" p:propertyName="javascriptEventsAsJSON"/>
-            </list>
-        </property>
-    </bean>
 
-    <bean id="add_plan_item_section"  parent="plan_item_actions_response">
-        <property name="items">
-            <list merge="true">
+                <!--  These two can go away once the javascript evening is totally implemented. -->
                 <bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
                 <bean id="course_id_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="remove_plan_item_section" parent="plan_item_actions_response">
-        <property name="items">
-            <list merge="true">
-                <bean id="remove_plan_item_key" parent="Uif-DataField" p:propertyName="courseId"/>
             </list>
         </property>
     </bean>

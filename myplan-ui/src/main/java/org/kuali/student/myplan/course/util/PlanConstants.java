@@ -13,12 +13,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String TERM_ID = "term";
 
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
-    //  This one should go away once event-driven changes are in (as an add and remove page will be identical)
-    public static final String PLAN_ITEM_ADD_PAGE_ID = "add_plan_item_page";
-    public static final String PLAN_ITEM_ADD_SECTION_ID = "add_plan_item_section";
-    //  This one should go away once event-driven changes are in (as an add and remove page will be identical)
-    public static final String PLAN_ITEM_REMOVE_PAGE_ID = "remove_plan_item_page";
-    public static final String PLAN_ITEM_REMOVE_SECTION_ID = "remove_plan_item_section";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 
