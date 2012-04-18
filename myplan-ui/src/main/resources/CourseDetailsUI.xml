@@ -845,6 +845,9 @@
 
     <!-- TODO: UW specific. Uses the student web service. -->
     <bean id="time_schedule_links_formatter" class="org.kuali.student.myplan.course.util.TimeScheduleLinksListPropertyEditor">
+        <property name="baseUrlS" value="http://www.washington.edu/students/timeschd/" />
+        <property name="baseUrlT" value="http://www.washington.edu/students/timeschd/T/" />
+        <property name="baseUrlB" value="http://www.uwb.edu/registration/time" />
         <property name="baseUrl" value="http://www.washington.edu/students/timeschd/" />
     </bean>
 </beans>
