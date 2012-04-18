@@ -724,18 +724,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
-                    <!--<property name="onClickScript" value="openPopUp('@{courseId}','course_summary_dialog_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{width:'300px',height:'16px'},{tail:{hidden:true},align:'top'});"/>
-                    -->
-
                     <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page',dateAdded:'@{dateAdded}'},e,null,{tail:{hidden:true},align:'top'});"/>
-
-                    <!--<property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseId}"/>-->
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
-                    <property name="onClickScript" value="openPopUp('@{courseId}','plan_item_delete_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',pageId:'plan_item_delete_page'},e,null,{width:'300px',height:'16px'},{tail:{hidden:true},align:'top'});"/>
+                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','plan_item_delete_page',{courseId:'@{courseId}',pageId:'plan_item_delete_page',dateAdded:'@{dateAdded}',planItemId:'@{planItemId}'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
             </list>
         </property>
@@ -869,9 +864,9 @@
         </property>
         <property name="onDocumentReadyScript" value="
             jq('#planned_courses_detail_list_group')
-                .subscribe('evAddPlanItem', function(data){fnAddPlanItem(data.atpId, data.type, data.courseId, data.courseCode, data.courseTitle, data.courseCredits)})
-                .subscribe('evRemovePlanItem', function(data){fnRemovePlanItem(data.atpId, data.type, data.courseId)})
-                .subscribe('evUpdatePlanCredits', function(data){fnUpdateCredits(data.atpId, data.type, data.termCredits)});
+                .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.courseDetails.courseId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
+                .subscribe('PLAN_ITEM_REMOVED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.courseDetails.courseId)})
+                .subscribe('UPDATE_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
         "/>
     </bean>
     <bean id="plannedCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
@@ -1102,6 +1097,7 @@
                     <property name="items">
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton" p:actionLabel="Yes">
+                                <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'removeItem');"/>
                                 <property name="styleClasses">
                                       <list merge="true">
                                           <value>myplan-button</value>
@@ -1470,8 +1466,9 @@
     <bean id="plan_item_delete_dialog" parent="Uif-HorizontalBoxSection"  p:title="Delete from the Plan" p:instructionalText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo.">
         <property name="items">
             <list>
-                <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="removeItem"
-                      p:actionLabel="Delete" p:style="padding: 0px 30px;">
+                <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Delete">
+                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'removeItem');"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
@@ -1481,6 +1478,13 @@
                     </property>
 
                 </bean>
+
+                <bean parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+
                 <bean parent="Uif-MessageField" p:messageText="or"/>
 
                 <bean parent="Uif-Link" p:linkLabel="Cancel" p:hrefText="#" p:target=""/>
