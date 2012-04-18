@@ -114,10 +114,67 @@ public class PlanController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan Item ID was missing.", null);
+        }
 
         //  Verify the type is planned, change to backup, update, make events (delete, add, update credits).
+        PlanItemInfo planItem = null;
+        try {
+            // First load the plan item and retrieve the courseId
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not fetch plan item.", e);
+        }
 
-        throw new RuntimeException("Not implemented.");
+        //  Verify that the plan item type is "planned".
+        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+             return doPlanActionError(form, "Move planned item was not type planned.", null);
+        }
+
+        //  Set type to "backup".
+        planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+
+        //  Update
+        try {
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not update plan item.", e);
+        }
+
+        //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+        //  Make events (delete, add, update credits).
+        //  Set the javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+
+        //  Make a delete event.  /* atpId, type, courseId */
+        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
+        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
+
+        //  Make an add event.
+        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
+        addPlannedItemEventParams.put("planItemId", planItem.getId());
+        addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
+
+        //  Make an "Update total credits".
+        Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
+        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+
+        form.setJavascriptEvents(events);
+
+        return doPlanActionSuccess(form);
     }
 
     @RequestMapping(params = "methodToCall=backupToPlanned")
@@ -125,10 +182,66 @@ public class PlanController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan Item ID was missing.", null);
+        }
 
         //  Verify type backup, change to planned, update, make events (delete, add, update credits).
+        PlanItemInfo planItem = null;
+        try {
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not fetch plan item.", e);
+        }
 
-        throw new RuntimeException("Not implemented.");
+        //  Verify that the plan item type is "backup".
+        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            return doPlanActionError(form, "Move planned item was not type backup.", null);
+        }
+
+        //  Set type to "planned".
+        planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+
+        //  Update
+        try {
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not udpate plan item.", e);
+        }
+
+        //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+        //  Make events (delete, add, update credits).
+        //  Set the javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+
+        //  Make a delete event.  /* atpId, type, courseId */
+        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        jsDeleteEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
+        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
+
+        //  Make an add event.
+        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
+        addPlannedItemEventParams.put("planItemId", planItem.getId());
+        addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        addPlannedItemEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
+
+        //  Make an "Update total credits".
+        Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
+        updateCreditsEventParams.put("atpId", planItem.getPlanPeriods().get(0));
+        updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+
+        form.setJavascriptEvents(events);
+
+        return doPlanActionSuccess(form);
     }
 
     @RequestMapping(params = "methodToCall=movePlannedCourse")
@@ -136,11 +249,90 @@ public class PlanController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
-        String atpIds = form.getTermsList();
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan Item ID was missing.", null);
+        }
+        String termIdString = form.getTermsList();
+        if (StringUtils.isEmpty(termIdString)) {
+            return doPlanActionError(form, "ATP ID was missing.", null);
+        }
+
+        ///  TODO: FIXME: This method will only consider the first ATP id.
+        String[] t = termIdString.split(",");
+        //  Using LinkedList so that remove() is supported.
+        List<String> newTermIds = new LinkedList<String>(Arrays.asList(t));
+        if (newTermIds.isEmpty()) {
+            return doPlanActionError(form, "Could not parse term IDs.", null);
+        }
+
+        PlanItemInfo planItem = null;
+        try {
+            // First load the plan item and retrieve the courseId
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not fetch plan item.", e);
+        }
+
+        //  Verify that the plan item type is "planned".
+        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return doPlanActionError(form, "Move planned item was not type planned.", null);
+        }
+
+        //  TODO: FIXME: Only dealing with a single atpid
+        String oldAtpId = planItem.getPlanPeriods().get(0);
+
+
+        //  Update
+        planItem.setPlanPeriods(newTermIds);
+        try {
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not udpate plan item.", e);
+        }
+
+        //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+        //  Make events (delete, add, update credits).
+        //  Set the javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+
+        //  Make a delete event for the old atp.  /* atpId, type, courseId */
+        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        jsDeleteEventParams.put("atpId", oldAtpId);
+        jsDeleteEventParams.put("planItemType", planItem.getTypeKey());
+        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
+
+        //  Make an add event for the new atp.
+        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
+        addPlannedItemEventParams.put("planItemId", planItem.getId());
+        addPlannedItemEventParams.put("planItemType", planItem.getTypeKey());
+        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
+        addPlannedItemEventParams.put("atpId", newTermIds.get(0));
+        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
+
+        //  TODO: This logic may get updated if the user is allowed to switch from backup to planning within this method.
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            //  Make an "Update total credits" for the old term.
+            Map<String, String> updateCreditsEventParamsOld = new HashMap<String, String>();
+            updateCreditsEventParamsOld.put("atpId", oldAtpId);
+            updateCreditsEventParamsOld.put("totalCredits", "AA-ZZ");
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsOld);
+
+            //  Make an "Update total credits" for the new term.
+            Map<String, String> updateCreditsEventParamsNew = new HashMap<String, String>();
+            updateCreditsEventParamsNew.put("atpId", oldAtpId);
+            updateCreditsEventParamsNew.put("totalCredits", "AA-ZZ");
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsNew);
+        }
+
+        form.setJavascriptEvents(events);
 
         //  Verify type planned, overwrite ATPids, events, update, make events (delete, add, update credits).
-
-        throw new RuntimeException("Not implemented.");
+        return doPlanActionSuccess(form);
     }
 
 
@@ -405,7 +597,7 @@ public class PlanController extends UifControllerBase {
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
         form.setJavascriptEvents(events);
         //  Set success text.
-        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_REMOVE_SECTION_ID, PlanConstants.SUCCESS_KEY);
+        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.SUCCESS_KEY);
 
         //  TODO: These can go away once the transition to JS events is complete.
         form.setPlanItemId(planItem.getId());
@@ -416,6 +608,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Blow up on failed plan adds.
+     * @deprecated Use doPlanActionError() instead.
      */
     private ModelAndView doAddPlanItemError(PlanForm form, String errorMessage, Exception e) {
         if (e != null) {
@@ -425,6 +618,50 @@ public class PlanController extends UifControllerBase {
         }
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_ADD_SECTION_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_ADD_PAGE_ID);
+    }
+
+    /**
+     *  Blow-up response for all plan item actions.
+     */
+    private ModelAndView doPlanActionError(PlanForm form, String errorMessage, Exception e) {
+         form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
+        if (e != null) {
+            logger.error(errorMessage, e);
+        } else {
+            logger.error(errorMessage);
+        }
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+    }
+
+    /**
+     *  Blow-up response for all plan item actions.
+     */
+    private ModelAndView doPlanActionSuccess(PlanForm form) {
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+    }
+
+
+    private String getCourseDetailsAsJson(String courseId) {
+        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+        CourseDetails courseDetails = null;
+        try {
+           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to retrieve Course Details.", e);
+        }
+
+        String courseDetailsAsJson;
+        try {
+            //  Turn the list of javascript events into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not convert javascript events to JSON.", e);
+        }
+
+        return courseDetailsAsJson;
     }
 
     /**
@@ -626,12 +863,15 @@ public class PlanController extends UifControllerBase {
             //  Queue the javascript event(s) that should be thrown in the UI.
             Map<String, String> jsEventParams = new HashMap<String, String>();
             jsEventParams.put("courseId", planItem.getRefObjectId());
+            jsEventParams.put("planItemType", planItem.getTypeKey());
             events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
         } else {
             //  Create a delete event for all ATPs
             for (String termId : planItem.getPlanPeriods()) {
                 //  Queue the javascript event(s) that should be thrown in the UI.
                 Map<String, String> jsEventParams = new HashMap<String, String>();
+                jsEventParams.put("atpId", termId);
+                jsEventParams.put("planItemType", planItem.getTypeKey());
                 jsEventParams.put("courseId", planItem.getRefObjectId());
                 events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
 
