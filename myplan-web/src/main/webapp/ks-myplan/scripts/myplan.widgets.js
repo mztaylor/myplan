@@ -17,21 +17,20 @@ function openCourse(courseId, e, enrolled, quarter, credits) {
     } else {
     	if ( enrolled ) {
             //var messaging = "You are currently enrolled in this course.";
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true);
         } else if (quarter != null && credits != null)  {
             var messaging = "You already took this course on "+quarter+" and received "+credits;
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, messaging);
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopupNoActions-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true, messaging);
         } else {
-            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+            openPopUp(courseId, 'course_details_popup', 'start', 'inquiry', {viewId:'CourseDetailsPopup-InquiryView', courseId:courseId}, e, null, {width:'300px'}, {tail:{align:'center', hidden: false}, position: 'bottom'}, true);
         }
     }
 }
 
-function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, messaging) {
+function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close, messaging) {
     stopEvent(e);
 
-    var popupSlider = jq('<div />').attr("class","myplan-popup-slider");
-    var popupHtml = jq('<div />').attr("id",id + "_popup").attr("class","myplan-popup-frame").append(popupSlider).append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+    var popupHtml = jq('<div />').attr("id",id + "_popup");
 
     if (popupStyles) {
         jQuery.each(popupStyles, function(property, value) {
@@ -47,7 +46,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		tail: {align:'middle', hidden: false},
 		position: 'left',
         align: 'center',
-        alwaysVisible: false
+        alwaysVisible: true,
+        themeMargins: {total:'20px', difference:'5px'}
 	};
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -90,11 +90,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jq("#" + getId + "_div", htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
-            if(jq("#" + id  + "_popup").length){
-                jq("#" + id + "_popup .myplan-popup-slider").append( component.addClass("myplan-popup-item") );
-                /*
-                popupBox.SetBubblePopupInnerHtml(component.addClass("myplan-popup-box").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>').append(messaging));
-                */
+            if (jq("#" + id  + "_popup").length){
+                popupBox.SetBubblePopupInnerHtml(component);
+                if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
                     popupBox.RemoveBubblePopup();
@@ -450,4 +448,25 @@ function truncateField(id) {
         jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
         jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
     });
+}
+
+function fnPopoverSlider(showId, parentId, direction) {
+    var newDirection;
+    if (direction === 'left') {
+        newDirection = 'right';
+    } else {
+        newDirection = 'left';
+    }
+    jq("#" + parentId + "_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem > div:visible").hide("slide", {
+        direction: direction
+    }, 100, function() {
+        jq("#" + parentId + "_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem > div").filter("#" + showId + "_div").show("slide", {
+            direction: newDirection
+        }, 100, function() {});
+    });
+    /*
+    jq('#course_popover_group_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem .slides').animate({
+        height: $(".jquerybubblepopup-innerHtml .slider .slide:visible").height()
+    }, 200);
+    */
 }

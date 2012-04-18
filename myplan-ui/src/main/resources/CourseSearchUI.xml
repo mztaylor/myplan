@@ -18,6 +18,7 @@
         <property name="id" value="CourseSearch-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
+        <property name="growlMessagingEnabled" value="false"/>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>

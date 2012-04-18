@@ -37,6 +37,7 @@
 	.jquerybubblepopup-top-middle,  .jquerybubblepopup-bottom-middle{overflow:hidden;background-repeat:repeat-x;}
 	.jquerybubblepopup-middle-left, .jquerybubblepopup-middle-right{overflow:hidden;background-repeat:repeat-y;}
 	.jquerybubblepopup-tail{border:0px;margin:0px;padding:0px;display:inline;}
+    .jquerybubblepopup-innerHtml{position:relative;}
 
 /*  
 	Themes:
