@@ -63,6 +63,8 @@ public class PlanForm extends UifFormBase {
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup;
 
+    //required for message on the view course summary
+    private String dateAdded;
     /**
      *  A list of javascript events as:
      *      EVENT_NAME
@@ -159,6 +161,14 @@ public class PlanForm extends UifFormBase {
 
     public void setRequestStatus(REQUEST_STATUS requestStatus) {
         this.requestStatus = requestStatus;
+    }
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     /**
