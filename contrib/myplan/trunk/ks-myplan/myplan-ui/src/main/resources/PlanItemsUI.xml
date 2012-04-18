@@ -315,8 +315,9 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}" p:title="@{#line.courseDetails.courseTitle}">
-                                <property name="onClickScript" value="openPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{#line.courseDetails.courseId}'},e,'li',{width:'300px'},{tail:{align:'top'},align:'top'});"/>
-                                <property name="target" value=""/>
+                                <property name="onClickScript" value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>
+                                <!--<property name="onClickScript" value="openPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{#line.courseDetails.courseId}'},e,'li',{width:'300px'},{tail:{align:'top'},align:'top'});"/>
+                                --><property name="target" value=""/>
                                 <property name="hrefText" value="#"/>
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -723,15 +724,18 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
-                    <property name="hrefText" value="plan?methodToCall=populateDialogDetails&amp;viewId=PlannedCourse-FormView&amp;pageId=course_summary_dialog_page&amp;courseId=@{courseId}&amp;dateAdded=@{dateAdded}"/>
-                    <!--<property name="onClickScript" value="openPopUp('@{courseId}','course_summary_dialog_page','populateDialogDetails','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}'},e,'li');"/>-->
+                    <!--<property name="onClickScript" value="openPopUp('@{courseId}','course_summary_dialog_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{width:'300px',height:'16px'},{tail:{hidden:true},align:'top'});"/>
+                    -->
+
+                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+
+                    <!--<property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseId}"/>-->
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter" p:hrefText="#"/>
-                <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" >
-                <property name="hrefText" value="plan?methodToCall=populateDialogDetails&amp;viewId=PlannedCourse-FormView&amp;pageId=plan_item_delete_page&amp;courseId=@{courseId}&amp;planItemId=@{planItemId}"/>
-                <!--<property name="onClickScript" value="openPopUp('@{courseId}','plan_item_delete_page','populateDialogDetails','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',planItemId:'@{planItemId}'},e,'li');"/>-->
+                <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
+                    <property name="onClickScript" value="openPopUp('@{courseId}','plan_item_delete_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',pageId:'plan_item_delete_page'},e,null,{width:'300px',height:'16px'},{tail:{hidden:true},align:'top'});"/>
                 </bean>
             </list>
         </property>
@@ -958,7 +962,7 @@
     <!--
         This provides the pop-over panels (not the "dialog" ones) for CRUD actions on Planned Course items.
       -->
-    <bean id="PlannedCourse-FormView" parent="MyPlanFormView">
+    <bean id="PlannedCourse-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="PlannedCourse-FormView"/>
         <property name="entryPageId" value="add_remove_course_popover_page"/>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
@@ -974,6 +978,11 @@
             <list>
                 <!-- This page builds the popover with the 3 sliding sections used to view course summary, add to plan and remove from courses list contextually -->
                 <bean parent="Uif-Page" p:id="add_remove_course_popover_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
@@ -1001,6 +1010,11 @@
                 </bean>
                 <!--This page is used for the View Course Summary Dialog box -->
                 <bean parent="Uif-Page" p:id="course_summary_dialog_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="plan_item_course_summary_dialog"/>
@@ -1009,6 +1023,11 @@
                 </bean>
                 <!--This page is used for the Delete plan Item Dialog box -->
                 <bean parent="Uif-Page" p:id="plan_item_delete_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="plan_item_delete_dialog"/>
@@ -1315,9 +1334,10 @@
                       <property name="group.errorsField.render" value="false"/>
                       <property name="items">
                           <list>
-                              <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:methodToCall="addPlannedCourse"
+                              <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
                                     p:actionLabel="Add To Plan">
-                                  <property name="clientSideJs" value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
+                                  <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'addPlannedCourse');"/>
+                                  <!--p:methodToCall="addPlannedCourse"-->
                                   <property name="styleClasses">
                                       <list merge="true">
                                           <value>fl-font-size-90</value>
