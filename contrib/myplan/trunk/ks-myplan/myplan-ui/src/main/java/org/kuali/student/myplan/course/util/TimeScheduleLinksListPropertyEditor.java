@@ -35,6 +35,9 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private StudentServiceClient studentServiceClient;
 
     private String baseUrl = "";
+    private String baseUrlS = "";
+    private String baseUrlT = "";
+    private String baseUrlB = "";
     private String label = "See full details about this course in {timeScheduleName} Time Schedule";
     private String title = label;
 
@@ -109,13 +112,41 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
      * @return
      */
     private String makeTimeScheduleUrl(String term, String courseCode) {
+
+       final CourseDetails courseDetails = (CourseDetails) super.getValue();
+
+       if (courseDetails == null) {
+           return "";
+       }
+
+       /*
+        *  If the collection is empty and no empty list message is defined then return an empty string.
+        *  Otherwise, add an empty list message to the list.
+        */
+       String styleClassNames = getEmptyListStyleClassesAsString();
+
+       List<String> campusLocation = courseDetails.getCampusLocations();
+
+       String campusLocationString = campusLocation.get(0);
+
+       if (campusLocationString.equals("Seattle")) { //Seattle
+           baseUrl = baseUrlS;
+       } else if (campusLocationString.equals("Bothell")) { //Bothell
+           baseUrl = baseUrlB;
+       } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+           baseUrl = baseUrlT;
+       } else {
+       }
+
+
+
         StringBuilder url = new StringBuilder(baseUrl);
 
         //  Parse out all of the necessary params.
         String year = term.replaceAll("\\D+", "");
         String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
         String courseNumber = courseCode.replaceAll("^\\D+", "");
-        String curriculumCode = courseCode.replaceAll("\\d+$", "").trim();
+        String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
 
         //  Convert term to SWS format "SPR2012"
         String swsTerm = termName.substring(0,3).toUpperCase() + year;
@@ -177,6 +208,31 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
+
+    public String getBaseUrlS() {
+        return baseUrlS;
+    }
+
+    public void setBaseUrlS (String baseUrlS) {
+        this.baseUrlS = baseUrlS;
+    }
+
+    public String getBaseUrlT() {
+        return baseUrlT;
+    }
+
+    public void setBaseUrlT(String baseUrlT) {
+        this.baseUrlT = baseUrlT;
+    }
+
+    public String getBaseUrlB() {
+        return baseUrlB;
+    }
+
+    public void setBaseUrlB(String baseUrlB) {
+        this.baseUrlB = baseUrlB;
+    }
+
 
     public StudentServiceClient getStudentServiceClient() {
         if (studentServiceClient == null) {
