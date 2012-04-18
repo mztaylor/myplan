@@ -16,7 +16,7 @@ function openCourse(courseId, e, enrolled, quarter, credits) {
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
-    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
+    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top',position:'right',alwaysVisible:'false'},true);
         /*
         if ( enrolled ) {
             //var messaging = "You are currently enrolled in this course.";
