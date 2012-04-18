@@ -727,7 +727,7 @@
                     <!--<property name="onClickScript" value="openPopUp('@{courseId}','course_summary_dialog_page','startAddPlannedCourseForm','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{width:'300px',height:'16px'},{tail:{hidden:true},align:'top'});"/>
                     -->
 
-                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page',dateAdded:'@{dateAdded}'},e,null,{tail:{hidden:true},align:'top'});"/>
 
                     <!--<property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseId}"/>-->
                 </bean>
