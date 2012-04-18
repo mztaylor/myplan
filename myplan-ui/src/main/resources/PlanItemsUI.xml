@@ -723,7 +723,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
-                    <property name="hrefText" value="plan?methodToCall=populateDialogDetails&amp;viewId=PlannedCourse-FormView&amp;pageId=course_summary_dialog_page&amp;courseId=@{courseId}"/>
+                    <property name="hrefText" value="plan?methodToCall=populateDialogDetails&amp;viewId=PlannedCourse-FormView&amp;pageId=course_summary_dialog_page&amp;courseId=@{courseId}&amp;dateAdded=@{dateAdded}"/>
                     <!--<property name="onClickScript" value="openPopUp('@{courseId}','course_summary_dialog_page','populateDialogDetails','plan',{viewId:'PlannedCourse-FormView',courseId:'@{courseId}'},e,'li');"/>-->
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:hrefText="#"/>
@@ -899,7 +899,7 @@
             <list>
                 <bean p:id="@{#line.id}" parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
               p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#" p:labelField.render="false"
-              p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
+              p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',dateAdded:'@{#line.dateAdded}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
               p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
@@ -1430,7 +1430,45 @@
     <bean id="plan_item_course_summary_dialog" parent="Uif-VerticalBoxSection" p:title="View Course Summary">
         <property name="items">
             <list>
-                <ref bean="course_summary_details" />
+                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                            <value>myplan-text-wrap</value>
+                        </list>
+                    </property>
+                    <property name="linkLabel" value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+                    <property name="title" value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+                    <property name="hrefText" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
+                </bean>
+                <ref bean="course_details_popup_info_testing" />
+                <ref bean="view_course_summary_Message"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--Message Field in the View Course Summary Dialog-->
+    <bean id="view_course_summary_Message" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="items">
+            <list>
+                <!-- If in plan -->
+                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
+                      p:render="@{courseDetails.inPlannedCourseList ? true : false}">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Added on @{dateAdded}" />
+
+
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
