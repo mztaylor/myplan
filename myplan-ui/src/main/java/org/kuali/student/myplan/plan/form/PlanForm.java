@@ -174,6 +174,11 @@ public class PlanForm extends UifFormBase {
             logger.error("Could not convert javascript events to JSON.", e);
             jsonOut = "";
         }
+
+        //  TODO: Determine if there is a config that can be set to avoid having to do this.
+        jsonOut = jsonOut.replaceAll("\"\\{", "{");
+        jsonOut = jsonOut.replaceAll("}\"", "}");
+
         return jsonOut;
     }
 }
