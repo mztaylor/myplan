@@ -967,13 +967,14 @@ public class PlanController extends UifControllerBase {
         if (StringUtils.isEmpty(courseId)) {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
-        if (((PlanForm) form).isBackup()) {
+        if (planForm.isBackup()) {
             planForm.setBackup(true);
         }
-        if(((PlanForm) form).getPlanItemId()!=null){
+        if(planForm.getPlanItemId()!=null){
             planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
         }
-        String dateStr=((PlanForm) form).getDateAdded().substring(0,10);
+        if(planForm.getDateAdded()!=null){
+        String dateStr=planForm.getDateAdded().substring(0,10);
         DateFormat dfYMD =
                 new SimpleDateFormat("yyyy-MM-dd") ;
         DateFormat dfDMY =
@@ -989,6 +990,7 @@ public class PlanController extends UifControllerBase {
 
 
         planForm.setDateAdded(dateStr);
+        }
         //  Initialize the form with a course Id.
         planForm.setCourseId(courseId);
         CourseDetails courseDetails=new CourseDetails();
