@@ -607,6 +607,7 @@ public class PlanController extends UifControllerBase {
         return events;
     }
 
+    /*Used for populating the menu items to have the courseId and planItemId in the form*/
     @RequestMapping(params = "methodToCall=populateMenuItems")
     public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                                           HttpServletRequest request, HttpServletResponse response) {
@@ -621,11 +622,40 @@ public class PlanController extends UifControllerBase {
         if (((PlanForm) form).isBackup()) {
             planForm.setBackup(true);
         }
-        //  Initialize the form with a course Id.
+        //  Initialize the form with a course Id and planItemId.
         planForm.setCourseId(courseId);
+        planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
 
         return getUIFModelAndView(planForm);
     }
+    /*used for handling the menu actions to populate the dialog with coursedetails and planItemId*/
+    @RequestMapping(params = "methodToCall=populateDialogDetails")
+    public ModelAndView populateDialogDetails(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                            HttpServletRequest request, HttpServletResponse response) {
+        super.start(form, result, request, response);
+
+        PlanForm planForm = (PlanForm) form;
+
+        String courseId = planForm.getCourseId();
+        if (StringUtils.isEmpty(courseId)) {
+            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
+        }
+        if (((PlanForm) form).isBackup()) {
+            planForm.setBackup(true);
+        }
+        if(((PlanForm) form).getPlanItemId()!=null){
+            planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
+        }
+        //  Initialize the form with a course Id.
+        planForm.setCourseId(courseId);
+        CourseDetails courseDetails=new CourseDetails();
+        courseDetails=getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+        planForm.setCourseDetails(courseDetails);
+        List<String> scheduleTerms=new ArrayList<String>();
+        courseDetails.setScheduledTerms(scheduleTerms);
+        return getUIFModelAndView(planForm);
+    }
+
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
