@@ -43,7 +43,7 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 
 <div class="control-toolbar">
 	<label for="requirement_status">Show</label>
-	<select id="requirement_status">
+	<select id="requirement_status" name="requirement_status">
 		<option value="all">All Requirements</option>
 		<option value="N">Incomplete Only</option>
 		<option value="I">In-Progress Only</option>

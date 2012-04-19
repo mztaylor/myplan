@@ -37,7 +37,6 @@ a:focus {
 }
 #appheader_div #appheading_div {
     overflow:auto;
-    padding-bottom: 1.8em;
 }
 #appheader_div #applogo_div,
 #appheader_div #appuser_div {
@@ -765,4 +764,9 @@ a:focus {
 ::-webkit-scrollbar-thumb:horizontal {
         width:50px;background-color:#999;
         -webkit-border-radius:8px;
+}
+
+/* Planned Courses ################################################################################### */
+.myplan-view #planned_courses_detail_page_div {
+	padding-top: 10px;
 }
