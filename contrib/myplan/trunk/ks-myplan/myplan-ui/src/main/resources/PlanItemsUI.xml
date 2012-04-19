@@ -865,8 +865,8 @@
         <property name="onDocumentReadyScript" value="
             jq('#planned_courses_detail_list_group')
                 .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
-                .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
-                .subscribe('UPDATE_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
+                            .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
+    .subscribe('UPDATE_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
         "/>
     </bean>
     <bean id="plannedCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
@@ -952,7 +952,7 @@
             <list>
                 <bean p:id="@{#line.id}" parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
                       p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"
-                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'true'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
+                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',backup:'true',planItemId:'@{#line.id}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
                       p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>

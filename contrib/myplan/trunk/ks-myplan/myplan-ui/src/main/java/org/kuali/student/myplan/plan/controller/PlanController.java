@@ -101,7 +101,7 @@ public class PlanController extends UifControllerBase {
             String atp=planItem.getPlanPeriods().get(0);
             String qtrYr = atp.substring(atpPrefix, atp.length());
             String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            planForm.setTerm(splitStr[0]);
+            planForm.setTerm(splitStr[0].substring(0, 1).toUpperCase().concat(splitStr[0].substring(1, splitStr[0].length())));
             planForm.setYear(splitStr[1]);
             planForm.getCourseDetails().setCourseId(courseId);
 
@@ -221,7 +221,8 @@ public class PlanController extends UifControllerBase {
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
         updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+        int totalCredits=this.getTotalCredits(termId);
+        updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
         events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
 
         form.setJavascriptEvents(events);
@@ -291,7 +292,8 @@ public class PlanController extends UifControllerBase {
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
         updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+        int totalCredits=this.getTotalCredits(termId);
+        updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
         events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
 
         form.setJavascriptEvents(events);
@@ -377,13 +379,15 @@ public class PlanController extends UifControllerBase {
             //  Make an "Update total credits" for the old term.
             Map<String, String> updateCreditsEventParamsOld = new HashMap<String, String>();
             updateCreditsEventParamsOld.put("atpId", formatAtpIdForUI(newTermId));
-            updateCreditsEventParamsOld.put("totalCredits", "AA-ZZ");
+            int totalCredits=this.getTotalCredits(newTermId);
+            updateCreditsEventParamsOld.put("totalCredits", String.valueOf(totalCredits));
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsOld);
 
             //  Make an "Update total credits" for the new term.
             Map<String, String> updateCreditsEventParamsNew = new HashMap<String, String>();
             updateCreditsEventParamsNew.put("atpId", formatAtpIdForUI(oldAtpId));
-            updateCreditsEventParamsNew.put("totalCredits", "AA-ZZ");
+            int totalCredits2=this.getTotalCredits(oldAtpId);
+            updateCreditsEventParamsNew.put("totalCredits", String.valueOf(totalCredits2));
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsNew);
         }
 
@@ -573,7 +577,8 @@ public class PlanController extends UifControllerBase {
             //  One "update total credits" for each new Term ID.
             Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
             updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-            updateCreditsEventParams.put("totalCredits", "AA-ZZ");
+            int totalCredits=this.getTotalCredits(termId);
+            updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
             events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
         }
 
