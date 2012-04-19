@@ -32,7 +32,7 @@
 
         <div id="appnav_div">
             <ul>
-                <li><a href="/student/">Home</a></li>
+                <li><a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Home</a></li>
                 <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find a Course</a></li>
                 <li><a href="#">Explore Programs</a></li>
                 <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>

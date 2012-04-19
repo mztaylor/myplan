@@ -182,6 +182,39 @@
         </property>
     </bean>
 
+    <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection" parent="Uif-StackedSubCollection-WithinSection-parentBean">
+        <property name="layoutManager">
+          <bean parent="UifMyPlan-HorizontalStackedCollectionLayout"/>
+        </property>
+    </bean>
+
+
+    <bean id="UifMyPlan-HorizontalStackedCollectionLayout"
+          parent="Uif-StackedCollectionLayout-WithBoxItems-parentBean"/>
+    <bean id="Uif-StackedCollectionLayout-WithBoxItems-parentBean" abstract="true"
+          parent="Uif-StackedCollectionLayoutBase">
+        <property name="template" value="/ks-myplan/WEB-INF/jsp/templates/layout/override/horizontalstacked.jsp"/>
+
+        <property name="addLineGroup">
+            <bean parent="Uif-CollectionHorizontalBoxItem">
+                <property name="styleClasses">
+                    <list merge="true">
+                        <value>uif-collectionAddItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="lineGroupPrototype">
+            <bean parent="Uif-CollectionHorizontalBoxItem"/>
+        </property>
+
+        <property name="subCollectionFieldGroupPrototype">
+            <bean parent="Uif-HorizontalFieldGroup" p:styleClasses="uif-subCollection"/>
+        </property>
+
+    </bean>
+
+
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection" p:title="AUDIT (TBD)" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
