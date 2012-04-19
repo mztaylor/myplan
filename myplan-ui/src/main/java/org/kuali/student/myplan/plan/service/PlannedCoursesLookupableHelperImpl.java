@@ -479,16 +479,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 String tempQuarter = quarters[i];
                 terms fd = terms.valueOf(quarters[i]);
                 switch (fd) {
-                    case Autumn:
+                    case Winter:
                         resultQuarter = 1;
                         break;
-                    case Winter:
+                    case Spring:
                         resultQuarter = 2;
                         break;
-                    case Spring:
+                    case Summer:
                         resultQuarter = 3;
                         break;
-                    case Summer:
+                    case Autumn:
                         resultQuarter = 4;
                         break;
                 }
