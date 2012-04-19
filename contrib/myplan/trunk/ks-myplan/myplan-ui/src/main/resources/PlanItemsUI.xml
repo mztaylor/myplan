@@ -870,6 +870,9 @@
         "/>
     </bean>
     <bean id="plannedCollection"  parent="Uif-StackedCollectionGroup" p:title="Planned">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Six"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -919,6 +922,9 @@
     </bean>
 
     <bean id="backupCollection"  parent="Uif-StackedCollectionGroup" p:title="Backup">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Six"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
