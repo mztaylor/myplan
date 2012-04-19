@@ -52,6 +52,10 @@
 	background: url('../images/iconIncomplete.png') no-repeat 20px 0px;
 	padding-left: 68px;
 }
+#txtaudit_span .requirement .requirement-heading .I {
+	background: url('../images/iconInprogress.png') no-repeat 20px 0px;
+	padding-left: 68px;
+}
 #txtaudit_span .requirement .requirement-heading .C {
 	background: url('../images/iconComplete.png') no-repeat 20px 0px;
 	padding-left: 68px;
