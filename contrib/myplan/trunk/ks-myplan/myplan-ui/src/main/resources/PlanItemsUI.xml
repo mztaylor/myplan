@@ -1468,7 +1468,7 @@
             <list>
                 <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
                       p:actionLabel="Delete">
-                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'removeItem');"/>
+                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{planItemId}', 'removeItem');"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
