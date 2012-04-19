@@ -190,9 +190,7 @@
 
 
     <bean id="UifMyPlan-HorizontalStackedCollectionLayout"
-          parent="Uif-StackedCollectionLayout-WithBoxItems-parentBean"/>
-    <bean id="Uif-StackedCollectionLayout-WithBoxItems-parentBean" abstract="true"
-          parent="Uif-StackedCollectionLayoutBase">
+          parent="Uif-StackedCollectionLayout-WithBoxItems-parentBean">
         <property name="template" value="/ks-myplan/WEB-INF/jsp/templates/layout/override/horizontalstacked.jsp"/>
 
         <property name="addLineGroup">
