@@ -1020,20 +1020,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                        <value>myplan-text-wrap</value>
-                                    </list>
-                                </property>
-                                <property name="linkLabel"
-                                          value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                                <property name="title"
-                                          value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                                <property name="hrefText"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
-                            </bean>
+                            <ref bean="course_title_link"/>
                             <ref bean="course_popover_group"/>
                         </list>
                     </property>
@@ -1093,6 +1080,23 @@
     </bean>
 
 
+
+    <bean id="course_title_link" parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-text-bold</value>
+                <value>myplan-text-wrap</value>
+            </list>
+        </property>
+        <property name="linkLabel"
+                  value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+        <property name="title"
+                  value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
+        <property name="hrefText"
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
+    </bean>
+
+
     <!-- Course details popover -->
     <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
         <property name="styleClasses">
@@ -1120,8 +1124,7 @@
         </property>
         <property name="items">
             <list>
-                <ref bean="course_details_popup_info_testing"/>
-                <ref bean="course_details_popup_actions_testing"/>
+                <ref bean="course_details_summary_info"/>
             </list>
         </property>
     </bean>
@@ -1177,7 +1180,17 @@
         </property>
     </bean>
 
-    <bean id="course_details_popup_info_testing" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+    <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="items">
+            <list>
+                <ref bean="course_details_summary_data"/>
+                <ref bean="course_details_summary_messages"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="course_details_summary_data" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-course-details</value>
@@ -1291,7 +1304,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_popup_actions_testing" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+    <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
                 <!-- If not in plan and not in saved courses -->
@@ -1339,9 +1352,8 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="Planned Course Message"/>
-                                        <bean parent="Uif-MessageField" p:messageText="Saved List Message"
-                                              p:render="@{courseDetails.inSavedCourseList ? true : false}"/>
+                                        <bean parent="Uif-MessageField"
+                                              p:messageText="Added to @{term} @{year} on @{dateAdded}"/>
                                     </list>
                                 </property>
                             </bean>
@@ -1399,6 +1411,9 @@
                                   p:actionLabel="Add To Plan">
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'addPlannedCourse');"/>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#addPlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan', 'addPlannedCourse')});"/>
                                 <!--p:methodToCall="addPlannedCourse"-->
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1489,49 +1504,8 @@
     <bean id="plan_item_course_summary_dialog" parent="Uif-VerticalBoxSection" p:title="View Course Summary">
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>fl-text-bold</value>
-                            <value>myplan-text-wrap</value>
-                        </list>
-                    </property>
-                    <property name="linkLabel"
-                              value="@{courseDetails.code} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                    <property name="title"
-                              value="@{courseDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseDetails.courseTitle} (@{courseDetails.credit})"/>
-                    <property name="hrefText"
-                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
-                </bean>
-                <ref bean="course_details_popup_info_testing"/>
-                <ref bean="view_course_summary_Message"/>
-            </list>
-        </property>
-    </bean>
-
-    <!--Message Field in the View Course Summary Dialog-->
-    <bean id="view_course_summary_Message" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
-        <property name="items">
-            <list>
-                <!-- If in plan -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{courseDetails.inPlannedCourseList ? true : false}">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
-                                <property name="group.errorsField.render" value="false"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-MessageField"
-                                              p:messageText="Added to @{term} @{year} on @{dateAdded}"/>
-
-
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="course_title_link"/>
+                <ref bean="course_details_summary_info"/>
             </list>
         </property>
     </bean>

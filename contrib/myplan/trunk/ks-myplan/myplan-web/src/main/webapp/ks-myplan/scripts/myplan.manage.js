@@ -86,3 +86,11 @@ function fnUpdateCredits (atpId, termCredits) {
         jq(this).html(termCredits).fadeIn(250);
     });
 }
+
+function fnDisplayMessage (message, targetId) {
+    jq("#" + targetId).parent().fadeOut(250, function() {
+	    jq(this).addClass("myplan-message-border myplan-message-success").html(message).fadeIn(250);
+	});
+}
+
+
