@@ -38,16 +38,16 @@ public class PlanControllerTest {
         this.planController = planController;
     }
 
-    @Autowired
-    private PersonImpl person;
-
-    public PersonImpl getPersonImpl() {
-        return person;
-    }
-
-    public void setPersonImpl(PersonImpl personImpl) {
-        this.person = personImpl;
-    }
+//    @Autowired
+//    private PersonImpl person;
+//
+//    public PersonImpl getPersonImpl() {
+//        return person;
+//    }
+//
+//    public void setPersonImpl(PersonImpl personImpl) {
+//        this.person = personImpl;
+//    }
 
     @Test
     public void startAddPlannedCourseFormTest() {
@@ -65,7 +65,7 @@ public class PlanControllerTest {
         planForm.setTermsList("kuali.uw.atp.summer2012");
         planForm.setTerm("autumn");
         planForm.setYear("2012");
-        person = getPersonImpl();
+//        person = getPersonImpl();
 
         planForm.setViewId("PlannedCourse-FormView");
         PlanController controller = getPlanController();
@@ -76,7 +76,7 @@ public class PlanControllerTest {
     @Test
     public void addSavedCourseTest() {
         PlanForm planForm = new PlanForm();
-        person = getPersonImpl();
+//        person = getPersonImpl();
         PlanController controller = getPlanController();
         planForm.setCourseId("10421b71-a740-4018-8d60-915ea639b88e");
         controller.addSavedCourse(planForm, null, null, null);
@@ -89,7 +89,7 @@ public class PlanControllerTest {
     @Test
     public void removePlanItemTest() {
         PlanForm planForm = new PlanForm();
-        person = getPersonImpl();
+//        person = getPersonImpl();
         PlanController controller = getPlanController();
         planForm.setPlanItemId("26d19b30-ce60-4405-80d9-153d263d83cb");
         controller.removePlanItem(planForm, null, null, null);

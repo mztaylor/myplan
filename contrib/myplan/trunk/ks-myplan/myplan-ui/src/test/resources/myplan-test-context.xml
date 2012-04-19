@@ -22,7 +22,7 @@
         <property name="luService" ref="luServiceImpl"/>
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="courseOfferingService" ref="coService"/>
-        <property name="personImpl" ref="personimpl"/>
+        <!--<property name="personImpl" ref="personimpl"/>-->
         <property name="academicCalendarService" ref="acalService"/>
         <property name="atpTypeComparator" ref="atpTypeComparator"/>
     </bean>
@@ -49,8 +49,8 @@
     <bean id="acalService" class="edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl">
         <property name="studentServiceClient" ref="StudentServiceClient"/>
     </bean>
-    <bean id="personimpl" class="org.kuali.rice.kim.impl.identity.PersonImpl">
-    </bean>
+    <!--<bean id="personimpl" class="org.kuali.rice.kim.impl.identity.PersonImpl">-->
+    <!--</bean>-->
 
     <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
     <bean id="coService" class="edu.uw.kuali.student.myplan.tests.unit.FakeCourseOfferingService">
@@ -70,7 +70,7 @@
     </bean>
 
     -->
-    <bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>
+    <!--<bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>-->
     <bean id="academicPlanService" class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
@@ -108,13 +108,13 @@
     </bean>
 
     <bean id="degreeAuditController" class="org.kuali.student.myplan.audit.controller.DegreeAuditController">
-        <property name="person" ref="personImpl"/>
+        <!--<property name="person" ref="personImpl"/>-->
         <property name="degreeAuditService" ref="degreeAuditService" />
     </bean>
 
     <bean id="planController" class="org.kuali.student.myplan.plan.controller.PlanController">
         <property name="courseDetailsInquiryService" ref="CourseDetailsInquiryViewHelperService"/>
-        <property name="person" ref="personimpl"/>
+        <!--<property name="person" ref="personimpl"/>-->
         <property name="academicPlanService" ref="academicPlanService"/>
 
     </bean>

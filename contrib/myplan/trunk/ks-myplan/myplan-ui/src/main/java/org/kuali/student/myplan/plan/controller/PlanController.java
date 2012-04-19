@@ -62,18 +62,9 @@ public class PlanController extends UifControllerBase {
 
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
-    private transient Person person;
-
     //  Java to JSON outputter.
     private transient ObjectMapper mapper = new ObjectMapper();
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
     /*
    atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
     */
@@ -149,13 +140,6 @@ public class PlanController extends UifControllerBase {
         }
 
         return getUIFModelAndView(planForm);
-    }
-
-    public Person getUser() {
-        if (person == null) {
-            person = GlobalVariables.getUserSession().getPerson();
-        }
-        return person;
     }
 
     @RequestMapping(params = "methodToCall=plannedToBackup")
@@ -440,7 +424,8 @@ public class PlanController extends UifControllerBase {
          *  Before attempting to add a plan item, query for plan items for the requested course id. If a plan item of type
          *  saved course already exists then make this operation an update which adds in any new ATP ids.
          */
-        Person user = getUser();
+        Person user = GlobalVariables.getUserSession().getPerson();
+
         String studentId = user.getPrincipalId();
 
         LearningPlan plan = null;
@@ -603,7 +588,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addSavedCourse")
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        Person user = getUser();
+        Person user = GlobalVariables.getUserSession().getPerson();
         String studentId = user.getPrincipalId();
         String courseId = form.getCourseId();
 
@@ -963,7 +948,7 @@ public class PlanController extends UifControllerBase {
     
     private Integer getTotalCredits(String termId){
         int totalCredits=0;
-        Person user = getUser();
+        Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;

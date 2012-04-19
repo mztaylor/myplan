@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
-import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
@@ -62,10 +61,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.InputStream;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping(value = "/course/**")
@@ -82,26 +78,6 @@ public class CourseSearchController extends UifControllerBase {
     private transient CourseOfferingService courseOfferingService;
 
     private transient AcademicCalendarService academicCalendarService;
-
-    private transient Person person;
-
-    private transient PersonImpl personImpl;
-
-    public PersonImpl getPersonImpl() {
-        return personImpl;
-    }
-
-    public void setPersonImpl(PersonImpl personImpl) {
-        this.personImpl = personImpl;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 
     @Autowired
     private TermInfoComparator atpTypeComparator;
@@ -489,18 +465,11 @@ public class CourseSearchController extends UifControllerBase {
         this.academicPlanService = academicPlanService;
     }
 
-    public Person getUser() {
-        if (person == null) {
-            person = GlobalVariables.getUserSession().getPerson();
-        }
-        return person;
-    }
-
     private Set<String> getSavedCourseSet() throws Exception {
         logger.info("Start of method getSavedCourseSet of CourseSearchController:"+System.currentTimeMillis());
         AcademicPlanService academicPlanService = getAcademicPlanService();
 
-        Person user = getUser();
+        Person user = GlobalVariables.getUserSession().getPerson();
 
         ContextInfo context = new ContextInfo();
         String studentID = user.getPrincipalId();
