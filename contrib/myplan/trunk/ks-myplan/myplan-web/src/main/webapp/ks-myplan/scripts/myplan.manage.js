@@ -88,9 +88,18 @@ function fnUpdateCredits (atpId, termCredits) {
 }
 
 function fnDisplayMessage (message, targetId) {
-    jq("#" + targetId).parent().fadeOut(250, function() {
+    jq("#" + targetId).parent().closest('div').fadeOut(250, function() {
 	    jq(this).addClass("myplan-message-border myplan-message-success").html(message).fadeIn(250);
 	});
 }
+
+function fnCloseAllPopups() {
+ jq(".myplan-popup-target").each(function() {
+        jq(this).HideAllBubblePopups();
+        jq(this).RemoveBubblePopup();
+    });
+
+}
+
 
 

@@ -1161,6 +1161,9 @@
                                         <value>fl-font-size-90</value>
                                     </list>
                                 </property>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#addPlannedCourse')
+                                        .subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});"/>
                             </bean>
                             <bean p:id="deleteCourseNoButton" parent="Uif-PrimaryActionButton" p:actionLabel="No">
                                 <property name="clientSideJs"
@@ -1413,7 +1416,7 @@
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'addPlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan', 'addPlannedCourse')});"/>
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan','addPlannedCourse')});"/>
                                 <!--p:methodToCall="addPlannedCourse"-->
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1526,7 +1529,9 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
-
+                    <property name="onDocumentReadyScript" value="
+                        jq('#addPlannedCourse')
+                            .subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});"/>
                 </bean>
 
                 <bean parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
