@@ -535,9 +535,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public String hardcodedStudentID( String studentId ) {
         // Used by devs when logged in as admin
-        if( "admin".equals( studentId )) return "100190981";
+        if( "admin".equals( studentId )) return   "100190981";
         // Used by Jill for demos
-        if( "jjulius".equals( studentId )) return "101167127";
+        if( "jjulius".equals( studentId )) return "101360188";
         // do nothing
         return studentId;
     }
