@@ -223,9 +223,6 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         FullPlanTermItemsDataObject fullPlanTerm1 = new FullPlanTermItemsDataObject();
         fullPlanTerm1.setTerm(term1);
         fullPlanItemsDataObjectList.add(fullPlanTerm1);
-        FullPlanTermItemsDataObject fullPlanTerm2 = new FullPlanTermItemsDataObject();
-        fullPlanTerm2.setTerm(term2);
-        fullPlanItemsDataObjectList.add(fullPlanTerm2);
 
         for (FullPlanItemsDataObject fpi : orderedFullPlanTerms) {
 
@@ -239,9 +236,6 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
             }
         }
-        FullPlanTermItemsDataObject fullPlanTerm3 = new FullPlanTermItemsDataObject();
-        fullPlanTerm3.setTerm(term3);
-        fullPlanItemsDataObjectList.add(fullPlanTerm3);
         FullPlanTermItemsDataObject fullPlanTerm4 = new FullPlanTermItemsDataObject();
         fullPlanTerm4.setTerm(term4);
         fullPlanItemsDataObjectList.add(fullPlanTerm4);
@@ -365,16 +359,16 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             String tempQuarter = term.get(i);
             terms fd = terms.valueOf(term.get(i));
             switch (fd) {
-                case Spring:
+                case Winter:
                     resultQuarter = 1;
                     break;
-                case Summer:
+                case Spring:
                     resultQuarter = 2;
                     break;
-                case Autumn:
+                case Summer:
                     resultQuarter = 3;
                     break;
-                case Winter:
+                case Autumn:
                     resultQuarter = 4;
                     break;
             }
