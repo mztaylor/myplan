@@ -61,13 +61,13 @@ jq(document).ready(function() {
     */
 });
 
-function fnAddPlanItem (atpId, type, courseId, courseCode, courseTitle, courseCredits) {
+function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
     var item = '\
 		<span class="fieldLine boxLayoutVerticalItem clearfix">\
     		<div class="uif-collectionItem">\
 				<span class="fieldLine boxLayoutVerticalItem clearfix">\
-					<span class="uif-field uif-link"><a id="' + courseId + '" href="#" target="" title="' + courseTitle + '" class="uif-field uif-link">' + courseCode + ' (' + courseCredits + ')</a></span>\
-					<input type="hidden" value="jq(\'#\' + \'' + courseId + '\').click(function(e) { openPopUp(\'' + courseId + '\',\'add_planned_course\',\'populateMenuItems\',\'plan\',{viewId:\'PlannedCourseMenuItem-FormView\',courseId:\'' + courseId + '\'},e,\'li\'); });" script="first_run">\
+					<span class="uif-field uif-link"><a id="' + planItemId + '" href="#" target="" title="' + courseTitle + '" class="uif-field uif-link">' + courseCode + ' (' + courseCredits + ')</a></span>\
+					<input type="hidden" value="jq(\'#\' + \'' + planItemId + '\').click(function(e) { openPopUp(\'' + planItemId + '\',\'add_planned_course\',\'populateMenuItems\',\'plan\',{viewId:\'PlannedCourseMenuItem-FormView\',courseId:\'' + planItemId + '\'},e,\'li\'); });" script="first_run">\
 				</span>\
 			</div>\
 		</span>\
@@ -75,8 +75,8 @@ function fnAddPlanItem (atpId, type, courseId, courseCode, courseTitle, courseCr
     jq(item).appendTo("." + atpId + "-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate( {backgroundColor:"#ffffff"}, 1500 );
 }
 
-function fnRemovePlanItem (atpId, type, courseId) {
-	jq("." + atpId + "-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + courseId).parents(".uif-collectionItem").parent("span").fadeOut(250, function(){
+function fnRemovePlanItem (atpId, type, planItemId) {
+    jq("." + atpId + "-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId).parents(".uif-collectionItem").parent("span").fadeOut(250, function(){
         jq(this).remove();
     });
 }

@@ -3,6 +3,10 @@
 *:focus {
 	outline: 0;
 }
+/* Hide messaging globally */
+#errorsFieldForPage_div {
+    display: none;
+}
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
