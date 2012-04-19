@@ -858,8 +858,8 @@
         </property>
         <property name="subCollections">
             <list>
-                <ref bean="plannedCollection" p:render="@{#line.plannedList ne null ? true : false}"/>
-                <ref bean="backupCollection" p:render="@{#line.backupList ne null ? true : false}"/>
+                <ref bean="plannedCollection" />
+                <ref bean="backupCollection"/>
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
