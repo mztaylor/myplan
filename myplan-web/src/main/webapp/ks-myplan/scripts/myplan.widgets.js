@@ -191,6 +191,15 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     jq("form#"+ id + "_form").remove();
 }
 
+
+/*function fnFireEvents(obj) {
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            eval('jq.publish("' + key + '", [' + JSON.stringify(obj[key]) + ']);');
+            alert('Event Fired!');
+        }
+    }
+}*/
 function myplanAjaxSubmitPlanItem(id, methodToCall) {
     var tempDiv = jq("<div />").hide();
     jq("body").append(tempDiv);
@@ -200,8 +209,24 @@ function myplanAjaxSubmitPlanItem(id, methodToCall) {
     jq('<input type="hidden" name="courseId" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
-        console.log(htmlContent)
+        elementToBlock.unblock();
+        jq("body").append('<div id="console" style="display: none;"/>');
+        //jq("#console").html(htmlContent);
+        jq("#console").html(jq("#json_events_item_key", htmlContent).text().replace(/\\/g,""));
+        var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
+
+        for (var key in json) {
+            if (json.hasOwnProperty(key)) {
+                eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
+            }
+        }
         /*
+        var status = jq("#request_status_item_key", htmlContent).text();
+        var message = jq("#add_plan_item_key", htmlContent);
+
+
+
+        var status = jq("#add_plan_item_key", htmlContent);
         var component = jq("#add_plan_item_key", htmlContent);
 
         var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
@@ -483,6 +508,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
     }
 	form.ajaxSubmit(submitOptions);
 }
+
 function truncateField(id) {
     jq("[id^='" + id + "']").each(function() {
         jq(this).css("display","block");
@@ -512,9 +538,4 @@ function fnPopoverSlider(showId, parentId, direction) {
             direction: newDirection
         }, 100, function() {});
     });
-    /*
-    jq('#course_popover_group_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem .slides').animate({
-        height: $(".jquerybubblepopup-innerHtml .slider .slide:visible").height()
-    }, 200);
-    */
 }

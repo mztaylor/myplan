@@ -864,8 +864,8 @@
         </property>
         <property name="onDocumentReadyScript" value="
             jq('#planned_courses_detail_list_group')
-                .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.courseDetails.courseId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
-                .subscribe('PLAN_ITEM_REMOVED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.courseDetails.courseId)})
+                .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
+                .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
                 .subscribe('UPDATE_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
         "/>
     </bean>

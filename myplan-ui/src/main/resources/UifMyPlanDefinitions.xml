@@ -47,6 +47,7 @@
 
 
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
+
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -68,6 +69,7 @@
 
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
+
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -87,6 +89,7 @@
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
+
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -107,6 +110,7 @@
     </bean>
 
     <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
+
         <property name="footer" ref="MyPlanFooterDocument"/>
 
         <property name="applicationHeader">

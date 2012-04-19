@@ -934,7 +934,7 @@ public class PlanController extends UifControllerBase {
                 Map<String, String> jsEventParams = new HashMap<String, String>();
                 jsEventParams.put("atpId", formatAtpIdForUI(termId));
                 jsEventParams.put("planItemType", formatTypeKey(typeKey));
-                jsEventParams.put("courseId", planItem.getRefObjectId());
+                jsEventParams.put("planItemId", planItem.getId());
                 events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
 
                 //  One "update total credits" for each ATP id.
