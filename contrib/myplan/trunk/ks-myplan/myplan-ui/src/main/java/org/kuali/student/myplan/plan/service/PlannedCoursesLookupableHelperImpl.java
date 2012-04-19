@@ -71,15 +71,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
                 termInfos = new ArrayList<TermInfo>();
             }
-            /* TODO: Remove these when implementation for getting the past records is included
-                These are hardcoded to show the past data in the list
-
-             */
-
-            populatePreviousData(plannedTerms);
-            populatePreviousData(plannedTerms);
-
-
+            
             /*
            Populating the PlannedTerm List
             */
@@ -210,84 +202,156 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             Collections.reverse(orderedPlanTerms);
 
 
+
+            List<PlannedTerm> plannedTermsOrderedList = new ArrayList<PlannedTerm>();
+            /* TODO: Remove these when implementation for getting the past records is included
+                These are hardcoded to show the past data in the list
+
+             */
+                String yearParam=orderedPlanTerms.get(0).getQtrYear();
+                String[] splitStr = yearParam.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                populatePreviousData(plannedTermsOrderedList,splitStr[0].trim(),splitStr[1].trim());
+
+            for(PlannedTerm pl:orderedPlanTerms){
+                plannedTermsOrderedList.add(pl);
+            }
+              
+
             /* TODO: Remove these when implementation for getting the future records is included
                 These are hardcoded to show the future data in the list
 
              */
 
-            String[] splitStr = orderedPlanTerms.get(orderedPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            int year = 0;
-            String quarter = null;
-            if (splitStr.length == 2) {
-                year = Integer.parseInt(splitStr[1].trim()) + 1;
+                String[] split = orderedPlanTerms.get(orderedPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                int year = 0;
+                String quarter = null;
+                if (split.length == 2) {
+                    year = Integer.parseInt(split[1].trim());
+                    quarter=split[0].trim();
+                }
+                populateFutureData(plannedTermsOrderedList, quarter,year);
+            
 
-            }
-            populateFutureData(orderedPlanTerms, year);
-            populateFutureData(orderedPlanTerms, year);
-            populateFutureData(orderedPlanTerms, year);
-            populateFutureData(orderedPlanTerms, year);
-
-            return orderedPlanTerms;
+            return plannedTermsOrderedList;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void populatePreviousData(List<PlannedTerm> plannedTerms) {
+    private void populatePreviousData(List<PlannedTerm> plannedTerms,String term, String year) {
 
-        PlannedTerm pl = new PlannedTerm();
-        if (counter == 0) {
-            pl.setPlanItemId("kuali.uw.atp.spring2011");
-
-            pl.setQtrYear("Spring 2011");
+        List<String> atps=new ArrayList<String>();
+        int yearVal=Integer.parseInt(year);
+         if(term.equalsIgnoreCase("Autumn")){
+             String termYrVal="kuali.uw.atp.spring"+(yearVal-1);
+             atps.add(termYrVal);
+             String termYrVal2="kuali.uw.atp.summer"+(yearVal-1);
+             atps.add(termYrVal2);
+         }
+        if(term.equalsIgnoreCase("Winter")){
+            String termYrVal="kuali.uw.atp.summer"+(yearVal-1);
+            atps.add(termYrVal);
+            String termYrVal2="kuali.uw.atp.autumn"+yearVal;
+            atps.add(termYrVal2);
         }
-        if (counter == 1) {
-            pl.setPlanItemId("kuali.uw.atp.summer2011");
-
-            pl.setQtrYear("Summer 2011");
+        if(term.equalsIgnoreCase("Spring")){
+            String termYrVal="kuali.uw.atp.autumn"+yearVal;
+            atps.add(termYrVal);
+            String termYrVal2="kuali.uw.atp.winter"+yearVal;
+            atps.add(termYrVal2);
         }
-        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-        CourseDetails courseDetails = new CourseDetails();
-        planItemDataObject.setCourseDetails(courseDetails);
-        List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-        planItemDataObjects.add(planItemDataObject);
-        pl.setPlannedList(planItemDataObjects);
-        plannedTerms.add(pl);
-        counter++;
+        if(term.equalsIgnoreCase("Summer")){
+            String termYrVal="kuali.uw.atp.winter"+yearVal;
+            atps.add(termYrVal);
+            String termYrVal2="kuali.uw.atp.spring"+yearVal;
+            atps.add(termYrVal2);
+        }
+        
+        for(String atp:atps){
+            PlannedTerm pl = new PlannedTerm();
+            pl.setPlanItemId(atp);
+            String qtrYr = atp.substring(atpPrefix, atp.length());
+            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            StringBuffer str = new StringBuffer();
+            str=str.append(splitStr[0]).append(" ").append(splitStr[1]);
+            String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
+            pl.setQtrYear(QtrYear);
+            PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+            CourseDetails courseDetails = new CourseDetails();
+            planItemDataObject.setCourseDetails(courseDetails);
+            List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
+            planItemDataObjects.add(planItemDataObject);
+            pl.setPlannedList(planItemDataObjects);
+            plannedTerms.add(pl);
+        }
+        
+        
+
 
     }
 
-    private void populateFutureData(List<PlannedTerm> orderedPlanTerms, int year) {
+    private void populateFutureData(List<PlannedTerm> plannedTerms, String term,int year) {
 
-        PlannedTerm pl = new PlannedTerm();
-        if (counter2 == 0) {
-            pl.setPlanItemId("kuali.uw.atp.spring" + year);
+        List<String> atps=new ArrayList<String>();
 
-            pl.setQtrYear("Spring " + year);
+        if(term.equalsIgnoreCase("Autumn")){
+            String termYrVal="kuali.uw.atp.winter"+year;
+            atps.add(termYrVal);
+            String termYrVal1="kuali.uw.atp.spring"+year;
+            atps.add(termYrVal1);
+            String termYrVal2="kuali.uw.atp.summer"+year;
+            atps.add(termYrVal2);
+            String termYrVal3="kuali.uw.atp.autumn"+(year+1);
+            atps.add(termYrVal3);
         }
-        if (counter2 == 1) {
-            pl.setPlanItemId("kuali.uw.atp.summer" + year);
-
-            pl.setQtrYear("Summer " + year);
+        if(term.equalsIgnoreCase("Winter")){
+            String termYrVal="kuali.uw.atp.spring"+year;
+            atps.add(termYrVal);
+            String termYrVal1="kuali.uw.atp.summer"+year;
+            atps.add(termYrVal1);
+            String termYrVal2="kuali.uw.atp.autumn"+(year+1);
+            atps.add(termYrVal2);
+            String termYrVal3="kuali.uw.atp.winter"+(year+1);
+            atps.add(termYrVal3);
         }
-        if (counter2 == 2) {
-            pl.setPlanItemId("kuali.uw.atp.autumn" + year);
-
-            pl.setQtrYear("Autumn " + year);
+        if(term.equalsIgnoreCase("Spring")){
+            String termYrVal="kuali.uw.atp.summer"+year;
+            atps.add(termYrVal);
+            String termYrVal1="kuali.uw.atp.autumn"+(year+1);
+            atps.add(termYrVal1);
+            String termYrVal2="kuali.uw.atp.winter"+(year+1);
+            atps.add(termYrVal2);
+            String termYrVal3="kuali.uw.atp.spring"+(year+1);
+            atps.add(termYrVal3);
         }
-        if (counter2 == 3) {
-            pl.setPlanItemId("kuali.uw.atp.winter" + year);
-
-            pl.setQtrYear("Winter " + year);
+        if(term.equalsIgnoreCase("Summer")){
+            String termYrVal="kuali.uw.atp.autumn"+(year+1);
+            atps.add(termYrVal);
+            String termYrVal1="kuali.uw.atp.winter"+(year+1);
+            atps.add(termYrVal1);
+            String termYrVal2="kuali.uw.atp.spring"+(year+1);
+            atps.add(termYrVal2);
+            String termYrVal3="kuali.uw.atp.summer"+(year+1);
+            atps.add(termYrVal3);
         }
-        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-        CourseDetails courseDetails = new CourseDetails();
-        planItemDataObject.setCourseDetails(courseDetails);
-        List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-        planItemDataObjects.add(planItemDataObject);
-        pl.setPlannedList(planItemDataObjects);
-        orderedPlanTerms.add(pl);
-        counter2++;
+
+        for(String atp:atps){
+            PlannedTerm pl = new PlannedTerm();
+            pl.setPlanItemId(atp);
+            String qtrYr = atp.substring(atpPrefix, atp.length());
+            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            StringBuffer str = new StringBuffer();
+            str=str.append(splitStr[0]).append(" ").append(splitStr[1]);
+            String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
+            pl.setQtrYear(QtrYear);
+            PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+            CourseDetails courseDetails = new CourseDetails();
+            planItemDataObject.setCourseDetails(courseDetails);
+            List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
+            planItemDataObjects.add(planItemDataObject);
+            pl.setPlannedList(planItemDataObjects);
+            plannedTerms.add(pl);
+        }
 
     }
 
