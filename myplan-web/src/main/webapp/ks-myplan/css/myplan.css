@@ -37,6 +37,7 @@ a:focus {
 }
 #appheader_div #appheading_div {
     overflow:auto;
+    padding-bottom: 1.8em;
 }
 #appheader_div #applogo_div,
 #appheader_div #appuser_div {
