@@ -276,12 +276,12 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             str=str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
             pl.setQtrYear(QtrYear);
-            PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+            /*PlanItemDataObject planItemDataObject = new PlanItemDataObject();
             CourseDetails courseDetails = new CourseDetails();
             planItemDataObject.setCourseDetails(courseDetails);
             List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
             planItemDataObjects.add(planItemDataObject);
-            pl.setPlannedList(planItemDataObjects);
+            pl.setPlannedList(planItemDataObjects);*/
             plannedTerms.add(pl);
         }
         
@@ -344,12 +344,12 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             str=str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
             pl.setQtrYear(QtrYear);
-            PlanItemDataObject planItemDataObject = new PlanItemDataObject();
+            /*PlanItemDataObject planItemDataObject = new PlanItemDataObject();
             CourseDetails courseDetails = new CourseDetails();
             planItemDataObject.setCourseDetails(courseDetails);
-            List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
+            List<PlanItemDataObject> planItemDataObjects = null;
             planItemDataObjects.add(planItemDataObject);
-            pl.setPlannedList(planItemDataObjects);
+            pl.setPlannedList(planItemDataObjects);*/
             plannedTerms.add(pl);
         }
 
