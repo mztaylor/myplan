@@ -18,16 +18,13 @@ package org.kuali.student.myplan.audit.controller;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
-import org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -68,27 +65,6 @@ public class DegreeAuditController extends UifControllerBase {
         this.degreeAuditService = degreeAuditService;
     }
 
-    private transient Person person;
-
-    private transient PersonImpl personImpl;
-
-    public PersonImpl getPersonImpl() {
-        return personImpl;
-    }
-
-    public void setPersonImpl(PersonImpl personImpl) {
-        this.personImpl = personImpl;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new DegreeAuditForm();
@@ -99,7 +75,7 @@ public class DegreeAuditController extends UifControllerBase {
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         try {
-            Person user = getUser();
+            Person user = GlobalVariables.getUserSession().getPerson();
             String studentID = user.getPrincipalId();
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
@@ -137,7 +113,7 @@ public class DegreeAuditController extends UifControllerBase {
     public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
         try {
-            Person user = getUser();
+            Person user = GlobalVariables.getUserSession().getPerson();
             String studentId = user.getPrincipalId();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String programId = form.getProgramParam();
@@ -163,13 +139,6 @@ public class DegreeAuditController extends UifControllerBase {
         }
 
         return getUIFModelAndView(form);
-    }
-
-    public Person getUser() {
-        if (person == null) {
-            person = GlobalVariables.getUserSession().getPerson();
-        }
-        return person;
     }
 
 }

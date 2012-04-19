@@ -63,16 +63,16 @@ public class CourseSearchControllerTest {
     public void setAcademicPlanService(AcademicPlanService academicPlanService) {
         this.academicPlanService = academicPlanService;
     }
-    @Autowired
-    private PersonImpl person;
-
-    public PersonImpl getPersonImpl() {
-        return person;
-    }
-
-    public void setPersonImpl(PersonImpl personImpl) {
-        this.person = personImpl;
-    }
+//    @Autowired
+//    private PersonImpl person;
+//
+//    public PersonImpl getPersonImpl() {
+//        return person;
+//    }
+//
+//    public void setPersonImpl(PersonImpl personImpl) {
+//        this.person = personImpl;
+//    }
 
     @Test
     public void testHitComparator() {
@@ -135,9 +135,9 @@ public class CourseSearchControllerTest {
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
         academicPlanService = getAcademicPlanService();
-        person=getPersonImpl();
+//        person=getPersonImpl();
         searchController.setAcademicPlanService(academicPlanService);
-        searchController.setPerson(person);
+//        searchController.setPerson(person);
         searchController.searchForCourses(form, null, null, null);
         List<CourseSearchItem> results = form.getCourseSearchResults();
         assertEquals(1, results.size());
@@ -158,9 +158,9 @@ public class CourseSearchControllerTest {
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
         academicPlanService = getAcademicPlanService();
-        person=getPersonImpl();
+//        person=getPersonImpl();
         searchController.setAcademicPlanService(academicPlanService);
-        searchController.setPerson(person);
+//        searchController.setPerson(person);
 
         searchController.searchForCourses(form, null, null, null);
 
@@ -177,9 +177,9 @@ public class CourseSearchControllerTest {
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
         academicPlanService = getAcademicPlanService();
-        person=getPersonImpl();
+//        person=getPersonImpl();
         searchController.setAcademicPlanService(academicPlanService);
-        searchController.setPerson(person);
+//        searchController.setPerson(person);
 
         searchController.searchForCourses(form, null, null, null);
 
