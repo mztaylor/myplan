@@ -724,13 +724,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
-                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page',dateAdded:'@{dateAdded}'},e,null,{tail:{hidden:true},align:'top'});"/>
+                    <property name="onClickScript" value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
-                    <property name="onClickScript" value="openPlanItemPopUp('@{courseId}','plan_item_delete_page',{courseId:'@{courseId}',pageId:'plan_item_delete_page',dateAdded:'@{dateAdded}',planItemId:'@{planItemId}'},e,null,{tail:{hidden:true},align:'top'});"/>
+                    <property name="onClickScript" value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
             </list>
         </property>
@@ -898,7 +898,7 @@
             <list>
                 <bean p:id="@{#line.id}" parent="Uif-Link" p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
               p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#" p:labelField.render="false"
-              p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',dateAdded:'@{#line.dateAdded}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
+              p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','populateMenuItems','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',dateAdded:'@{#line.dateAdded}',planItemId:'@{#line.id}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
               p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
@@ -1448,7 +1448,7 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="Added on @{dateAdded}" />
+                                        <bean parent="Uif-MessageField" p:messageText="Added to @{term} @{year} on @{dateAdded}" />
 
 
                                     </list>
