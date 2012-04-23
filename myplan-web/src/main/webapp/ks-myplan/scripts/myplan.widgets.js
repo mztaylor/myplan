@@ -555,3 +555,31 @@ function fnCloseAllPopups() {
     });
 
 }
+
+/*Function used for moving the plan Item from planned to backup*/
+function myPlanAjaxPlanItemMove(id, getId, retrieveOptions, e, methodToCall) {
+    stopEvent(e);
+    var tempForm = jq('<form />').hide();
+    jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+    jq(tempForm).append('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />');
+    jQuery.each(retrieveOptions, function(name, value) {
+        jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+    });
+    jq("body").append(tempForm);
+
+    var elementToBlock = jq("#" + id  + "_popup");
+
+    var updateRefreshableComponentCallback = function(htmlContent){
+        var component = jq("#" + getId + "_div", htmlContent);
+        var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+        elementToBlock.unblock({onUnblock: function(){
+            runHiddenScripts(getId + "_div");
+        }
+        });
+    };
+      myplanAjaxSubmitPlanItem(id,methodToCall);
+    fnCloseAllPopups();
+      jq("form#"+ id + "_form").remove();
+
+}
+
