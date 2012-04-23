@@ -49,26 +49,23 @@
 	background-image: url('../../krad/images/h3_collapse-back-black-ks.png');
 }
 #txtaudit_span .requirement .requirement-heading .N {
-	background: url('../images/iconIncomplete.png') no-repeat 20px 0px;
+	background: url('../images/iconIncomplete.png') no-repeat 20px;
 	padding-left: 68px;
 }
 #txtaudit_span .requirement .requirement-heading .I {
-	background: url('../images/iconInprogress.png') no-repeat 20px 0px;
+	background: url('../images/iconInprogress.png') no-repeat 20px;
 	padding-left: 68px;
 }
 #txtaudit_span .requirement .requirement-heading .C {
-	background: url('../images/iconComplete.png') no-repeat 20px 0px;
+	background: url('../images/iconComplete.png') no-repeat 20px;
 	padding-left: 68px;
 }
 #txtaudit_span .requirement .requirement-heading div h4 {
 	font: 12px/20px Helvetica, Arial, clean, sans-serif !important;
 	margin: 0;
 	padding: 0;
-	height: 20px;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	min-height: 20px;
 	width: 100%;
-	white-space: nowrap;
 }
 #txtaudit_span .requirement .requirement-body {
     padding: 10px 20px;
