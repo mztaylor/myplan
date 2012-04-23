@@ -94,7 +94,17 @@ public class PlanController extends UifControllerBase {
             String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             planForm.setTerm(splitStr[0].substring(0, 1).toUpperCase().concat(splitStr[0].substring(1, splitStr[0].length())));
             planForm.setYear(splitStr[1]);
+            if(planForm.getCourseDetails()==null){
+                CourseDetails courseDetails=new CourseDetails();
+                courseDetails.setCourseId(courseId);
+                planForm.setCourseDetails(courseDetails);
+            }else{
             planForm.getCourseDetails().setCourseId(courseId);
+            }
+            //Following data used for the Dialog boxes
+            if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                planForm.setBackup(true);
+            }
 
         }
         catch (Exception e){
@@ -109,10 +119,7 @@ public class PlanController extends UifControllerBase {
             return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
 
-        //Following data used for the Dialog boxes
-        if (planForm.isBackup()) {
-            planForm.setBackup(true);
-        }
+
 
         if(planForm.getDateAdded()!=null){
             String dateStr=planForm.getDateAdded().substring(0,10);
@@ -189,8 +196,8 @@ public class PlanController extends UifControllerBase {
         Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
         jsDeleteEventParams.put("atpId", formatAtpIdForUI(termId));
-        jsDeleteEventParams.put("planItemType", formatTypeKey(typeKey));
-        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        jsDeleteEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED));
+        jsDeleteEventParams.put("planItemId", planItemId);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
 
         //  Make an add event.
@@ -260,8 +267,8 @@ public class PlanController extends UifControllerBase {
         Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
         jsDeleteEventParams.put("atpId", formatAtpIdForUI(termId));
-        jsDeleteEventParams.put("planItemType", formatTypeKey(typeKey));
-        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        jsDeleteEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP));
+        jsDeleteEventParams.put("planItemId", planItemId);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
 
         //  Make an add event.
@@ -966,6 +973,7 @@ public class PlanController extends UifControllerBase {
                 planItemList= getAcademicPlanService().getPlanItemsInPlan(learningPlanID, context);
 
             for (PlanItemInfo planItem : planItemList) {
+                  if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)){
                 String courseID = planItem.getRefObjectId();
                 for(String atp:planItem.getPlanPeriods()){
                 if(atp.equalsIgnoreCase(termId)){
@@ -980,7 +988,7 @@ public class PlanController extends UifControllerBase {
                     }
                 }
                 }
-                
+            }   
             }
         }
          }catch(Exception e){
@@ -989,31 +997,6 @@ public class PlanController extends UifControllerBase {
         return totalCredits;
     }
     
-    
-
-    /*Used for populating the menu items to have the courseId and planItemId in the form*/
-    @RequestMapping(params = "methodToCall=populateMenuItems")
-    public ModelAndView populateMenuItems(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                          HttpServletRequest request, HttpServletResponse response) {
-        super.start(form, result, request, response);
-
-        PlanForm planForm = (PlanForm) form;
-
-        String courseId = planForm.getCourseId();
-        if (StringUtils.isEmpty(courseId)) {
-            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
-        }
-        if (((PlanForm) form).isBackup()) {
-            planForm.setBackup(true);
-        }
-        //  Initialize the form with a course Id and planItemId.
-        planForm.setCourseId(courseId);
-        planForm.setPlanItemId(((PlanForm) form).getPlanItemId());
-
-        return getUIFModelAndView(planForm);
-    }
-
-
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {

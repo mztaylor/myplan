@@ -149,7 +149,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
            Populating the backup list for the Plans
             */
             List<PlanItemDataObject> backupCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
-
             int count = plannedTerms.size();
             for (PlanItemDataObject bl : backupCoursesList) {
                 for (String atp : bl.getAtpIds()) {
@@ -157,9 +156,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     boolean added = false;
                     for (int i = 0; i < count; i++) {
                         if (atp.equalsIgnoreCase(plannedTerms.get(i).getPlanItemId())) {
-                            List<PlanItemDataObject> backupLists = new ArrayList<PlanItemDataObject>();
-                            backupLists.add(bl);
-                            plannedTerms.get(i).setBackupList(backupLists);
+                            plannedTerms.get(i).getBackupList().add(bl);
                             added = true;
                         }
                     }
@@ -173,17 +170,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                         plannedTerm.setQtrYear(QtrYear);
                         plannedTerm.getBackupList().add(bl);
-                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-                        if (bl.getCourseDetails().getCredit().length() > 2) {
-                            String[] str4 = bl.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            String credit = str4[2];
-                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
-                        } else {
-                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(bl.getCourseDetails().getCredit()));
-                        }
                         plannedTerm.setCurrentTerm(false);
                         plannedTerms.add(plannedTerm);
-
+                        count++;
                     }
                 }
 
@@ -253,6 +242,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 These are hardcoded to show the past data in the list
 
              */
+            if(orderedPlanTerms.size()>0){
             String yearParam = orderPlanTerms.get(0).getQtrYear();
             String[] splitStr = yearParam.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             populatePreviousData(plannedTermsOrderedList, splitStr[0].trim(), splitStr[1].trim());
@@ -260,13 +250,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             for (PlannedTerm pl : orderPlanTerms) {
                 plannedTermsOrderedList.add(pl);
             }
+            }
 
 
             /* TODO: Remove these when implementation for getting the future records is included
                These are hardcoded to show the future data in the list
 
             */
-
+           if(orderedPlanTerms.size()>0){
             String[] split = orderPlanTerms.get(orderPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             int year = 0;
             String quarter = null;
@@ -275,6 +266,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 quarter = split[0].trim();
             }
             populateFutureData(plannedTermsOrderedList, quarter, year);
+           }
 
 
             return plannedTermsOrderedList;
