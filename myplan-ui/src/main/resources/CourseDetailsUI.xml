@@ -574,6 +574,7 @@
 
                 <!-- Lightbox Link -->
                 <bean parent="Uif-DataField" p:propertyName="this" p:labelField.render="false">
+                  <!--
                     <property name="onDocumentReadyScript" value="
                         jq('#course_details_links_div ul li a').each(function(){
                             var href = jq(this).attr('href');
@@ -585,9 +586,12 @@
                         jq('#course_details_links_div ul li a').click(function(e){
                             e.preventDefault();
                             var id = jq(this).attr('href').split('#')[1];
+                            alert(jq(this).attr('id'));
                             createLightBoxLink(jq(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
                         });
                     "/>
+
+                    -->
                     <property name="propertyEditor" ref="time_schedule_links_formatter"/>
                     <property name="styleClasses">
                         <list merge="true">
