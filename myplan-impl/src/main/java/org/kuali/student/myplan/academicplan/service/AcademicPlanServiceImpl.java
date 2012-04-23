@@ -3,6 +3,8 @@ package org.kuali.student.myplan.academicplan.service;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.util.UUIDHelper;
 
+import org.kuali.student.core.atp.dto.AtpTypeInfo;
+import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.service.CourseService;
 
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -45,6 +47,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private PlanItemDao planItemDao;
     private PlanItemTypeDao planItemTypeDao;
     private CourseService courseService;
+    private AtpService atpService;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -60,6 +63,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                     .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
         }
         return this.courseService;
+    }
+
+    /**
+     * Provides an instance of the AtpService client.
+     */
+    protected AtpService getAtpService() {
+        if (atpService == null) {
+            // TODO: Namespace should not be hard-coded.
+            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
+        }
+        return this.atpService;
     }
 
     public PlanItemDao getPlanItemDao() {
@@ -403,7 +417,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Delete plan items.
         List<PlanItemEntity> pies = planItemDao.getLearningPlanItems(learningPlanId);
         for (PlanItemEntity pie : pies) {
-            //  TODO: May need to manually remove items from the ATP join table once that is implemented.
             planItemDao.remove(pie);
         }
 
@@ -427,8 +440,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         if (pie == null) {
             throw new DoesNotExistException(String.format("Unknown plan item id [%s].", planItemId));
         }
-
-        //  TODO: May need to manually remove items from the ATP join table once that is implemented.
 
         planItemDao.remove(pie);
 
@@ -475,21 +486,31 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
         //  Make sure a plan period exists if type is planned course.
-        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)
+                || planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
                 validationResultInfos.add(makeValidationResultInfo(
-                    String.format("Plan Item Type was [%s], but no plan periods were defined.", AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED),
+                    String.format("Plan Item Type was [%s], but no plan periods were defined.", planItemInfo.getTypeKey()),
                     "typeKey", ValidationResult.ErrorLevel.ERROR));
-            }
-        }
+            } else {
+                //  Make sure the plan periods are valid.
+                /*
 
-        //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
-        //  Make sure a plan period exists if type is backup Plan course.
-        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
-                validationResultInfos.add(makeValidationResultInfo(
-                        String.format("Plan Item Type was [%s], but no backup plan periods were defined.", AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP),
-                        "typeKey", ValidationResult.ErrorLevel.ERROR));
+                FIXME: Uncomment after Friday demo.
+
+                for (String atpId : planItemInfo.getPlanPeriods()) {
+                    boolean valid = false;
+                    try {
+                        valid = isValidAtp(atpId);
+                        if ( ! valid) {
+                            validationResultInfos.add(makeValidationResultInfo(
+                                String.format("ATP ID [%s] was not valid.", planItemInfo.getTypeKey()), "typeKey", ValidationResult.ErrorLevel.ERROR));
+                        }
+                    } catch (Exception e) {
+                        validationResultInfos.add(makeValidationResultInfo(
+                            "ATP ID lookup failed.", "typeKey", ValidationResult.ErrorLevel.ERROR));
+                    }
+                }*/
             }
         }
 
@@ -555,5 +576,16 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         vri.setElement(element);
         vri.setLevel(errorLevel);
         return vri;
+    }
+
+    private boolean isValidAtp(String atpId) {
+        try {
+            getAtpService().getAtp(atpId);
+        } catch (org.kuali.student.common.exceptions.DoesNotExistException e) {
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Query to ATP service failed.", e);
+        }
+        return true;
     }
 }
