@@ -90,10 +90,19 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
         for (String scheduledTerm : scheduledTerms) {
             String url = makeTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
+            String urlId = makeTimeScheduleUrlId(scheduledTerm, courseDetails.getCode());
             String t = title.replace("{timeScheduleName}", scheduledTerm);
             String l = label.replace("{timeScheduleName}", scheduledTerm);
+
             formattedText.append("<" + listType.getListItemElementName() + ">")
-                .append("<a href=\"" + url + "\" title=\"" + t + "\">")
+
+
+
+                    /*
+                    <input type="hidden" value=" createLightBoxLink('u86', {autoScale:true,centerOnScroll:true,transitionIn:"fade",transitionOut:"fade",speedIn:200,speedOut:200,hideOnOverlayClick:false,type:"iframe",width:"75%",height:"95%"}); " script="first_run">
+                     */
+                    .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
+                    .append("<a id=\"" + urlId + "\" href=\"" + url + "\" target=\"_self\">")
                 .append(l)
                 .append("</a>")
                 .append("</" + listType.getListItemElementName() + ">");
@@ -142,6 +151,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
         StringBuilder url = new StringBuilder(baseUrl);
 
+
         //  Parse out all of the necessary params.
         String year = term.replaceAll("\\D+", "");
         String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
@@ -165,11 +175,39 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         }
 
         url.append(timeScheduleLinkAbbreviation)
-            .append(".html#")
+            //.append(".html#")
+            .append(".html?external=true&dialogMode=true#")
             .append(curriculumCode.toLowerCase())
             .append(courseNumber);
         return url.toString();
     }
+
+    private String makeTimeScheduleUrlId(String term, String courseCode) {
+
+
+       /*
+        *  If the collection is empty and no empty list message is defined then return an empty string.
+        *  Otherwise, add an empty list message to the list.
+        */
+       String styleClassNames = getEmptyListStyleClassesAsString();
+
+       String urlId = "";
+
+        //  Parse out all of the necessary params.
+        String year = term.replaceAll("\\D+", "");
+        String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
+        String courseNumber = courseCode.replaceAll("^\\D+", "");
+        String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
+
+        //  Convert term to SWS format "SPR2012"
+        String swsTerm = termName.substring(0,3).toUpperCase() + year;
+
+        urlId = curriculumCode + courseNumber + swsTerm;
+
+        return urlId;
+    }
+
+
 
     public List<String> getStyleClasses() {
         return this.styleClasses;
