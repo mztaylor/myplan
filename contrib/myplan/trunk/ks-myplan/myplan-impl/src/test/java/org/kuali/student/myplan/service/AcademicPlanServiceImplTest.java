@@ -757,7 +757,7 @@ public class AcademicPlanServiceImplTest {
         assertEquals("stateKey",validationResultInfos.get(2).getElement());
         assertEquals("Could not find course with ID [XX].",validationResultInfos.get(3).getMessage());
         assertEquals("refObjectId",validationResultInfos.get(3).getElement());
-        assertEquals("Plan Item Type was [kuali.academicplan.item.backup], but no backup plan periods were defined.",validationResultInfos.get(4).getMessage());
+        assertEquals("Plan Item Type was [kuali.academicplan.item.backup], but no plan periods were defined.",validationResultInfos.get(4).getMessage());
         assertEquals("typeKey",validationResultInfos.get(4).getElement());
     }
 
