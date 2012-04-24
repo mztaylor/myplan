@@ -806,12 +806,6 @@
                     "/>
                 </bean>
 
-                <bean parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-
                 <bean parent="Uif-MessageField" p:messageText="or"/>
 
                 <bean parent="Uif-Link" p:linkLabel="Cancel" p:hrefText="#" p:target=""/>
