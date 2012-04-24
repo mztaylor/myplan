@@ -5,6 +5,7 @@ import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.*;
 
@@ -25,6 +26,14 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     private String term2 = "winter";
     private String term3 = "spring";
     private String term4 = "summer";
+    // Used for gettign the term and year from Atp
+    private transient AtpHelper atpHelper;
+    public synchronized AtpHelper getAtpHelper(){
+        if(this.atpHelper == null){
+            this.atpHelper = new AtpHelper();
+        }
+        return atpHelper;
+    }
 
 
     public enum terms {Autumn, Winter, Spring, Summer}
@@ -41,8 +50,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             /*Based on the Planned course list populate the FullPlanItemsDataObject*/
             for (PlanItemDataObject plan : plannedCoursesList) {
                 for (String atp : plan.getAtpIds()) {
-                    String qtrYr = atp.substring(atpPrefix, atp.length());
-                    String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                     String year = null;
                     String quarter = null;
                     if (splitStr.length == 2) {
@@ -236,9 +245,38 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
             }
         }
-        FullPlanTermItemsDataObject fullPlanTerm4 = new FullPlanTermItemsDataObject();
-        fullPlanTerm4.setTerm(term4);
-        fullPlanItemsDataObjectList.add(fullPlanTerm4);
+        if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term1)
+                && fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getPlanItemDataObjects().size()==0){
+            
+            fullPlanItemsDataObjectList.remove(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1));
+
+        }
+        else if (fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term1)
+                && fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getPlanItemDataObjects().size()>0)  {
+            FullPlanTermItemsDataObject planTerm2 = new FullPlanTermItemsDataObject();
+            planTerm2.setTerm(term2);
+            fullPlanItemsDataObjectList.add(planTerm2);
+            FullPlanTermItemsDataObject planTerm3 = new FullPlanTermItemsDataObject();
+            planTerm3.setTerm(term3);
+            fullPlanItemsDataObjectList.add(planTerm3);
+            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
+            planTerm4.setTerm(term4);
+            fullPlanItemsDataObjectList.add(planTerm4);
+        }
+        else if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term2)){
+
+            FullPlanTermItemsDataObject planTerm3 = new FullPlanTermItemsDataObject();
+            planTerm3.setTerm(term3);
+            fullPlanItemsDataObjectList.add(planTerm3);
+            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
+            planTerm4.setTerm(term4);
+            fullPlanItemsDataObjectList.add(planTerm4);
+        }
+        else if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term3)){
+            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
+            planTerm4.setTerm(term4);
+            fullPlanItemsDataObjectList.add(planTerm4);
+        }
 
         for (int i = 0; i < orderedFullPlanTerms.size(); i++) {
             FullPlanItemsDataObject fullPlanItemsDataObject1 = new FullPlanItemsDataObject();
@@ -253,6 +291,20 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
             }
             fullPlanItemsDataObjects.add(fullPlanItemsDataObject1);
+
+        }
+        if(fullPlanItemsDataObjectList.size()!=0){
+            FullPlanItemsDataObject fullPlanItemsDataObject1 = new FullPlanItemsDataObject();
+            StringBuffer yearRange=new StringBuffer();
+            yearRange=yearRange.append(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear()+1).append("-").append(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear()+2);
+            fullPlanItemsDataObject1.setYear(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear() + 1);
+            fullPlanItemsDataObject1.setYearRange(yearRange.toString());
+            for(int j=0;j<4;j++){
+                fullPlanItemsDataObject1.getTerms().add(fullPlanItemsDataObjectList.get(primaryIndex));
+                fullPlanItemsDataObjectList.remove(primaryIndex);
+            }
+            fullPlanItemsDataObjects.add(fullPlanItemsDataObject1);
+
 
         }
     }
