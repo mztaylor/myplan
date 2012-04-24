@@ -140,7 +140,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                    @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        throw new RuntimeException("Not implemented.");
+        List<PlanItemInfo> planItemInfos=new ArrayList<PlanItemInfo>();
+        List<PlanItemEntity> planItemEntities=planItemDao.getLearningPlanItems(learningPlanId,planItemTypeKey);
+        if(null == planItemEntities){
+            throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] does not exist", learningPlanId));
+        }
+        else {
+            for(PlanItemEntity planItemEntity:planItemEntities){
+                planItemInfos.add(planItemEntity.toDto());
+            }
+        }
+        return planItemInfos;
     }
 
     @Override
