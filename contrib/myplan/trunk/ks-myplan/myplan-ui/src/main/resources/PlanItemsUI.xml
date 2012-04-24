@@ -1448,7 +1448,7 @@
 
                 <!--  Backup checkbox -->
                 <bean parent="Uif-InputField" p:propertyName="backup" p:label="Backup" p:defaultValue="false"
-                      p:instructionalText="Should this course be marked as a backup.">
+                      p:instructionalText="Should this course be marked as a backup." p:render="@{moveCourse eq false ? true : false}">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
