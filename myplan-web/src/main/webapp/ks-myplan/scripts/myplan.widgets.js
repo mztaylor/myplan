@@ -30,7 +30,11 @@ function openCourse(courseId, e, enrolled, quarter, credits) {
         */
     }
 }
-
+/*
+######################################################################################
+    Function: Launch generic bubble popup
+######################################################################################
+ */
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close, messaging) {
     stopEvent(e);
 
@@ -110,7 +114,11 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
-
+/*
+######################################################################################
+    Function: Launch plan item bubble popup
+######################################################################################
+ */
 function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions, close) {
     stopEvent(e);
 
@@ -190,16 +198,11 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 	myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
-
-
-/*function fnFireEvents(obj) {
-    for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            eval('jq.publish("' + key + '", [' + JSON.stringify(obj[key]) + ']);');
-            alert('Event Fired!');
-        }
-    }
-}*/
+/*
+######################################################################################
+    Function: Submit
+######################################################################################
+ */
 function myplanAjaxSubmitPlanItem(id, methodToCall) {
     var tempDiv = jq("<div />").hide();
     jq("body").append(tempDiv);
@@ -210,36 +213,20 @@ function myplanAjaxSubmitPlanItem(id, methodToCall) {
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         elementToBlock.unblock();
-        jq("body").append('<div id="console" style="display: none;"/>');
-        //jq("#console").html(htmlContent);
-        jq("#console").html(jq("#json_events_item_key", htmlContent).text().replace(/\\/g,""));
         var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
-
         for (var key in json) {
             if (json.hasOwnProperty(key)) {
                 eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
             }
         }
+
         /*
         var status = jq("#request_status_item_key", htmlContent).text();
         var message = jq("#add_plan_item_key", htmlContent);
-
-
-
         var status = jq("#add_plan_item_key", htmlContent);
         var component = jq("#add_plan_item_key", htmlContent);
-
         var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
 		var addedId = jq.trim( jq(component).text() );
-        if (addedId.length > 0) {
-			elementToBlock.unblock();
-            jq("#" + targetId).parent().fadeOut(250, function() {
-                jq("#" + targetId).hide();
-                var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html('Saved to <a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Your Plan</a>');
-                jq("#" + targetId).parent().append(tempDiv);
-                jq(this).fadeIn(250);
-			});
-		}
 		*/
     };
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
@@ -449,7 +436,12 @@ function removeSavedCourse(id, methodToCall, action, retrieveOptions, courseCode
 		}
 	});
 }
-
+/*
+######################################################################################
+    Function:   KRAD's ajax submit function modified to allow submission of a form
+                other then the kuali form
+######################################################################################
+ */
 function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId) {
 	var data;
     // methodToCall checks
@@ -554,7 +546,12 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
     }
 	form.ajaxSubmit(submitOptions);
 }
-
+/*
+######################################################################################
+    Function:   Truncate (ellipse) a single horizontally aligned item so all items
+                fit on one line.
+######################################################################################
+ */
 function truncateField(id) {
     jq("[id^='" + id + "']").each(function() {
         jq(this).css("display","block");
@@ -569,7 +566,12 @@ function truncateField(id) {
         jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
     });
 }
-
+/*
+######################################################################################
+    Function:   Slide into view hidden horizontally aligned items specifying the id
+                of the item being brought into view.
+######################################################################################
+ */
 function fnPopoverSlider(showId, parentId, direction) {
     var newDirection;
     if (direction === 'left') {
@@ -585,21 +587,18 @@ function fnPopoverSlider(showId, parentId, direction) {
         }, 100, function() {});
     });
 }
-
-
-/* Callback functions */
-function fnDisplayMessage (message, targetId) {
-    jq("#" + targetId).parent().closest('div').fadeOut(250, function() {
-        jq(this).addClass("myplan-message-border myplan-message-success").html(message).fadeIn(250);
-    });
-}
-
+/*
+######################################################################################
+    Function:   Close all bubble popups
+######################################################################################
+ */
 function fnCloseAllPopups() {
-    jq(".myplan-popup-target").each(function() {
-        jq(this).HideAllBubblePopups();
-        jq(this).RemoveBubblePopup();
+    jq("*").each(function() {
+        if ( jq(this).HasBubblePopup() ) {
+            jq(this).HideAllBubblePopups();
+            jq(this).RemoveBubblePopup();
+        }
     });
-
 }
 
 /*Function used for moving the plan Item from planned to backup*/
