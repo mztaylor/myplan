@@ -899,7 +899,17 @@ public class PlanController extends UifControllerBase {
 
             //  Set the status of the request for the UI.
             form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+            if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)||planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)){
             form.setJavascriptEvents(makeRemoveEvents(planItem));
+            }else if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)){
+                Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+                Map<String, String> jsEventParams = new HashMap<String, String>();
+                jsEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST));
+                jsEventParams.put("planItemId", planItemId);
+                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+                form.setJavascriptEvents(events);
+            }
+
             //  Set success text.
             GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
         } catch (DoesNotExistException e) {
