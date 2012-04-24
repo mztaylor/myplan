@@ -42,6 +42,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
         /* atpId, type, courseId */
         PLAN_ITEM_DELETED,
         /* atpId, newTotalCredits */
-        UPDATE_TOTAL_CREDITS
+        UPDATE_NEW_TERM_TOTAL_CREDITS,
+        /*atpId, oldTotalCredits*/
+        UPDATE_OLD_TERM_TOTAL_CREDITS
     }
 }

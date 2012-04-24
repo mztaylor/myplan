@@ -35,6 +35,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.exceptions.*;
@@ -64,11 +65,9 @@ public class PlanController extends UifControllerBase {
 
     //  Java to JSON outputter.
     private transient ObjectMapper mapper = new ObjectMapper();
-
-    /*
-   atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
-    */
-    private int atpPrefix = 13;
+    
+    // Used for gettign the term and year from Atp
+    private transient AtpHelper atpHelper;
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -82,57 +81,50 @@ public class PlanController extends UifControllerBase {
 
         PlanForm planForm = (PlanForm) form;
         // First load the plan item and retrieve the courseId
-        PlanItemInfo planItem=new PlanItemInfo();
-        String courseId=null;
-        if(planForm.getPlanItemId()!=null){
-        try{
-            planItem= getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
-            courseId= planItem.getRefObjectId();
-            planForm.setDateAdded(planItem.getMeta().getCreateTime().toString());
-            String atp=planItem.getPlanPeriods().get(0);
-            String qtrYr = atp.substring(atpPrefix, atp.length());
-            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            planForm.setTerm(splitStr[0].substring(0, 1).toUpperCase().concat(splitStr[0].substring(1, splitStr[0].length())));
-            planForm.setYear(splitStr[1]);
-            if(planForm.getCourseDetails()==null){
-                CourseDetails courseDetails=new CourseDetails();
-                courseDetails.setCourseId(courseId);
-                planForm.setCourseDetails(courseDetails);
-            }else{
-            planForm.getCourseDetails().setCourseId(courseId);
-            }
-            //Following data used for the Dialog boxes
-            if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                planForm.setBackup(true);
-            }
+        PlanItemInfo planItem = null;
 
-        }
-        catch (Exception e){
-            logger.error("PlanItem not found");
-        }
-        }
-        else{
-            courseId=planForm.getCourseId();
+        //TODO: find and remove any reference to courseId being passed in to PlanForm
+        String courseId = null;
+        if (planForm.getPlanItemId() != null) {
+            try {
+                planItem = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                courseId = planItem.getRefObjectId();
+                planForm.setDateAdded(planItem.getMeta().getCreateTime().toString());
+                String[] splitStr = getAtpHelper().getTermAndYear(planItem.getPlanPeriods().get(0));
+                planForm.setTerm(splitStr[0]);
+                planForm.setYear(splitStr[1]);
+
+                //Following data used for the Dialog boxes
+                if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                    planForm.setBackup(true);
+                }
+
+            } catch (Exception e) {
+                logger.error("PlanItem not found");
+            }
+        } else {
+            planItem = new PlanItemInfo();
+            courseId = planForm.getCourseId();
         }
 
+        //TODO: Clean up with courseId removal
         if (StringUtils.isEmpty(courseId)) {
-            return doAddPlanItemError(planForm, "Could not initialize form because Course ID was missing.", null);
+            return doPlanActionError(planForm, "Could not initialize form because Course ID was missing.", null);
         }
 
 
-
-        if(planForm.getDateAdded()!=null){
-            String dateStr=planForm.getDateAdded().substring(0,10);
+        if (planForm.getDateAdded() != null) {
+            String dateStr = planForm.getDateAdded().substring(0, 10);
             DateFormat dfYMD =
-                    new SimpleDateFormat("yyyy-MM-dd") ;
+                    new SimpleDateFormat("yyyy-MM-dd");
             DateFormat dfDMY =
-                    new SimpleDateFormat("dd/MM/yyyy") ;
+                    new SimpleDateFormat("dd/MM/yyyy");
 
-            try{
-                dateStr=dfDMY.format(dfYMD.parse(dateStr));
-            }
-            catch (Exception e){
+            try {
+               dateStr = dfDMY.format(dfYMD.parse(dateStr));
+            } catch (Exception e) {
                 logger.error("Cant parse date");
+                return doPlanActionError(planForm, "Could not retrieve Plan date information.", null);
             }
             planForm.setDateAdded(dateStr);
         }
@@ -143,7 +135,7 @@ public class PlanController extends UifControllerBase {
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch (Exception e) {
-            return doAddPlanItemError(planForm, "Could retrieve Course Details.", null);
+            return doPlanActionError(planForm, "Could not retrieve Course Details.", null);
         }
 
         return getUIFModelAndView(planForm);
@@ -151,7 +143,7 @@ public class PlanController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=plannedToBackup")
     public ModelAndView plannedToBackup(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
         if (StringUtils.isEmpty(planItemId)) {
@@ -168,8 +160,8 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "planned".
-        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-             return doPlanActionError(form, "Move planned item was not type planned.", null);
+        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return doPlanActionError(form, "Move planned item was not type planned.", null);
         }
 
         //  Set type to "backup".
@@ -187,7 +179,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         String termId = planItem.getPlanPeriods().get(0);
         String typeKey = planItem.getTypeKey();
@@ -212,9 +204,9 @@ public class PlanController extends UifControllerBase {
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
         updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        int totalCredits=this.getTotalCredits(termId);
+        int totalCredits = this.getTotalCredits(termId);
         updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
-        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
 
         form.setJavascriptEvents(events);
 
@@ -223,7 +215,7 @@ public class PlanController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=backupToPlanned")
     public ModelAndView backupToPlanned(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
         if (StringUtils.isEmpty(planItemId)) {
@@ -239,7 +231,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "backup".
-        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return doPlanActionError(form, "Move planned item was not type backup.", null);
         }
 
@@ -258,7 +250,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         String termId = planItem.getPlanPeriods().get(0);
         String typeKey = planItem.getTypeKey();
@@ -283,9 +275,9 @@ public class PlanController extends UifControllerBase {
         //  Make an "Update total credits".
         Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
         updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        int totalCredits=this.getTotalCredits(termId);
+        int totalCredits = this.getTotalCredits(termId);
         updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
-        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
 
         form.setJavascriptEvents(events);
 
@@ -294,7 +286,7 @@ public class PlanController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=movePlannedCourse")
     public ModelAndView movePlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
         if (StringUtils.isEmpty(planItemId)) {
@@ -312,6 +304,25 @@ public class PlanController extends UifControllerBase {
         if (newTermIds.isEmpty()) {
             return doPlanActionError(form, "Could not parse term IDs.", null);
         }
+        //  Check for an "other" item in the terms list.
+        if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {
+            //  Remove the "other" item from the list.
+            newTermIds.remove(newTermIds.indexOf(PlanConstants.OTHER_TERM_KEY));
+
+            //  Create an ATP id from the values in the year and term fields.
+            String year = form.getYear();
+            if (StringUtils.isBlank(year)) {
+                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because year was blank.", null);
+            }
+
+            String term = form.getTerm();
+            if (StringUtils.isBlank(term)) {
+                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
+            }
+
+
+            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term,year));
+        }
 
         PlanItemInfo planItem = null;
         try {
@@ -322,9 +333,9 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "planned".
-        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            return doPlanActionError(form, "Move planned item was not type planned.", null);
-        }
+//        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+//            return doPlanActionError(form, "Move planned item was not type planned.", null);
+//        }
 
         //  TODO: FIXME: Only dealing with a single atpid
         String oldAtpId = planItem.getPlanPeriods().get(0);
@@ -343,7 +354,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         String typeKey = planItem.getTypeKey();
 
@@ -352,10 +363,10 @@ public class PlanController extends UifControllerBase {
         //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
         jsDeleteEventParams.put("atpId", formatAtpIdForUI(oldAtpId));
         jsDeleteEventParams.put("planItemType", formatTypeKey(typeKey));
-        jsDeleteEventParams.put("courseId", planItem.getRefObjectId());
+        jsDeleteEventParams.put("planItemId", planItemId);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
 
-        String newTermId =  newTermIds.get(0);
+        String newTermId = newTermIds.get(0);
         //  Make an add event for the new atp.
         Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
         addPlannedItemEventParams.put("planItemId", planItem.getId());
@@ -367,19 +378,20 @@ public class PlanController extends UifControllerBase {
 
         //  TODO: This logic may get updated if the user is allowed to switch from backup to planning within this method.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            //  Make an "Update total credits" for the old term.
+            //  Make an "Update total credits" for the new term.
             Map<String, String> updateCreditsEventParamsOld = new HashMap<String, String>();
             updateCreditsEventParamsOld.put("atpId", formatAtpIdForUI(newTermId));
-            int totalCredits=this.getTotalCredits(newTermId);
+            int totalCredits = this.getTotalCredits(newTermId);
             updateCreditsEventParamsOld.put("totalCredits", String.valueOf(totalCredits));
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsOld);
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParamsOld);
 
-            //  Make an "Update total credits" for the new term.
+            //  Make an "Update total credits" for the old term.
             Map<String, String> updateCreditsEventParamsNew = new HashMap<String, String>();
             updateCreditsEventParamsNew.put("atpId", formatAtpIdForUI(oldAtpId));
-            int totalCredits2=this.getTotalCredits(oldAtpId);
+            int totalCredits2 = this.getTotalCredits(oldAtpId);
             updateCreditsEventParamsNew.put("totalCredits", String.valueOf(totalCredits2));
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParamsNew);
+
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS, updateCreditsEventParamsNew);
         }
 
         form.setJavascriptEvents(events);
@@ -423,8 +435,7 @@ public class PlanController extends UifControllerBase {
                 return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
             }
 
-            String newTermId = PlanConstants.TERM_ID_PREFIX + term + year;
-            newTermIds.add(newTermId);
+            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term,year));
         }
 
         /*
@@ -441,18 +452,20 @@ public class PlanController extends UifControllerBase {
             //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
             plan = getLearningPlan(studentId);
         } catch (RuntimeException e) {
-            return doAddPlanItemError(form, "Query for default learning plan failed.", e);
+            return doPlanActionError(form, "Query for default learning plan failed.", e);
         }
 
         /*
          *  Create a default learning plan if there isn't one already and skip querying for plan items.
          */
+        //TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
+        // at the db level to restrict a single plan of a given type to a student
         PlanItem planItem = null;
         if (plan == null) {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                return doAddPlanItemError(form, "Unable to create learning plan.", e);
+                return doPlanActionError(form, "Unable to create learning plan.", e);
             }
         } else {
             /* Check for an existing plan item for the given course id (refObjectId). The planItems list should contain
@@ -464,7 +477,7 @@ public class PlanController extends UifControllerBase {
                 planItems = getAcademicPlanService().getPlanItemsInPlanByRefObjectIdByRefObjectType(plan.getId(), courseId,
                         LUConstants.CLU_TYPE_CREDIT_COURSE, PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                return doAddPlanItemError(form, "Unable to fetch plan items.", e);
+                return doPlanActionError(form, "Unable to fetch plan items.", e);
             }
 
             /*
@@ -519,7 +532,7 @@ public class PlanController extends UifControllerBase {
             try {
                 academicPlanService.updatePlanItem(planItem.getId(), (PlanItemInfo) planItem, PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                return doAddPlanItemError(form, "Unable to update plan item.", e);
+                return doPlanActionError(form, "Unable to update plan item.", e);
             }
         } else {
             try {
@@ -530,16 +543,16 @@ public class PlanController extends UifControllerBase {
                     planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
                 }
             } catch (Exception e) {
-                return doAddPlanItemError(form, "Unable to add plan item.", e);
+                return doPlanActionError(form, "Unable to add plan item.", e);
             }
         }
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         } catch (Exception e) {
-            return doAddPlanItemError(form, "Unable to retrieve Course Details.", null);
+            return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
 
         String courseDetailsAsJson;
@@ -547,7 +560,7 @@ public class PlanController extends UifControllerBase {
             //  Turn the list of javascript events into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
-            return doAddPlanItemError(form, "Could not convert javascript events to JSON.", e);
+            return doPlanActionError(form, "Could not convert javascript events to JSON.", e);
         }
 
         //  Set the status of the request for the UI.
@@ -556,7 +569,7 @@ public class PlanController extends UifControllerBase {
         String typeKey = planItem.getTypeKey();
 
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         for (String termId : newTermIds) {
             //  One "plan item added" for each new Term ID.
             Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
@@ -569,9 +582,9 @@ public class PlanController extends UifControllerBase {
             //  One "update total credits" for each new Term ID.
             Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
             updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-            int totalCredits=this.getTotalCredits(termId);
+            int totalCredits = this.getTotalCredits(termId);
             updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
         }
 
         form.setJavascriptEvents(events);
@@ -625,10 +638,10 @@ public class PlanController extends UifControllerBase {
             return doAddPlanItemError(form, "Unable to add plan item.", e);
         }
 
-         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         } catch (Exception e) {
             return doAddPlanItemError(form, "Unable to retrieve Course Details.", null);
         }
@@ -651,7 +664,7 @@ public class PlanController extends UifControllerBase {
         jsEventParams.put("planItemType", formatTypeKey(typeKey));
         jsEventParams.put("courseDetails", courseDetailsAsJson);
 
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
         form.setJavascriptEvents(events);
         //  Set success text.
@@ -666,6 +679,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Blow up on failed plan adds.
+     *
      * @deprecated Use doPlanActionError() instead.
      */
     private ModelAndView doAddPlanItemError(PlanForm form, String errorMessage, Exception e) {
@@ -679,10 +693,10 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     *  Blow-up response for all plan item actions.
+     * Blow-up response for all plan item actions.
      */
     private ModelAndView doPlanActionError(PlanForm form, String errorMessage, Exception e) {
-         form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
         if (e != null) {
             logger.error(errorMessage, e);
         } else {
@@ -693,7 +707,7 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     *  Blow-up response for all plan item actions.
+     * Blow-up response for all plan item actions.
      */
     private ModelAndView doPlanActionSuccess(PlanForm form) {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
@@ -705,7 +719,7 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-           courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
@@ -872,10 +886,10 @@ public class PlanController extends UifControllerBase {
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
-        form.setPlanItemId(planItemId);
 
         try {
             // First load the plan item and retrieve the courseId
+            //TODO: Once all courseId dependencies are removed from form, delete this section
             PlanItemInfo planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
             String courseId = planItem.getRefObjectId();
             form.setCourseId(courseId);
@@ -910,38 +924,31 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Creates events map for a remove.
+     *
      * @param planItem
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvents(PlanItemInfo planItem) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String,String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+        String termId = (planItem.getPlanPeriods() == null || planItem.getPlanPeriods().size() == 0) ? "" : planItem.getPlanPeriods().get(0);
+
+        Map<String, String> jsEventParams = new HashMap<String, String>();
+        jsEventParams.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+        jsEventParams.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+        jsEventParams.put("planItemId", planItem.getId());
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
             //  Queue the javascript event(s) that should be thrown in the UI.
-            Map<String, String> jsEventParams = new HashMap<String, String>();
-            jsEventParams.put("courseId", planItem.getRefObjectId());
-            jsEventParams.put("planItemType", planItem.getTypeKey());
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
-        } else {
-
-            String typeKey = planItem.getTypeKey();
-            //  Create a delete event for all ATPs
-            for (String termId : planItem.getPlanPeriods()) {
-                //  Queue the javascript event(s) that should be thrown in the UI.
-                Map<String, String> jsEventParams = new HashMap<String, String>();
-                jsEventParams.put("atpId", formatAtpIdForUI(termId));
-                jsEventParams.put("planItemType", formatTypeKey(typeKey));
-                jsEventParams.put("planItemId", planItem.getId());
-                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
-
-                //  One "update total credits" for each ATP id.
-                Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-                updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-                int totalCredits=this.getTotalCredits(termId);
-                updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
-                events.put(PlanConstants.JS_EVENT_NAME.UPDATE_TOTAL_CREDITS, updateCreditsEventParams);
-            }
+            //  One "update total credits" for each ATP id.
+            Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
+            updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
+            int totalCredits = this.getTotalCredits(termId);
+            updateCreditsEventParams.put("totalCredits", String.valueOf(totalCredits));
+            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
         }
+
         return events;
     }
 
@@ -950,53 +957,65 @@ public class PlanController extends UifControllerBase {
     }
 
     private String formatTypeKey(String typeKey) {
-        return typeKey.substring(typeKey.lastIndexOf(".")+1);
+        return typeKey.substring(typeKey.lastIndexOf(".") + 1);
     }
-    
-    private Integer getTotalCredits(String termId){
-        int totalCredits=0;
+
+    private Integer getTotalCredits(String termId) {
+        int totalCredits = 0;
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
         ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
-        List<LearningPlanInfo> learningPlanList=null;
-        List<PlanItemInfo> planItemList=null;
+        List<LearningPlanInfo> learningPlanList = null;
+        List<PlanItemInfo> planItemList = null;
 
-         try{
-             learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+        try {
+            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
 
 
-        for (LearningPlanInfo learningPlan : learningPlanList) {
-            String learningPlanID = learningPlan.getId();
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                String learningPlanID = learningPlan.getId();
 
-                planItemList= getAcademicPlanService().getPlanItemsInPlan(learningPlanID, context);
+                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, context);
 
-            for (PlanItemInfo planItem : planItemList) {
-                  if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)){
-                String courseID = planItem.getRefObjectId();
-                for(String atp:planItem.getPlanPeriods()){
-                if(atp.equalsIgnoreCase(termId)){
-                    CourseDetails courseDetails=new CourseDetails();
-                    courseDetails=getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
-                    if(courseDetails.getCredit().length()>2){
-                        String [] str= courseDetails.getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                        String credit=str[2] ;
-                        totalCredits=totalCredits+Integer.parseInt(credit);
-                    }  else{
-                    totalCredits=totalCredits+Integer.parseInt(courseDetails.getCredit());
+                for (PlanItemInfo planItem : planItemList) {
+                    String courseID = planItem.getRefObjectId();
+                    for (String atp : planItem.getPlanPeriods()) {
+                        if (atp.equalsIgnoreCase(termId)) {
+                            CourseDetails courseDetails = new CourseDetails();
+                            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
+
+                            //TODO: Put the right logic to deal with different credit options
+                            if (courseDetails.getCredit().length() > 2) {
+                                String[] str = courseDetails.getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                                String credit = str[2];
+                                totalCredits = totalCredits + Integer.parseInt(credit);
+                            } else {
+                                totalCredits = totalCredits + Integer.parseInt(courseDetails.getCredit());
+                            }
+                        }
                     }
                 }
-                }
-            }   
             }
-        }
-         }catch(Exception e){
+        } catch (Exception e) {
 
-         }
+            logger.error("could not load total credits");
+        }
         return totalCredits;
     }
-    
+
+
+    public synchronized AtpHelper getAtpHelper(){
+        if(this.atpHelper == null){
+            this.atpHelper = new AtpHelper();
+        }
+        return atpHelper;
+    }
+
+    public void setAtpHelper(AtpHelper atpHelper) {
+        this.atpHelper = atpHelper;
+    }
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {

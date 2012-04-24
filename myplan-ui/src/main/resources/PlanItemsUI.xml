@@ -751,7 +751,7 @@
                       p:title="Mark it as Planned course" p:onClickScript="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'backupToPlanned');"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter"
-                      p:title="Move to Another Quarter" p:hrefText="#"/>
+                      p:title="Move to Another Quarter" p:onClickScript="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:onClickScript="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
             </list>
         </property>
@@ -767,17 +767,23 @@
             </list>
         </property>
     </bean>
+     <!--Move Course to another Quarter Dialog Box Content-->
 
-
-
-       <!--Delete confirmation Dialog Box content -->
+    <bean id="plan_item_course_move_dialog" parent="Uif-VerticalBoxSection" p:title="Move to Another Quarter">
+        <property name="items">
+            <list>
+               <bean parent="add_planned_course_fields" p:style="display:block;"/>
+            </list>
+        </property>
+    </bean>
+    <!--Delete confirmation Dialog Box content -->
     <bean id="plan_item_delete_dialog" parent="Uif-HorizontalBoxSection" p:title="Delete from the Plan"
           p:instructionalText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo.">
         <property name="items">
             <list>
                 <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
                       p:actionLabel="Delete">
-                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{planItemId}', 'removeItem');"/>
+                    <property name="clientSideJs" value="myplanAjaxMovePlanItem('@{planItemId}', 'removeItem');"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
@@ -954,7 +960,7 @@
             jq('#planned_courses_detail_list_group')
                 .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
                             .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
-    .subscribe('UPDATE_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
+    .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)}).subscribe('UPDATE_OLD_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
         "/>
     </bean>
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
@@ -1328,6 +1334,19 @@
                         </list>
                     </property>
                 </bean>
+                <!--This page is used for the Move to another quarter Dialog box -->
+                <bean parent="Uif-Page" p:id="move_dialog_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="plan_item_course_move_dialog"/>
+                        </list>
+                    </property>
+                </bean>
                 <!--This page is used for the Delete plan Item Dialog box -->
                 <bean parent="Uif-Page" p:id="plan_item_delete_page" p:errorsField.render="false">
                     <property name="styleClasses">
@@ -1390,8 +1409,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="Which quarter would you like add?"/>
-
+                <bean parent="Uif-MessageField" p:messageText="Which quarter would you like add?" p:render="@{moveCourse eq false ? true : false}"/>
+                <bean parent="Uif-MessageField" p:messageText="Which quarter would you like move @{courseDetails.code} to ?" p:render="@{moveCourse eq true ? true : false}"/>
                 <bean parent="Uif-InputField" p:propertyName="termsList" p:width="auto" p:defaultValue="">
                     <property name="control">
                         <bean parent="Uif-VerticalCheckboxesControl"/>
@@ -1423,7 +1442,7 @@
                     <property name="items">
                         <list>
                             <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Add To Plan">
+                                  p:actionLabel="Add To Plan" p:render="@{moveCourse eq false ? true : false}">
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'addPlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
@@ -1438,9 +1457,34 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                            <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}">
+                                <property name="clientSideJs"
+                                          value="myplanAjaxMovePlanItem('@{planItemId}', 'movePlannedCourse');"/>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#addPlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan','addPlannedCourse')});"/>
+                                <!--p:methodToCall="addPlannedCourse"-->
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-90</value>
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{moveCourse eq false ? true : false}">
                                 <property name="clientSideJs"
                                           value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-transparent</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{moveCourse eq true ? true : false}">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>

@@ -12,6 +12,7 @@ import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import javax.xml.namespace.QName;
 import java.awt.*;
@@ -40,11 +41,18 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
         this.academicCalendarService = academicCalendarService;
     }
+    // Used for gettign the term and year from Atp
+    private transient AtpHelper atpHelper;
+    public synchronized AtpHelper getAtpHelper(){
+        if(this.atpHelper == null){
+            this.atpHelper = new AtpHelper();
+        }
+        return atpHelper;
+    }
 
-    /*
-   atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
-    */
-    private int atpPrefix = 13;
+    public void setAtpHelper(AtpHelper atpHelper) {
+        this.atpHelper = atpHelper;
+    }
 
     private String term1 = "Autumn";
     private String term2 = "Winter";
@@ -100,8 +108,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                             PlannedTerm plannedTerm1 = new PlannedTerm();
                             plannedTerm1.setPlanItemId(atp);
                             StringBuffer str = new StringBuffer();
-                            String qtrYr = atp.substring(atpPrefix, atp.length());
-                            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                            /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                            String[] splitStr = getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                             str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
                             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                             plannedTerm1.setQtrYear(QtrYear);
@@ -124,8 +132,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         PlannedTerm plannedTerm = new PlannedTerm();
                         plannedTerm.setPlanItemId(atp);
                         StringBuffer str = new StringBuffer();
-                        String qtrYr = atp.substring(atpPrefix, atp.length());
-                        String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                        /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                        String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                         str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
                         String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                         plannedTerm.setQtrYear(QtrYear);
@@ -164,8 +172,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         PlannedTerm plannedTerm = new PlannedTerm();
                         plannedTerm.setPlanItemId(atp);
                         StringBuffer str = new StringBuffer();
-                        String qtrYr = atp.substring(atpPrefix, atp.length());
-                        String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                        /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                        String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                         str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
                         String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                         plannedTerm.setQtrYear(QtrYear);
@@ -301,8 +309,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         for (String atp : atps) {
             PlannedTerm pl = new PlannedTerm();
             pl.setPlanItemId(atp);
-            String qtrYr = atp.substring(atpPrefix, atp.length());
-            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+            String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
             StringBuffer str = new StringBuffer();
             str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
@@ -348,8 +356,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         for (String atp : atps) {
             PlannedTerm pl = new PlannedTerm();
             pl.setPlanItemId(atp);
-            String qtrYr = atp.substring(atpPrefix, atp.length());
-            String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+            String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
             StringBuffer str = new StringBuffer();
             str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
