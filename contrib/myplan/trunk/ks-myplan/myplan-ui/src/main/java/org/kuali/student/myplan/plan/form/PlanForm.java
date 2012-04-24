@@ -63,6 +63,9 @@ public class PlanForm extends UifFormBase {
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup;
 
+    //   based on this Add to plan page items are populated
+    private boolean moveCourse=false;
+
     //required for message on the view course summary
     private String dateAdded;
     /**
@@ -169,6 +172,14 @@ public class PlanForm extends UifFormBase {
 
     public void setDateAdded(String dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public boolean isMoveCourse() {
+        return moveCourse;
+    }
+
+    public void setMoveCourse(boolean moveCourse) {
+        this.moveCourse = moveCourse;
     }
 
     /**
