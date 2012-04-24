@@ -269,13 +269,24 @@ a:focus {
     padding:5px 0px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout {
-    height: 200px;
+    height: 208px;
     overflow: hidden;
+    background: url(../images/bkgrdDotted.gif);
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
-    border-top:dotted 1px #ccc;
-    padding:5px;
+    margin-top: 1px;
+}
+.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
+    display: block;
+    font-weight: normal;
+    padding: 0 5px;
+    height: 25px;
+    line-height: 25px;
     font-size:90%;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
+    color: #aaa;
 }
 .myplan-carousel-term-total {
     background:#ccc;

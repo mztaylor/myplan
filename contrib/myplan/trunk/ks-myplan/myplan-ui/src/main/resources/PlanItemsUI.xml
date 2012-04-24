@@ -740,19 +740,29 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
+                <bean p:id="@{planItemId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
+                <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:render="@{backup ? false : true}">
+                    <property name="onClickScript"
+                              value="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'plannedToBackup');"/>
+                </bean>
+                <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Planned course" p:title="Mark it as Planned course" p:render="@{backup ? true : false}">
+                    <property name="onClickScript"
+                              value="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'backupToPlanned');"/>
+                </bean>
+                <bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#">
 
-                <bean parent="Uif-Link" p:render="@{backup ? false : true}" p:target="" p:linkLabel="Mark it as Backup course"
-                      p:title="Mark it as Backup course" p:onClickScript="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'plannedToBackup');"/>
-                <bean parent="Uif-Link" p:render="@{backup ? true : false}" p:target="" p:linkLabel="Mark it as Planned course"
-                      p:title="Mark it as Planned course" p:onClickScript="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'backupToPlanned');"/>
-                <bean parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"/>
-                <bean parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter"
-                      p:title="Move to Another Quarter" p:onClickScript="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
-                <bean parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:onClickScript="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
+                <bean p:id="@{planItemId}_move" parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
+                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -792,8 +802,8 @@
                         </list>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                        jq('#addPlannedCourse')
-                            .subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});"/>
+                        jq('#addPlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});
+                    "/>
                 </bean>
 
                 <bean parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
@@ -886,7 +896,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalBoxGroup">
+                <ref bean="overallPlanLink"/>
+                <bean parent="Uif-HorizontalBoxGroup" p:styleClasses="this-style">
                     <property name="errorsField.render" value="false"/>
                     <property name="items">
                         <list>
@@ -897,6 +908,7 @@
                                     </list>
                                 </property>
                             </bean>
+                            <bean parent="Uif-MessageField" p:messageText="Academic Year"/>
                             <bean parent="Uif-Link" p:linkLabel="Next" p:hrefText="#" p:target="">
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -908,7 +920,6 @@
                     </property>
                 </bean>
                 <ref bean="planned_courses_detail_list"/>
-                <ref bean="overallPlanLink"/>
             </list>
         </property>
     </bean>
@@ -930,7 +941,7 @@
             </list>
         </property>
     </bean>
-    <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection" p:title="Academic Year">
+    <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
@@ -942,9 +953,7 @@
                 <value>myplan-remove-margin</value>
             </list>
         </property>
-        <property name="header">
-            <bean parent="Uif-HeaderField-Three"/>
-        </property>
+        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader"/>
@@ -959,8 +968,9 @@
         <property name="onDocumentReadyScript" value="
             jq('#planned_courses_detail_list_group')
                 .subscribe('PLAN_ITEM_ADDED', function(data){fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit)})
-                            .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
-    .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)}).subscribe('UPDATE_OLD_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
+                .subscribe('PLAN_ITEM_DELETED', function(data){fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId)})
+                .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)})
+                .subscribe('UPDATE_OLD_TERM_TOTAL_CREDITS', function(data){fnUpdateCredits(data.atpId, data.totalCredits)});
         "/>
     </bean>
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
@@ -1563,8 +1573,8 @@
                                     </list>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse')
-                                        .subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});"/>
+                                    jq('#addPlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});
+                                "/>
                             </bean>
                             <bean p:id="deleteCourseNoButton" parent="Uif-PrimaryActionButton" p:actionLabel="No">
                                 <property name="clientSideJs"
