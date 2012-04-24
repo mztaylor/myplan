@@ -609,7 +609,7 @@
                         <list>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
                                 <property name="clientSideJs"
-                                          value="fnPopoverSlider('add_planned_course_fields','course_popover_group','left');"/>
+                                          value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top'});"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
@@ -1335,6 +1335,19 @@
                     <property name="items">
                         <list>
                             <ref bean="plan_item_course_summary_dialog"/>
+                        </list>
+                    </property>
+                </bean>
+                <!--This page is used for the Move to another quarter Dialog box -->
+                <bean parent="Uif-Page" p:id="add_dialog_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="plan_item_course_move_dialog" p:title="Add to Plan"/>
                         </list>
                     </property>
                 </bean>

@@ -287,8 +287,9 @@
     <bean id="course_details_actions" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false" p:style="margin-bottom: 25px;">
         <property name="items">
             <list>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Add to Plan"
-                      p:clientSideJs="alert('This course has been added successfully');">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Add to Plan">
+                    <property name="clientSideJs"
+                              value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top'});"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>
