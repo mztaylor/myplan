@@ -63,9 +63,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
-        var popupBox = jq(target).attr("class","myplan-popup-target");
+        var popupBox = jq(target).addClass("myplan-popup-target");
     } else {
-        var popupBox = jq(target).parents(selector).attr("class","myplan-popup-target");
+        var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
     }
 
     jq(".myplan-popup-target").each(function() {
@@ -144,9 +144,9 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
-        var popupBox = jq(target).attr("class","myplan-popup-target");
+        var popupBox = jq(target).addClass("myplan-popup-target");
     } else {
-        var popupBox = jq(target).parents(selector).attr("class","myplan-popup-target");
+        var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
     }
 
     jq(".myplan-popup-target").each(function() {
@@ -213,21 +213,17 @@ function myplanAjaxSubmitPlanItem(id, methodToCall) {
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         elementToBlock.unblock();
-        var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
-        for (var key in json) {
-            if (json.hasOwnProperty(key)) {
-                eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
-            }
+        var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
+        switch (status) {
+            case 'success':
+                var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
+                    }
+                }
+                break;
         }
-
-        /*
-        var status = jq("#request_status_item_key", htmlContent).text();
-        var message = jq("#add_plan_item_key", htmlContent);
-        var status = jq("#add_plan_item_key", htmlContent);
-        var component = jq("#add_plan_item_key", htmlContent);
-        var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
-		var addedId = jq.trim( jq(component).text() );
-		*/
     };
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
     tempDiv.remove();
@@ -593,6 +589,7 @@ function fnPopoverSlider(showId, parentId, direction) {
 ######################################################################################
  */
 function fnCloseAllPopups() {
+    jq("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
     jq("*").each(function() {
         if ( jq(this).HasBubblePopup() ) {
             jq(this).HideAllBubblePopups();
@@ -617,14 +614,13 @@ function myPlanAjaxPlanItemMove(id, getId, retrieveOptions, e, methodToCall) {
     var updateRefreshableComponentCallback = function(htmlContent){
         var component = jq("#" + getId + "_div", htmlContent);
         var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
-        elementToBlock.unblock({onUnblock: function(){
-            runHiddenScripts(getId + "_div");
-        }
+        elementToBlock.unblock({onUnblock:
+            function(){
+                runHiddenScripts(getId + "_div");
+            }
         });
     };
-      myplanAjaxSubmitPlanItem(id,methodToCall);
+    myplanAjaxSubmitPlanItem(id,methodToCall);
     fnCloseAllPopups();
-      jq("form#"+ id + "_form").remove();
-
+    jq("form#"+ id + "_form").remove();
 }
-

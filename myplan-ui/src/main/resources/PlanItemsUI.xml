@@ -609,7 +609,7 @@
                         <list>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
                                 <property name="clientSideJs"
-                                          value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top'});"/>
+                                          value="openPlanItemPopUp('@{#line.id}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
@@ -619,7 +619,7 @@
                             </bean>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
                                 <property name="clientSideJs"
-                                          value="fnPopoverSlider('delete_from_list_confirmation','course_popover_group','left');"/>
+                                          value="openPlanItemPopUp('@{#line.id}','plan_item_delete_page',{planItemId:'@{#line.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
@@ -802,14 +802,23 @@
                         </list>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                        jq('#addPlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){fnCloseAllPopups()});
+                        jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){ fnDisplayMessage('Deleted Successfully','deletePlannedCourse'); setTimeout('fnCloseAllPopups()', 2000);});
                     "/>
                 </bean>
 
                 <bean parent="Uif-MessageField" p:messageText="or"/>
 
-                <bean parent="Uif-Link" p:linkLabel="Cancel" p:hrefText="#" p:target=""/>
-
+                <bean p:id="cancelPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                    <property name="clientSideJs"
+                              value="fnCloseAllPopups();"/>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-button</value>
+                            <value>myplan-button-transparent</value>
+                            <value>fl-font-size-90</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -891,7 +900,7 @@
         <property name="items">
             <list>
                 <ref bean="overallPlanLink"/>
-                <bean parent="Uif-HorizontalBoxGroup" p:styleClasses="this-style">
+                <bean parent="Uif-HorizontalBoxGroup">
                     <property name="errorsField.render" value="false"/>
                     <property name="items">
                         <list>
@@ -902,7 +911,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:messageText="Academic Year"/>
+                            <bean parent="Uif-MessageField" p:messageText="Academic Year" p:styleClasses="myplan-plan-header fl-text-bold" />
                             <bean parent="Uif-Link" p:linkLabel="Next" p:hrefText="#" p:target="">
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1464,7 +1473,7 @@
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'addPlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan','addPlannedCourse')});"/>
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan','addPlannedCourse'); setTimeout('fnCloseAllPopups()', 2000);});"/>
                                 <!--p:methodToCall="addPlannedCourse"-->
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1479,8 +1488,8 @@
                                 <property name="clientSideJs"
                                           value="myplanAjaxMovePlanItem('@{planItemId}', 'movePlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Added to Plan','addPlannedCourse')});"/>
+                                    jq('#movePlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){fnDisplayMessage('Course Moved','addPlannedCourse'); setTimeout('fnCloseAllPopups()', 2000);});"/>
                                 <!--p:methodToCall="addPlannedCourse"-->
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1502,6 +1511,8 @@
                                 </property>
                             </bean>
                             <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{moveCourse eq true ? true : false}">
+                                <property name="clientSideJs"
+                                          value="fnCloseAllPopups();"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
