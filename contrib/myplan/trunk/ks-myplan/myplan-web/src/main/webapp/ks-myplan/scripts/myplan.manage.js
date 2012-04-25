@@ -2,7 +2,7 @@ function fnBuildTitle(aView, termSelector, headerSelector) {
     var sText = 'Academic Year';
     var sFirst = jq.trim ( jq(aView[0]).find("." + termSelector).text() );
     var sLast = jq.trim ( jq(aView[aView.length-1]).find("." + termSelector).text() );
-    jq("#" + headerSelector + " .uif-header").html(sText + ' ' + sFirst.substr(-4) + '-' + sLast.substr(-4));
+    jq("#" + headerSelector + " .myplan-plan-header").html(sText + ' ' + sFirst.substr(-4) + '-' + sLast.substr(-4));
 }
 
 jq(document).ready(function() {
@@ -36,8 +36,8 @@ jq(document).ready(function() {
         btnNext: ".myplan-carousel-next",
         btnPrev: ".myplan-carousel-prev",
         scroll: 4,
-        afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_header_div'); },
-        initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_header_div'); }
+        afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); },
+        initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
     });
     /*
     jq(".quarter_backup_footer").click(function() {

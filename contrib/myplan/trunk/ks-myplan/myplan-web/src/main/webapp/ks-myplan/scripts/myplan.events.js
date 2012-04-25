@@ -6,15 +6,18 @@
 function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
     var item = '\
 		<span class="fieldLine boxLayoutVerticalItem clearfix">\
-    		<div class="uif-collectionItem">\
+    		<div class="uif-collectionItem" id="' + planItemId + '_div">\
 				<span class="fieldLine boxLayoutVerticalItem clearfix">\
 					<span class="uif-field uif-link"><a id="' + planItemId + '" href="#" target="" title="' + courseTitle + '" class="uif-field uif-link">' + courseCode + ' (' + courseCredits + ')</a></span>\
-					<input type="hidden" value="jq(\'#\' + \'' + planItemId + '\').click(function(e) { openPopUp(\'' + planItemId + '\',\'add_planned_course\',\'populateMenuItems\',\'plan\',{viewId:\'PlannedCourseMenuItem-FormView\',courseId:\'' + planItemId + '\'},e,\'li\'); });" script="first_run">\
+					<input name="script" type="hidden" value="jq(\'#\' + \'' + planItemId + '\').click(function(e) { openPopUp(\'' + planItemId + '\',\'add_planned_course\',\'startAddPlannedCourseForm\',\'plan\',{viewId:\'PlannedCourseMenuItem-FormView\',planItemId:\'' + planItemId + '\'},e,null,{width:\'150px\'},{tail:{align:\'top\'},align:\'top\'},false); });">\
 				</span>\
 			</div>\
 		</span>\
 	';
-    jq(item).appendTo("." + atpId + "-" + type + " .uif-stackedCollectionLayout > span").children(".uif-collectionItem").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate( {backgroundColor:"#ffffff"}, 1500 );
+    jq(item).prependTo("." + atpId + "-" + type + " .uif-stackedCollectionLayout > span").children(".uif-collectionItem").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
+        runHiddenScripts(planItemId + "_div");
+    });
+
 }
 /*
 #################################################################
@@ -22,6 +25,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
 #################################################################
  */
 function fnRemovePlanItem (atpId, type, planItemId) {
+    jq("#" + planItemId).unbind('click');
     jq("." + atpId + "-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId).parents(".uif-collectionItem").parent("span").fadeOut(250, function(){
         jq(this).remove();
     });
