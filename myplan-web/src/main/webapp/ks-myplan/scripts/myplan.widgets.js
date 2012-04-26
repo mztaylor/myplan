@@ -203,20 +203,20 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     Function: Submit
 ######################################################################################
  */
-function myplanAjaxSubmitPlanItem(id, methodToCall) {
+function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
     var tempDiv = jq("<div />").hide();
     jq("body").append(tempDiv);
     var elementToBlock = tempDiv;
     jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
-    jq('<input type="hidden" name="courseId" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
+    jq('<input type="hidden" name="' + type + '" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         elementToBlock.unblock();
         var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
         switch (status) {
             case 'success':
-                var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
+                var json = jq.parseJSON( jq.trim( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") ) );
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
@@ -228,53 +228,11 @@ function myplanAjaxSubmitPlanItem(id, methodToCall) {
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
     tempDiv.remove();
 }
-
-function myplanAjaxMovePlanItem(id, methodToCall) {
-    var tempDiv = jq("<div />").hide();
-    jq("body").append(tempDiv);
-    var elementToBlock = tempDiv;
-    jq('input[name="methodToCall"]').remove();
-    jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
-    jq('<input type="hidden" name="planItemId" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
-    jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
-    var updateRefreshableComponentCallback = function(htmlContent){
-        elementToBlock.unblock();
-        jq("body").append('<div id="console" style="display: none;"/>');
-        //jq("#console").html(htmlContent);
-        jq("#console").html(jq("#json_events_item_key", htmlContent).text().replace(/\\/g,""));
-        var json = jq.parseJSON( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") );
-
-        for (var key in json) {
-            if (json.hasOwnProperty(key)) {
-                eval('jq.publish("' + key + '", [' + JSON.stringify(json[key]) + ']);');
-            }
-        }
-        /*
-         var status = jq("#request_status_item_key", htmlContent).text();
-         var message = jq("#add_plan_item_key", htmlContent);
-
-
-
-         var status = jq("#add_plan_item_key", htmlContent);
-         var component = jq("#add_plan_item_key", htmlContent);
-
-         var courseId =  jq.trim( jq( jq("#course_id_item_key", htmlContent) ).text() );
-         var addedId = jq.trim( jq(component).text() );
-         if (addedId.length > 0) {
-         elementToBlock.unblock();
-         jq("#" + targetId).parent().fadeOut(250, function() {
-         jq("#" + targetId).hide();
-         var tempDiv = jq('<div />').attr("id",courseId+"_saved").addClass("myplan-message-border myplan-message-success fl-force-left").html('Saved to <a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Your Plan</a>');
-         jq("#" + targetId).parent().append(tempDiv);
-         jq(this).fadeIn(250);
-         });
-         }
-         */
-    };
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
-    tempDiv.remove();
-}
-
+/*
+######################################################################################
+    Function: Retrieve component content through ajax
+######################################################################################
+ */
 function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
@@ -620,7 +578,7 @@ function myPlanAjaxPlanItemMove(id, getId, retrieveOptions, e, methodToCall) {
             }
         });
     };
-    myplanAjaxSubmitPlanItem(id,methodToCall);
+    myplanAjaxSubmitPlanItem(id, 'planItemId', methodToCall);
     fnCloseAllPopups();
     jq("form#"+ id + "_form").remove();
 }

@@ -21,7 +21,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
 }
 /*
 #################################################################
-    Function: remove course to quarter plan view
+    Function: remove course from quarter plan view
 #################################################################
  */
 function fnRemovePlanItem (atpId, type, planItemId) {
@@ -29,6 +29,26 @@ function fnRemovePlanItem (atpId, type, planItemId) {
     jq("." + atpId + "-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId).parents(".uif-collectionItem").parent("span").fadeOut(250, function(){
         jq(this).remove();
     });
+}
+/*
+#################################################################
+    Function: remove course from saved courses full details list
+#################################################################
+ */
+function fnRemoveSavedItem (planItemId) {
+    jq(".myplan-saved-courses-detail #" + planItemId + "_span").parents("li").fadeOut(250, function(){
+        jq(this).remove();
+    });
+}
+/*
+#################################################################
+    Function: update the count of saved courses
+#################################################################
+ */
+function fnUpdateSavedCount (savedItemCount) {
+    jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong").fadeOut(250, function() {
+	    jq(this).html(savedItemCount - 1).fadeIn(250);
+	});
 }
 /*
 #################################################################

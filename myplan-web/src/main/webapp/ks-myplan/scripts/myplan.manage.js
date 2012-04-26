@@ -32,13 +32,15 @@ jq(document).ready(function() {
             }
         }
     }); */
-    jq("#planned_courses_detail_list_group").jCarouselLite({
-        btnNext: ".myplan-carousel-next",
-        btnPrev: ".myplan-carousel-prev",
-        scroll: 4,
-        afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); },
-        initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
-    });
+    if ( jq("#planned_courses_detail_list_group ul:not(.errorLines) li").length > 0 ) {
+        jq("#planned_courses_detail_list_group").jCarouselLite({
+            btnNext: ".myplan-carousel-next",
+            btnPrev: ".myplan-carousel-prev",
+            scroll: 4,
+            afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); },
+            initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
+        });
+    }
     /*
     jq(".quarter_backup_footer").click(function() {
         if (!jq(this).hasClass("disabled")) {
