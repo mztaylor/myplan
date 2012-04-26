@@ -65,7 +65,7 @@ public class PlanController extends UifControllerBase {
 
     //  Java to JSON outputter.
     private transient ObjectMapper mapper = new ObjectMapper();
-    
+
     // Used for gettign the term and year from Atp
     private transient AtpHelper atpHelper;
 
@@ -121,7 +121,7 @@ public class PlanController extends UifControllerBase {
                     new SimpleDateFormat("dd/MM/yyyy");
 
             try {
-               dateStr = dfDMY.format(dfYMD.parse(dateStr));
+                dateStr = dfDMY.format(dfYMD.parse(dateStr));
             } catch (Exception e) {
                 logger.error("Cant parse date");
                 return doPlanActionError(planForm, "Could not retrieve Plan date information.", null);
@@ -321,7 +321,7 @@ public class PlanController extends UifControllerBase {
             }
 
 
-            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term,year));
+            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term, year));
         }
 
         PlanItemInfo planItem = null;
@@ -435,7 +435,7 @@ public class PlanController extends UifControllerBase {
                 return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
             }
 
-            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term,year));
+            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term, year));
         }
 
         /*
@@ -899,16 +899,8 @@ public class PlanController extends UifControllerBase {
 
             //  Set the status of the request for the UI.
             form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-            if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)||planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)){
             form.setJavascriptEvents(makeRemoveEvents(planItem));
-            }else if(planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)){
-                Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-                Map<String, String> jsEventParams = new HashMap<String, String>();
-                jsEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST));
-                jsEventParams.put("planItemId", planItemId);
-                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
-                form.setJavascriptEvents(events);
-            }
+
 
             //  Set success text.
             GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
@@ -944,7 +936,10 @@ public class PlanController extends UifControllerBase {
         String termId = (planItem.getPlanPeriods() == null || planItem.getPlanPeriods().size() == 0) ? "" : planItem.getPlanPeriods().get(0);
 
         Map<String, String> jsEventParams = new HashMap<String, String>();
-        jsEventParams.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
+                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            jsEventParams.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+        }
         jsEventParams.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         jsEventParams.put("planItemId", planItem.getId());
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
@@ -1016,8 +1011,8 @@ public class PlanController extends UifControllerBase {
     }
 
 
-    public synchronized AtpHelper getAtpHelper(){
-        if(this.atpHelper == null){
+    public synchronized AtpHelper getAtpHelper() {
+        if (this.atpHelper == null) {
             this.atpHelper = new AtpHelper();
         }
         return atpHelper;
