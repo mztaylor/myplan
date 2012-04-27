@@ -21,7 +21,7 @@ public class PlannedTerm {
 
     private List<PlanItemDataObject> plannedList=new ArrayList<PlanItemDataObject>();
     private List<PlanItemDataObject> backupList=new ArrayList<PlanItemDataObject>();
-    private int credits=0;
+    private String credits=null;
     private boolean isCurrentTerm;
 
     public String getPlanItemId() {
@@ -57,13 +57,27 @@ public class PlannedTerm {
         this.backupList = backupList;
     }
 
-    public int getCredits() {
-        return credits;
+    public String getCredits() {
+        int totalMin = 0;
+        int totalMax = 0;
+        for (PlanItemDataObject item : getPlannedList()) {
+            String[] str = item.getCourseDetails().getCredit().split("\\D");
+            int min = Integer.parseInt(str[0]);
+            totalMin += min;
+            int max = Integer.parseInt(str[str.length - 1]);
+            totalMax += max;
+        }
+        String totalCredits = Integer.toString(totalMin);
+        if (totalMin != totalMax) {
+            totalCredits = totalCredits + "-" + Integer.toString(totalMax);
+        }
+
+        return totalCredits;
     }
 
-    public void setCredits(int credits) {
-        this.credits = credits;
-    }
+//    public void setCredits(String credits) {
+//        this.credits = credits;
+//    }
 
     public boolean isCurrentTerm() {
         return isCurrentTerm;

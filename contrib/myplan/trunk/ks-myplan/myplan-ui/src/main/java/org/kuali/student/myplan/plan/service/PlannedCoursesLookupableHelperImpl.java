@@ -87,72 +87,30 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             for (PlanItemDataObject plan : plannedCoursesList) {
                 for (String atp : plan.getAtpIds()) {
                     boolean exists = false;
-                    if (plannedTerms.size() > 0) {
-                        for (PlannedTerm plannedTerm : plannedTerms) {
+                    for (PlannedTerm term : plannedTerms) {
 
-                            if (plannedTerm.getPlanItemId().equalsIgnoreCase(atp)) {
-                                plannedTerm.getPlannedList().add(plan);
-                                /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-                                if (plan.getCourseDetails().getCredit().length() > 2) {
-                                    String[] str = plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                                    String credit = str[2];
-                                    plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
-                                } else {
-                                    plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-                                }
-                                exists = true;
-
-                            }
+                        if (term.getPlanItemId().equalsIgnoreCase(atp)) {
+                            term.getPlannedList().add(plan);
+                            exists = true;
                         }
-                        if (!exists) {
-                            PlannedTerm plannedTerm1 = new PlannedTerm();
-                            plannedTerm1.setPlanItemId(atp);
-                            StringBuffer str = new StringBuffer();
-                            /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-                            String[] splitStr = getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
-                            str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
-                            String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
-                            plannedTerm1.setQtrYear(QtrYear);
-                            plannedTerm1.getPlannedList().add(plan);
-                            /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-                            if (plan.getCourseDetails().getCredit().length() > 2) {
-                                String[] str2 = plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                                String credit = str2[2];
-                                plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(credit));
-                            } else {
-                                plannedTerm1.setCredits(plannedTerm1.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-                            }
-                            plannedTerm1.setCurrentTerm(false);
-                            plannedTerms.add(plannedTerm1);
-
-
-                        }
-
-                    } else {
-                        PlannedTerm plannedTerm = new PlannedTerm();
-                        plannedTerm.setPlanItemId(atp);
-                        StringBuffer str = new StringBuffer();
+                    }
+                    if (!exists) {
+                        PlannedTerm term = new PlannedTerm();
+                        term.setPlanItemId(atp);
                         /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-                        String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
-                        str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
-                        String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
-                        plannedTerm.setQtrYear(QtrYear);
-                        plannedTerm.getPlannedList().add(plan);
-                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-                        if (plan.getCourseDetails().getCredit().length() > 2) {
-                            String[] str3 = plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            String credit = str3[2];
-                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(credit));
-                        } else {
-                            plannedTerm.setCredits(plannedTerm.getCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-                        }
-                        plannedTerm.setCurrentTerm(false);
-                        plannedTerms.add(plannedTerm);
-
+                        String[] splitStr = getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(splitStr[0]).append(" ").append(splitStr[1]);
+                        String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
+                        term.setQtrYear(QtrYear);
+                        term.getPlannedList().add(plan);
+                        term.setCurrentTerm(false);
+                        plannedTerms.add(term);
                     }
                 }
-
             }
+
+
             /*
            Populating the backup list for the Plans
             */
@@ -384,32 +342,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
              switch (fd) {
                  case Autumn:
-                     if (!autumnExists) {
-                         autumnExists = true;
-                     } else {
-                         autumnExists = false;
-                     }
+                     autumnExists = !autumnExists;
                      break;
                  case Winter:
-                     if (!winterExists) {
-                         winterExists = true;
-                     } else {
-                         winterExists = false;
-                     }
+                     winterExists = !winterExists;
                      break;
                  case Spring:
-                     if (!springExists) {
-                         springExists = true;
-                     } else {
-                         springExists = false;
-                     }
+                     springExists = !springExists;
                      break;
                  case Summer:
-                     if (!summerExists) {
-                         summerExists = true;
-                     } else {
-                         summerExists = false;
-                     }
+                     summerExists = !summerExists;
                      break;
              }
          }
