@@ -1692,7 +1692,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-MessageField" p:messageText="Which quarter would you like @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <bean parent="Uif-InputField" p:propertyName="termsList" p:width="auto" p:defaultValue="">
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="">
                     <property name="control">
                         <bean parent="Uif-VerticalCheckboxesControl"/>
                     </property>

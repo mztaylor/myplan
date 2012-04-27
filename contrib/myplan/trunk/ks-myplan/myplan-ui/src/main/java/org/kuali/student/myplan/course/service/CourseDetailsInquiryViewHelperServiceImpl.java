@@ -1,13 +1,10 @@
 package org.kuali.student.myplan.course.service;
 
 import java.lang.String;
-import java.text.BreakIterator;
 import java.util.*;
 import javax.xml.namespace.QName;
 
-import org.apache.cxf.aegis.type.java5.XmlParamType;
 import org.apache.log4j.Logger;
-
 
 import org.joda.time.YearMonth;
 import org.kuali.rice.core.api.criteria.EqualPredicate;
