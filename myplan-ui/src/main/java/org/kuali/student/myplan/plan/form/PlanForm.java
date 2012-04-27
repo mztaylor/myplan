@@ -14,6 +14,7 @@
  */
 package org.kuali.student.myplan.plan.form;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -52,7 +53,7 @@ public class PlanForm extends UifFormBase {
     private CourseDetails courseDetails;
 
     //  Form fields.
-    private String termsList;
+    private String atpId;
 
     private boolean other = false;
 
@@ -61,7 +62,7 @@ public class PlanForm extends UifFormBase {
     private String year;
 
     //   Form checkbox to determine plan item type (planned or backup).
-    private boolean backup;
+    private boolean backup = false;
 
     //   based on this Add to plan page items are populated
     private boolean moveCourse=false;
@@ -94,12 +95,12 @@ public class PlanForm extends UifFormBase {
         this.javascriptEvents = javascriptEvents;
     }
 
-    public String getTermsList() {
-        return termsList;
+    public String getAtpId() {
+        return atpId;
     }
 
-    public void setTermsList(String termsList) {
-        this.termsList = termsList;
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
     }
 
     public boolean isOther() {
@@ -191,6 +192,7 @@ public class PlanForm extends UifFormBase {
         try {
             //  Turn the list of javascript events into a string of JSON.
             jsonOut = mapper.writeValueAsString(javascriptEvents);
+            jsonOut = StringEscapeUtils.unescapeJava(jsonOut) ;
         } catch (Exception e) {
             logger.error("Could not convert javascript events to JSON.", e);
             jsonOut = "";
