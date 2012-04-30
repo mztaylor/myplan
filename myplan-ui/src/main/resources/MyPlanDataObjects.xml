@@ -25,11 +25,6 @@
                 <ref bean="PlanItemDataObject.creditPref"/>
             </list>
         </property>
-        <property name="complexAttributes">
-            <list>
-                <ref bean="PlanItemDataObject.courseDetails"/>
-            </list>
-        </property>
     </bean>
 
     <bean id="PlanItemDataObject.id" parent="PlanItemDataObject.id-parentBean"/>
@@ -42,6 +37,9 @@
         <property name="maxLength" value="10"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -59,6 +57,9 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="20"/>
         </property>
@@ -74,6 +75,9 @@
         <property name="maxLength" value="20"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -91,6 +95,9 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
@@ -106,6 +113,9 @@
         <property name="maxLength" value="20"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -123,6 +133,9 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
@@ -138,6 +151,9 @@
         <property name="maxLength" value="20"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -155,6 +171,9 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
@@ -171,14 +190,12 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
-    </bean>
-
-    <bean id="PlanItemDataObject.courseDetails" parent="ComplexAttributeDefinition">
-        <property name="name" value="courseDetails"/>
-        <property name="dataObjectEntry" ref="CourseDetails"/>
     </bean>
     <!--************PlanItemDataObject End*********************-->
 
@@ -216,6 +233,9 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
@@ -232,19 +252,29 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
     </bean>
 
+    <!-- TODO: Relable the bean as termYear -->
     <bean id="PlannedTerm.qtrYear" parent="PlannedTerm.qtrYear-parentBean"/>
     <bean id="PlannedTerm.qtrYear-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="qtrYear"/>
+        <property name="label" value="Term Year"/>
+        <property name="shortLabel" value="Term Year"/>
         <property name="dataType" value="STRING"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="10"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -262,61 +292,7 @@
     </bean>
     <!--******************PlannedTermDataObject End**************************-->
 
-    <!--****************FullPlannedtermItemsDataObject Start***************-->
-    <bean id="FullPlanTermItemsDataObject" parent="FullPlanTermItemsDataObject-parentBean"/>
-    <bean id="FullPlanTermItemsDataObject-parentBean" abstract="true" parent="DataObjectEntry">
-        <property name="objectLabel" value="Saved Courses"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject"/>
-        <property name="titleAttribute" value=""/>
-        <property name="attributes">
-            <list>
-                <ref bean="FullPlanTermItemsDataObject.term"/>
-                <ref bean="FullPlanTermItemsDataObject.totalCredits"/>
-
-            </list>
-        </property>
-        <property name="collections">
-            <list>
-                <ref bean="FullPlanTermItemsDataObject.planItemDataObjects"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="FullPlanTermItemsDataObject.term" parent="FullPlanTermItemsDataObject.term-parentBean"/>
-    <bean id="FullPlanTermItemsDataObject.term-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="term"/>
-        <property name="dataType" value="STRING"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="10"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
-        </property>
-    </bean>
-
-    <bean id="FullPlanTermItemsDataObject.totalCredits" parent="FullPlanTermItemsDataObject.totalCredits-parentBean"/>
-    <bean id="FullPlanTermItemsDataObject.totalCredits-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="totalCredits"/>
-        <property name="dataType" value="INTEGER"/>
-        <property name="label" value="Total Credits"/>
-        <property name="shortLabel" value="Total Credits"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="10"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
-        </property>
-    </bean>
-
-    <bean id="FullPlanTermItemsDataObject.planItemDataObjects" parent="CollectionDefinition">
-        <property name="name" value="planItemDataObjects"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
-    </bean>
-
+    <!--****************FullPlannedtemsDataObject Start***************-->
 
     <bean id="FullPlanItemsDataObject" parent="FullPlanItemsDataObject-parentBean"/>
     <bean id="FullPlanItemsDataObject-parentBean" abstract="true" parent="DataObjectEntry">
@@ -339,9 +315,14 @@
     <bean id="FullPlanItemsDataObject.year" parent="FullPlanItemsDataObject.year-parentBean"/>
     <bean id="FullPlanItemsDataObject.year-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="year"/>
+        <property name="label" value="Year"/>
+        <property name="shortLabel" value="Year"/>
         <property name="dataType" value="INTEGER"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -351,10 +332,15 @@
     <bean id="FullPlanItemsDataObject.yearRange-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="yearRange"/>
         <property name="dataType" value="STRING"/>
+        <property name="label" value="Year Range"/>
+        <property name="shortLabel" value="Year Range"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="20"/>
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
@@ -362,160 +348,104 @@
     </bean>
     <bean id="FullPlanItemsDataObject.terms" parent="CollectionDefinition">
         <property name="name" value="terms"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
     </bean>
 
 
     <!--********************FullPlanItemsDataObjects End**************************-->
 
+    <!--***********************PlannedCourseDataObject Start********************-->
 
-    <!--***********CourseDetailsInquiryDataObject Start***********************-->
-    <bean id="CourseDetailsInquiryDataObject" parent="CourseDetailsInquiryDataObject-parentBean"/>
-    <bean id="CourseDetailsInquiryDataObject-parentBean" abstract="true" parent="DataObjectEntry">
-        <property name="objectLabel" value="Saved Courses"/>
+    <bean id="PlannedCourseDataObject" parent="PlannedCourseDataObject-parentBean"/>
+    <bean id="PlannedCourseDataObject-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Planned Courses"/>
         <property name="dataObjectClass"
-                  value="org.kuali.student.myplan.plan.dataobject.CourseDetailsInquiryDataObject"/>
-        <property name="titleAttribute" value=""/>
-        <property name="attributes">
-            <list>
-                <ref bean="CourseDetailsInquiryDataObject.savedItemId"/>
-                <ref bean="CourseDetailsInquiryDataObject.savedItemDateCreated"/>
-
-            </list>
-        </property>
-        <property name="collections">
-            <list>
-                <ref bean="CourseDetailsInquiryDataObject.plannedList"/>
-                <ref bean="CourseDetailsInquiryDataObject.backupList"/>
-                <!--No bean created for the acadRecord as it doesnt have a DataObject yet-->
-
-            </list>
-        </property>
-        <property name="complexAttributes">
-            <list>
-                <ref bean="CourseDetailsInquiryDataObject.courseDetails"/>
-            </list>
-        </property>
-
-    </bean>
-
-
-    <bean id="CourseDetailsInquiryDataObject.savedItemId"
-          parent="CourseDetailsInquiryDataObject.savedItemId-parentBean"/>
-    <bean id="CourseDetailsInquiryDataObject.savedItemId-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="savedItemId"/>
-        <property name="dataType" value="STRING"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="20"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
-        </property>
-    </bean>
-
-
-    <bean id="CourseDetailsInquiryDataObject.savedItemDateCreated"
-          parent="CourseDetailsInquiryDataObject.savedItemDateCreated-parentBean"/>
-    <bean id="CourseDetailsInquiryDataObject.savedItemDateCreated-parentBean" abstract="true"
-          parent="AttributeDefinition">
-        <property name="name" value="savedItemDateCreated"/>
-        <property name="dataType" value="DATE"/>
-        <property name="label" value="Date Added"/>
-        <property name="shortLabel" value="Added"/>
-        <property name="forceUppercase" value="false"/>
-        <property name="maxLength" value="16"/>
-        <property name="validCharactersConstraint">
-            <bean parent="AnyCharacterPatternConstraint"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="20"/>
-        </property>
-    </bean>
-
-    <bean id="CourseDetailsInquiryDataObject.plannedList" parent="CollectionDefinition">
-        <property name="name" value="plannedList"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
-    </bean>
-
-    <bean id="CourseDetailsInquiryDataObject.backupList" parent="CollectionDefinition">
-        <property name="name" value="backupList"/>
-        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
-    </bean>
-
-    <bean id="CourseDetailsInquiryDataObject.courseDetails" parent="ComplexAttributeDefinition">
-        <property name="name" value="courseDetails"/>
-        <property name="dataObjectEntry" ref="CourseDetails"/>
-    </bean>
-
-    <!--***********CourseDetailsInquiryDataObject End***********************-->
-
-    <!--***********************PlannedCoursesDataObject Start********************-->
-
-    <bean id="PlannedCoursesDataObject" parent="PlannedCoursesDataObject-parentBean"/>
-    <bean id="PlannedCoursesDataObject-parentBean" abstract="true" parent="DataObjectEntry">
-        <property name="objectLabel" value="Saved Courses"/>
-        <property name="dataObjectClass"
-                  value="org.kuali.student.myplan.plan.dataobject.PlannedCoursesDataObject"/>
+                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="titleAttribute" value=""/>
         <property name="complexAttributes">
             <list>
-                <!--<ref bean="PlannedCoursesDataObject.planItemDataObject"/>-->
-                <ref bean="PlannedCoursesDataObject.courseDetails"/>
-
+                <!--<ref bean="PlannedCourseDataObject.planItemDataObject"/>-->
+                <ref bean="PlannedCourseDataObject.courseDetails"/>
             </list>
         </property>
 
 
     </bean>
 
-    <bean id="PlannedCoursesDataObject.planItemDataObject" parent="ComplexAttributeDefinition">
+    <bean id="PlannedCourseDataObject.planItemDataObject" parent="ComplexAttributeDefinition">
         <property name="name" value="planItemDataObject"/>
         <property name="dataObjectEntry" ref="PlanItemDataObject"/>
     </bean>
-    <bean id="PlannedCoursesDataObject.courseDetails" parent="ComplexAttributeDefinition">
+    <bean id="PlannedCourseDataObject.courseDetails" parent="ComplexAttributeDefinition">
         <property name="name" value="courseDetails"/>
         <property name="dataObjectEntry" ref="CourseDetails"/>
     </bean>
 
 
-    <!--***********************PlannedCoursesDataObject End********************-->
+    <!-- ***********************PlannedCourseDataObject End******************** -->
 
 
-    <!--*********************** Course Details Data Object ********************-->
+    <!--*********************** Course Details Summary Data Object ******************** -->
+
+
+    <bean id="CourseSummaryDetails" parent="CourseSummaryDetails-parentBean" abstract="true"/>
+    <bean id="CourseSummaryDetails-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Course Details"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseSummaryDetails"/>
+        <property name="titleAttribute" value="courseId"/>
+        <property name="attributes">
+            <list>
+                <ref bean="CourseSummaryDetails.courseId"/>
+                <ref bean="CourseSummaryDetails.code"/>
+                <ref bean="CourseSummaryDetails.courseTitle"/>
+                <ref bean="CourseSummaryDetails.credit"/>
+                <ref bean="CourseSummaryDetails.courseDescription"/>
+            </list>
+        </property>
+
+        <property name="collections">
+            <list>
+                <ref bean="CourseSummaryDetails.termsOffered"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- ***********************Course Details Summary End******************** -->
+
+
+    <!-- *********************** Course Details Data Object ******************** -->
 
     <bean id="CourseDetails" parent="CourseDetails-parentBean"/>
-    <bean id="CourseDetails-parentBean" abstract="true" parent="DataObjectEntry">
+    <bean id="CourseDetails-parentBean" abstract="true" parent="CourseSummaryDetails">
         <property name="objectLabel" value="Course Details"/>
         <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="titleAttribute" value="courseId"/>
         <property name="attributes">
-            <list>
-                <ref bean="CourseDetails.courseId"/>
-                <ref bean="CourseDetails.code"/>
-                <ref bean="CourseDetails.courseTitle"/>
-                <ref bean="CourseDetails.credit"/>
-                <ref bean="CourseDetails.courseDescription"/>
+            <list merge="true">
                 <ref bean="CourseDetails.curriculumTitle"/>
                 <ref bean="CourseDetails.lastOffered"/>
+
+                <ref bean="CourseDetails.savedItemId"/>
+                <ref bean="CourseDetails.savedItemDateCreated"/>
+
             </list>
         </property>
 
         <property name="collections">
-            <list>
+            <list merge="true">
                 <ref bean="CourseDetails.campusLocations"/>
                 <ref bean="CourseDetails.scheduledTerms"/>
-                <ref bean="CourseDetails.termsOffered"/>
                 <ref bean="CourseDetails.requisites"/>
                 <ref bean="CourseDetails.genEdRequirements"/>
-
+                <ref bean="CourseDetails.plannedList"/>
+                <ref bean="CourseDetails.backupList"/>
             </list>
         </property>
     </bean>
 
-    <bean id="CourseDetails.courseId" parent="CourseDetails.courseId-parentBean"/>
-    <bean id="CourseDetails.courseId-parentBean" abstract="true" parent="BaseKuali.idField">
+
+    <bean id="CourseSummaryDetails.courseId" parent="CourseSummaryDetails.courseId-parentBean"/>
+    <bean id="CourseSummaryDetails.courseId-parentBean" abstract="true" parent="BaseKuali.idField">
         <property name="name" value="courseId"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course ID"/>
@@ -525,13 +455,16 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="100"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="100"/>
         </property>
     </bean>
 
-    <bean id="CourseDetails.code" parent="CourseDetails.code-parentBean"/>
-    <bean id="CourseDetails.code-parentBean" abstract="true" parent="BaseKuali.string">
+    <bean id="CourseSummaryDetails.code" parent="CourseSummaryDetails.code-parentBean"/>
+    <bean id="CourseSummaryDetails.code-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="code"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Code"/>
@@ -541,13 +474,16 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
     </bean>
 
-    <bean id="CourseDetails.courseTitle" parent="CourseDetails.courseTitle-parentBean"/>
-    <bean id="CourseDetails.courseTitle-parentBean" abstract="true" parent="BaseKuali.string">
+    <bean id="CourseSummaryDetails.courseTitle" parent="CourseSummaryDetails.courseTitle-parentBean"/>
+    <bean id="CourseSummaryDetails.courseTitle-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="courseTitle"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Title"/>
@@ -557,13 +493,16 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="40"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="40"/>
         </property>
     </bean>
 
-    <bean id="CourseDetails.credit" parent="CourseDetails.credit-parentBean"/>
-    <bean id="CourseDetails.credit-parentBean" abstract="true" parent="BaseKuali.string">
+    <bean id="CourseSummaryDetails.credit" parent="CourseSummaryDetails.credit-parentBean"/>
+    <bean id="CourseSummaryDetails.credit-parentBean" abstract="true" parent="BaseKuali.string">
         <property name="name" value="credit"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Credit"/>
@@ -573,13 +512,16 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="20"/>
         </property>
     </bean>
 
-        <bean id="CourseDetails.courseDescription" parent="CourseDetails.courseDescription-parentBean"/>
-    <bean id="CourseDetails.courseDescription-parentBean" abstract="true" parent="BaseKuali.stringLong">
+    <bean id="CourseSummaryDetails.courseDescription" parent="CourseSummaryDetails.courseDescription-parentBean"/>
+    <bean id="CourseSummaryDetails.courseDescription-parentBean" abstract="true" parent="BaseKuali.stringLong">
         <property name="name" value="courseDescription"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Course Description"/>
@@ -589,9 +531,24 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="200"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="200"/>
         </property>
+    </bean>
+
+    <bean id="CourseSummaryDetails.termsOffered" parent="CourseSummaryDetails.termsOffered-parentBean"/>
+    <bean id="CourseSummaryDetails.termsOffered-parentBean" abstract="true" parent="CollectionDefinition">
+        <property name="name" value="termsOffered"/>
+        <property name="shortLabel" value="Projected Quarter"/>
+        <property name="summary">
+            <value>Projected Quarter</value>
+        </property>
+        <property name="label" value="Projected Quarter"/>
+        <property name="minOccurs" value="0"/>
+        <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
     <bean id="CourseDetails.campusLocations" parent="CourseDetails.campusLocations-parentBean"/>
@@ -619,17 +576,6 @@
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>
 
-    <bean id="CourseDetails.termsOffered" parent="CourseDetails.termsOffered-parentBean"/>
-    <bean id="CourseDetails.termsOffered-parentBean" abstract="true" parent="CollectionDefinition">
-        <property name="name" value="termsOffered"/>
-        <property name="shortLabel" value="Projected Quarter"/>
-        <property name="summary">
-            <value>Projected Quarter</value>
-        </property>
-        <property name="label" value="Projected Quarter"/>
-        <property name="minOccurs" value="0"/>
-        <property name="dataObjectClass" value="java.lang.String"/>
-    </bean>
 
     <bean id="CourseDetails.lastOffered" parent="CourseDetails.lastOffered-parentBean"/>
     <bean id="CourseDetails.lastOffered-parentBean" abstract="true" parent="BaseKuali.stringLong">
@@ -641,6 +587,9 @@
         <property name="maxLength" value="200"/>
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="200"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="200"/>
@@ -684,10 +633,67 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="200"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="200"/>
         </property>
     </bean>
+
+
+    <bean id="CourseDetails.savedItemId"
+          parent="CourseDetails.savedItemId-parentBean"/>
+    <bean id="CourseDetails.savedItemId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="savedItemId"/>
+        <property name="label" value="Saved Item Id"/>
+        <property name="shortLabel" value="Saved Item Id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+
+    <bean id="CourseDetails.savedItemDateCreated"
+          parent="CourseDetails.savedItemDateCreated-parentBean"/>
+    <bean id="CourseDetails.savedItemDateCreated-parentBean" abstract="true"
+          parent="AttributeDefinition">
+        <property name="name" value="savedItemDateCreated"/>
+        <property name="dataType" value="DATE"/>
+        <property name="label" value="Date Added"/>
+        <property name="shortLabel" value="Added"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="16"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="CourseDetails.plannedList" parent="CollectionDefinition">
+        <property name="name" value="plannedList"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+    </bean>
+
+    <bean id="CourseDetails.backupList" parent="CollectionDefinition">
+        <property name="name" value="backupList"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+    </bean>
+
 
     <!--*********************** End Course Details Data Object ********************-->
 
@@ -699,9 +705,9 @@
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
-                <ref bean="DegreeAuditItem.programTitle" />
-                <ref bean="DegreeAuditItem.programType" />
-                <ref bean="DegreeAuditItem.reportAsHtml" />
+                <ref bean="DegreeAuditItem.programTitle"/>
+                <ref bean="DegreeAuditItem.programType"/>
+                <ref bean="DegreeAuditItem.reportAsHtml"/>
 
             </list>
         </property>
@@ -729,6 +735,9 @@
         <property name="validCharactersConstraint">
             <bean parent="NoWhitespacePatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="50"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="50"/>
         </property>
@@ -747,6 +756,9 @@
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
         </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="50"/>
+        </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="50"/>
         </property>
@@ -763,6 +775,9 @@
         <property name="maxLength" value="50000"/>
         <property name="validCharactersConstraint">
             <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="50000"/>
         </property>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="50000"/>

@@ -5,42 +5,37 @@ import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hsqldb.lib.StringUtil;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.springframework.util.StringUtils;
 
 /**
  *  Course Details
  */
-public class CourseDetails {
+public class CourseDetails extends CourseSummaryDetails {
 
-    // Indicates if only summary information is stored in course details
-    private boolean summaryOnly = true;
-
-    // List of fileds populated when only summary information is loaded
-    private String courseId;
-    private String code;
-    private String courseTitle;
-    private String credit;
-    private String courseDescription;
-    private List<String> termsOffered;
-
-
-    // Rest of these properties are populated as part of full details
+    private boolean summaryOnly;
 
     private String curriculumTitle;
     private String lastOffered;
-
-    //  Planned course properties
-    private boolean inPlannedCourseList;
-
-    // Saved course properties
-    private boolean inSavedCourseList;
-    private String savedCourseItemId;
-    private Date savedCourseDateCreated;
 
     private List<String> campusLocations;
     private List<String> scheduledTerms;
     private List<String> requisites;
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
+
+
+    // Plan related information
+    private transient List<PlanItemDataObject> plannedList;
+    private transient List<PlanItemDataObject> backupList;
+    private transient String savedItemId;
+    private Date savedItemDateCreated;
+
+    // Academic Record Information
+    private transient List<?> acadRecList;
+
+
 
     public String getLastOffered() {
         return lastOffered;
@@ -53,7 +48,6 @@ public class CourseDetails {
     public CourseDetails() {
         genEdRequirements = new ArrayList<String>();
         requisites = new ArrayList<String>();
-        termsOffered = new ArrayList<String>();
     }
 
     public String getCurriculumTitle() {
@@ -64,88 +58,6 @@ public class CourseDetails {
         this.curriculumTitle = curriculumTitle;
     }
 
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getCourseTitle() {
-        return courseTitle;
-    }
-
-    public void setCourseTitle(String courseTitle) {
-        this.courseTitle = courseTitle;
-    }
-
-    public String getCredit() {
-        return credit;
-    }
-
-    public void setCredit(String credit) {
-        this.credit = credit;
-    }
-
-    public String getCourseDescription() {
-        // TODO quickfix Put in just for usability testing, remove asap
-        if (courseDescription == null) {
-            courseDescription = "";
-        }
-        String quickfix = courseDescription;
-        int n = quickfix.lastIndexOf( "Prerequisite:" );
-        if( n > -1  )
-        {
-            quickfix = quickfix.substring( 0, n );
-        }
-        return quickfix;
-//        return courseDescription;
-    }
-
-    public void setCourseDescription(String courseDescription) {
-        this.courseDescription = courseDescription;
-    }
-
-    public boolean isInPlannedCourseList() {
-        return inPlannedCourseList;
-    }
-
-    public void setInPlannedCourseList(boolean inPlannedCourseList) {
-        this.inPlannedCourseList = inPlannedCourseList;
-    }
-
-    public boolean isInSavedCourseList() {
-        return inSavedCourseList;
-    }
-
-    public void setInSavedCourseList(boolean inSavedCourseList) {
-        this.inSavedCourseList = inSavedCourseList;
-    }
-
-    public String getSavedCourseItemId() {
-        return savedCourseItemId;
-    }
-
-    public void setSavedCourseItemId(String savedCourseItemId) {
-        this.savedCourseItemId = savedCourseItemId;
-    }
-
-    public Date getSavedCourseDateCreated() {
-        return savedCourseDateCreated;
-    }
-
-    public void setSavedCourseDateCreated(Date savedCourseDateCreated) {
-        this.savedCourseDateCreated = savedCourseDateCreated;
-    }
 
     public List<String> getGenEdRequirements() {
         return genEdRequirements;
@@ -171,13 +83,6 @@ public class CourseDetails {
         this.requisites = requisites;
     }
 
-    public List<String> getTermsOffered() {
-        return termsOffered;
-    }
-
-    public void setTermsOffered(List<String> termsOffered) {
-        this.termsOffered = termsOffered;
-    }
     public List<String> getCampusLocations() {
         return campusLocations;
     }
@@ -194,6 +99,46 @@ public class CourseDetails {
         this.scheduledTerms = scheduledTerms;
     }
 
+    public List<PlanItemDataObject> getPlannedList() {
+        return plannedList;
+    }
+
+    public void setPlannedList(List<PlanItemDataObject> plannedList) {
+        this.plannedList = plannedList;
+    }
+
+    public List<PlanItemDataObject> getBackupList() {
+        return backupList;
+    }
+
+    public void setBackupList(List<PlanItemDataObject> backupList) {
+        this.backupList = backupList;
+    }
+
+    public String getSavedItemId() {
+        return savedItemId;
+    }
+
+    public void setSavedItemId(String savedItemId) {
+        this.savedItemId = savedItemId;
+    }
+
+    public Date getSavedItemDateCreated() {
+        return savedItemDateCreated;
+    }
+
+    public void setSavedItemDateCreated(Date savedItemDateCreated) {
+        this.savedItemDateCreated = savedItemDateCreated;
+    }
+
+    public List<?> getAcadRecList() {
+        return acadRecList;
+    }
+
+    public void setAcadRecList(List<?> acadRecList) {
+        this.acadRecList = acadRecList;
+    }
+
     public boolean isSummaryOnly() {
         return summaryOnly;
     }
@@ -202,6 +147,22 @@ public class CourseDetails {
         this.summaryOnly = summaryOnly;
     }
 
+    public boolean getInPlannedCourseList() {
+        if(isSummaryOnly()) {
+            throw new IllegalArgumentException("Planned course check performed on Course Summary");
+        }
+
+        return (plannedList != null && plannedList.size() > 1) ? true : false;
+    }
+
+
+    public boolean getInSavedCourseList() {
+        if(isSummaryOnly()) {
+            throw new IllegalArgumentException("Saved course check performed on Course Summary");
+        }
+
+        return (StringUtils.hasText(savedItemId)) ? true : false;
+    }
 
 
     //TODO: Review why we really need this

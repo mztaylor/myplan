@@ -43,6 +43,7 @@ import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.course.util.CurriculumFacet;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
@@ -66,7 +67,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AcademicPlanService academicPlanService;
 
-    private  transient CourseInfo courseInfo;
+    private transient CourseInfo courseInfo;
 
     public CourseInfo getCourseInfo() {
         return courseInfo;
@@ -100,6 +101,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     /**
      * Populates course with catalog information (title, id, code, description) and next offering information.
      * Other properties are left empty and a flag is set to indicate only summary view
+     *
      * @param courseId
      * @return
      */
@@ -258,18 +260,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                 //  Fetch the plan items which are associated with the plan.
                 List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
-                courseDetails.setInSavedCourseList(false);
+
+                List<PlanItemDataObject> plannedList = new ArrayList<PlanItemDataObject>();
+                List<PlanItemDataObject> backupList = new ArrayList<PlanItemDataObject>();
 
                 //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {
                     if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
                         //  Assuming type is planned or backup if not wishlist.
                         if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-                            courseDetails.setInSavedCourseList(true);
-                            courseDetails.setSavedCourseItemId(planItemInPlanTemp.getId());
-                            courseDetails.setSavedCourseDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
-                        } else {
-                            courseDetails.setInPlannedCourseList(true);
+                            courseDetails.setSavedItemId(planItemInPlanTemp.getId());
+                            courseDetails.setSavedItemDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
+                        } else if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                            plannedList.add(PlanItemDataObject.build(planItemInPlanTemp));
+                        } else if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                            backupList.add(PlanItemDataObject.build(planItemInPlanTemp));
                         }
                     }
                 }
@@ -280,18 +285,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         //Curriculum
         String courseCode = courseDetails.getCode();
-        String subject=null;
-        String number=null;
-        if(courseCode!=null){
-        String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        subject = splitStr[0];
-        number = splitStr[1];
-        String temp = getTitle(subject);
-        StringBuffer value = new StringBuffer();
-        value = value.append(temp);
-        value = value.append(" (").append(subject.trim()).append(")");
+        String subject = null;
+        String number = null;
+        if (courseCode != null) {
+            String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            subject = splitStr[0];
+            number = splitStr[1];
+            String temp = getTitle(subject);
+            StringBuffer value = new StringBuffer();
+            value = value.append(temp);
+            value = value.append(" (").append(subject.trim()).append(")");
 
-        courseDetails.setCurriculumTitle(value.toString());
+            courseDetails.setCurriculumTitle(value.toString());
         }
         //If course not scheduled for future terms, Check for the last term when course was offered
         if (courseDetails.getScheduledTerms().size() == 0) {
@@ -303,7 +308,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             } catch (Exception e) {
                 logger.error("could not load courseOfferingInfo list");
             }
-            if (courseOfferingInfo.size()>0) {
+            if (courseOfferingInfo.size() > 0) {
                 String lastOffered = courseOfferingInfo.get(0).getTermId();
                 lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                 courseDetails.setLastOffered(lastOffered);
@@ -484,6 +489,19 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return enumeratedValueInfoList;
     }
 
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
+                            AcademicPlanServiceConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
     /**
      * Initializes ATP term cache.
      * AtpSeasonalTypes rarely change, so fetch them all and store them in a Map.
@@ -505,16 +523,5 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
     }
 
-    public AcademicPlanService getAcademicPlanService() {
-        if (academicPlanService == null) {
-            academicPlanService = (AcademicPlanService)
-                    GlobalResourceLoader.getService(new QName(AcademicPlanServiceConstants.NAMESPACE,
-                            AcademicPlanServiceConstants.SERVICE_NAME));
-        }
-        return academicPlanService;
-    }
 
-    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
-        this.academicPlanService = academicPlanService;
-    }
 }

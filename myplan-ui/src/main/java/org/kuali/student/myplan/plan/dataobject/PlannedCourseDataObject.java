@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 
 import java.security.PrivateKey;
 
@@ -11,7 +12,7 @@ import java.security.PrivateKey;
  * Time: 3:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PlannedCoursesDataObject {
+public class PlannedCourseDataObject implements Comparable {
 
     private transient PlanItemDataObject planItemDataObject;
     private transient CourseDetails courseDetails;
@@ -30,5 +31,11 @@ public class PlannedCoursesDataObject {
 
     public void setPlanItemDataObject(PlanItemDataObject planItemDataObject) {
         this.planItemDataObject = planItemDataObject;
+    }
+
+    @Override
+    public int compareTo( Object object ) {
+        PlannedCourseDataObject that = (PlannedCourseDataObject) object;
+        return this.getPlanItemDataObject().getDateAdded().compareTo( that.getPlanItemDataObject().getDateAdded() ) * -1;
     }
 }

@@ -1,16 +1,17 @@
 package org.kuali.student.myplan.plan.dataobject;
 
+import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.Date;
 import java.util.List;
 
-public class PlanItemDataObject implements Comparable {
+public class PlanItemDataObject {
 
     //  Common properties.
     private String id;
-    @Deprecated
-    private CourseDetails courseDetails;
+
     private Date dateAdded;
     private String planType;
     private String atp;
@@ -21,6 +22,25 @@ public class PlanItemDataObject implements Comparable {
     private String creditPref;
 
 
+    public static PlanItemDataObject build(PlanItem item) {
+        PlanItemDataObject itemDO = new PlanItemDataObject();
+
+        // At the application level we are only dealing with single ATP per plan item
+        if (item.getPlanPeriods() != null && item.getPlanPeriods().size() > 0) {
+            itemDO.setAtp(item.getPlanPeriods().get(0));
+            String[] termYear = AtpHelper.getTermAndYear(itemDO.getAtp());
+            itemDO.setYear(Integer.valueOf(termYear[1]));
+            itemDO.setTerm(termYear[0]);
+        }
+
+        itemDO.setDateAdded(item.getMeta().getCreateTime());
+        itemDO.setId(item.getId());
+        itemDO.setRefObjId(item.getRefObjectId());
+        itemDO.setRefObjType(item.getRefObjectType());
+        itemDO.setPlanType(item.getTypeKey());
+
+        return itemDO;
+    }
 
     //  Planned course specific properties.
 
@@ -33,16 +53,6 @@ public class PlanItemDataObject implements Comparable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Deprecated
-    public CourseDetails getCourseDetails() {
-        return courseDetails;
-    }
-
-    @Deprecated
-    public void setCourseDetails(CourseDetails courseDetails) {
-        this.courseDetails = courseDetails;
     }
 
     public Date getDateAdded() {
@@ -107,12 +117,6 @@ public class PlanItemDataObject implements Comparable {
 
     public void setCreditPref(String creditPref) {
         this.creditPref = creditPref;
-    }
-
-    @Override
-    public int compareTo( Object object ) {
-        PlanItemDataObject that = (PlanItemDataObject) object;
-        return this.getDateAdded().compareTo( that.getDateAdded() ) * -1;
     }
 
     public List<String> getAtpIds() {
