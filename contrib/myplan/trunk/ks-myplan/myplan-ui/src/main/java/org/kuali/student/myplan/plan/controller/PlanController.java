@@ -23,7 +23,6 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -32,7 +31,6 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -49,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -287,41 +284,36 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=movePlannedCourse")
     public ModelAndView movePlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
+        /**
+         * This method needs a Plan Item ID and an ATP ID.
+         */
         String planItemId = form.getPlanItemId();
         if (StringUtils.isEmpty(planItemId)) {
             return doPlanActionError(form, "Plan Item ID was missing.", null);
         }
-        String termIdString = form.getAtpId();
-        if (StringUtils.isEmpty(termIdString)) {
+
+        //  This is the new/destination ATP.
+        String newAtpId = form.getAtpId();
+        //  Further validation of ATP IDs will happen in the service validation methods.
+        if (StringUtils.isEmpty(newAtpId)) {
             return doPlanActionError(form, "ATP ID was missing.", null);
         }
 
-        ///  TODO: FIXME: This method will only consider the first ATP id.
-        String[] t = termIdString.split(",");
-        //  Using LinkedList so that remove() is supported.
-        List<String> newTermIds = new LinkedList<String>(Arrays.asList(t));
-        if (newTermIds.isEmpty()) {
-            return doPlanActionError(form, "Could not parse term IDs.", null);
+        //  Should the course be type 'planned' or 'backup'. Default to planned.
+        boolean backup = form.isBackup();
+
+        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+        if (backup) {
+            newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
         }
-        //  Check for an "other" item in the terms list.
-        if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {
-            //  Remove the "other" item from the list.
-            newTermIds.remove(newTermIds.indexOf(PlanConstants.OTHER_TERM_KEY));
 
-            //  Create an ATP id from the values in the year and term fields.
-            String year = form.getYear();
-            if (StringUtils.isBlank(year)) {
-                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because year was blank.", null);
-            }
-
-            String term = form.getTerm();
-            if (StringUtils.isBlank(term)) {
-                return doAddPlanItemError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
-            }
-
-
-            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term, year));
+         //  This list can only contain one item, otherwise the backend validation will fail.
+        //  Use LinkedList here so that the remove method works during "other" option processing.
+        List<String> newAtpIds = null;
+        try {
+            newAtpIds = getNewTermIds(newAtpId, form);
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, "Unable to process request.", e);
         }
 
         PlanItemInfo planItem = null;
@@ -332,19 +324,61 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Could not fetch plan item.", e);
         }
 
-        //  Verify that the plan item type is "planned".
-//        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-//            return doPlanActionError(form, "Move planned item was not type planned.", null);
-//        }
+        if (planItem == null) {
+            return doPlanActionError(form, String.format("Could not fetch plan item."), null);
+        }
 
-        //  TODO: FIXME: Only dealing with a single atpid
-        String oldAtpId = planItem.getPlanPeriods().get(0);
-
-
-        //  Update
-        planItem.setPlanPeriods(newTermIds);
+          //  Lookup course details as they will be needed for errors.
+        CourseDetails courseDetails = null;
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+        } catch (Exception e) {
+            return doPlanActionError(form, "Unable to retrieve Course Details.", null);
+        }
+
+        //  Make sure there isn't a plan item for the same course id in the destination ATP.
+        PlanItemInfo existingPlanItem = null;
+        try {
+            existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpIds.get(0));
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, String.format("Query for existing plan item failed."), null);
+        }
+
+        if (existingPlanItem != null) {
+             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
+
+        //  Create events before updating the plan item.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalUpdateTotalCredits = makeUpdateTotalCreditsEvent(planItem);
+
+        //  Do validations.
+        //  Validate: Plan Size exceeded.
+        boolean hasCapacity = false;
+        try {
+            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()), newAtpIds.get(0), newType);
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
+        }
+        if (! hasCapacity) {
+            return doPlanCapacityExceededError(form);
+        }
+
+        //  Validate: Adding to historical term.
+        if (isTermHistorical(newAtpIds.get(0))) {
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
+
+        //  Update the plan item.
+        planItem.setPlanPeriods(newAtpIds);
+        planItem.setTypeKey(newType);
+
+        try {
+            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             return doPlanActionError(form, "Could not udpate plan item.", e);
         }
@@ -352,47 +386,17 @@ public class PlanController extends UifControllerBase {
         //  Set the status of the request for the UI.
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
 
-        //  Make events (delete, add, update credits).
-        //  Set the javascript event(s) that should be thrown in the UI.
+        //  Make Javascript UI events (delete, add, update credits).
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-
-        String typeKey = planItem.getTypeKey();
-
-        //  Make a delete event for the old atp.  /* atpId, type, courseId */
-        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", formatAtpIdForUI(oldAtpId));
-        jsDeleteEventParams.put("planItemType", formatTypeKey(typeKey));
-        jsDeleteEventParams.put("planItemId", planItemId);
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
-
-        String newTermId = newTermIds.get(0);
-        //  Make an add event for the new atp.
-        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
-        addPlannedItemEventParams.put("planItemId", planItem.getId());
-        addPlannedItemEventParams.put("planItemType", formatTypeKey(typeKey));
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", formatAtpIdForUI(newTermId));
-        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
-
-        //  TODO: This logic may get updated if the user is allowed to switch from backup to planning within this method.
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            //  Make an "Update total credits" for the new term.
-            Map<String, String> updateCreditsEventParamsOld = new HashMap<String, String>();
-            updateCreditsEventParamsOld.put("atpId", formatAtpIdForUI(newTermId));
-            String totalCredits = this.getTotalCredits(newTermId);
-            updateCreditsEventParamsOld.put("totalCredits", totalCredits );
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParamsOld);
-
-            //  Make an "Update total credits" for the old term.
-            Map<String, String> updateCreditsEventParamsNew = new HashMap<String, String>();
-            updateCreditsEventParamsNew.put("atpId", formatAtpIdForUI(oldAtpId));
-            String totalCredits2 = this.getTotalCredits(oldAtpId);
-            updateCreditsEventParamsNew.put("totalCredits", totalCredits2 );
-
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS, updateCreditsEventParamsNew);
+        //  Add events generated for the plan item before it was updated.
+        events.putAll(originalRemoveEvents);
+        events.putAll(originalUpdateTotalCredits);
+        try {
+            events.putAll(makeAddEvent(planItem, courseDetails));
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Unable to create add event.", e);
         }
+        events.putAll(makeUpdateTotalCreditsEvent(planItem));
 
         form.setJavascriptEvents(events);
 
@@ -402,50 +406,37 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
+        /**
+         * This method needs a Course ID and an ATP ID.
+         */
         String courseId = form.getCourseId();
         if (StringUtils.isEmpty(courseId)) {
             return doPlanActionError(form, "Course ID was missing.", null);
         }
 
-        /* This method only accepts a single ATP ID though the backend is able to deal with multiple ATP IDs for a
-         * single planned course.
-         */
         String atpId = form.getAtpId();
         //  Further validation of ATP IDs will happen in the service validation methods.
         if (StringUtils.isEmpty(atpId)) {
-            return doPlanActionError(form, "Term ID was missing.", null);
+            return doPlanActionError(form, "ATP ID was missing.", null);
         }
 
-        //  Should the course be type 'planned' or 'backup'. Defaults to planned.
+        //  Should the course be type 'planned' or 'backup'. Default to planned.
         boolean backup = form.isBackup();
-
-        //  Using LinkedList so that remove() is supported.
-        List<String> newTermIds = new LinkedList<String>();
-        newTermIds.add(atpId);
-
-        //  Check for an "other" item in the terms list and assemble an ATP ID from the year and term fields.
-        if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {
-            //  Remove the "other" item from the list.
-            newTermIds.remove(newTermIds.indexOf(PlanConstants.OTHER_TERM_KEY));
-
-            //  Create an ATP id from the values in the year and term fields.
-            String year = form.getYear();
-            if (StringUtils.isBlank(year)) {
-                return doPlanActionError(form, "Could not construct ATP id for 'other' option because year was blank.", null);
-            }
-
-            String term = form.getTerm();
-            if (StringUtils.isBlank(term)) {
-                return doPlanActionError(form, "Could not construct ATP id for 'other' option because term was blank.", null);
-            }
-
-            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term, year));
+        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+        if (backup) {
+            newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
         }
 
-        Person user = GlobalVariables.getUserSession().getPerson();
+        //  This list can only contain one item, otherwise the backend validation will fail.
+        //  Use LinkedList here so that the remove method works during "other" option processing.
+        List<String> newAtpIds = null;
+        try {
+            newAtpIds = getNewTermIds(atpId, form);
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, "Unable to process request.", e);
+        }
 
-        String studentId = user.getPrincipalId();
+        String studentId = getUserId();
 
         LearningPlan plan = null;
         try {
@@ -459,95 +450,17 @@ public class PlanController extends UifControllerBase {
         /*
          *  Create a default learning plan if there isn't one already and skip querying for plan items.
          */
-        //TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
+        // TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
         // at the db level to restrict a single plan of a given type to a student
-        PlanItem planItem = null;
-        boolean doWishlistEvents = false;
         if (plan == null) {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
                 return doPlanActionError(form, "Unable to create learning plan.", e);
             }
-        } else {
-            /*
-             *  Before attempting to add a plan item, query for plan items for the requested course id.
-             *
-             *  If a plan item of type "wishlist" (saved) already exists then make this operation an update which changes the plan
-             *  item type and adds the ATP id specified in the form.
-             *
-             *  If a plan item of type "planned" or "backup" already exists and the associated ATP IDs match the ATP ID that
-             *  was submitted in the form then error out.
-             *
-             *  If a plan item of type "planned" or "backup" already exists and matches the type specified in the form data
-             *  (via the backup "backup" field) and the ATP ID is NOT the same as specified in the form then append the append
-             *  the new ATP ID to the existing record. However, if the existing type and the form type DO NOT match then
-             *  create a new plan item.
-             *
-             */
-            List<PlanItemInfo> existingPlanItems = null;
-            try {
-                existingPlanItems = getAcademicPlanService().getPlanItemsInPlanByRefObjectIdByRefObjectType(plan.getId(), courseId,
-                    PlanConstants.COURSE_TYPE, PlanConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                return doPlanActionError(form, "Unable to fetch plan items.", e);
-            }
-
-            for (PlanItemInfo pii : existingPlanItems) {
-                if (pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-                    //  Wislist/saved plan items don't have ATP IDs so update the existing item.
-                    if (backup) {
-                        pii.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
-                    } else {
-                        pii.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
-                    }
-                    pii.getPlanPeriods().addAll(newTermIds);
-                    planItem = pii;
-                    doWishlistEvents = true;
-                } else {
-                    //  Check if Planned and backup items have any ATP IDs in common with the ones submitted in the form.
-                    //  If so, that's an error.
-                    List<String> existingTermIds = pii.getPlanPeriods();
-                    boolean isNoCommonAtps = Collections.disjoint(existingTermIds, newTermIds);
-                    if ( ! isNoCommonAtps ) {
-                        return doPlanActionError(form, String.format("A plan item for %s already exists.", newTermIds), null);
-                    } else {
-                        //  If there are no ATP IDs in common then determine whether the new ATP IDs should be appended
-                        //  to the existing plan item or a new plan item should be created.
-                        if ((pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP) && backup) ||
-                            (pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) && ! backup)) {
-                            //  Types match so append the new ATP ID(s) and update
-                            pii.getPlanPeriods().addAll(newTermIds);
-                            planItem = pii;
-                        } else if ((pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP) && ! backup) ||
-                            pii.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) && backup) {
-                            //  Types don't match so create new item below.
-                        }
-                    }
-                }
-            }
         }
 
-        //  If an update-able plan item was found then go ahead and do an update. Otherwise, do an add.
-        if (planItem != null) {
-            try {
-                academicPlanService.updatePlanItem(planItem.getId(), (PlanItemInfo) planItem, PlanConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                return doPlanActionError(form, "Unable to update plan item.", e);
-            }
-        } else {
-            try {
-                if (backup) {
-                    planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
-                } else {
-                    planItem = addPlanItem(plan, courseId, newTermIds, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
-                }
-            } catch (Exception e) {
-                return doPlanActionError(form, "Unable to add plan item.", e);
-            }
-        }
-
-        //  Lookup course details, convert to Jason, include in the response.
+        //  Lookup course details as well need them in case there is an error below.
         CourseDetails courseDetails = null;
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
@@ -555,56 +468,88 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
 
-        String courseDetailsAsJson;
+        /*
+         *  Before attempting to add a plan item, query for plan items for the requested Course ID and ATP ID.
+         *
+         *  If none exists then proceed. Otherwise, throw an error.
+         */
+        PlanItemInfo existingPlanItem = null;
         try {
-            //  Turn the list of javascript events into a string of JSON.
-            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
-        } catch (Exception e) {
-            return doPlanActionError(form, "Could not convert javascript events to JSON.", e);
+            existingPlanItem = (PlanItemInfo) getPlannedOrBackupPlanItem(courseId, newAtpIds.get(0));
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Query for existing plan item failed.", e);
         }
 
-        System.err.println("JSON: " + courseDetailsAsJson);
+        //  Fail if a planned or backup item already exists.
+        if (existingPlanItem != null) {
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
 
-        //  Set the status of the request for the UI.
-        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        /*  Do validations. */
 
-        String typeKey = planItem.getTypeKey();
+        //  Plan Size exceeded.
+        boolean hasCapacity = false;
+        try {
+            hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
+        }
 
-        //  Create and set the javascript event(s) that should be thrown in the UI.
+        if (! hasCapacity) {
+            return doPlanCapacityExceededError(form);
+        }
+
+        //  Validate: Adding to historical term.
+        //  TODO: isTermHistorical() only returns false at the moment.
+        if (isTermHistorical(newAtpIds.get(0))) {
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
+
+        //  See if a wishlist item exists for the course. If so, then update it. Otherwise create a new plan item.
+        PlanItemInfo planItem = getWishlistPlanItem(courseId);
+        //  Storage for wishlist events.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> wishlistEvents = null;
+        //  Create a new plan item if no wishlist exists. Otherwise, update the wishlist item.
+        if (planItem == null) {
+            try {
+                planItem = (PlanItemInfo) addPlanItem(plan, courseId, newAtpIds, newType);
+            } catch (Exception e) {
+                return doPlanActionError(form, "Unable to add plan item.", e);
+            }
+        } else {
+            //  Create wishlist events before updating the plan item.
+            wishlistEvents = makeRemoveEvent(planItem);
+            planItem.setTypeKey(newType);
+            planItem.setPlanPeriods(newAtpIds);
+            try {
+                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                return doPlanActionError(form, "Unable to update wishlist plan item.", e);
+            }
+        }
+
+        //  Create the map of javascript event(s) that should be thrown in the UI.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        if (doWishlistEvents) {
-            Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
-            addPlannedItemEventParams.put("planItemId", planItem.getId());
-            addPlannedItemEventParams.put("planItemType", formatTypeKey(typeKey));
-            addPlannedItemEventParams.put("courseDetails", courseDetailsAsJson);
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, addPlannedItemEventParams);
+        //  If a wishlist item was clobbered then generate Javascript events.
+        if (wishlistEvents != null) {
+            events.putAll(wishlistEvents);
         }
 
-        for (String termId : newTermIds) {
-            //  One "plan item added" for each new Term ID.
-            Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
-            addPlannedItemEventParams.put("planItemId", planItem.getId());
-            addPlannedItemEventParams.put("planItemType", formatTypeKey(typeKey));
-            addPlannedItemEventParams.put("atpId", formatAtpIdForUI(termId));
-            addPlannedItemEventParams.put("courseDetails", courseDetailsAsJson);
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
-
-            //  One "update total credits" for each new Term ID.
-            Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-            updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-            String totalCredits = this.getTotalCredits(termId);
-            updateCreditsEventParams.put("totalCredits", totalCredits);
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
+        try {
+            events.putAll(makeAddEvent(planItem, courseDetails));
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Unable to create add event.", e);
         }
 
+        events.putAll(makeUpdateTotalCreditsEvent(planItem));
+
+        //  Populate the form.
         form.setJavascriptEvents(events);
-        //  Set success text.
-        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
-
-        //  TODO: These can go away once the transition to JS events is complete.
-        form.setPlanItemId(planItem.getId());
-        form.setCourseId(planItem.getRefObjectId());
 
         //  TODO: Hold on this for now. Unclear how meta data gets updated.
         //  Update the timestamp on the plan.
@@ -613,7 +558,93 @@ public class PlanController extends UifControllerBase {
         //} catch (Exception e) {
         //    logger.error("Unable to update the plan.", e);
         //}
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        return doPlanActionSuccess(form);
+    }
+
+    /**
+     * Determines if the given ATP ID is before the current ATP.
+     * @param atpId
+     * @return Returns true if the ATP is historical. Otherwise, false.
+     */
+    private boolean isTermHistorical(String atpId) {
+        // TODO: Logic needs to be more complex.
+        return false;
+    }
+
+    /**
+     * Gets a list of term ids taking into account "other" items. Currently this list should only contain a single item.
+     * @param atpId
+     * @return
+     */
+    private List<String> getNewTermIds(String atpId, PlanForm form) {
+        List<String> newTermIds = new LinkedList<String>();
+        newTermIds.add(atpId);
+
+        //  Check for an "other" item in the terms list and assemble an ATP ID from the year and term fields.
+        if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {
+            //  Remove the "other" item from the list.
+            newTermIds.remove(newTermIds.indexOf(PlanConstants.OTHER_TERM_KEY));
+
+            //  Create an ATP id from the values in the year and term fields.
+            String year = form.getYear();
+            if (StringUtils.isBlank(year)) {
+                throw new RuntimeException("Could not construct ATP id for 'other' option because year was blank.");
+            }
+
+            String term = form.getTerm();
+            if (StringUtils.isBlank(term)) {
+                throw new RuntimeException("Could not construct ATP id for 'other' option because term was blank.");
+            }
+
+            newTermIds.add(getAtpHelper().getAtpFromYearAndTerm(term, year));
+        }
+        return newTermIds;
+    }
+
+    /**
+     * Determines if a plan has capacity in within a particular ATP for adding a new plan item of a specific type.
+     *
+     * @param plan
+     * @param atpId
+     * @param typeKey
+     * @return True if the item can be added or false if not.
+     * @throws RuntimeException if things go wrong.
+     */
+    private boolean isAtpHasCapacity(LearningPlan plan, String atpId, String typeKey) {
+        if (plan == null) {
+            throw new RuntimeException("Plan was NULL.");
+        }
+
+        if (StringUtils.isEmpty(atpId)) {
+            throw new RuntimeException("Course Id was empty.");
+        }
+
+        List<PlanItemInfo> planItems = null;
+        PlanItem item = null;
+        try {
+            planItems = getAcademicPlanService().getPlanItemsInPlanByType(plan.getId(), typeKey, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve plan items.", e);
+        }
+
+        int counter = 0;
+        if (planItems == null || planItems.isEmpty()) {
+            throw new RuntimeException("Could not retrieve plan items.");
+        } else {
+            for (PlanItem p : planItems) {
+                if (p.getRefObjectId().equals(atpId)) {
+                    counter++;
+                }
+            }
+        }
+
+        if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            return (counter >= PlanConstants.BACKUP_PLAN_ITEM_CAPACITY) ? false : true;
+        } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return (counter >= PlanConstants.PLANNED_PLAN_ITEM_CAPACITY) ? false : true;
+        }
+
+        throw new RuntimeException(String.format("Unknown plan item type [%s].", typeKey));
     }
 
     @RequestMapping(params = "methodToCall=addSavedCourse")
@@ -704,6 +735,20 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
+     * Blow up response of the plan capacity validation fails.
+     * @param form
+     * @return
+     */
+    private ModelAndView doPlanCapacityExceededError(PlanForm form) {
+        String errorId = PlanConstants.ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED;
+        if (form.isBackup()) {
+            errorId = PlanConstants.ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
+        }
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, errorId);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+    }
+
+    /**
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doPlanActionError(PlanForm form, String errorMessage, Exception e) {
@@ -756,14 +801,14 @@ public class PlanController extends UifControllerBase {
      * @return The newly created plan item or the existing plan item where a plan item already exists for the given course.
      * @throws RuntimeException on errors.
      */
-    protected PlanItem addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
+    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
 
         if (StringUtils.isEmpty(courseId)) {
             // TODO: DO ERROR.
             throw new RuntimeException("Empty Course ID");
         }
 
-        PlanItem newPlanItem = null;
+        PlanItemInfo newPlanItem = null;
 
         PlanItemInfo pii = new PlanItemInfo();
         pii.setLearningPlanId(plan.getId());
@@ -795,13 +840,115 @@ public class PlanController extends UifControllerBase {
         return newPlanItem;
     }
 
+
+    /**
+     * Gets a Plan Item of type "wishlist" for a particular course. There should only ever be one.
+     * @param courseId The id of the course.
+     * @return A PlanItem of type wishlist.
+     */
+    protected PlanItemInfo getWishlistPlanItem(String courseId) {
+        if (StringUtils.isEmpty(courseId)) {
+            throw new RuntimeException("Course Id was empty.");
+        }
+
+        String studentId = getUserId();
+        LearningPlan learningPlan = getLearningPlan(studentId);
+        if (learningPlan == null) {
+            throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
+        }
+
+        List<PlanItemInfo> planItems = null;
+        PlanItemInfo item = null;
+
+        try {
+            planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
+                    PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve plan items.", e);
+        }
+
+        if (planItems == null || planItems.isEmpty()) {
+            throw new RuntimeException("Could not retrieve plan items.");
+        } else {
+            for (PlanItemInfo p : planItems) {
+                if (p.getRefObjectId().equals(courseId)) {
+                    item = p;
+                    break;
+                }
+            }
+        }
+        //  A null here means that no plan item exists for the given course ID.
+        return item;
+    }
+
+
+    /**
+     * Gets a Plan Item of type "planned" or "backup" for a particular course and ATP ID. Since we are enforcing a
+     * data constraint of one "planned" or "backup" plan item per ATP ID this method only returns a single plan item.
+     *
+     * @param courseId
+     * @return A "planned" or "backup" plan item. Or 'null' if none exists.
+     * @throws RuntimeException on errors.
+     */
+    protected PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
+        if (StringUtils.isEmpty(courseId)) {
+            throw new RuntimeException("Course Id was empty.");
+        }
+
+        if (StringUtils.isEmpty(atpId)) {
+            throw new RuntimeException("ATP Id was empty.");
+        }
+
+        String studentId = getUserId();
+        LearningPlan learningPlan = getLearningPlan(studentId);
+        if (learningPlan == null) {
+            throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
+        }
+
+        List<PlanItemInfo> planItems = null;
+        PlanItemInfo item = null;
+
+        try {
+            planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
+                    PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve plan items.", e);
+        }
+
+        if (planItems == null || planItems.isEmpty()) {
+            throw new RuntimeException("Could not retrieve plan items.");
+        } else {
+            for (PlanItemInfo p : planItems) {
+                //  Make sure some ATP IDs exist on the plan item. There should never be more than one ATP ID however.
+                List<String> planPeriods = p.getPlanPeriods();
+                if (p.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)
+                        || planPeriods == null || planPeriods.size() == 0) {
+                    continue;
+                }
+                //  Throw an error if a plan item has more than one ATP ID associated with it.
+                if (planPeriods.size() > 1) {
+                    throw new RuntimeException(String.format("Learning Plan [%s] plan id [%s] has more than one associated ATP ID.",
+                            learningPlan.getId(), p.getId()));
+                }
+
+                String atp = planPeriods.get(0);
+                if (p.getRefObjectId().equals(courseId) && atp.equals(atpId)) {
+                    item = p;
+                    break;
+                }
+            }
+        }
+        //  A null here means that no plan item exists for the given course and ATP IDs.
+        return item;
+    }
+
     /*
-     *  If the saved course item couldn't be added because the course already exists then lookup the id of the existing
-     *  plan item.
+     *  Gets a plan item given a course id and plan item type
+     *
      *  @return Returns a plan item if one is found for the given courseId. Otherwise, returns null.
      *  @throws RuntimeException on errors.
      */
-    protected PlanItem getPlanItemByCourseIdAndType(String courseId, String planItemType) {
+    protected PlanItemInfo getPlanItemByCourseIdAndType(String courseId, String planItemType) {
 
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentId = user.getPrincipalId();
@@ -811,7 +958,7 @@ public class PlanController extends UifControllerBase {
         }
 
         List<PlanItemInfo> planItems = null;
-        PlanItem item = null;
+        PlanItemInfo item = null;
 
         try {
             planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), planItemType, PlanConstants.CONTEXT_INFO);
@@ -822,7 +969,7 @@ public class PlanController extends UifControllerBase {
         if (planItems == null || planItems.isEmpty()) {
             throw new RuntimeException("Could not retrieve plan items.");
         } else {
-            for (PlanItem p : planItems) {
+            for (PlanItemInfo p : planItems) {
                 if (p.getRefObjectId().equals(courseId)) {
                     item = p;
                     break;
@@ -910,7 +1057,7 @@ public class PlanController extends UifControllerBase {
 
             //  Set the status of the request for the UI.
             form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-            form.setJavascriptEvents(makeRemoveEvents(planItem));
+            form.setJavascriptEvents(makeRemoveEvent(planItem));
 
 
             //  Set success text.
@@ -941,31 +1088,78 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvents(PlanItemInfo planItem) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<String, String> params = new HashMap<String, String>();
 
-        String termId = (planItem.getPlanPeriods() == null || planItem.getPlanPeriods().size() == 0) ? "" : planItem.getPlanPeriods().get(0);
-
-        Map<String, String> jsEventParams = new HashMap<String, String>();
+        //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            jsEventParams.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         }
-        jsEventParams.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-        jsEventParams.put("planItemId", planItem.getId());
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsEventParams);
+        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+        params.put("planItemId", planItem.getId());
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
+        return events;
+    }
 
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            //  Queue the javascript event(s) that should be thrown in the UI.
-            //  One "update total credits" for each ATP id.
-            Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-            updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-            String totalCredits = this.getTotalCredits(termId);
-            updateCreditsEventParams.put("totalCredits", totalCredits);
-            events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
+    /**
+     * Creates an update credits event.
+     * @param planItem
+     * @return
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(PlanItemInfo planItem) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        //  Only planned items need this event.
+        if (! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return events;
         }
+
+        Map<String, String> params = new HashMap<String, String>();
+        String termId = (planItem.getPlanPeriods() == null || planItem.getPlanPeriods().size() == 0) ? "" : planItem.getPlanPeriods().get(0);
+
+        params.put("atpId", formatAtpIdForUI(termId));
+        String totalCredits = this.getTotalCredits(termId);
+        params.put("totalCredits", totalCredits);
 
         return events;
+    }
+
+    /**
+     * Creates an add plan item event.
+     * @param planItem
+     * @param courseDetails
+     * @return
+     * @throws RuntimeException if anything goes wrong.
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("planItemId", planItem.getId());
+        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+         //  Only planned or backup items get an atpId attribute.
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
+                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+        }
+
+        //  Create Javascript events.
+        String courseDetailsAsJson;
+        try {
+            //  Serialize course details into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not convert javascript events to JSON.");
+        }
+        params.put("courseDetails", courseDetailsAsJson);
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+        return events;
+    }
+
+    private String getUserId() {
+        Person user = GlobalVariables.getUserSession().getPerson();
+        return user.getPrincipalId();
     }
 
     private String formatAtpIdForUI(String atpId) {
