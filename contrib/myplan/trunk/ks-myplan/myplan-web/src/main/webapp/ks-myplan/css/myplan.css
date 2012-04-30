@@ -806,3 +806,8 @@ a:focus {
 .myplan-view #planned_courses_detail_page_div {
 	padding-top: 10px;
 }
+
+.myplan-audit-widget select {
+    width: 180px;
+    margin: 10px 0px 0px;
+}
