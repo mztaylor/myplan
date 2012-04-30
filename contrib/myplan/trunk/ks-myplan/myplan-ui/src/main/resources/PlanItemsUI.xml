@@ -577,7 +577,7 @@
                     </property>
                     <property name="onDocumentReadyScript" value="
                         jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
-                            fnDisplayMessage('Deleted Successfully','deletePlannedCourse');
+                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse');
                             setTimeout('fnCloseAllPopups()', 2000);
                         });
                     "/>
@@ -775,7 +775,8 @@
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-carousel-term</value>
-                <value>@{#line.planItemId.replaceAll("\.","-")}-planned</value>
+                <value>@{#line.planItemId.replaceAll("\.","-")}</value>
+                <value>myplan-term-planned</value>
             </list>
         </property>
 
@@ -791,11 +792,11 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.id}" parent="Uif-Link"
+                <bean p:id="@{#line.id}_planned" parent="Uif-Link"
                       p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
                       p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"
                       p:labelField.render="false"
-                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',dateAdded:'@{#line.dateAdded}',planItemId:'@{#line.id}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
+                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',dateAdded:'@{#line.dateAdded}',planItemId:'@{#line.id}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);"
                       p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
@@ -830,7 +831,8 @@
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-carousel-term</value>
-                <value>@{#line.planItemId.replaceAll("\.","-")}-backup</value>
+                <value>@{#line.planItemId.replaceAll("\.","-")}</value>
+                <value>myplan-term-backup</value>
             </list>
         </property>
         <property name="collectionObjectClass"
@@ -845,17 +847,26 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.id}" parent="Uif-Link"
+                <bean p:id="@{#line.id}_backup" parent="Uif-Link"
                       p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
                       p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"
-                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.id}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
+                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.id}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);"
                       p:labelField.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"/>
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
-
+        <property name="footer">
+            <bean parent="term_backup_link" p:styleClasses="myplan-backup-link"/>
+        </property>
     </bean>
 
+    <bean id="term_backup_link" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:linkLabel="&lt;span&gt;Show&lt;/span&gt; # more courses" p:hrefText="#" p:onClickScript="fnExpandBackup(e);"/>
+            </list>
+        </property>
+    </bean>
 
 
 
@@ -1258,7 +1269,7 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage('Added to Plan','addPlannedCourse');
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse');
                                             setTimeout('fnCloseAllPopups()', 2000);
                                         });"/>
                                 <property name="styleClasses">
@@ -1276,10 +1287,9 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage('Course Moved','addPlannedCourse');
+                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse');
                                             setTimeout('fnCloseAllPopups()', 2000);
                                         });"/>
-                                <!--p:methodToCall="addPlannedCourse"-->
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-font-size-90</value>
@@ -1420,12 +1430,6 @@
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>/ks-myplan/scripts/myplan.manage.js</value>
-                <value>/ks-myplan/plugins/jcarousellite.js</value>
-            </list>
-        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-LookupPage" p:id="full_planned_courses_detail_page">
@@ -1435,7 +1439,6 @@
                     <property name="items">
                         <list>
                             <ref bean="full_planned_courses_detail"/>
-
                         </list>
                     </property>
                 </bean>
@@ -1472,11 +1475,11 @@
         <property name="propertyName" value="searchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-
+        <!--<property name="layoutManager.applyDefaultCellWidths" value="false"/>-->
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false"
-                      p:escapeHtmlInPropertyValue="false" p:width="100"/>
+                      p:escapeHtmlInPropertyValue="false" />
             </list>
         </property>
         <property name="subCollections">
@@ -1492,7 +1495,6 @@
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject"/>
         <property name="propertyName" value="terms"/>
-
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>

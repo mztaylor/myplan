@@ -269,9 +269,14 @@ a:focus {
     padding:5px 0px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout {
-    height: 208px;
     overflow: hidden;
     background: url(../images/bkgrdDotted.gif);
+}
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-planned .uif-stackedCollectionLayout {
+    height: 208px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-backup .uif-stackedCollectionLayout {
+    height: 52px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
     margin-top: 1px;
@@ -287,6 +292,24 @@ a:focus {
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
     color: #aaa;
+    text-transform: uppercase;
+    font-size:85%;
+}
+.myplan-backup-link {
+    font-size:90%;
+    background: url(../images/bkgrdDotted.gif);
+    padding: 0 5px;
+    height: 25px;
+    line-height: 25px;
+}
+.myplan-backup-link a {
+    display: block;
+    padding-left: 12px;
+    cursor: pointer;
+    background: url(../images/sortDesc.png) no-repeat -5px -1px;
+}
+.myplan-backup-link a.expanded {
+    background: url(../images/sortAsc.png) no-repeat -5px 7px;
 }
 .myplan-carousel-term-total {
     background:#ccc;
