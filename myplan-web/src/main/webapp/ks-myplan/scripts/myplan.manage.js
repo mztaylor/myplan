@@ -5,6 +5,27 @@ function fnBuildTitle(aView, termSelector, headerSelector) {
     jq("#" + headerSelector + " .myplan-plan-header").html(sText + ' ' + sFirst.substr(-4) + '-' + sLast.substr(-4));
 }
 
+function fnExpandBackup(e) {
+    stopEvent(e);
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    if (!jq(target).hasClass("disabled")) {
+        var oBackup = jq(target).parents(".myplan-term-backup").find(".uif-stackedCollectionLayout");
+        var oQuarter = jq(target).parents("li");
+        var iSpeed = 500;
+        var iDefault = 26;
+        if (jq(target).hasClass("expanded")) {
+            var iAdjust = ( oBackup.height() - ( iDefault * 2 ) ) * -1;
+            jq(target).removeClass("expanded");
+            jq(target).find("span").html("Show");
+        } else {
+            var iAdjust = ( oBackup.find("span a").size() * iDefault ) - oBackup.height();
+            jq(target).addClass("expanded");
+            jq(target).find("span").html("Hide");
+        }
+        oBackup.animate({"height": oBackup.height() + iAdjust}, {duration: iSpeed});
+        oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
+    }
+}
 jq(document).ready(function() {
     /*
     jq(".myplan-carousel-list .uif-stackedCollectionLayout").each(function() {
@@ -41,24 +62,4 @@ jq(document).ready(function() {
             initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
         });
     }
-    /*
-    jq(".quarter_backup_footer").click(function() {
-        if (!jq(this).hasClass("disabled")) {
-            var oBackup = jq(this).prev(".quarter_backup_group");
-            var oQuarter = jq(this).parents("li");
-            var iSpeed = 500;
-            if (jq(this).hasClass("expanded")) {
-                var iAdjust = ( oBackup.height() - 46 ) * -1;
-                jq(this).removeClass("expanded");
-                jq(this).find("span").html("Show");
-            } else {
-                var iAdjust = oBackup[0].scrollHeight - oBackup.height();
-                jq(this).addClass("expanded");
-                jq(this).find("span").html("Hide");
-            }
-            oBackup.animate({"height": oBackup.height() + iAdjust}, {duration: iSpeed});
-            oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
-        }
-    });
-    */
 });
