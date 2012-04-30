@@ -12,11 +12,20 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String COURSE_ID = "courseId";
     public static final String TERM_ID = "term";
 
+    public static final int PLANNED_PLAN_ITEM_CAPACITY = 8;
+    public static final int BACKUP_PLAN_ITEM_CAPACITY = 8;
+
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 
     public static final String SUCCESS_KEY = "myplan.text.success";
+
+    public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
+    public static final String ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.plannedCapacityExceeded";
+    public static final String ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.backupCapacityExceeded";
+
+    public static final String ERROR_KEY_HISTORICAL_ATP = "myplan.text.error.plannedCourseList.historicalAtp";
 
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "myplan.text.error.savedCoursesList.unknownPlanItem";

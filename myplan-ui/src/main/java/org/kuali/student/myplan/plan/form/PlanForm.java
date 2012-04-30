@@ -35,7 +35,8 @@ public class PlanForm extends UifFormBase {
     public enum REQUEST_STATUS {
         /*  The requested operation was successful. */
         SUCCESS,
-        /*  The requested operation was unnecessary (e.g. the plan item was already deleted) */
+        /*  The requested operation was unnecessary (e.g. the plan item was already deleted), but appropriate
+         *  javascript events were generated/available. */
         NOOP,
         /* The requested operation failed. */
         FAILURE
