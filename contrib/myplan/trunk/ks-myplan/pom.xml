@@ -122,7 +122,7 @@
         <spring.security.version>3.1.0.RELEASE</spring.security.version>
         <spring.security-cas.version>3.1.0.RELEASE</spring.security-cas.version>
         <spring.security.javadoc.version>3.1.0.RELEASE</spring.security.javadoc.version>
-        <velocity.version>1.6.4</velocity.version>
+        <velocity.version>1.7</velocity.version>
         <velocity.tools.version>2.0</velocity.tools.version>
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
@@ -1050,7 +1050,7 @@
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
-                <version>1.7</version>
+                <version>${velocity.version}</version>
             </dependency>
 
 

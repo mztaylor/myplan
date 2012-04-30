@@ -14,16 +14,16 @@ public class AtpHelper {
     /*
    atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
     */
-    private int atpPrefix = 13;
+    private static int atpPrefix = 13;
     
-    public String[] getTermAndYear(String atp){
+    public static String[] getTermAndYear(String atp){
         String qtrYr = atp.substring(atpPrefix, atp.length());
         String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         splitStr[0]=splitStr[0].substring(0, 1).toUpperCase().concat(splitStr[0].substring(1, splitStr[0].length()));
         return  splitStr;
     }
     
-    public String getAtpFromYearAndTerm(String term, String year){
+    public static String getAtpFromYearAndTerm(String term, String year){
         String newTermId = PlanConstants.TERM_ID_PREFIX + term + year;
         return newTermId;
     }

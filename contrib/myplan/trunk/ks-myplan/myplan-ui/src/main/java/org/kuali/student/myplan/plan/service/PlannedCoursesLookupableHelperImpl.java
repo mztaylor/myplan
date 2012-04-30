@@ -9,8 +9,8 @@ import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.FullPlanTermItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
@@ -41,18 +41,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
         this.academicCalendarService = academicCalendarService;
     }
-    // Used for gettign the term and year from Atp
-    private transient AtpHelper atpHelper;
-    public synchronized AtpHelper getAtpHelper(){
-        if(this.atpHelper == null){
-            this.atpHelper = new AtpHelper();
-        }
-        return atpHelper;
-    }
 
-    public void setAtpHelper(AtpHelper atpHelper) {
-        this.atpHelper = atpHelper;
-    }
 
     private String term1 = "Autumn";
     private String term2 = "Winter";
@@ -67,7 +56,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         try {
 
-            List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
+            List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
             Collections.sort(plannedCoursesList);
 
             List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
@@ -84,29 +73,28 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             /*
            Populating the PlannedTerm List
             */
-            for (PlanItemDataObject plan : plannedCoursesList) {
-                for (String atp : plan.getAtpIds()) {
-                    boolean exists = false;
-                    for (PlannedTerm term : plannedTerms) {
+            for (PlannedCourseDataObject plan : plannedCoursesList) {
+                String atp = plan.getPlanItemDataObject().getAtp();
+                boolean exists = false;
+                for (PlannedTerm term : plannedTerms) {
 
-                        if (term.getPlanItemId().equalsIgnoreCase(atp)) {
-                            term.getPlannedList().add(plan);
-                            exists = true;
-                        }
-                    }
-                    if (!exists) {
-                        PlannedTerm term = new PlannedTerm();
-                        term.setPlanItemId(atp);
-                        /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-                        String[] splitStr = getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(splitStr[0]).append(" ").append(splitStr[1]);
-                        String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
-                        term.setQtrYear(QtrYear);
+                    if (term.getPlanItemId().equalsIgnoreCase(atp)) {
                         term.getPlannedList().add(plan);
-                        term.setCurrentTerm(false);
-                        plannedTerms.add(term);
+                        exists = true;
                     }
+                }
+                if (!exists) {
+                    PlannedTerm term = new PlannedTerm();
+                    term.setPlanItemId(atp);
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr = AtpHelper.getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
+                    term.setQtrYear(QtrYear);
+                    term.getPlannedList().add(plan);
+                    term.setCurrentTerm(false);
+                    plannedTerms.add(term);
                 }
             }
 
@@ -114,36 +102,34 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             /*
            Populating the backup list for the Plans
             */
-            List<PlanItemDataObject> backupCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
+            List<PlannedCourseDataObject> backupCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
             int count = plannedTerms.size();
-            for (PlanItemDataObject bl : backupCoursesList) {
-                for (String atp : bl.getAtpIds()) {
+            for (PlannedCourseDataObject bl : backupCoursesList) {
+                String atp = bl.getPlanItemDataObject().getAtp();
 
-                    boolean added = false;
-                    for (int i = 0; i < count; i++) {
-                        if (atp.equalsIgnoreCase(plannedTerms.get(i).getPlanItemId())) {
-                            plannedTerms.get(i).getBackupList().add(bl);
-                            added = true;
-                        }
-                    }
-                    if (!added) {
-                        PlannedTerm plannedTerm = new PlannedTerm();
-                        plannedTerm.setPlanItemId(atp);
-                        StringBuffer str = new StringBuffer();
-                        /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-                        String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
-                        str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
-                        String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
-                        plannedTerm.setQtrYear(QtrYear);
-                        plannedTerm.getBackupList().add(bl);
-                        plannedTerm.setCurrentTerm(false);
-                        plannedTerms.add(plannedTerm);
-                        count++;
+                boolean added = false;
+                for (int i = 0; i < count; i++) {
+                    if (atp.equalsIgnoreCase(plannedTerms.get(i).getPlanItemId())) {
+                        plannedTerms.get(i).getBackupList().add(bl);
+                        added = true;
                     }
                 }
-
-
+                if (!added) {
+                    PlannedTerm plannedTerm = new PlannedTerm();
+                    plannedTerm.setPlanItemId(atp);
+                    StringBuffer str = new StringBuffer();
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr = AtpHelper.getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+                    str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
+                    plannedTerm.setQtrYear(QtrYear);
+                    plannedTerm.getBackupList().add(bl);
+                    plannedTerm.setCurrentTerm(false);
+                    plannedTerms.add(plannedTerm);
+                    count++;
+                }
             }
+
 
             /*
            Used for sorting the planItemDataobjects
@@ -163,7 +149,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             List<PlannedTerm> orderedList = new ArrayList<PlannedTerm>();
             int listSize = orderedPlanTerms.size();
             List<String> yearExistsCompare = new ArrayList<String>();
-            for (PlannedTerm plannedTerm:orderedPlanTerms) {
+            for (PlannedTerm plannedTerm : orderedPlanTerms) {
 
 
                 String[] split = plannedTerm.getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
@@ -173,7 +159,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     List<String> quarters = new ArrayList<String>();
                     int year = Integer.parseInt(split[1].trim());
 
-                    for (PlannedTerm pl:orderedPlanTerms) {
+                    for (PlannedTerm pl : orderedPlanTerms) {
                         String[] str = pl.getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                         if (split[1].trim().equalsIgnoreCase(str[1].trim())) {
                             quarters.add(str[0].trim());
@@ -208,14 +194,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 These are hardcoded to show the past data in the list
 
              */
-            if(orderedPlanTerms.size()>0){
-            String yearParam = orderPlanTerms.get(0).getQtrYear();
-            String[] splitStr = yearParam.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            populatePreviousData(plannedTermsOrderedList, splitStr[0].trim(), splitStr[1].trim());
+            if (orderedPlanTerms.size() > 0) {
+                String yearParam = orderPlanTerms.get(0).getQtrYear();
+                String[] splitStr = yearParam.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                populatePreviousData(plannedTermsOrderedList, splitStr[0].trim(), splitStr[1].trim());
 
-            for (PlannedTerm pl : orderPlanTerms) {
-                plannedTermsOrderedList.add(pl);
-            }
+                for (PlannedTerm pl : orderPlanTerms) {
+                    plannedTermsOrderedList.add(pl);
+                }
             }
 
 
@@ -223,16 +209,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                These are hardcoded to show the future data in the list
 
             */
-           if(orderedPlanTerms.size()>0){
-            String[] split = orderPlanTerms.get(orderPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            int year = 0;
-            String quarter = null;
-            if (split.length == 2) {
-                year = Integer.parseInt(split[1].trim());
-                quarter = split[0].trim();
+            if (orderedPlanTerms.size() > 0) {
+                String[] split = orderPlanTerms.get(orderPlanTerms.size() - 1).getQtrYear().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                int year = 0;
+                String quarter = null;
+                if (split.length == 2) {
+                    year = Integer.parseInt(split[1].trim());
+                    quarter = split[0].trim();
+                }
+                populateFutureData(plannedTermsOrderedList, quarter, year);
             }
-            populateFutureData(plannedTermsOrderedList, quarter, year);
-           }
 
 
             return plannedTermsOrderedList;
@@ -268,7 +254,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             PlannedTerm pl = new PlannedTerm();
             pl.setPlanItemId(atp);
             /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-            String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+            String[] splitStr = AtpHelper.getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
             StringBuffer str = new StringBuffer();
             str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
@@ -315,7 +301,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             PlannedTerm pl = new PlannedTerm();
             pl.setPlanItemId(atp);
             /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-            String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+            String[] splitStr = AtpHelper.getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
             StringBuffer str = new StringBuffer();
             str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
             String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
@@ -337,51 +323,51 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         boolean winterExists = false;
         boolean springExists = false;
         boolean summerExists = false;
-         for(String term:quarters){
-             terms fd = terms.valueOf(term);
+        for (String term : quarters) {
+            terms fd = terms.valueOf(term);
 
-             switch (fd) {
-                 case Autumn:
-                     autumnExists = !autumnExists;
-                     break;
-                 case Winter:
-                     winterExists = !winterExists;
-                     break;
-                 case Spring:
-                     springExists = !springExists;
-                     break;
-                 case Summer:
-                     summerExists = !summerExists;
-                     break;
-             }
-         }
+            switch (fd) {
+                case Autumn:
+                    autumnExists = !autumnExists;
+                    break;
+                case Winter:
+                    winterExists = !winterExists;
+                    break;
+                case Spring:
+                    springExists = !springExists;
+                    break;
+                case Summer:
+                    summerExists = !summerExists;
+                    break;
+            }
+        }
         if (!autumnExists) {
             PlannedTerm pl = new PlannedTerm();
-            pl.setPlanItemId("kuali.uw.atp.autumn"+(year));
-            String qtrYr = term1+" "+(year);
+            pl.setPlanItemId("kuali.uw.atp.autumn" + (year));
+            String qtrYr = term1 + " " + (year);
             pl.setQtrYear(qtrYr);
             termOrderedPlanTerms.add(pl);
         }
         if (!winterExists) {
             PlannedTerm pl = new PlannedTerm();
-            pl.setPlanItemId("kuali.uw.atp.winter"+(year));
-            String qtrYr = term2+" "+(year);
+            pl.setPlanItemId("kuali.uw.atp.winter" + (year));
+            String qtrYr = term2 + " " + (year);
             pl.setQtrYear(qtrYr);
             termOrderedPlanTerms.add(pl);
 
         }
         if (!springExists) {
             PlannedTerm pl = new PlannedTerm();
-            pl.setPlanItemId("kuali.uw.atp.spring"+(year));
-            String qtrYr = term3+" "+(year);
+            pl.setPlanItemId("kuali.uw.atp.spring" + (year));
+            String qtrYr = term3 + " " + (year);
             pl.setQtrYear(qtrYr);
             termOrderedPlanTerms.add(pl);
 
         }
         if (!summerExists) {
             PlannedTerm pl = new PlannedTerm();
-            pl.setPlanItemId("kuali.uw.atp.summer"+(year));
-            String qtrYr = term4+" "+(year);
+            pl.setPlanItemId("kuali.uw.atp.summer" + (year));
+            String qtrYr = term4 + " " + (year);
             pl.setQtrYear(qtrYr);
             termOrderedPlanTerms.add(pl);
 

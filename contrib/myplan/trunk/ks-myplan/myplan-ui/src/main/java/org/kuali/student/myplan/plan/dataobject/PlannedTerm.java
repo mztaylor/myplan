@@ -12,16 +12,15 @@ import java.util.List;
  * Date: 4/2/12
  * Time: 3:17 PM
  * To change this template use File | Settings | File Templates.
- *
  */
 public class PlannedTerm {
     // TODO: This is actually the ATPid. FIXME!
     private String planItemId;
     private String qtrYear;
 
-    private List<PlanItemDataObject> plannedList=new ArrayList<PlanItemDataObject>();
-    private List<PlanItemDataObject> backupList=new ArrayList<PlanItemDataObject>();
-    private String credits=null;
+    private List<PlannedCourseDataObject> plannedList = new ArrayList<PlannedCourseDataObject>();
+    private List<PlannedCourseDataObject> backupList = new ArrayList<PlannedCourseDataObject>();
+    private String credits = null;
     private boolean isCurrentTerm;
 
     public String getPlanItemId() {
@@ -36,32 +35,31 @@ public class PlannedTerm {
         this.qtrYear = qtrYear;
     }
 
-    public List<PlanItemDataObject> getPlannedList() {
-        return plannedList;
-    }
-
-    public void setPlannedList(List<PlanItemDataObject> plannedList) {
-        this.plannedList = plannedList;
-    }
-
     public void setPlanItemId(String planItemId) {
         this.planItemId = planItemId;
     }
 
+    public List<PlannedCourseDataObject> getPlannedList() {
+        return plannedList;
+    }
 
-    public List<PlanItemDataObject> getBackupList() {
+    public void setPlannedList(List<PlannedCourseDataObject> plannedList) {
+        this.plannedList = plannedList;
+    }
+
+    public List<PlannedCourseDataObject> getBackupList() {
         return backupList;
     }
 
-    public void setBackupList(List<PlanItemDataObject> backupList) {
+    public void setBackupList(List<PlannedCourseDataObject> backupList) {
         this.backupList = backupList;
     }
 
     public String getCredits() {
         int totalMin = 0;
         int totalMax = 0;
-        for (PlanItemDataObject item : getPlannedList()) {
-            String[] str = item.getCourseDetails().getCredit().split("\\D");
+        for (PlannedCourseDataObject pc : getPlannedList()) {
+            String[] str = pc.getCourseDetails().getCredit().split("\\D");
             int min = Integer.parseInt(str[0]);
             totalMin += min;
             int max = Integer.parseInt(str[str.length - 1]);
@@ -74,10 +72,6 @@ public class PlannedTerm {
 
         return totalCredits;
     }
-
-//    public void setCredits(String credits) {
-//        this.credits = credits;
-//    }
 
     public boolean isCurrentTerm() {
         return isCurrentTerm;

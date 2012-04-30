@@ -11,6 +11,7 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperSer
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -30,10 +31,10 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
 
-    protected List<PlanItemDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly)
+    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
-        List<PlanItemDataObject> plannedCoursesList = new ArrayList<PlanItemDataObject>();
+        List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
 
         AcademicPlanService academicPlanService = getAcademicPlanService();
 
@@ -51,28 +52,20 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
             List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
 
             for (PlanItemInfo planItem : planItemList) {
+                PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
                 String courseID = planItem.getRefObjectId();
                 //  Only create a data object for the specified type.
                 if (planItem.getTypeKey().equals(planItemType)) {
-                    PlanItemDataObject item = new PlanItemDataObject();
-                    item.setId(planItem.getId());
-                    item.setDateAdded(planItem.getMeta().getCreateTime());
-                    //  Only load ATP info for planned courses.
-                    if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                        item.setAtpIds(planItem.getPlanPeriods());
-                    }
-                    //  Only load ATP info for backup courses.
-                    if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                        item.setAtpIds(planItem.getPlanPeriods());
-                    }
-                    plannedCoursesList.add(item);
 
+                    plannedCourseDO.setPlanItemDataObject( PlanItemDataObject.build(planItem) );
 
                     if(loadSummaryInfoOnly) {
-                        item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
+                        plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
                     }    else {
-                        item.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                        plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
                     }
+
+                    plannedCoursesList.add(plannedCourseDO);
                 }
             }
         }

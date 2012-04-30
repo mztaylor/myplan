@@ -15,7 +15,7 @@ public class FullPlanItemsDataObject {
 
     private String yearRange;
 
-    private List<FullPlanTermItemsDataObject> terms=new ArrayList<FullPlanTermItemsDataObject>();
+    private List<PlannedTerm> terms=new ArrayList<PlannedTerm>();
 
     public String getYearRange() {
         return yearRange;
@@ -34,11 +34,11 @@ public class FullPlanItemsDataObject {
         this.year = year;
     }
 
-    public List<FullPlanTermItemsDataObject> getTerms() {
+    public List<PlannedTerm> getTerms() {
         return terms;
     }
 
-    public void setTerms(List<FullPlanTermItemsDataObject> terms) {
+    public void setTerms(List<PlannedTerm> terms) {
         this.terms = terms;
     }
 }
