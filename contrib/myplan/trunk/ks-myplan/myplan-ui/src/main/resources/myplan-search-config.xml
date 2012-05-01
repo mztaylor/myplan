@@ -257,6 +257,20 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.course.getCourseTitle">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
     <search:searchType id="myplan.course.prereqsearch.subject">
         <search:searchResultTypeInfo>
             <search:name/>
@@ -626,6 +640,18 @@
                             trim( id.SUFX_CD ) = :number
                         AND
                             trim( id.DIVISION ) = :subject
+                    </value>
+                </entry>
+                <entry key="myplan.course.getCourseTitle">
+                    <value>NATIVE:
+                        SELECT
+                        id.LNG_NAME
+                        FROM
+                        KSLU_CLU_IDENT id
+                        WHERE
+                        trim( id.SUFX_CD ) = :number
+                        AND
+                        trim( id.DIVISION ) = :subject
                     </value>
                 </entry>
             </map>
