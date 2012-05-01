@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -470,25 +471,6 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
 
-        /*
-         *  Before attempting to add a plan item, query for plan items for the requested Course ID and ATP ID.
-         *
-         *  If none exists then proceed. Otherwise, throw an error.
-         */
-        PlanItemInfo existingPlanItem = null;
-        try {
-            existingPlanItem = (PlanItemInfo) getPlannedOrBackupPlanItem(courseId, newAtpIds.get(0));
-        } catch(RuntimeException e) {
-            return doPlanActionError(form, "Query for existing plan item failed.", e);
-        }
-
-        //  Fail if a planned or backup item already exists.
-        if (existingPlanItem != null) {
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
-            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
-        }
-
         /*  Do validations. */
 
         //  Plan Size exceeded.
@@ -518,7 +500,9 @@ public class PlanController extends UifControllerBase {
         //  Create a new plan item if no wishlist exists. Otherwise, update the wishlist item.
         if (planItem == null) {
             try {
-                planItem = (PlanItemInfo) addPlanItem(plan, courseId, newAtpIds, newType);
+                planItem = addPlanItem(plan, courseId, newAtpIds, newType);
+            } catch (DuplicateEntryException e) {
+                return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpIds.get(0)), courseDetails);
             } catch (Exception e) {
                 return doPlanActionError(form, "Unable to add plan item.", e);
             }
@@ -675,19 +659,21 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-        PlanItemInfo planItem = null;
-        try {
-            planItem = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        } catch (Exception e) {
-            return doPlanActionError(form, "Unable to add plan item.", e);
-        }
-
         //  Grab course details.
         CourseDetails courseDetails = null;
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         } catch (Exception e) {
             return doPlanActionError(form, String.format("Unable to retrieve Course Details for [%s].", courseId), e);
+        }
+
+        PlanItemInfo planItem = null;
+        try {
+            planItem = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+        } catch(DuplicateEntryException e) {
+            return doDuplicatePlanItem(form, null, courseDetails);
+        } catch(Exception e) {
+            return doPlanActionError(form, "Unable to add plan item.", e);
         }
 
         //  Create events
@@ -731,6 +717,15 @@ public class PlanController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions.
      */
+    private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
+         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+         PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), atpId);
+         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+    }
+
+    /**
+     * Blow-up response for all plan item actions.
+     */
     private ModelAndView doPlanActionSuccess(PlanForm form) {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
@@ -767,7 +762,8 @@ public class PlanController extends UifControllerBase {
      * @return The newly created plan item or the existing plan item where a plan item already exists for the given course.
      * @throws RuntimeException on errors.
      */
-    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
+    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType)
+        throws DuplicateEntryException {
 
         if (StringUtils.isEmpty(courseId)) {
             throw new RuntimeException("Empty Course ID");
@@ -795,11 +791,11 @@ public class PlanController extends UifControllerBase {
         //  Make sure no dups exist
         if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
             if (getWishlistPlanItem(courseId) != null) {
-                throw new RuntimeException("Duplicate plan item exists.");
+                throw new DuplicateEntryException("Duplicate plan item exists.");
             }
         } else {
             if (getPlannedOrBackupPlanItem(courseId, termIds.get(0)) != null) {
-                throw new RuntimeException("Duplicate plan item exists.");
+                throw new DuplicateEntryException("Duplicate plan item exists.");
             }
         }
 
