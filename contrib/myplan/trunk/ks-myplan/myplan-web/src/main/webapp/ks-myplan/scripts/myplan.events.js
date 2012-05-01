@@ -35,8 +35,8 @@ function fnRemovePlanItem (atpId, type, planItemId) {
     Function: remove course from saved courses full details list
 #################################################################
  */
-function fnRemoveSavedItem (planItemId) {
-    jq(".myplan-saved-courses-detail #" + planItemId + "_span").parents("li").fadeOut(250, function(){
+function fnRemoveSavedItem (planItemId, cssStyle) {
+    jq("." + cssStyle + " #" + planItemId + "_span").parents("li").fadeOut(250, function(){
         jq(this).remove();
     });
 }

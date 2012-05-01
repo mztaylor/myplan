@@ -27,32 +27,6 @@ function fnExpandBackup(e) {
     }
 }
 jq(document).ready(function() {
-    /*
-    jq(".myplan-carousel-list .uif-stackedCollectionLayout").each(function() {
-        var slots = 8;
-        var count = jq(this).find("span > span.fieldLine.boxLayoutVerticalItem.clearfix").size();
-        if (count < slots) {
-            for (var i = count; i < slots; i++) {
-                jq(this).append('<span class="fieldLine boxLayoutVerticalItem clearfix"><div class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">&nbsp;</div></span>');
-            }
-        } else if (count > slots) {
-            jq(this).find('span:gt(' + (slots - 1) + ')').hide();
-        }
-    }); */ /*
-    jq(".quarter .quarter_backup_group").each(function() {
-        var slots = 2;
-        var count = jq(this).find("span").size();
-        if (count <= slots) {
-            jq(this).next(".quarter_backup_footer").html("&nbsp;").addClass("disabled");
-        } else {
-            jq(this).next(".quarter_backup_footer").html("<span>Show</span> " + (count - slots) + " more courses");
-        }
-        if (count < slots) {
-            for (var i = count; i < slots; i++) {
-                jq(this).append("<span>&nbsp;</span>");
-            }
-        }
-    }); */
     if ( jq("#planned_courses_detail_list_group ul:not(.errorLines) li").length > 0 ) {
         jq("#planned_courses_detail_list_group").jCarouselLite({
             btnNext: ".myplan-carousel-next",

@@ -20,7 +20,7 @@
     -->
 
     <!--  Saved Courses (wishlist) components -->
-    <bean id="SavedCoursesSummary-LookupView" parent="MyPlanLookupView">
+    <bean id="SavedCoursesSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="title" value="Saved Courses Summary"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
@@ -230,8 +230,10 @@
         <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="onDocumentReadyScript" value="
             jq('#saved_courses_detail_list_div').subscribe('PLAN_ITEM_DELETED', function(data){
-                fnRemoveSavedItem(data.planItemId);
-                fnUpdateSavedCount( jq(this).find('.uif-headerField.uif-sectionHeaderField .uif-header strong').text() );
+                if (data.planItemType === 'wishlist') {
+                    fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
+                    fnUpdateSavedCount( jq(this).find('.uif-headerField.uif-sectionHeaderField .uif-header strong').text() );
+                }
             });
         "/>
         <property name="styleClasses">

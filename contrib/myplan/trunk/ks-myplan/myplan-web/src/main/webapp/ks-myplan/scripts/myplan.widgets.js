@@ -235,6 +235,9 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
                     }
                 }
                 break;
+            case 'error':
+                // grab message and display message
+                break;
         }
     };
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
