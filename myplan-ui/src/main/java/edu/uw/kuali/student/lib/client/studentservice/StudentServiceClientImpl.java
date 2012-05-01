@@ -19,8 +19,11 @@ import org.restlet.engine.security.DefaultSslContextFactory;
 import org.restlet.representation.Representation;
 import org.restlet.util.Series;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,16 +63,14 @@ public class StudentServiceClientImpl
     /**
      *  Initialize for SSL connections.
      */
-	public StudentServiceClientImpl(String baseUrl,
-                                    String trustStoreFilename, String trustStorePasswd,
-                                    String keyStoreFilename, String keyStorePasswd) {
+	public StudentServiceClientImpl(String baseUrl,String keyStoreFilename, String keyStorePasswd, String trustStoreFilename, String trustStorePasswd) {
 		this(baseUrl);
 
 		logger.info("Initializing SSL with truststore [" + trustStoreFilename + "] and keystore [" + keyStoreFilename + "].");
 		
-		if (logger.isDebugEnabled()) {
+		/*if (logger.isDebugEnabled()) {*/
 			System.setProperty("javax.net.debug", "ssl");
-		}
+		/*}*/
 		//  This is needed for the re-negotiation to succeed. 
 		System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
 	
@@ -290,8 +291,19 @@ public class StudentServiceClientImpl
         .append("course_number=").append(courseNo);
         return  sendQuery(url.toString().trim());
 
+    }
 
-
+    /**
+     *
+     * @param regId
+     * @return
+     * @throws ServiceException
+     */
+    public String getAcademicRecords(String regId)throws ServiceException{
+        StringBuilder url = new StringBuilder(getBaseUrl());
+        url.append("/").append(getServiceVersion()).append("/")
+                .append("enrollment.xml?reg_id=").append("9136CCB8F66711D5BE060004AC494FFE").append("&").append("verbose=on");
+        return sendQuery(url.toString().trim());
 
     }
 
