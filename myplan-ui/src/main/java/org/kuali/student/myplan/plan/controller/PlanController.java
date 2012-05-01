@@ -179,7 +179,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         String termId = planItem.getPlanPeriods().get(0);
         String typeKey = planItem.getTypeKey();
@@ -390,7 +390,7 @@ public class PlanController extends UifControllerBase {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
 
         //  Make Javascript UI events (delete, add, update credits).
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         //  Add events generated for the plan item before it was updated.
         events.putAll(originalRemoveEvents);
         events.putAll(originalUpdateTotalCredits);
@@ -519,7 +519,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Create the map of javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  If a wishlist item was clobbered then generate Javascript events.
         if (wishlistEvents != null) {
@@ -677,7 +677,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Create events
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         events.putAll(makeAddEvent(planItem, courseDetails));
 
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
@@ -910,44 +910,6 @@ public class PlanController extends UifControllerBase {
         return item;
     }
 
-    /*
-     *  Gets a plan item given a course id and plan item type
-     *
-     *  @return Returns a plan item if one is found for the given courseId. Otherwise, returns null.
-     *  @throws RuntimeException on errors.
-     */
-    protected PlanItemInfo getPlanItemByCourseIdAndTypeX(String courseId, String planItemType) {
-
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String studentId = user.getPrincipalId();
-        LearningPlan learningPlan = getLearningPlan(studentId);
-        if (learningPlan == null) {
-            throw new RuntimeException("Could not find the default plan for [%].");
-        }
-
-        List<PlanItemInfo> planItems = null;
-        PlanItemInfo item = null;
-
-        try {
-            planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), planItemType, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not retrieve plan items.", e);
-        }
-
-        if (planItems == null || planItems.isEmpty()) {
-            throw new RuntimeException("Could not retrieve plan items.");
-        } else {
-            for (PlanItemInfo p : planItems) {
-                if (p.getRefObjectId().equals(courseId)) {
-                    item = p;
-                    break;
-                }
-            }
-        }
-        //  A null here means that the duplicate plan item couldn't be found.
-        return item;
-    }
-
     /**
      * Retrieve a student's LearningPlan.
      *
@@ -1057,7 +1019,7 @@ public class PlanController extends UifControllerBase {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
         //  Only planned or backup items get an atpId attribute.
@@ -1077,7 +1039,7 @@ public class PlanController extends UifControllerBase {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(PlanItemInfo planItem) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  Only planned items need this event.
         if (! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
@@ -1102,7 +1064,7 @@ public class PlanController extends UifControllerBase {
      * @throws RuntimeException if anything goes wrong.
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
