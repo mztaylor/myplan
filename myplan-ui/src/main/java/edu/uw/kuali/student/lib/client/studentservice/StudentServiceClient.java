@@ -66,6 +66,14 @@ public interface StudentServiceClient {
     public abstract String getSections(String year, String Curriculum, String courseNo) throws ServiceException;
 
     /**
+     *
+     * @param regId
+     * @return
+     * @throws ServiceException
+     */
+    public abstract String getAcademicRecords(String regId) throws ServiceException;
+
+    /**
      * Query the student web service (course service) to convert a course abbreviation to a TimeScheduleLinkAbbreviation
      */
     public abstract String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException;
