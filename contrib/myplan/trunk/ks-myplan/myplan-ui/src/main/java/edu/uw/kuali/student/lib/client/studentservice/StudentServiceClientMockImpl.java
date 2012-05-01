@@ -101,6 +101,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         return out;
     }
 
+    @Override
     public String getSections(String year, String Curriculum, String courseNo) throws ServiceException{
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/public/section?year=2002&quarter=&curriculum_abbreviation=ESS&course_number=101&reg_id=&search_by=Instructor
@@ -114,6 +115,22 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         }
         return out;
     }
+
+    @Override
+    public String getAcademicRecords(String regId) throws ServiceException{
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
+    }
+
 
     @Override
     public String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException {
