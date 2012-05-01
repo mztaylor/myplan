@@ -256,8 +256,15 @@
         <property name="header">
             <bean parent="Uif-HeaderField-Five"/>
         </property>
-        <property name="onDocumentReadyScript"
-                  value="myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});"/>
+        <property name="onDocumentReadyScript" value="
+            myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+            jq('#watch_list_div').subscribe('PLAN_ITEM_DELETED', function(data){
+                if (data.planItemType === 'wishlist') {
+                    fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-summary');
+                    fnUpdateSavedCount( jq(this).find('.uif-headerField.uif-sectionHeaderField .uif-header strong').text() );
+                }
+            });
+        "/>
     </bean>
 
     <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports"
