@@ -671,54 +671,33 @@ public class PlanController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                return doAddPlanItemError(form, "Unable to create learning plan.", e);
+                return doPlanActionError(form, "Unable to create learning plan.", e);
             }
         }
 
-        PlanItem planItem = null;
+        PlanItemInfo planItem = null;
         try {
             planItem = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         } catch (Exception e) {
-            return doAddPlanItemError(form, "Unable to add plan item.", e);
+            return doPlanActionError(form, "Unable to add plan item.", e);
         }
 
-        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+        //  Grab course details.
         CourseDetails courseDetails = null;
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
         } catch (Exception e) {
-            return doAddPlanItemError(form, "Unable to retrieve Course Details.", null);
+            return doPlanActionError(form, String.format("Unable to retrieve Course Details for [%s].", courseId), e);
         }
 
-        String courseDetailsAsJson;
-        try {
-            //  Turn the list of javascript events into a string of JSON.
-            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
-        } catch (Exception e) {
-            return doAddPlanItemError(form, "Could not convert javascript events to JSON.", e);
-        }
-
-        String typeKey = planItem.getTypeKey();
-
-        //  Set the status of the request for the UI.
-        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-        //  Queue the javascript event(s) that should be thrown in the UI.
-        Map<String, String> jsEventParams = new HashMap<String, String>();
-        jsEventParams.put("planItemId", planItem.getId());
-        jsEventParams.put("planItemType", formatTypeKey(typeKey));
-        jsEventParams.put("courseDetails", courseDetailsAsJson);
-
+        //  Create events
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, jsEventParams);
+        events.putAll(makeAddEvent(planItem, courseDetails));
+
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         form.setJavascriptEvents(events);
-        //  Set success text.
-        GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
 
-        //  TODO: These can go away once the transition to JS events is complete.
-        form.setPlanItemId(planItem.getId());
-        form.setCourseId(planItem.getRefObjectId());
-
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        return doPlanActionSuccess(form);
     }
 
     /**
