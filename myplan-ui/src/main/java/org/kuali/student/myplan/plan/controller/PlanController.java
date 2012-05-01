@@ -770,7 +770,6 @@ public class PlanController extends UifControllerBase {
     protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType) {
 
         if (StringUtils.isEmpty(courseId)) {
-            // TODO: DO ERROR.
             throw new RuntimeException("Empty Course ID");
         }
 
@@ -795,10 +794,6 @@ public class PlanController extends UifControllerBase {
 
         try {
             newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
-        } catch (AlreadyExistsException e) {
-            //  The course id was already in the saved courses list.
-            logger.warn("This item was a duplicate. Fetching the existing plan item.", e);
-            newPlanItem = getPlanItemByCourseIdAndType(courseId, planItemType);
         } catch (Exception e) {
             throw new RuntimeException("Could not create plan item.", e);
         }
@@ -914,7 +909,7 @@ public class PlanController extends UifControllerBase {
      *  @return Returns a plan item if one is found for the given courseId. Otherwise, returns null.
      *  @throws RuntimeException on errors.
      */
-    protected PlanItemInfo getPlanItemByCourseIdAndType(String courseId, String planItemType) {
+    protected PlanItemInfo getPlanItemByCourseIdAndTypeX(String courseId, String planItemType) {
 
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentId = user.getPrincipalId();
