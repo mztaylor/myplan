@@ -652,8 +652,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addSavedCourse")
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String studentId = user.getPrincipalId();
+
+        String studentId = getUserId();
         String courseId = form.getCourseId();
 
         LearningPlan plan = null;
@@ -661,7 +661,7 @@ public class PlanController extends UifControllerBase {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
             plan = getLearningPlan(studentId);
         } catch (RuntimeException e) {
-            return doAddPlanItemError(form, "Query for default learning plan failed.", e);
+            return doPlanActionError(form, "Query for default learning plan failed.", e);
         }
 
         /*
