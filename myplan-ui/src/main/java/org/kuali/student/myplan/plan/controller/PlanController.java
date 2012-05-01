@@ -702,6 +702,7 @@ public class PlanController extends UifControllerBase {
         } else {
             logger.error(errorMessage);
         }
+        GlobalVariables.getMessageMap().clearErrorMessages();
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
@@ -966,42 +967,44 @@ public class PlanController extends UifControllerBase {
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
-
-        try {
-            // First load the plan item and retrieve the courseId
-            //TODO: Once all courseId dependencies are removed from form, delete this section
-            PlanItemInfo planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-            String courseId = planItem.getRefObjectId();
-            form.setCourseId(courseId);
-
-            // Now Delete the plan item
-            getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-
-            //  Set the status of the request for the UI.
-            form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-            form.setJavascriptEvents(makeRemoveEvent(planItem));
-
-
-            //  Set success text.
-            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
-        } catch (DoesNotExistException e) {
-            //  Assume the end-user already deleted this item and silently let this error go. Log it though.
-            logger.warn("Tried to delete a plan item that doesn't exist.", e);
-            //  Set the status of the request for the UI.
-            form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
-            //  Set the success message as well as a warning which explains why the request didn't complete successfully.
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putInfoForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.SUCCESS_KEY);
-            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_UNKNOWN_PLAN_ITEM);
-        } catch (Exception e) {
-            //  Give the end-user a generic error message, but log the exception.
-            logger.error("Could not delete plan item.", e);
-            form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan item id was missing.", null);
         }
 
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        //  See if the plan item exists.
+        PlanItemInfo planItem = null;
+        boolean isNoop = false;
+        try {
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            isNoop = true;
+        } catch (Exception e) {
+              return doPlanActionError(form, "Query for plan item failed.", e);
+        }
+
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        //  Make events ...
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        }
+        events.putAll(makeRemoveEvent(planItem));
+
+        try {
+            // Delete the plan item
+            getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch(Exception e) {
+            return doPlanActionError(form, "Could not delete plan item", e);
+        }
+
+        if (isNoop) {
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
+        } else {
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        }
+
+        form.setJavascriptEvents(events);
+        return doPlanActionSuccess(form);
     }
 
     /**
