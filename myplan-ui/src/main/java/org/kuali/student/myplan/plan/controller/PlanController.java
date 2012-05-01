@@ -701,21 +701,6 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     * Blow up on failed plan adds.
-     *
-     * @deprecated Use doPlanActionError() instead.
-     */
-    private ModelAndView doAddPlanItemError(PlanForm form, String errorMessage, Exception e) {
-        if (e != null) {
-            logger.error(errorMessage, e);
-        } else {
-            logger.error(errorMessage);
-        }
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_KEY_OPERATION_FAILED);
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
-    }
-
-    /**
      * Blow up response of the plan capacity validation fails.
      * @param form
      * @return
