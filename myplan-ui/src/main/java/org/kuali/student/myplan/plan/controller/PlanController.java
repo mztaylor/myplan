@@ -792,6 +792,17 @@ public class PlanController extends UifControllerBase {
             pii.setPlanPeriods(termIds);
         }
 
+        //  Make sure no dups exist
+        if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            if (getWishlistPlanItem(courseId) != null) {
+                throw new RuntimeException("Duplicate plan item exists.");
+            }
+        } else {
+            if (getPlannedOrBackupPlanItem(courseId, termIds.get(0)) != null) {
+                throw new RuntimeException("Duplicate plan item exists.");
+            }
+        }
+
         try {
             newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
