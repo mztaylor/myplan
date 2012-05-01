@@ -629,9 +629,12 @@ public class PlanController extends UifControllerBase {
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-        String studentId = getUserId();
         String courseId = form.getCourseId();
+        if (StringUtils.isEmpty(courseId)) {
+            return doPlanActionError(form, "Course ID was missing.", null);
+        }
 
+        String studentId = getUserId();
         LearningPlan plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
@@ -678,6 +681,51 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form);
     }
 
+    @RequestMapping(params = "methodToCall=removeItem")
+    public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                       HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        String planItemId = form.getPlanItemId();
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan item id was missing.", null);
+        }
+
+        //  See if the plan item exists.
+        PlanItemInfo planItem = null;
+        boolean isNoop = false;
+        try {
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            isNoop = true;
+        } catch (Exception e) {
+              return doPlanActionError(form, "Query for plan item failed.", e);
+        }
+
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        //  Make events ...
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        }
+        events.putAll(makeRemoveEvent(planItem));
+
+        try {
+            // Delete the plan item
+            getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch(Exception e) {
+            return doPlanActionError(form, "Could not delete plan item", e);
+        }
+
+        if (isNoop) {
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
+        } else {
+            form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        }
+
+        form.setJavascriptEvents(events);
+        return doPlanActionSuccess(form);
+    }
+
     /**
      * Blow up response of the plan capacity validation fails.
      * @param form
@@ -696,7 +744,7 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doPlanActionError(PlanForm form, String errorMessage, Exception e) {
-        form.setRequestStatus(PlanForm.REQUEST_STATUS.FAILURE);
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.ERROR);
         if (e != null) {
             logger.error(errorMessage, e);
         } else {
@@ -955,51 +1003,6 @@ public class PlanController extends UifControllerBase {
         LearningPlan newPlan = getAcademicPlanService().createLearningPlan(plan, PlanConstants.CONTEXT_INFO);
 
         return newPlan;
-    }
-
-    @RequestMapping(params = "methodToCall=removeItem")
-    public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                       HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
-        String planItemId = form.getPlanItemId();
-        if (StringUtils.isEmpty(planItemId)) {
-            return doPlanActionError(form, "Plan item id was missing.", null);
-        }
-
-        //  See if the plan item exists.
-        PlanItemInfo planItem = null;
-        boolean isNoop = false;
-        try {
-            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-        } catch (DoesNotExistException e) {
-            isNoop = true;
-        } catch (Exception e) {
-              return doPlanActionError(form, "Query for plan item failed.", e);
-        }
-
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-
-        //  Make events ...
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            events.putAll(makeUpdateTotalCreditsEvent(planItem));
-        }
-        events.putAll(makeRemoveEvent(planItem));
-
-        try {
-            // Delete the plan item
-            getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-        } catch(Exception e) {
-            return doPlanActionError(form, "Could not delete plan item", e);
-        }
-
-        if (isNoop) {
-            form.setRequestStatus(PlanForm.REQUEST_STATUS.NOOP);
-        } else {
-            form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-        }
-
-        form.setJavascriptEvents(events);
-        return doPlanActionSuccess(form);
     }
 
     /**

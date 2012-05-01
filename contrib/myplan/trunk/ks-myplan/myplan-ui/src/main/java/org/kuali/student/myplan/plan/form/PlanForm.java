@@ -39,7 +39,7 @@ public class PlanForm extends UifFormBase {
          *  javascript events were generated/available. */
         NOOP,
         /* The requested operation failed. */
-        FAILURE
+        ERROR
     }
 
     /**
