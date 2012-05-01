@@ -785,4 +785,139 @@
     </bean>
     <!--*********************** End DegreeAuditItem Data Object. ********************-->
 
+    <!--*********************** AcademicRecord Data Object Start ********************-->
+    <bean id="AcademicRecordDataObject" parent="AcademicRecordDataObject-parentBean"/>
+    <bean id="AcademicRecordDataObject-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Academic Records"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="AcademicRecordDataObject.personId"/>
+                <ref bean="AcademicRecordDataObject.courseTitle"/>
+                <ref bean="AcademicRecordDataObject.courseCode"/>
+                <ref bean="AcademicRecordDataObject.atpId"/>
+                <ref bean="AcademicRecordDataObject.grade"/>
+                <ref bean="AcademicRecordDataObject.credit"/>
+                <!--<ref bean="AcademicRecordDataObject.isRepeated"/>-->
+
+            </list>
+        </property>
+    </bean>
+    <bean id="AcademicRecordDataObject.personId" parent="AcademicRecordDataObject.personId-parentBean"/>
+    <bean id="AcademicRecordDataObject.personId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="personId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Person ID"/>
+        <property name="shortLabel" value="Person ID"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.courseTitle" parent="AcademicRecordDataObject.courseTitle-parentBean"/>
+    <bean id="AcademicRecordDataObject.courseTitle-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="courseTitle"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="course Title"/>
+        <property name="shortLabel" value="course Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.courseCode" parent="AcademicRecordDataObject.courseCode-parentBean"/>
+    <bean id="AcademicRecordDataObject.courseCode-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="courseCode"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="course Code"/>
+        <property name="shortLabel" value="course Code"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.atpId" parent="AcademicRecordDataObject.atpId-parentBean"/>
+    <bean id="AcademicRecordDataObject.atpId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="atpId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="atp Id"/>
+        <property name="shortLabel" value="atp Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.grade" parent="AcademicRecordDataObject.grade-parentBean"/>
+    <bean id="AcademicRecordDataObject.grade-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="grade"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="grade"/>
+        <property name="shortLabel" value="grade"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.credit" parent="AcademicRecordDataObject.credit-parentBean"/>
+    <bean id="AcademicRecordDataObject.credit-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="credit"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="credit"/>
+        <property name="shortLabel" value="credit"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+   <!-- <bean id="AcademicRecordDataObject.isRepeated" parent="AcademicRecordDataObject.isRepeated-parentBean"/>
+    <bean id="AcademicRecordDataObject.isRepeated-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="isRepeated"/>
+        <property name="dataType" value="BOOLEAN"/>
+        <property name="label" value="is Course Repeated"/>
+        <property name="shortLabel" value="is Course Repeated"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>-->
+    <!--*********************** AcademicRecord Data Object End ********************-->
+
+
+
+
 </beans>

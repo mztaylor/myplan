@@ -7,9 +7,14 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.enrollment.academicrecord.dto.GPAInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -17,6 +22,7 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 import javax.jws.WebParam;
+import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +46,20 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
+
+    private transient LuService luService;
+
+    protected LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
+
+    public void setLuService(LuService luService) {
+        this.luService = luService;
+    }
+
 
     /**
      * This method returns a list of StudentCourseRecords for a
@@ -109,8 +129,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         /*Implementation for populating the StudentCourseRecordInfo list*/
         if (sections != null) {
             StringBuffer cc = new StringBuffer();
-
-
             for (Object node : sections) {
 
                 /*
@@ -146,6 +164,10 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             Element section = (Element) Section;
                             String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
                             String courseNumber = section.elementText("CourseNumber");
+                            String courseTitle=this.getCourseTitle(curriculumAbbreviation,courseNumber);
+                            if(courseTitle!=null){
+                            studentCourseRecordInfo.setCourseTitle(courseTitle);
+                            }
                             StringBuffer courseCode = new StringBuffer();
                             courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
                             StringBuffer termName = new StringBuffer();
@@ -166,6 +188,33 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
 
     }
+
+    /**
+     * populate the courseTitle for studentCourseRecordInfo for course code
+     * @param subject
+     * @param number
+     * @return
+     */
+    private String getCourseTitle(String subject,String number){
+        List<SearchRequest> requests=new ArrayList<SearchRequest>();
+        SearchRequest request = new SearchRequest("myplan.course.getCourseTitle");
+        request.addParam("subject", subject);
+        request.addParam("number",number);
+        requests.add(request);
+        SearchResult searchResult=new SearchResult();
+        try {
+            searchResult= getLuService().search(request);
+        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        String title=null;
+        if(searchResult.getRows().size()>0){
+            title=searchResult.getRows().get(0).getCells().get(0).getValue();
+        }
+
+       return title;
+
+    } 
 
     /**
      * This method returns a list of StudentCourseRecord for a student
