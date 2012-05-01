@@ -20,6 +20,7 @@ public class PlannedTerm {
 
     private List<PlannedCourseDataObject> plannedList = new ArrayList<PlannedCourseDataObject>();
     private List<PlannedCourseDataObject> backupList = new ArrayList<PlannedCourseDataObject>();
+    private List<AcademicRecordDataObject> academicRecord=new ArrayList<AcademicRecordDataObject>();
     private String credits = null;
     private boolean isCurrentTerm;
 
@@ -79,6 +80,14 @@ public class PlannedTerm {
 
     public void setCurrentTerm(boolean currentTerm) {
         isCurrentTerm = currentTerm;
+    }
+
+    public List<AcademicRecordDataObject> getAcademicRecord() {
+        return academicRecord;
+    }
+
+    public void setAcademicRecord(List<AcademicRecordDataObject> academicRecord) {
+        this.academicRecord = academicRecord;
     }
 }
 

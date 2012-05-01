@@ -15,6 +15,7 @@ import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -170,10 +171,9 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             }
                             StringBuffer courseCode = new StringBuffer();
                             courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
-                            StringBuffer termName = new StringBuffer();
-                            termName = termName.append("kuali.uw.atp.").append(section.elementText("Quarter")).append(section.elementText("Year"));
+                            String termName= AtpHelper.getAtpFromYearAndTerm(section.elementText("Quarter"), section.elementText("Year"));
                             studentCourseRecordInfo.setCourseCode(courseCode.toString());
-                            studentCourseRecordInfo.setTermName(termName.toString());
+                            studentCourseRecordInfo.setTermName(termName);
                             studentCourseRecordInfo.setPersonId(regId);
                             studentCourseRecordInfoList.add(studentCourseRecordInfo);
                         }
