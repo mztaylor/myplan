@@ -164,49 +164,44 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Move planned item was not type planned.", null);
         }
 
-        //  Set type to "backup".
-        planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+        //  Validate: Capacity.
+        boolean hasCapacity = false;
+        try {
+            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
+                    planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
+        }
+        if (! hasCapacity) {
+            return doPlanCapacityExceededError(form);
+        }
+
+        //  Lookup course details.
+        CourseDetails courseDetails = null;
+        try {
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+        } catch (Exception e) {
+            return doPlanActionError(form, "Unable to retrieve Course Details.", null);
+        }
+
+        //  Make removed event before updating the plan item.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem);
 
         //  Update
+        planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         try {
             getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             return doPlanActionError(form, "Could not update plan item.", e);
         }
 
-        //  Set the status of the request for the UI.
-        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        String termId = planItem.getPlanPeriods().get(0);
-        String typeKey = planItem.getTypeKey();
-
-        //  Make a delete event.  /* atpId, type, courseId */
-        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", formatAtpIdForUI(termId));
-        jsDeleteEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED));
-        jsDeleteEventParams.put("planItemId", planItemId);
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
-
-        //  Make an add event.
-        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
-        addPlannedItemEventParams.put("planItemId", planItem.getId());
-        addPlannedItemEventParams.put("planItemType", formatTypeKey(typeKey));
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", formatAtpIdForUI(termId));
-        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
-
-        //  Make an "Update total credits".
-        Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-        updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        String totalCredits = this.getTotalCredits(termId);
-        updateCreditsEventParams.put("totalCredits", totalCredits );
-        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
+        events.putAll(removeEvent);
+        events.putAll(makeAddEvent(planItem, courseDetails));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem));
 
         form.setJavascriptEvents(events);
 
@@ -231,9 +226,33 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "backup".
-        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return doPlanActionError(form, "Move planned item was not type backup.", null);
         }
+
+        //  Validate: Capacity.
+        boolean hasCapacity = false;
+        try {
+            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
+                planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        } catch(RuntimeException e) {
+            return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
+        }
+        if (! hasCapacity) {
+            return doPlanCapacityExceededError(form);
+        }
+
+        //  Lookup course details.
+        CourseDetails courseDetails = null;
+        try {
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+        } catch (Exception e) {
+            return doPlanActionError(form, "Unable to retrieve Course Details.", null);
+        }
+
+        //  Make removed event before updating the plan item.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> creditsUpdateEvent = makeUpdateTotalCreditsEvent(planItem);
 
         //  Set type to "planned".
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
@@ -245,42 +264,15 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Could not udpate plan item.", e);
         }
 
-        //  Set the status of the request for the UI.
-        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
-
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        String termId = planItem.getPlanPeriods().get(0);
-        String typeKey = planItem.getTypeKey();
-
-        //  Make a delete event.  /* atpId, type, courseId */
-        Map<String, String> jsDeleteEventParams = new HashMap<String, String>();
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        jsDeleteEventParams.put("atpId", formatAtpIdForUI(termId));
-        jsDeleteEventParams.put("planItemType", formatTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP));
-        jsDeleteEventParams.put("planItemId", planItemId);
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, jsDeleteEventParams);
-
-        //  Make an add event.
-        Map<String, String> addPlannedItemEventParams = new HashMap<String, String>();
-        addPlannedItemEventParams.put("planItemId", planItem.getId());
-        addPlannedItemEventParams.put("planItemType", formatTypeKey(typeKey));
-        //  TODO: FIXME: Assuming one ATP per plan item here. Add planned course actually supports multiples.
-        addPlannedItemEventParams.put("atpId", formatAtpIdForUI(termId));
-        addPlannedItemEventParams.put("courseDetails", getCourseDetailsAsJson(planItem.getRefObjectId()));
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, addPlannedItemEventParams);
-
-        //  Make an "Update total credits".
-        Map<String, String> updateCreditsEventParams = new HashMap<String, String>();
-        updateCreditsEventParams.put("atpId", formatAtpIdForUI(termId));
-        String totalCredits = this.getTotalCredits(termId);
-        updateCreditsEventParams.put("totalCredits",  totalCredits );
-        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, updateCreditsEventParams);
+        events.putAll(removeEvent);
+        events.putAll(makeAddEvent(planItem, courseDetails));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem));
 
         form.setJavascriptEvents(events);
-
         return doPlanActionSuccess(form);
     }
 
@@ -331,7 +323,7 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, String.format("Could not fetch plan item."), null);
         }
 
-          //  Lookup course details as they will be needed for errors.
+        //  Lookup course details as they will be needed for errors.
         CourseDetails courseDetails = null;
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
