@@ -828,16 +828,14 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
-        if (planItems == null || planItems.isEmpty()) {
-            throw new RuntimeException("Could not retrieve plan items.");
-        } else {
-            for (PlanItemInfo p : planItems) {
-                if (p.getRefObjectId().equals(courseId)) {
-                    item = p;
-                    break;
-                }
+
+        for (PlanItemInfo p : planItems) {
+            if (p.getRefObjectId().equals(courseId)) {
+                item = p;
+                break;
             }
         }
+
         //  A null here means that no plan item exists for the given course ID.
         return item;
     }
@@ -876,29 +874,26 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
-        if (planItems == null || planItems.isEmpty()) {
-            throw new RuntimeException("Could not retrieve plan items.");
-        } else {
-            for (PlanItemInfo p : planItems) {
-                //  Make sure some ATP IDs exist on the plan item. There should never be more than one ATP ID however.
-                List<String> planPeriods = p.getPlanPeriods();
-                if (p.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)
-                        || planPeriods == null || planPeriods.size() == 0) {
-                    continue;
-                }
-                //  Throw an error if a plan item has more than one ATP ID associated with it.
-                if (planPeriods.size() > 1) {
-                    throw new RuntimeException(String.format("Learning Plan [%s] plan id [%s] has more than one associated ATP ID.",
-                            learningPlan.getId(), p.getId()));
-                }
+        for (PlanItemInfo p : planItems) {
+            //  Make sure some ATP IDs exist on the plan item. There should never be more than one ATP ID however.
+            List<String> planPeriods = p.getPlanPeriods();
+            if (p.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)
+                    || planPeriods == null || planPeriods.size() == 0) {
+                continue;
+            }
+            //  Throw an error if a plan item has more than one ATP ID associated with it.
+            if (planPeriods.size() > 1) {
+                throw new RuntimeException(String.format("Learning Plan [%s] plan id [%s] has more than one associated ATP ID.",
+                        learningPlan.getId(), p.getId()));
+            }
 
-                String atp = planPeriods.get(0);
-                if (p.getRefObjectId().equals(courseId) && atp.equals(atpId)) {
-                    item = p;
-                    break;
-                }
+            String atp = planPeriods.get(0);
+            if (p.getRefObjectId().equals(courseId) && atp.equals(atpId)) {
+                item = p;
+                break;
             }
         }
+
         //  A null here means that no plan item exists for the given course and ATP IDs.
         return item;
     }
