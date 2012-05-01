@@ -556,7 +556,12 @@ public class PlanController extends UifControllerBase {
      */
     private List<String> getNewTermIds(String atpId, PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
-        newTermIds.add(atpId);
+
+        if(!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)){
+        newTermIds.add(AtpHelper.getTermAndYearFromAtp(atpId));
+        }else {
+            newTermIds.add(atpId);
+        }
 
         //  Check for an "other" item in the terms list and assemble an ATP ID from the year and term fields.
         if (newTermIds.contains(PlanConstants.OTHER_TERM_KEY)) {

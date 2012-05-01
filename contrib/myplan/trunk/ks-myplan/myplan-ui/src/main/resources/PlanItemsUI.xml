@@ -742,6 +742,7 @@
         </property>
         <property name="subCollections">
             <list>
+                <ref bean="academicRecordCollection"/>
                 <ref bean="plannedCollection"/>
                 <ref bean="backupCollection"/>
             </list>
@@ -762,6 +763,53 @@
                 });
         "/>
     </bean>
+
+    <bean id="academicRecordCollection" parent="Uif-StackedCollectionGroup" p:title="Completed">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Six"/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                </property>
+            </bean>
+        </property>
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-carousel-term</value>
+                <value>myplan-term-planned</value>
+            </list>
+        </property>
+
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
+        <property name="propertyName" value="academicRecord"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean p:id="@{#line.personId}" parent="Uif-Link"
+                      p:linkLabel="@{#line.courseCode} (@{#line.credit})"
+                      p:title="@{#line.courseTitle}" p:target="" p:hrefText="#"
+                      p:labelField.render="false"
+                      p:render="@{#line.courseCode ne null ? true : false}"
+                      p:onClickScript=""/>
+            </list>
+        </property>
+        <property name="collectionLookup.quickfinderActionField.render" value="false"/>
+    </bean>
+
+
+
+
+
+
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
         <property name="header">
             <bean parent="Uif-HeaderField-Six"/>
