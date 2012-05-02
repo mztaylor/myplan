@@ -577,7 +577,7 @@
                     </property>
                     <property name="onDocumentReadyScript" value="
                         jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
-                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse');
+                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true);
                             setTimeout('fnCloseAllPopups()', 2000);
                         });
                     "/>
@@ -1311,8 +1311,11 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse');
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
                                             setTimeout('fnCloseAllPopups()', 2000);
+                                        })
+                                        .subscribe('ERROR', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
                                         });"/>
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1329,7 +1332,7 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse');
+                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
                                             setTimeout('fnCloseAllPopups()', 2000);
                                         });"/>
                                 <property name="styleClasses">
@@ -1432,8 +1435,10 @@
                                     </list>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
-                                        fnCloseAllPopups();
+                                    jq('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data){
+                                        if (jq(this).is(':visible')){
+                                            fnCloseAllPopups();
+                                        }
                                     });
                                 "/>
                             </bean>

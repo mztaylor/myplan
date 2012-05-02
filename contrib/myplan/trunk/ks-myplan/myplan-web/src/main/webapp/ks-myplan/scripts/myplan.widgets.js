@@ -203,7 +203,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 }
 
 function fnPositionPopUp(popupBoxId) {
-    console.log( parseFloat(jq("#" + popupBoxId).css("top")) + "," + parseFloat(jq("#" + popupBoxId).css("left")) );
+    //console.log( parseFloat(jq("#" + popupBoxId).css("top")) + "," + parseFloat(jq("#" + popupBoxId).css("left")) );
     if ( parseFloat(jq("#" + popupBoxId).css("top")) < 0 || parseFloat(jq("#" + popupBoxId).css("left")) < 0 ) {
         var iTop = ( jq(window).height() / 2 ) - ( jq("#" + popupBoxId).height() / 2 );
         var iLeft = ( jq(window).width() / 2 ) - ( jq("#" + popupBoxId).width() / 2 );
@@ -233,11 +233,13 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
+                        console.log('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
                 break;
             case 'error':
-                // grab message and display message
+                var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_errorMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-error' };
+                eval('jq.publish("ERROR", [' + JSON.stringify( oMessage ) + ']);');
                 break;
         }
     };

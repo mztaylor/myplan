@@ -347,27 +347,28 @@ a:focus {
     padding: 0;
 }
 .myplan-message-border {
-    height: 22px;
-    line-height: 22px;
-    padding: 0 10px 0 32px !important;
+    padding: 5px 5px 5px 26px !important;
     border: solid 1px #d7d7d7;
     display: block;
     float: left;
     margin: 0 !important;
 }
 .myplan-message-noborder {
-    height: 24px;
-    line-height: 24px;
-    padding: 0 0 0 32px !important;
+    padding: 5px 5px 5px 26px !important;
     display: block;
     float: left;
     margin: 0 !important;
 }
 .myplan-message-success {
-    background: #e4e4e4 url(../images/iconSuccess16.png) no-repeat 7px center;
+    background: #e4e4e4 url(../images/iconSuccess16.png) no-repeat 5px center;
+}
+.myplan-message-error {
+    background: #ffd4d4 url(../images/iconError16.png) no-repeat 5px center;
+    border-color: #e3b8b8;
+
 }
 .myplan-message-info {
-    background: #e4e4e4 url(../images/iconInfo16.png) no-repeat 7px center;
+    background: #e4e4e4 url(../images/iconInfo16.png) no-repeat 5px center;
 }
 .myplan-action-success {
     background: transparent url(../images/iconSuccess.png) no-repeat 0px center;
