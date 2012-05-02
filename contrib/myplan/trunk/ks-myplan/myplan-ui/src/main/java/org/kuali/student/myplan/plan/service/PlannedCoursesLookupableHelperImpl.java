@@ -79,6 +79,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
             Collections.sort(plannedCoursesList);
 
+            /*academic record SWS call to get the studentCourseRecordInfo list */
+            List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+            try {
+
+                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
+            }
+
+
             List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
             List<TermInfo> termInfos = null;
             try {
@@ -155,13 +165,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
            Used for sorting the planItemDataobjects
             */
             List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-            List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-            try {
 
-                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
-            }
             Collections.sort(plannedTerms, new Comparator<PlannedTerm>() {
                 @Override
                 public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
@@ -169,7 +173,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
             });
 
-            /***********TEST******************/
+            /***********Implementation to populate the plannedTerm list with academic record and plannedterms******************/
         if(studentCourseRecordInfos.size()>0&&plannedTerms.size()>0){
             Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
             String minTerm = studentCourseRecordInfos.get(0).getTermName();
@@ -204,7 +208,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             }
 
 
-            /*****************TEST End*********************************/
+
             Collections.sort(perfectPlannedTerms,new Comparator<PlannedTerm>() {
                 @Override
                 public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
