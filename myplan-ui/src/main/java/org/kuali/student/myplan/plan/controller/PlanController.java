@@ -611,7 +611,7 @@ public class PlanController extends UifControllerBase {
         }
 
         int counter = 0;
-        if (planItems == null || planItems.isEmpty()) {
+        if (planItems == null) {
             throw new RuntimeException("Could not retrieve plan items.");
         } else {
             for (PlanItem p : planItems) {
@@ -1051,6 +1051,7 @@ public class PlanController extends UifControllerBase {
         String totalCredits = this.getTotalCredits(termId);
         params.put("totalCredits", totalCredits);
 
+        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, params);
         return events;
     }
 
