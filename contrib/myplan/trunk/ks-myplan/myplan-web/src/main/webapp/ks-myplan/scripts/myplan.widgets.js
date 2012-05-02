@@ -233,7 +233,6 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
-                        console.log('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
                 break;
