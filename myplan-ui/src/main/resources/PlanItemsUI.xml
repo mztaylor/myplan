@@ -1089,8 +1089,7 @@
     <!--  Add to saved courses. Used contextually in course details popup actions -->
     <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton"
           p:actionLabel="Save to Your Courses List">
-        <property name="clientSideJs"
-                  value="addSavedCourse('@{courseDetails.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{courseDetails.courseId}'}, e);"/>
+        <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-button</value>
