@@ -109,8 +109,14 @@ function fnUpdateCredits (atpId, termCredits) {
     Function: swap action button with feedback message
 #################################################################
  */
-function fnDisplayMessage (message, cssClass, targetId) {
-    jq("#" + targetId).parent().fadeOut(250, function() {
-        jq(this).addClass(cssClass).html(message).fadeIn(250);
-    });
+function fnDisplayMessage (message, cssClass, targetId, buttons) {
+    if (buttons) {
+        jq("#" + targetId).parent().parent("div").fadeOut(250, function() {
+            jq(this).addClass(cssClass).html(message).fadeIn(250);
+        });
+    } else {
+        jq("#" + targetId).parent().fadeOut(250, function() {
+            jq(this).addClass(cssClass).html(message).fadeIn(250);
+        });
+    }
 }

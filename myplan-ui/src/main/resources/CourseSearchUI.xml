@@ -366,8 +366,8 @@
                               p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
                     <property name="onDocumentReadyScript" value="jq('#@{#line.courseId}_save').subscribe('PLAN_ITEM_ADDED', function(data){
-                        if (data.planItemType === 'wishlist') {
-                            fnDisplayMessage ('Saved', 'fl-text-green', jq(this).attr('id'));
+                        if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
+                            fnDisplayMessage ('Saved', 'fl-text-green', jq(this).attr('id'), false);
                         }
                     });"/>
                 </bean>
