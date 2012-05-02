@@ -121,7 +121,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
         //  ... from a text file.
-        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_academic_record_response.xml");
         String out = null;
         try {
             out = IOUtils.toString(in, "UTF-8");
