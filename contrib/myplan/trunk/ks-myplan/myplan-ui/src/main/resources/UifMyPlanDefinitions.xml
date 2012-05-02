@@ -261,11 +261,12 @@
             jq('#watch_list_div')
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     if (data.planItemType === 'wishlist') {
-                        if (!jq('.jquerybubblepopup.jquerybubblepopup-myplan').length) {
-                            myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-                        }
-
-
+                        deleteIntervalId = setInterval(function(){
+                            if (!jq('.jquerybubblepopup.jquerybubblepopup-myplan').length) {
+                                myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+                                clearInterval(deleteIntervalId);
+                            }
+                        }, 500 );
                     }
                 })
                 .subscribe('PLAN_ITEM_ADDED', function(data){
