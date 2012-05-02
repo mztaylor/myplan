@@ -183,8 +183,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     academicRecordDataObject.setPersonId(studentInfo.getPersonId());
                     academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
                     academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                    academicRecordDataObject.setCredit(studentInfo.getCalculatedGradeValue());
-                    academicRecordDataObject.setGrade(studentInfo.getCreditsEarned());
+                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                     academicRecordDataObjectList.add(academicRecordDataObject);
                     termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
