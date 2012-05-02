@@ -72,8 +72,6 @@ public class PlanController extends UifControllerBase {
         return new PlanForm();
     }
 
-
-
     @RequestMapping(params = "methodToCall=startAddPlannedCourseForm")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {

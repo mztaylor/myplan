@@ -461,7 +461,7 @@
     </bean>
 
 
-   <!-- ####################### The Right panel for Saved Coruses Full View #################### -->
+   <!-- ####################### The Right panel for Saved Courses Full View #################### -->
     <!-- For saved courses view, we do not want to show the saved course summary list -->
     <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)"
           p:errorsField.render="false">
@@ -803,11 +803,6 @@
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
     </bean>
 
-
-
-
-
-
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
         <property name="header">
             <bean parent="Uif-HeaderField-Six"/>
@@ -839,7 +834,7 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}" parent="Uif-Link"
+                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-Link"
                       p:linkLabel="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"
                       p:title="@{#line.courseDetails.courseTitle}" p:target="" p:hrefText="#"
                       p:labelField.render="false"
@@ -894,7 +889,7 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}" parent="Uif-Link"
+                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-Link"
                       p:linkLabel="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
                       p:title="@{#line.CourseDetails.courseTitle}" p:target="" p:hrefText="#"
                       p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}'},e,null,{width:'150px'},{tail:{align:'top'},align:'top'},false);"
