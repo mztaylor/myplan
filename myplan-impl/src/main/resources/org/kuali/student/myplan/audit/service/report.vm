@@ -92,9 +92,9 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #end
 #if( ${req.hasCount()} )
                 <ul class="progress">
-                    <li class="required"><label>Required:</label> ${req.count.required} credits</li>
-                    <li class="earned"><label>Earned:</label> ${req.count.earned} credits</li>
-                    <li class="needs"><label>Needs:</label> ${req.count.needs} credits</li>
+                    <li class="required"><label>Required:</label> ${req.count.required} courses</li>
+                    <li class="earned"><label>Earned:</label> ${req.count.earned} courses</li>
+                    <li class="needs"><label>Needs:</label> ${req.count.needs} courses</li>
                 </ul>
 #end
             </div>
@@ -129,9 +129,9 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 #end
 #if( ${subreq.hasCount()} )
                     <ul class="progress">
-                        <li class="required"><label>Required:</label> ${subreq.count.required} credits</li>
-                        <li class="earned"><label>Earned:</label> ${subreq.count.earned} credits</li>
-                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} credits</li>
+                        <li class="required"><label>Required:</label> ${subreq.count.required} courses</li>
+                        <li class="earned"><label>Earned:</label> ${subreq.count.earned} courses</li>
+                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} courses</li>
                     </ul>
 #end
 
