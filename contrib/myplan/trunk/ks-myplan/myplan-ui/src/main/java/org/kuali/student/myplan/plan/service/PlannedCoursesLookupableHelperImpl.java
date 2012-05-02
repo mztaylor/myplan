@@ -196,7 +196,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             }
             for (PlannedTerm plannedTerm : plannedTerms) {
                 if (termsList.containsKey(plannedTerm.getPlanItemId())) {
-                    if (plannedTerm.getPlannedList().size() > 0) {
+                    if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size()>0) {
                         termsList.get(plannedTerm.getPlanItemId());
                         termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
                     }
