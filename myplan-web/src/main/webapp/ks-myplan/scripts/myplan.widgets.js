@@ -203,6 +203,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 }
 
 function fnPositionPopUp(popupBoxId) {
+    console.log( parseFloat(jq("#" + popupBoxId).css("top")) + "," + parseFloat(jq("#" + popupBoxId).css("left")) );
     if ( parseFloat(jq("#" + popupBoxId).css("top")) < 0 || parseFloat(jq("#" + popupBoxId).css("left")) < 0 ) {
         var iTop = ( jq(window).height() / 2 ) - ( jq("#" + popupBoxId).height() / 2 );
         var iLeft = ( jq(window).width() / 2 ) - ( jq("#" + popupBoxId).width() / 2 );
@@ -227,11 +228,12 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
         var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
         switch (status) {
             case 'success':
-                var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_infoMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-success' };
+                var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_infoMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-success' };
                 var json = jq.parseJSON( jq.trim( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") ) );
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
+                        console.log('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
                 break;
@@ -244,12 +246,12 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
     tempDiv.remove();
 }
 /*Function used for moving the plan Item from planned to backup*/
-function myPlanAjaxPlanItemMove(id, getId, retrieveOptions, e, methodToCall) {
+function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     stopEvent(e);
     var tempForm = jq('<form />').hide();
     jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
     jq("body").append(tempForm);
-    myplanAjaxSubmitPlanItem(id, 'planItemId', methodToCall);
+    myplanAjaxSubmitPlanItem(id, type, methodToCall);
     fnCloseAllPopups();
     jq("form#"+ id + "_form").remove();
 }
