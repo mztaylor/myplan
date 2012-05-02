@@ -170,6 +170,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             });
 
             /***********TEST******************/
+        if(studentCourseRecordInfos.size()>0&&plannedTerms.size()>0){
             Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
             String minTerm = studentCourseRecordInfos.get(0).getTermName();
             String maxTerm = plannedTerms.get(plannedTerms.size() - 1).getPlanItemId();
@@ -212,6 +213,10 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             });
 
             return perfectPlannedTerms;
+        }else{
+            return plannedTerms;
+        }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
