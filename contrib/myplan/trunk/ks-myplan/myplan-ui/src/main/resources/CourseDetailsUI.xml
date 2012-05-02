@@ -93,7 +93,9 @@
                 <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}_addSavedCourse" p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <property name="onDocumentReadyScript"
                               value="jq('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
-                                  fnDisplayMessage(data.message, data.cssClass, '@{dataObject.courseId}_addSavedCourse', false);
+                                  if (data.planItemType === 'wishlist') {
+                                      fnDisplayMessage(data.message, data.cssClass, '@{dataObject.courseId}_addSavedCourse', false);
+                                  }
                               });"/>
                     <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="styleClasses">
