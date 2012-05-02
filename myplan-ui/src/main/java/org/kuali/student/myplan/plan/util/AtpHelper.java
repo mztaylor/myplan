@@ -53,8 +53,6 @@ public class AtpHelper {
     }
     /*for atp kuali.uw.atp.spring2014 returns string[] with term(String[0])="Spring" and year(string[1])=2014*/
     public static String[] getAlphaTermAndYearForAtp(String atp){
-        atp = getTermAndYearFromAtp(atp);
-
         String qtrYr = atp.substring(atpPrefix, atp.length());
         String [] splitStr= new String[2];
         splitStr[0]=qtrYr.substring(qtrYr.lastIndexOf(".")+1);
@@ -81,8 +79,6 @@ public class AtpHelper {
 
         /*for atp kuali.uw.atp.spring2014 returns string[] with term(String[0])=2 and year(string[1])=2014*/
     public static String[] getTermAndYear(String atp){
-        atp = getTermAndYearFromAtp(atp);
-
         String qtrYr = atp.substring(atpPrefix, atp.length());
         String [] splitStr= new String[2];
         splitStr[0]=qtrYr.substring(qtrYr.lastIndexOf(".")+1);
