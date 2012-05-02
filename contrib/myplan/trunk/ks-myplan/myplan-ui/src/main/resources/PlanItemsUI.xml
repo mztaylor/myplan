@@ -77,7 +77,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}"
+                            <bean p:id="@{#line.planItemDataObject.id}_saved" parent="Uif-Link" p:linkLabel="@{#line.courseDetails.courseTitle}"
                                   p:title="@{#line.courseDetails.courseTitle}">
                                 <property name="onClickScript"
                                           value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>

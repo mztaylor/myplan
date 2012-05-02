@@ -80,7 +80,7 @@
     <bean id="course_details_actions" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false" p:style="margin-bottom: 25px;">
         <property name="items">
             <list>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Add to Plan">
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Add to Plan" p:id="@{dataObject.courseId}_addPlannedCourse">
                     <property name="clientSideJs"
                               value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top'});"/>
                     <property name="styleClasses">
@@ -90,8 +90,12 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}" p:render="@{dataObject.inSavedCourseList ? false : true}">
-                    <property name="clientSideJs" value="addSavedCourse('@{dataObject.courseId}', 'addSavedCourse', 'plan', {viewId:'SavedCoursesListActions-FormView', courseId:'@{dataObject.courseId}'}, e);"/>
+                <bean parent="Uif-ActionFieldBase" p:actionLabel="Save to Your Courses List" p:id="@{dataObject.courseId}_addSavedCourse" p:render="@{dataObject.inSavedCourseList ? false : true}">
+                    <property name="onDocumentReadyScript"
+                              value="jq('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
+                                  fnDisplayMessage(data.message, data.cssClass, '@{dataObject.courseId}_addSavedCourse');
+                              });"/>
+                    <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>
