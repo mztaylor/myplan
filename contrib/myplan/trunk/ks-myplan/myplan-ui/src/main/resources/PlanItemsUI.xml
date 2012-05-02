@@ -521,12 +521,10 @@
                               value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:render="@{backup ? false : true}">
-                    <property name="onClickScript"
-                              value="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'plannedToBackup');"/>
+                    <property name="onClickScript" value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','plannedToBackup',e);"/>
                 </bean>
                 <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Planned course" p:title="Mark it as Planned course" p:render="@{backup ? true : false}">
-                    <property name="onClickScript"
-                              value="myPlanAjaxPlanItemMove('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,'backupToPlanned');"/>
+                    <property name="onClickScript" value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','backupToPlanned',e);"/>
                 </bean>
                 <bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#">
 
