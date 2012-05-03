@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -8,18 +9,14 @@ import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.r2.common.dto.ContextInfo;
 
 import javax.xml.namespace.QName;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -28,14 +25,11 @@ import java.util.List;
  */
 public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelperBase {
 
+    private final Logger logger = Logger.getLogger(PlannedCoursesLookupableHelperImpl.class);
+
     private transient AcademicCalendarService academicCalendarService;
 
     private transient AcademicRecordService academicRecordService;
-
-    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
-
-
-    private final Logger logger = Logger.getLogger(PlannedCoursesLookupableHelperImpl.class);
 
     protected AcademicCalendarService getAcademicCalendarService() {
         if (this.academicCalendarService == null) {
@@ -62,19 +56,26 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         this.academicRecordService = academicRecordService;
     }
 
-
-    private String term1 = "Autumn";
-    private String term2 = "Winter";
-    private String term3 = "Spring";
-    private String term4 = "Summer";
-
-    public enum terms {Autumn, Winter, Spring, Summer}
-
-    ;
-
     @Override
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+
+        String focusAtpId = lookupForm.getCriteriaFields().get(PlanConstants.FOCUS_ATP_ID_KEY);
+        String focusAtpYear = null;
+
         try {
+            if (StringUtils.isEmpty(focusAtpId)) {
+                focusAtpYear = AtpHelper.getCurrentAtpYear();
+            } else {
+                focusAtpYear = AtpHelper.getTermAndYear(focusAtpId)[1];
+            }
+        }  catch(Exception e) {
+            //  Log and set the year to the current year.
+            logger.error("Could not get the current ATP year, so using the current year.", e);
+            focusAtpYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        }
+
+        try {
+            List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
 
             List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
             Collections.sort(plannedCoursesList);
@@ -82,18 +83,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             /*academic record SWS call to get the studentCourseRecordInfo list */
             List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
             try {
-
-                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", CONTEXT_INFO);
+                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
+                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.");
             }
 
-
-            List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
             List<TermInfo> termInfos = null;
             try {
-                termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
-                        CourseSearchConstants.CONTEXT_INFO);
+                termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Web service call failed.", e);
                 //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
@@ -101,13 +98,12 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             }
 
             /*
-           Populating the PlannedTerm List
-            */
+             *  Populating the PlannedTerm List.
+             */
             for (PlannedCourseDataObject plan : plannedCoursesList) {
                 String atp = plan.getPlanItemDataObject().getAtp();
                 boolean exists = false;
                 for (PlannedTerm term : plannedTerms) {
-
                     if (term.getPlanItemId().equalsIgnoreCase(atp)) {
                         term.getPlannedList().add(plan);
                         exists = true;
@@ -117,20 +113,18 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     PlannedTerm term = new PlannedTerm();
                     term.setPlanItemId(atp);
                     /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-                    String[] splitStr = AtpHelper.getAlphaTermAndYearForAtp(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+                    String[] splitStr = AtpHelper.getAlphaTermAndYearForAtp(atp); /*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                     StringBuilder sb = new StringBuilder();
                     sb.append(splitStr[0]).append(" ").append(splitStr[1]);
                     String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
                     term.setQtrYear(QtrYear);
                     term.getPlannedList().add(plan);
-                    term.setCurrentTerm(false);
                     plannedTerms.add(term);
                 }
             }
 
-
             /*
-           Populating the backup list for the Plans
+             * Populating the backup list for the Plans
             */
             List<PlannedCourseDataObject> backupCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
             int count = plannedTerms.size();
@@ -154,16 +148,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                     plannedTerm.setQtrYear(QtrYear);
                     plannedTerm.getBackupList().add(bl);
-                    plannedTerm.setCurrentTerm(false);
                     plannedTerms.add(plannedTerm);
                     count++;
                 }
             }
 
-
             /*
-           Used for sorting the planItemDataobjects
-            */
+             * Used for sorting the planItemDataobjects
+             */
             List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
 
             Collections.sort(plannedTerms, new Comparator<PlannedTerm>() {
@@ -173,59 +165,67 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
             });
 
-            /***********Implementation to populate the plannedTerm list with academic record and plannedterms******************/
-        if(studentCourseRecordInfos.size()>0&&plannedTerms.size()>0){
-            Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
-            String minTerm = studentCourseRecordInfos.get(0).getTermName();
-            String maxTerm = plannedTerms.get(plannedTerms.size() - 1).getPlanItemId();
-            populateMockList(minTerm, maxTerm, termsList);
+            /*********** Implementation to populate the plannedTerm list with academic record and planned terms ******************/
+            if (studentCourseRecordInfos.size() > 0 && plannedTerms.size() > 0){
+                Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
+                String minTerm = studentCourseRecordInfos.get(0).getTermName();
+                String maxTerm = plannedTerms.get(plannedTerms.size() - 1).getPlanItemId();
+                populateMockList(minTerm, maxTerm, termsList);
 
-            for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                if (termsList.containsKey(studentInfo.getTermName())) {
-                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                    academicRecordDataObjectList.add(academicRecordDataObject);
-                    termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
-                }
-            }
-            for (PlannedTerm plannedTerm : plannedTerms) {
-                if (termsList.containsKey(plannedTerm.getPlanItemId())) {
-                    if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size()>0) {
-                        termsList.get(plannedTerm.getPlanItemId());
-                        termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
+                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                    if (termsList.containsKey(studentInfo.getTermName())) {
+                        AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                        academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                        academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                        academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                        academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                        academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                        academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                        academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                        academicRecordDataObjectList.add(academicRecordDataObject);
+                        termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
                     }
                 }
-            }
-            List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
-            for (String key : termsList.keySet()) {
-                perfectPlannedTerms.add(termsList.get(key));
-            }
-
-
-
-            Collections.sort(perfectPlannedTerms,new Comparator<PlannedTerm>() {
-                @Override
-                public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
-                    return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                for (PlannedTerm plannedTerm : plannedTerms) {
+                    if (termsList.containsKey(plannedTerm.getPlanItemId())) {
+                        if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size()>0) {
+                            termsList.get(plannedTerm.getPlanItemId());
+                            termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
+                        }
+                    }
                 }
-            });
 
-            return perfectPlannedTerms;
-        }else{
-            return plannedTerms;
-        }
+                List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
+                for (String key : termsList.keySet()) {
+                    perfectPlannedTerms.add(termsList.get(key));
+                }
 
+                Collections.sort(perfectPlannedTerms,
+                    new Comparator<PlannedTerm>() {
+                        @Override
+                        public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
+                            return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                        }
+                    });
+
+                //  Can't do this step until the sort has been done else the index won't be correct.
+                int i = 0;
+                for (PlannedTerm pt : perfectPlannedTerms) {
+                    if (AtpHelper.getTermAndYear(pt.getPlanItemId())[1].equals(focusAtpYear)) {
+                        pt.setIndex(i);
+                        break;
+                    }
+                    i++;
+                }
+
+                return perfectPlannedTerms;
+            }else{
+                return plannedTerms;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     private void populateMockList(String minTerm, String maxTerm, Map<String, PlannedTerm> map) {
         String[] minTerms = AtpHelper.getTermAndYear(minTerm);
@@ -240,7 +240,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         else {
             minYear =Integer.parseInt(minTerms[1]);
         }
-        if (!maxTerms[0].equalsIgnoreCase("3")) {
+        if ( ! maxTerms[0].equalsIgnoreCase("3")) {
             if (maxTerms[0].equalsIgnoreCase("4")) {
                 maxTerm = AtpHelper.getAtpFromYearAndNumTerm("3", String.valueOf(Integer.parseInt(maxTerms[1]) + 1));
                 maxYear = Integer.parseInt(maxTerms[1]) + 1;
@@ -256,7 +256,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         String term2 = "";
         String term3 = "";
         String term4 = "";
-        for(int i=0;!term4.equalsIgnoreCase(maxTerm);i++){
+        for (int i = 0; ! term4.equalsIgnoreCase(maxTerm); i++){
             PlannedTerm plannedTerm1 = new PlannedTerm();
             term1 = AtpHelper.getAtpFromYearAndNumTerm("4", String.valueOf(minYear));
             plannedTerm1.setPlanItemId(term1);
@@ -279,7 +279,5 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             plannedTerm4.setQtrYear("Summer"+" "+minYear);
             map.put(term4, plannedTerm4);
         }
-
-
     }
 }

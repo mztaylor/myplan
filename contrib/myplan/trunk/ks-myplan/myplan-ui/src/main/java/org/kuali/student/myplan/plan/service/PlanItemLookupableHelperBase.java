@@ -30,7 +30,6 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
-
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
@@ -59,9 +58,9 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
 
                     plannedCourseDO.setPlanItemDataObject( PlanItemDataObject.build(planItem) );
 
-                    if(loadSummaryInfoOnly) {
+                    if (loadSummaryInfoOnly) {
                         plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
-                    }    else {
+                    } else {
                         plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
                     }
 
