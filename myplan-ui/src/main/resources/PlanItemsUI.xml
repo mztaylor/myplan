@@ -623,6 +623,17 @@
                   value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
+        <property name="onDocumentReadyScript" value="
+            if ( jq('#planned_courses_detail_list_group ul:not(.errorLines) li').length > 0 ) {
+                jq('#planned_courses_detail_list_group').jCarouselLite({
+                    btnNext: '.myplan-carousel-next',
+                    btnPrev: '.myplan-carousel-prev',
+                    scroll: 4,
+                    afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); },
+                    initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
+                });
+            }
+        "/>
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -630,7 +641,6 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/scripts/myplan.manage.js</value>
                 <value>/ks-myplan/plugins/jcarousellite.js</value>
             </list>
         </property>
@@ -916,7 +926,7 @@
     <bean id="term_backup_link" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:linkLabel="&lt;span&gt;Show&lt;/span&gt; # more courses" p:hrefText="#" p:onClickScript="fnExpandBackup(e);"/>
+                <bean parent="Uif-Link" p:linkLabel="&lt;span&gt;Show&lt;/span&gt; # more courses" p:hrefText="#" p:onClickScript="fnToggleBackup(e);"/>
             </list>
         </property>
     </bean>

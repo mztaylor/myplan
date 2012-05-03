@@ -357,7 +357,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
-                <bean parent="Uif-ActionImage" p:label="" p:id="@{#line.courseId}_save" p:styleClasses="fl-text-align-center" p:style="width:55px;">
+                <bean parent="Uif-ActionImage" p:label="" p:id="@{#line.courseId}_save" p:styleClasses="fl-container-50 fl-text-align-center">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
                     <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{#line.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="actionImage">
@@ -365,14 +365,32 @@
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
                               p:altText="Save to Your Courses List" p:title="Save to Your Courses List"/>
                     </property>
-                    <property name="onDocumentReadyScript" value="jq('#@{#line.courseId}_save').subscribe('PLAN_ITEM_ADDED', function(data){
-                        if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
-                            fnDisplayMessage ('Saved', 'fl-text-green', jq(this).attr('id'), false);
-                        }
-                    });"/>
+                    <property name="onDocumentReadyScript" value="
+                        jq('#@{#line.courseId}_save')
+                            .subscribe('PLAN_ITEM_ADDED', function(data){
+                                if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
+                                    fnDisplayMessage('Saved', 'fl-text-green', jq(this).attr('id'), false);
+                                }
+                            })
+                            .subscribe('PLAN_ITEM_DELETED', function(data){
+
+                            });
+                    "/>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="In List" p:id="@{#line.courseId}"
-                      p:styleClasses="fl-container-50 fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}"/>
+                <bean parent="Uif-MessageField" p:messageText="In List" p:id="@{#line.courseId}_save"
+                      p:styleClasses="fl-container-50 fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}">
+                    <property name="onDocumentReadyScript" value="
+                        jq('#@{#line.courseId}_save')
+                            .subscribe('PLAN_ITEM_ADDED', function(data){
+                                if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
+                                    fnDisplayMessage('Saved', 'fl-text-green', jq(this).attr('id'), false);
+                                }
+                            })
+                            .subscribe('PLAN_ITEM_DELETED', function(data){
+
+                            });
+                    "/>
+                </bean>
                 <bean parent="Uif-DataField" p:propertyName="quartersFacetKey" p:label="Quarter Projected"
                       p:readOnly="true"/>
                 <bean parent="Uif-DataField" p:propertyName="scheduledFacetKey" p:label="Quarter Scheduled"
