@@ -396,6 +396,130 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form);
     }
 
+    @RequestMapping(params = "methodToCall=copyPlannedCourse")
+    public ModelAndView copyPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+        /**
+         * This method needs a Plan Item ID and an ATP ID.
+         */
+        String planItemId = form.getPlanItemId();
+        if (StringUtils.isEmpty(planItemId)) {
+            return doPlanActionError(form, "Plan Item ID was missing.", null);
+        }
+
+        //  This is the new/destination ATP.
+        String newAtpId = form.getAtpId();
+        //  Further validation of ATP IDs will happen in the service validation methods.
+        if (StringUtils.isEmpty(newAtpId)) {
+            return doPlanActionError(form, "ATP ID was missing.", null);
+        }
+
+        //  Should the course be type 'planned' or 'backup'. Default to planned.
+        boolean backup = form.isBackup();
+
+        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+        if (backup) {
+            newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
+        }
+
+        //  This list can only contain one item, otherwise the backend validation will fail.
+        //  Use LinkedList here so that the remove method works during "other" option processing.
+        List<String> newAtpIds = null;
+        try {
+            newAtpIds = getNewTermIds(newAtpId, form);
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, "Unable to process request.", e);
+        }
+
+        PlanItemInfo planItem = null;
+        try {
+            // First load the plan item and retrieve the courseId
+            planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Could not fetch plan item.", e);
+        }
+
+        if (planItem == null) {
+            return doPlanActionError(form, String.format("Could not fetch plan item."), null);
+        }
+
+        //  Lookup course details as they will be needed for errors.
+        CourseDetails courseDetails = null;
+        try {
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+        } catch (Exception e) {
+            return doPlanActionError(form, "Unable to retrieve Course Details.", null);
+        }
+
+        //  Make sure there isn't a plan item for the same course id in the destination ATP.
+        PlanItemInfo existingPlanItem = null;
+        try {
+            existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpIds.get(0));
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, String.format("Query for existing plan item failed."), null);
+        }
+
+        if (existingPlanItem != null) {
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                    PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
+
+        //  Do validations.
+        //  Validate: Plan Size exceeded.
+        boolean hasCapacity = false;
+        LearningPlan learningPlan = null;
+        try {
+            learningPlan = getLearningPlan(getUserId());
+            hasCapacity = isAtpHasCapacity( learningPlan, newAtpIds.get(0), newType);
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
+        }
+        if (!hasCapacity) {
+            return doPlanCapacityExceededError(form);
+        }
+
+        //  Validate: Adding to historical term.
+        if (isTermHistorical(newAtpIds.get(0))) {
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
+            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        }
+
+        //  Update the plan item.
+        planItem.setPlanPeriods(newAtpIds);
+        planItem.setTypeKey(newType);
+
+        PlanItemInfo planItemCopy = null;
+        try {
+            String courseId = planItem.getRefObjectId();
+            planItemCopy = addPlanItem(learningPlan, courseId, newAtpIds, newType);
+        } catch (DuplicateEntryException e) {
+            return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpIds.get(0)), courseDetails);
+        } catch (Exception e) {
+            return doPlanActionError(form, "Unable to add plan item.", e);
+        }
+
+        //  Set the status of the request for the UI.
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+
+        //  Create the map of javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        try {
+            events.putAll(makeAddEvent(planItemCopy, courseDetails));
+        } catch (RuntimeException e) {
+            return doPlanActionError(form, "Unable to create add event.", e);
+        }
+
+        events.putAll(makeUpdateTotalCreditsEvent(planItemCopy, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
+
+        //  Populate the form.
+        form.setJavascriptEvents(events);
+
+        return doPlanActionSuccess(form);
+    }
+
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
@@ -537,11 +661,13 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form);
     }
 
+
+
     /**
-     * Determines if the given ATP ID is before the current ATP.
-     * @param atpId
-     * @return Returns true if the ATP is historical. Otherwise, false.
-     */
+         * Determines if the given ATP ID is before the current ATP.
+         * @param atpId
+         * @return Returns true if the ATP is historical. Otherwise, false.
+         */
     private boolean isTermHistorical(String atpId) {
         // TODO: Logic needs to be more complex.
         return false;
