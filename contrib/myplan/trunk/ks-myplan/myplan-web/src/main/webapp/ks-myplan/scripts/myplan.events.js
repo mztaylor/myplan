@@ -125,7 +125,7 @@ function fnDisplayMessage (message, cssClass, targetId, buttons) {
     Function: restore add button for saving courses in search results
 #################################################################
  */
-function fnRestoreAddButton (courseId) {
+function fnRestoreSearchAddButton (courseId) {
     var oTable = jq('#course_search_results_datatable').dataTable();
     var oNodes = oTable.fnGetNodes();
     jq(oNodes).find("#" + courseId + "_save_span").removeClass().fadeOut(250, function() {
@@ -138,5 +138,18 @@ function fnRestoreAddButton (courseId) {
         jq(this).html("<input type=\"image\" id=\"" + courseId + "_save\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" />").fadeIn(250);
         jq("#" + courseId + "_save_cell input[type='hidden']").attr("name","script");
         runHiddenScripts(courseId + "_save_cell");
+    });
+}
+/*
+#################################################################
+    Function: restore add button for saving courses on course details
+#################################################################
+ */
+function fnRestoreDetailsAddButton (courseId) {
+    jq("#" + courseId + "_div").parent().fadeOut(250, function() {
+        jq("#" + courseId + "_div").replaceWith("<button id=\"" + courseId + "_addSavedCourse\" class=\"uif-field uif-action myplan-button myplan-button-gray\" onClick=\"event.preventDefault(); myPlanAjaxPlanItemMove('" + courseId + "', 'courseId', 'addSavedCourse', event);\">Save to Your Courses List</button>");
+        jq("#" + courseId + "_addSavedCourse").after('<input name="script" type="hidden" value="jq(document).ready(function() {jq(\'#' + courseId + '_addSavedCourse\').subscribe(\'PLAN_ITEM_ADDED\', function(data){ if (data.planItemType === \'wishlist\') { fnDisplayMessage(data.message, data.cssClass, \'' + courseId + '_addSavedCourse\', false); } });});" />');
+        runHiddenScripts();
+        jq(this).fadeIn(250);
     });
 }

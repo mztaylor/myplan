@@ -628,6 +628,7 @@
                     btnNext: '.myplan-carousel-next',
                     btnPrev: '.myplan-carousel-prev',
                     scroll: 4,
+                    start: parseFloat(jq(&quot;input[type='hidden'][id^='atp_start_index']&quot;).val()),
                     afterEnd: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); },
                     initCallback: function(a) { fnBuildTitle(a, 'uif-groupHeader', 'planned_courses_detail_group'); }
                 });
