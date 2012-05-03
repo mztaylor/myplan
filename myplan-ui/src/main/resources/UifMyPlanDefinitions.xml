@@ -70,7 +70,6 @@
 
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
-
         <property name="applicationHeader">
             <bean parent="Uif-HeaderField-One" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"

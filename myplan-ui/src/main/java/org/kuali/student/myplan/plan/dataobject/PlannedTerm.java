@@ -22,7 +22,20 @@ public class PlannedTerm {
     private List<PlannedCourseDataObject> backupList = new ArrayList<PlannedCourseDataObject>();
     private List<AcademicRecordDataObject> academicRecord=new ArrayList<AcademicRecordDataObject>();
     private String credits = null;
-    private boolean isCurrentTerm;
+
+    /*
+     *  The index of this item in a list of PlannedTerms. This is used by the UI to focus the "carousellite" javascript
+     *  component. The value should be -1 unless this PlannedTerm should have focus.
+     */
+    private int index = -1;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public String getPlanItemId() {
         return planItemId;
@@ -72,14 +85,6 @@ public class PlannedTerm {
         }
 
         return totalCredits;
-    }
-
-    public boolean isCurrentTerm() {
-        return isCurrentTerm;
-    }
-
-    public void setCurrentTerm(boolean currentTerm) {
-        isCurrentTerm = currentTerm;
     }
 
     public List<AcademicRecordDataObject> getAcademicRecord() {

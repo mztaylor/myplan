@@ -34,6 +34,4 @@ public class CourseSearchConstants {
     public static final String SUBJECT_AREA = "kuali.lu.subjectArea";
 
     public static final String CAMPUS_LOCATION = "kuali.lu.campusLocation";
-
-
 }

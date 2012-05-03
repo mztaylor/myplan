@@ -46,5 +46,4 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
         }
         return list.toString();
     }
-
 }

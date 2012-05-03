@@ -1,6 +1,15 @@
 package org.kuali.student.myplan.plan.util;
 
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.r2.common.exceptions.*;
+
+import javax.xml.namespace.QName;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,12 +25,55 @@ public class AtpHelper {
     private static String term3 = "summer";
     private static String term4 = "autumn";
     /*
-   atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
-    */
+     * atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
+     */
     private static int atpPrefix = 13;
 
-    /*for atp kuali.uw.atp.spring2014 returns string kuali.uw.atp.2014.2*/
+    private static transient AcademicCalendarService academicCalendarService;
 
+    private static AcademicCalendarService getAcademicCalendarService() {
+       if (academicCalendarService == null) {
+           academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                   .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                           AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+       }
+       return academicCalendarService;
+    }
+
+    /**
+     * Query the Academic Record Service, determine the current ATP, and the return the ID.
+     * @return The ID of the current ATP.
+     * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
+     */
+    public static String getCurrentAtpId() {
+        String atpId = null;
+        //   The first arg here is "usageKey" which isn't used.
+        List<TermInfo> scheduledTerms = null;
+        try {
+            scheduledTerms = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY, PlanConstants.CONTEXT_INFO) ;
+        } catch (Exception e) {
+            throw new RuntimeException("Query to Academic Calendar Service failed.", e);
+        }
+
+        if (scheduledTerms == null || scheduledTerms.size() == 0) {
+            throw new RuntimeException("No scheduled terms were found.");
+        }
+
+        //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
+        //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
+        //  is the Right thing to do.
+        TermInfo currentTerm = scheduledTerms.get(0);
+        return currentTerm.getId();
+    }
+
+    /**
+     * Gets the year of the current ATP.
+     */
+    public static String getCurrentAtpYear() {
+        return getTermAndYear(getCurrentAtpId())[0];
+    }
+
+    /*for atp kuali.uw.atp.spring2014 returns string kuali.uw.atp.2014.2*/
     public static String getTermAndYearFromAtp(String atp){
         String qtrYr = atp.substring(atpPrefix, atp.length());
         String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
@@ -34,16 +86,16 @@ public class AtpHelper {
         splitStr[0]=splitStr[0].substring(0, 1).toUpperCase().concat(splitStr[0].substring(1, splitStr[0].length()));
 
         int termVal=0;
-        if(term.equalsIgnoreCase(term1)){
+        if (term.equalsIgnoreCase(term1)){
             termVal=1;
         }
-        if(term.equalsIgnoreCase(term2)){
+        if (term.equalsIgnoreCase(term2)){
             termVal=2;
         }
-        if(term.equalsIgnoreCase(term3)){
+        if (term.equalsIgnoreCase(term3)){
             termVal=3;
         }
-        if(term.equalsIgnoreCase(term4)){
+        if (term.equalsIgnoreCase(term4)){
             termVal=4;
         }
         StringBuffer newAtpId=new StringBuffer();
@@ -74,8 +126,6 @@ public class AtpHelper {
         return  splitStr;
 
     }
-
-
 
         /*for atp kuali.uw.atp.spring2014 returns string[] with term(String[0])=2 and year(string[1])=2014*/
     public static String[] getTermAndYear(String atp){
@@ -111,6 +161,4 @@ public class AtpHelper {
         newAtpId=newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(term);
         return newAtpId.toString();
     }
-    
-    
 }
