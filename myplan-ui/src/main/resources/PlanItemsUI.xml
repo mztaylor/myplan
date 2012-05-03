@@ -533,6 +533,10 @@
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
+                <bean p:id="@{planItemId}_copy" parent="Uif-Link" p:target="" p:linkLabel="Copy to Another Quarter" p:title="Copy to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp('@{planItemId}','copy_dialog_page',{planItemId:'@{planItemId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
                 <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
@@ -557,6 +561,13 @@
         <property name="items">
             <list>
                <bean parent="add_planned_course_fields" p:style="display:block;"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="plan_item_course_copy_dialog" parent="Uif-VerticalBoxSection" p:title="Copy to Another Quarter">
+        <property name="items">
+            <list>
+                <bean parent="copy_planned_course_fields" p:style="display:block;"/>
             </list>
         </property>
     </bean>
@@ -1210,6 +1221,19 @@
                         </list>
                     </property>
                 </bean>
+                <!--This page is used for the Copy to another quarter Dialog box -->
+                <bean parent="Uif-Page" p:id="copy_dialog_page" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="plan_item_course_copy_dialog"/>
+                        </list>
+                    </property>
+                </bean>
                 <!--This page is used for the Delete plan Item Dialog box -->
                 <bean parent="Uif-Page" p:id="plan_item_delete_page" p:errorsField.render="false">
                     <property name="styleClasses">
@@ -1354,6 +1378,74 @@
                                 </property>
                             </bean>
                             <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{moveCourse eq true ? true : false}">
+                                <property name="clientSideJs"
+                                          value="fnCloseAllPopups();"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-transparent</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="copy_planned_course_fields" parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:style="display:none;">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-300</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="">
+                    <property name="control">
+                        <bean parent="Uif-VerticalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
+                            <property name="additionalListItemsBottom">
+                                <map>
+                                    <entry key="other" value="Other"/>
+                                </map>
+                            </property>
+                        </bean>
+                    </property>
+
+                </bean>
+
+                <ref bean="add_planned_course_other"/>
+
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                    <property name="group.errorsField.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Copy" p:render="true">
+                                <property name="clientSideJs"
+                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse');"/>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#movePlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
+                                            setTimeout('fnCloseAllPopups()', 2000);
+                                        });"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-90</value>
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean p:id="cancelCopylannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
+                                  p:render="true">
                                 <property name="clientSideJs"
                                           value="fnCloseAllPopups();"/>
                                 <property name="styleClasses">
