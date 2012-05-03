@@ -30,7 +30,7 @@ public class PlanForm extends UifFormBase {
     private final Logger logger = Logger.getLogger(PlanForm.class);
 
     /**
-     *  The return code for a plan item add, change, or delete.
+     * The return code for a plan item add, change, or delete.
      */
     public enum REQUEST_STATUS {
         /*  The requested operation was successful. */
@@ -66,21 +66,20 @@ public class PlanForm extends UifFormBase {
     private boolean backup = false;
 
     //   based on this Add to plan page items are populated
-    private boolean moveCourse=false;
+    private boolean moveCourse = false;
 
-    //required for message on the view course summary
-    private String dateAdded;
+
     /**
-     *  A list of javascript events as:
-     *      EVENT_NAME
-     *          param1: p1
-     *          param2: p2
-     *      PLAN_ITEM_ADDED
-     *          itemType: plannedCourse
-     *          planItem: pi1
-     *          courseId: c1
+     * A list of javascript events as:
+     * EVENT_NAME
+     * param1: p1
+     * param2: p2
+     * PLAN_ITEM_ADDED
+     * itemType: plannedCourse
+     * planItem: pi1
+     * courseId: c1
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String,String>> javascriptEvents;
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> javascriptEvents;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -88,11 +87,11 @@ public class PlanForm extends UifFormBase {
         super();
     }
 
-    public Map<PlanConstants.JS_EVENT_NAME, Map<String,String>> getJavascriptEvents() {
+    public Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> getJavascriptEvents() {
         return javascriptEvents;
     }
 
-    public void setJavascriptEvents(Map<PlanConstants.JS_EVENT_NAME, Map<String,String>> javascriptEvents) {
+    public void setJavascriptEvents(Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> javascriptEvents) {
         this.javascriptEvents = javascriptEvents;
     }
 
@@ -168,14 +167,6 @@ public class PlanForm extends UifFormBase {
         this.requestStatus = requestStatus;
     }
 
-    public String getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(String dateAdded) {
-        this.dateAdded = dateAdded;
-    }
-
     public boolean isMoveCourse() {
         return moveCourse;
     }
@@ -185,7 +176,7 @@ public class PlanForm extends UifFormBase {
     }
 
     /**
-     *  Returns the list of events that should be
+     * Returns the list of events that should be
      */
     public String getJavascriptEventsAsJSON() {
         ObjectMapper mapper = new ObjectMapper();
@@ -193,7 +184,7 @@ public class PlanForm extends UifFormBase {
         try {
             //  Turn the list of javascript events into a string of JSON.
             jsonOut = mapper.writeValueAsString(javascriptEvents);
-            jsonOut = StringEscapeUtils.unescapeJava(jsonOut) ;
+            jsonOut = StringEscapeUtils.unescapeJava(jsonOut);
         } catch (Exception e) {
             logger.error("Could not convert javascript events to JSON.", e);
             jsonOut = "";

@@ -87,11 +87,6 @@ public class PlanController extends UifControllerBase {
             try {
                 planItem = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
                 courseId = planItem.getRefObjectId();
-                planForm.setDateAdded(planItem.getMeta().getCreateTime().toString());
-                String[] splitStr = getAtpHelper().getTermAndYear(planItem.getPlanPeriods().get(0));
-                planForm.setTerm(splitStr[0]);
-                planForm.setYear(splitStr[1]);
-
                 //Following data used for the Dialog boxes
                 if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     planForm.setBackup(true);
@@ -111,21 +106,6 @@ public class PlanController extends UifControllerBase {
         }
 
 
-        if (planForm.getDateAdded() != null) {
-            String dateStr = planForm.getDateAdded().substring(0, 10);
-            DateFormat dfYMD =
-                    new SimpleDateFormat("yyyy-MM-dd");
-            DateFormat dfDMY =
-                    new SimpleDateFormat("dd/MM/yyyy");
-
-            try {
-                dateStr = dfDMY.format(dfYMD.parse(dateStr));
-            } catch (Exception e) {
-                logger.error("Cant parse date");
-                return doPlanActionError(planForm, "Could not retrieve Plan date information.", null);
-            }
-            planForm.setDateAdded(dateStr);
-        }
         //  Initialize the form with a course Id.
         planForm.setCourseId(courseId);
 
@@ -167,10 +147,10 @@ public class PlanController extends UifControllerBase {
         try {
             hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
                     planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form);
         }
 
@@ -224,7 +204,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "backup".
-        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return doPlanActionError(form, "Move planned item was not type backup.", null);
         }
 
@@ -232,11 +212,11 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         try {
             hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
-                planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
-        } catch(RuntimeException e) {
+                    planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form);
         }
 
@@ -300,7 +280,7 @@ public class PlanController extends UifControllerBase {
             newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
         }
 
-         //  This list can only contain one item, otherwise the backend validation will fail.
+        //  This list can only contain one item, otherwise the backend validation will fail.
         //  Use LinkedList here so that the remove method works during "other" option processing.
         List<String> newAtpIds = null;
         try {
@@ -333,13 +313,13 @@ public class PlanController extends UifControllerBase {
         PlanItemInfo existingPlanItem = null;
         try {
             existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpIds.get(0));
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, String.format("Query for existing plan item failed."), null);
         }
 
         if (existingPlanItem != null) {
-             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                    PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), formatAtpIdForUI(newAtpIds.get(0)));
             return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
         }
 
@@ -352,10 +332,10 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         try {
             hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()), newAtpIds.get(0), newType);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form);
         }
 
@@ -386,7 +366,7 @@ public class PlanController extends UifControllerBase {
         events.putAll(originalUpdateTotalCredits);
         try {
             events.putAll(makeAddEvent(planItem, courseDetails));
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Unable to create add event.", e);
         }
         events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
@@ -591,11 +571,11 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         try {
             hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
         }
 
-        if (! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form);
         }
 
@@ -642,7 +622,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             events.putAll(makeAddEvent(planItem, courseDetails));
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             return doPlanActionError(form, "Unable to create add event.", e);
         }
 
@@ -681,9 +661,9 @@ public class PlanController extends UifControllerBase {
     private List<String> getNewTermIds(String atpId, PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
 
-        if(!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)){
-        newTermIds.add(AtpHelper.getTermAndYearFromAtp(atpId));
-        }else {
+        if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
+            newTermIds.add(AtpHelper.getTermAndYearFromAtp(atpId));
+        } else {
             newTermIds.add(atpId);
         }
 
@@ -794,9 +774,9 @@ public class PlanController extends UifControllerBase {
         PlanItemInfo planItem = null;
         try {
             planItem = addPlanItem(plan, courseId, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
-        } catch(DuplicateEntryException e) {
+        } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, null, courseDetails);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return doPlanActionError(form, "Unable to add plan item.", e);
         }
 
@@ -827,7 +807,7 @@ public class PlanController extends UifControllerBase {
         } catch (DoesNotExistException e) {
             isNoop = true;
         } catch (Exception e) {
-              return doPlanActionError(form, "Query for plan item failed.", e);
+            return doPlanActionError(form, "Query for plan item failed.", e);
         }
 
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
@@ -841,7 +821,7 @@ public class PlanController extends UifControllerBase {
         try {
             // Delete the plan item
             getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return doPlanActionError(form, "Could not delete plan item", e);
         }
 
@@ -888,9 +868,9 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
-         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-         PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), atpId);
-         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
+                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), atpId);
+        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
     /**
@@ -933,7 +913,7 @@ public class PlanController extends UifControllerBase {
      * @throws RuntimeException on errors.
      */
     protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType)
-        throws DuplicateEntryException {
+            throws DuplicateEntryException {
 
         if (StringUtils.isEmpty(courseId)) {
             throw new RuntimeException("Empty Course ID");
@@ -1164,7 +1144,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  Only planned items need this event.
-        if (! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
             return events;
         }
 
@@ -1191,7 +1171,7 @@ public class PlanController extends UifControllerBase {
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-         //  Only planned or backup items get an atpId attribute.
+        //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
@@ -1250,10 +1230,10 @@ public class PlanController extends UifControllerBase {
                             CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
 
                             String[] str = courseDetails.getCredit().split("\\D");
-                            int min = Integer.parseInt( str[0] );
+                            int min = Integer.parseInt(str[0]);
                             totalMin += min;
-                            int max = Integer.parseInt( str[str.length-1] );
-                            totalMax +=max;
+                            int max = Integer.parseInt(str[str.length - 1]);
+                            totalMax += max;
                         }
                     }
                 }
@@ -1264,8 +1244,7 @@ public class PlanController extends UifControllerBase {
         }
 
         String totalCredits = Integer.toString(totalMin);
-        if( totalMin != totalMax )
-        {
+        if (totalMin != totalMax) {
             totalCredits = totalCredits + "-" + Integer.toString(totalMax);
         }
 
