@@ -199,7 +199,7 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails));
-        events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS));
 
         form.setJavascriptEvents(events);
 
@@ -250,7 +250,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make removed event before updating the plan item.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem);
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> creditsUpdateEvent = makeUpdateTotalCreditsEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> creditsUpdateEvent = makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS);
 
         //  Set type to "planned".
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
@@ -268,7 +268,7 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails));
-        events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         form.setJavascriptEvents(events);
         return doPlanActionSuccess(form);
@@ -345,7 +345,7 @@ public class PlanController extends UifControllerBase {
 
         //  Create events before updating the plan item.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem);
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalUpdateTotalCredits = makeUpdateTotalCreditsEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalUpdateTotalCredits = makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS);
 
         //  Do validations.
         //  Validate: Plan Size exceeded.
@@ -389,7 +389,7 @@ public class PlanController extends UifControllerBase {
         } catch(RuntimeException e) {
             return doPlanActionError(form, "Unable to create add event.", e);
         }
-        events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         form.setJavascriptEvents(events);
 
@@ -522,7 +522,7 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Unable to create add event.", e);
         }
 
-        events.putAll(makeUpdateTotalCreditsEvent(planItem));
+        events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         //  Populate the form.
         form.setJavascriptEvents(events);
@@ -708,7 +708,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events ...
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            events.putAll(makeUpdateTotalCreditsEvent(planItem));
+            events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
         }
         events.putAll(makeRemoveEvent(planItem));
 
@@ -1034,7 +1034,7 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(PlanItemInfo planItem) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(PlanItemInfo planItem, PlanConstants.JS_EVENT_NAME eventName) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  Only planned items need this event.
@@ -1049,7 +1049,7 @@ public class PlanController extends UifControllerBase {
         String totalCredits = this.getTotalCredits(termId);
         params.put("totalCredits", totalCredits);
 
-        events.put(PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS, params);
+        events.put(eventName, params);
         return events;
     }
 
