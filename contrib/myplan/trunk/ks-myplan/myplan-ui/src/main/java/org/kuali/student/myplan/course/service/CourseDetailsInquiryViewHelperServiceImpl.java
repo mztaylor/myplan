@@ -1,11 +1,13 @@
 package org.kuali.student.myplan.course.service;
 
 import java.lang.String;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
 
+import org.joda.time.DateTime;
 import org.joda.time.YearMonth;
 import org.kuali.rice.core.api.criteria.EqualPredicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -18,6 +20,8 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.core.statement.service.StatementService;
+import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -43,8 +47,12 @@ import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.course.util.CurriculumFacet;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.restlet.engine.util.DateUtils;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
 
@@ -66,6 +74,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient EnumerationManagementService enumService;
 
     private transient AcademicPlanService academicPlanService;
+
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
+
+    private transient AcademicRecordService academicRecordService;
+
 
     private transient CourseInfo courseInfo;
 
@@ -270,18 +283,29 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         //  Assuming type is planned or backup if not wishlist.
                         if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
                             courseDetails.setSavedItemId(planItemInPlanTemp.getId());
-                            courseDetails.setSavedItemDateCreated(planItemInPlanTemp.getMeta().getCreateTime());
+                            String dateStr = planItemInPlanTemp.getMeta().getCreateTime().toString();
+                            dateStr = DateFormatHelper.getDateFomatted(dateStr);
+                            courseDetails.setSavedItemDateCreated(dateStr);
                         } else if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
                             plannedList.add(PlanItemDataObject.build(planItemInPlanTemp));
+
                         } else if (planItemInPlanTemp.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                             backupList.add(PlanItemDataObject.build(planItemInPlanTemp));
+
                         }
                     }
+                }
+                if (plannedList.size() > 0) {
+                    courseDetails.setPlannedList(plannedList);
+                }
+                if (backupList.size() > 0) {
+                    courseDetails.setBackupList(backupList);
                 }
             }
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
+
 
         //Curriculum
         String courseCode = courseDetails.getCode();
@@ -315,6 +339,41 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
 
         }
+        /*********Implemantation to get the Academic Record Data from the SWS and set that to CourseDetails acedRecordList***************/
+
+        List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+
+        try {
+
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
+        }
+        if (studentCourseRecordInfos.size() > 0) {
+
+            for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                academicRecordDataObject.setCredit(studentInfo.getCalculatedGradeValue());
+                academicRecordDataObject.setGrade(studentInfo.getCreditsEarned());
+                academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                academicRecordDataObjectList.add(academicRecordDataObject);
+                if (courseDetails.getCourseTitle().equalsIgnoreCase(studentInfo.getCourseTitle())) {
+                    String[] str = AtpHelper.getAlphaTermAndYearForAtp(studentInfo.getTermName());
+                    courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+                }
+            }
+            if (academicRecordDataObjectList.size() > 0) {
+                courseDetails.setAcadRecList(academicRecordDataObjectList);
+
+            }
+        }
+
+
         return courseDetails;
     }
 
@@ -382,6 +441,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         return titleValue;
+    }
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (this.academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return this.academicRecordService;
+    }
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
     }
 
     protected synchronized CourseService getCourseService() {

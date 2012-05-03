@@ -668,7 +668,7 @@
     <bean id="CourseDetails.savedItemDateCreated-parentBean" abstract="true"
           parent="AttributeDefinition">
         <property name="name" value="savedItemDateCreated"/>
-        <property name="dataType" value="DATE"/>
+        <property name="dataType" value="STRING"/>
         <property name="label" value="Date Added"/>
         <property name="shortLabel" value="Added"/>
         <property name="forceUppercase" value="false"/>
@@ -900,7 +900,7 @@
         </property>
     </bean>
 
-   <!-- <bean id="AcademicRecordDataObject.isRepeated" parent="AcademicRecordDataObject.isRepeated-parentBean"/>
+    <!-- <bean id="AcademicRecordDataObject.isRepeated" parent="AcademicRecordDataObject.isRepeated-parentBean"/>
     <bean id="AcademicRecordDataObject.isRepeated-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="isRepeated"/>
         <property name="dataType" value="BOOLEAN"/>
@@ -916,8 +916,6 @@
         </property>
     </bean>-->
     <!--*********************** AcademicRecord Data Object End ********************-->
-
-
 
 
 </beans>

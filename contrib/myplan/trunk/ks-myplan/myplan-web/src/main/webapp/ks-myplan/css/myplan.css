@@ -352,6 +352,7 @@ a:focus {
     display: block;
     float: left;
     margin: 0 !important;
+    background: #e4e4e4;
 }
 .myplan-message-noborder {
     padding: 5px 5px 5px 26px !important;

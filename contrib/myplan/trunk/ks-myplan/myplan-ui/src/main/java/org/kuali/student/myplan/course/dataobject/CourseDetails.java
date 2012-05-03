@@ -6,11 +6,12 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hsqldb.lib.StringUtil;
+import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.springframework.util.StringUtils;
 
 /**
- *  Course Details
+ * Course Details
  */
 public class CourseDetails extends CourseSummaryDetails {
 
@@ -29,12 +30,10 @@ public class CourseDetails extends CourseSummaryDetails {
     // Plan related information
     private transient List<PlanItemDataObject> plannedList;
     private transient List<PlanItemDataObject> backupList;
+    private List<AcademicRecordDataObject> acadRecList;
+    private List<String> academicTerms = new ArrayList<String>();
     private transient String savedItemId;
-    private Date savedItemDateCreated;
-
-    // Academic Record Information
-    private transient List<?> acadRecList;
-
+    private String savedItemDateCreated;
 
 
     public String getLastOffered() {
@@ -123,19 +122,19 @@ public class CourseDetails extends CourseSummaryDetails {
         this.savedItemId = savedItemId;
     }
 
-    public Date getSavedItemDateCreated() {
+    public String getSavedItemDateCreated() {
         return savedItemDateCreated;
     }
 
-    public void setSavedItemDateCreated(Date savedItemDateCreated) {
+    public void setSavedItemDateCreated(String savedItemDateCreated) {
         this.savedItemDateCreated = savedItemDateCreated;
     }
 
-    public List<?> getAcadRecList() {
+    public List<AcademicRecordDataObject> getAcadRecList() {
         return acadRecList;
     }
 
-    public void setAcadRecList(List<?> acadRecList) {
+    public void setAcadRecList(List<AcademicRecordDataObject> acadRecList) {
         this.acadRecList = acadRecList;
     }
 
@@ -148,7 +147,7 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public boolean getInPlannedCourseList() {
-        if(isSummaryOnly()) {
+        if (isSummaryOnly()) {
             throw new IllegalArgumentException("Planned course check performed on Course Summary");
         }
 
@@ -157,11 +156,20 @@ public class CourseDetails extends CourseSummaryDetails {
 
 
     public boolean getInSavedCourseList() {
-        if(isSummaryOnly()) {
+        if (isSummaryOnly()) {
             throw new IllegalArgumentException("Saved course check performed on Course Summary");
         }
 
         return (StringUtils.hasText(savedItemId)) ? true : false;
+    }
+
+
+    public List<String> getAcademicTerms() {
+        return academicTerms;
+    }
+
+    public void setAcademicTerms(List<String> academicTerms) {
+        this.academicTerms = academicTerms;
     }
 
 
@@ -171,7 +179,6 @@ public class CourseDetails extends CourseSummaryDetails {
     public CourseDetails getThis() {
         return this;
     }
-
 
 
 }
