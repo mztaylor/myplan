@@ -120,3 +120,23 @@ function fnDisplayMessage (message, cssClass, targetId, buttons) {
         });
     }
 }
+/*
+#################################################################
+    Function: restore add button for saving courses in search results
+#################################################################
+ */
+function fnRestoreAddButton (courseId) {
+    var oTable = jq('#course_search_results_datatable').dataTable();
+    var oNodes = oTable.fnGetNodes();
+    jq(oNodes).find("#" + courseId + "_save_span").removeClass().fadeOut(250, function() {
+        jq(this).parent("td").attr("id", courseId + "_save_cell");
+        if ( jq.trim( jq(this).text() ) === 'In List') {
+            var sOriginalScript = jq(this).parent().find("input[type='hidden']").attr("value");
+            var sAppendScript = "jq('#' + '" + courseId + "_save').click(function(e){e.preventDefault();myPlanAjaxPlanItemMove('" + courseId + "', 'courseId', 'addSavedCourse', e);});";
+            jq(this).parent().find("input[type='hidden']").attr("value", sOriginalScript + " " + sAppendScript);
+        }
+        jq(this).html("<input type=\"image\" id=\"" + courseId + "_save\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" />").fadeIn(250);
+        jq("#" + courseId + "_save_cell input[type='hidden']").attr("name","script");
+        runHiddenScripts(courseId + "_save_cell");
+    });
+}
