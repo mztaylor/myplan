@@ -67,15 +67,14 @@ public class AtpHelper {
     }
 
     /**
-     * Gets the ATP ID of the first ATP in the academic year.
+     * Gets the ATP ID of the first ATP in the current academic year.
      */
-    public static String getFirstAtpIdOfAcademicYear() {
+    public static String getFirstAtpIdOfAcademicYear(String atpId) {
         String firstAtpId = null;
-        String currentAtpId = getCurrentAtpId();
-        String t[] = getTermAndYear(currentAtpId);
+        String t[] = getTermAndYear(atpId);
         //   If the term is not Autumn/4 then the beginning of the academic year is (year - 1) . 4
         if (t[0].equals("1")) {
-            firstAtpId = currentAtpId;
+            firstAtpId = atpId;
         } else {
             String year = String.valueOf(Integer.valueOf(t[1]) - 1);
             firstAtpId = AtpHelper.getAtpFromYearAndNumTerm("4", year);
