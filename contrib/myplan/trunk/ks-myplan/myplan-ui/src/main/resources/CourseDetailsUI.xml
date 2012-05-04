@@ -148,7 +148,7 @@
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
-                    <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? true : false}"/>
+                    <property name="render" value="@{dataObject.courseDescription ne null ? true : false}"/>
                 </bean>
                 <!-- If Course Description is empty-->
                 <bean parent="Uif-MessageField" p:label="Course Description" p:messageText="No description is available">
@@ -162,7 +162,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="render" value="@{dataObject.courseDescription.bytes.length gt 0 ? false : true}"/>
+                    <property name="render" value="@{dataObject.courseDescription ne null ? false : true}"/>
                 </bean>
 
                 <!-- Requisites -->
