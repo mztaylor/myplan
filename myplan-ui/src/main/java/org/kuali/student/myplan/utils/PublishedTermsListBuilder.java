@@ -10,6 +10,7 @@ import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         if (termInfos != null) {
             //  Add the individual term items.
             for (TermInfo ti : termInfos) {
-                keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName() + suffix));
+                String atp= AtpHelper.getTermAndYearFromAtp(ti.getId());
+                keyValues.add(new ConcreteKeyValue(atp, ti.getName() + suffix));
             }
         }
 
