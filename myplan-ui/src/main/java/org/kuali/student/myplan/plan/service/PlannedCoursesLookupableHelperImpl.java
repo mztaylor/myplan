@@ -60,18 +60,21 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
         String focusAtpId = lookupForm.getCriteriaFields().get(PlanConstants.FOCUS_ATP_ID_KEY);
-        String focusAtpYear = null;
+        String[] focusQuarterYear = null;
 
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
-                focusAtpYear = AtpHelper.getCurrentAtpYear();
+                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear());
             } else {
-                focusAtpYear = AtpHelper.getTermAndYear(focusAtpId)[1];
+                focusQuarterYear = AtpHelper.getTermAndYear(focusAtpId);
             }
         }  catch(Exception e) {
             //  Log and set the year to the current year.
-            logger.error("Could not get the current ATP year, so using the current year.", e);
-            focusAtpYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            //  TODO: This logic isn't correct.
+            logger.error("Could not get the requested focus ATP, so using the current academic year.", e);
+            String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            focusQuarterYear[0] = "1";
+            focusQuarterYear[1] = year;
         }
 
         try {
@@ -138,7 +141,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         added = true;
                     }
                 }
-                if (!added) {
+                if ( ! added) {
                     PlannedTerm plannedTerm = new PlannedTerm();
                     plannedTerm.setPlanItemId(atp);
                     StringBuffer str = new StringBuffer();
@@ -211,7 +214,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 //  Can't do this step until the sort has been done else the index won't be correct.
                 int i = 0;
                 for (PlannedTerm pt : perfectPlannedTerms) {
-                    if (AtpHelper.getTermAndYear(pt.getPlanItemId())[1].equals(focusAtpYear)) {
+                    String[] qy = AtpHelper.getTermAndYear(pt.getPlanItemId());
+                    if (qy[0].equals(focusQuarterYear[0])
+                            && qy[1].equals(focusQuarterYear[1])) {
                         pt.setIndex(i);
                         break;
                     }

@@ -46,7 +46,6 @@ public class AtpHelper {
      * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
      */
     public static String getCurrentAtpId() {
-        String atpId = null;
         //   The first arg here is "usageKey" which isn't used.
         List<TermInfo> scheduledTerms = null;
         try {
@@ -63,14 +62,25 @@ public class AtpHelper {
         //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
         //  is the Right thing to do.
         TermInfo currentTerm = scheduledTerms.get(0);
-        return currentTerm.getId();
+        String atpId = getTermAndYearFromAtp(currentTerm.getId());
+        return atpId;
     }
 
     /**
-     * Gets the year of the current ATP.
+     * Gets the ATP ID of the first ATP in the academic year.
      */
-    public static String getCurrentAtpYear() {
-        return getTermAndYear(getCurrentAtpId())[0];
+    public static String getFirstAtpIdOfAcademicYear() {
+        String firstAtpId = null;
+        String currentAtpId = getCurrentAtpId();
+        String t[] = getTermAndYear(currentAtpId);
+        //   If the term is not Autumn/4 then the beginning of the academic year is (year - 1) . 4
+        if (t[0].equals("1")) {
+            firstAtpId = currentAtpId;
+        } else {
+            String year = String.valueOf(Integer.valueOf(t[1]) - 1);
+            firstAtpId = AtpHelper.getAtpFromYearAndNumTerm("4", year);
+        }
+        return firstAtpId;
     }
 
     /*for atp kuali.uw.atp.spring2014 returns string kuali.uw.atp.2014.2*/
