@@ -146,6 +146,7 @@ public class CourseDetails extends CourseSummaryDetails {
         this.summaryOnly = summaryOnly;
     }
 
+    @JsonIgnore
     public boolean getInPlannedCourseList() {
         if (isSummaryOnly()) {
             throw new IllegalArgumentException("Planned course check performed on Course Summary");
@@ -154,7 +155,7 @@ public class CourseDetails extends CourseSummaryDetails {
         return (plannedList != null && plannedList.size() > 1) ? true : false;
     }
 
-
+    @JsonIgnore
     public boolean getInSavedCourseList() {
         if (isSummaryOnly()) {
             throw new IllegalArgumentException("Saved course check performed on Course Summary");
