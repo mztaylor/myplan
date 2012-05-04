@@ -75,13 +75,13 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
-                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear());
+                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(AtpHelper.getCurrentAtpId()));
             } else {
-                focusQuarterYear = AtpHelper.getTermAndYear(focusAtpId);
+                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
             }
         }  catch(Exception e) {
             //  Log and set the year to the current year.
-            //  TODO: This logic isn't correct.
+            //  TODO: This logic isn't correct, but does position the quarter view pretty close.
             logger.error("Could not get the requested focus ATP, so using the current academic year.", e);
             String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
             focusQuarterYear[0] = "1";
