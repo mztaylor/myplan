@@ -21,7 +21,7 @@ public class DateFormatHelper {
         DateFormat dfYMD =
                 new SimpleDateFormat("yyyy-MM-dd");
         DateFormat dfDMY =
-                new SimpleDateFormat("dd/MM/yyyy");
+                new SimpleDateFormat("MM/dd/yyyy");
 
         try {
             dateStr = dfDMY.format(dfYMD.parse(dateStr));
