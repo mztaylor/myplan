@@ -163,7 +163,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make removed event before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem,courseDetails);
 
         //  Update
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
@@ -229,7 +229,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make removed event before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem,courseDetails);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> creditsUpdateEvent = makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS);
 
         //  Set type to "planned".
@@ -324,7 +324,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Create events before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem,courseDetails);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalUpdateTotalCredits = makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS);
 
         //  Do validations.
@@ -602,7 +602,7 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             //  Create wishlist events before updating the plan item.
-            wishlistEvents = makeRemoveEvent(planItem);
+            wishlistEvents = makeRemoveEvent(planItem,courseDetails);
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
             try {
@@ -816,7 +816,8 @@ public class PlanController extends UifControllerBase {
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
             events.putAll(makeUpdateTotalCreditsEvent(planItem, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
         }
-        events.putAll(makeRemoveEvent(planItem));
+        CourseDetails courseDetails=null;
+        events.putAll(makeRemoveEvent(planItem,courseDetails));
 
         try {
             // Delete the plan item
@@ -1120,7 +1121,7 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem,CourseDetails courseDetails) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -1131,6 +1132,18 @@ public class PlanController extends UifControllerBase {
         }
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         params.put("planItemId", planItem.getId());
+        //  Create Javascript events.
+        String courseDetailsAsJson;
+        try {
+            if(courseDetails==null){
+            courseDetails=getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            }
+            //  Serialize course details into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not convert javascript events to JSON.");
+        }
+        params.put("courseDetails", courseDetailsAsJson);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
         return events;
     }
