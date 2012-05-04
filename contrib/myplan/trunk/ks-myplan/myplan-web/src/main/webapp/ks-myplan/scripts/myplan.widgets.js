@@ -16,7 +16,7 @@ function openCourse(courseId, e) {
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
-    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'left'},align:'center',position:'bottom',alwaysVisible:'false'},true);
+    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'left'},align:'left',position:'bottom',alwaysVisible:'false'},true);
     }
 }
 /*

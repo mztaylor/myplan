@@ -1027,7 +1027,7 @@
         </property>
     </bean>
 
-    <bean id="course_title_link" parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
+    <bean id="course_title_link" parent="Uif-Link" p:target="" p:style="width:280px; display:block;">
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-text-bold</value>
