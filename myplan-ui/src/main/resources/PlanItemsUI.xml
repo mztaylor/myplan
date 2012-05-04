@@ -667,7 +667,6 @@
         <property name="resultFields">
             <list/>
         </property>
-
         <property name="footer.render" value="false"/>
     </bean>
 
@@ -758,9 +757,9 @@
             <list>
                 <!-- This hidden field is only rendered for the ATP that should have focus in the UI. The value of "index" will
                      be used to initialize the javascript "carousellite" component. It should only be displayed for the PlanTerm
-                     that should get "focus".@{#line.planItemDataObject.id} -->
+                     that should get focus -->
                 <bean id="atp_start_index" parent="Uif-InputField" p:propertyName="index" p:render="@{#line.index ge 0 ? true : false}">
-                   <property name="control">
+                    <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
@@ -1722,10 +1721,10 @@
         <property name="criteriaFields">
             <list/>
         </property>
+
         <property name="resultFields">
             <list/>
         </property>
-
         <property name="footer.render" value="false"/>
     </bean>
 
