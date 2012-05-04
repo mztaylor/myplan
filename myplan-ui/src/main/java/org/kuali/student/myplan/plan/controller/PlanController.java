@@ -157,7 +157,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
@@ -223,7 +223,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
@@ -304,7 +304,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details as they will be needed for errors.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
@@ -426,7 +426,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details as they will be needed for errors.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
             return doPlanActionError(form, "Unable to retrieve Course Details.", null);
         }
@@ -766,7 +766,7 @@ public class PlanController extends UifControllerBase {
         //  Grab course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId);
         } catch (Exception e) {
             return doPlanActionError(form, String.format("Unable to retrieve Course Details for [%s].", courseId), e);
         }
@@ -887,7 +887,7 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseDetails(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId);
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
