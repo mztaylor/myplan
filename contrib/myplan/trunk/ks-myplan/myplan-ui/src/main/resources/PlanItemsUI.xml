@@ -1054,10 +1054,8 @@
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-
                                         <ref bean="addToPlanButton"/>
                                         <ref bean="addSavedCourseButton"/>
-
                                     </list>
                                 </property>
                             </bean>

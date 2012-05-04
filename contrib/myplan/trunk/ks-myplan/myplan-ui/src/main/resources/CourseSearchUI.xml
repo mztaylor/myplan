@@ -373,7 +373,9 @@
                                 }
                             })
                             .subscribe('PLAN_ITEM_DELETED', function(data){
-
+                                if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
+                                    fnRestoreSearchAddButton('@{#line.courseId}');
+                                }
                             });
                     "/>
                 </bean>
@@ -387,7 +389,9 @@
                                 }
                             })
                             .subscribe('PLAN_ITEM_DELETED', function(data){
-
+                                if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{#line.courseId}') {
+                                    fnRestoreSearchAddButton('@{#line.courseId}');
+                                }
                             });
                     "/>
                 </bean>

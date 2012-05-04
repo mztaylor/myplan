@@ -109,7 +109,7 @@
                       p:groupBeginDelimiter="This course is in " p:groupEndDelimiter="" p:linkSeparator="">
                     <property name="onDocumentReadyScript"
                               value="jq('#@{dataObject.courseId}_div').subscribe('PLAN_ITEM_DELETED', function(data){
-                                  if (data.planItemType === 'wishlist') {
+                                  if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
                                       fnRestoreDetailsAddButton('@{dataObject.courseId}');
                                   }
                               });"/>
