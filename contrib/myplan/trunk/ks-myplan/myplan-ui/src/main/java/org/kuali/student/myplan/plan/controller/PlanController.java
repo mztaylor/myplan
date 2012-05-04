@@ -662,7 +662,7 @@ public class PlanController extends UifControllerBase {
         List<String> newTermIds = new LinkedList<String>();
 
         if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
-            newTermIds.add(AtpHelper.getTermAndYearFromAtp(atpId));
+            newTermIds.add(atpId);
         } else {
             newTermIds.add(atpId);
         }
