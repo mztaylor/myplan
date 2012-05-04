@@ -10,24 +10,13 @@ function stopEvent(e) {
     return false;
 }
 
-function openCourse(courseId, e, enrolled, quarter, credits) {
+function openCourse(courseId, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
-    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top',position:'right',alwaysVisible:'false'},true);
-        /*
-        if ( enrolled ) {
-            //var messaging = "You are currently enrolled in this course.";
-            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
-        } else if (quarter != null && credits != null)  {
-            //var messaging = "You already took this course on "+quarter+" and received "+credits;
-            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
-        } else {
-            openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'top'},align:'top'},true);
-        }
-        */
+    	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'left'},align:'center',position:'bottom',alwaysVisible:'false'},true);
     }
 }
 /*
@@ -35,7 +24,7 @@ function openCourse(courseId, e, enrolled, quarter, credits) {
     Function: Launch generic bubble popup
 ######################################################################################
  */
-function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close, messaging) {
+function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close) {
     stopEvent(e);
 
     var popupHtml = jq('<div />').attr("id",id + "_popup");
@@ -203,7 +192,6 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 }
 
 function fnPositionPopUp(popupBoxId) {
-    //console.log( parseFloat(jq("#" + popupBoxId).css("top")) + "," + parseFloat(jq("#" + popupBoxId).css("left")) );
     if ( parseFloat(jq("#" + popupBoxId).css("top")) < 0 || parseFloat(jq("#" + popupBoxId).css("left")) < 0 ) {
         var iTop = ( jq(window).height() / 2 ) - ( jq("#" + popupBoxId).height() / 2 );
         var iLeft = ( jq(window).width() / 2 ) - ( jq("#" + popupBoxId).width() / 2 );
