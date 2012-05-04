@@ -597,6 +597,4 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
         }
     }
-
-
 }

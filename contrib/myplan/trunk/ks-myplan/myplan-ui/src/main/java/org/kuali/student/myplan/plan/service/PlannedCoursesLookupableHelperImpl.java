@@ -56,10 +56,21 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         this.academicRecordService = academicRecordService;
     }
 
+    /**
+     * Skip the validation so that we use the criteriaFields param to pass in args to the getSearchResults method.
+     * @param form
+     * @param searchCriteria
+     * @return
+     */
+    @Override
+    public boolean validateSearchParameters(LookupForm form, Map<String, String> searchCriteria) {
+        return true;
+    }
+
     @Override
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
-        String focusAtpId = lookupForm.getCriteriaFields().get(PlanConstants.FOCUS_ATP_ID_KEY);
+        String focusAtpId = fieldValues.get(PlanConstants.FOCUS_ATP_ID_KEY);
         String[] focusQuarterYear = null;
 
         try {
