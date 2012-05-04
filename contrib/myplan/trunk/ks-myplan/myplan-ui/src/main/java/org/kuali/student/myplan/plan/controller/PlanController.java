@@ -1136,7 +1136,7 @@ public class PlanController extends UifControllerBase {
         String courseDetailsAsJson;
         try {
             if(courseDetails==null){
-            courseDetails=getCourseDetailsInquiryService().retrieveCourseDetails(planItem.getRefObjectId());
+            courseDetails=getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
             }
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);

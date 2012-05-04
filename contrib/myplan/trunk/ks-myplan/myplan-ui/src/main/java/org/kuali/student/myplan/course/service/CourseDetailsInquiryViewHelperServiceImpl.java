@@ -133,7 +133,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
-        courseDetails.setCourseDescription(course.getDescr().getFormatted());
+        String str=course.getDescr().getFormatted();
+        if(str.contains("Prerequisite")){
+        str=str.substring(0,str.indexOf("Prerequisite"));
+        }
+        courseDetails.setCourseDescription(str);
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
 
