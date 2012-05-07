@@ -85,7 +85,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public List<StudentCourseRecordInfo> getAttemptedCourseRecordsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -164,13 +164,16 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             Element section = (Element) Section;
                             String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
                             String courseNumber = section.elementText("CourseNumber");
-                            String courseTitle = getCourseTitle(curriculumAbbreviation,courseNumber);
-                            if (courseTitle!=null) {
-                                studentCourseRecordInfo.setCourseTitle(courseTitle);
+                            String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
+                            if (results.length > 0 && results[0] != null) {
+                                studentCourseRecordInfo.setId(results[0]);
+                            }
+                            if (results.length > 0 && results[1] != null) {
+                                studentCourseRecordInfo.setCourseTitle(results[1]);
                             }
                             StringBuffer courseCode = new StringBuffer();
                             courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
-                            String termName= AtpHelper.getAtpFromYearAndTerm(section.elementText("Quarter"), section.elementText("Year"));
+                            String termName = AtpHelper.getAtpFromYearAndTerm(section.elementText("Quarter"), section.elementText("Year"));
                             studentCourseRecordInfo.setCourseCode(courseCode.toString());
                             studentCourseRecordInfo.setTermName(termName);
                             studentCourseRecordInfo.setPersonId(regId);
@@ -185,13 +188,14 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
     /**
      * populate the courseTitle for studentCourseRecordInfo for course code
+     *
      * @param subject
      * @param number
      * @return
      */
-    private String getCourseTitle(String subject,String number) {
+    private String[] getCourseTitleAndId(String subject, String number) {
         List<SearchRequest> requests = new ArrayList<SearchRequest>();
-        SearchRequest request = new SearchRequest("myplan.course.getCourseTitle");
+        SearchRequest request = new SearchRequest("myplan.course.getCourseTitleAndId");
         request.addParam("subject", subject);
         request.addParam("number", number);
         requests.add(request);
@@ -199,14 +203,18 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         try {
             searchResult = getLuService().search(request);
         } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
-            logger.error("Query to LU Service failed.", e);
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        String title = null;
-        if (searchResult.getRows().size() > 0){
-            title = searchResult.getRows().get(0).getCells().get(0).getValue();
+        String results[] = new String[2];
+        if (searchResult.getRows().size() > 0) {
+            results[0] = searchResult.getRows().get(0).getCells().get(0).getValue();
+            results[1] = searchResult.getRows().get(0).getCells().get(1).getValue();
+
         }
-        return title;
-    } 
+
+        return results;
+
+    }
 
     /**
      * This method returns a list of StudentCourseRecord for a student
@@ -226,7 +234,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecordsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -247,7 +255,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getGPAForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -267,7 +275,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getGPAForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -286,7 +294,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getCumulativeGPA(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -307,7 +315,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCreditsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -328,7 +336,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCreditsForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 
@@ -349,6 +357,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCredits(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
