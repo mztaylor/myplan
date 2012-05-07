@@ -257,12 +257,15 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
-    <search:searchType id="myplan.course.getCourseTitle">
+    <search:searchType id="myplan.course.getCourseTitleAndId">
         <search:searchResultTypeInfo>
             <search:name/>
             <search:desc/>
             <search:resultColumns>
                 <ref bean="lu.resultColumn.cluId"/>
+                <search:resultColumn id="id.lngName">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
             </search:resultColumns>
         </search:searchResultTypeInfo>
         <search:searchCriteriaTypeInfo>
@@ -642,13 +645,16 @@
                             trim( id.DIVISION ) = :subject
                     </value>
                 </entry>
-                <entry key="myplan.course.getCourseTitle">
+                <entry key="myplan.course.getCourseTitleAndId">
                     <value>NATIVE:
                         SELECT
-                        id.LNG_NAME
+                        clu.id, id.LNG_NAME
                         FROM
+                        KSLU_CLU clu,
                         KSLU_CLU_IDENT id
                         WHERE
+                        clu.offic_clu_id = id.id
+                        AND
                         trim( id.SUFX_CD ) = :number
                         AND
                         trim( id.DIVISION ) = :subject
