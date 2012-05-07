@@ -757,7 +757,7 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader"/>
+                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader" p:labelField.render="true"/>
             </list>
         </property>
         <property name="subCollections">
