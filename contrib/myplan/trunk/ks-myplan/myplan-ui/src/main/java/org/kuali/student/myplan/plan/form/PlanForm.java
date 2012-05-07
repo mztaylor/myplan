@@ -65,6 +65,9 @@ public class PlanForm extends UifFormBase {
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup = false;
 
+    // Used for populating the menu oprions for the Academic record course link
+    private boolean acadRecCourse=false;
+
     //   based on this Add to plan page items are populated
     private boolean moveCourse = false;
 
@@ -175,6 +178,14 @@ public class PlanForm extends UifFormBase {
         this.moveCourse = moveCourse;
     }
 
+    public boolean isAcadRecCourse() {
+        return acadRecCourse;
+    }
+
+    public void setAcadRecCourse(boolean acadRecCourse) {
+        this.acadRecCourse = acadRecCourse;
+    }
+
     /**
      * Returns the list of events that should be
      */
@@ -196,4 +207,6 @@ public class PlanForm extends UifFormBase {
 
         return jsonOut;
     }
+
+
 }
