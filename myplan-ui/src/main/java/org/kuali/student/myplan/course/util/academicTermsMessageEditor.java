@@ -21,9 +21,10 @@ public class academicTermsMessageEditor extends CollectionListPropertyEditor {
     protected String makeHtmlList(Collection c) {
         Iterator<Object> i = c.iterator();
         StringBuffer sb = new StringBuffer();
+
         while (i.hasNext()) {
             String term = (String) i.next();
-            sb = sb.append("<dd class= >").append("<li>").append("You took this course on ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView>").append(term).append("</a>").append("</li>");
+            sb = sb.append("<dd>").append("You took this course in ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView>").append(term).append("</a>");
         }
         return sb.toString();
     }

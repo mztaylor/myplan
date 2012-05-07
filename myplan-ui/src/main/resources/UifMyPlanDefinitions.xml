@@ -374,34 +374,9 @@
         -->
     </bean>
 
-    <bean id="academic_term_message_formatter" class="org.kuali.student.myplan.course.util.academicTermsMessageEditor">
-        <property name="emptyListMessage" value=""/>
-        <property name="emptyListStyleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
-        <property name="styleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
-    </bean>
+    <bean id="academic_term_message_formatter" class="org.kuali.student.myplan.course.util.academicTermsMessageEditor"/>
 
-    <bean id="crud_message_formatter" class="org.kuali.student.myplan.course.util.crudMessagePropertyEditor">
-        <property name="emptyListMessage" value=""/>
-        <property name="emptyListStyleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
-        <property name="styleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
-    </bean>
-
+    <bean id="crud_message_formatter" class="org.kuali.student.myplan.course.util.crudMessagePropertyEditor"/>
 
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="emptyListMessage" value="Not currently scheduled"/>

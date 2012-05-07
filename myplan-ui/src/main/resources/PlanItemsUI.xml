@@ -708,21 +708,11 @@
                     <property name="errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:linkLabel="Prev" p:hrefText="#" p:target="">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>myplan-carousel-prev</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-MessageField" p:messageText="Academic Year" p:styleClasses="myplan-plan-header fl-text-bold" />
-                            <bean parent="Uif-Link" p:linkLabel="Next" p:hrefText="#" p:target="">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>myplan-carousel-next</value>
-                                    </list>
-                                </property>
-                            </bean>
+                            <bean parent="Uif-ImageField" p:altText="Previous Academic Year" p:styleClasses="myplan-carousel-prev" p:style="line-height:24px !important;"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>
+                            <bean parent="Uif-MessageField" p:messageText="Academic Year" p:styleClasses="myplan-plan-header fl-text-bold fl-font-size-130" p:style="line-height:24px !important;" />
+                            <bean parent="Uif-ImageField" p:altText="Next Academic Year" p:styleClasses="myplan-carousel-next" p:style="line-height:24px !important;"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnNext.png"/>
                         </list>
                     </property>
                 </bean>
@@ -733,12 +723,7 @@
     <bean id="overallPlanLink" parent="Uif-VerticalBoxSection">
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:target="" p:style="width:284px; display:block;">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>myplan-text-wrap</value>
-                        </list>
-                    </property>
+                <bean parent="Uif-Link" p:target="">
                     <property name="linkLabel" value="View Overall Academic Plan"/>
                     <property name="title" value="View Overall Academic Plan"/>
                     <property name="hrefText"

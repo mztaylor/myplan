@@ -295,6 +295,14 @@ a:focus {
     text-transform: uppercase;
     font-size:85%;
 }
+.myplan-carousel-prev,
+.myplan-carousel-next {
+    cursor: pointer;
+}
+.myplan-carousel-prev.disabled,
+.myplan-carousel-next.disabled {
+    visibility: hidden;
+}
 .myplan-backup-link {
     font-size:90%;
     background: url(../images/bkgrdDotted.gif);
