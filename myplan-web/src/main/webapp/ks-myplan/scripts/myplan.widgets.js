@@ -209,7 +209,9 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
     var elementToBlock = tempDiv;
     jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
+    jq('form#' + id + '_form input[name="' + type + '"]').remove();
     jq('<input type="hidden" name="' + type + '" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
+    jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         elementToBlock.unblock();
@@ -221,7 +223,6 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
-                        console.log('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
                 break;
