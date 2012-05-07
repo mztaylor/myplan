@@ -10,6 +10,7 @@ package org.kuali.student.myplan.plan.dataobject;
 public class AcademicRecordDataObject {
     
     private transient String personId;
+    private transient String courseId;
     private transient String courseTitle;
     private transient String courseCode;
     private transient String atpId;
@@ -71,5 +72,13 @@ public class AcademicRecordDataObject {
 
     public void setRepeated(boolean repeated) {
         isRepeated = repeated;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 }
