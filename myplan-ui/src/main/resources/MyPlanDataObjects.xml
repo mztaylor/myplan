@@ -795,6 +795,7 @@
             <list>
                 <ref bean="AcademicRecordDataObject.personId"/>
                 <ref bean="AcademicRecordDataObject.courseTitle"/>
+                <ref bean="AcademicRecordDataObject.courseId"/>
                 <ref bean="AcademicRecordDataObject.courseCode"/>
                 <ref bean="AcademicRecordDataObject.atpId"/>
                 <ref bean="AcademicRecordDataObject.grade"/>
@@ -810,6 +811,22 @@
         <property name="dataType" value="STRING"/>
         <property name="label" value="Person ID"/>
         <property name="shortLabel" value="Person ID"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="20"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="AcademicRecordDataObject.courseId" parent="AcademicRecordDataObject.courseId-parentBean"/>
+    <bean id="AcademicRecordDataObject.courseId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="courseId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course ID"/>
+        <property name="shortLabel" value="Course ID"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="20"/>
         <property name="validCharactersConstraint">
