@@ -79,7 +79,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             } else {
                 focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
             }
-        }  catch(Exception e) {
+        } catch (Exception e) {
             //  Log and set the year to the current year.
             //  TODO: This logic isn't correct, but does position the quarter view pretty close.
             logger.error("Could not get the requested focus ATP, so using the current academic year.", e);
@@ -152,7 +152,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         added = true;
                     }
                 }
-                if ( ! added) {
+                if (!added) {
                     PlannedTerm plannedTerm = new PlannedTerm();
                     plannedTerm.setPlanItemId(atp);
                     StringBuffer str = new StringBuffer();
@@ -180,7 +180,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             });
 
             /*********** Implementation to populate the plannedTerm list with academic record and planned terms ******************/
-            if (studentCourseRecordInfos.size() > 0 && plannedTerms.size() > 0){
+            if (studentCourseRecordInfos.size() > 0 && plannedTerms.size() > 0) {
                 Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
                 String minTerm = studentCourseRecordInfos.get(0).getTermName();
                 String maxTerm = plannedTerms.get(plannedTerms.size() - 1).getPlanItemId();
@@ -192,6 +192,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         academicRecordDataObject.setAtpId(studentInfo.getTermName());
                         academicRecordDataObject.setPersonId(studentInfo.getPersonId());
                         academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                        academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
                         academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
@@ -202,7 +203,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
                 for (PlannedTerm plannedTerm : plannedTerms) {
                     if (termsList.containsKey(plannedTerm.getPlanItemId())) {
-                        if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size()>0) {
+                        if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
                             termsList.get(plannedTerm.getPlanItemId());
                             termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
                         }
@@ -215,12 +216,12 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
 
                 Collections.sort(perfectPlannedTerms,
-                    new Comparator<PlannedTerm>() {
-                        @Override
-                        public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
-                            return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
-                        }
-                    });
+                        new Comparator<PlannedTerm>() {
+                            @Override
+                            public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
+                                return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                            }
+                        });
 
                 //  Can't do this step until the sort has been done else the index won't be correct.
                 int i = 0;
@@ -235,7 +236,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
 
                 return perfectPlannedTerms;
-            }else{
+            } else {
                 return plannedTerms;
             }
         } catch (Exception e) {
@@ -252,11 +253,10 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         if (!minTerms[0].equalsIgnoreCase("4")) {
             minTerm = AtpHelper.getAtpFromYearAndNumTerm("4", String.valueOf(Integer.parseInt(minTerms[1]) - 1));
             minYear = Integer.parseInt(minTerms[1]) - 1;
+        } else {
+            minYear = Integer.parseInt(minTerms[1]);
         }
-        else {
-            minYear =Integer.parseInt(minTerms[1]);
-        }
-        if ( ! maxTerms[0].equalsIgnoreCase("3")) {
+        if (!maxTerms[0].equalsIgnoreCase("3")) {
             if (maxTerms[0].equalsIgnoreCase("4")) {
                 maxTerm = AtpHelper.getAtpFromYearAndNumTerm("3", String.valueOf(Integer.parseInt(maxTerms[1]) + 1));
                 maxYear = Integer.parseInt(maxTerms[1]) + 1;
@@ -266,7 +266,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 maxYear = Integer.parseInt(maxTerms[1]);
             }
         } else {
-            maxYear=Integer.parseInt(maxTerms[1]);
+            maxYear = Integer.parseInt(maxTerms[1]);
         }
         String term1 = "";
         String term2 = "";
@@ -276,23 +276,23 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             PlannedTerm plannedTerm1 = new PlannedTerm();
             term1 = AtpHelper.getAtpFromYearAndNumTerm("4", String.valueOf(minYear));
             plannedTerm1.setPlanItemId(term1);
-            plannedTerm1.setQtrYear("Autumn"+" "+minYear);
+            plannedTerm1.setQtrYear("Autumn" + " " + minYear);
             map.put(term1, plannedTerm1);
             minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromYearAndNumTerm("1", String.valueOf(minYear));
             plannedTerm2.setPlanItemId(term2);
-            plannedTerm2.setQtrYear("Winter"+" "+minYear);
+            plannedTerm2.setQtrYear("Winter" + " " + minYear);
             map.put(term2, plannedTerm2);
             PlannedTerm plannedTerm3 = new PlannedTerm();
             term3 = AtpHelper.getAtpFromYearAndNumTerm("2", String.valueOf(minYear));
             plannedTerm3.setPlanItemId(term3);
-            plannedTerm3.setQtrYear("Spring"+" "+minYear);
+            plannedTerm3.setQtrYear("Spring" + " " + minYear);
             map.put(term3, plannedTerm3);
             PlannedTerm plannedTerm4 = new PlannedTerm();
             term4 = AtpHelper.getAtpFromYearAndNumTerm("3", String.valueOf(minYear));
             plannedTerm4.setPlanItemId(term4);
-            plannedTerm4.setQtrYear("Summer"+" "+minYear);
+            plannedTerm4.setQtrYear("Summer" + " " + minYear);
             map.put(term4, plannedTerm4);
         }
     }
