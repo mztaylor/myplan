@@ -516,28 +516,36 @@
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{planItemId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:title="View Course Summary">
+                <bean p:id="@{planItemId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{acadRecCourse eq false ? true : false}" p:title="View Course Summary">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
-                <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:render="@{backup ? false : true}">
+                <bean p:id="@{courseId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{acadRecCourse eq true ? true : false}" p:title="View Course Summary">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
+                <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Backup course" p:title="Mark it as Backup course" p:render="@{backup eq false and acadRecCourse eq false ? true : false}">
                     <property name="onClickScript" value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','plannedToBackup',e);"/>
                 </bean>
-                <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Planned course" p:title="Mark it as Planned course" p:render="@{backup ? true : false}">
+                <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Planned course" p:title="Mark it as Planned course" p:render="@{backup eq true and acadRecCourse eq false ? true : false}">
                     <property name="onClickScript" value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','backupToPlanned',e);"/>
                 </bean>
-                <bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#">
+                <bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"  p:render="@{acadRecCourse eq false ? true : false}">
 
                 </bean>
-                <bean p:id="@{planItemId}_move" parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter">
+                <bean p:id="@{planItemId}_move" parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter" p:render="@{acadRecCourse eq false ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
-                <bean p:id="@{planItemId}_copy" parent="Uif-Link" p:target="" p:linkLabel="Copy to Another Quarter" p:title="Copy to Another Quarter">
+                <bean p:id="@{planItemId}_copy" parent="Uif-Link" p:target="" p:linkLabel="Copy to Another Quarter" p:title="Copy to Another Quarter" p:render="@{acadRecCourse eq false ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','copy_dialog_page',{planItemId:'@{planItemId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
-                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#">
+                <bean p:id="@{courseId}_copy" parent="Uif-Link" p:target="" p:linkLabel="Copy to Another Quarter" p:title="Copy to Another Quarter" p:render="@{acadRecCourse eq true ? true : false}">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                </bean>
+                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#" p:render="@{acadRecCourse eq false ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
@@ -821,12 +829,17 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.personId}" parent="Uif-Link"
+                <bean p:id="@{#line.courseId}_completed" parent="Uif-Link"
                       p:linkLabel="@{#line.courseCode} (@{#line.credit})"
                       p:title="@{#line.courseTitle}" p:target="" p:hrefText="#"
                       p:labelField.render="false"
-                      p:render="@{#line.courseCode ne null ? true : false}"
-                      p:onClickScript=""/>
+                      p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
+                      p:onClickScript="openPopUp('@{#line.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecCourse:'true'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);"
+                     />
+                <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} (@{#line.credit})"
+                      p:styleClasses="myplan-carousel-term-credits"
+                      p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}"/>
+
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
