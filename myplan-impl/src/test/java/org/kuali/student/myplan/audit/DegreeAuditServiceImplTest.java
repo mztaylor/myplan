@@ -4,17 +4,28 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import uachieve.apis.audit.Audit;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
+
+import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:degree-audit-test-context.xml"})
@@ -87,18 +98,18 @@ public class DegreeAuditServiceImplTest {
 
     @Test
     public void runRecentAuditList() {
-        if( true ) return;
+//        if( true ) return;
 
         try
         {
 //        String studentId = "100190981";
-        String studentId = "100190977";
+//        String studentId = "100190977";
+        String studentId = "101360188";
         Date startDate = new Date();
         Date endDate = new Date();
         ContextInfo context = new ContextInfo();
         DegreeAuditService degreeAuditService = getDegreeAuditService();
-        List<AuditReportInfo> list = degreeAuditService.getAuditsForStudentInDateRange
-        ( studentId,  startDate, endDate,null);
+        List<AuditReportInfo> list = degreeAuditService.getAuditsForStudentInDateRange( studentId,  startDate, endDate, null);
 
             for(AuditReportInfo info : list)
             {
@@ -108,6 +119,30 @@ public class DegreeAuditServiceImplTest {
         catch( Exception e )
         {
             Assert.fail("ugh");
+        }
+    }
+
+    @Test
+    public void getAuditReport() {
+        String auditID = "2012042713461525";
+        DegreeAuditService degreeAuditService = getDegreeAuditService();
+
+        ContextInfo zero = new ContextInfo();
+        try {
+            AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_HTML, zero);
+            OutputStream out = report.getReport().getDataSource().getOutputStream();
+            System.out.println( "argh" );
+
+        } catch (DoesNotExistException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 }
