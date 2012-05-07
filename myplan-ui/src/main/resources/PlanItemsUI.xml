@@ -543,7 +543,7 @@
                 </bean>
                 <bean p:id="@{courseId}_copy" parent="Uif-Link" p:target="" p:linkLabel="Copy to Another Quarter" p:title="Copy to Another Quarter" p:render="@{acadRecCourse eq true ? true : false}">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',acadRecCourse:'true',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan" p:title="Delete from the Plan" p:hrefText="#" p:render="@{acadRecCourse eq false ? true : false}">
                     <property name="onClickScript"
@@ -1572,8 +1572,8 @@
                     <property name="group.errorsField.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Copy" p:render="true">
+                            <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"  p:render="@{acadRecCourse eq false ? true : false}"
+                                  p:actionLabel="Copy" >
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
@@ -1590,7 +1590,25 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="cancelCopylannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
+                            <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton"  p:render="@{acadRecCourse eq true ? true : false}"
+                                  p:actionLabel="Copy" >
+                                <property name="clientSideJs"
+                                          value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse');"/>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#movePlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true);
+                                            setTimeout('fnCloseAllPopups()', 2000);
+                                        });"/>
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-90</value>
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
                                   p:render="true">
                                 <property name="clientSideJs"
                                           value="fnCloseAllPopups();"/>
