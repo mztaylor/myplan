@@ -35,13 +35,14 @@ public class crudMessagePropertyEditor extends CollectionListPropertyEditor {
             for (PlanItemDataObject pl : planItemDataObjects) {
                 String[] str = AtpHelper.getAlphaTermAndYearForAtp(pl.getAtp());
                 String date = DateFormatHelper.getDateFomatted(pl.getDateAdded().toString());
+                String aptId = pl.getAtp();
                 if (count == 0) {
-                    sb = sb.append("<dd class=>").append("<li>").append("Added to ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView>").append(str[0]).append(" ").append(str[1]).append(" plan ").append("</a>")
-                            .append(" on ").append(date).append("</li>");
+                    sb = sb.append("<dd>").append("Added to ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(aptId).append("\">").append(str[0]).append(" ").append(str[1]).append(" plan").append("</a> ")
+                            .append(" on ").append(date);
                 }
                 if (count > 0) {
-                    sb = sb.append("<dd class=>").append("<li>").append(" and ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView>").append(str[0]).append(" ").append(str[1]).append(" plan ").append("</a>")
-                            .append(" on ").append(date).append("</li>");
+                    sb = sb.append("<dd>").append(" and ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(aptId).append("\">").append(str[0]).append(" ").append(str[1]).append(" plan").append("</a> ")
+                            .append(" on ").append(date);
                 }
                 count++;
             }
