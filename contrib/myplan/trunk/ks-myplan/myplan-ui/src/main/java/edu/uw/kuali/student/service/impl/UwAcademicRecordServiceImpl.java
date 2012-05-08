@@ -165,6 +165,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
                             String courseNumber = section.elementText("CourseNumber");
                             String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
+                            /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
                             if (results.length > 0 && results[0] != null) {
                                 studentCourseRecordInfo.setId(results[0]);
                             }
