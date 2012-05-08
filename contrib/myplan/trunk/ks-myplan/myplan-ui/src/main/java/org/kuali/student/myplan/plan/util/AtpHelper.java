@@ -6,7 +6,6 @@ import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
-import org.kuali.student.r2.common.exceptions.*;
 
 import javax.xml.namespace.QName;
 import java.util.List;
@@ -27,7 +26,9 @@ public class AtpHelper {
     /*
      * atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
      */
-    private static int atpPrefix = 13;
+    private static int atpPrefixLength = 13;
+
+    private static String atpPrefix =  "kuali.uw.atp.";
 
     private static transient AcademicCalendarService academicCalendarService;
 
@@ -84,7 +85,7 @@ public class AtpHelper {
 
     /*for atp kuali.uw.atp.spring2014 returns string kuali.uw.atp.2014.2*/
     public static String getTermAndYearFromAtp(String atp){
-        String qtrYr = atp.substring(atpPrefix, atp.length());
+        String qtrYr = atp.substring(atpPrefixLength, atp.length());
         String[] splitStr = qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
 
         String year=splitStr[1];
@@ -114,7 +115,7 @@ public class AtpHelper {
     }
     /*for atp kuali.uw.atp.spring2014 returns string[] with term(String[0])="Spring" and year(string[1])=2014*/
     public static String[] getAlphaTermAndYearForAtp(String atp){
-        String qtrYr = atp.substring(atpPrefix, atp.length());
+        String qtrYr = atp.substring(atpPrefixLength, atp.length());
         String [] splitStr= new String[2];
         splitStr[0]=qtrYr.substring(qtrYr.lastIndexOf(".")+1);
         splitStr[1]=qtrYr.substring(0,qtrYr.lastIndexOf("."));
@@ -133,17 +134,40 @@ public class AtpHelper {
         }
 
         return  splitStr;
-
     }
 
         /*for atp kuali.uw.atp.spring2014 returns string[] with term(String[0])=2 and year(string[1])=2014*/
     public static String[] getTermAndYear(String atp){
-        String qtrYr = atp.substring(atpPrefix, atp.length());
+        String qtrYr = atp.substring(atpPrefixLength, atp.length());
         String [] splitStr= new String[2];
         splitStr[0]=qtrYr.substring(qtrYr.lastIndexOf(".")+1);
         splitStr[1]=qtrYr.substring(0,qtrYr.lastIndexOf("."));
         return  splitStr;
     }
+
+    /**
+     * Converts an ATP ID to a Term and Year ...
+     *    "kuali.uw.atp.1991.1" -> {"Autumn", "1991"}
+     * @return A String array containing a term and year.
+     */
+    public static String[] atpIdToTermAndYear(String atpId) {
+        String atpSuffix = atpId.replace(atpPrefix, "");
+        String[] termYear = atpSuffix.split("\\.");
+        String year = termYear[0];
+        String term = termYear[1];
+
+        if (term.equals("1")) {
+            term = "Autumn";
+        } else if (term.equals("2")) {
+            term = "Winter";
+        } else if (term.equals("3")) {
+            term = "Spring";
+        }  else if (term.equals("4")) {
+            term = "Summer";
+        }
+        return new String[] {term, year};
+    }
+
     /*retuns atp of this format kuali.uw.atp.1991.1 for term="Winter" and year = 1991*/
     public static String getAtpFromYearAndTerm(String term, String year){
         int termVal=0;

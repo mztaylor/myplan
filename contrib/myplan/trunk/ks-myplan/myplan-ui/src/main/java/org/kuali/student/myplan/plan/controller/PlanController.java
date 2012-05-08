@@ -527,7 +527,6 @@ public class PlanController extends UifControllerBase {
         }
 
         //  This list can only contain one item, otherwise the backend validation will fail.
-        //  Use LinkedList here so that the remove method works during "other" option processing.
         List<String> newAtpIds = null;
         try {
             newAtpIds = getNewTermIds(atpId, form);
@@ -577,7 +576,7 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Could not validate capacity for new plan item.", e);
         }
 
-        if (!hasCapacity) {
+        if ( ! hasCapacity) {
             return doPlanCapacityExceededError(form);
         }
 
@@ -598,7 +597,7 @@ public class PlanController extends UifControllerBase {
             try {
                 planItem = addPlanItem(plan, courseId, newAtpIds, newType);
             } catch (DuplicateEntryException e) {
-                return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpIds.get(0)), courseDetails);
+                return doDuplicatePlanItem(form, newAtpIds.get(0), courseDetails);
             } catch (Exception e) {
                 return doPlanActionError(form, "Unable to add plan item.", e);
             }
@@ -885,7 +884,9 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
-        String[] params = {atpId};
+        String t[] = AtpHelper.atpIdToTermAndYear(atpId);
+        String term = t[0] + " " + t[1];
+        String[] params = {courseDetails.getCode(), term};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 
