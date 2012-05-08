@@ -12,7 +12,7 @@ public class CircularTermList {
     }
 
     /**
-     * Gets the index of the
+     * Gets the index
      * @param quarter
      * @return
      */

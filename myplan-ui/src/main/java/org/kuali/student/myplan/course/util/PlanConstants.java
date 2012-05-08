@@ -27,6 +27,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String ERROR_KEY_HISTORICAL_ATP = "myplan.text.error.plannedCourseList.historicalAtp";
 
+    public static final String ERROR_KEY_PAGE_RESET_REQUIRED = "myplan.text.error.pageResetRequired";
+
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "myplan.text.error.savedCoursesList.unknownPlanItem";
     public static final String ERROR_KEY_DATA_VALIDATION_ERROR = "myplan.text.error.dataValidationError";

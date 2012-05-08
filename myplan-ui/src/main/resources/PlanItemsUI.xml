@@ -598,8 +598,9 @@
                         jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
                             fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true);
                             setTimeout('fnCloseAllPopups()', 2000);
-                        });
-                    "/>
+                        }).subscribe('ERROR', function(data) {
+                                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true);
+                        });"/>
                 </bean>
 
                 <bean parent="Uif-MessageField" p:messageText="or"/>
@@ -1383,7 +1384,6 @@
         </property>
     </bean>
 
-
     <!-- Course details 3 box group  -->
     <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
         <property name="styleClasses">
@@ -1415,7 +1415,6 @@
             </list>
         </property>
     </bean>
-
 
     <!-- Group for "Add Plan Item" inputs -->
     <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
@@ -1488,6 +1487,8 @@
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
                                             setTimeout('fnCloseAllPopups()', 2000);
+                                        }).subscribe('ERROR', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
                                         });"/>
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1675,12 +1676,13 @@
                                     </list>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data){
+                                    jq('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data) {
                                         if (jq(this).is(':visible')){
                                             fnCloseAllPopups();
                                         }
-                                    });
-                                "/>
+                                    }).subscribe('ERROR', function(data) {
+                                            fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true);
+                                    });" />
                             </bean>
                             <bean p:id="deleteCourseNoButton" parent="Uif-PrimaryActionButton" p:actionLabel="No">
                                 <property name="clientSideJs"
