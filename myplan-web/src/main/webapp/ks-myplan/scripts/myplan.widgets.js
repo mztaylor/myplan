@@ -211,7 +211,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
     jq('form#' + id + '_form input[name="' + type + '"]').remove();
     jq('<input type="hidden" name="' + type + '" value="' + id + '" />').appendTo(jq("form#" + id + "_form"));
-    jq('input[name="methodToCall"]').remove();
+    jq('form#' + id + '_form input[name="viewId"]').remove();
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
         elementToBlock.unblock();
