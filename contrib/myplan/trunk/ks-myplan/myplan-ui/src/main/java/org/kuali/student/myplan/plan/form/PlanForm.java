@@ -36,7 +36,9 @@ public class PlanForm extends UifFormBase {
         /*  The requested operation was successful. */
         SUCCESS,
         /*  The requested operation was unnecessary (e.g. the plan item was already deleted), but appropriate
-         *  javascript events were generated/available. */
+         *  javascript events were generated/available.
+         *
+         *  TODO: Looks like this status may not be necessary. */
         NOOP,
         /* The requested operation failed. */
         ERROR
