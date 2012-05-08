@@ -1427,21 +1427,35 @@
         <property name="items">
             <list>
                 <bean parent="Uif-MessageField" p:messageText="Which quarter would you like @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="">
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="" p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl"/>
                     </property>
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                        </list>
+                    </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
+
+                        <bean class="org.kuali.student.myplan.utils.AddPlanPublishedTermsListBuilder">
                             <property name="additionalListItemsBottom">
                                 <map>
                                     <entry key="other" value="Other"/>
                                 </map>
                             </property>
-                        </bean>
-                    </property>
 
+                        </bean>
+
+                    </property>
                 </bean>
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+
+
 
                 <ref bean="add_planned_course_other"/>
 
@@ -1479,7 +1493,7 @@
                                 </property>
                             </bean>
                             <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}">
+                                  p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}" >
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse');"/>
                                 <property name="onDocumentReadyScript" value="
@@ -1535,13 +1549,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-MessageField"
-                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?" p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}"/>
                 <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
+                        <bean class="org.kuali.student.myplan.utils.AddPlanPublishedTermsListBuilder">
                             <property name="additionalListItemsBottom">
                                 <map>
                                     <entry key="other" value="Other"/>
@@ -1550,6 +1564,11 @@
                         </bean>
                     </property>
 
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
                 </bean>
 
                 <ref bean="add_planned_course_other"/>
@@ -1626,6 +1645,16 @@
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
                     </property>
+                    <property name="onDocumentReadyScript" value="
+                                    jq('#addPlannedCourse')
+                                        .subscribe('BUTTON_ENABLE', function(data){
+                                            fnEnableButton(data.message, data.cssClass, 'addPlannedCourse', true);
+                                            setTimeout('fnCloseAllPopups()', 2000);
+                                        })
+                                        .subscribe('ERROR', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
+                                        });"/>
+
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="year" p:label="Select Year"
                       p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false"
@@ -1636,6 +1665,16 @@
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
+                    <property name="onDocumentReadyScript" value="
+                                    jq('#addPlannedCourse')
+                                        .subscribe('PLAN_ITEM_ADDED', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
+                                            setTimeout('fnCloseAllPopups()', 2000);
+                                        })
+                                        .subscribe('ERROR', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
+                                        });"/>
+
                 </bean>
             </list>
         </property>
