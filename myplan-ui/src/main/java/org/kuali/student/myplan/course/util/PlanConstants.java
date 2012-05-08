@@ -44,6 +44,14 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String OTHER_TERM_KEY = "other";
     public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
     public static final String FOCUS_ATP_ID_KEY = "focusAtpId";
+    
+    
+    /*Term Names Autumn,Winter,Spring,Summer*/
+    public static final String TERM_1="Winter";
+    public static final String TERM_2="Spring";
+    public static final String TERM_3="Summer";
+    public static final String TERM_4="Autumn";
+
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
