@@ -821,3 +821,15 @@ a:focus {
     width: 180px;
     margin: 10px 0px 0px;
 }
+label.scheduled {
+    background: #ccc;
+    color: #333;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 80%;
+    padding: 0 4px;
+    clear: none;
+    margin-right: 0.33em;
+    line-height: 1.8em;
+    display: inline-block;
+}
