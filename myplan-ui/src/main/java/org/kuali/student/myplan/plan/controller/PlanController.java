@@ -839,42 +839,45 @@ public class PlanController extends UifControllerBase {
         if (form.isBackup()) {
             errorId = PlanConstants.ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
         }
-        return doErrorPage(form, errorId);
+        return doErrorPage(form, errorId, null);
     }
 
     /**
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doPageRefreshError(PlanForm form, String errorMessage, Exception e) {
-        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, e);
+        // <a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Reset your academic plan</a>
+        String[] params = {"<a href=\"/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView\">Reset your academic plan</a>"};
+        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, params, e);
     }
 
     /**
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doPlanActionError(PlanForm form, String errorMessage, Exception e) {
-        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+        String[] params = {};
+        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_OPERATION_FAILED, params, e);
     }
 
     /**
      * Logs errors and passes the request on to the error page.
      */
-    private ModelAndView doErrorPage(PlanForm form, String errorMessage, String errorKey, Exception e) {
+    private ModelAndView doErrorPage(PlanForm form, String errorMessage, String errorKey, String[] params, Exception e) {
         if (e != null) {
             logger.error(errorMessage, e);
         } else {
             logger.error(errorMessage);
         }
-        return doErrorPage(form, errorKey);
+        return doErrorPage(form, errorKey, params);
     }
 
     /**
      * Initializes the error page.
      */
-    private ModelAndView doErrorPage(PlanForm form, String errorKey) {
+    private ModelAndView doErrorPage(PlanForm form, String errorKey, String[] params) {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.ERROR);
         GlobalVariables.getMessageMap().clearErrorMessages();
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, errorKey);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, errorKey, params);
         return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
     }
 
@@ -882,9 +885,8 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, courseDetails.getCode(), atpId);
-        return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+        String[] params = {atpId};
+        return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 
     /**
