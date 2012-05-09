@@ -169,13 +169,20 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     var elementToBlock = jq("#" + id  + "_popup");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + getId + "_div", htmlContent);
-        var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+        var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
+        if ( status === 'error' ) {
+            var sError = jq.trim( jq("#errorsFieldForPage_errorMessages ul li:first", htmlContent).text() );
+            var oError = jq("<div />").attr("id","error_div").html(sError).addClass("myplan-message-border myplan-message-error");
+            var component = jq("<div />").css("padding-right","24px").html(oError);
+        } else {
+            var component = jq("#" + getId + "_div", htmlContent);
+            var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+        }
         elementToBlock.unblock({onUnblock: function(){
             if (jq("#" + id  + "_popup").length){
                 popupBox.SetBubblePopupInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
-                jq(".jquerybubblepopup-innerHtml").wrapInner(planForm);
+                if ( status != 'error' ) jq(".jquerybubblepopup-innerHtml").wrapInner(planForm);
                 if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
                     popupBox.HideAllBubblePopups();
@@ -183,8 +190,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
                 });
             }
             runHiddenScripts(getId + "_div");
-			}
-		});
+        }});
 	};
 
 	myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);

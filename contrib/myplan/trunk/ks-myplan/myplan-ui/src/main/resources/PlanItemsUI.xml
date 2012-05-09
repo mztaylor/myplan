@@ -170,7 +170,7 @@
 
         <property name="items">
             <list>
-                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:title="Your Courses List">
+                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:title="Bookmarked Courses List">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -221,7 +221,7 @@
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="title"
-                  value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
+                  value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses bookmarked"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
@@ -413,12 +413,12 @@
     <!-- Group for Empty Result Set -->
     <bean id="saved_courses_detail_list_empty" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="title"
-                  value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses in your list"/>
+                  value="You have &lt;strong&gt;@{searchResults.size()}&lt;/strong&gt; courses bookmarked"/>
         <property name="render" value="@{searchResults.size() gt 0 ? false : true}"/>
         <property name="items">
             <list>
                 <bean parent="Uif-MessageField"
-                      p:messageText="Your List Is Empty. Find Courses and Save them to your list.">
+                      p:messageText="Your List Is Empty. Find Courses and bookmark them.">
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-150</value>
@@ -434,7 +434,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField"
-                                  p:messageText="With Your Courses List, you can">
+                                  p:messageText="With Your Bookmarked Courses List, you can">
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>fl-font-size-150</value>
@@ -444,8 +444,8 @@
                             <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField"
-                                              p:messageText="Track courses via email notification when they become available to register"/>
+                                        <!--<bean parent="Uif-MessageField"
+                                              p:messageText="Track courses via email notification when they become available to register"/>-->
                                         <bean parent="Uif-MessageField"
                                               p:messageText="Save courses before moving to Plan to sleep on"/>
                                         <bean parent="Uif-MessageField"
@@ -530,9 +530,9 @@
                 <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkLabel="Mark it as Planned course" p:title="Mark it as Planned course" p:render="@{backup eq true and acadRecCourse eq false ? true : false}">
                     <property name="onClickScript" value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','backupToPlanned',e);"/>
                 </bean>
-                <bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"  p:render="@{acadRecCourse eq false ? true : false}">
+                <!--<bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkLabel="Set Credit" p:title="Set Credit" p:hrefText="#"  p:render="@{acadRecCourse eq false ? true : false}">
 
-                </bean>
+                </bean>-->
                 <bean p:id="@{planItemId}_move" parent="Uif-Link" p:target="" p:linkLabel="Move to Another Quarter" p:title="Move to Another Quarter" p:render="@{acadRecCourse eq false ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','move_dialog_page',{planItemId:'@{planItemId}',pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
@@ -797,12 +797,11 @@
             </bean>
         </property>
         <property name="styleClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>myplan-carousel-term</value>
-                <value>myplan-term-planned</value>
+                <value>myplan-term-completed</value>
             </list>
         </property>
-
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
@@ -843,7 +842,7 @@
             </bean>
         </property>
         <property name="styleClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>myplan-carousel-term</value>
                 <value>@{#line.planItemId.replaceAll("\.","-")}</value>
                 <value>myplan-term-planned</value>
@@ -899,7 +898,7 @@
             </bean>
         </property>
         <property name="styleClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>myplan-carousel-term</value>
                 <value>@{#line.planItemId.replaceAll("\.","-")}</value>
                 <value>myplan-term-backup</value>
@@ -1111,8 +1110,8 @@
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:styleClasses="myplan-message-border">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="Saved to"/>
-                                        <bean parent="Uif-Link" p:linkLabel=" your Course List ">
+                                        <bean parent="Uif-MessageField" p:messageText="Saved to your "/>
+                                        <bean parent="Uif-Link" p:linkLabel="Bookmarked Courses List">
                                             <property name="hrefText"
                                                       value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                                             <property name="styleClasses">
@@ -1122,7 +1121,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-MessageField"
-                                              p:messageText="on @{courseDetails.savedItemDateCreated}"/>
+                                              p:messageText=" on @{courseDetails.savedItemDateCreated}"/>
 
                                     </list>
                                 </property>
@@ -1231,7 +1230,7 @@
 
     <!--  Add to saved courses. Used contextually in course details popup actions -->
     <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton"
-          p:actionLabel="Save to Your Courses List">
+          p:actionLabel="Bookmark Course">
         <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
         <property name="styleClasses">
             <list merge="true">
@@ -1549,8 +1548,8 @@
         <property name="items">
             <list>
                 <bean parent="Uif-MessageField"
-                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?" p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}"/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="">
+                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?" />
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="" p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl"/>
                     </property>
@@ -1632,11 +1631,16 @@
         </property>
     </bean>
 
-    <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup">
+    <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup" p:style="display:block; margin-left:1.5em;">
+        <property name="onDocumentReadyScript" value="
+            jq('.myplan-select-other select.uif-dropdownControl').change(function() {
+                jq(&quot;input[name='atpId'][value='other']&quot;).attr('checked', true);
+            });
+        "/>
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="term" p:label="Select Quarter"
+                <bean parent="Uif-InputField" p:propertyName="term" p:label="Quarter" p:styleClasses="myplan-select-other"
                       p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false"
                       p:labelPlacement="TOP">
                     <property name="control">
@@ -1656,7 +1660,7 @@
                                         });"/>
 
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="year" p:label="Select Year"
+                <bean parent="Uif-InputField" p:propertyName="year" p:label="Year" p:styleClasses="myplan-select-other"
                       p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false"
                       p:labelPlacement="TOP">
                     <property name="control">
