@@ -109,13 +109,13 @@ public class AtpHelper {
         String term = termYear[0];
         String year = termYear[1];
 
-        if (term.equals("1")) {
+        if (term.equals("4")) {
             term = "Autumn";
-        } else if (term.equals("2")) {
+        } else if (term.equals("1")) {
             term = "Winter";
-        } else if (term.equals("3")) {
+        } else if (term.equals("2")) {
             term = "Spring";
-        }  else if (term.equals("4")) {
+        }  else if (term.equals("3")) {
             term = "Summer";
         }
         return new String[] {term, year};
