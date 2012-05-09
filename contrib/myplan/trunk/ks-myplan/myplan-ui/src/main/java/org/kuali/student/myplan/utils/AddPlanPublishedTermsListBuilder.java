@@ -68,7 +68,7 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                     keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
                 }
             }
-            List<Boolean> termExistsBoolean = new ArrayList<Boolean>();
+
             //  Add the individual term items.
             for (String term : courseDetails.getScheduledTerms()) {
                 String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
@@ -96,19 +96,14 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                 }
                 if(!atpAlreadyexists){
                 keyValues.add(new ConcreteKeyValue(atp, termsOffered+" "+"(Scheduled according to "+termsOffered+" Time Schedule)"));
+                    planForm.setShowOther(true);
                 }
-                termExistsBoolean.add(atpAlreadyexists);
+
+
             }
 
             //  Append and additional items to the list.
-            boolean allowOtherOption=false;
-            for(Boolean exists:termExistsBoolean){
-                if(exists.equals(false)){
-                    allowOtherOption=true;
-                    break;
-                }
-            }
-            if(allowOtherOption){
+            if(planForm.isShowOther()){
             if (additionalListItemsBottom != null && additionalListItemsBottom.size() > 0) {
                 for (Map.Entry<String, String> entry : additionalListItemsBottom.entrySet()) {
                     keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
