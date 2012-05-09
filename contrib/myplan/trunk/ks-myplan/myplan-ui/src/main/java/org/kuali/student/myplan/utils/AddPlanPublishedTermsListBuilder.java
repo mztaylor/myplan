@@ -94,7 +94,7 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                     }
                 }
                 if(!atpAlreadyexists){
-                keyValues.add(new ConcreteKeyValue(atp, termsOffered));
+                keyValues.add(new ConcreteKeyValue(atp, termsOffered+" "+"(Scheduled according to "+termsOffered+" Time Schedule)"));
                 }
             }
 
