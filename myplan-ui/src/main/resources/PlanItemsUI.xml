@@ -1449,7 +1449,7 @@
 
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+               <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -1565,7 +1565,7 @@
                     </property>
 
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
