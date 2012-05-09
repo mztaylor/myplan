@@ -68,17 +68,18 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                     keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
                 }
             }
-
+            List<Boolean> termExistsBoolean = new ArrayList<Boolean>();
             //  Add the individual term items.
             for (String term : courseDetails.getScheduledTerms()) {
                 String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 String termsOffered = null;
+                boolean atpAlreadyexists=false;
                 Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
                 if (m.matches()) {
                     termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
                 }
                 String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
-                boolean atpAlreadyexists=false;
+
                 if(courseDetails.getPlannedList()!=null){
                 for(PlanItemDataObject plan:courseDetails.getPlannedList()) {
                      if(plan.getAtp().equalsIgnoreCase(atp)){
@@ -96,13 +97,23 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                 if(!atpAlreadyexists){
                 keyValues.add(new ConcreteKeyValue(atp, termsOffered+" "+"(Scheduled according to "+termsOffered+" Time Schedule)"));
                 }
+                termExistsBoolean.add(atpAlreadyexists);
             }
 
             //  Append and additional items to the list.
+            boolean allowOtherOption=false;
+            for(Boolean exists:termExistsBoolean){
+                if(exists.equals(false)){
+                    allowOtherOption=true;
+                    break;
+                }
+            }
+            if(allowOtherOption){
             if (additionalListItemsBottom != null && additionalListItemsBottom.size() > 0) {
                 for (Map.Entry<String, String> entry : additionalListItemsBottom.entrySet()) {
                     keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
                 }
+            }
             }
         }
         return keyValues;
