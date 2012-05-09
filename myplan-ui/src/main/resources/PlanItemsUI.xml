@@ -758,7 +758,7 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader" p:labelField.render="true"/>
+                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader" p:labelField.render="false"/>
             </list>
         </property>
         <property name="subCollections">
@@ -1449,8 +1449,8 @@
                     </property>
                 </bean>
                 <bean parent="Uif-MessageField"
-                      p:messageText="Note: This Course MAY NOT be offered in yout selected quarter.Check back when Time Schedule is released."/>
-               <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+                      p:messageText="Note: This Course MAY NOT be offered in your selected quarter.Check back when Time Schedule is released."/>
+               <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{showOther eq false ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -1567,7 +1567,7 @@
                </bean>
                 <bean parent="Uif-MessageField"
                       p:messageText="Note: This Course MAY NOT be offered in yout selected quarter.Check back when Time Schedule is released."/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{showOther eq false ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>

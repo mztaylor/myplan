@@ -73,6 +73,9 @@ public class PlanForm extends UifFormBase {
     //   based on this Add to plan page items are populated
     private boolean moveCourse = false;
 
+    // boolean to show or hide Other option.
+    private boolean showOther=false;
+
 
     /**
      * A list of javascript events as:
@@ -186,6 +189,14 @@ public class PlanForm extends UifFormBase {
 
     public void setAcadRecCourse(boolean acadRecCourse) {
         this.acadRecCourse = acadRecCourse;
+    }
+
+    public boolean isShowOther() {
+        return showOther;
+    }
+
+    public void setShowOther(boolean showOther) {
+        this.showOther = showOther;
     }
 
     /**
