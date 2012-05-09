@@ -28,7 +28,7 @@ public class PlanItemDataObject {
         // At the application level we are only dealing with single ATP per plan item
         if (item.getPlanPeriods() != null && item.getPlanPeriods().size() > 0) {
             itemDO.setAtp(item.getPlanPeriods().get(0));
-            String[] termYear = AtpHelper.getTermAndYear(itemDO.getAtp());
+            String[] termYear = AtpHelper.atpIdToTermAndYear(itemDO.getAtp());
             itemDO.setYear(Integer.valueOf(termYear[1]));
             itemDO.setTerm(termYear[0]);
         }

@@ -33,8 +33,8 @@ import java.util.regex.Pattern;
 public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
 
-    private static final String REGEX_TERM = "([a-z]*)\\d{4}$";
-    private static final String REGEX_YEAR = "(\\d{4})$";
+    private static final String REGEX_TERM = "\\d{4}\\.([1-4]{1})$";
+    private static final String REGEX_YEAR = "(\\d{4})\\.[1-4]{1}$";
     private static Pattern patternTerm;
     private static Pattern patternYear;
 
@@ -130,7 +130,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     private Set<String> getCourseOfferings(String termId, String subjectArea) throws ServiceException {
 
         String term, year;
-
         Matcher matcher = patternTerm.matcher(termId);
         if (matcher.find()) {
             term = matcher.group(1);
@@ -143,6 +142,17 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             year = matcher.group(1);
         } else {
             throw new RuntimeException("Term key did not contain a year.");
+        }
+
+        //  TODO: THis should be in AtpHelper.
+        if (term.equals("1")) {
+            term = "autumn";
+        } else if (term.equals("2")) {
+            term = "winter";
+        } else if (term.equals("3")) {
+            term = "spring";
+        } else if (term.equals("4")) {
+            term = "summer";
         }
 
         logger.info(String.format("Querying the Student Section Service for: %s - %s %s", year, term, subjectArea));

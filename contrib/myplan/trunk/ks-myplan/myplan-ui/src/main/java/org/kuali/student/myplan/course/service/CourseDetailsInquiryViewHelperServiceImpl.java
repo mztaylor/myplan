@@ -367,7 +367,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                 academicRecordDataObjectList.add(academicRecordDataObject);
                 if (courseDetails.getCourseTitle().equalsIgnoreCase(studentInfo.getCourseTitle())) {
-                    String[] str = AtpHelper.getAlphaTermAndYearForAtp(studentInfo.getTermName());
+                    String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
                     courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
                 }
             }

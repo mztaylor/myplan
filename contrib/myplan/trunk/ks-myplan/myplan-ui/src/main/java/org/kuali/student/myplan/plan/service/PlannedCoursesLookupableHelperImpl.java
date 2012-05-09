@@ -64,7 +64,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     private String atpTerm3 = "3";
     private String atpTerm4 = "4";
 
-
     /**
      * Skip the validation so that we use the criteriaFields param to pass in args to the getSearchResults method.
      *
@@ -85,9 +84,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
-                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(AtpHelper.getCurrentAtpId()));
+                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(AtpHelper.getCurrentAtpId()));
             } else {
-                focusQuarterYear = AtpHelper.getTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
+                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
             }
         } catch (Exception e) {
             //  Log and set the year to the current year.
@@ -136,7 +135,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 if (!exists) {
                     PlannedTerm term = new PlannedTerm();
                     term.setPlanItemId(atp);
-                    String[] splitStr = AtpHelper.getAlphaTermAndYearForAtp(atp);
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp); /*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                     StringBuilder sb = new StringBuilder();
                     sb.append(splitStr[0]).append(" ").append(splitStr[1]);
                     String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
@@ -165,7 +165,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     PlannedTerm plannedTerm = new PlannedTerm();
                     plannedTerm.setPlanItemId(atp);
                     StringBuffer str = new StringBuffer();
-                    String[] splitStr = AtpHelper.getAlphaTermAndYearForAtp(atp);
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp); /*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                     str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
                     String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                     plannedTerm.setQtrYear(QtrYear);
@@ -239,11 +240,10 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                             }
                         });
 
-
                 //  Can't do this step until the sort has been done else the index won't be correct.
                 int i = 0;
                 for (PlannedTerm pt : perfectPlannedTerms) {
-                    String[] qy = AtpHelper.getTermAndYear(pt.getPlanItemId());
+                    String[] qy = AtpHelper.atpIdToTermAndYear(pt.getPlanItemId());
                     if (qy[0].equals(focusQuarterYear[0])
                             && qy[1].equals(focusQuarterYear[1])) {
                         pt.setIndex(i);
@@ -269,28 +269,28 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     }
 
     private void populateMockList(String minTerm, String maxTerm, Map<String, PlannedTerm> map) {
-        String[] minTerms = AtpHelper.getTermAndYear(minTerm);
-        String[] maxTerms = AtpHelper.getTermAndYear(maxTerm);
+        String[] minTerms = AtpHelper.atpIdToTermAndYear(minTerm);
+        String[] maxTerms = AtpHelper.atpIdToTermAndYear(maxTerm);
         int minYear = 0;
         int maxYear = 0;
 
         if (!minTerms[0].equalsIgnoreCase(atpTerm4)) {
-            minTerm = AtpHelper.getAtpFromYearAndNumTerm(atpTerm4, String.valueOf(Integer.parseInt(minTerms[1]) - 1));
+            minTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(Integer.parseInt(minTerms[1]) - 1));
             minYear = Integer.parseInt(minTerms[1]) - 1;
         } else {
             minYear = Integer.parseInt(minTerms[1]);
         }
         if (!maxTerms[0].equalsIgnoreCase(atpTerm3)) {
             if (maxTerms[0].equalsIgnoreCase(atpTerm4)) {
-                maxTerm = AtpHelper.getAtpFromYearAndNumTerm(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+                maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
                 maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
 
             } else {
-                maxTerm = AtpHelper.getAtpFromYearAndNumTerm(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+                maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
                 maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
             }
         } else {
-            maxTerm = AtpHelper.getAtpFromYearAndNumTerm(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+            maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
             maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
         }
         String term1 = "";
@@ -299,23 +299,23 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         String term4 = "";
         for (int i = 0; !term4.equalsIgnoreCase(maxTerm); i++) {
             PlannedTerm plannedTerm1 = new PlannedTerm();
-            term1 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm4, String.valueOf(minYear));
+            term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
             plannedTerm1.setPlanItemId(term1);
             plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
             map.put(term1, plannedTerm1);
             minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
-            term2 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm1, String.valueOf(minYear));
+            term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
             plannedTerm2.setPlanItemId(term2);
             plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
             map.put(term2, plannedTerm2);
             PlannedTerm plannedTerm3 = new PlannedTerm();
-            term3 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm2, String.valueOf(minYear));
+            term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
             plannedTerm3.setPlanItemId(term3);
             plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
             map.put(term3, plannedTerm3);
             PlannedTerm plannedTerm4 = new PlannedTerm();
-            term4 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm3, String.valueOf(minYear));
+            term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
             plannedTerm4.setPlanItemId(term4);
             plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
             map.put(term4, plannedTerm4);
@@ -324,7 +324,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
 
     private void populateFutureData(String termId, List<PlannedTerm> plannedTermList) {
-        String[] strings = AtpHelper.getTermAndYear(termId);
+        String[] strings = AtpHelper.atpIdToTermAndYear(termId);
         int minYear = Integer.parseInt(strings[1]);
         if (!strings[0].equalsIgnoreCase(atpTerm4)) {
             minYear = minYear - 1;
@@ -335,23 +335,23 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         String term4 = "";
         for (int i = 0; i <= 5; i++) {
             PlannedTerm plannedTerm1 = new PlannedTerm();
-            term1 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm4, String.valueOf(minYear));
+            term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
             plannedTerm1.setPlanItemId(term1);
             plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
             plannedTermList.add(plannedTerm1);
             minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
-            term2 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm1, String.valueOf(minYear));
+            term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
             plannedTerm2.setPlanItemId(term2);
             plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
             plannedTermList.add(plannedTerm2);
             PlannedTerm plannedTerm3 = new PlannedTerm();
-            term3 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm2, String.valueOf(minYear));
+            term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
             plannedTerm3.setPlanItemId(term3);
             plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
             plannedTermList.add(plannedTerm3);
             PlannedTerm plannedTerm4 = new PlannedTerm();
-            term4 = AtpHelper.getAtpFromYearAndNumTerm(atpTerm3, String.valueOf(minYear));
+            term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
             plannedTerm4.setPlanItemId(term4);
             plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
             plannedTermList.add(plannedTerm4);
