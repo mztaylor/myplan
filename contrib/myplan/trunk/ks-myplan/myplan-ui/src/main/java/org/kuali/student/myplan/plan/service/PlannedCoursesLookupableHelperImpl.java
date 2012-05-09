@@ -81,7 +81,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
         String focusAtpId = fieldValues.get(PlanConstants.FOCUS_ATP_ID_KEY);
-        String[] focusQuarterYear = null;
+        String[] focusQuarterYear = new String[2];
 
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
