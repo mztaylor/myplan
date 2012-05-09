@@ -18,7 +18,7 @@ public class academicTermsMessageEditor extends CollectionListPropertyEditor {
 
     private final static Logger logger = Logger.getLogger(academicTermsMessageEditor.class);
 
-     @Override
+    @Override
     protected String makeHtmlList(Collection c) {
         Iterator<Object> i = c.iterator();
         StringBuffer sb = new StringBuffer();
@@ -26,8 +26,11 @@ public class academicTermsMessageEditor extends CollectionListPropertyEditor {
         while (i.hasNext()) {
             String term = (String) i.next();
             String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            String atpId= AtpHelper.getAtpFromYearAndTerm(splitStr[0].trim(),splitStr[1].trim());
-            sb = sb.append("<dd>").append("You took this course in ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(atpId).append(">").append(term).append("</a>");
+            String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+            sb = sb.append("<dd>").append("You took this course in ")
+                    .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                    .append(atpId).append(">")
+                    .append(term).append("</a>");
         }
         return sb.toString();
     }

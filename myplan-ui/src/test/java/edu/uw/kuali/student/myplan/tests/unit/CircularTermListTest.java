@@ -11,27 +11,27 @@ public class CircularTermListTest {
     @Test
     public void circularTermListExerciseTerms() {
         CircularTermList ctl = new CircularTermList("autumn", 2000);
-        assertEquals(ctl.getQuarter(), "Autumn");
+        assertEquals(ctl.getQuarterName(), "Autumn");
         assertEquals(ctl.getYear(), 2000);
 
         ctl.incrementQuarter();
-        assertEquals(ctl.getQuarter(), "Winter");
+        assertEquals(ctl.getQuarterName(), "Winter");
         assertEquals(ctl.getYear(), 2001);
 
         ctl.incrementQuarter();
-        assertEquals(ctl.getQuarter(), "Spring");
+        assertEquals(ctl.getQuarterName(), "Spring");
         assertEquals(ctl.getYear(), 2001);
 
         ctl.incrementQuarter();
-        assertEquals(ctl.getQuarter(), "Summer");
+        assertEquals(ctl.getQuarterName(), "Summer");
         assertEquals(ctl.getYear(), 2001);
 
         ctl.incrementQuarter();
-        assertEquals(ctl.getQuarter(), "Autumn");
+        assertEquals(ctl.getQuarterName(), "Autumn");
         assertEquals(ctl.getYear(), 2001);
 
         ctl.incrementQuarter();
-        assertEquals(ctl.getQuarter(), "Winter");
+        assertEquals(ctl.getQuarterName(), "Winter");
         assertEquals(ctl.getYear(), 2002);
     }
 

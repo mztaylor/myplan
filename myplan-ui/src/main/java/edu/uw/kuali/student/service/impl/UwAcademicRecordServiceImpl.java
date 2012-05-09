@@ -174,7 +174,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             }
                             StringBuffer courseCode = new StringBuffer();
                             courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
-                            String termName = AtpHelper.getAtpFromYearAndTerm(section.elementText("Quarter"), section.elementText("Year"));
+                            //  termName is really an ATP Id.
+                            String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
                             studentCourseRecordInfo.setCourseCode(courseCode.toString());
                             studentCourseRecordInfo.setTermName(termName);
                             studentCourseRecordInfo.setPersonId(regId);

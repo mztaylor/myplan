@@ -3,7 +3,9 @@ package edu.uw.kuali.student.myplan.util;
 public class CircularTermList {
     private short index = 0;
 
+    //  TODO: This data structure could be improved.
     private String quarters[] = {"Autumn", "Winter", "Spring", "Summer"};
+    private String quarterNumber[] = {"1", "2", "3", "4"};
     private int year;
 
     public CircularTermList(String quarter, int year) {
@@ -17,8 +19,14 @@ public class CircularTermList {
      * @return
      */
     private short getIndex(String quarter) {
+        //  Check both name and number.
         for (short i = 0; i < quarters.length; i++) {
             if (quarter.toLowerCase().equals(quarters[i].toLowerCase())) {
+                return i;
+            }
+        }
+        for (short i = 0; i < quarterNumber.length; i++) {
+            if (quarter.toLowerCase().equals(quarterNumber[i])) {
                 return i;
             }
         }
@@ -37,8 +45,12 @@ public class CircularTermList {
         }
     }
 
-    public String getQuarter() {
+    public String getQuarterName() {
        return quarters[index];
+    }
+
+    public String getQuarterNumber() {
+       return quarterNumber[index];
     }
 
     public int getYear() {

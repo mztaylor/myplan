@@ -68,8 +68,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         if (termInfos != null) {
             //  Add the individual term items.
             for (TermInfo ti : termInfos) {
-                String atp= AtpHelper.getTermAndYearFromAtp(ti.getId());
-                keyValues.add(new ConcreteKeyValue(atp, ti.getName() + suffix));
+                keyValues.add(new ConcreteKeyValue(ti.getId(), ti.getName() + suffix));
             }
         }
 
@@ -79,7 +78,6 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
                 keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue()));
             }
         }
-
         return keyValues;
     }
 

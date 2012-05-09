@@ -77,7 +77,7 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                 if (m.matches()) {
                     termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
                 }
-                String atp = AtpHelper.getAtpFromYearAndTerm(splitStr[0].trim(), splitStr[1].trim());
+                String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
                 boolean atpAlreadyexists=false;
                 if(courseDetails.getPlannedList()!=null){
                 for(PlanItemDataObject plan:courseDetails.getPlannedList()) {
@@ -105,7 +105,6 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                 }
             }
         }
-
         return keyValues;
     }
 
@@ -132,7 +131,6 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
     public void setAdditionalListItemsBottom(Map<String, String> additionalListItems) {
         this.additionalListItemsBottom = additionalListItems;
     }
-
 
     protected AcademicCalendarService getAcademicCalendarService() {
         if (this.academicCalendarService == null) {

@@ -90,16 +90,16 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
         DateTime lastDropDay = new DateTime(lastDropDayDateString);
 
-        logger.info(String.format("The Student Term Service reports [%s] [%s] is the current term with last drop day [%s].",
-                ccl.getQuarter(), ccl.getYear(), lastDropDayDateString));
+        logger.info(String.format("The Student Term Service reports [%s/%s] [%s] is the current term with last drop day [%s].",
+                ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear(), lastDropDayDateString));
 
         /*
          *  If the last drop day has passed then increment to the next term.
          */
         if (lastDropDay.isBeforeNow()) {
             ccl.incrementQuarter();
-            logger.info(String.format("The last drop day has passed, so the current term has been incremented to [%s] [%s].",
-               ccl.getQuarter(), ccl.getYear()));
+            logger.info(String.format("The last drop day has passed, so the current term has been incremented to [%s/%s] [%s].",
+               ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
         }
 
         /*
@@ -107,9 +107,9 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
          */
         for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
             try {
-                logger.info(String.format("Querying the Student Term Service for quarter [%s] year [%s] to determine if section information as been published.",
-                    ccl.getQuarter(), ccl.getYear()));
-                responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarter());
+                logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
+                    ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
+                responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
             } catch (ServiceException e) {
                 logger.error("Call to Student Term Service failed.", e);
                 break;
@@ -131,8 +131,9 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                 || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
 
                 TermInfo ti = new TermInfo();
-                ti.setId(TERM_KEY_PREFIX + ccl.getQuarter().toLowerCase() + ccl.getYear());
-                ti.setName(ccl.getQuarter() + " " + ccl.getYear());
+                //  Create the ATP ID.
+                ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
+                ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
                 termInfos.add(ti);
 
                 ccl.incrementQuarter();

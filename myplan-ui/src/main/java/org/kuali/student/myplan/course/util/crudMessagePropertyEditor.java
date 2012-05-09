@@ -33,7 +33,7 @@ public class crudMessagePropertyEditor extends CollectionListPropertyEditor {
         int count = 0;
         if (planItemDataObjects.size() > 0) {
             for (PlanItemDataObject pl : planItemDataObjects) {
-                String[] str = AtpHelper.getAlphaTermAndYearForAtp(pl.getAtp());
+                String[] str = AtpHelper.atpIdToTermNameAndYear(pl.getAtp());
                 String date = DateFormatHelper.getDateFomatted(pl.getDateAdded().toString());
                 String aptId = pl.getAtp();
                 if (count == 0) {
