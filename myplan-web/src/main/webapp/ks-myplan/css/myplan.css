@@ -272,6 +272,10 @@ a:focus {
     overflow: hidden;
     background: url(../images/bkgrdDotted.gif);
 }
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-completed .uif-stackedCollectionLayout {
+    height: 27px;
+    overflow: hidden;
+}
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-planned .uif-stackedCollectionLayout {
     height: 208px;
 }
@@ -670,6 +674,7 @@ a:focus {
 .myplan-section .uif-headerField .uif-header {
     font-weight: normal;
     text-align: center;
+    text-transform: none;
 }
 .myplan-section .uif-headerField.uif-subSectionHeaderField {
     background: #ccc;

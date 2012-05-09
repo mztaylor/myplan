@@ -245,7 +245,7 @@
         </property>
     </bean>
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Your Courses List" p:errorsField.render="false">
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Bookmarked Courses List" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
