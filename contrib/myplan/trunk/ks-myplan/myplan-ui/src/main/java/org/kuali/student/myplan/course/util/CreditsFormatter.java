@@ -5,6 +5,8 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -45,6 +47,13 @@ public class CreditsFormatter {
             credits = trimCredits(credits);
         } else if (type.equals(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE)) {
             StringBuilder cTmp = new StringBuilder();
+           Collections.sort(rci.getResultValues(),new Comparator<String>() {
+               @Override
+               public int compare(String o1, String o2) {
+                   return o1.compareTo(o2);
+
+               }
+           });
             for (String c : rci.getResultValues()) {
                 if (cTmp.length() != 0) {
                     cTmp.append(", ");
