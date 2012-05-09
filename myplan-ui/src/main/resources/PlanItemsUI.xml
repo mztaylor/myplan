@@ -1448,6 +1448,8 @@
 
                     </property>
                 </bean>
+                <bean parent="Uif-MessageField"
+                      p:messageText="Note: This Course MAY NOT be offered in yout selected quarter.Check back when Time Schedule is released."/>
                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -1562,8 +1564,9 @@
                             </property>
                         </bean>
                     </property>
-
-                </bean>
+               </bean>
+                <bean parent="Uif-MessageField"
+                      p:messageText="Note: This Course MAY NOT be offered in yout selected quarter.Check back when Time Schedule is released."/>
                 <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other" p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
