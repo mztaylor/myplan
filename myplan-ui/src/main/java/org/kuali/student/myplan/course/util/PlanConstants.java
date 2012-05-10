@@ -19,8 +19,16 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 
+    // CRUD operations positive feedback.
     public static final String SUCCESS_KEY = "myplan.text.success";
+    public static final String SUCCESS_PLAN_ITEM_ADDED_KEY = "myplan.text.success.planItemAdded";
+    public static final String SUCCESS_PLAN_ITEM_MOVED_KEY = "myplan.text.success.planItemMoved";
+    public static final String SUCCESS_PLAN_ITEM_COPIED_KEY = "myplan.text.success.planItemCopied";
+    public static final String SUCCESS_PLAN_ITEM_DELETED_KEY = "myplan.text.success.planItemCopied";
+    public static final String SUCCESS_PLAN_ITEM_MARKED_BACKUP_KEY = "myplan.text.success.planItemDeleted";
+    public static final String SUCCESS_PLAN_ITEM_MARKED_PLANNED_KEY = "myplan.text.success.planItemMarkedAsPlanned";
 
+    //  CRUD error feedback
     public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
     public static final String ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.plannedCapacityExceeded";
     public static final String ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.backupCapacityExceeded";
