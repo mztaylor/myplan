@@ -76,6 +76,7 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 	    			<p>${req.info}</p>
 #end
                 </div>
+#if( ${req.getShowTotal()} )
 #if( ${req.hasCredits()} )
                 <ul class="progress">
                     <li class="required"><label>Credits required:</label> ${req.credits.required}</li>
@@ -96,6 +97,7 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
                     <li class="earned"><label>earned:</label> ${req.count.earned}</li>
                     <li class="needs"><label>needs:</label> ${req.count.needs}</li>
                 </ul>
+#end
 #end
             </div>
 #foreach( $subreq in $req.subrequirementList ) ## subreq
