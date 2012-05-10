@@ -1598,6 +1598,8 @@
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
                                             setTimeout('fnCloseAllPopups()', 2000);
+                                        }).subscribe('ERROR', function(data){
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
                                         });"/>
                                 <property name="styleClasses">
                                     <list merge="true">
