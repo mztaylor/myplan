@@ -11,11 +11,7 @@ import javax.xml.namespace.QName;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: hemanthg
- * Date: 4/23/12
- * Time: 4:25 PM
- * To change this template use File | Settings | File Templates.
+ *  Helper methods for dealing with ATPs.
  */
 public class AtpHelper {
 
@@ -144,5 +140,14 @@ public class AtpHelper {
         StringBuffer newAtpId = new StringBuffer();
         newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(term);
         return newAtpId.toString();
+    }
+
+    /**
+     * Gets term name as "Spring 2012" given an ATP ID.
+     * @return
+     */
+    public static String atpIdToTermName(String atpId) {
+        String[] termYear = atpIdToTermNameAndYear(atpId);
+        return (termYear[0] + " " + termYear[1]);
     }
 }

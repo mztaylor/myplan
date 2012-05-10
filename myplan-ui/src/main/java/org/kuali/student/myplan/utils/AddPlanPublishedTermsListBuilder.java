@@ -80,22 +80,22 @@ public class AddPlanPublishedTermsListBuilder extends UifKeyValuesFinderBase {
                 }
                 String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
 
-                if(courseDetails.getPlannedList()!=null){
+                if (courseDetails.getPlannedList()!=null){
                 for(PlanItemDataObject plan:courseDetails.getPlannedList()) {
                      if(plan.getAtp().equalsIgnoreCase(atp)){
                          atpAlreadyexists=true;
                      }
                 }
                 }
-                if(courseDetails.getBackupList()!=null && !atpAlreadyexists){
+                if (courseDetails.getBackupList()!=null && !atpAlreadyexists){
                     for(PlanItemDataObject plan:courseDetails.getBackupList()) {
                         if(plan.getAtp().equalsIgnoreCase(atp)){
                             atpAlreadyexists=true;
                         }
                     }
                 }
-                if(!atpAlreadyexists){
-                keyValues.add(new ConcreteKeyValue(atp, termsOffered+" "+"(Scheduled according to "+termsOffered+" Time Schedule)"));
+                if (!atpAlreadyexists) {
+                    keyValues.add(new ConcreteKeyValue(atp, termsOffered + " " + "(Scheduled according to " + termsOffered + " Time Schedule)"));
                     planForm.setShowOther(true);
                 }
 
