@@ -21,12 +21,15 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     // CRUD operations positive feedback.
     public static final String SUCCESS_KEY = "myplan.text.success";
-    public static final String SUCCESS_PLAN_ITEM_ADDED_KEY = "myplan.text.success.planItemAdded";
-    public static final String SUCCESS_PLAN_ITEM_MOVED_KEY = "myplan.text.success.planItemMoved";
-    public static final String SUCCESS_PLAN_ITEM_COPIED_KEY = "myplan.text.success.planItemCopied";
-    public static final String SUCCESS_PLAN_ITEM_DELETED_KEY = "myplan.text.success.planItemCopied";
-    public static final String SUCCESS_PLAN_ITEM_MARKED_BACKUP_KEY = "myplan.text.success.planItemDeleted";
-    public static final String SUCCESS_PLAN_ITEM_MARKED_PLANNED_KEY = "myplan.text.success.planItemMarkedAsPlanned";
+    public static final String SUCCESS_KEY_PLANNED_ITEM_ADDED = "myplan.text.success.plannedCourseList.itemAdded";
+    public static final String SUCCESS_KEY_PLANNED_ITEM_MOVED = "myplan.text.success.plannedCourseList.itemMoved";
+    public static final String SUCCESS_KEY_PLANNED_ITEM_COPIED = "myplan.text.success.plannedCourseList.itemCopied";
+    public static final String SUCCESS_KEY_PLANNED_ITEM_MARKED_BACKUP = "myplan.text.success.plannedCourseList.itemMarkedAsBackup";
+    public static final String SUCCESS_KEY_PLANNED_ITEM_MARKED_PLANNED = "myplan.text.success.plannedCourseList.itemMarkedAsPlanned";
+
+    public static final String SUCCESS_KEY_ITEM_DELETED = "myplan.text.success.itemDeleted";
+
+    public static final String SUCCESS_KEY_SAVED_ITEM_ADDED = "myplan.text.success.savedCourseList.itemAdded";
 
     //  CRUD error feedback
     public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
