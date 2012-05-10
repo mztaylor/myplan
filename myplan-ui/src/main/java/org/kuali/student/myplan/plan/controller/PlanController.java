@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -32,6 +33,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -50,6 +52,7 @@ import javax.xml.namespace.QName;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
 
 @Controller
 @RequestMapping(value = "/plan")
@@ -112,7 +115,7 @@ public class PlanController extends UifControllerBase {
         } catch (Exception e) {
             return doPlanActionError(planForm, "Could not retrieve Course Details.", null);
         }
-
+        this.otherOptionValidation(planForm);
         return getUIFModelAndView(planForm);
     }
 
@@ -771,6 +774,9 @@ public class PlanController extends UifControllerBase {
             return doPlanActionError(form, "Unable to add plan item.", e);
         }
 
+
+
+
         //  Create events
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         events.putAll(makeAddEvent(planItem, courseDetails));
@@ -1270,6 +1276,41 @@ public class PlanController extends UifControllerBase {
         }
 
         return totalCredits;
+    }
+
+
+    private void otherOptionValidation(PlanForm form){
+        CourseDetails courseDetails=form.getCourseDetails();
+        for (String term : courseDetails.getScheduledTerms()) {
+            String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            String termsOffered = null;
+            boolean atpAlreadyexists=false;
+            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+            if (m.matches()) {
+                termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
+            }
+            String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+
+            if(courseDetails.getPlannedList()!=null){
+                for(PlanItemDataObject plan:courseDetails.getPlannedList()) {
+                    if(plan.getAtp().equalsIgnoreCase(atp)){
+                        atpAlreadyexists=true;
+                    }
+                }
+            }
+            if(courseDetails.getBackupList()!=null && !atpAlreadyexists){
+                for(PlanItemDataObject plan:courseDetails.getBackupList()) {
+                    if(plan.getAtp().equalsIgnoreCase(atp)){
+                        atpAlreadyexists=true;
+                    }
+                }
+            }
+            if(!atpAlreadyexists){
+                form.setShowOther(true);
+            }
+
+
+        }
     }
 
 
