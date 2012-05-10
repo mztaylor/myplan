@@ -24,8 +24,6 @@ public class AtpHelper {
     private static String term3 = "summer";
     private static String term4 = "autumn";
 
-    private static String atpPrefix =  "kuali.uw.atp.";
-
     private static transient AcademicCalendarService academicCalendarService;
 
     private static AcademicCalendarService getAcademicCalendarService() {
@@ -67,7 +65,7 @@ public class AtpHelper {
      */
     public static String getFirstAtpIdOfAcademicYear(String atpId) {
         String firstAtpId = null;
-        String atpSuffix = atpId.replace(atpPrefix, "");
+        String atpSuffix = atpId.replace(PlanConstants.TERM_ID_PREFIX, "");
         String[] termYear = atpSuffix.split("\\.");
         String year = termYear[0];
         String term = termYear[1];
@@ -86,7 +84,7 @@ public class AtpHelper {
      * Returns an String[] {term, year} given an ATP ID.
      */
     public static String[] atpIdToTermAndYear(String atpId) {
-        String atpSuffix = atpId.replace(atpPrefix, "");
+        String atpSuffix = atpId.replace(PlanConstants.TERM_ID_PREFIX, "");
 
         //  See if the ATP ID is nearly sane.
         if ( ! atpSuffix.matches("[0-9]{4}\\.[1-4]{1}")) {
