@@ -212,25 +212,7 @@
 
     </bean>
 
-
-    <bean id="audit_section" parent="Uif-VerticalBoxSubSection" p:title="AUDIT (TBD)" p:errorsField.render="false">
-        <property name="styleClasses">
-            <list merge="true">
-                <value>fl-container-200</value>
-                <value>myplan-section</value>
-            </list>
-        </property>
-
-        <property name="items">
-            <list>
-
-                <ref bean="run_degree_audits"/>
-
-            </list>
-        </property>
-    </bean>
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)"
-          p:errorsField.render="false">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-container-200</value>
@@ -359,8 +341,8 @@
     </bean>
 
 
-    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray" p:style="margin: 10px; width: 180px; display:block;">
-        <property name="messageText" value="Audit will be ready in approximately 1 - 5 minutes" />
+    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90" p:style="margin: 10px; width: 180px; display:block;">
+        <property name="messageText" value="Audit will be ready in approximately 1 - 5 minutes. &lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit." />
     </bean>
 
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">

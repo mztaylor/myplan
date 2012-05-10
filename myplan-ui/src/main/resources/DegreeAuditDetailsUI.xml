@@ -70,8 +70,16 @@
                     <property name="items">
                         <list>
                             <ref bean="audit_report_section"/>
-                            <ref bean="audit_section"/>
-                            <ref bean="myplan_section"/>
+                            <bean parent="myplan_section" p:title="AUDIT (TBD)">
+                                <property name="items">
+                                    <list>
+                                        <ref bean="run_degree_audits"/>
+                                        <ref bean="degree_audits_list"/>
+                                        <ref bean="watch_list"/>
+                                    </list>
+                                </property>
+                            </bean>
+
                         </list>
                     </property>
                 </bean>

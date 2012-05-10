@@ -13,7 +13,7 @@ function stopEvent(e) {
 function openCourse(courseId, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if ( jq(target).parents("#course_details_popup_requisites").length > 0 ) {
+    if ( jq(target).parents(".jquerybubblepopup.jquerybubblepopup-myplan").length > 0 ) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId="+courseId;
     } else {
     	openPlanItemPopUp(courseId,'add_remove_course_popover_page',{courseId:courseId},e,null,{tail:{align:'left'},align:'left',position:'bottom',alwaysVisible:'false'},true);

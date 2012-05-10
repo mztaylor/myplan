@@ -42,7 +42,7 @@
                     <property name="items">
                         <list>
                             <ref bean="course_search_section"/>
-                            <ref bean="myplan_section"/>
+                            <ref bean="myplan_section" />
                         </list>
                     </property>
                 </bean>
@@ -55,7 +55,7 @@
                     <property name="items">
                         <list>
                             <ref bean="course_search_result_section"/>
-                            <ref bean="myplan_section"/>
+                            <ref bean="myplan_section" />
                         </list>
                     </property>
                 </bean>
