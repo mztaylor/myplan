@@ -18,6 +18,10 @@ public class Requirement {
     public ArrayList<Subrequirement> getSubrequirementList() { return subrequirementList; }
     public void addSubrequirement(Subrequirement subrequirement) { subrequirementList.add(subrequirement); }
 
+    public boolean getShowTotal() {
+        return getSubrequirementList().size() != 1;
+    }
+
     public String getStatus() { return status; }
 
     public void setStatus( String status ) { this.status = status; }

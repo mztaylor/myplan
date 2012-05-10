@@ -52,8 +52,8 @@ import org.kuali.student.common.search.dto.*;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceImpl implements DegreeAuditService {
     private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
-//    private transient LuService luService;
-//    private transient CourseOfferingService courseOfferingService;
+    private transient LuService luService;
+    private transient CourseOfferingService courseOfferingService;
     private JobQueueRunLoader jobQueueRunLoader;
 
     private JobQueueRunDao jobQueueRunDao;
@@ -77,20 +77,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         this.jobQueueRunDao = jobQueueRunDao;
     }
 
-//    protected CourseOfferingService getCourseOfferingService() {
-//        if (this.courseOfferingService == null) {
-//            this.courseOfferingService = (CourseOfferingService)
-//                    GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, CourseOfferingServiceConstants.SERVICE_NAME_LOCAL_PART));
-//        }
-//        return this.courseOfferingService;
-//    }
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            this.courseOfferingService = (CourseOfferingService)
+                    GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, CourseOfferingServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return this.courseOfferingService;
+    }
 
-//    protected LuService getLuService() {
-//        if (this.luService == null) {
-//            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
-//        }
-//        return this.luService;
-//    }
+    protected LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
 
     public JobQueueRunLoader getJobQueueRunLoader() {
         return jobQueueRunLoader;
@@ -299,7 +299,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if ("".equals(jqr.getRname())) continue;
             if ("H".equals(jqr.getHidden())) continue;
 
-//            String rname = jqr.getRname();
+            String rname = jqr.getRname();
+            String psname = jqr.getPsname();
+            System.out.printf( "\n%s %s", rname, psname );
 
             String reqText = null;
             {
@@ -434,9 +436,86 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         subrequirement.setCount(count);
                     }
                 }
+
+//                LuService luService = getLuService();
+                {
+                // Acceptable courses
+                List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
+                for (JobQueueAccept accept : acceptList) {
+                    String dept = accept.getDept();
+                    if (dept.startsWith("**")) continue;
+                    String number = accept.getCrsno();
+                    if (number.length() == 0) continue;
+
+                    CourseAcceptable courseAcceptable = new CourseAcceptable();
+                    courseAcceptable.setDept(dept);
+                    courseAcceptable.setNumber(number);
+                    subrequirement.addCourseAcceptable(courseAcceptable);
+
+                    String courseID = getCourseID( dept.trim(), number );
+                    if( courseID != null )
+                    {
+                        courseAcceptable.setCluId(courseID);
+                        {
+                            SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+                            searchRequest.addParam("courseID", courseAcceptable.getCluid());
+                            try {
+
+                                SearchResult searchResult = getLuService().search(searchRequest);
+                                for (SearchResultRow row : searchResult.getRows()) {
+                                    String name = getCellValue(row, "course.name");
+                                    courseAcceptable.setDescription(name);
+
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    }
+                    {
+                    List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
+                    for (JobQueueCourse taken : takenList) {
+                        CourseTaken temp = new CourseTaken();
+                        String dept = "";
+                        String number = "";
+
+                        String course = taken.getCourse().trim();
+                        if ("FL-HS".equals(course)) {
+                            dept = course;
+                        } else if ("NATSPEAK".equals(course)) {
+                            dept = course;
+                        } else {
+                            course = course.substring(1);
+                            if (course.length() > 6) {
+                                dept = course.substring(0, 6).trim();
+                                number = course.substring(6).trim();
+                                if (number.length() > 3) {
+                                    number = number.substring(0, 3).trim();
+                                }
+
+                            } else {
+                                dept = course.trim();
+                            }
+                        }
+                        temp.setDept(dept);
+                        temp.setNumber(number);
+                        temp.setGrade(taken.getGpa().toString());
+                        temp.setDescription(taken.getCtitle());
+                        temp.setCredits(taken.getCredit().toString());
+                        temp.setQuarter(taken.getEditYt());
+                        boolean inProgress = "I".equals(taken.getIp());
+                        temp.setInProgress(inProgress);
+                        String courseID = getCourseID(dept, number);
+                        temp.setCluid(courseID);
+
+                        subrequirement.addCourseTaken(temp);
+                    }
+                    }
+                }
             }
         }
-
         return report;
     }
 
@@ -525,20 +604,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
-//    public String getCourseID( String dept, String number )
-//    {
-//        try {
-//            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-//            searchRequest.addParam("number", number);
-//            searchRequest.addParam("subject", dept.trim());
-//            SearchResult searchResult = getLuService().search(searchRequest);
-//            for (SearchResultRow row : searchResult.getRows()) {
-//                String courseID = getCellValue(row, "lu.resultColumn.cluId");
-//                return courseID;
-//            }
-//            return null;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public String getCourseID( String dept, String number )
+    {
+        try {
+            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
+            searchRequest.addParam("number", number);
+            searchRequest.addParam("subject", dept.trim());
+            SearchResult searchResult = getLuService().search(searchRequest);
+            for (SearchResultRow row : searchResult.getRows()) {
+                String courseID = getCellValue(row, "lu.resultColumn.cluId");
+                return courseID;
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
