@@ -111,14 +111,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.");
             }
 
-            List<TermInfo> termInfos = null;
-            try {
-                termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Web service call failed.", e);
-                //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
-                termInfos = new ArrayList<TermInfo>();
-            }
 
             /*
              *  Populating the PlannedTerm List.
