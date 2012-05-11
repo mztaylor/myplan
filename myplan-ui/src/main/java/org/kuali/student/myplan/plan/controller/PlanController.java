@@ -329,7 +329,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Create events before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem,courseDetails);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem, courseDetails);
         //  Save the source ATP ID to create credit total updates later.
         String originalAtpId = planItem.getPlanPeriods().get(0);
 
@@ -382,8 +382,21 @@ public class PlanController extends UifControllerBase {
 
         form.setJavascriptEvents(events);
 
-        String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
+        String atpId = planItem.getPlanPeriods().get(0);
+        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
+        String[] params = {link};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_MOVED, params);
+    }
+
+    private String makeLinkToAtp(String atpId, String text) {
+        StringBuilder out = new StringBuilder();
+        out.append("<a href=\"")
+                .append("/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                .append(atpId)
+                .append("\">")
+                .append(text)
+                .append("</a>");
+        return out.toString();
     }
 
     @RequestMapping(params = "methodToCall=copyPlannedCourse")
@@ -507,7 +520,9 @@ public class PlanController extends UifControllerBase {
         //  Populate the form.
         form.setJavascriptEvents(events);
 
-        String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
+        String atpId = planItem.getPlanPeriods().get(0);
+        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
+        String[] params = {link};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_COPIED, params);
     }
 
@@ -648,7 +663,8 @@ public class PlanController extends UifControllerBase {
         //} catch (Exception e) {
         //    logger.error("Unable to update the plan.", e);
         //}
-        String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
+        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
+        String[] params = {link};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
 
@@ -1241,8 +1257,6 @@ public class PlanController extends UifControllerBase {
 
         try {
             learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
-
-
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
