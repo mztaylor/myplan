@@ -503,11 +503,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                     String.format("Plan Item Type was [%s], but no plan periods were defined.", planItemInfo.getTypeKey()),
                     "typeKey", ValidationResult.ErrorLevel.ERROR));
             } else {
-                //  Make sure the plan periods are valid.
-                /*
-
-                FIXME: Uncomment after Friday demo.
-
+                //  Make sure the plan periods are valid. Note: There should never be more than one item in the collection.
                 for (String atpId : planItemInfo.getPlanPeriods()) {
                     boolean valid = false;
                     try {
@@ -520,7 +516,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                         validationResultInfos.add(makeValidationResultInfo(
                             "ATP ID lookup failed.", "typeKey", ValidationResult.ErrorLevel.ERROR));
                     }
-                }*/
+                }
             }
         }
 
