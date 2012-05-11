@@ -110,7 +110,7 @@ public class PlanController extends UifControllerBase {
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch (Exception e) {
-            return doOperationFailedError(planForm, "Could not retrieve Course Details.", null);
+            return doOperationFailedError(planForm, "Could not retrieve Course Details.", e);
         }
         this.otherOptionValidation(planForm);
         return getUIFModelAndView(planForm);

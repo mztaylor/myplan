@@ -493,6 +493,7 @@
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="header.render" value="false"/>
+        <property name="entryPageId" value="add_planned_course"/>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
 
         <property name="styleClasses">
@@ -509,6 +510,8 @@
                         </list>
                     </property>
                 </bean>
+                <!-- This page is displayed if initialization of the view fails. -->
+                <ref bean="plan_action_response_page"/>
             </list>
         </property>
     </bean>
@@ -689,8 +692,29 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-
-    <!-- Page displaying all plan action response -->
+    <!-- Page displaying all plan action response
+         This page is returned in response to any action on a plan item. It passes data base to javascripts on the UI-->
+    <bean id="plan_action_response_page" parent="Uif-Page" p:id="plan_item_action_response_page">
+        <property name="errorsField">
+            <bean parent="Uif-GroupValidationMessages">
+                <property name="displayMessages" value="true"/>
+                <property name="displayCounts" value="false"/>
+                <property name="displayFieldLabelWithMessages" value="false"/>
+                <property name="displayNestedMessages" value="false"/>
+                <property name="highlightOnError" value="false"/>
+                <property name="combineMessages" value="true"/>
+                <property name="allowMessageRepeat" value="false"/>
+                <property name="displayInfoMessages" value="true"/>
+                <property name="displayWarningMessages" value="true"/>
+                <property name="fireGrowlsForMessages" value="false"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="plan_item_actions_response"/>
+            </list>
+        </property>
+    </bean>
     <bean id="plan_item_actions_response" parent="Uif-VerticalBoxSection">
         <property name="items">
             <list>
@@ -1301,28 +1325,9 @@
                     </property>
                 </bean>
 
-                <!--  This page is returned in response to any action on a plan item. It passes data base to javascripts on the UI-->
-                <bean parent="Uif-Page" p:id="plan_item_action_response_page">
-                    <property name="errorsField">
-                        <bean parent="Uif-GroupValidationMessages">
-                            <property name="displayMessages" value="true"/>
-                            <property name="displayCounts" value="false"/>
-                            <property name="displayFieldLabelWithMessages" value="false"/>
-                            <property name="displayNestedMessages" value="false"/>
-                            <property name="highlightOnError" value="false"/>
-                            <property name="combineMessages" value="true"/>
-                            <property name="allowMessageRepeat" value="false"/>
-                            <property name="displayInfoMessages" value="true"/>
-                            <property name="displayWarningMessages" value="true"/>
-                            <property name="fireGrowlsForMessages" value="false"/>
-                        </bean>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <ref bean="plan_item_actions_response"/>
-                        </list>
-                    </property>
-                </bean>
+                <!-- This page contains return status and feedback messages for actions on plan items -->
+                <ref bean="plan_action_response_page"/>
+
                 <!--This page is used for the View Course Summary Dialog box -->
                 <bean parent="Uif-Page" p:id="course_summary_dialog_page" p:errorsField.render="false">
                     <property name="styleClasses">
@@ -1465,8 +1470,6 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-
-
 
                 <ref bean="add_planned_course_other"/>
 
@@ -1759,7 +1762,6 @@
             </list>
         </property>
     </bean>
-
 
     <!-- ################# Tabular view of full academic plan ############################# -->
 
