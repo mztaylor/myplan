@@ -1739,9 +1739,9 @@
     <bean id="FullPlannedCourses-LookupView" parent="MyPlanLookupView">
         <property name="viewName" value="FullPlannedCourses-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
-        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="viewHelperServiceClassName"
-                  value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
+                  value="org.kuali.student.myplan.plan.service.FullPlanItemsLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
         <property name="styleClasses">
@@ -1774,7 +1774,7 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="full_planned_courses_detail" parent="Uif-HorizontalBoxSubSection" p:errorsField.render="false">
+    <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
@@ -1783,22 +1783,31 @@
         <property name="items">
             <list>
                 <ref bean="collection1"/>
+
             </list>
         </property>
     </bean>
 
     <!--Collection list of the Full Plan Items-->
-    <bean id="collection1" parent="Uif-Disclosure-StackedCollectionSection">
+    <bean id="collection1" parent="Uif-Disclosure-StackedCollectionSection" >
+
+        <property name="styleClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>myplan-term-completed</value>
+            </list>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="searchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-        <!--<property name="layoutManager.applyDefaultCellWidths" value="false"/>-->
+
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false"
-                      p:escapeHtmlInPropertyValue="false" />
+                      p:escapeHtmlInPropertyValue="false" p:width="10.0%" p:styleClasses="myplan-carousel-term-total"/>
+
             </list>
         </property>
         <property name="subCollections">
@@ -1806,10 +1815,17 @@
                 <ref bean="termsCollection"/>
             </list>
         </property>
+
     </bean>
 
 
     <bean id="termsCollection" parent="UifMyPlan-HorizontalStackedSubCollection-WithinSection">
+        <property name="styleClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>myplan-term-completed</value>
+            </list>
+        </property>
 
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
@@ -1822,45 +1838,109 @@
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-DataField" p:propertyName="term" p:labelField.render="false"
-                      p:escapeHtmlInPropertyValue="false" p:width="100"/>
-            </list>
-        </property>
+
         <property name="subCollections">
             <list>
-                <ref bean="planItemDOCollection"/>
+                <ref bean="academicRecordDOCollection"/>
+                <ref bean="plannedCourseDOCollection"/>
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
 
+
     </bean>
 
-
-    <bean id="planItemDOCollection" parent="Uif-ListCollectionSubSection">
-
+    <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
+        <property name="header">
+            <bean parent="Uif-HeaderField-Six"/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem"/>
+                </property>
+            </bean>
+        </property>
+        <property name="styleClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>myplan-term-completed</value>
+            </list>
+        </property>
         <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.plan.dataobject.PlanItemDataObject"/>
-        <property name="propertyName" value="planItemDataObjects"/>
-
+                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
+        <property name="propertyName" value="plannedList"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="disclosure.render" value="false"/>
-        <!--<property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>-->
-        <!--<property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>-->
-        <!--<property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>-->
+
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:messageText="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"
+                      p:render="@{#line.CourseDetails ne null ? true : false}"/>
+                <bean parent="Uif-MessageField"
+                      p:messageText="add Courses to your plan "
+                      p:render="@{#line.courseDetails eq null ? true : false}"/>
+
+            </list>
+        </property>
+
+        <property name="collectionLookup.quickfinderActionField.render" value="false"/>
+        <property name="footer">
+            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"/>
+        </property>
+
+    </bean>
+
+    <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:title="COMPLETED">
+
+        <property name="header">
+            <bean parent="Uif-HeaderField-Six"/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem"/>
+                </property>
+            </bean>
+        </property>
+
+        <property name="styleClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>myplan-term-completed</value>
+            </list>
+        </property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
+        <property name="propertyName" value="academicRecord"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
 
                 <bean parent="Uif-MessageField"
-                      p:messageText="@{#line.CourseDetails.code} (@{#line.CourseDetails.credit})"/>
+                      p:messageText="@{#line.courseCode} (@{#line.credit})"
+                      p:render="@{#line.courseCode ne null ? true : false}"/>
+
             </list>
         </property>
 
+        <property name="collectionLookup.quickfinderActionField.render" value="false"/>
 
         <!--<property name="collectionLookup.quickfinderActionField.render" value="false"/>-->
 
     </bean>
+
+
 </beans>
