@@ -1077,12 +1077,12 @@
     <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
-                <!-- If not in plan and not in saved courses and not in academic record list -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                            <!-- If not in plan and not in saved courses and not in academic record list -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -1091,20 +1091,36 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <!-- If not in plan and in saved courses and not in academic list-->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="addToPlanButton"/>
+                                        <ref bean="removeSavedCourseButton"/>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
 
-                <!-- If not in plan and not in saved courses and in academic record list -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() gt 0) ? true : false}">
+                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>myplan-message-border</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                            <!-- If not in plan and not in saved courses and in academic record list -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() gt 0) ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
-
                                         <bean parent="Uif-DataField"
                                               p:render="@{courseDetails.academicTerms.size() gt 0 ? true : false}"
                                               p:propertyName="courseDetails.academicTerms"
@@ -1114,34 +1130,16 @@
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
-                                                    <value>myplan-message-border</value>
                                                 </list>
                                             </property>
                                         </bean>
-
                                     </list>
                                 </property>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
 
-                <!-- If not in plan and in saved courses and not in academic list-->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
-                                <property name="group.errorsField.render" value="false"/>
-                                <property name="items">
-                                    <list>
-
-                                        <ref bean="addToPlanButton"/>
-                                        <ref bean="removeSavedCourseButton"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:styleClasses="myplan-message-border">
+                            <!-- If not in plan and in saved courses and not in academic list -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="Saved to your "/>
@@ -1154,28 +1152,14 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-MessageField"
-                                              p:messageText=" on @{courseDetails.savedItemDateCreated}"/>
-
+                                        <bean parent="Uif-MessageField" p:messageText=" on @{courseDetails.savedItemDateCreated}"/>
                                     </list>
                                 </property>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
 
-
-                <!-- If not in plan and in saved courses and in academic list-->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() gt 0) ? true : false}">
-                    <property name="styleClasses">
-                        <list merge="true">
-                            <value>myplan-message-border</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                            <!-- If not in plan and in saved courses and in academic list -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() gt 0) ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -1187,25 +1171,16 @@
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
-                                                    <value>myplan-message-border</value>
                                                 </list>
                                             </property>
                                         </bean>
-
-
                                     </list>
                                 </property>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
 
-                <!-- If in plan -->
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
-                      p:render="@{courseDetails.plannedList ne null ? true : false}">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                            <!-- If in plan -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{courseDetails.plannedList ne null ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -1218,11 +1193,9 @@
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
-                                                    <value>myplan-message-border</value>
                                                 </list>
                                             </property>
                                         </bean>
-
                                         <bean parent="Uif-DataField"
                                               p:propertyName="courseDetails.plannedList"
                                               p:labelField.styleClasses="fl-text-gray myplan-text-normal"
@@ -1231,19 +1204,16 @@
                                             <property name="styleClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
-                                                    <value>myplan-message-border</value>
                                                 </list>
                                             </property>
                                         </bean>
-
                                     </list>
-
                                 </property>
-
                             </bean>
                         </list>
                     </property>
                 </bean>
+
             </list>
         </property>
     </bean>
