@@ -1,4 +1,5 @@
 package org.kuali.student.myplan.plan.dataobject;
+
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
@@ -20,13 +21,13 @@ public class PlannedTerm {
 
     private List<PlannedCourseDataObject> plannedList = new ArrayList<PlannedCourseDataObject>();
     private List<PlannedCourseDataObject> backupList = new ArrayList<PlannedCourseDataObject>();
-    private List<AcademicRecordDataObject> academicRecord=new ArrayList<AcademicRecordDataObject>();
+    private List<AcademicRecordDataObject> academicRecord = new ArrayList<AcademicRecordDataObject>();
     private String credits = null;
 
     /*
-     *  The index of this item in a list of PlannedTerms. This is used by the UI to focus the "carousellite" javascript
-     *  component. The value should be -1 unless this PlannedTerm should have focus.
-     */
+    *  The index of this item in a list of PlannedTerms. This is used by the UI to focus the "carousellite" javascript
+    *  component. The value should be -1 unless this PlannedTerm should have focus.
+    */
     private int index = -1;
 
     public int getIndex() {
@@ -70,22 +71,87 @@ public class PlannedTerm {
     }
 
     public String getCredits() {
-        int totalMin = 0;
-        int totalMax = 0;
-        for (PlannedCourseDataObject pc : getPlannedList()) {
-            String[] str = pc.getCourseDetails().getCredit().split("\\D");
-            int min = Integer.parseInt(str[0]);
-            totalMin += min;
-            int max = Integer.parseInt(str[str.length - 1]);
-            totalMax += max;
+        String totalCredits = null;
+        int plannedTotalMin = 0;
+        int plannedTotalMax = 0;
+        if (getPlannedList().size() > 0) {
+
+            for (PlannedCourseDataObject pc : getPlannedList()) {
+                if (pc.getCourseDetails() != null) {
+                    String[] str = pc.getCourseDetails().getCredit().split("\\D");
+                    int min = Integer.parseInt(str[0]);
+                    plannedTotalMin += min;
+                    int max = Integer.parseInt(str[str.length - 1]);
+                    plannedTotalMax += max;
+
+                }
+            }
+            totalCredits = Integer.toString(plannedTotalMin);
+
+            if (plannedTotalMin != plannedTotalMax) {
+                totalCredits = totalCredits + "-" + Integer.toString(plannedTotalMax);
+
+            }
         }
-        String totalCredits = Integer.toString(totalMin);
-        if (totalMin != totalMax) {
-            totalCredits = totalCredits + "-" + Integer.toString(totalMax);
+        int academicTotalMin = 0;
+        int academicTotalMax = 0;
+        if (getAcademicRecord().size() > 0) {
+
+            for (AcademicRecordDataObject ar : getAcademicRecord()) {
+                if (ar.getCredit() != null) {
+                    String[] str = ar.getCredit().split("\\D");
+                    int min = Integer.parseInt(str[0]);
+                    academicTotalMin += min;
+                    int max = Integer.parseInt(str[str.length - 1]);
+                    academicTotalMax += max;
+                }
+            }
+            totalCredits = Integer.toString(academicTotalMin);
+
+            if (academicTotalMin != academicTotalMax) {
+                totalCredits = totalCredits + "-" + Integer.toString(academicTotalMax);
+
+
+            }
+
+
         }
 
+        /*TODO:Implement this based on the flags (past,present,future) logic*/
+        if (getPlannedList().size() > 0 && getAcademicRecord().size() > 0) {
+             if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
+                int minVal = 0;
+                int maxVal = 0;
+                minVal = Math.min(plannedTotalMin, academicTotalMin);
+                maxVal = plannedTotalMax + academicTotalMax;
+                totalCredits = minVal + "-" + maxVal;
+            }
+            if (plannedTotalMin == plannedTotalMax && academicTotalMin == academicTotalMax) {
+                totalCredits = String.valueOf(plannedTotalMin + academicTotalMin);
+            }
+            if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
+                int minVal = 0;
+                int maxVal = 0;
+                minVal = plannedTotalMin;
+                maxVal = plannedTotalMax + academicTotalMax;
+                totalCredits = minVal + "-" + maxVal;
+
+            }
+            if (plannedTotalMin == plannedTotalMax && academicTotalMin != academicTotalMax) {
+                int minVal = 0;
+                int maxVal = 0;
+                minVal = academicTotalMin;
+                maxVal = plannedTotalMax + academicTotalMax;
+                totalCredits = minVal + "-" + maxVal;
+            }
+        }
         return totalCredits;
     }
+
+    public void setCredits(String credits) {
+        this.credits = credits;
+    }
+
 
     public List<AcademicRecordDataObject> getAcademicRecord() {
         return academicRecord;
