@@ -283,6 +283,15 @@ $.fn.jCarouselLite = function(o) {
 
         if(o.initCallback) {
 			o.initCallback.call(this, vis());
+            if(!o.circular) {
+                $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
+                $( (curr-o.scroll<0 && o.btnPrev)
+                    ||
+                   (curr+o.scroll > itemLength-v && o.btnNext)
+                    ||
+                   []
+                 ).addClass("disabled");
+            }
 		}
 
         function go(to) {
