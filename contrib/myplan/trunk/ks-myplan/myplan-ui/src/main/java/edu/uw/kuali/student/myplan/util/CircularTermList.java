@@ -5,7 +5,8 @@ public class CircularTermList {
 
     //  TODO: This data structure could be improved.
     private String quarters[] = {"Autumn", "Winter", "Spring", "Summer"};
-    private String quarterNumber[] = {"1", "2", "3", "4"};
+    //  This is the number which will be used to build ATP IDs.
+    private String quarterNumber[] = {"4", "1", "2", "3"};
     private int year;
 
     public CircularTermList(String quarter, int year) {
