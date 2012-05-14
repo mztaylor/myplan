@@ -106,6 +106,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             /*academic record SWS call to get the studentCourseRecordInfo list */
             List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
             try {
+                /*TODO:Replace the hard coded personId with the actual once logic to get that is known */
                 studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", PlanConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.");
@@ -191,6 +192,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                 }
                 String maxTerm = AtpHelper.getCurrentAtpId();
                 populateMockList(minTerm, maxTerm, termsList);
+                if (plannedTerms.size() > 0) {
+                    for (PlannedTerm plannedTerm : plannedTerms) {
+                        if (termsList.containsKey(plannedTerm.getPlanItemId())) {
+                            if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
+                                termsList.get(plannedTerm.getPlanItemId());
+                                termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
+                            }
+                        }
+                    }
+                }
                 if (studentCourseRecordInfos.size() > 0) {
                     for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
                         if (termsList.containsKey(studentInfo.getTermName())) {
@@ -209,16 +220,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         }
                     }
                 }
-                if (plannedTerms.size() > 0) {
-                    for (PlannedTerm plannedTerm : plannedTerms) {
-                        if (termsList.containsKey(plannedTerm.getPlanItemId())) {
-                            if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
-                                termsList.get(plannedTerm.getPlanItemId());
-                                termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
-                            }
-                        }
-                    }
-                }
+
                 List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
                 for (String key : termsList.keySet()) {
                     perfectPlannedTerms.add(termsList.get(key));
