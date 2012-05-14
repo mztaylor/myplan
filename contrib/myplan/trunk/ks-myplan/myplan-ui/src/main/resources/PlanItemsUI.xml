@@ -878,7 +878,7 @@
         <property name="styleClasses">
             <list merge="false">
                 <value>myplan-carousel-term</value>
-                <value>@{#line.planItemId.replaceAll("\.","-")}</value>
+                <value>@{#line.atpId.replaceAll("\.","-")}</value>
                 <value>myplan-term-planned</value>
             </list>
         </property>
@@ -934,7 +934,7 @@
         <property name="styleClasses">
             <list merge="false">
                 <value>myplan-carousel-term</value>
-                <value>@{#line.planItemId.replaceAll("\.","-")}</value>
+                <value>@{#line.atpId.replaceAll("\.","-")}</value>
                 <value>myplan-term-backup</value>
             </list>
         </property>
