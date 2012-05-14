@@ -194,7 +194,7 @@
         <property name="template" value="/ks-myplan/WEB-INF/jsp/templates/layout/override/horizontalstacked.jsp"/>
 
         <property name="addLineGroup">
-            <bean parent="Uif-CollectionHorizontalBoxItem">
+            <bean parent="Uif-CollectionVerticalBoxItem">
                 <property name="styleClasses">
                     <list merge="true">
                         <value>uif-collectionAddItem</value>
@@ -203,11 +203,11 @@
             </bean>
         </property>
         <property name="lineGroupPrototype">
-            <bean parent="Uif-CollectionHorizontalBoxItem"/>
+            <bean parent="Uif-CollectionVerticalBoxItem"/>
         </property>
 
         <property name="subCollectionFieldGroupPrototype">
-            <bean parent="Uif-HorizontalFieldGroup" p:styleClasses="uif-subCollection"/>
+            <bean parent="Uif-VerticalFieldGroup" p:styleClasses="uif-subCollection"/>
         </property>
 
     </bean>
