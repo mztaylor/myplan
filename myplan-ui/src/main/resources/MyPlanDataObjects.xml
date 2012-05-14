@@ -208,7 +208,7 @@
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
-                <ref bean="PlannedTerm.planItemId"/>
+                <ref bean="PlannedTerm.atpId"/>
                 <ref bean="PlannedTerm.qtrYear"/>
                 <ref bean="PlannedTerm.credits"/>
                 <!--<ref bean="PlannedTerm.isCurrentTerm"/>-->
@@ -222,9 +222,9 @@
         </property>
     </bean>
 
-    <bean id="PlannedTerm.planItemId" parent="PlannedTerm.planItemId-parentBean"/>
-    <bean id="PlannedTerm.planItemId-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="planItemId"/>
+    <bean id="PlannedTerm.atpId" parent="PlannedTerm.atpId-parentBean"/>
+    <bean id="PlannedTerm.atpId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="atpId"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Your Courses Atp ID"/>
         <property name="shortLabel" value="Your Courses List Atp ID"/>

@@ -388,15 +388,14 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_MOVED, params);
     }
 
+    /**
+     * Build an HTML link to a specific ATP in the quarter view.
+     * @param atpId
+     * @param text
+     * @return
+     */
     private String makeLinkToAtp(String atpId, String text) {
-        StringBuilder out = new StringBuilder();
-        out.append("<a href=\"")
-                .append("/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
-                .append(atpId)
-                .append("\">")
-                .append(text)
-                .append("</a>");
-        return out.toString();
+        return PlanConstants.QUARTER_LINK.replace("{atpId}", atpId).replace("{label}", text);
     }
 
     @RequestMapping(params = "methodToCall=copyPlannedCourse")

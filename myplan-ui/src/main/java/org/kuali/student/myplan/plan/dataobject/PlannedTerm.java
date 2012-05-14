@@ -15,8 +15,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PlannedTerm {
-    // TODO: This is actually the ATPid. FIXME!
-    private String planItemId;
+    private String atpId;
     private String qtrYear;
 
     private List<PlannedCourseDataObject> plannedList = new ArrayList<PlannedCourseDataObject>();
@@ -38,8 +37,8 @@ public class PlannedTerm {
         this.index = index;
     }
 
-    public String getPlanItemId() {
-        return planItemId;
+    public String getAtpId() {
+        return atpId;
     }
 
     public String getQtrYear() {
@@ -50,8 +49,8 @@ public class PlannedTerm {
         this.qtrYear = qtrYear;
     }
 
-    public void setPlanItemId(String planItemId) {
-        this.planItemId = planItemId;
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
     }
 
     public List<PlannedCourseDataObject> getPlannedList() {
