@@ -3,24 +3,17 @@
 <h1>${report.webTitle}</h1>
 
 
-<h2>Degree Audit Summary</h2>
 
 <table class="audit-summary">
 	<tr>
 		<td colspan="2">
 			<table>
 				<tr>
-					<td class="student-name">
-						<label>Student Name:</label> ${report.studentName}
-					</td>
 					<td class="date-prepared">
 						<label>Date Prepared:</label> ${report.datePrepared}
 					</td>
 				</tr>
 				<tr>
-					<td class="uw-entry-date">
-						<label>UW Entry Date:</label> ${report.entryDateUW}
-					</td>
 					<td class="program-entry-date">
 						<label>Program Entry Date:</label> ${report.entryDateProgram}
 					</td>
@@ -31,14 +24,9 @@
 </table>
 
 
-<h2>Detailed Degree Audit</h2>
 <p>
 THIS REPORT IS AN ADVISING TOOL USED TO TRACK DEGREE PROGRESS. FINAL CONFIRMATION OF DEGREE
 REQUIREMENTS IS SUBJECT TO DEPARTMENT OR COLLEGE AND UNIVERSITY APPROVAL.
-</p>
-<p>
-Please review this audit carefully and bring any questions to your adviser in the
-Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 </p>
 
 <div class="control-toolbar">
@@ -53,6 +41,12 @@ Communications Advising Office, 118 Communications, BOX 353740, 543-8860.
 
 
 #set( $courseAcceptableCounter = 0 )
+
+#foreach( $advisory in $report.advisoryList )
+<div class="requirement-advisory">
+${advisory}
+</div>
+#end
 
 #foreach( $section in $report.sectionList )
 #if( ${section.hasCaption()} )
