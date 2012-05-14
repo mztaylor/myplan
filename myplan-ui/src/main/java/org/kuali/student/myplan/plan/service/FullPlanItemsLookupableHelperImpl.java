@@ -1,10 +1,21 @@
 package org.kuali.student.myplan.plan.service;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
+import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject;
+import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
+import javax.xml.namespace.QName;
 import java.util.*;
 
 /**
@@ -17,429 +28,248 @@ import java.util.*;
 public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperBase {
     /*
    atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
+
     */
-    private int atpPrefix = 13;
-    private int primaryIndex = 0;
-    private String term1 = "autumn";
-    private String term2 = "winter";
-    private String term3 = "spring";
-    private String term4 = "summer";
-    // Used for gettign the term and year from Atp
-    private transient AtpHelper atpHelper;
-    public synchronized AtpHelper getAtpHelper(){
-        if(this.atpHelper == null){
-            this.atpHelper = new AtpHelper();
-        }
-        return atpHelper;
-    }
+    private final Logger logger = Logger.getLogger(FullPlanItemsLookupableHelperImpl.class);
+
+    /*Count of no of future years to be shown the quarter view */
+    private int futureTermsCount = 6;
+
+    private String atpTerm1 = "1";
+    private String atpTerm2 = "2";
+    private String atpTerm3 = "3";
+    private String atpTerm4 = "4";
 
 
     public enum terms {Autumn, Winter, Spring, Summer}
 
     ;
 
+    private transient AcademicCalendarService academicCalendarService;
+
+    private transient AcademicRecordService academicRecordService;
+
+    protected AcademicCalendarService getAcademicCalendarService() {
+        if (this.academicCalendarService == null) {
+            this.academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return this.academicCalendarService;
+    }
+
+    public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        this.academicCalendarService = academicCalendarService;
+    }
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (this.academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return this.academicRecordService;
+    }
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
+    }
+
     @Override
     protected List<FullPlanItemsDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        return null;
+
+        try {
+            List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
+
+            List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
+            Collections.sort(plannedCoursesList);
+
+            /*academic record SWS call to get the studentCourseRecordInfo list */
+            List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+            try {
+                /*TODO:Replace the hard coded personId with the actual once logic to get that is known */
+                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("9136CCB8F66711D5BE060004AC494FFE", PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.");
+            }
+
+            /*
+             *  Populating the PlannedTerm List.
+             */
+            for (PlannedCourseDataObject plan : plannedCoursesList) {
+                String atp = plan.getPlanItemDataObject().getAtp();
+                boolean exists = false;
+                for (PlannedTerm term : plannedTerms) {
+                    if (term.getPlanItemId().equalsIgnoreCase(atp)) {
+                        term.getPlannedList().add(plan);
+                        exists = true;
+                    }
+                }
+                if (!exists) {
+                    PlannedTerm term = new PlannedTerm();
+                    term.setPlanItemId(atp);
+                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
+                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp); /*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
+                    term.setQtrYear(QtrYear);
+                    term.getPlannedList().add(plan);
+                    plannedTerms.add(term);
+                }
+            }
+
+            /*
+             * Used for sorting the planItemDataObjects
+             */
+            Collections.sort(plannedTerms, new Comparator<PlannedTerm>() {
+                @Override
+                public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
+                    return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                }
+            });
+
+            /*********** Implementation to populate the plannedTerm list with academic record and planned terms ******************/
+            List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+            if (studentCourseRecordInfos.size() > 0 || plannedTerms.size() > 0) {
+                Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
+                String minTerm = null;
+                if (studentCourseRecordInfos.size() > 0) {
+                    minTerm = studentCourseRecordInfos.get(0).getTermName();
+                } else {
+                    minTerm = AtpHelper.getCurrentAtpId();
+                }
+                String maxTerm = AtpHelper.getCurrentAtpId();
+                populateMockList(minTerm, maxTerm, termsList);
+                if (plannedTerms.size() > 0) {
+                    for (PlannedTerm plannedTerm : plannedTerms) {
+                        if (termsList.containsKey(plannedTerm.getPlanItemId())) {
+                            if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
+                                termsList.get(plannedTerm.getPlanItemId());
+                                termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
+                            }
+                        }
+                    }
+                }
+
+                if (studentCourseRecordInfos.size() > 0) {
+                    for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                        if (termsList.containsKey(studentInfo.getTermName())) {
+                            AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                            academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                            academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                            academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                            /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
+                            academicRecordDataObject.setCourseId(studentInfo.getId());
+                            academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                            academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                            academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                            academicRecordDataObjectList.add(academicRecordDataObject);
+                            termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
+                        }
+                    }
+                }
+
+                List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
+                for (String key : termsList.keySet()) {
+                    perfectPlannedTerms.add(termsList.get(key));
+                }
+
+                Collections.sort(perfectPlannedTerms,
+                        new Comparator<PlannedTerm>() {
+                            @Override
+                            public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
+                                return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                            }
+                        });
+                List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
+                int size = perfectPlannedTerms.size();
+                for (int i = 0; i < size; i++) {
+                    FullPlanItemsDataObject fullPlanItemsDataObject = new FullPlanItemsDataObject();
+                    List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
+
+
+                    for (int j = 0; j < 4; j++) {
+                        plannedTermList.add(perfectPlannedTerms.get(0));
+                        perfectPlannedTerms.remove(perfectPlannedTerms.get(0));
+                        size--;
+                    }
+
+                    String[] minYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(0).getPlanItemId());
+                    String[] maxYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(plannedTermList.size() - 1).getPlanItemId());
+                    StringBuffer yearRange = new StringBuffer();
+                    yearRange = yearRange.append(minYear[1]).append("-").append(maxYear[1]);
+                    fullPlanItemsDataObject.setYearRange(yearRange.toString());
+                    fullPlanItemsDataObject.setTerms(plannedTermList);
+                    fullPlanItemsDataObjectList.add(fullPlanItemsDataObject);
+                }
+                return fullPlanItemsDataObjectList;
+            }
+
+
+            else {
+                List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
+
+                return fullPlanItemsDataObjectList;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-//        try {
-//            List<PlanItemDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true);
-//            List<FullPlanItemsDataObject> fullPlanItemsDataObjects = new ArrayList<FullPlanItemsDataObject>();
-//
-//
-//            /*Based on the Planned course list populate the FullPlanItemsDataObject*/
-//            for (PlanItemDataObject plan : plannedCoursesList) {
-//                for (String atp : plan.getAtpIds()) {
-//                    /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
-//                    String[] splitStr =  getAtpHelper().getTermAndYear(atp);/*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
-//                    String year = null;
-//                    String quarter = null;
-//                    if (splitStr.length == 2) {
-//                        year = splitStr[1].trim();
-//
-//                        quarter = splitStr[0].trim();
-//                    }
-//                    boolean exists = false;
-//                    if (fullPlanItemsDataObjects.size() > 0) {
-//
-//                        for (FullPlanItemsDataObject fpl : fullPlanItemsDataObjects) {
-//
-//                            if (String.valueOf(fpl.getYear()).equalsIgnoreCase(year)) {
-//
-//                                boolean termExists = false;
-//                                for (FullPlanTermItemsDataObject fpt : fpl.getTerms()) {
-//
-//                                    if (fpt.getTerm().equalsIgnoreCase(quarter)) {
-//                                        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-//                                        List<String> atps = new ArrayList<String>();
-//                                        atps.add(atp);
-//                                        planItemDataObject.setAtpIds(atps);
-//                                        planItemDataObject.setCourseDetails(plan.getCourseDetails());
-//                                        planItemDataObject.setDateAdded(plan.getDateAdded());
-//                                        planItemDataObject.setId(plan.getId());
-//                                        fpt.getPlanItemDataObjects().add(planItemDataObject);
-//                                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-//                                        if(plan.getCourseDetails().getCredit().length()>2){
-//                                            String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-//                                            String credit=str[2] ;
-//                                            fpt.setTotalCredits(fpt.getTotalCredits() + Integer.parseInt(credit));
-//                                        }else{
-//                                            fpt.setTotalCredits(fpt.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-//                                        }
-//                                        termExists = true;
-//                                    }
-//                                }
-//                                if (!termExists) {
-//
-//                                    FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//                                    List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-//                                    PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-//                                    List<String> atps = new ArrayList<String>();
-//                                    atps.add(atp);
-//                                    planItemDataObject.setAtpIds(atps);
-//                                    planItemDataObject.setCourseDetails(plan.getCourseDetails());
-//                                    planItemDataObject.setDateAdded(plan.getDateAdded());
-//                                    planItemDataObject.setId(plan.getId());
-//                                    planItemDataObjects.add(planItemDataObject);
-//                                    fullPlanTermItemsDataObject.setTerm(quarter);
-//                                    /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-//                                    if(plan.getCourseDetails().getCredit().length()>2){
-//                                        String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-//                                        String credit=str[2] ;
-//                                        fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
-//                                    }else{
-//                                        fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-//                                    }
-//                                    fullPlanTermItemsDataObject.setPlanItemDataObjects(planItemDataObjects);
-//                                    fpl.getTerms().add(fullPlanTermItemsDataObject);
-//                                }
-//                                exists = true;
-//
-//                            }
-//                        }
-//                        if (!exists) {
-//                            FullPlanItemsDataObject fullPlanItemsDataObject = new FullPlanItemsDataObject();
-//                            fullPlanItemsDataObject.setYear(Integer.parseInt(year));
-//                            List<FullPlanTermItemsDataObject> fullPlanTermItemsDataObjects = new ArrayList<FullPlanTermItemsDataObject>();
-//                            FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//                            List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-//                            PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-//                            List<String> atps = new ArrayList<String>();
-//                            atps.add(atp);
-//                            planItemDataObject.setAtpIds(atps);
-//                            planItemDataObject.setCourseDetails(plan.getCourseDetails());
-//                            planItemDataObject.setDateAdded(plan.getDateAdded());
-//                            planItemDataObject.setId(plan.getId());
-//                            planItemDataObjects.add(planItemDataObject);
-//                            fullPlanTermItemsDataObject.setTerm(quarter);
-//
-//                            fullPlanTermItemsDataObject.setPlanItemDataObjects(planItemDataObjects);
-//                            /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-//                            if(plan.getCourseDetails().getCredit().length()>2){
-//                                String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-//                                String credit=str[2] ;
-//                                fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
-//                            }else{
-//                                fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-//                            }
-//                            fullPlanTermItemsDataObjects.add(fullPlanTermItemsDataObject);
-//                            fullPlanItemsDataObject.setTerms(fullPlanTermItemsDataObjects);
-//
-//                            fullPlanItemsDataObjects.add(fullPlanItemsDataObject);
-//
-//
-//                        }
-//
-//                    } else {
-//                        FullPlanItemsDataObject fullPlanItemsDataObject = new FullPlanItemsDataObject();
-//                        fullPlanItemsDataObject.setYear(Integer.parseInt(year));
-//
-//
-//                        List<FullPlanTermItemsDataObject> fullPlanTermItemsDataObjects = new ArrayList<FullPlanTermItemsDataObject>();
-//                        FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//                        List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-//                        PlanItemDataObject planItemDataObject = new PlanItemDataObject();
-//                        List<String> atps = new ArrayList<String>();
-//                        atps.add(atp);
-//                        planItemDataObject.setAtpIds(atps);
-//                        planItemDataObject.setCourseDetails(plan.getCourseDetails());
-//                        planItemDataObject.setDateAdded(plan.getDateAdded());
-//                        planItemDataObject.setId(plan.getId());
-//                        planItemDataObjects.add(planItemDataObject);
-//                        fullPlanTermItemsDataObject.setTerm(quarter);
-//
-//                        fullPlanTermItemsDataObject.setPlanItemDataObjects(planItemDataObjects);
-//                        /*TODO: Remove this logic of substringing the credit once logic for handling the creditRanges is done     */
-//                        if(plan.getCourseDetails().getCredit().length()>2){
-//                            String [] str= plan.getCourseDetails().getCredit().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-//                            String credit=str[2] ;
-//                            fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(credit));
-//                        }else{
-//                            fullPlanTermItemsDataObject.setTotalCredits(fullPlanTermItemsDataObject.getTotalCredits() + Integer.parseInt(plan.getCourseDetails().getCredit()));
-//                        }
-//                        fullPlanTermItemsDataObjects.add(fullPlanTermItemsDataObject);
-//                        fullPlanItemsDataObject.setTerms(fullPlanTermItemsDataObjects);
-//
-//                        fullPlanItemsDataObjects.add(fullPlanItemsDataObject);
-//
-//
-//                    }
-//                }
-//
-//            }
-//
-//            /*Ordering base on year*/
-//            List<FullPlanItemsDataObject> orderedFullPlanTerms = new ArrayList<FullPlanItemsDataObject>();
-//            int size = fullPlanItemsDataObjects.size();
-//            for (int i = 0; i < size; i++) {
-//                this.yearOrdered(fullPlanItemsDataObjects, orderedFullPlanTerms);
-//                size--;
-//                i--;
-//            }
-//            Collections.reverse(orderedFullPlanTerms);
-//
-//            /*Populating missing quarters/Terms*/
-//            for (FullPlanItemsDataObject fullPlanItemsDataObject : orderedFullPlanTerms) {
-//                if (fullPlanItemsDataObject.getTerms().size() != 4) {
-//                    this.addMissingTerms(fullPlanItemsDataObject.getTerms());
-//                }
-//            }
-//
-//            /*Sorting the list based on quarters/Terms in the List*/
-//            for (FullPlanItemsDataObject fpt : orderedFullPlanTerms) {
-//                List<FullPlanTermItemsDataObject> termOrderedFullPlanTerms = new ArrayList<FullPlanTermItemsDataObject>();
-//                int size2 = fpt.getTerms().size();
-//                for (int i = 0; i < size2; i++) {
-//                    this.termOrdered(fpt.getTerms(), termOrderedFullPlanTerms);
-//                    size2--;
-//                    i--;
-//                }
-//                Collections.reverse(termOrderedFullPlanTerms);
-//                fpt.setTerms(termOrderedFullPlanTerms);
-//            }
-//
-//            /*Reordering the List to reflect the academic calender format*/
-//            populateOrderedAcademicTermList(orderedFullPlanTerms, fullPlanItemsDataObjects);
-//
-//            return fullPlanItemsDataObjects;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    private void populateOrderedAcademicTermList(List<FullPlanItemsDataObject> orderedFullPlanTerms, List<FullPlanItemsDataObject> fullPlanItemsDataObjects) {
-//        List<FullPlanTermItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanTermItemsDataObject>();
-//        FullPlanTermItemsDataObject fullPlanTerm1 = new FullPlanTermItemsDataObject();
-//        fullPlanTerm1.setTerm(term1);
-//        fullPlanItemsDataObjectList.add(fullPlanTerm1);
-//
-//        for (FullPlanItemsDataObject fpi : orderedFullPlanTerms) {
-//
-//
-//            for (FullPlanTermItemsDataObject fpt : fpi.getTerms()) {
-//                FullPlanTermItemsDataObject fullPlanTermItemsDataObject1 = new FullPlanTermItemsDataObject();
-//                fullPlanTermItemsDataObject1.setTerm(fpt.getTerm());
-//                fullPlanTermItemsDataObject1.setTotalCredits(fpt.getTotalCredits());
-//                fullPlanTermItemsDataObject1.setPlanItemDataObjects(fpt.getPlanItemDataObjects());
-//                fullPlanItemsDataObjectList.add(fullPlanTermItemsDataObject1);
-//
-//            }
-//        }
-//        if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term1)
-//                && fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getPlanItemDataObjects().size()==0){
-//
-//            fullPlanItemsDataObjectList.remove(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1));
-//
-//        }
-//        else if (fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term1)
-//                && fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getPlanItemDataObjects().size()>0)  {
-//            FullPlanTermItemsDataObject planTerm2 = new FullPlanTermItemsDataObject();
-//            planTerm2.setTerm(term2);
-//            fullPlanItemsDataObjectList.add(planTerm2);
-//            FullPlanTermItemsDataObject planTerm3 = new FullPlanTermItemsDataObject();
-//            planTerm3.setTerm(term3);
-//            fullPlanItemsDataObjectList.add(planTerm3);
-//            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
-//            planTerm4.setTerm(term4);
-//            fullPlanItemsDataObjectList.add(planTerm4);
-//        }
-//        else if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term2)){
-//
-//            FullPlanTermItemsDataObject planTerm3 = new FullPlanTermItemsDataObject();
-//            planTerm3.setTerm(term3);
-//            fullPlanItemsDataObjectList.add(planTerm3);
-//            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
-//            planTerm4.setTerm(term4);
-//            fullPlanItemsDataObjectList.add(planTerm4);
-//        }
-//        else if(fullPlanItemsDataObjectList.get(fullPlanItemsDataObjectList.size()-1).getTerm().equalsIgnoreCase(term3)){
-//            FullPlanTermItemsDataObject planTerm4 = new FullPlanTermItemsDataObject();
-//            planTerm4.setTerm(term4);
-//            fullPlanItemsDataObjectList.add(planTerm4);
-//        }
-//
-//        for (int i = 0; i < orderedFullPlanTerms.size(); i++) {
-//            FullPlanItemsDataObject fullPlanItemsDataObject1 = new FullPlanItemsDataObject();
-//            fullPlanItemsDataObject1.setYear(orderedFullPlanTerms.get(i).getYear() - 1);
-//            StringBuffer yearRange = new StringBuffer();
-//            yearRange = yearRange.append(orderedFullPlanTerms.get(i).getYear() - 1).append("-").append(orderedFullPlanTerms.get(i).getYear());
-//            fullPlanItemsDataObject1.setYearRange(yearRange.toString());
-//            for (int j = 0; j < 4; j++) {
-//
-//                fullPlanItemsDataObject1.getTerms().add(fullPlanItemsDataObjectList.get(primaryIndex));
-//                fullPlanItemsDataObjectList.remove(primaryIndex);
-//
-//            }
-//            fullPlanItemsDataObjects.add(fullPlanItemsDataObject1);
-//
-//        }
-//        if(fullPlanItemsDataObjectList.size()!=0){
-//            FullPlanItemsDataObject fullPlanItemsDataObject1 = new FullPlanItemsDataObject();
-//            StringBuffer yearRange=new StringBuffer();
-//            yearRange=yearRange.append(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear()+1).append("-").append(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear()+2);
-//            fullPlanItemsDataObject1.setYear(fullPlanItemsDataObjects.get(fullPlanItemsDataObjects.size()-1).getYear() + 1);
-//            fullPlanItemsDataObject1.setYearRange(yearRange.toString());
-//            for(int j=0;j<4;j++){
-//                fullPlanItemsDataObject1.getTerms().add(fullPlanItemsDataObjectList.get(primaryIndex));
-//                fullPlanItemsDataObjectList.remove(primaryIndex);
-//            }
-//            fullPlanItemsDataObjects.add(fullPlanItemsDataObject1);
-//
-//
-//        }
-//    }
-//
-//
-//    private void addMissingTerms(List<FullPlanTermItemsDataObject> termOrderedFullPlanTerms) {
-//
-//        boolean autumn = false;
-//        boolean winter = false;
-//        boolean spring = false;
-//        boolean summer = false;
-//        int size = termOrderedFullPlanTerms.size();
-//        for (int i = 0; i < size; i++) {
-//            String Qtr = termOrderedFullPlanTerms.get(i).getTerm().substring(0, 1).toUpperCase().concat(termOrderedFullPlanTerms.get(i).getTerm().substring(1, termOrderedFullPlanTerms.get(i).getTerm().length()));
-//            terms fd = terms.valueOf(Qtr.trim());
-//            switch (fd) {
-//                case Autumn:
-//                    if (!autumn) {
-//                        autumn = true;
-//                    } else {
-//                        autumn = false;
-//                    }
-//                    break;
-//                case Winter:
-//                    if (!winter) {
-//                        winter = true;
-//                    } else {
-//                        winter = false;
-//                    }
-//                    break;
-//                case Spring:
-//                    if (!spring) {
-//                        spring = true;
-//                    } else {
-//                        spring = false;
-//                    }
-//                    break;
-//                case Summer:
-//                    if (!summer) {
-//                        summer = true;
-//                    } else {
-//                        summer = false;
-//                    }
-//                    break;
-//            }
-//        }
-//        if (!autumn) {
-//            FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//            fullPlanTermItemsDataObject.setTerm(term1);
-//            termOrderedFullPlanTerms.add(fullPlanTermItemsDataObject);
-//        }
-//        if (!winter) {
-//            FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//            fullPlanTermItemsDataObject.setTerm(term2);
-//            termOrderedFullPlanTerms.add(fullPlanTermItemsDataObject);
-//        }
-//        if (!spring) {
-//            FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//            fullPlanTermItemsDataObject.setTerm(term3);
-//            termOrderedFullPlanTerms.add(fullPlanTermItemsDataObject);
-//        }
-//        if (!summer) {
-//            FullPlanTermItemsDataObject fullPlanTermItemsDataObject = new FullPlanTermItemsDataObject();
-//            fullPlanTermItemsDataObject.setTerm(term4);
-//            termOrderedFullPlanTerms.add(fullPlanTermItemsDataObject);
-//        }
-//
-//
-//    }
-//
-//
-//    private void yearOrdered(List<FullPlanItemsDataObject> fullPlanItemsDataObjects, List<FullPlanItemsDataObject> orderedFullPlanTerms) {
-//        int actualYear = -1;
-//        for (FullPlanItemsDataObject fpl : fullPlanItemsDataObjects) {
-//            int resultYear = fpl.getYear();
-//
-//            if (resultYear > actualYear) {
-//                actualYear = resultYear;
-//            }
-//
-//        }
-//        for (FullPlanItemsDataObject fpl : fullPlanItemsDataObjects) {
-//            if (String.valueOf(actualYear).equalsIgnoreCase(String.valueOf(fpl.getYear()))) {
-//                orderedFullPlanTerms.add(fpl);
-//                fullPlanItemsDataObjects.remove(fpl);
-//                break;
-//            }
-//        }
-//
-//    }
-//
-//
-//    private void termOrdered(List<FullPlanTermItemsDataObject> fullPlanItemsDataObjects, List<FullPlanTermItemsDataObject> orderedFullPlanTerms) {
-//        List<String> term = new ArrayList<String>();
-//        int count = 0;
-//        int resultQuarter = 0;
-//        int maxQ = 0;
-//        String actualQuarter = null;
-//        for (FullPlanTermItemsDataObject fpt : fullPlanItemsDataObjects) {
-//            String Qtr = fpt.getTerm().substring(0, 1).toUpperCase().concat(fpt.getTerm().substring(1, fpt.getTerm().length()));
-//            term.add(Qtr);
-//        }
-//        for (int i = 0; i < term.size(); i++) {
-//            String tempQuarter = term.get(i);
-//            terms fd = terms.valueOf(term.get(i));
-//            switch (fd) {
-//                case Winter:
-//                    resultQuarter = 1;
-//                    break;
-//                case Spring:
-//                    resultQuarter = 2;
-//                    break;
-//                case Summer:
-//                    resultQuarter = 3;
-//                    break;
-//                case Autumn:
-//                    resultQuarter = 4;
-//                    break;
-//            }
-//            if (resultQuarter > maxQ) {
-//                maxQ = resultQuarter;
-//                actualQuarter = tempQuarter;
-//
-//            }
-//
-//        }
-//        for (int j = 0; j < fullPlanItemsDataObjects.size(); j++) {
-//            if (fullPlanItemsDataObjects.get(j).getTerm().equalsIgnoreCase(actualQuarter)) {
-//                orderedFullPlanTerms.add(fullPlanItemsDataObjects.get(j));
-//                fullPlanItemsDataObjects.remove(fullPlanItemsDataObjects.get(j));
-//                break;
-//            }
-//        }
-//
-//
-//    }
+
+    private void populateMockList(String minTerm, String maxTerm, Map<String, PlannedTerm> map) {
+        String[] minTerms = AtpHelper.atpIdToTermAndYear(minTerm);
+        String[] maxTerms = AtpHelper.atpIdToTermAndYear(maxTerm);
+        int minYear = 0;
+        int maxYear = 0;
+
+        if (!minTerms[0].equalsIgnoreCase(atpTerm4)) {
+            minTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(Integer.parseInt(minTerms[1]) - 1));
+            minYear = Integer.parseInt(minTerms[1]) - 1;
+        } else {
+            minYear = Integer.parseInt(minTerms[1]);
+        }
+        if (!maxTerms[0].equalsIgnoreCase(atpTerm3)) {
+            if (maxTerms[0].equalsIgnoreCase(atpTerm4)) {
+                maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+                maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
+
+            } else {
+                maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+                maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
+            }
+        } else {
+            maxTerm = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(Integer.parseInt(maxTerms[1]) + futureTermsCount));
+            maxYear = Integer.parseInt(maxTerms[1]) + futureTermsCount;
+        }
+        String term1 = "";
+        String term2 = "";
+        String term3 = "";
+        String term4 = "";
+        for (int i = 0; !term4.equalsIgnoreCase(maxTerm); i++) {
+            PlannedTerm plannedTerm1 = new PlannedTerm();
+            term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
+            plannedTerm1.setPlanItemId(term1);
+            plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
+            map.put(term1, plannedTerm1);
+            minYear++;
+            PlannedTerm plannedTerm2 = new PlannedTerm();
+            term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
+            plannedTerm2.setPlanItemId(term2);
+            plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
+            map.put(term2, plannedTerm2);
+            PlannedTerm plannedTerm3 = new PlannedTerm();
+            term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
+            plannedTerm3.setPlanItemId(term3);
+            plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
+            map.put(term3, plannedTerm3);
+            PlannedTerm plannedTerm4 = new PlannedTerm();
+            term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
+            plannedTerm4.setPlanItemId(term4);
+            plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
+            map.put(term4, plannedTerm4);
+        }
+    }
+
 
 }

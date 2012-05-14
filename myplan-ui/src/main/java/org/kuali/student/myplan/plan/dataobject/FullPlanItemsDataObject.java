@@ -10,8 +10,9 @@ import java.util.*;
  */
 
 public class FullPlanItemsDataObject {
-    /* Used for sorting purpose*/
-    private int year;
+
+
+    private String totalCredits;
 
     private String yearRange;
 
@@ -25,14 +26,6 @@ public class FullPlanItemsDataObject {
         this.yearRange = yearRange;
     }
 
-    public int getYear() {
-        return year;
-
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
 
     public List<PlannedTerm> getTerms() {
         return terms;
@@ -40,5 +33,14 @@ public class FullPlanItemsDataObject {
 
     public void setTerms(List<PlannedTerm> terms) {
         this.terms = terms;
+    }
+
+    public String getTotalCredits() {
+       return totalCredits;
+
+    }
+
+    public void setTotalCredits(String totalCredits) {
+        this.totalCredits = totalCredits;
     }
 }
