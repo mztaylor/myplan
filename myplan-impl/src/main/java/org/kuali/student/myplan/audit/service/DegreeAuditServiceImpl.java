@@ -100,6 +100,48 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         this.jobQueueRunLoader = loader;
     }
 
+
+    public DegreeAuditServiceImpl()
+    {
+        loadProperties();
+    }
+
+    enum Structure { Section, Requirement, Advisory };
+    private HashMap<String, Structure> map = new HashMap<String, Structure>();
+
+    public void loadProperties()
+    {
+        map.put("A&SGENTXT", Structure.Section);
+        map.put("AOKTEXT", Structure.Section);
+        map.put("AOKTXTRCS", Structure.Section);
+        map.put("ART-ADMIT", Structure.Section);
+        map.put("ARTADVISE", Structure.Advisory);
+        map.put("ASTERISKS", Structure.Section);
+        map.put("BUSADMIN", Structure.Section);
+        map.put("CHEMADV1", Structure.Advisory);
+        map.put("CHMMAJOR1", Structure.Section);
+        map.put("COMADVIS", Structure.Advisory);
+        map.put("GENTEXTBA", Structure.Section);
+        map.put("LINE1", Structure.Section);
+        map.put("MAJORTEXT", Structure.Section);
+        map.put("MATHADVIS", Structure.Advisory);
+        map.put("MIN2.0BNR", Structure.Section);
+        map.put("SISAPRERQ", Structure.Section);
+        map.put("UTEXT", Structure.Section);
+        map.put("WHAT-IF", Structure.Advisory);
+    }
+
+    public Structure getStructure(JobQueueReq jqr )
+    {
+        Structure result = Structure.Requirement;
+        String rname = jqr.getRname();
+        if( map.containsKey( rname ))
+        {
+            result = map.get( rname );
+        }
+        return result;
+    }
+
     String join(Object... args) {
         StringBuilder sb = new StringBuilder();
         for (Object item : args) {
@@ -268,7 +310,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         JobQueueRunLoader jqrl = getJobQueueRunLoader();
         JobQueueRun run = jqrl.loadJobQueueRun(auditid);
 
-        report.setStudentName(run.getStuno());
+//        report.setStudentName(run.getStuno());
         report.setWebTitle(run.getWebtitle());
         report.setDegreeProgram(run.getDprog());
 
@@ -276,8 +318,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy h:mm a");
         report.setDatePrepared(formatter.format(runDate));
 
-        Section section = new Section();
-        report.addSection(section);
+        Section section = null;
         List<JobQueueReq> list = run.getJobQueueReqs();
         Comparator<JobQueueReq> poppins = new Comparator<JobQueueReq>()
         {
@@ -299,10 +340,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if ("".equals(jqr.getRname())) continue;
             if ("H".equals(jqr.getHidden())) continue;
 
-            String rname = jqr.getRname();
-            String psname = jqr.getPsname();
-            System.out.printf( "\n%s %s", rname, psname );
-
             String reqText = null;
             {
                 StringBuilder buf = new StringBuilder();
@@ -315,204 +352,216 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
 
             String satisfied = jqr.getSatisfied().trim().toUpperCase();
-            boolean textual = "T".equals( satisfied );
 
-            if( textual )
+            List<JobQueueSubreq> subreqs = jqr.getJobQueueSubreqs();
+
+
+            switch( getStructure( jqr ))
             {
-                section.setCaption(reqText);
-                // Create new section
-                section = new Section();
-                report.addSection(section);
-
-                continue;
-            }
-
-            Requirement requirement = new Requirement();
-            requirement.setStatus(satisfied);
-            section.addRequirement(requirement);
-            requirement.setCaption(reqText);
-
-
-            {
-                float reqHrs = jqr.getReqhrs().floatValue();
-                float gotHrs = jqr.getGothrs().floatValue();
-                float needHrs = jqr.getNeedhrs().floatValue();
-                float ipHrs = jqr.getIphrs().floatValue();
-                if (reqHrs > 1.0f && reqHrs < 999.0f) {
-                    Credits credits = new Credits();
-                    credits.setRequired(reqHrs);
-                    credits.setEarned(gotHrs - ipHrs);
-                    credits.setInprogress(ipHrs);
-                    credits.setNeeds(needHrs);
-                    requirement.setCredits(credits);
-                }
-            }
-
-            {
-                float reqGPA = jqr.getReqgpa().floatValue();
-                float gotGPA = jqr.getGotgpa().floatValue();
-
-                if (reqGPA > 0.0f) {
-                    GPA gpa = new GPA();
-                    gpa.setRequired(reqGPA);
-                    gpa.setEarned(gotGPA);
-                    requirement.setGPA(gpa);
-                }
-            }
-
-            {
-                int reqCourses = jqr.getReqct();
-                int gotCourses = jqr.getGotct();
-                int needCourses = jqr.getNeedct();
-
-                if (reqCourses > 0) {
-                    Count count = new Count();
-                    count.setRequired(reqCourses);
-                    count.setEarned(gotCourses);
-                    count.setNeeds(needCourses);
-                    requirement.setCount(count);
-                }
-            }
-
-            for (JobQueueSubreq jqsr : jqr.getJobQueueSubreqs()) {
-                if ("H".equals(jqsr.getHidden())) continue;
-
-                Subrequirement subrequirement = new Subrequirement();
-                requirement.addSubrequirement(subrequirement);
-                String subsatisfied = jqsr.getSatisfied();
-                subrequirement.setStatus(subsatisfied);
-
+                case Advisory:
                 {
-                    StringBuilder buf = new StringBuilder();
-                    for (JobQueueSubreqText text : jqsr.getJobQueueSubreqTexts()) {
-                        String temp = text.getText();
-                        buf.append(temp);
-                        buf.append(" ");
-                    }
-
-                    String subReqText = scrub( buf.toString() );
-
-                    if (subReqText.length() > 0) {
-                        subrequirement.setCaption(subReqText);
-                    }
-                }
-                {
-                    float reqHrs = jqsr.getReqhrs().floatValue();
-                    float gotHrs = jqsr.getGothrs().floatValue();
-                    float needHrs = jqsr.getNeedhrs().floatValue();
-                    float ipHrs = jqsr.getIphrs().floatValue();
-                    if (reqHrs > 1.0f && reqHrs < 999.0f) {
-                        Credits credits = new Credits();
-                        credits.setRequired(reqHrs);
-                        credits.setEarned(gotHrs - ipHrs);
-                        credits.setInprogress(ipHrs);
-                        credits.setNeeds(needHrs);
-                        subrequirement.setCredits(credits);
-                    }
+                    report.addAdvisory( reqText );
+                    break;
                 }
 
+                case Section:
                 {
-                    float reqGPA = jqr.getReqgpa().floatValue();
-                    float gotGPA = jqr.getGotgpa().floatValue();
-
-                    if (reqGPA > 0.0f) {
-                        GPA gpa = new GPA();
-                        gpa.setRequired(reqGPA);
-                        gpa.setEarned(gotGPA);
-                        subrequirement.setGPA(gpa);
-                    }
+                    section = report.newSection();
+                    section.setCaption(reqText);
+                    break;
                 }
 
+                case Requirement:
                 {
-                    int reqCourses = jqsr.getReqct();
-                    int gotCourses = jqsr.getGotct();
-                    int needCourses = jqsr.getNeedct();
 
-                    if (reqCourses > 0) {
-                        Count count = new Count();
-                        count.setRequired(reqCourses);
-                        count.setEarned(gotCourses);
-                        count.setNeeds(needCourses);
-                        subrequirement.setCount(count);
-                    }
-                }
+                    Requirement requirement = report.newRequirement();
+                    requirement.setStatus(satisfied);
+                    requirement.setCaption(reqText);
 
-//                LuService luService = getLuService();
-                {
-                // Acceptable courses
-                List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
-                for (JobQueueAccept accept : acceptList) {
-                    String dept = accept.getDept();
-                    if (dept.startsWith("**")) continue;
-                    String number = accept.getCrsno();
-                    if (number.length() == 0) continue;
 
-                    CourseAcceptable courseAcceptable = new CourseAcceptable();
-                    courseAcceptable.setDept(dept);
-                    courseAcceptable.setNumber(number);
-                    subrequirement.addCourseAcceptable(courseAcceptable);
-
-                    String courseID = getCourseID( dept.trim(), number );
-                    if( courseID != null )
                     {
-                        courseAcceptable.setCluId(courseID);
+                        float reqHrs = jqr.getReqhrs().floatValue();
+                        float gotHrs = jqr.getGothrs().floatValue();
+                        float needHrs = jqr.getNeedhrs().floatValue();
+                        float ipHrs = jqr.getIphrs().floatValue();
+                        if (reqHrs > 1.0f && reqHrs < 999.0f) {
+                            Credits credits = new Credits();
+                            credits.setRequired(reqHrs);
+                            credits.setEarned(gotHrs - ipHrs);
+                            credits.setInprogress(ipHrs);
+                            credits.setNeeds(needHrs);
+                            requirement.setCredits(credits);
+                        }
+                    }
+
+                    {
+                        float reqGPA = jqr.getReqgpa().floatValue();
+                        float gotGPA = jqr.getGotgpa().floatValue();
+
+                        if (reqGPA > 0.0f) {
+                            GPA gpa = new GPA();
+                            gpa.setRequired(reqGPA);
+                            gpa.setEarned(gotGPA);
+                            requirement.setGPA(gpa);
+                        }
+                    }
+
+                    {
+                        int reqCourses = jqr.getReqct();
+                        int gotCourses = jqr.getGotct();
+                        int needCourses = jqr.getNeedct();
+
+                        if (reqCourses > 0) {
+                            Count count = new Count();
+                            count.setRequired(reqCourses);
+                            count.setEarned(gotCourses);
+                            count.setNeeds(needCourses);
+                            requirement.setCount(count);
+                        }
+                    }
+
+                    for (JobQueueSubreq jqsr : subreqs ) {
+                        if ("H".equals(jqsr.getHidden())) continue;
+
+                        Subrequirement subrequirement = new Subrequirement();
+                        requirement.addSubrequirement(subrequirement);
+                        String subsatisfied = jqsr.getSatisfied();
+                        subrequirement.setStatus(subsatisfied);
+
                         {
-                            SearchRequest searchRequest = new SearchRequest("myplan.course.info");
-                            searchRequest.addParam("courseID", courseAcceptable.getCluid());
-                            try {
+                            StringBuilder buf = new StringBuilder();
+                            for (JobQueueSubreqText text : jqsr.getJobQueueSubreqTexts()) {
+                                String temp = text.getText();
+                                buf.append(temp);
+                                buf.append(" ");
+                            }
 
-                                SearchResult searchResult = getLuService().search(searchRequest);
-                                for (SearchResultRow row : searchResult.getRows()) {
-                                    String name = getCellValue(row, "course.name");
-                                    courseAcceptable.setDescription(name);
+                            String subReqText = scrub( buf.toString() );
 
-                                    break;
-                                }
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
+                            if (subReqText.length() > 0) {
+                                subrequirement.setCaption(subReqText);
                             }
                         }
-                    }
-                    }
-                    {
-                    List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
-                    for (JobQueueCourse taken : takenList) {
-                        CourseTaken temp = new CourseTaken();
-                        String dept = "";
-                        String number = "";
-
-                        String course = taken.getCourse().trim();
-                        if ("FL-HS".equals(course)) {
-                            dept = course;
-                        } else if ("NATSPEAK".equals(course)) {
-                            dept = course;
-                        } else {
-                            course = course.substring(1);
-                            if (course.length() > 6) {
-                                dept = course.substring(0, 6).trim();
-                                number = course.substring(6).trim();
-                                if (number.length() > 3) {
-                                    number = number.substring(0, 3).trim();
-                                }
-
-                            } else {
-                                dept = course.trim();
+                        {
+                            float reqHrs = jqsr.getReqhrs().floatValue();
+                            float gotHrs = jqsr.getGothrs().floatValue();
+                            float needHrs = jqsr.getNeedhrs().floatValue();
+                            float ipHrs = jqsr.getIphrs().floatValue();
+                            if (reqHrs > 1.0f && reqHrs < 999.0f) {
+                                Credits credits = new Credits();
+                                credits.setRequired(reqHrs);
+                                credits.setEarned(gotHrs - ipHrs);
+                                credits.setInprogress(ipHrs);
+                                credits.setNeeds(needHrs);
+                                subrequirement.setCredits(credits);
                             }
                         }
-                        temp.setDept(dept);
-                        temp.setNumber(number);
-                        temp.setGrade(taken.getGpa().toString());
-                        temp.setDescription(taken.getCtitle());
-                        temp.setCredits(taken.getCredit().toString());
-                        temp.setQuarter(taken.getEditYt());
-                        boolean inProgress = "I".equals(taken.getIp());
-                        temp.setInProgress(inProgress);
-                        String courseID = getCourseID(dept, number);
-                        temp.setCluid(courseID);
 
-                        subrequirement.addCourseTaken(temp);
+                        {
+                            float reqGPA = jqr.getReqgpa().floatValue();
+                            float gotGPA = jqr.getGotgpa().floatValue();
+
+                            if (reqGPA > 0.0f) {
+                                GPA gpa = new GPA();
+                                gpa.setRequired(reqGPA);
+                                gpa.setEarned(gotGPA);
+                                subrequirement.setGPA(gpa);
+                            }
+                        }
+
+                        {
+                            int reqCourses = jqsr.getReqct();
+                            int gotCourses = jqsr.getGotct();
+                            int needCourses = jqsr.getNeedct();
+
+                            if (reqCourses > 0) {
+                                Count count = new Count();
+                                count.setRequired(reqCourses);
+                                count.setEarned(gotCourses);
+                                count.setNeeds(needCourses);
+                                subrequirement.setCount(count);
+                            }
+                        }
+
+                        {
+                        List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
+                        for (JobQueueAccept accept : acceptList) {
+                            String dept = accept.getDept();
+                            if (dept.startsWith("**")) continue;
+                            String number = accept.getCrsno();
+                            if (number.length() == 0) continue;
+
+                            CourseAcceptable courseAcceptable = new CourseAcceptable();
+                            courseAcceptable.setDept(dept);
+                            courseAcceptable.setNumber(number);
+                            subrequirement.addCourseAcceptable(courseAcceptable);
+
+                            String courseID = getCourseID( dept.trim(), number );
+                            if( courseID != null )
+                            {
+                                courseAcceptable.setCluId(courseID);
+                                {
+                                    SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+                                    searchRequest.addParam("courseID", courseAcceptable.getCluid());
+                                    try {
+
+                                        SearchResult searchResult = getLuService().search(searchRequest);
+                                        for (SearchResultRow row : searchResult.getRows()) {
+                                            String name = getCellValue(row, "course.name");
+                                            courseAcceptable.setDescription(name);
+
+                                            break;
+                                        }
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }
+                            }
+                            {
+                            List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
+                            for (JobQueueCourse taken : takenList) {
+                                CourseTaken temp = new CourseTaken();
+                                String dept = "";
+                                String number = "";
+
+                                String course = taken.getCourse().trim();
+                                if ("FL-HS".equals(course)) {
+                                    dept = course;
+                                } else if ("NATSPEAK".equals(course)) {
+                                    dept = course;
+                                } else {
+                                    course = course.substring(1);
+                                    if (course.length() > 6) {
+                                        dept = course.substring(0, 6).trim();
+                                        number = course.substring(6).trim();
+                                        if (number.length() > 3) {
+                                            number = number.substring(0, 3).trim();
+                                        }
+
+                                    } else {
+                                        dept = course.trim();
+                                    }
+                                }
+                                temp.setDept(dept);
+                                temp.setNumber(number);
+                                temp.setGrade(taken.getGpa().toString());
+                                temp.setDescription(taken.getCtitle());
+                                temp.setCredits(taken.getCredit().toString());
+                                temp.setQuarter(taken.getEditYt());
+                                boolean inProgress = "I".equals(taken.getIp());
+                                temp.setInProgress(inProgress);
+                                String courseID = getCourseID(dept, number);
+                                temp.setCluid(courseID);
+
+                                subrequirement.addCourseTaken(temp);
+                            }
+                            }
+                        }
+                        break;
+
                     }
-                    }
+
                 }
             }
         }
@@ -606,18 +655,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public String getCourseID( String dept, String number )
     {
-        try {
-            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-            searchRequest.addParam("number", number);
-            searchRequest.addParam("subject", dept.trim());
-            SearchResult searchResult = getLuService().search(searchRequest);
-            for (SearchResultRow row : searchResult.getRows()) {
-                String courseID = getCellValue(row, "lu.resultColumn.cluId");
-                return courseID;
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String courseID = null;
+//        try {
+//            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
+//            searchRequest.addParam("number", number);
+//            searchRequest.addParam("subject", dept.trim());
+//            SearchResult searchResult = getLuService().search(searchRequest);
+//            for (SearchResultRow row : searchResult.getRows()) {
+//                courseID = getCellValue(row, "lu.resultColumn.cluId");
+//                break;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+////            throw new RuntimeException(e);
+//        }
+        return courseID;
     }
 }
