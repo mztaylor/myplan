@@ -301,7 +301,6 @@
         <property name="titleAttribute" value=""/>
         <property name="attributes">
             <list>
-                <ref bean="FullPlanItemsDataObject.year"/>
                 <ref bean="FullPlanItemsDataObject.yearRange"/>
 
             </list>
@@ -312,22 +311,7 @@
             </list>
         </property>
     </bean>
-    <bean id="FullPlanItemsDataObject.year" parent="FullPlanItemsDataObject.year-parentBean"/>
-    <bean id="FullPlanItemsDataObject.year-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="year"/>
-        <property name="label" value="Year"/>
-        <property name="shortLabel" value="Year"/>
-        <property name="dataType" value="INTEGER"/>
-        <property name="validCharactersConstraint">
-            <bean parent="NoWhitespacePatternConstraint"/>
-        </property>
-        <property name="control">
-            <bean parent="TextControlDefinition" p:size="10"/>
-        </property>
-        <property name="controlField">
-            <bean parent="Uif-TextControl" p:size="10"/>
-        </property>
-    </bean>
+
     <bean id="FullPlanItemsDataObject.yearRange" parent="FullPlanItemsDataObject.yearRange-parentBean"/>
     <bean id="FullPlanItemsDataObject.yearRange-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="yearRange"/>
