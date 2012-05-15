@@ -69,6 +69,8 @@ public class CourseTaken {
         return inProgress;
     }
 
+//    public boolean inProgress() { return inProgress; }
+
     public void setInProgress( boolean inProgress )
     {
         this.inProgress = inProgress;

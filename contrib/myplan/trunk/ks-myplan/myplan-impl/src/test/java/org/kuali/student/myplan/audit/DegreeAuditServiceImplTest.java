@@ -20,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uachieve.apis.audit.Audit;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
@@ -130,7 +129,19 @@ public class DegreeAuditServiceImplTest {
         ContextInfo zero = new ContextInfo();
         try {
             AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_HTML, zero);
-            OutputStream out = report.getReport().getDataSource().getOutputStream();
+            InputStream in = report.getReport().getDataSource().getInputStream();
+
+            File target = new File( "auditreport.html" );
+            FileOutputStream out = new FileOutputStream( target );
+
+            int c = 0;
+            while( ( c = in.read() ) != -1 )
+            {
+                out.write( (char) c );
+            }
+            in.close();
+            out.close();
+
             System.out.println( "argh" );
 
         } catch (DoesNotExistException e) {

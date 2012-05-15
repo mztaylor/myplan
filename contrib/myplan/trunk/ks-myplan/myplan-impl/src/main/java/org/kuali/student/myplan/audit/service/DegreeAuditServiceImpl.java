@@ -107,37 +107,62 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     enum Structure { Section, Requirement, Advisory };
-    private HashMap<String, Structure> map = new HashMap<String, Structure>();
+    private HashMap<String, Structure> structureMap = new HashMap<String, Structure>();
 
     public void loadProperties()
     {
-        map.put("A&SGENTXT", Structure.Section);
-        map.put("AOKTEXT", Structure.Section);
-        map.put("AOKTXTRCS", Structure.Section);
-        map.put("ART-ADMIT", Structure.Section);
-        map.put("ARTADVISE", Structure.Advisory);
-        map.put("ASTERISKS", Structure.Section);
-        map.put("BUSADMIN", Structure.Section);
-        map.put("CHEMADV1", Structure.Advisory);
-        map.put("CHMMAJOR1", Structure.Section);
-        map.put("COMADVIS", Structure.Advisory);
-        map.put("GENTEXTBA", Structure.Section);
-        map.put("LINE1", Structure.Section);
-        map.put("MAJORTEXT", Structure.Section);
-        map.put("MATHADVIS", Structure.Advisory);
-        map.put("MIN2.0BNR", Structure.Section);
-        map.put("SISAPRERQ", Structure.Section);
-        map.put("UTEXT", Structure.Section);
-        map.put("WHAT-IF", Structure.Advisory);
+        structureMap.put("A&SGENTXT", Structure.Section);
+        structureMap.put("AOKTEXT", Structure.Section);
+        structureMap.put("AOKTXTRCS", Structure.Section);
+        structureMap.put("ART-ADMIT", Structure.Section);
+        structureMap.put("ARTADVISE", Structure.Advisory);
+        structureMap.put("ASTERISKS", Structure.Section);
+        structureMap.put("BUSADMIN", Structure.Section);
+        structureMap.put("CHEMADV1", Structure.Advisory);
+        structureMap.put("CHMMAJOR1", Structure.Section);
+        structureMap.put("COMADVIS", Structure.Advisory);
+        structureMap.put("GENTEXTBA", Structure.Section);
+        structureMap.put("LINE1", Structure.Section);
+        structureMap.put("MAJORTEXT", Structure.Section);
+        structureMap.put("MATHADVIS", Structure.Advisory);
+        structureMap.put("MIN2.0BNR", Structure.Section);
+        structureMap.put("SISAPRERQ", Structure.Section);
+        structureMap.put("UTEXT", Structure.Section);
+        structureMap.put("WHAT-IF", Structure.Advisory);
+
+        textMap.put("A&SGENTXT", "GENERAL EDUCATION REQUIREMENTS" );
     }
 
     public Structure getStructure(JobQueueReq jqr )
     {
         Structure result = Structure.Requirement;
-        String rname = jqr.getRname();
-        if( map.containsKey( rname ))
+        String rname = jqr.getRname().trim();
+        if( structureMap.containsKey( rname ))
         {
-            result = map.get( rname );
+            result = structureMap.get( rname );
+        }
+        return result;
+    }
+
+    private HashMap<String,String> textMap = new HashMap<String, String>();
+
+    public String getText( JobQueueReq jqr )
+    {
+        String result = "";
+        String rname = jqr.getRname().trim();
+        if(textMap.containsKey( rname))
+        {
+            result = textMap.get( rname );
+        }
+        else
+        {
+            StringBuilder buf = new StringBuilder();
+            for (JobQueueReqText text : jqr.getJobQueueReqTexts()) {
+                String temp = text.getText();
+                buf.append(temp);
+                buf.append(" ");
+            }
+            result = scrub(buf.toString());
         }
         return result;
     }
@@ -318,11 +343,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy h:mm a");
         report.setDatePrepared(formatter.format(runDate));
 
+        String yearterm = run.getCatlyt();
+        yearterm = yearTermMagic( yearterm );
+        report.setEntryDateProgram( yearterm );
+
+        String complete = run.getComplete();
+        report.setComplete( "C".equals( complete ));
+
         Section section = null;
         List<JobQueueReq> list = run.getJobQueueReqs();
         Comparator<JobQueueReq> poppins = new Comparator<JobQueueReq>()
         {
-
             public int compare(JobQueueReq o1, JobQueueReq o2) {
                 String f1 = o1.getSortflg();
                 if( f1 == null ) return -1;
@@ -340,21 +371,19 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if ("".equals(jqr.getRname())) continue;
             if ("H".equals(jqr.getHidden())) continue;
 
-            String reqText = null;
-            {
-                StringBuilder buf = new StringBuilder();
-                for (JobQueueReqText text : jqr.getJobQueueReqTexts()) {
-                    String temp = text.getText();
-                    buf.append(temp);
-                    buf.append(" ");
-                }
-                reqText = scrub(buf.toString());
-            }
+
+            String reqText = getText( jqr );
+//            {
+//                StringBuilder buf = new StringBuilder();
+//                for (JobQueueReqText text : jqr.getJobQueueReqTexts()) {
+//                    String temp = text.getText();
+//                    buf.append(temp);
+//                    buf.append(" ");
+//                }
+//                reqText = scrub(buf.toString());
+//            }
 
             String satisfied = jqr.getSatisfied().trim().toUpperCase();
-
-            List<JobQueueSubreq> subreqs = jqr.getJobQueueSubreqs();
-
 
             switch( getStructure( jqr ))
             {
@@ -420,6 +449,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
+                    List<JobQueueSubreq> subreqs = jqr.getJobQueueSubreqs();
                     for (JobQueueSubreq jqsr : subreqs ) {
                         if ("H".equals(jqsr.getHidden())) continue;
 
@@ -483,44 +513,44 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
+                        if( false )
                         {
-                        List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
-                        for (JobQueueAccept accept : acceptList) {
-                            String dept = accept.getDept();
-                            if (dept.startsWith("**")) continue;
-                            String number = accept.getCrsno();
-                            if (number.length() == 0) continue;
+                            for (JobQueueAccept accept : jqsr.getJobQueueAccepts()) {
+                                String dept = accept.getDept();
+                                if (dept.startsWith("**")) continue;
+                                String number = accept.getCrsno();
+                                if (number.length() == 0) continue;
 
-                            CourseAcceptable courseAcceptable = new CourseAcceptable();
-                            courseAcceptable.setDept(dept);
-                            courseAcceptable.setNumber(number);
-                            subrequirement.addCourseAcceptable(courseAcceptable);
+                                CourseAcceptable courseAcceptable = new CourseAcceptable();
+                                courseAcceptable.setDept(dept);
+                                courseAcceptable.setNumber(number);
+                                subrequirement.addCourseAcceptable(courseAcceptable);
 
-                            String courseID = getCourseID( dept.trim(), number );
-                            if( courseID != null )
-                            {
-                                courseAcceptable.setCluId(courseID);
+                                String courseID = getCourseID( dept.trim(), number );
+                                if( courseID != null )
                                 {
-                                    SearchRequest searchRequest = new SearchRequest("myplan.course.info");
-                                    searchRequest.addParam("courseID", courseAcceptable.getCluid());
-                                    try {
+                                    courseAcceptable.setCluId(courseID);
+                                    {
+                                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+                                        searchRequest.addParam("courseID", courseAcceptable.getCluid());
+                                        try {
 
-                                        SearchResult searchResult = getLuService().search(searchRequest);
-                                        for (SearchResultRow row : searchResult.getRows()) {
-                                            String name = getCellValue(row, "course.name");
-                                            courseAcceptable.setDescription(name);
+                                            SearchResult searchResult = getLuService().search(searchRequest);
+                                            for (SearchResultRow row : searchResult.getRows()) {
+                                                String name = getCellValue(row, "course.name");
+                                                courseAcceptable.setDescription(name);
 
-                                            break;
+                                                break;
+                                            }
+                                        } catch (Exception e) {
+                                            throw new RuntimeException(e);
                                         }
-                                    } catch (Exception e) {
-                                        throw new RuntimeException(e);
                                     }
                                 }
                             }
-                            }
-                            {
-                            List<JobQueueCourse> takenList = jqsr.getJobQueueCourses();
-                            for (JobQueueCourse taken : takenList) {
+                        }
+                        {
+                            for (JobQueueCourse taken : jqsr.getJobQueueCourses()) {
                                 CourseTaken temp = new CourseTaken();
                                 String dept = "";
                                 String number = "";
@@ -545,9 +575,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 }
                                 temp.setDept(dept);
                                 temp.setNumber(number);
-                                temp.setGrade(taken.getGpa().toString());
+                                temp.setGrade( Float.toString( taken.getGpa().floatValue() ));
                                 temp.setDescription(taken.getCtitle());
-                                temp.setCredits(taken.getCredit().toString());
+                                temp.setCredits(Float.toString( taken.getCredit().floatValue()));
                                 temp.setQuarter(taken.getEditYt());
                                 boolean inProgress = "I".equals(taken.getIp());
                                 temp.setInProgress(inProgress);
@@ -555,7 +585,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 temp.setCluid(courseID);
 
                                 subrequirement.addCourseTaken(temp);
-                            }
                             }
                         }
                         break;
@@ -652,6 +681,29 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public static String yearTermMagic(String yearterm) {
+        String result = "";
+        if (yearterm.length() == 5) {
+            String year = yearterm.substring(0, 4);
+            switch (yearterm.charAt(4)) {
+                case '1':
+                    result = "WIN/" + year;
+                    break;
+                case '2':
+                    result = "SPR/" + year;
+                    break;
+                case '3':
+                    result = "SUM/" + year;
+                    break;
+                case '4':
+                    result = "AUT/" + year;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return result;
+    }
 
     public String getCourseID( String dept, String number )
     {
