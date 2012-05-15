@@ -40,10 +40,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     private String atpTerm3 = "3";
     private String atpTerm4 = "4";
 
-
     public enum terms {Autumn, Winter, Spring, Summer}
-
-    ;
 
     private transient AcademicCalendarService academicCalendarService;
 
@@ -99,14 +96,14 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                 String atp = plan.getPlanItemDataObject().getAtp();
                 boolean exists = false;
                 for (PlannedTerm term : plannedTerms) {
-                    if (term.getPlanItemId().equalsIgnoreCase(atp)) {
+                    if (term.getAtpId().equalsIgnoreCase(atp)) {
                         term.getPlannedList().add(plan);
                         exists = true;
                     }
                 }
                 if (!exists) {
                     PlannedTerm term = new PlannedTerm();
-                    term.setPlanItemId(atp);
+                    term.setAtpId(atp);
                     /*String qtrYr = atp.substring(atpPrefix, atp.length());*/
                     String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp); /*qtrYr.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");*/
                     StringBuilder sb = new StringBuilder();
@@ -124,7 +121,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             Collections.sort(plannedTerms, new Comparator<PlannedTerm>() {
                 @Override
                 public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
-                    return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                    return plannedTerm1.getAtpId().compareTo(plannedTerm2.getAtpId());
                 }
             });
 
@@ -142,10 +139,10 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                 populateMockList(minTerm, maxTerm, termsList);
                 if (plannedTerms.size() > 0) {
                     for (PlannedTerm plannedTerm : plannedTerms) {
-                        if (termsList.containsKey(plannedTerm.getPlanItemId())) {
+                        if (termsList.containsKey(plannedTerm.getAtpId())) {
                             if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
-                                termsList.get(plannedTerm.getPlanItemId());
-                                termsList.put(plannedTerm.getPlanItemId(), plannedTerm);
+                                termsList.get(plannedTerm.getAtpId());
+                                termsList.put(plannedTerm.getAtpId(), plannedTerm);
                             }
                         }
                     }
@@ -179,7 +176,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                         new Comparator<PlannedTerm>() {
                             @Override
                             public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
-                                return plannedTerm1.getPlanItemId().compareTo(plannedTerm2.getPlanItemId());
+                                return plannedTerm1.getAtpId().compareTo(plannedTerm2.getAtpId());
                             }
                         });
                 List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
@@ -195,8 +192,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                         size--;
                     }
 
-                    String[] minYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(0).getPlanItemId());
-                    String[] maxYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(plannedTermList.size() - 1).getPlanItemId());
+                    String[] minYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(0).getAtpId());
+                    String[] maxYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(plannedTermList.size() - 1).getAtpId());
                     StringBuffer yearRange = new StringBuffer();
                     yearRange = yearRange.append(minYear[1]).append("-").append(maxYear[1]);
                     fullPlanItemsDataObject.setYearRange(yearRange.toString());
@@ -249,27 +246,25 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         for (int i = 0; !term4.equalsIgnoreCase(maxTerm); i++) {
             PlannedTerm plannedTerm1 = new PlannedTerm();
             term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
-            plannedTerm1.setPlanItemId(term1);
+            plannedTerm1.setAtpId(term1);
             plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
             map.put(term1, plannedTerm1);
             minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
-            plannedTerm2.setPlanItemId(term2);
+            plannedTerm2.setAtpId(term2);
             plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
             map.put(term2, plannedTerm2);
             PlannedTerm plannedTerm3 = new PlannedTerm();
             term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
-            plannedTerm3.setPlanItemId(term3);
+            plannedTerm3.setAtpId(term3);
             plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
             map.put(term3, plannedTerm3);
             PlannedTerm plannedTerm4 = new PlannedTerm();
             term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
-            plannedTerm4.setPlanItemId(term4);
+            plannedTerm4.setAtpId(term4);
             plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
             map.put(term4, plannedTerm4);
         }
     }
-
-
 }
