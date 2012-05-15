@@ -150,4 +150,13 @@ public class AtpHelper {
         String[] termYear = atpIdToTermNameAndYear(atpId);
         return (termYear[0] + " " + termYear[1]);
     }
+
+    /**
+     * Returns true if an ATP is considered historical in the context of WHAT? Otherwise, false.
+     * @param atpId
+     * @return
+     */
+    public static boolean isAtpHistorical(String atpId) {
+        return false;
+    }
 }

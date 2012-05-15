@@ -26,10 +26,6 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperBase {
-    /*
-   atpPrefix is the length of "kuali.uw.atp." prefix in "kuali.uw.atp.spring2014"
-
-    */
     private final Logger logger = Logger.getLogger(FullPlanItemsLookupableHelperImpl.class);
 
     /*Count of no of future years to be shown the quarter view */
