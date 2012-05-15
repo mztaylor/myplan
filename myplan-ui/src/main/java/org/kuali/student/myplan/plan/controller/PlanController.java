@@ -347,9 +347,7 @@ public class PlanController extends UifControllerBase {
 
         //  Validate: Adding to historical term.
         if (isTermHistorical(originalAtpId)) {
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
-            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+            return doCannotChangeHistoryError(form);
         }
 
         //  Update the plan item.
@@ -482,9 +480,7 @@ public class PlanController extends UifControllerBase {
 
         //  Validate: Adding to historical term.
         if (isTermHistorical(newAtpIds.get(0))) {
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
-            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+            return doCannotChangeHistoryError(form);
         }
 
         //  Update the plan item.
@@ -606,9 +602,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Adding to historical term.
         //  TODO: isTermHistorical() only returns false at the moment.
         if (isTermHistorical(newAtpIds.get(0))) {
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID,
-                    PlanConstants.ERROR_KEY_HISTORICAL_ATP);
-            return getUIFModelAndView(form, PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID);
+            return doCannotChangeHistoryError(form);
         }
 
         //  See if a wishlist item exists for the course. If so, then update it. Otherwise create a new plan item.
@@ -828,9 +822,6 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  Make events ...
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            events.putAll(makeUpdateTotalCreditsEvent(planItem.getPlanPeriods().get(0), PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
-        }
         CourseDetails courseDetails = null;
         events.putAll(makeRemoveEvent(planItem, courseDetails));
 
@@ -839,6 +830,10 @@ public class PlanController extends UifControllerBase {
             getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
+        }
+
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            events.putAll(makeUpdateTotalCreditsEvent(planItem.getPlanPeriods().get(0), PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
         }
 
         form.setJavascriptEvents(events);
@@ -856,6 +851,15 @@ public class PlanController extends UifControllerBase {
             errorId = PlanConstants.ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
         }
         return doErrorPage(form, errorId, new String[0]);
+    }
+
+    /**
+     * Blow up response if the user tries to update plan items in past terms.
+     * @param form
+     * @return
+     */
+    private ModelAndView doCannotChangeHistoryError(PlanForm form) {
+        return doErrorPage(form, PlanConstants.ERROR_KEY_HISTORICAL_ATP, new String[0]);
     }
 
     /**
