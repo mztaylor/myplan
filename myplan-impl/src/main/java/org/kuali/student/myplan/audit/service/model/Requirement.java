@@ -25,6 +25,10 @@ public class Requirement {
     public String getStatus() { return status; }
 
     public void setStatus( String status ) { this.status = status; }
+    public boolean notComplete() {
+        return !"C".equals( status );
+    }
+
     public String getCaption() { return caption; }
     public void setCaption( String caption ) { this.caption = caption; }
     public boolean hasCount() { return count != null; }

@@ -23,11 +23,16 @@
 	</tr>
 </table>
 
-
 <p>
 THIS REPORT IS AN ADVISING TOOL USED TO TRACK DEGREE PROGRESS. FINAL CONFIRMATION OF DEGREE
 REQUIREMENTS IS SUBJECT TO DEPARTMENT OR COLLEGE AND UNIVERSITY APPROVAL.
 </p>
+
+#if( !${report.complete} )
+<div class="audit-incomplete">
+NOTE: At least one requirement still incomplete.
+</div>
+#end
 
 <div class="control-toolbar">
 	<label for="requirement_status">Show</label>
@@ -70,6 +75,8 @@ ${advisory}
 	    			<p>${req.info}</p>
 #end
                 </div>
+
+
 #if( ${req.getShowTotal()} )
 #if( ${req.hasCredits()} )
                 <ul class="progress">
@@ -81,8 +88,7 @@ ${advisory}
 #end
 #if( ${req.hasGPA()} )
                 <ul class="progress">
-                    <li class="required"><label>GPA required:</label> ${req.gpa.required}</li>
-                    <li class="earned"><label>earned:</label> ${req.gpa.earned}</li>
+                    <li class="earned"><label>Earned:</label> ${req.gpa.earned} GPA</li>
                 </ul>
 #end
 #if( ${req.hasCount()} )
@@ -94,6 +100,7 @@ ${advisory}
 #end
 #end
             </div>
+##if( ${req.notComplete()} )
 #foreach( $subreq in $req.subrequirementList ) ## subreq
             <div class="subrequirement">
                 <div class="subrequirement-heading">
@@ -173,7 +180,12 @@ ${advisory}
                                     <td>${taken.credits}</td><td>${taken.grade}</td>
 #end ## if inprogress
 #else
-                                    <td>${taken.quarter}</td><td>${taken.dept} ${taken.number} ${taken.description}</td><td>${taken.credits}</td><td>${taken.grade}</td>
+                                    <td>${taken.quarter}</td><td>${taken.dept} ${taken.number} ${taken.description}</td><td>${taken.credits}</td>
+                                    #if(${taken.inProgress})
+                                    <td>IP</td>
+                                    #else
+                                    <td>${taken.grade}</td>
+                                    #end
 #end ## if hasCluid
                                 </tr>
 #end ## foreach taken
@@ -184,8 +196,14 @@ ${advisory}
                 </div>
             </div>
 #end ## subreq
+
+
+##end ## notComplete
         </div>
+
 	</div> <!-- end requirement-body -->
+
+
 #end ## foreach req
 </div>
 #end ## if section.hasCaption
