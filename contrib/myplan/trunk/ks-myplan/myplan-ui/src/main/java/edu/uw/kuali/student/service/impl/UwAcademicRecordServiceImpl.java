@@ -155,7 +155,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                         String calculatedGradeVal = dataSection.elementText("Grade");
                         String creditsEarned = dataSection.elementText("Credits");
                         if(creditsEarned.contains(".")){
-                        creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf("."));
+                        creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf(".")-1);
                         }
                         String isRepeated=dataSection.elementText("RepeatCourse");
                         if (isRepeated.equalsIgnoreCase("true")){
