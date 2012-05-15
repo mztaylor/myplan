@@ -147,8 +147,8 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (!hasCapacity) {
-            return doPlanCapacityExceededError(form);
+        if ( ! hasCapacity) {
+            return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         }
 
         //  Lookup course details.
@@ -156,7 +156,7 @@ public class PlanController extends UifControllerBase {
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
 
         //  Make removed event before updating the plan item.
@@ -204,7 +204,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "backup".
-        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return doOperationFailedError(form, "Move planned item was not type backup.", null);
         }
 
@@ -216,8 +216,8 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (!hasCapacity) {
-            return doPlanCapacityExceededError(form);
+        if ( ! hasCapacity) {
+            return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         }
 
         //  Lookup course details.
@@ -225,7 +225,7 @@ public class PlanController extends UifControllerBase {
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
         } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
 
         //  Make removed event before updating the plan item.
@@ -342,11 +342,11 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
         if ( ! hasCapacity) {
-            return doPlanCapacityExceededError(form);
+            return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if (isTermHistorical(originalAtpId)) {
+        if (AtpHelper.isAtpHistorical(originalAtpId)) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -475,11 +475,11 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
         if ( ! hasCapacity) {
-            return doPlanCapacityExceededError(form);
+            return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if (isTermHistorical(newAtpIds.get(0))) {
+        if (AtpHelper.isAtpHistorical(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -596,12 +596,12 @@ public class PlanController extends UifControllerBase {
         }
 
         if ( ! hasCapacity) {
-            return doPlanCapacityExceededError(form);
+            return doPlanCapacityExceededError(form, newType);
         }
 
         //  Validate: Adding to historical term.
-        //  TODO: isTermHistorical() only returns false at the moment.
-        if (isTermHistorical(newAtpIds.get(0))) {
+        //  TODO: AptHelper.isTermHistorical() only returns false at the moment.
+        if (AtpHelper.isAtpHistorical(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -659,16 +659,6 @@ public class PlanController extends UifControllerBase {
         String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
         String[] params = {link};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
-    }
-
-    /**
-         * Determines if the given ATP ID is before the current ATP.
-         * @param atpId
-         * @return Returns true if the ATP is historical. Otherwise, false.
-         */
-    private boolean isTermHistorical(String atpId) {
-        // TODO: Logic needs to be more complex.
-        return false;
     }
 
     /**
@@ -845,9 +835,9 @@ public class PlanController extends UifControllerBase {
      * @param form
      * @return
      */
-    private ModelAndView doPlanCapacityExceededError(PlanForm form) {
+    private ModelAndView doPlanCapacityExceededError(PlanForm form, String type) {
         String errorId = PlanConstants.ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED;
-        if (form.isBackup()) {
+        if (type.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             errorId = PlanConstants.ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
         }
         return doErrorPage(form, errorId, new String[0]);
