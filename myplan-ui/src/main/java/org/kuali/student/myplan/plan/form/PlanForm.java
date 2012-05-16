@@ -68,13 +68,24 @@ public class PlanForm extends UifFormBase {
     private boolean backup = false;
 
     // Used for populating the menu oprions for the Academic record course link
-    private boolean acadRecCourse=false;
+    private String acadRecAtpId;
 
     //   based on this Add to plan page items are populated
     private boolean moveCourse = false;
 
     // boolean to show or hide Other option.
-    private boolean showOther=false;
+    private boolean showOther = false;
+
+    /*Flag used for populating the exact menu items for a course in past,present, future terms */
+    private boolean setToPlanning=false;
+
+    public boolean isSetToPlanning() {
+        return setToPlanning;
+    }
+
+    public void setSetToPlanning(boolean setToPlanning) {
+        this.setToPlanning = setToPlanning;
+    }
 
 
     /**
@@ -183,12 +194,12 @@ public class PlanForm extends UifFormBase {
         this.moveCourse = moveCourse;
     }
 
-    public boolean isAcadRecCourse() {
-        return acadRecCourse;
+    public String getAcadRecAtpId() {
+        return acadRecAtpId;
     }
 
-    public void setAcadRecCourse(boolean acadRecCourse) {
-        this.acadRecCourse = acadRecCourse;
+    public void setAcadRecAtpId(String acadRecAtpId) {
+        this.acadRecAtpId = acadRecAtpId;
     }
 
     public boolean isShowOther() {
