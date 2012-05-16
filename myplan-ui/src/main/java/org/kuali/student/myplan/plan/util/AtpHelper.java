@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.plan.util;
 
+import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -10,8 +12,10 @@ import org.kuali.student.myplan.course.util.PlanConstants;
 import javax.xml.namespace.QName;
 import java.util.List;
 
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+
 /**
- *  Helper methods for dealing with ATPs.
+ * Helper methods for dealing with ATPs.
  */
 public class AtpHelper {
 
@@ -22,17 +26,22 @@ public class AtpHelper {
 
     private static transient AcademicCalendarService academicCalendarService;
 
+    public static int TERM_COUNT=4;
+
+    private static final Logger logger = Logger.getLogger(AtpHelper.class);
+
     private static AcademicCalendarService getAcademicCalendarService() {
-       if (academicCalendarService == null) {
-           academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
-                   .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
-                           AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
-       }
-       return academicCalendarService;
+        if (academicCalendarService == null) {
+            academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return academicCalendarService;
     }
 
     /**
      * Query the Academic Record Service, determine the current ATP, and the return the ID.
+     *
      * @return The ID of the current ATP.
      * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
      */
@@ -40,7 +49,7 @@ public class AtpHelper {
         //   The first arg here is "usageKey" which isn't used.
         List<TermInfo> scheduledTerms = null;
         try {
-            scheduledTerms = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY, PlanConstants.CONTEXT_INFO) ;
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.INPROGRESS)), CourseSearchConstants.CONTEXT_INFO);
         } catch (Exception e) {
             throw new RuntimeException("Query to Academic Calendar Service failed.", e);
         }
@@ -83,19 +92,20 @@ public class AtpHelper {
         String atpSuffix = atpId.replace(PlanConstants.TERM_ID_PREFIX, "");
 
         //  See if the ATP ID is nearly sane.
-        if ( ! atpSuffix.matches("[0-9]{4}\\.[1-4]{1}")) {
+        if (!atpSuffix.matches("[0-9]{4}\\.[1-4]{1}")) {
             throw new RuntimeException(String.format("ATP ID [%s] isn't formatted correctly.", atpId));
         }
 
         String[] termYear = atpSuffix.split("\\.");
         String year = termYear[0];
         String term = termYear[1];
-        return new String[] {term, year};
+        return new String[]{term, year};
     }
 
     /**
      * Converts an ATP ID to a Term and Year ...
-     *    "kuali.uw.atp.1991.1" -> {"Autumn", "1991"}
+     * "kuali.uw.atp.1991.1" -> {"Autumn", "1991"}
+     *
      * @return A String array containing a term and year.
      */
     public static String[] atpIdToTermNameAndYear(String atpId) {
@@ -109,34 +119,34 @@ public class AtpHelper {
             term = "Winter";
         } else if (term.equals("2")) {
             term = "Spring";
-        }  else if (term.equals("3")) {
+        } else if (term.equals("3")) {
             term = "Summer";
         }
-        return new String[] {term, year};
+        return new String[]{term, year};
     }
 
     /*  Retuns ATP ID in format kuali.uw.atp.1991.1 for term="Winter" and year = 1991*/
-    public static String getAtpIdFromTermAndYear(String term, String year){
-        int termVal=0;
-        if (term.equalsIgnoreCase(term1)){
-            termVal=1;
+    public static String getAtpIdFromTermAndYear(String term, String year) {
+        int termVal = 0;
+        if (term.equalsIgnoreCase(term1)) {
+            termVal = 1;
         }
-        if (term.equalsIgnoreCase(term2)){
-            termVal=2;
+        if (term.equalsIgnoreCase(term2)) {
+            termVal = 2;
         }
-        if (term.equalsIgnoreCase(term3)){
-            termVal=3;
+        if (term.equalsIgnoreCase(term3)) {
+            termVal = 3;
         }
-        if (term.equalsIgnoreCase(term4)){
-            termVal=4;
+        if (term.equalsIgnoreCase(term4)) {
+            termVal = 4;
         }
-        StringBuffer newAtpId=new StringBuffer();
+        StringBuffer newAtpId = new StringBuffer();
         newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(termVal);
         return newAtpId.toString();
     }
 
     /* Returns ATP ID as kuali.uw.atp.1991.1 for term=1 and year = 1991 */
-    public static String getAtpFromNumTermAndYear(String term, String year){
+    public static String getAtpFromNumTermAndYear(String term, String year) {
         StringBuffer newAtpId = new StringBuffer();
         newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(term);
         return newAtpId.toString();
@@ -144,6 +154,7 @@ public class AtpHelper {
 
     /**
      * Gets term name as "Spring 2012" given an ATP ID.
+     *
      * @return
      */
     public static String atpIdToTermName(String atpId) {
@@ -153,10 +164,72 @@ public class AtpHelper {
 
     /**
      * Returns true if an ATP is considered historical in the context of WHAT? Otherwise, false.
+     *
      * @param atpId
      * @return
      */
     public static boolean isAtpHistorical(String atpId) {
-        return false;
+        boolean isAtpHistorical = false;
+        List<TermInfo> planningTermInfo = null;
+
+        try {
+            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not validate is Atp Historical", e);
+        }
+        String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
+        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
+        if (Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
+            isAtpHistorical = true;
+
+        }
+        if (!isAtpHistorical && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
+            isAtpHistorical = true;
+        }
+        if (!isAtpHistorical && !getCurrentAtpId().equalsIgnoreCase(planningTermInfo.get(0).getId()) &&getCurrentAtpId().equalsIgnoreCase(atpId)) {
+            isAtpHistorical = true;
+        }
+        return isAtpHistorical;
     }
+
+
+
+    /**
+     * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
+     *
+     * @param atpId
+     * @return
+     */
+    public static boolean isAtpSetToPlanning(String atpId) {
+        boolean isSetToPlanning = false;
+        List<TermInfo> planningTermInfo = null;
+        try {
+            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not validate is Atp Historical", e);
+        }
+        String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
+        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
+
+        /*Planning term = atpId*/
+        if (planningTermInfo.get(0).getId().equalsIgnoreCase(atpId)) {
+            isSetToPlanning = true;
+        }
+
+        /*planning term having same year as atp year but term is greater than atp term*/
+
+        if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) > Integer.parseInt(planningAtpYearAndTerm[0])) {
+            isSetToPlanning = true;
+
+        }
+
+        /*planning term having year greater than atp year*/
+        if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) > Integer.parseInt(planningAtpYearAndTerm[1])) {
+            isSetToPlanning = true;
+        }
+
+        return isSetToPlanning;
+    }
+
+
 }
