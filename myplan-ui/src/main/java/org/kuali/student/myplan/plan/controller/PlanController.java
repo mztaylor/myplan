@@ -366,7 +366,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Validate: Adding to historical term.
-        if (AtpHelper.isAtpHistorical(originalAtpId)) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -499,7 +499,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Validate: Adding to historical term.
-        if (AtpHelper.isAtpHistorical(newAtpIds.get(0))) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -620,8 +620,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Validate: Adding to historical term.
-        //  TODO: AptHelper.isTermHistorical() only returns false at the moment.
-        if (AtpHelper.isAtpHistorical(newAtpIds.get(0))) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
