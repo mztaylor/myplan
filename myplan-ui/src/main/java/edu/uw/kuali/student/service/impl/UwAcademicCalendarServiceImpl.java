@@ -7,9 +7,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.joda.time.DateTime;
+import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.enrollment.acal.dto.*;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
@@ -37,6 +40,8 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     private static final String TERM_KEY_PREFIX = "kuali.uw.atp.";
 
+    private static int CRITERIA_LENGTH = 23;
+
     private SAXReader reader;
 
     private StudentServiceClient studentServiceClient;
@@ -60,93 +65,13 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
     public List<TermInfo> getCurrentTerms(@WebParam(name = "processKey") String processKey,
                                           @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
-                OperationFailedException, PermissionDeniedException {
-
-        List<TermInfo> termInfos = new ArrayList<TermInfo>();
-
-        /*
-         *  Query the student web service for the current term. If the last drop date has passed
-         *  then make the next term the current term.
-         */
-        String responseText = null;
-        try {
-            responseText = studentServiceClient.getCurrentTerm();
-        } catch (ServiceException e) {
-            throw new RuntimeException("Query to Student Term Service failed.", e);
-        }
-
-        Document termDocument = null;
-        try {
-            termDocument = reader.read(new StringReader(responseText));
-        } catch (Exception e) {
-            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
-        }
-
-        String lastDropDayDateString =  termDocument.getRootElement().element("LastDropDay").getTextTrim();
-        String currentTerm = termDocument.getRootElement().element("Quarter").getTextTrim();
-        String year = termDocument.getRootElement().element("Year").getTextTrim();
-
-        CircularTermList ccl = new CircularTermList(currentTerm, Integer.valueOf(year));
-
-        DateTime lastDropDay = new DateTime(lastDropDayDateString);
-
-        logger.info(String.format("The Student Term Service reports [%s/%s] [%s] is the current term with last drop day [%s].",
-                ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear(), lastDropDayDateString));
-
-        /*
-         *  If the last drop day has passed then increment to the next term.
-         */
-        if (lastDropDay.isBeforeNow()) {
-            ccl.incrementQuarter();
-            logger.info(String.format("The last drop day has passed, so the current term has been incremented to [%s/%s] [%s].",
-               ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
-        }
-
-        /*
-         *  Query the term service and determine which terms are published.
-         */
-        for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
-            try {
-                logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
-                    ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
-                responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
-            } catch (ServiceException e) {
-                logger.error("Call to Student Term Service failed.", e);
-                break;
-            }
-
-            Document sectionDocument = null;
-            try {
-                termDocument = reader.read(new StringReader(responseText));
-            } catch (Exception e) {
-                logger.error("Could not parse reply from the Student Term Service.", e);
-                break;
-            }
-
-            //  If the time schedule for any campus is published then create a TermInfo and continue.
-            //  Otherwise, stop processing.
-            Element timeSchedulePublished =  termDocument.getRootElement().element("TimeSchedulePublished");
-            if (isTrue(timeSchedulePublished.element("Bothell").getText())
-                || isTrue(timeSchedulePublished.element("Seattle").getText())
-                || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
-
-                TermInfo ti = new TermInfo();
-                //  Create the ATP ID.
-                ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
-                ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
-                termInfos.add(ti);
-
-                ccl.incrementQuarter();
-            } else {
-                break;
-            }
-
-        }
-        return termInfos;
+            OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
     }
 
     /**
      * Tests a String representation of an Integer ("0" or "1") for truth or falsity.
+     *
      * @param value
      * @return
      */
@@ -160,7 +85,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public List<TypeInfo> getAcademicCalendarTypes(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -170,17 +95,17 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public StateInfo getAcademicCalendarState(@WebParam(name = "academicCalendarStateKey") String academicCalendarStateKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<StateInfo> getAcademicCalendarStates(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public AcademicCalendarInfo getAcademicCalendar(@WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -195,7 +120,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public List<AcademicCalendarInfo> getAcademicCalendarsByStartYear(@WebParam(name = "year") Integer year, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -210,7 +135,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public List<AcademicCalendarInfo> searchForAcademicCalendars(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -220,17 +145,17 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public AcademicCalendarInfo createAcademicCalendar(@WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "academicCalendarInfo") AcademicCalendarInfo academicCalendarInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public AcademicCalendarInfo updateAcademicCalendar(@WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "academicCalendarInfo") AcademicCalendarInfo academicCalendarInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public StatusInfo deleteAcademicCalendar(@WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -240,7 +165,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public String getAcademicCalendarData(@WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calendarDataFormatTypeKey") String calendarDataFormatTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-         throw new RuntimeException("Not implemented.");
+        throw new RuntimeException("Not implemented.");
     }
 
     @Override
@@ -390,7 +315,105 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     @Override
     public List<TermInfo> searchForTerms(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
+        Predicate p = criteria.getPredicate();
+        String str = p.toString();
+        str = str.substring(CRITERIA_LENGTH, str.length() - 1);
+
+
+        List<TermInfo> termInfos = new ArrayList<TermInfo>();
+
+        /*
+         *  Query the student web service for the current term. If the last drop date has passed
+         *  then make the next term the current term.
+         */
+        String responseText = null;
+        try {
+            responseText = studentServiceClient.getCurrentTerm();
+        } catch (ServiceException e) {
+            throw new RuntimeException("Query to Student Term Service failed.", e);
+        }
+
+        Document termDocument = null;
+        try {
+            termDocument = reader.read(new StringReader(responseText));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+        }
+
+        String lastDropDayDateString = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+        String currentTerm = termDocument.getRootElement().element("Quarter").getTextTrim();
+        String year = termDocument.getRootElement().element("Year").getTextTrim();
+
+        if (str.equalsIgnoreCase(PlanConstants.INPROGRESS)) {
+            TermInfo termInfo = new TermInfo();
+            String atp = AtpHelper.getAtpIdFromTermAndYear(currentTerm, year);
+            termInfo.setId(atp);
+            termInfo.setName(currentTerm + " " + year);
+            termInfos.add(termInfo);
+        }
+        if (str.equalsIgnoreCase(PlanConstants.PUBLISHED) || str.equalsIgnoreCase(PlanConstants.PLANNING)) {
+            CircularTermList ccl = new CircularTermList(currentTerm, Integer.valueOf(year));
+
+            DateTime lastDropDay = new DateTime(lastDropDayDateString);
+
+            logger.info(String.format("The Student Term Service reports [%s/%s] [%s] is the current term with last drop day [%s].",
+                    ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear(), lastDropDayDateString));
+
+            /*
+            *  If the last drop day has passed then increment to the next term.
+            */
+            if (lastDropDay.isBeforeNow()) {
+                ccl.incrementQuarter();
+                logger.info(String.format("The last drop day has passed, so the current term has been incremented to [%s/%s] [%s].",
+                        ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
+            }
+
+            /*
+            *  Query the term service and determine which terms are published.
+            */
+
+            for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
+                try {
+                    logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
+                            ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
+                    responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
+                } catch (ServiceException e) {
+                    logger.error("Call to Student Term Service failed.", e);
+                    break;
+                }
+
+                Document sectionDocument = null;
+                try {
+                    termDocument = reader.read(new StringReader(responseText));
+                } catch (Exception e) {
+                    logger.error("Could not parse reply from the Student Term Service.", e);
+                    break;
+                }
+
+                //  If the time schedule for any campus is published then create a TermInfo and continue.
+                //  Otherwise, stop processing.
+                Element timeSchedulePublished = termDocument.getRootElement().element("TimeSchedulePublished");
+                if (isTrue(timeSchedulePublished.element("Bothell").getText())
+                        || isTrue(timeSchedulePublished.element("Seattle").getText())
+                        || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
+
+                    TermInfo ti = new TermInfo();
+                    //  Create the ATP ID.
+                    ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
+                    ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
+                    termInfos.add(ti);
+                    if (str.equalsIgnoreCase(PlanConstants.PLANNING)) {
+                        break;
+                    }
+                    ccl.incrementQuarter();
+                } else {
+                    break;
+                }
+
+            }
+        }
+        return termInfos;
+
     }
 
     @Override
