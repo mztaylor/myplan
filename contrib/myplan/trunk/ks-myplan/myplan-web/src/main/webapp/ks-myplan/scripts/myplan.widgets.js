@@ -209,10 +209,9 @@ function fnPositionPopUp(popupBoxId) {
     Function: Submit
 ######################################################################################
  */
-function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
-    var tempDiv = jq("<div />").hide();
-    jq("body").append(tempDiv);
-    var elementToBlock = tempDiv;
+function myplanAjaxSubmitPlanItem(id, type, methodToCall, e) {
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var elementToBlock = jq(target);
     jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
     jq('form#' + id + '_form input[name="' + type + '"]').remove();
@@ -220,8 +219,8 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
     jq('form#' + id + '_form input[name="viewId"]').remove();
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
-        elementToBlock.unblock();
         var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
+        elementToBlock.unblock();
         switch (status) {
             case 'success':
                 var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_infoMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-success' };
@@ -238,8 +237,21 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall) {
                 break;
         }
     };
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id);
-    tempDiv.remove();
+    var blockOptions = {
+        message:'<img src="../ks-myplan/images/btnLoader.gif"/>',
+        css:{
+            width: '100%',
+            border: 'none',
+            backgroundColor: 'transparent'
+        },
+        overlayCSS:  {
+            backgroundColor: '#fff',
+            opacity: 0.6,
+            padding: '0px 1px',
+            margin: '0px -1px'
+        }
+    };
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id, blockOptions);
 }
 /*Function used for moving the plan Item from planned to backup*/
 function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
@@ -295,7 +307,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
                 other then the kuali form
 ######################################################################################
  */
-function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId) {
+function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, blockOptions) {
 	var data;
     // methodToCall checks
 	if(methodToCall != null){
@@ -355,12 +367,12 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 		var elementBlockingOptions = {
 				beforeSend: function() {
 					if(elementToBlock.hasClass("unrendered")){
-						elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="working..." /> Loading...');
+						elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
 						elementToBlock.show();
 					}
 					else{
-						elementToBlock.block({
-			                message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />', // ' <img src="' + getConfigParam("kradImageLocation") + 'loading-bars.gif" alt="working..." /> Updating...',
+						var oDefaults = {
+			                message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />',
 			                fadeIn:  0,
 			                fadeOut:  0,
 			                overlayCSS:  {
@@ -373,12 +385,11 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                                 top: '0px',
                                 left: '0px'
     						}
-			            });
+			            };
+                        elementToBlock.block(jQuery.extend(oDefaults, blockOptions));
 					}
 				},
 				complete: function(){
-					// note that if you want to unblock simultaneous with showing the new retrieval
-					// you must do so in the successCallback
 					elementToBlock.unblock();
 				},
 				error: function(){
