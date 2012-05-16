@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 public class CourseLinkBuilder {
 
     enum LINK_TEMPLATE {
-        COURSE_DETAILS("<a href=\"/student/plan&param={href}\" title=\"{title}\">{label}</a>"),
-        COURSE_SEARCH ("<a href=\"/student/course&searchParams={href}\" title=\"{titel}\">{label}</a>");
+        COURSE_DETAILS("<a href=\"/student/plan&param={params}\" title=\"{title}\">{label}</a>"),
+        COURSE_SEARCH ("<a href=\"/student/course&searchParams={params}\" title=\"{title}\">{label}</a>");
 
         private final String templateText;
 
@@ -45,21 +45,24 @@ public class CourseLinkBuilder {
         //  Storage for a list of substitutions. Using LinkedHashMap to preserve order.
         Map<String, String> placeHolders = new LinkedHashMap<String, String>();
 
+        //  Match simple course codes.
 		Matcher matcher = simpleCourseCodePattern.matcher(rawText);
 		while (matcher.find()) {
 			String m = matcher.group();
-            String url  = template.getTemplateText()
-                    .replace("{href}", "p1")
-                    .replace("{title}", "Title Text")
-                    .replace("{label}", m);
-            placeHolders.put(m, url);
+            placeHolders.put(m, makeLink("p1", "Title Text", m, template));
 		}
 
-        //
+        //  Substitute plain text with links.
         for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
             rawText = rawText.replace(entry.getKey(), entry.getValue());
         }
-
         return rawText;
+    }
+
+    private static String makeLink (String paramText, String titleText, String linkText, LINK_TEMPLATE template) {
+        return template.getTemplateText()
+                    .replace("{params}", paramText)
+                    .replace("{title}", titleText)
+                    .replace("{label}", linkText);
     }
 }
