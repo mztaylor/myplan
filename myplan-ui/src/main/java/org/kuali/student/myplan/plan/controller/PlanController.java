@@ -675,7 +675,8 @@ public class PlanController extends UifControllerBase {
         //} catch (Exception e) {
         //    logger.error("Unable to update the plan.", e);
         //}
-        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
+
+        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
         String[] params = {link};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
