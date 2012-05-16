@@ -81,7 +81,6 @@ public class PlanController extends UifControllerBase {
         // First load the plan item and retrieve the courseId
         PlanItemInfo planItem;
 
-        //TODO: find and remove any reference to courseId being passed in to PlanForm
         String courseId = null;
         if (planForm.getPlanItemId() != null) {
             try {
@@ -91,6 +90,17 @@ public class PlanController extends UifControllerBase {
                 if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     planForm.setBackup(true);
                 }
+                /*if a plan item exists the this is used for populating the menu items*/
+                if (planItem.getPlanPeriods().size() > 0) {
+                    /*Condition to check if the atp is greater than or equal to planning term*/
+                    if (!planForm.isSetToPlanning()) {
+                        planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
+                    }
+
+
+                }
+
+
             } catch (Exception e) {
                 return doPageRefreshError(planForm, "Plan item not found.", e);
             }
@@ -111,6 +121,16 @@ public class PlanController extends UifControllerBase {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
         } catch (Exception e) {
             return doOperationFailedError(planForm, "Could not retrieve Course Details.", e);
+        }
+        /*plan item does not exists for academic Record course
+        In that case acadRecAtpId is passed in through the UI
+        which is used for populating the right flag*/
+        if (planForm.getAcadRecAtpId() != null) {
+            /*Condition to check if the atp is greater than or equal to planning term*/
+            if (!planForm.isSetToPlanning()) {
+                planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planForm.getAcadRecAtpId()));
+            }
+
         }
         this.otherOptionValidation(planForm);
         return getUIFModelAndView(planForm);
@@ -147,7 +167,7 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         }
 
@@ -176,7 +196,7 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails));
-        String atpId =  planItem.getPlanPeriods().get(0);
+        String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         form.setJavascriptEvents(events);
@@ -204,7 +224,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Verify that the plan item type is "backup".
-        if ( ! planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (!planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return doOperationFailedError(form, "Move planned item was not type backup.", null);
         }
 
@@ -216,7 +236,7 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         }
 
@@ -229,7 +249,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make removed event before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem,courseDetails);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem, courseDetails);
 
         //  Set type to "planned".
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
@@ -341,7 +361,7 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
@@ -417,9 +437,9 @@ public class PlanController extends UifControllerBase {
         //  Should the course be type 'planned' or 'backup'. Default to planned.
         //boolean backup = form.isBackup();
 
-       // String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+        // String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
         //if (backup) {
-       //     newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
+        //     newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
         //}
 
         //  This list can only contain one item, otherwise the backend validation will fail.
@@ -470,11 +490,11 @@ public class PlanController extends UifControllerBase {
         LearningPlan learningPlan = null;
         try {
             learningPlan = getLearningPlan(getUserId());
-            hasCapacity = isAtpHasCapacity( learningPlan, newAtpIds.get(0), planItem.getTypeKey());
+            hasCapacity = isAtpHasCapacity(learningPlan, newAtpIds.get(0), planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
@@ -595,7 +615,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
 
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, newType);
         }
 
@@ -620,7 +640,7 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             //  Create wishlist events before updating the plan item.
-            wishlistEvents = makeRemoveEvent(planItem,courseDetails);
+            wishlistEvents = makeRemoveEvent(planItem, courseDetails);
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
             try {
@@ -669,7 +689,7 @@ public class PlanController extends UifControllerBase {
     private List<String> getNewTermIds(String atpId, PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
 
-        if ( ! atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
+        if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
             newTermIds.add(atpId);
         } else {
             //  Create an ATP id from the values in the year and term fields.
@@ -1154,7 +1174,7 @@ public class PlanController extends UifControllerBase {
 
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-            planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         }
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
@@ -1162,7 +1182,7 @@ public class PlanController extends UifControllerBase {
         //  Create Javascript events.
         String courseDetailsAsJson;
         try {
-            if (courseDetails == null){
+            if (courseDetails == null) {
                 courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
             }
             //  Serialize course details into a string of JSON.
@@ -1284,33 +1304,33 @@ public class PlanController extends UifControllerBase {
     }
 
 
-    private void otherOptionValidation(PlanForm form){
-        CourseDetails courseDetails=form.getCourseDetails();
+    private void otherOptionValidation(PlanForm form) {
+        CourseDetails courseDetails = form.getCourseDetails();
         for (String term : courseDetails.getScheduledTerms()) {
             String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             String termsOffered = null;
-            boolean atpAlreadyexists=false;
+            boolean atpAlreadyexists = false;
             Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
             if (m.matches()) {
                 termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
             }
             String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
 
-            if(courseDetails.getPlannedList()!=null){
-                for(PlanItemDataObject plan:courseDetails.getPlannedList()) {
-                    if(plan.getAtp().equalsIgnoreCase(atp)){
-                        atpAlreadyexists=true;
+            if (courseDetails.getPlannedList() != null) {
+                for (PlanItemDataObject plan : courseDetails.getPlannedList()) {
+                    if (plan.getAtp().equalsIgnoreCase(atp)) {
+                        atpAlreadyexists = true;
                     }
                 }
             }
-            if(courseDetails.getBackupList()!=null && !atpAlreadyexists){
-                for(PlanItemDataObject plan:courseDetails.getBackupList()) {
-                    if(plan.getAtp().equalsIgnoreCase(atp)){
-                        atpAlreadyexists=true;
+            if (courseDetails.getBackupList() != null && !atpAlreadyexists) {
+                for (PlanItemDataObject plan : courseDetails.getBackupList()) {
+                    if (plan.getAtp().equalsIgnoreCase(atp)) {
+                        atpAlreadyexists = true;
                     }
                 }
             }
-            if(!atpAlreadyexists){
+            if (!atpAlreadyexists) {
                 form.setShowOther(true);
             }
 
