@@ -23,6 +23,13 @@ public class PlannedTerm {
     private List<AcademicRecordDataObject> academicRecord = new ArrayList<AcademicRecordDataObject>();
     private String credits = null;
 
+
+    /*These flags are used for styling, highlighting, naming  of terms in the quarter view */
+    private boolean currentTermForView;
+    private boolean completedTerm;
+    private boolean openForPlanning;
+
+
     /*
     *  The index of this item in a list of PlannedTerms. This is used by the UI to focus the "carousellite" javascript
     *  component. The value should be -1 unless this PlannedTerm should have focus.
@@ -118,7 +125,7 @@ public class PlannedTerm {
 
         /*TODO:Implement this based on the flags (past,present,future) logic*/
         if (getPlannedList().size() > 0 && getAcademicRecord().size() > 0) {
-             if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
+            if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
                 int minVal = 0;
                 int maxVal = 0;
                 minVal = Math.min(plannedTotalMin, academicTotalMin);
@@ -158,6 +165,31 @@ public class PlannedTerm {
 
     public void setAcademicRecord(List<AcademicRecordDataObject> academicRecord) {
         this.academicRecord = academicRecord;
+    }
+
+
+    public boolean isCurrentTermForView() {
+        return currentTermForView;
+    }
+
+    public void setCurrentTermForView(boolean currentTermForView) {
+        this.currentTermForView = currentTermForView;
+    }
+
+    public boolean isCompletedTerm() {
+        return completedTerm;
+    }
+
+    public void setCompletedTerm(boolean completedTerm) {
+        this.completedTerm = completedTerm;
+    }
+
+    public boolean isOpenForPlanning() {
+        return openForPlanning;
+    }
+
+    public void setOpenForPlanning(boolean openForPlanning) {
+        this.openForPlanning = openForPlanning;
     }
 }
 

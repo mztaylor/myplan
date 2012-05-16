@@ -217,16 +217,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                         }
                     }
                 }
-                if (plannedTerms.size() > 0) {
-                    for (PlannedTerm plannedTerm : plannedTerms) {
-                        if (termsList.containsKey(plannedTerm.getAtpId())) {
-                            if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
-                                termsList.get(plannedTerm.getAtpId());
-                                termsList.put(plannedTerm.getAtpId(), plannedTerm);
-                            }
-                        }
-                    }
-                }
                 List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
                 for (String key : termsList.keySet()) {
                     perfectPlannedTerms.add(termsList.get(key));
@@ -252,10 +242,25 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
                     i++;
                 }
 
+                /*Implementation to set the conditional flags based on each plannedTerm atpId*/
+                for (PlannedTerm pl : perfectPlannedTerms) {
+
+                    if (AtpHelper.isAtpSetToPlanning(pl.getAtpId())) {
+                        pl.setOpenForPlanning(true);
+                    } else {
+                        pl.setCompletedTerm(true);
+                    }
+                    if (AtpHelper.getCurrentAtpId().equalsIgnoreCase(pl.getAtpId())) {
+                        pl.setCurrentTermForView(true);
+                    }
+
+                }
+
+
                 return perfectPlannedTerms;
             }
 
-            /*Implementation to populate the future terms till 6 years from current term if no academic record data and planned term data are present*/
+            /*Implementation to populate the future terms till 6 years from current term if academic record data and planned term data are NOT present*/
             else {
                 List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
                 String currentAtpId = AtpHelper.getCurrentAtpId();
