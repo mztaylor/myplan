@@ -82,7 +82,7 @@
             <list>
                 <bean parent="Uif-ActionFieldBase" p:actionLabel="Add to Plan" p:id="@{dataObject.courseId}_addPlannedCourse">
                     <property name="clientSideJs"
-                              value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-button</value>

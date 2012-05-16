@@ -599,7 +599,7 @@
             <list>
                 <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
                       p:actionLabel="Delete">
-                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem');"/>
+                    <property name="clientSideJs" value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem', e);"/>
                     <property name="styleClasses">
                         <list merge="true">
                             <value>fl-font-size-90</value>
@@ -1458,12 +1458,12 @@
                             <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
                                   p:actionLabel="Add To Plan" p:render="@{moveCourse eq false ? true : false}">
                                 <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse');"/>
+                                          value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
+                                            setTimeout('fnCloseAllPopups()', 5000);
                                         })
                                         .subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
@@ -1479,12 +1479,12 @@
                             <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
                                   p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}" >
                                 <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse');"/>
+                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
+                                            setTimeout('fnCloseAllPopups()', 5000);
                                         }).subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
                                         });"/>
@@ -1565,12 +1565,12 @@
                             <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"  p:render="@{acadRecCourse eq false ? true : false}"
                                   p:actionLabel="Copy" >
                                 <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse');"/>
+                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
+                                            setTimeout('fnCloseAllPopups()', 5000);
                                         }).subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
                                         });"/>
@@ -1585,12 +1585,12 @@
                             <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton"  p:render="@{acadRecCourse eq true ? true : false}"
                                   p:actionLabel="Copy" >
                                 <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse');"/>
+                                          value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
+                                            setTimeout('fnCloseAllPopups()', 5000);
                                         });"/>
                                 <property name="styleClasses">
                                     <list merge="true">
@@ -1698,7 +1698,7 @@
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton" p:actionLabel="Yes">
                                 <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'removeItem');"/>
+                                          value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'removeItem', e);"/>
                                 <property name="styleClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
