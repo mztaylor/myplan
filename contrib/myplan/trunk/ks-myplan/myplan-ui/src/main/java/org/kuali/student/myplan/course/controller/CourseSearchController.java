@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
@@ -62,6 +63,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
+
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 @Controller
 @RequestMapping(value = "/course/**")
@@ -385,8 +388,7 @@ public class CourseSearchController extends UifControllerBase {
             logger.info("Start of method loadScheduledTerms of CourseSearchController:"+System.currentTimeMillis());
             AcademicCalendarService atpService = getAcademicCalendarService();
 
-            List<TermInfo> terms = atpService
-                    .getCurrentTerms(CourseSearchConstants.PROCESS_KEY, CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> terms = atpService.searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
 
             CourseOfferingService offeringService = getCourseOfferingService();
 
