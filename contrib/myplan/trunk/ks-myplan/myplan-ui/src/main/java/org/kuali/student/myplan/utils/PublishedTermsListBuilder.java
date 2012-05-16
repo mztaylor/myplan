@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
@@ -10,12 +11,15 @@ import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 /**
  *  Assembles a list of published terms.
@@ -51,8 +55,7 @@ public class PublishedTermsListBuilder extends KeyValuesBase {
         //  Fetch the available terms from the Academic Calendar Service.
         List<TermInfo> termInfos = null;
         try {
-            termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
-                CourseSearchConstants.CONTEXT_INFO);
+            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
         }
