@@ -66,6 +66,12 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String TERM_4="Autumn";
 
 
+    /*Query keys for getting the termInfos from the academic calender*/
+    public static final String PLANNING="PLANNING";
+    public static final String INPROGRESS="INPROGRESS";
+    public static final String PUBLISHED="PUBLISHED";
+
+
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
      */
