@@ -239,8 +239,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             //  Fetch the available terms from the Academic Calendar Service.
             List<TermInfo> termInfos = null;
             try {
-                termInfos = getAcademicCalendarService().getCurrentTerms(CourseSearchConstants.PROCESS_KEY,
-                        CourseSearchConstants.CONTEXT_INFO);
+                termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Web service call failed.", e);
                 //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
@@ -362,6 +361,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 academicRecordDataObject.setPersonId(studentInfo.getPersonId());
                 academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
                 academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                academicRecordDataObject.setCourseId(studentInfo.getId());
                 academicRecordDataObject.setCredit(studentInfo.getCalculatedGradeValue());
                 academicRecordDataObject.setGrade(studentInfo.getCreditsEarned());
                 academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
