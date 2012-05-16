@@ -182,7 +182,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                     List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
 
 
-                    for (int j = 0; j < 4; j++) {
+                    for (int j = 0; j < AtpHelper.TERM_COUNT; j++) {
                         plannedTermList.add(perfectPlannedTerms.get(0));
                         perfectPlannedTerms.remove(perfectPlannedTerms.get(0));
                         size--;
