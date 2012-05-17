@@ -215,7 +215,6 @@ public class AtpHelper {
 
         if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
             isAtpCompletedTerm = true;
-
         }
 
         /*atpId term having year less than planning year*/
@@ -223,9 +222,10 @@ public class AtpHelper {
             isAtpCompletedTerm = true;
         }
 
-
         return isAtpCompletedTerm;
     }
 
-
+    public static boolean isAtpIdFormatValid(String atpId) {
+        return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
+    }
 }

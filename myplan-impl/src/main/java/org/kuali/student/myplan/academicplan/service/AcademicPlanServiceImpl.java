@@ -510,7 +510,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                         valid = isValidAtp(atpId);
                         if ( ! valid) {
                             validationResultInfos.add(makeValidationResultInfo(
-                                String.format("ATP ID [%s] was not valid.", planItemInfo.getTypeKey()), "typeKey", ValidationResult.ErrorLevel.ERROR));
+                                String.format("ATP ID [%s] was not valid.", atpId), "atpId", ValidationResult.ErrorLevel.ERROR));
                         }
                     } catch (Exception e) {
                         validationResultInfos.add(makeValidationResultInfo(

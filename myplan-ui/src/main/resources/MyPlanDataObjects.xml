@@ -727,7 +727,6 @@
         </property>
     </bean>
 
-
     <bean id="DegreeAuditItem.programType" parent="DegreeAuditItem.programType-parentBean"/>
     <bean id="DegreeAuditItem.programType-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="programType"/>
