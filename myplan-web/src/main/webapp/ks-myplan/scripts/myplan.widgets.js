@@ -347,7 +347,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
                 other then the kuali form
 ######################################################################################
  */
-function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, blockOptions) {
+function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, elementBlockingSettings) {
 	var data;
     // methodToCall checks
 	if(methodToCall != null){
@@ -411,7 +411,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 						elementToBlock.show();
 					}
 					else{
-						var oDefaults = {
+						var elementBlockingDefaults = {
 			                message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />',
 			                fadeIn:  0,
 			                fadeOut:  0,
@@ -426,7 +426,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                                 left: '0px'
     						}
 			            };
-                        elementToBlock.block(jQuery.extend(oDefaults, blockOptions));
+                        elementToBlock.block(jq.extend(elementBlockingDefaults, elementBlockingSettings));
 					}
 				},
 				complete: function(){
