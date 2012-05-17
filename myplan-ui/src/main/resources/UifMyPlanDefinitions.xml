@@ -182,9 +182,10 @@
         </property>
     </bean>
 
-    <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection" parent="Uif-StackedSubCollection-WithinSection-parentBean">
+    <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
+          parent="Uif-StackedSubCollection-WithinSection-parentBean">
         <property name="layoutManager">
-          <bean parent="UifMyPlan-HorizontalStackedCollectionLayout"/>
+            <bean parent="UifMyPlan-HorizontalStackedCollectionLayout"/>
         </property>
     </bean>
 
@@ -212,7 +213,8 @@
 
     </bean>
 
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)" p:errorsField.render="false">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)"
+          p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-container-200</value>
@@ -226,35 +228,6 @@
             </list>
         </property>
     </bean>
-
-    <bean id="recent_audit_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
-        <property name="styleClasses">
-            <list merge="true">
-                <value>fl-container-200</value>
-                <value>myplan-section</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="degree_audits_list"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="saved_courses_section" parent="Uif-VerticalBoxSubSection" p:title="OTHER STUFF[TBD]" p:errorsField.render="false">
-        <property name="styleClasses">
-            <list merge="true">
-                <value>fl-container-200</value>
-                <value>myplan-section</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="watch_list"/>
-            </list>
-        </property>
-    </bean>
-
 
 
     <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Bookmarked Courses List" p:errorsField.render="false">
@@ -328,11 +301,13 @@
         </property>
     </bean>
 
-    <bean id="select_instruction" parent="Uif-MessageField" p:styleClasses="myplan-text-normal" p:style="margin: 10px; width: 600px; display:block;">
-        <property name="messageText" value="Select the campus and enter degree program or minor to run audit. It may take 1-5 minutes." />
+    <bean id="select_instruction" parent="Uif-MessageField" p:styleClasses="myplan-text-normal"
+          p:style="margin: 10px; width: 600px; display:block;">
+        <property name="messageText"
+                  value="Select the campus and enter degree program or minor to run audit. It may take 1-5 minutes."/>
     </bean>
 
-    <bean id="campus_params" parent="Uif-HorizontalFieldGroup"  p:style="margin: 0px 7px; display:block;">
+    <bean id="campus_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
@@ -347,12 +322,13 @@
             </list>
         </property>
     </bean>
-    <bean id="program_params" parent="Uif-HorizontalFieldGroup"  p:style="margin: 0px 7px; display:block;">
+    <bean id="program_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
         <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="programParam"  p:width="600px" p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false" >
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -360,8 +336,9 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="programParam"  p:width="600px"  p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false" >
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -369,8 +346,9 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="programParam"  p:width="600px" p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false" >
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -385,8 +363,9 @@
     </bean>
 
 
-    <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:refreshId="audit_report_section"
-          p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP" >
+    <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit"
+          p:refreshId="audit_report_section"
+          p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP">
         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-button</value>
@@ -396,8 +375,10 @@
     </bean>
 
 
-    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90" p:style="margin: 10px; width: 600px; display:block;">
-        <property name="messageText" value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit." />
+    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90"
+          p:style="margin: 10px; width: 600px; display:block;">
+        <property name="messageText"
+                  value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit."/>
     </bean>
 
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">

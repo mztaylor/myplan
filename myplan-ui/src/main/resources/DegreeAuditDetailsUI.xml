@@ -13,30 +13,30 @@
          express or implied. See the License for the specific language governing permissions
          and limitations under the License. -->
 
- <!--
-    <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
-        <property name="id" value="degreeAuditView"/>
-        <property name="breadcrumbs.render" value="false"/>
-        <property name="styleClasses" value="myplan"/>
-        <property name="entryPageId" value="degree_audit"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Page" p:id="degree_audit" p:title="Degree Audit">
-                    <property name="items">
-                        <list>
-                            <bean id="yippee" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
+    <!--
+       <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
+           <property name="id" value="degreeAuditView"/>
+           <property name="breadcrumbs.render" value="false"/>
+           <property name="styleClasses" value="myplan"/>
+           <property name="entryPageId" value="degree_audit"/>
+           <property name="items">
+               <list>
+                   <bean parent="Uif-Page" p:id="degree_audit" p:title="Degree Audit">
+                       <property name="items">
+                           <list>
+                               <bean id="yippee" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"/>
+                           </list>
+                       </property>
+                   </bean>
+               </list>
+           </property>
 
 
 
-        <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
-    </bean>
- -->
+           <property name="footer.render" value="false"/>
+           <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
+       </bean>
+    -->
 
     <!-- Not used to view audit reports. -->
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
@@ -72,9 +72,14 @@
                         <list>
                             <ref bean="run_degree_audits"/>
                             <ref bean="audit_report_section"/>
-                            <ref bean="recent_audit_section"/>
-                            <ref bean="empty_space_section"/>
-                            <ref bean="saved_courses_section"/>
+                            <bean parent="myplan_section" p:title="AUDIT (TBD)">
+                                <property name="items">
+                                    <list>
+                                        <ref bean="degree_audits_list"/>
+                                        <ref bean="watch_list"/>
+                                    </list>
+                                </property>
+                            </bean>
 
                         </list>
                     </property>
@@ -84,34 +89,22 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
-    <bean id="empty_space_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+
+
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false"
+          p:progressiveRenderViaAJAX="true" p:refreshWhenChanged="#form.field44">
         <property name="styleClasses">
-            <list merge="true">
-                <value>fl-container-200</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90" p:style="margin: 10px; width: 600px; display:none;">
-                    <property name="messageText" value="" />
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false" p:progressiveRenderViaAJAX="true" p:refreshWhenChanged="#form.field44">
-         <property name="styleClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
             </list>
         </property>
-         <property name="items">
+        <property name="items">
             <list>
-                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}" p:style="display:block;">                            </bean>
+                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"
+                                  p:style="display:block;"></bean>
                         </list>
                     </property>
                 </bean>
