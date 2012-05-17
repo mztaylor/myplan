@@ -184,14 +184,14 @@ public class AtpHelper {
             isSetToPlanning = true;
         }
 
-        /*planning term having same year as atp year but term is greater than atp term*/
+        /*atpId term having same year as planning year but atpId term is greater than planning term*/
 
         if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) > Integer.parseInt(planningAtpYearAndTerm[0])) {
             isSetToPlanning = true;
 
         }
 
-        /*planning term having year greater than atp year*/
+        /*atpId term having year greater than planning year*/
         if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) > Integer.parseInt(planningAtpYearAndTerm[1])) {
             isSetToPlanning = true;
         }
@@ -211,14 +211,14 @@ public class AtpHelper {
         String[] planningAtpYearAndTerm = atpIdToTermAndYear(getCurrentAtpId());
         String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
 
-        /*planning term having same year as atp year but term is less than atp term*/
+        /*atpId term having same year as planning year but atpId term less than planning term*/
 
         if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
             isAtpCompletedTerm = true;
 
         }
 
-        /*planning term having year less than atp year*/
+        /*atpId term having year less than planning year*/
         if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
             isAtpCompletedTerm = true;
         }
