@@ -11,7 +11,7 @@ public class Subrequirement {
     public GPA gpa;
     public Credits credits;
 
-    public String info = null;
+//    public String info = null;
     public String courseFilter = null;
 
     public String getStatus() {
@@ -38,6 +38,14 @@ public class Subrequirement {
         return count != null;
     }
 
+    public boolean hasCountZeroEarned() {
+        return count.getEarned() == 0;
+    }
+
+    public boolean hasCountZeroNeeds() {
+        return count.getNeeds() == 0;
+    }
+
     public Count getCount() {
         return count;
     }
@@ -58,17 +66,25 @@ public class Subrequirement {
         return credits != null;
     }
 
+    public boolean hasCreditsZeroEarned() {
+        return credits.earned < 0.0001f;
+    }
+
+    public boolean hasCreditsZeroNeeds() {
+        return credits.needs < 0.0001f;
+    }
+
     public Credits getCredits() {
         return credits;
     }
 
-    public boolean hasInfo() {
-        return info != null;
-    }
-
-    public String getInfo() {
-        return info;
-    }
+//    public boolean hasInfo() {
+//        return info != null;
+//    }
+//
+//    public String getInfo() {
+//        return info;
+//    }
 
     public void setCredits(Credits credits) {
         this.credits = credits;
