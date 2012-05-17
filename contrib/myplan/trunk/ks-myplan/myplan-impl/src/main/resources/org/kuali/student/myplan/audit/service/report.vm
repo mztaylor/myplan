@@ -24,8 +24,8 @@
 </table>
 
 <p>
-THIS REPORT IS AN ADVISING TOOL USED TO TRACK DEGREE PROGRESS. FINAL CONFIRMATION OF DEGREE
-REQUIREMENTS IS SUBJECT TO DEPARTMENT OR COLLEGE AND UNIVERSITY APPROVAL.
+This report is an advising tool used to track degree progress. Final confirmation of degree
+requirements is subject to department or college and university approval.
 </p>
 
 #if( !${report.complete} )
@@ -70,15 +70,18 @@ ${advisory}
 		</div>
 		<div class="requirement-body">
 		    <div class="requirement-content">
-                <div class="requirement-info">
-#if( ${req.hasInfo()} )
-	    			<p>${req.info}</p>
-#end
-                </div>
-
 
 #if( ${req.getShowTotal()} )
 #if( ${req.hasCredits()} )
+#if( ${req.hasCreditsZeroEarned()} )
+                <ul class="progress">
+                    <li class="needs"><label>Needs:</label> ${req.credits.needs} credits</li>
+                </ul>
+#elseif( ${req.hasCreditsZeroNeeds()} )
+                <ul class="progress">
+                    <li class="needs"><label>Earned:</label> ${req.credits.earned} credits</li>
+                </ul>
+#else
                 <ul class="progress">
                     <li class="required"><label>Credits required:</label> ${req.credits.required}</li>
                     <li class="earned"><label>earned:</label> ${req.credits.earned}</li>
@@ -86,17 +89,28 @@ ${advisory}
                     <li class="needs"><label>needs:</label> ${req.credits.needs}</li>
                 </ul>
 #end
+#end
 #if( ${req.hasGPA()} )
                 <ul class="progress">
                     <li class="earned"><label>Earned:</label> ${req.gpa.earned} GPA</li>
                 </ul>
 #end
 #if( ${req.hasCount()} )
+#if( ${req.hasCountZeroEarned()} )
+                <ul class="progress">
+                    <li class="needs"><label>Needs:</label> ${req.count.needs} courses</li>
+                </ul>
+#elseif( ${req.hasCountZeroNeeds()} )
+                <ul class="progress">
+                    <li class="needs"><label>Earned:</label> ${req.count.earned} courses</li>
+                </ul>
+#else
                 <ul class="progress">
                     <li class="required"><label>Courses required:</label> ${req.count.required}</li>
                     <li class="earned"><label>earned:</label> ${req.count.earned}</li>
                     <li class="needs"><label>needs:</label> ${req.count.needs}</li>
                 </ul>
+#end
 #end
 #end
             </div>
@@ -106,17 +120,21 @@ ${advisory}
                 <div class="subrequirement-heading">
                     <div class="${subreq.status}">
 #if( ${subreq.hasCaption()} )
-                        <h5>${subreq.caption}</h5>
+                        ${subreq.caption}
 #end
                     </div>
                 </div>
                 <div class="subrequirement-content">
-#if( ${subreq.hasInfo()} )
-                    <div class="subrequirement-info">
-		    	    	<p>${req.info}</p>
-		    	    </div>
-#end
 #if( ${subreq.hasCredits()} )
+#if( ${subreq.hasCreditsZeroEarned()} )
+                    <ul class="progress">
+                        <li class="needs"><label>Needs:</label> ${subreq.credits.needs} credits</li>
+                    </ul>
+#elseif( ${subreq.hasCreditsZeroNeeds()} )
+                    <ul class="progress">
+                        <li class="needs"><label>Earned:</label> ${subreq.credits.earned} credits</li>
+                    </ul>
+#else
                     <ul class="progress">
                         <li class="required"><label>Credits required:</label> ${subreq.credits.required}</li>
                         <li class="earned"><label>earned:</label> ${subreq.credits.earned}</li>
@@ -124,18 +142,28 @@ ${advisory}
                         <li class="needs"><label>needs:</label> ${subreq.credits.needs}</li>
                     </ul>
 #end
+#end
 #if( ${subreq.hasGPA()} )
                     <ul class="progress">
-                        <li class="required"><label>GPA required:</label> ${subreq.gpa.required}</li>
-                        <li class="earned"><label>earned:</label>${subreq.gpa.earned}</li>
+                        <li class="earned"><label>Earned:</label>${subreq.gpa.earned} GPA</li>
                     </ul>
 #end
 #if( ${subreq.hasCount()} )
+#if( ${subreq.hasCountZeroEarned()} )
+                    <ul class="progress">
+                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} courses</li>
+                    </ul>
+#elseif( ${subreq.hasCountZeroNeeds()} )
+                    <ul class="progress">
+                        <li class="needs"><label>Earned:</label> ${subreq.count.earned} courses</li>
+                    </ul>
+#else
                     <ul class="progress">
                         <li class="required"><label>Courses required:</label> ${subreq.count.required}</li>
                         <li class="earned"><label>earned:</label> ${subreq.count.earned}</li>
                         <li class="needs"><label>needs:</label> ${subreq.count.needs}</li>
                     </ul>
+#end
 #end
 
 #if( ${subreq.hasCourseAcceptableList()} )

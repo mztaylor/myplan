@@ -8,18 +8,29 @@ public class Credits {
     public float earned = 1;
     public float needs = 1;
 
+    public static String smartZero(float value) {
+        String result = Float.toString(value);
+        int x = result.length() - 1;
+        while ((char) result.codePointAt(x) == '0')
+            x--;
+        if (result.codePointAt(x) == '.')
+            x--;
+
+        return result.substring(0, x + 1);
+    }
+
     public float getMinimum() { return minimum; }
-    public float getRequired() {
-        return required;
+    public String getRequired() {
+        return smartZero( required );
     }
 
-    public float getInprogress() { return inprogress; }
+    public String getInprogress() { return smartZero(inprogress); }
 
-    public float getEarned() {
-        return earned;
+    public String getEarned() {
+        return smartZero( earned );
     }
 
-    public float getNeeds() { return needs; }
+    public String getNeeds() { return smartZero(needs); }
 
     public void setRequired(float required) {
         this.required = required;

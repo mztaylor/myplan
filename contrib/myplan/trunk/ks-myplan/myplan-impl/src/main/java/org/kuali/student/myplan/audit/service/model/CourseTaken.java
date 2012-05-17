@@ -8,7 +8,7 @@ public class CourseTaken {
 
 
     private String description = "Xxxxx xx Xxxxx";
-    private String credits;
+    private float credits;
 
     // IP, CR, 0.0,
     private String grade = "X.X";
@@ -50,10 +50,10 @@ public class CourseTaken {
     }
 
     public String getCredits() {
-        return credits;
+        return Credits.smartZero(credits);
     }
 
-    public void setCredits(String credits) {
+    public void setCredits(float credits) {
         this.credits = credits;
     }
 
@@ -68,8 +68,6 @@ public class CourseTaken {
     public boolean getInProgress() {
         return inProgress;
     }
-
-//    public boolean inProgress() { return inProgress; }
 
     public void setInProgress( boolean inProgress )
     {

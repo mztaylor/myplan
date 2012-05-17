@@ -141,6 +141,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         {
             result = structureMap.get( rname );
         }
+        if( "45MATRIC".equals( rname ))
+        {
+            System.out.println( "woot!");
+        }
         return result;
     }
 
@@ -336,7 +340,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         JobQueueRun run = jqrl.loadJobQueueRun(auditid);
 
 //        report.setStudentName(run.getStuno());
-        report.setWebTitle(run.getWebtitle());
+        report.setWebTitle(run.getDptitle1());
         report.setDegreeProgram(run.getDprog());
 
         Timestamp runDate = run.getRundate();
@@ -373,15 +377,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
 
             String reqText = getText( jqr );
-//            {
-//                StringBuilder buf = new StringBuilder();
-//                for (JobQueueReqText text : jqr.getJobQueueReqTexts()) {
-//                    String temp = text.getText();
-//                    buf.append(temp);
-//                    buf.append(" ");
-//                }
-//                reqText = scrub(buf.toString());
-//            }
 
             String satisfied = jqr.getSatisfied().trim().toUpperCase();
 
@@ -577,7 +572,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 temp.setNumber(number);
                                 temp.setGrade( Float.toString( taken.getGpa().floatValue() ));
                                 temp.setDescription(taken.getCtitle());
-                                temp.setCredits(Float.toString( taken.getCredit().floatValue()));
+                                temp.setCredits( taken.getCredit().floatValue());
                                 temp.setQuarter(taken.getEditYt());
                                 boolean inProgress = "I".equals(taken.getIp());
                                 temp.setInProgress(inProgress);
@@ -587,7 +582,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 subrequirement.addCourseTaken(temp);
                             }
                         }
-                        break;
 
                     }
 
