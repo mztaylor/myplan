@@ -96,11 +96,7 @@ public class PlanController extends UifControllerBase {
                     if (!planForm.isSetToPlanning()) {
                         planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
                     }
-
-
                 }
-
-
             } catch (Exception e) {
                 return doPageRefreshError(planForm, "Plan item not found.", e);
             }
@@ -314,6 +310,11 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
+        //  Can't validate further up because the new ATP ID can be "other".
+        if (! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        }
+
 
         PlanItemInfo planItem = null;
         try {
@@ -361,12 +362,12 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (!hasCapacity) {
+        if ( ! hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -451,6 +452,11 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
 
+        //  Can't validate further up because the new ATP ID can be "other".
+        if (! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        }
+
         PlanItemInfo planItem = null;
         try {
             // First load the plan item and retrieve the courseId
@@ -494,12 +500,12 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if (!hasCapacity) {
+        if ( ! hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -572,6 +578,9 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
+        if ( ! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        }
 
         String studentId = getUserId();
 
@@ -620,7 +629,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Validate: Adding to historical term.
-        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -689,7 +698,7 @@ public class PlanController extends UifControllerBase {
     private List<String> getNewTermIds(String atpId, PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
 
-        if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
+        if ( ! atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
             newTermIds.add(atpId);
         } else {
             //  Create an ATP id from the values in the year and term fields.
@@ -915,7 +924,12 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
-        String t[] = AtpHelper.atpIdToTermAndYear(atpId);
+        String[] t = {"?", "?"};
+        try {
+            t = AtpHelper.atpIdToTermAndYear(atpId);
+        } catch (RuntimeException e) {
+            logger.error("Could not convert ATP ID to a term and year.", e);
+        }
         String term = t[0] + " " + t[1];
         String[] params = {courseDetails.getCode(), term};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
