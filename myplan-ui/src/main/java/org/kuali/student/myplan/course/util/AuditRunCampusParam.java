@@ -64,7 +64,7 @@ public class AuditRunCampusParam extends KeyValuesBase {
             //  Add the individual term items.
             for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
                 if (!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
-                    keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()));
+                    keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()+ " campus"));
                 }
             }
         }

@@ -60,7 +60,6 @@
                             <bean parent="myplan_section" p:title="AUDIT (TBD)">
                                 <property name="items">
                                     <list>
-                                        <ref bean="run_degree_audits"/>
                                         <ref bean="degree_audits_list"/>
                                         <ref bean="watch_list"/>
                                     </list>
