@@ -218,7 +218,7 @@ public class AtpHelper {
 
         }
 
-        /*planning term having year greater than atp year*/
+        /*planning term having year less than atp year*/
         if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
             isAtpCompletedTerm = true;
         }
