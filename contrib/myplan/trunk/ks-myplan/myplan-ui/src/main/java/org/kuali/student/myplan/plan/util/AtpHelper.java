@@ -26,7 +26,7 @@ public class AtpHelper {
 
     private static transient AcademicCalendarService academicCalendarService;
 
-    public static int TERM_COUNT=4;
+    public static int TERM_COUNT = 4;
 
     private static final Logger logger = Logger.getLogger(AtpHelper.class);
 
@@ -163,38 +163,6 @@ public class AtpHelper {
     }
 
     /**
-     * Returns true if an ATP is considered historical in the context of WHAT? Otherwise, false.
-     *
-     * @param atpId
-     * @return
-     */
-    public static boolean isAtpHistorical(String atpId) {
-        boolean isAtpHistorical = false;
-        List<TermInfo> planningTermInfo = null;
-
-        try {
-            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("could not validate is Atp Historical", e);
-        }
-        String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
-        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
-        if (Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
-            isAtpHistorical = true;
-
-        }
-        if (!isAtpHistorical && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
-            isAtpHistorical = true;
-        }
-        if (!isAtpHistorical && !getCurrentAtpId().equalsIgnoreCase(planningTermInfo.get(0).getId()) &&getCurrentAtpId().equalsIgnoreCase(atpId)) {
-            isAtpHistorical = true;
-        }
-        return isAtpHistorical;
-    }
-
-
-
-    /**
      * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
      *
      * @param atpId
@@ -229,6 +197,34 @@ public class AtpHelper {
         }
 
         return isSetToPlanning;
+    }
+
+    /**
+     * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
+     *
+     * @param atpId
+     * @return
+     */
+    public static boolean isAtpCompletedTerm(String atpId) {
+        boolean isAtpCompletedTerm = false;
+
+        String[] planningAtpYearAndTerm = atpIdToTermAndYear(getCurrentAtpId());
+        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
+
+        /*planning term having same year as atp year but term is less than atp term*/
+
+        if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
+            isAtpCompletedTerm = true;
+
+        }
+
+        /*planning term having year greater than atp year*/
+        if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
+            isAtpCompletedTerm = true;
+        }
+
+
+        return isAtpCompletedTerm;
     }
 
 
