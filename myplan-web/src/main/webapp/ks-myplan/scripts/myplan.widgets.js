@@ -259,7 +259,7 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     var tempForm = jq('<form />').hide();
     jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
     jq("body").append(tempForm);
-    myplanAjaxSubmitPlanItem(id, type, methodToCall);
+    myplanAjaxSubmitPlanItem(id, type, methodToCall, e);
     fnCloseAllPopups();
     jq("form#"+ id + "_form").remove();
 }
