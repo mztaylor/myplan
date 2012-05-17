@@ -29,22 +29,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     private final Logger logger = Logger.getLogger(FullPlanItemsLookupableHelperImpl.class);
 
-    private transient AcademicCalendarService academicCalendarService;
-
     private transient AcademicRecordService academicRecordService;
-
-    protected AcademicCalendarService getAcademicCalendarService() {
-        if (this.academicCalendarService == null) {
-            this.academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
-                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
-                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
-        }
-        return this.academicCalendarService;
-    }
-
-    public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
-        this.academicCalendarService = academicCalendarService;
-    }
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
