@@ -63,22 +63,18 @@
         </property>
         <property name="items">
             <list>
+
                 <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
+                            <ref bean="run_degree_audits"/>
                             <ref bean="audit_report_section"/>
-                            <bean parent="myplan_section" p:title="AUDIT (TBD)">
-                                <property name="items">
-                                    <list>
-                                        <ref bean="run_degree_audits"/>
-                                        <ref bean="degree_audits_list"/>
-                                        <ref bean="watch_list"/>
-                                    </list>
-                                </property>
-                            </bean>
+                            <ref bean="recent_audit_section"/>
+                            <ref bean="empty_space_section"/>
+                            <ref bean="saved_courses_section"/>
 
                         </list>
                     </property>
@@ -88,8 +84,23 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
+    <bean id="empty_space_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-200</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90" p:style="margin: 10px; width: 600px; display:none;">
+                    <property name="messageText" value="" />
+                </bean>
+            </list>
+        </property>
+    </bean>
 
-    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
+
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false" p:progressiveRenderViaAJAX="true" p:refreshWhenChanged="#form.field44">
          <property name="styleClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
