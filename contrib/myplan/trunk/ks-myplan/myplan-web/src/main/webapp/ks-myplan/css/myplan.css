@@ -370,6 +370,7 @@ a:focus {
     padding: 5px;
     display: block;
     float: left;
+    border: none;
     margin: 0 !important;
 }
 .myplan-message-success {
@@ -747,7 +748,6 @@ a:focus {
 /* Course Details Popup ########################################################################### */
 
 .myplan-popup-close {
-    float: right;
     cursor: pointer;
     position: absolute;
     top: 0px;
