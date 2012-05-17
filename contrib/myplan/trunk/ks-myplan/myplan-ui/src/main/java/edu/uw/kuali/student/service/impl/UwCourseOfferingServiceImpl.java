@@ -145,13 +145,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
 
         //  TODO: THis should be in AtpHelper.
-        if (term.equals("1")) {
+        if (term.equals("4")) {
             term = "autumn";
-        } else if (term.equals("2")) {
+        } else if (term.equals("1")) {
             term = "winter";
-        } else if (term.equals("3")) {
+        } else if (term.equals("2")) {
             term = "spring";
-        } else if (term.equals("4")) {
+        } else if (term.equals("3")) {
             term = "summer";
         }
 
