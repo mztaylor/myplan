@@ -57,20 +57,15 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
     }
 
-    jq(".myplan-popup-target").each(function() {
-        jq(this).HideAllBubblePopups();
-        jq(this).RemoveBubblePopup();
-    });
+    fnCloseAllPopups();
 
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
-    //jq("#" + popupBoxId).css({top:'0px', left:'0px'});
 	popupBox.FreezeBubblePopup();
 
     jq("html").click(function() {
-		popupBox.HideAllBubblePopups();
-		popupBox.RemoveBubblePopup();
+		fnCloseAllPopups();
 	});
     jq('#' + popupBoxId).click(function(event){
     	event.stopPropagation();
@@ -92,8 +87,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                 popupBox.SetBubblePopupInnerHtml(component);
                 if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
-                    popupBox.HideAllBubblePopups();
-                    popupBox.RemoveBubblePopup();
+                    fnCloseAllPopups();
                 });
             }
             runHiddenScripts(getId + "_div");
@@ -196,6 +190,45 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 	myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
+function openDialog(sText, e) {
+    stopEvent(e);
+
+    var dialogHtml = jq('<div />').html(sText).css({
+        width: "300px"
+    });
+
+	var popupOptionsDefault = {
+		innerHtml: jq(dialogHtml).clone().wrap('<div>').parent().html(),
+		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+		manageMouseEvents: true,
+		selectable: true,
+		tail: {hidden: true},
+		position: 'top',
+        align: 'center',
+        alwaysVisible: false,
+        themeMargins: {total:'20px', difference:'5px'}
+	};
+
+    var popupBox = jq("body");
+
+    fnCloseAllPopups();
+
+	popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.ShowBubblePopup(popupOptionsDefault, false);
+    var popupBoxId = popupBox.GetBubblePopupID();
+	popupBox.FreezeBubblePopup();
+
+    if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+
+    fnPositionPopUp(popupBoxId);
+
+    jq("html, #" + popupBoxId + " img.myplan-popup-close").click(function() {
+		fnCloseAllPopups();
+	});
+    jq('#' + popupBoxId).click(function(event){
+    	event.stopPropagation();
+ 	});
+}
 
 function fnPositionPopUp(popupBoxId) {
     if ( parseFloat(jq("#" + popupBoxId).css("top")) < 0 || parseFloat(jq("#" + popupBoxId).css("left")) < 0 ) {
@@ -209,8 +242,9 @@ function fnPositionPopUp(popupBoxId) {
     Function: Submit
 ######################################################################################
  */
-function myplanAjaxSubmitPlanItem(id, type, methodToCall, e) {
+function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var targetText = ( jq.trim( jq(target).text() ) != '') ? jq.trim( jq(target).text() ) : "Error";
     var elementToBlock = jq(target);
     jq('input[name="methodToCall"]').remove();
     jq('<input type="hidden" name="methodToCall" value="' + methodToCall + '" />').appendTo(jq("form#" + id + "_form"));
@@ -233,7 +267,13 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e) {
                 break;
             case 'error':
                 var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_errorMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-error' };
-                eval('jq.publish("ERROR", [' + JSON.stringify( oMessage ) + ']);');
+                if (!bDialog) {
+                    var sContent = jq("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"transparent","color":"#ff0606","border":"none"});
+                    var sHtml = jq("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
+                    openDialog(sHtml.html(), e);
+                } else {
+                    eval('jq.publish("ERROR", [' + JSON.stringify( oMessage ) + ']);');
+                }
                 break;
         }
     };
@@ -259,7 +299,7 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     var tempForm = jq('<form />').hide();
     jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
     jq("body").append(tempForm);
-    myplanAjaxSubmitPlanItem(id, type, methodToCall, e);
+    myplanAjaxSubmitPlanItem(id, type, methodToCall, e, false);
     fnCloseAllPopups();
     jq("form#"+ id + "_form").remove();
 }

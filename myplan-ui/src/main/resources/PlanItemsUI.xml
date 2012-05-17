@@ -1806,7 +1806,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false"
-                      p:escapeHtmlInPropertyValue="false" p:width="10.0%" p:styleClasses="myplan-carousel-term-total"/>
+                      p:escapeHtmlInPropertyValue="false" p:width="10.0%"/>
 
             </list>
         </property>
@@ -1820,13 +1820,6 @@
 
 
     <bean id="termsCollection" parent="UifMyPlan-HorizontalStackedSubCollection-WithinSection">
-        <property name="styleClasses">
-            <list merge="false">
-                <value>myplan-carousel-term</value>
-                <value>myplan-term-completed</value>
-            </list>
-        </property>
-
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="terms"/>
@@ -1846,26 +1839,15 @@
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
-
-
     </bean>
 
     <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
-        <property name="header">
-            <bean parent="Uif-HeaderField-Six"/>
-        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionHorizontalBoxItem"/>
                 </property>
             </bean>
-        </property>
-        <property name="styleClasses">
-            <list merge="false">
-                <value>myplan-carousel-term</value>
-                <value>myplan-term-completed</value>
-            </list>
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
@@ -1892,29 +1874,17 @@
 
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"/>
+            <bean parent="term_total_credits"/>
         </property>
-
     </bean>
 
     <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:title="COMPLETED">
-
-        <property name="header">
-            <bean parent="Uif-HeaderField-Six"/>
-        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionHorizontalBoxItem"/>
                 </property>
             </bean>
-        </property>
-
-        <property name="styleClasses">
-            <list merge="false">
-                <value>myplan-carousel-term</value>
-                <value>myplan-term-completed</value>
-            </list>
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
@@ -1937,9 +1907,6 @@
         </property>
 
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
-
-        <!--<property name="collectionLookup.quickfinderActionField.render" value="false"/>-->
-
     </bean>
 
 
