@@ -58,7 +58,7 @@ public class DegreeAuditItem implements Comparable {
     /**
      * Returns the audit content as HTML.
      */
-    public String getReportAsHtml(){
+    public String getReportAsHtml() {
         InputStream in = null;
         try {
             in = this.auditReport.getReport().getDataSource().getInputStream();
@@ -75,9 +75,7 @@ public class DegreeAuditItem implements Comparable {
         } catch (IOException e) {
             return "Could not read report contents.";
         }
-
-        String html = sw.toString();
-        return html;
+        return sw.toString();
     }
 
     @Override
