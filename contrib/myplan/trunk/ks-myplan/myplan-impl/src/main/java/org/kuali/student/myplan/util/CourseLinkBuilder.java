@@ -33,7 +33,7 @@ public class CourseLinkBuilder {
     //  This expression defines a curriculum code: "CHEM", "A A", "A&E", "A &E", "FRENCH"
     private static final String courseAbbreviationRegex = "[A-Z]{1}[A-Z &]{1,6}";
     //  Groups a course code by looking for a curriculum code followed by any amount of white space, followed by three digits.
-    private static final String courseAbbreviationGroupRegex = String.format("(%s)\\s+[0-9]{3}", courseAbbreviationRegex);
+    private static final String courseAbbreviationGroupRegex = String.format("(%s)\\s*[0-9]{3}", courseAbbreviationRegex);
     private static final Pattern courseAbbreviationPattern;
 
     //  Groups text from the beginning of a line to a curriculum code.
@@ -42,8 +42,7 @@ public class CourseLinkBuilder {
 
     //  Groups a line of input into sub-sections based on the beginning of a course abbreviation.
     //private static final String subLinesRegex = String.format("(%s([a-z0-9 \\-&,/:.]|And)*)", courseAbbreviationGroupRegex, courseAbbreviationRegex);
-    private static final String subLinesRegex = String.format("(%s.*)", courseAbbreviationGroupRegex, courseAbbreviationRegex);
-
+    private static final String subLinesRegex = String.format("(%s.*)", courseAbbreviationGroupRegex);
     private static final Pattern subLinesPattern;
 
     //  Groups curriculum abbreviation with a three digit number after it: "E&C N 123", "CH M 101 and CHEM 102"
