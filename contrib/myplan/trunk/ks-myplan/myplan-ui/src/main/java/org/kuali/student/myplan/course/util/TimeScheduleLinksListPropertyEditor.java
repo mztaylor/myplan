@@ -35,9 +35,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private StudentServiceClient studentServiceClient;
 
     private String baseUrl = "";
-    private String baseUrlS = "";
-    private String baseUrlT = "";
-    private String baseUrlB = "";
     private String label = "See full details about this course in {timeScheduleName} Time Schedule";
     private String title = label;
 
@@ -89,20 +86,23 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         formattedText.append("<" + listType.getListElementName() + " class=\"" + styleClassNames + "\">" );
 
         for (String scheduledTerm : scheduledTerms) {
-            String url = makeTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
+            String lightboxUrl = makeLightboxTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
             String urlId = makeTimeScheduleUrlId(scheduledTerm, courseDetails.getCode());
             String t = title.replace("{timeScheduleName}", scheduledTerm);
             String l = label.replace("{timeScheduleName}", scheduledTerm);
 
+
+            //need to change lightbox link url b bus --> bbus for bothell and tacoma
+
+
+
             formattedText.append("<" + listType.getListItemElementName() + ">")
-
-
 
                     /*
                     <input type="hidden" value=" createLightBoxLink('u86', {autoScale:true,centerOnScroll:true,transitionIn:"fade",transitionOut:"fade",speedIn:200,speedOut:200,hideOnOverlayClick:false,type:"iframe",width:"75%",height:"95%"}); " script="first_run">
                      */
                     .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
-                    .append("<a id=\"" + urlId + "\" href=\"" + url + "\" target=\"_self\">")
+                    .append("<a id=\"" + urlId + "\" href=\"" + lightboxUrl + "\" target=\"_self\">")
                 .append(l)
                 .append("</a>")
                 .append("</" + listType.getListItemElementName() + ">");
@@ -113,6 +113,84 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     }
 
     /**
+     * Format a UW SWS URL as: SPR2012/chem.html#chem142
+     *                         term/curriculmum_abbreviation#curriculmum_abbreviation + course number
+     * No space in curriculum code for Bothell/Tacoma
+     *
+     * @param term
+     * @param courseCode
+     * @return
+     */
+    private String makeLightboxTimeScheduleUrl(String term, String courseCode) {
+
+       final CourseDetails courseDetails = (CourseDetails) super.getValue();
+
+       if (courseDetails == null) {
+           return "";
+       }
+
+       /*
+        *  If the collection is empty and no empty list message is defined then return an empty string.
+        *  Otherwise, add an empty list message to the list.
+        */
+       String styleClassNames = getEmptyListStyleClassesAsString();
+
+       List<String> campusLocation = courseDetails.getCampusLocations();
+
+       String campusLocationString = campusLocation.get(0);
+
+        StringBuilder url = new StringBuilder(baseUrl);
+
+
+        //  Parse out all of the necessary params.
+        String year = term.replaceAll("\\D+", "");
+        String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
+        String courseNumber = courseCode.replaceAll("^\\D+", "");
+        String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
+
+        //  Convert term to SWS format "SPR2012"
+        String swsTerm = termName.substring(0,3).toUpperCase() + year;
+
+
+        if (campusLocationString.equals("Bothell")) { //Bothell
+           url.append("B").append("/");
+        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+            url.append("T").append("/");
+        }
+
+
+        // Build the URL: SPR2012/chem.html#chem142
+        url.append(swsTerm).append("/");
+
+        //  Query the student web service to convert the curriculum abbreviation to a TimeScheduleLinkAbbreviation.
+        String timeScheduleLinkAbbreviation = null;
+        try {
+            timeScheduleLinkAbbreviation = getStudentServiceClient().getTimeScheduleLinkAbbreviation(year, termName, curriculumCode);
+        } catch (ServiceException e) {
+            //  If the service call fails just return the base URL.
+            logger.error("Call to SWS failed.", e);
+            return baseUrl;
+        }
+
+        url.append(timeScheduleLinkAbbreviation)
+            //.append(".html#")
+            .append(".html?external=true&dialogMode=true#");
+
+        if (campusLocationString.equals("Seattle")) { //Seattle
+            url.append(curriculumCode.toLowerCase());
+        } else if (campusLocationString.equals("Bothell")) { //Bothell
+            url.append(curriculumCode.toLowerCase().replaceAll("\\s",""));
+        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+            url.append(curriculumCode.toLowerCase().replaceAll("\\s",""));
+        }
+
+        url.append(courseNumber);
+        return url.toString();
+    }
+
+
+
+     /**
      * Format a UW SWS URL as: SPR2012/chem.html#chem142
      *                         term/curriculmum_abbreviation#curriculmum_abbreviation + course number
      *
@@ -138,17 +216,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
        String campusLocationString = campusLocation.get(0);
 
-       if (campusLocationString.equals("Seattle")) { //Seattle
-           baseUrl = baseUrlS;
-       } else if (campusLocationString.equals("Bothell")) { //Bothell
-           baseUrl = baseUrlB;
-       } else if (campusLocationString.equals("Tacoma")) { //Tacoma
-           baseUrl = baseUrlT;
-       } else {
-       }
-
-
-
         StringBuilder url = new StringBuilder(baseUrl);
 
 
@@ -160,6 +227,14 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
         //  Convert term to SWS format "SPR2012"
         String swsTerm = termName.substring(0,3).toUpperCase() + year;
+
+
+        if (campusLocationString.equals("Bothell")) { //Bothell
+           url.append("B").append("/");
+        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+            url.append("T").append("/");
+        }
+
 
         // Build the URL: SPR2012/chem.html#chem142
         url.append(swsTerm).append("/");
@@ -184,6 +259,11 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     private String makeTimeScheduleUrlId(String term, String courseCode) {
 
+        final CourseDetails courseDetails = (CourseDetails) super.getValue();
+
+        if (courseDetails == null) {
+            return "";
+        }
 
        /*
         *  If the collection is empty and no empty list message is defined then return an empty string.
@@ -198,6 +278,18 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
         String courseNumber = courseCode.replaceAll("^\\D+", "");
         String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
+
+
+       List<String> campusLocation = courseDetails.getCampusLocations();
+
+       String campusLocationString = campusLocation.get(0);
+
+        if (campusLocationString.equals("Bothell")) { //Bothell
+            curriculumCode = curriculumCode.replaceAll("\\s","");
+        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+            curriculumCode = curriculumCode.replaceAll("\\s","");
+        }
+
 
         //  Convert term to SWS format "SPR2012"
         String swsTerm = termName.substring(0,3).toUpperCase() + year;
@@ -246,31 +338,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
-
-    public String getBaseUrlS() {
-        return baseUrlS;
-    }
-
-    public void setBaseUrlS (String baseUrlS) {
-        this.baseUrlS = baseUrlS;
-    }
-
-    public String getBaseUrlT() {
-        return baseUrlT;
-    }
-
-    public void setBaseUrlT(String baseUrlT) {
-        this.baseUrlT = baseUrlT;
-    }
-
-    public String getBaseUrlB() {
-        return baseUrlB;
-    }
-
-    public void setBaseUrlB(String baseUrlB) {
-        this.baseUrlB = baseUrlB;
-    }
-
 
     public StudentServiceClient getStudentServiceClient() {
         if (studentServiceClient == null) {
