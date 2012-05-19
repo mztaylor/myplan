@@ -7,6 +7,10 @@ import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -23,14 +27,15 @@ import java.util.List;
 public class DegreeAuditBothellPrograms extends KeyValuesBase {
 
 
-
     private final Logger logger = Logger.getLogger(DegreeAuditBothellPrograms.class);
 
     private boolean blankOption;
 
     private transient EnumerationManagementService enumService;
 
-    private HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private transient DegreeAuditService degreeAuditService;
+
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -49,21 +54,35 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
     }
 
 
+    public DegreeAuditService getDegreeAuditService() {
+        if (degreeAuditService == null) {
+            degreeAuditService = (DegreeAuditService)
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
+        }
+        return degreeAuditService;
+    }
+
 
     @Override
     public List<KeyValue> getKeyValues() {
+        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+        try {
+            auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not retrieve AuditPrograms", e);
+        }
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        keyValues.add(new ConcreteKeyValue("0ART H 0011", "Art History"));
-        keyValues.add(new ConcreteKeyValue("0ENGL  0011", "English"));
-        keyValues.add(new ConcreteKeyValue("0HIST  0011", "History"));
-        keyValues.add(new ConcreteKeyValue("0PHIL  0011", "Philosophy"));
-        keyValues.add(new ConcreteKeyValue("0ART   2014", "Art: Fibers"));
 
-
-
-
+        for (AuditProgramInfo programInfo : auditProgramInfoList) {
+            /*Bothell campus programs starts with 1*/
+            if (programInfo.getProgramId().startsWith("1")) {
+                keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
+            }
+        }
         return keyValues;
     }
+
 
     public DegreeAuditBothellPrograms() {
         super();

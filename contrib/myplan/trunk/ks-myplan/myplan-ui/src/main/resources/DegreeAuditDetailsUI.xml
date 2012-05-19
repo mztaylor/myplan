@@ -111,4 +111,98 @@
             </list>
         </property>
     </bean>
+
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:width="600px">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>fl-container-700</value>
+                <value>myplan-course-search-panel</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderField-Five"/>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="select_instruction"/>
+                <ref bean="campus_params"/>
+                <ref bean="program_params"/>
+                <ref bean="audit_instruction"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="select_instruction" parent="Uif-MessageField" p:styleClasses="myplan-text-normal"
+          p:style="margin: 10px; width: 600px; display:block;">
+        <property name="messageText"
+                  value="Select the campus and enter degree program or minor to run audit. It may take 1-5 minutes."/>
+    </bean>
+
+    <bean id="campus_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
+        <property name="group.errorsField.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="campusParam" p:width="600px">
+                    <property name="control">
+                        <bean parent="Uif-HorizontalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="program_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
+        <property name="group.errorsField.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'"
+                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
+                    </property>
+                </bean>
+                <ref bean="degree_audit_run"/>
+
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit"
+          p:refreshId="audit_report_section"
+          p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP">
+        <property name="styleClasses">
+            <list merge="true">
+                <value>myplan-button</value>
+                <value>myplan-button-blue</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

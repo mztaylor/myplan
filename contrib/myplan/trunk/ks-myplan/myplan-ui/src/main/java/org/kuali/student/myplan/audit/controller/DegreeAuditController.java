@@ -21,8 +21,10 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,9 +86,11 @@ public class DegreeAuditController extends UifControllerBase {
             ContextInfo contextInfo = new ContextInfo();
             Date startDate = new Date();
             Date endDate = new Date();
+            String programParam=null;
             if (auditId == null) {
                 List<AuditReportInfo> auditReportInfos = degreeAuditService.getAuditsForStudentInDateRange(studentID, startDate, endDate, contextInfo);
                 auditId = auditReportInfos.get(0).getAuditId();
+                programParam=auditReportInfos.get(0).getProgramId();
             }
 
 
@@ -100,6 +105,23 @@ public class DegreeAuditController extends UifControllerBase {
 
             String html = sw.toString();
             form.setAuditHtml(html);
+            
+            
+            /*Impl to set the default values for campusParam and programParam properties*/
+            List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+            try {
+                auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("could not retrieve AuditPrograms", e);
+            }
+            for(AuditProgramInfo auditProgramInfo:auditProgramInfoList){
+                if(auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)){
+                  form.setProgramParam(auditProgramInfo.getProgramId());
+                  form.setCampusParam(auditProgramInfo.getProgramId().substring(0,1));
+                    break;
+                }
+            }
+
 
 
         } catch (Exception e) {

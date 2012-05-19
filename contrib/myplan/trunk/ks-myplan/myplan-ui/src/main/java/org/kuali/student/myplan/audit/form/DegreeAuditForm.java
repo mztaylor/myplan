@@ -20,7 +20,7 @@ public class DegreeAuditForm extends UifFormBase {
                 "</ul>\n" +
                 "</div>";
     private String programParam;
-    private String campusParam="0";
+    private String campusParam;
     private String auditId;
 
     public String getAuditId() {
