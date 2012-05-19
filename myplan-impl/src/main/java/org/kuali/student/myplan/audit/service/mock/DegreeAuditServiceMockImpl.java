@@ -3,6 +3,7 @@ package org.kuali.student.myplan.audit.service.mock;
 
 import org.apache.commons.io.IOUtils;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
@@ -131,4 +132,10 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     public String runEmptyAuditAsync(@WebParam(name = "programId") String programId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+    @Override
+    public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException{
+        return null;
+    }
+
+
 }

@@ -42,6 +42,7 @@
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
         <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
+        <property name="dprogDao" ref="uachieveapi.dprogDao"/>
     </bean>
 
 </beans>

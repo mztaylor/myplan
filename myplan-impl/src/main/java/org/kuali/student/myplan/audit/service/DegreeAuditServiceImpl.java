@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.audit.service;
 
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.*;
 
 import org.apache.velocity.Template;
@@ -8,11 +9,18 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.jacorb.sasPolicy.ATLASPolicyHelper;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvc;
 import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvcSoap;
@@ -47,6 +55,10 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import org.kuali.student.common.search.dto.*;
+import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
+import uachieve.apis.requirement.Dprog;
+import uachieve.apis.requirement.dao.DprogDao;
+import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -60,6 +72,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private JobQueueListDao jobQueueListDao;
 
+
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
+
+    private DprogDao dprogDao;
+
+    private static transient AcademicCalendarService academicCalendarService;
+
+    public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
+
+    public DprogDao getDprogDao() {
+        return dprogDao;
+    }
+
+    public void setDprogDao(DprogDao dprogDao) {
+        this.dprogDao = dprogDao;
+    }
 
     public JobQueueListDao getJobQueueListDao() {
         return jobQueueListDao;
@@ -101,8 +129,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
-    public DegreeAuditServiceImpl()
-    {
+    private static AcademicCalendarService getAcademicCalendarService() {
+        if (academicCalendarService == null) {
+            academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return academicCalendarService;
+    }
+
+
+    public DegreeAuditServiceImpl() {
         loadProperties();
     }
 
@@ -264,10 +301,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 StatusInfo info = this.getAuditRunStatus(auditId, context);
                 logger.info(info.getMessage());
                 if (info.getIsSuccess()) break;
-                Thread.currentThread().sleep( 200 );
-                if( System.currentTimeMillis() > giveup )
-                {
-                    throw new TimeoutException( "giving up after " + (timeout / 1000 ) + " seconds" );
+                Thread.currentThread().sleep(200);
+                if (System.currentTimeMillis() > giveup) {
+                    throw new TimeoutException("giving up after " + (timeout / 1000) + " seconds");
                 }
             }
         } catch (Exception e) {
@@ -717,4 +753,49 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 //        }
         return courseID;
     }
+
+    @Override
+    public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+        String hql = "SELECT dp.comp_id.dprog, dp.webtitle from Dprog dp WHERE (dp.comp_id.dprog LIKE '0%' or dp.comp_id.dprog LIKE '1%' or dp.comp_id.dprog LIKE '2%') AND dp.lyt>=? AND dp.webtitle IS NOT NULL AND dp.webtitle<>'' AND dp.dpstatus='W'";
+        String[] currentTermAndYear=this.getCurrentYearAndTerm();
+        int year=Integer.parseInt(currentTermAndYear[1])-10;
+        StringBuffer termYear=new StringBuffer();
+        termYear=termYear.append(year).append(currentTermAndYear[0]);
+        String[] params = new String[]{termYear.toString()};
+        List programs = dao.find(hql, params);
+        List<Dprog> obj = new ArrayList<Dprog>();
+        for (int i = 0; i < programs.size(); i++) {
+            Object[] objs = null;
+            AuditProgramInfo auditProgramInfo = new AuditProgramInfo();
+            objs = (Object[]) programs.get(i);
+            auditProgramInfo.setProgramId((String) objs[0]);
+            auditProgramInfo.setProgramTitle((String) objs[1]);
+            auditProgramInfoList.add(auditProgramInfo);
+        }
+        return auditProgramInfoList;
+    }
+    /*Implemented to get the current year and the term value from the academic calender service.*/
+    public String[] getCurrentYearAndTerm() {
+        List<TermInfo> scheduledTerms = null;
+        try {
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "INPROGRESS")), CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Query to Academic Calendar Service failed.", e);
+        }
+
+        if (scheduledTerms == null || scheduledTerms.size() == 0) {
+            throw new RuntimeException("No scheduled terms were found.");
+        }
+        TermInfo currentTerm = scheduledTerms.get(0);
+        String atpSuffix = currentTerm.getId().replace(TERM_ID_PREFIX, "");
+        String[] termYear = atpSuffix.split("\\.");
+        String year = termYear[0].trim();
+        String term = termYear[1].trim();
+        return new String[]{term, year};
+    }
+
+
+
 }

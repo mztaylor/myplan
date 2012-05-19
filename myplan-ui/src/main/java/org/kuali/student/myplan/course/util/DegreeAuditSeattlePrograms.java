@@ -5,8 +5,19 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -23,14 +34,15 @@ import java.util.List;
 public class DegreeAuditSeattlePrograms extends KeyValuesBase {
 
 
-
     private final Logger logger = Logger.getLogger(DegreeAuditSeattlePrograms.class);
 
     private boolean blankOption;
 
+    private transient DegreeAuditService degreeAuditService;
+
     private transient EnumerationManagementService enumService;
 
-    private HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -39,6 +51,7 @@ public class DegreeAuditSeattlePrograms extends KeyValuesBase {
     public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
         this.hashMap = hashMap;
     }
+
 
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
@@ -49,22 +62,32 @@ public class DegreeAuditSeattlePrograms extends KeyValuesBase {
     }
 
 
+    public DegreeAuditService getDegreeAuditService() {
+        if (degreeAuditService == null) {
+            degreeAuditService = (DegreeAuditService)
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
+        }
+        return degreeAuditService;
+    }
+
 
     @Override
     public List<KeyValue> getKeyValues() {
+        List<AuditProgramInfo> auditProgramInfoList=new ArrayList<AuditProgramInfo>();
+        try {
+            auditProgramInfoList= getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not retrieve AuditPrograms", e);
+        }
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        keyValues.add(new ConcreteKeyValue("0CHEM  0011", "Chemistry (BA)"));
-        keyValues.add(new ConcreteKeyValue("0BIOL  0511", "Biology (BA)"));
-        keyValues.add(new ConcreteKeyValue("0ECON  0011", "Economics (BA)"));
-        keyValues.add(new ConcreteKeyValue("0ENGL  0011", "English"));
-        keyValues.add(new ConcreteKeyValue("0HIST  0011", "History"));
-        keyValues.add(new ConcreteKeyValue("0PHIL  0011", "Philosophy"));
-        keyValues.add(new ConcreteKeyValue("0ART H 0011", "Art History"));
-        keyValues.add(new ConcreteKeyValue("0ART   2014", "Art: Fibers"));
 
-
-
-
+        for(AuditProgramInfo programInfo:auditProgramInfoList){
+            /*Seattle campus programs starts with 0*/
+            if(programInfo.getProgramId().startsWith("0")){
+            keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
+            }
+            }
         return keyValues;
     }
 

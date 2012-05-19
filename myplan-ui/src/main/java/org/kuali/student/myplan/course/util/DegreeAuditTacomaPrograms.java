@@ -7,6 +7,10 @@ import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -30,7 +34,9 @@ public class DegreeAuditTacomaPrograms extends KeyValuesBase {
 
     private transient EnumerationManagementService enumService;
 
-    private HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private transient DegreeAuditService degreeAuditService;
+
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
@@ -49,17 +55,32 @@ public class DegreeAuditTacomaPrograms extends KeyValuesBase {
     }
 
 
+    public DegreeAuditService getDegreeAuditService() {
+        if (degreeAuditService == null) {
+            degreeAuditService = (DegreeAuditService)
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
+        }
+        return degreeAuditService;
+    }
+
 
     @Override
     public List<KeyValue> getKeyValues() {
+        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+        try {
+            auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not retrieve AuditPrograms", e);
+        }
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
 
-        keyValues.add(new ConcreteKeyValue("0ECON  0011", "Economics (BA)"));
-        keyValues.add(new ConcreteKeyValue("0ENGL  0011", "English"));
-        keyValues.add(new ConcreteKeyValue("0HIST  0011", "History"));
-        keyValues.add(new ConcreteKeyValue("0PHIL  0011", "Philosophy"));
-
-
+        for (AuditProgramInfo programInfo : auditProgramInfoList) {
+            /*Tacoma campus programs starts with 2*/
+            if (programInfo.getProgramId().startsWith("2")) {
+                keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
+            }
+        }
         return keyValues;
     }
 
