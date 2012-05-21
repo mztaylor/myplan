@@ -63,24 +63,49 @@
         </property>
         <property name="items">
             <list>
-
                 <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="run_degree_audits"/>
-                            <ref bean="audit_report_section"/>
-                            <bean parent="myplan_section" p:title="AUDIT (TBD)">
+                            <bean parent="Uif-Page" p:id="course_search">
+                                <property name="layoutManager">
+                                    <bean parent="Uif-VerticalBoxLayout"/>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <ref bean="degree_audits_list"/>
-                                        <ref bean="watch_list"/>
+                                        <ref bean="run_degree_audits"/>
+                                        <ref bean="audit_report_section"/>
                                     </list>
                                 </property>
                             </bean>
+                            <bean parent="Uif-Page" p:id="course_search">
+                                <property name="layoutManager">
+                                    <bean parent="Uif-VerticalBoxLayout"/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="myplan_section">
+                                            <property name="header.render" value="false"/>
 
+                                            <property name="items">
+                                                <list>
+                                                    <ref bean="degree_audits_list"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="myplan_section">
+                                            <property name="title" value="OTHER STUFF[TBD]"/>
+                                            <property name="items">
+                                                <list>
+                                                      <ref bean="watch_list"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -89,7 +114,6 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
-
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false"
           p:progressiveRenderViaAJAX="true" p:refreshWhenChanged="#form.field44">
@@ -112,7 +136,7 @@
         </property>
     </bean>
 
-    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:width="600px">
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:width="700px">
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-container-700</value>
@@ -203,6 +227,12 @@
                 <value>myplan-button-blue</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90"
+          p:style="margin: 10px; width: 600px; display:block;">
+        <property name="messageText"
+                  value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit."/>
     </bean>
 
 </beans>
