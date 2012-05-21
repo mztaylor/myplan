@@ -87,6 +87,7 @@ public class DegreeAuditController extends UifControllerBase {
             Date startDate = new Date();
             Date endDate = new Date();
             String programParam=null;
+            form.setCampusParam("0");
             if (auditId == null) {
                 List<AuditReportInfo> auditReportInfos = degreeAuditService.getAuditsForStudentInDateRange(studentID, startDate, endDate, contextInfo);
                 auditId = auditReportInfos.get(0).getAuditId();
