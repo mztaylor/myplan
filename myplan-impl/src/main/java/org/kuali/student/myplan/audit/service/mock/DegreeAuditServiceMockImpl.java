@@ -134,7 +134,26 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     }
     @Override
     public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException{
-        return null;
+        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+
+        try {
+            AuditProgramInfo api0= new AuditProgramInfo();
+            api0.setProgramId("0api0");
+            api0.setProgramTitle("");
+            AuditProgramInfo api1= new AuditProgramInfo();
+            api1.setProgramId("1api1");
+            api1.setProgramTitle("");
+            AuditProgramInfo api2= new AuditProgramInfo();
+            api2.setProgramId("2api2");
+            api2.setProgramTitle("");
+            auditProgramInfoList.add(api0);
+            auditProgramInfoList.add(api1);
+            auditProgramInfoList.add(api2);
+        } catch (Exception e) {
+            throw new RuntimeException("Trouble creating fake audit programs.", e);
+        }
+
+        return auditProgramInfoList;
     }
 
 
