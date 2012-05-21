@@ -75,7 +75,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         /*************BackupCourseList**************/
         List<PlannedCourseDataObject> backupCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
-            getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
+            backupCoursesList=getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true);
         } catch (Exception e) {
             logger.error("Could not load backupCourseList", e);
 
