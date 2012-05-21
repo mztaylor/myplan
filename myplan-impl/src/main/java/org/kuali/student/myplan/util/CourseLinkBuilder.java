@@ -31,7 +31,7 @@ public class CourseLinkBuilder {
     }
 
     //  This expression defines a curriculum code: "CHEM", "A A", "A&E", "A &E", "FRENCH"
-    private static final String courseAbbreviationRegex = "[A-Z]{1}[A-Z &]{1,6}";
+    private static final String courseAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
     //  Groups a course code by looking for a curriculum code followed by any amount of white space, followed by three digits.
     private static final String courseAbbreviationGroupRegex = String.format("(%s)\\s*[0-9]{3}", courseAbbreviationRegex);
     private static final Pattern courseAbbreviationPattern;

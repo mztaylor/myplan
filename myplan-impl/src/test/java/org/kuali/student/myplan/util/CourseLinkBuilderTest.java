@@ -91,8 +91,8 @@ public class CourseLinkBuilderTest {
                     "[p1::Title Text::ECON 200] and [p1::Title Text::201] can also apply toward the I&S requirement, below.   -   Needs:  1 course"},
                 {"SP09 SPAN  202  5.0 3.6   INTERMEDIATE",
                     "SP09 [p1::Title Text::SPAN  202]  5.0 3.6   INTERMEDIATE"},
-                //{ "AU11 BIOL    180  5.0   2.7    INTRO BIOLOGY",
-                //        "AU11 [p1::Title Text::BIOL    180]  5.0   2.7    INTRO BIOLOGY"},
+                { "AU11 BIOL    180  5.0   2.7    INTRO BIOLOGY",
+                    "AU11 [p1::Title Text::BIOL    180]  5.0   2.7    INTRO BIOLOGY"},
         };
         return Arrays.asList(data);
     }
