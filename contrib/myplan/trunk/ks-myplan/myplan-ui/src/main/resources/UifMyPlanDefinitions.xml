@@ -281,12 +281,6 @@
                   value="Select the campus and enter degree program to run audit"/>
     </bean>
 
-    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90"
-          p:style="margin: 10px; width: 600px; display:block;">
-        <property name="messageText"
-                  value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit."/>
-    </bean>
-
     <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
         <property name="emptyListMessage" value="None"/>
         <!-- This is available too
