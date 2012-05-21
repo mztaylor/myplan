@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uachieve.apis.requirement.dao.DprogDao;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceMockImpl implements DegreeAuditService {
@@ -40,6 +41,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {}
     public void setJobQueueRunLoader(JobQueueRunLoader loader) {}
     public void setJobQueueListDao(JobQueueListDao jobQueueListDao) {}
+    public void setDprogDao(DprogDao dprogDao){}
 
 
     @Override
@@ -139,13 +141,13 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         try {
             AuditProgramInfo api0= new AuditProgramInfo();
             api0.setProgramId("0api0");
-            api0.setProgramTitle("");
+            api0.setProgramTitle("Select a degree program or minor");
             AuditProgramInfo api1= new AuditProgramInfo();
             api1.setProgramId("1api1");
-            api1.setProgramTitle("");
+            api1.setProgramTitle("Select a degree program or minor");
             AuditProgramInfo api2= new AuditProgramInfo();
             api2.setProgramId("2api2");
-            api2.setProgramTitle("");
+            api2.setProgramTitle("Select a degree program or minor");
             auditProgramInfoList.add(api0);
             auditProgramInfoList.add(api1);
             auditProgramInfoList.add(api2);
