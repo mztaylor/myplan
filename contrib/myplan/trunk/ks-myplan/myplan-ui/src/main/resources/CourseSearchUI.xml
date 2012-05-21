@@ -357,7 +357,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
-                <bean parent="Uif-ActionImage" p:label="" p:id="@{#line.courseId}_save" p:styleClasses="fl-container-50 fl-text-align-center">
+                <bean parent="Uif-ActionImage" p:label="Bookmark" p:id="@{#line.courseId}_save" p:styleClasses="fl-container-50 fl-text-align-center">
                     <property name="render" value="@{#line.statusSaved ? false : true}"/>
                     <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{#line.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="actionImage">
