@@ -29,11 +29,13 @@ public class CourseLinkBuilder {
             return templateText;
         }
     }
-
+                                                       //  q(?!u) to the string Iraq
     //  This expression defines a curriculum code: "CHEM", "A A", "A&E", "A &E", "FRENCH"
     private static final String courseAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
-    //  Groups a course code by looking for a curriculum code followed by any amount of white space, followed by three digits.
-    private static final String courseAbbreviationGroupRegex = String.format("(%s)\\s*[0-9]{3}", courseAbbreviationRegex);
+    //  Groups a course code by looking for a curriculum code (at the beginning of a line or preceded by a space or "(" )
+    //  followed by any amount of white space, followed by three digits.
+    //  Note: Tried really hard to match on word boundary here finally gave up.
+    private static final String courseAbbreviationGroupRegex = String.format("(^|[ (])(%s)\\s*[0-9]{3}", courseAbbreviationRegex);
     private static final Pattern courseAbbreviationPattern;
 
     //  Groups text from the beginning of a line to a curriculum code.
@@ -41,11 +43,20 @@ public class CourseLinkBuilder {
     private static final Pattern prefixPattern;
 
     //  Groups a line of input into sub-sections based on the beginning of a course abbreviation.
-    //private static final String subLinesRegex = String.format("(%s([a-z0-9 \\-&,/:.]|And)*)", courseAbbreviationGroupRegex, courseAbbreviationRegex);
     private static final String subLinesRegex = String.format("(%s.*)", courseAbbreviationGroupRegex);
     private static final Pattern subLinesPattern;
 
-    //  Groups curriculum abbreviation with a three digit number after it: "E&C N 123", "CH M 101 and CHEM 102"
+    //  Groups a list of course codes separated by / and followed by 3 digits: "CS&SS/SOC/STAT 221"
+    private static final String curriculumAbbreviationListRegex = "([A-Z]{1}[A-Z &]{1,}/[A-Z &/]{2,}\\s*[0-9]{3})";
+    private static final Pattern curriculumAbbreviationListPattern;
+
+    private static final String courseNumberRangeRegex = "\\d{3}-\\d{3}";
+    private static final Pattern courseNumberRangePattern;
+
+    private static final String uppercaseOrAndRegex = "\\d{3}( OR | AND )\\d{3}";
+    private static final Pattern uppercaseOrAndPattern;
+
+    //  Groups curriculum abbreviation with a three digit number not followed by a dash: "E&C N 123", "CH M 101 and CHEM 102", but not "CHEM 101-102"
     private static final String simpleCourseCodeRegex = String.format("(%s\\d{3})", courseAbbreviationRegex);
     private static final Pattern simpleCourseCodePattern;
 
@@ -59,8 +70,11 @@ public class CourseLinkBuilder {
         prefixPattern = Pattern.compile(prefixRegex);
         subLinesPattern = Pattern.compile(subLinesRegex);
         courseAbbreviationPattern = Pattern.compile(courseAbbreviationGroupRegex);
+        curriculumAbbreviationListPattern = Pattern.compile(curriculumAbbreviationListRegex);
         simpleCourseCodePattern = Pattern.compile(simpleCourseCodeRegex);
-        courseNumberPattern =  Pattern.compile(courseNumberRegex);
+        courseNumberPattern = Pattern.compile(courseNumberRegex);
+        courseNumberRangePattern = Pattern.compile(courseNumberRangeRegex);
+        uppercaseOrAndPattern = Pattern.compile(uppercaseOrAndRegex);
     }
 
     /**
@@ -95,16 +109,37 @@ public class CourseLinkBuilder {
         //  Storage for a list of substitutions. Using LinkedHashMap to preserve order.
         Map<String, String> placeHolders = new LinkedHashMap<String, String>();
 
-        //  Determine the curriculum abbreviation.
-        //  If there is no match here then no further processing is required.
-        Matcher matcher = courseAbbreviationPattern.matcher(rawText);
-        String curriculumAbbreviation = null;
+        //  Look for curriculum abbreviation lists. Note the short-circuit here.
+        Matcher matcher = curriculumAbbreviationListPattern.matcher(rawText);
         if (matcher.find()) {
-			curriculumAbbreviation = matcher.group(1);
-		} else {
             return rawText;
         }
 
+        //  Look for course number range and short circuit.
+        matcher = courseNumberRangePattern.matcher(rawText);
+        if (matcher.find()) {
+            return rawText;
+        }
+
+        //  Look for course number range and short circuit.
+        matcher = uppercaseOrAndPattern.matcher(rawText);
+        boolean isUndoOrAnd = false;
+        if (matcher.find()) {
+            rawText = rawText.replace(" OR ", " or ");
+            rawText = rawText.replace(" AND ", " and ");
+            isUndoOrAnd = true;
+        }
+
+        //  Determine the curriculum abbreviation.
+        //  If there is no match here then no further processing is required.
+        matcher = courseAbbreviationPattern.matcher(rawText);
+        String curriculumAbbreviation = null;
+        if (matcher.find()) {
+            curriculumAbbreviation = matcher.group(1);
+        } else {
+            curriculumAbbreviation = "";
+            //return rawText;
+        }
         //  Look for simple course codes.
 		matcher = simpleCourseCodePattern.matcher(rawText);
 		while (matcher.find()) {
@@ -123,6 +158,11 @@ public class CourseLinkBuilder {
         //  Substitute plain text with links.
         for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
             rawText = rawText.replace(entry.getKey(), entry.getValue());
+        }
+
+        if (isUndoOrAnd) {
+            rawText = rawText.replace(" or ", " OR ");
+            rawText = rawText.replace(" and ", " AND ");
         }
         return rawText;
     }
@@ -149,19 +189,13 @@ public class CourseLinkBuilder {
         while (matcher.find()) {
             // Get all groups for this match
             String groupStr = matcher.group(1);
-            //  Drop "," from the end of lines. It's probably possible to get this effect in the regex. Doing it this way for the sake of simplicity and timeliness.
-            //groupStr = groupStr.replaceAll(",$", "");
             tokens.add(groupStr);
         }
 
-        //matcher = suffixPattern.matcher(rawText);
-        //  Select the text that comes after the last course number.
-        //if (matcher.find()) {
-        //    String suffix = matcher.group(1);
-        //    if ( ! StringUtils.isEmpty(suffix)) {
-        //        tokens.add(suffix);
-        //    }
-        //}
+        if (tokens.size() == 0) {
+            tokens.add(rawText);
+        }
+
         return tokens;
     }
 
