@@ -201,6 +201,23 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.lu.search.divisionAndCode.simple">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+                <search:resultColumn id="ident.longName">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
     <search:searchType id="myplan.lu.search.divisionAndLevel">
         <search:searchResultTypeInfo>
             <search:name/>
@@ -316,7 +333,6 @@
             </search:queryParams>
         </search:searchCriteriaTypeInfo>
     </search:searchType>
-
 
     <bean id="queryMap" parent="queryMap-parent">
         <property name="sourceMap">
@@ -434,6 +450,35 @@
                         ident.suffixCode
                     </value>
                 </entry>
+
+                <!--  This query is like the one above, but doesn't require campus params -->
+                <entry key="myplan.lu.search.divisionAndCode.simple">
+                    <value>
+                        SELECT
+                        clu.id,
+                        ident.longName
+                        FROM CluCampusLocation loc
+                        JOIN loc.clu clu
+                        JOIN clu.officialIdentifier ident
+                        WHERE
+                        clu.version.currentVersionStart &lt;= CURRENT_DATE
+                        AND
+                        (
+                        clu.version.currentVersionEnd &gt; CURRENT_DATE
+                        OR
+                        clu.version.currentVersionEnd IS NULL
+                        )
+                        AND
+                        ident.division = :division
+                        AND
+                        ident.suffixCode = :code
+                        AND
+                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        ORDER BY
+                        ident.suffixCode
+                    </value>
+                </entry>
+
                 <entry key="myplan.lu.search.divisionAndLevel">
                     <value>
                         SELECT
@@ -663,6 +708,4 @@
             </map>
         </property>
     </bean>
-
-
 </beans>
