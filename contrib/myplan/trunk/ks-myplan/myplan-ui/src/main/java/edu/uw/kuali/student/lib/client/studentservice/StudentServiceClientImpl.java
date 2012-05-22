@@ -302,7 +302,7 @@ public class StudentServiceClientImpl
     public String getAcademicRecords(String regId)throws ServiceException{
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion()).append("/")
-                .append("enrollment.xml?reg_id=").append("9136CCB8F66711D5BE060004AC494FFE").append("&").append("verbose=on");
+                .append("enrollment.xml?reg_id=").append(regId).append("&").append("verbose=on");
         return sendQuery(url.toString().trim());
 
     }
