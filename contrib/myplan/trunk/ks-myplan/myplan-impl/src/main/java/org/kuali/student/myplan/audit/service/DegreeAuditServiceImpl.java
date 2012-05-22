@@ -29,6 +29,7 @@ import org.kuali.student.myplan.audit.service.model.*;
 import org.kuali.student.myplan.audit.service.model.Requirement;
 import org.kuali.student.myplan.audit.service.model.Subrequirement;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
+import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -143,7 +144,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         loadProperties();
     }
 
-    enum Structure { Section, Requirement, Advisory };
+    enum Structure { Section, Requirement, Advisory }
     private HashMap<String, Structure> structureMap = new HashMap<String, Structure>();
 
     public void loadProperties()
@@ -315,9 +316,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
             return getHTMLReport(auditId);
         }
-        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey)) {
-            return getDARSReport(auditId);
-        }
         throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
 
@@ -353,6 +351,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             VelocityContext context = new VelocityContext();
             Report report = getAuditReport(auditId);
             context.put("report", report);
+            context.put("courseLinkBuilder", CourseLinkBuilder.class);
 
             StringWriter sw = new StringWriter();
             template.merge(context, sw);

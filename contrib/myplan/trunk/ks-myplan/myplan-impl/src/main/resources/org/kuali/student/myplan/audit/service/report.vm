@@ -65,7 +65,9 @@ ${advisory}
 	<div class="requirement ${req.status}">
 		<div class="requirement-heading">
 			<div class="${req.status}">
-                <h4>${req.caption}</h4>
+                <!-- Course Link Builder example -->
+                <p>$courseLinkBuilder.makeLinks(${req.caption})</p>
+                <!-- <h4>$ {req.caption}</h4> -->
 			</div>
 		</div>
 		<div class="requirement-body">

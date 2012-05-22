@@ -27,6 +27,8 @@ public class CourseLinkBuilderTest {
                         "19 - 20 credits, including [p1::Title Text::MATH 112] or [p1::Title Text::124]."},
                 { "You must complete MUHST 211, 212, & 210:",
                         "You must complete [p1::Title Text::MUHST 211], [p1::Title Text::212], & [p1::Title Text::210]:"},
+                {"-  3) Statistics: Either CS&SS 220, STAT 311 or Q SCI 381",
+                    "-  3) Statistics: Either [p1::Title Text::CS&SS 220], [p1::Title Text::STAT 311] or [p1::Title Text::Q SCI 381]"},
                 {" +  4) One from BIOL 220, PHYS 115 & 118, 122,",
                         " +  4) One from [p1::Title Text::BIOL 220], [p1::Title Text::PHYS 115] & [p1::Title Text::118], [p1::Title Text::122],"},
                 {" 18 credits in MUSAP 320 and/or 420",

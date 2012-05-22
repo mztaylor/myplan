@@ -50,7 +50,6 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     @XmlElement
     private Date runDate;
 
-
     public AuditReportInfo() {
         this.auditId = null;
         this._futureElements = null;
@@ -63,7 +62,6 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
             this.auditId = item.getAuditId();
         }
     }
-
 
     @Override
     public String getAuditId() {
