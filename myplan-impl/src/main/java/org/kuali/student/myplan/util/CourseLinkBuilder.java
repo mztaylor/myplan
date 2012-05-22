@@ -240,25 +240,37 @@ public class CourseLinkBuilder {
      * @return
      */
     private static synchronized String makeLink (String courseCode, String label, LINK_TEMPLATE template) {
-        String courseTitle = "Title Text";
-        String courseId = "p1";
+        String courseTitle = "Unknown";
+        String courseId = "unknown";
 
         //  Parse out the curriculum code and number.
         String number = courseCode.replaceAll("\\D*", "").trim();
         String code = courseCode.replaceAll("\\d*", "").trim();
 
+        String link = null;
+
         if ( ! template.equals(LINK_TEMPLATE.TEST)) {
-            Map<String, String> results = getCourseInfo(code, number);
-            if (results.size() > 0) {
-                courseId = results.get("courseId");
-                courseTitle = results.get("courseTitle");
+            try {
+                Map<String, String> results = getCourseInfo(code, number);
+                if (results.size() > 0) {
+                    courseId = results.get("courseId");
+                    courseTitle = results.get("courseTitle");
+                } else {
+                    link = label;
+                }
+            } catch (Exception e) {
+                logger.error("Search for course info failed.", e);
+                link = label;
             }
         }
 
-        return template.getTemplateText()
+        if (link == null) {
+            link = template.getTemplateText()
                     .replace("{params}", courseId)
                     .replace("{title}", courseTitle)
                     .replace("{label}", label);
+        }
+        return link;
     }
 
     private static String getCellValue(SearchResultRow row, String key) {
@@ -271,9 +283,9 @@ public class CourseLinkBuilder {
     }
 
     private static Map<String, String> getCourseInfo(String curriculumCode, String courseNumber) {
-        SearchRequest searchRequest = new SearchRequest("myplan.lu.search.divisionAndCode.simple");
-        searchRequest.addParam("division", curriculumCode);
-        searchRequest.addParam("code", courseNumber);
+        SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
+        searchRequest.addParam("subject", curriculumCode);
+        searchRequest.addParam("number", courseNumber);
 
         SearchResult searchResult = null;
         try {
@@ -284,8 +296,8 @@ public class CourseLinkBuilder {
 
         Map<String, String> result = new HashMap<String, String>();
         for (SearchResultRow row : searchResult.getRows()) {
-            String courseId = getCellValue(row, "clu.id");
-            String courseTitle = getCellValue(row, "ident.longName");
+            String courseId = getCellValue(row, "lu.resultColumn.cluId");
+            String courseTitle = getCellValue(row, "id.lngName");
             result.put("courseId", courseId);
             result.put("courseTitle", courseTitle);
         }
