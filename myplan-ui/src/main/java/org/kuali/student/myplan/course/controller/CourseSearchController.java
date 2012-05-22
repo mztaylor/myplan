@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
@@ -544,6 +545,15 @@ public class CourseSearchController extends UifControllerBase {
             creditsFacet.process(course);
             termsFacet.process(course);
         }
+
+
+        /*Removing Duplicate entries from genEduReqFacet*/
+        List<FacetItem> genEduReqFacetItems=genEduReqFacet.getFacetItems();
+        HashSet hs = new HashSet();
+        hs.addAll(genEduReqFacetItems);
+        genEduReqFacetItems.clear();
+        genEduReqFacetItems.addAll(hs);
+        Collections.sort(genEduReqFacetItems);
 
         //  Add the facet data to the response.
         logger.info("Start of populating curriculumFacet  of CourseSearchController:"+System.currentTimeMillis());
