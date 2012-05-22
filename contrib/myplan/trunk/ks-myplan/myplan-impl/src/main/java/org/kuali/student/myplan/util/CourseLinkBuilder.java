@@ -239,7 +239,7 @@ public class CourseLinkBuilder {
      * @param template
      * @return
      */
-    private static synchronized String makeLink (String courseCode, String label, LINK_TEMPLATE template) {
+    private static String makeLink (String courseCode, String label, LINK_TEMPLATE template) {
         String courseTitle = "Unknown";
         String courseId = "unknown";
 
@@ -282,7 +282,7 @@ public class CourseLinkBuilder {
         throw new RuntimeException("cell result '" + key + "' not found");
     }
 
-    private static Map<String, String> getCourseInfo(String curriculumCode, String courseNumber) {
+    private static synchronized Map<String, String> getCourseInfo(String curriculumCode, String courseNumber) {
         SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
         searchRequest.addParam("subject", curriculumCode);
         searchRequest.addParam("number", courseNumber);
