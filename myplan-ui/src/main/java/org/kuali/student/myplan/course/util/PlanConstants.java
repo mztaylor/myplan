@@ -41,6 +41,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_PAGE_RESET_REQUIRED = "myplan.text.error.pageResetRequired";
 
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
+    public static final String ERROR_KEY_UNKNOWN_COURSE = "myplan.text.error.unknownCourse";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "myplan.text.error.savedCoursesList.unknownPlanItem";
     public static final String ERROR_KEY_DATA_VALIDATION_ERROR = "myplan.text.error.dataValidationError";
     public static final String ERROR_KEY_DUPLICATE_PLAN = "myplan.text.error.savedCoursesList.duplicatePlan";
@@ -70,6 +71,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLANNING="PLANNING";
     public static final String INPROGRESS="INPROGRESS";
     public static final String PUBLISHED="PUBLISHED";
+
+    /*Grade X is given to the courses that are registered for current or future terms*/
+    public static final String CURRENT_TERM_GRADE="X";
 
 
     /**
