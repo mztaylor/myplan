@@ -76,7 +76,7 @@ public class CourseLinkBuilderTest {
                 {"2) A A 210 with a 2.0 or better",
                     "2) [unknown::Unknown::A A 210] with a 2.0 or better"},
                 {"-  1) Earth Systems Literacy: One course from ATM S 211, ESS 201, ESS/OCEAN 230, GEOG 205 or OCEAN 200",
-                    "-  1) Earth Systems Literacy: One course from ATM S 211, ESS 201, ESS/OCEAN 230, GEOG 205 or OCEAN 200"},
+                    "-  1) Earth Systems Literacy: One course from [unknown::Unknown::ATM S 211], [unknown::Unknown::ESS 201], ESS/OCEAN 230, [unknown::Unknown::GEOG 205] or [unknown::Unknown::OCEAN 200]"},
                 {"-  1) Biocultural Anthropology: BIO A 201",
                     "-  1) Biocultural Anthropology: [unknown::Unknown::BIO A 201]"},
                 {"-  3) Statistics: Either CS&SS/SOC/STAT 221, STAT 220, STAT 311 or Q SCI 381",
