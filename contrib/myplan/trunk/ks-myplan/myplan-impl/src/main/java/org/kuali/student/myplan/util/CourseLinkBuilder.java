@@ -40,12 +40,12 @@ public class CourseLinkBuilder {
 
     }
     //  This expression defines a curriculum code up to 8 characters long: "CHEM", "A A", "A&E", "A &E", "FRENCH"
-    private static final String courseAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
+    private static final String curriculumAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
 
     //  Groups a course code by looking for a curriculum code (at the beginning of a line or preceded by " " or "(" )
     //  followed by any amount of white space, followed by three digits.
     //  Note: Tried really hard to match on word boundary here finally gave up.
-    private static final String curriculumAbbreviationGroupRegex = String.format("(^|[ (])(%s)\\s*[0-9]{3}", courseAbbreviationRegex);
+    private static final String curriculumAbbreviationGroupRegex = String.format("(^|[ (])(%s)\\s*[0-9]{3}", curriculumAbbreviationRegex);
     private static final Pattern curriculumAbbreviationGroupPattern;
 
     //  Groups text from the beginning of a line to a curriculum code.
@@ -69,13 +69,13 @@ public class CourseLinkBuilder {
     private static final Pattern uppercaseOrAndPattern;
 
     //  Groups curriculum abbreviation with a three digit number not followed by a dash: "E&C N 123", "CH M 101 and CHEM 102", but not "CHEM 101-102"
-    private static final String simpleCourseCodeRegex = String.format("(%s\\d{3})", courseAbbreviationRegex);
+    private static final String simpleCourseCodeRegex = String.format("(?<=^|[ (])(%s\\d{3})", curriculumAbbreviationRegex);
     private static final Pattern simpleCourseCodePattern;
 
     //  Matches three digit course numbers. This expression uses "look back" notation to say "Find 3 digit number not
     //  followed by a curriculum abbreviation". We don't want to match those because they would have already been processed
     //  by the simple course code matcher above and the final text replacement would match and expand it again.
-    private static final String courseNumberRegex = String.format("(?<!%s)(\\d{3})", courseAbbreviationRegex);
+    private static final String courseNumberRegex = String.format("(?<!%s)(\\d{3})", curriculumAbbreviationRegex);
     private static final Pattern courseNumberPattern;
 
     static {
@@ -144,13 +144,9 @@ public class CourseLinkBuilder {
         Map<String, String> placeHolders = new LinkedHashMap<String, String>();
 
         /*
-         *  These two matches will short-circuit the method.
+         *  This match will short-circuit the method.
          */
-        Matcher matcher = curriculumAbbreviationListPattern.matcher(rawText);
-        if (matcher.find()) {
-            return rawText;
-        }
-        matcher = courseNumberRangePattern.matcher(rawText);
+        Matcher matcher = courseNumberRangePattern.matcher(rawText);
         if (matcher.find()) {
             return rawText;
         }
