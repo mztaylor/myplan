@@ -1210,6 +1210,38 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{courseDetails.backupList ne null ? true : false}">
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-DataField"
+                                              p:render="@{courseDetails.academicTerms.size() gt 0 ? true : false}"
+                                              p:propertyName="courseDetails.academicTerms"
+                                              p:labelField.styleClasses="fl-text-gray myplan-text-normal"
+                                              p:labelPlacement="LEFT">
+                                            <property name="propertyEditor" ref="academic_term_message_formatter"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-data-list</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-DataField"
+                                              p:propertyName="courseDetails.backupList"
+                                              p:labelField.styleClasses="fl-text-gray myplan-text-normal"
+                                              p:labelPlacement="LEFT">
+                                            <property name="propertyEditor" ref="crud_message_formatter"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-data-list</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
