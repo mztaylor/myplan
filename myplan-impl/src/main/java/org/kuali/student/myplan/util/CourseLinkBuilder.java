@@ -5,6 +5,9 @@ import org.apache.commons.lang.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.namespace.QName;
+
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.exceptions.MissingParameterException;
@@ -12,10 +15,9 @@ import org.kuali.student.common.search.dto.*;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 
-import javax.xml.namespace.QName;
 
 /**
- * Helper class to parse links from audit text.
+ * Helper class to parse lines of text and create links where course codes are found.
  */
 public class CourseLinkBuilder {
 
