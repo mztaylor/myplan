@@ -150,7 +150,9 @@ public class PlannedTermsHelperBase {
                         academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                        if (!studentInfo.getCalculatedGradeValue().equalsIgnoreCase(PlanConstants.CURRENT_TERM_GRADE)) {
+                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                        }
                         academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                         academicRecordDataObjectList.add(academicRecordDataObject);
                         termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
@@ -170,16 +172,16 @@ public class PlannedTermsHelperBase {
                         }
                     });
             //  Can't do this step until the sort has been done else the index won't be correct.
-                int i = 0;
-                for (PlannedTerm pt : perfectPlannedTerms) {
-                    String[] qy = AtpHelper.atpIdToTermAndYear(pt.getAtpId());
-                    if (qy[0].equals(focusQuarterYear[0])
-                            && qy[1].equals(focusQuarterYear[1])) {
-                        pt.setIndex(i);
-                        break;
-                    }
-                    i++;
+            int i = 0;
+            for (PlannedTerm pt : perfectPlannedTerms) {
+                String[] qy = AtpHelper.atpIdToTermAndYear(pt.getAtpId());
+                if (qy[0].equals(focusQuarterYear[0])
+                        && qy[1].equals(focusQuarterYear[1])) {
+                    pt.setIndex(i);
+                    break;
                 }
+                i++;
+            }
 
 
             /*Implementation to set the conditional flags based on each plannedTerm atpId*/

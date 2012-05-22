@@ -504,6 +504,20 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="add_planned_course" p:title="">
+                    <property name="errorsField">
+                        <bean parent="Uif-GroupValidationMessages">
+                            <property name="displayMessages" value="true"/>
+                            <property name="displayCounts" value="false"/>
+                            <property name="displayFieldLabelWithMessages" value="false"/>
+                            <property name="displayNestedMessages" value="false"/>
+                            <property name="highlightOnError" value="false"/>
+                            <property name="combineMessages" value="true"/>
+                            <property name="allowMessageRepeat" value="false"/>
+                            <property name="displayInfoMessages" value="true"/>
+                            <property name="displayWarningMessages" value="true"/>
+                            <property name="fireGrowlsForMessages" value="false"/>
+                        </bean>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="add_menu_items"/>
@@ -518,12 +532,12 @@
     <bean id="add_menu_items" parent="Uif-VerticalBoxSection" p:styleClasses="fl-container-150" p:errorsField.render="false" >
         <property name="items">
             <list>
-                <bean p:id="@{planItemId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{acadRecAtpId eq null ? true : false}" p:title="View Course Summary">
+                <bean p:id="@{planItemId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{courseDetails.code ne null and acadRecAtpId eq null ? true : false}" p:title="View Course Summary">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="@{courseId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{acadRecAtpId ne null ? true : false}" p:title="View Course Summary">
+                <bean p:id="@{courseId}_summary" parent="Uif-Link" p:target="" p:linkLabel="View Course Summary" p:render="@{courseDetails.code ne null and acadRecAtpId ne null ? true : false}" p:title="View Course Summary">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
@@ -849,7 +863,7 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.courseId}_completed" parent="Uif-Link"
-                      p:linkLabel="@{#line.courseCode} (@{#line.credit})"
+                      p:linkLabel="@{#line.courseCode} (@{#line.credit}) @{#line.grade}"
                       p:title="@{#line.courseTitle}" p:target="" p:hrefText="#"
                       p:labelField.render="false"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
@@ -1058,7 +1072,7 @@
         </property>
     </bean>
 
-    <bean id="course_title_link" parent="Uif-Link" p:target="" p:style="width:280px; display:block;">
+    <bean id="course_title_link" parent="Uif-Link" p:target="" p:style="width:280px; display:block;" >
         <property name="styleClasses">
             <list merge="true">
                 <value>fl-text-bold</value>
@@ -1932,7 +1946,7 @@
             <list>
 
                 <bean parent="Uif-MessageField"
-                      p:messageText="@{#line.courseCode} (@{#line.credit})"
+                      p:messageText="@{#line.courseCode} (@{#line.credit}) @{#line.grade}"
                       p:render="@{#line.courseCode ne null ? true : false}"/>
 
             </list>
