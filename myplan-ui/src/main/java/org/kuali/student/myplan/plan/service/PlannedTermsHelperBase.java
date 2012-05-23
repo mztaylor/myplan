@@ -150,9 +150,7 @@ public class PlannedTermsHelperBase {
                         academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if (!studentInfo.getCalculatedGradeValue().equalsIgnoreCase(PlanConstants.CURRENT_TERM_GRADE)) {
-                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        }
+                        academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                         academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                         academicRecordDataObjectList.add(academicRecordDataObject);
                         termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
