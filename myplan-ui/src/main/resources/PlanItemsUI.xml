@@ -1171,6 +1171,7 @@
                                 </property>
                             </bean>
 
+
                             <!-- If not in plan and in saved courses and in academic list -->
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
                                   p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() gt 0) ? true : false}">
@@ -1210,6 +1211,7 @@
                                                 </list>
                                             </property>
                                         </bean>
+
                                         <bean parent="Uif-DataField"
                                               p:propertyName="courseDetails.plannedList"
                                               p:labelField.styleClasses="fl-text-gray myplan-text-normal"
@@ -1221,6 +1223,29 @@
                                                 </list>
                                             </property>
                                         </bean>
+
+
+
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- If in plan or  in academic list and in saved courses  -->
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
+                                  p:render="@{((courseDetails.plannedList ne null or courseDetails.academicTerms.size() gt 0) and courseDetails.savedItemId ne null and courseDetails.savedItemDateCreated ne null ) ? true : false}">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="Had Saved to your "/>
+                                        <bean parent="Uif-Link" p:linkLabel="Bookmarked Courses List">
+                                            <property name="hrefText"
+                                                      value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-text-ellipsis</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-MessageField" p:messageText=" on @{courseDetails.savedItemDateCreated}"/>
                                     </list>
                                 </property>
                             </bean>
