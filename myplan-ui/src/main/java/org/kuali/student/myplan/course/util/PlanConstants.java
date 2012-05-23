@@ -72,8 +72,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String INPROGRESS="INPROGRESS";
     public static final String PUBLISHED="PUBLISHED";
 
-    /*Grade X is given to the courses that are registered for current or future terms*/
-    public static final String CURRENT_TERM_GRADE="X";
 
 
     /**
