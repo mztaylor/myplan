@@ -15,10 +15,8 @@
  */
 package org.kuali.student.myplan.course.controller;
 
-import javax.annotation.RegEx;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.POST;
 import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
@@ -279,7 +277,7 @@ public class CourseSearchController extends UifControllerBase {
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         try {
             logger.info("Start Of Method searchForCourses in CourseSearchController:"+System.currentTimeMillis());
-                List<SearchRequest> requests = searcher.queryToRequests(form);
+            List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
             logger.info("No of actual records pulled in:"+hits.size());
@@ -635,7 +633,9 @@ public class CourseSearchController extends UifControllerBase {
             if (genEdsOut.length() != 0) {
                 genEdsOut.append(", ");
             }
+
             req = req.replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
+
             genEdsOut.append(req);
         }
         return genEdsOut.toString();

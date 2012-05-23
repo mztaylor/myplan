@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
@@ -18,14 +19,18 @@ public class GenEduReqFacet extends AbstractFacet {
     private final Logger logger = Logger.getLogger(GenEduReqFacet.class);
 
     private transient EnumerationManagementService enumService;
-    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
 
-    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
-        return hashMap;
+    private  HashMap<String,List<EnumeratedValueInfo>> enumServiceCache =new HashMap<String, List<EnumeratedValueInfo>>();
+
+    private HashSet<String> GenEduReqFacetSet = new HashSet<String>();
+
+    public GenEduReqFacet() {
+        super();
+        super.setShowUnknownKey(false);
     }
 
-    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
-        this.hashMap = hashMap;
+    public HashMap<String, List<EnumeratedValueInfo>> getEnumServiceCache() {
+        return enumServiceCache;
     }
 
     protected synchronized EnumerationManagementService getEnumerationService() {
@@ -34,14 +39,6 @@ public class GenEduReqFacet extends AbstractFacet {
                     .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
         }
         return this.enumService;
-    }
-
-
-    private HashSet<String> GenEduReqFacetSet = new HashSet<String>();
-
-    public GenEduReqFacet() {
-        super();
-        super.setShowUnknownKey(false);
     }
 
     /**
@@ -58,53 +55,65 @@ public class GenEduReqFacet extends AbstractFacet {
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
             facetKeys.add(FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER);
-
         } else {
             //  TODO: UW SPECIFIC
             //  Remove white space before tokenizing.
             genEdString = genEdString.replaceAll("\\s+", "");
             String k[] = genEdString.split(",");
             List<String> keys = new ArrayList<String>(Arrays.asList(k));
+            String saveKey = null;
             for (String key : keys) {
-                if (isNewFacetKey( FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER )) {
-                    String display = key;
-                    key = FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER;
-
-                    String title= this.getTitle(display);
-
-                    if(title != null || title!= ""){
+                saveKey = key;
+                if (isNewFacetKey( FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER )) {
+                    EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX + key);
+                    saveKey = e.getAbbrevValue();
+                    String title = e.getValue();
+                    if ( ! StringUtils.isEmpty(title)){
                         itemFacet.setTitle(title);
-                        itemFacet.setKey( key );
-                        itemFacet.setDisplayName(display);
+                        itemFacet.setKey(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER);
+                        itemFacet.setDisplayName(saveKey);
                         facetItems.add(itemFacet);
                     }
                 }
-                facetKeys.add(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER);
+                facetKeys.add(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER);
             }
         }
         item.setGenEduReqFacetKeys(facetKeys);
     }
 
-
-    protected String getTitle(String key) {
-
-               String titleValue=null;
-
-               try {
-                  List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
-                  for(EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                      String abbr = enumVal.getAbbrevValue();
-
-                      if(abbr.equalsIgnoreCase(key)) {
-                          titleValue=enumVal.getValue();
-                          break;
-                      }
-                  }
-
-              } catch (Exception e) {
-                  logger.error("Could not load genEdReqValue");
-              }
-          return titleValue;
+    /**
+     *  FIXME: This code is duplicated in CourseDetailsInquiryViewHelperService.java. This code will go away with facet refactor
+     */
+    private EnumeratedValueInfo getGenEdReqEnumInfo(String key) {
+        EnumeratedValueInfo enumValueInfo = null;
+        try {
+            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+            if ( ! enumServiceCache.containsKey("kuali.uw.lu.genedreq")) {
+                enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
+            } else {
+                enumeratedValueInfoList = enumServiceCache.get("kuali.uw.lu.genedreq");
+            }
+            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+                String abbr = enumVal.getCode();
+                if (abbr.equalsIgnoreCase(key)) {
+                    enumValueInfo = enumVal;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Could not load genEdReqValue");
+        }
+        return enumValueInfo;
     }
 
+    private List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        try {
+            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
+            enumServiceCache.put(param, enumeratedValueInfoList);
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
+        }
+        return enumeratedValueInfoList;
+    }
 }
