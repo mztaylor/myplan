@@ -74,12 +74,14 @@ ${advisory}
 
 #if( ${req.hasCredits()} )
                 <ul class="progress">
-                    <li class="required"><label>Credits earned:</label> ${req.credits.earned}</li>
-#if( ${req.credits.hasInprogress()} )
-                    <li class="inprogress"><label>in-progress:</label> ${req.credits.inprogress}</li>
+#if( ${req.credits.showEarned()} )
+                    <li class="required"><label>Earned:</label> ${req.credits.earned} credits</li>
 #end
-#if( ${req.credits.hasNeeds()} )
-                    <li class="needs"><label>needs:</label> ${req.credits.needs}</li>
+#if( ${req.credits.showInprogress()} )
+                    <li class="inprogress"><label>In-progress:</label> ${req.credits.inprogress} credits</li>
+#end
+#if( ${req.credits.showNeeds()} )
+                    <li class="needs"><label>Needs:</label> ${req.credits.needs} credits</li>
 #end
                 </ul>
 #end
@@ -90,9 +92,13 @@ ${advisory}
 #end
 #if( ${req.hasCount()} )
                 <ul class="progress">
-                    <li class="required"><label>Courses required:</label> ${req.count.required}</li>
-                    <li class="earned"><label>earned:</label> ${req.count.earned}</li>
-                    <li class="needs"><label>needs:</label> ${req.count.needs}</li>
+                    <li class="required"><label>Required:</label> ${req.count.required} courses</li>
+#if( ${req.credits.showEarned()} )
+                    <li class="earned"><label>Earned:</label> ${req.count.earned} courses</li>
+#end
+#if( ${req.credits.showNeeds()} )
+                    <li class="needs"><label>Needs:</label> ${req.count.needs} courses</li>
+#end
                 </ul>
 #end
             </div>
@@ -109,12 +115,14 @@ ${advisory}
                 <div class="subrequirement-content">
 #if( ${subreq.hasCredits()} )
                     <ul class="progress">
-                        <li class="required"><label>Credits earned:</label> ${subreq.credits.earned}</li>
-#if( ${req.credits.hasInprogress()} )
-                        <li class="inprogress"><label>in-progress:</label> ${subreq.credits.inprogress}</li>
+#if( ${subreq.credits.showEarned()} )
+                        <li class="required"><label>Earned:</label> ${subreq.credits.earned} credits</li>
 #end
-#if( ${subreq.credits.hasNeeds()} )
-                        <li class="needs"><label>needs:</label> ${subreq.credits.needs}</li>
+#if( ${subreq.credits.showInprogress()} )
+                        <li class="inprogress"><label>In-progress:</label> ${subreq.credits.inprogress} credits</li>
+#end
+#if( ${subreq.credits.showNeeds()} )
+                        <li class="needs"><label>Needs:</label> ${subreq.credits.needs} credits</li>
 #end
                     </ul>
 #end
@@ -125,9 +133,13 @@ ${advisory}
 #end
 #if( ${subreq.hasCount()} )
                     <ul class="progress">
-                        <li class="required"><label>Courses required:</label> ${subreq.count.required}</li>
-                        <li class="earned"><label>earned:</label> ${subreq.count.earned}</li>
-                        <li class="needs"><label>needs:</label> ${subreq.count.needs}</li>
+                        <li class="required"><label>Required:</label> ${subreq.count.required} courses</li>
+#if( ${subreq.count.showEarned()} )
+                        <li class="earned"><label>Earned:</label> ${subreq.count.earned} courses</li>
+#end
+#if( ${subreq.count.showNeeds()} )
+                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} courses</li>
+#end
                     </ul>
 #end
 
