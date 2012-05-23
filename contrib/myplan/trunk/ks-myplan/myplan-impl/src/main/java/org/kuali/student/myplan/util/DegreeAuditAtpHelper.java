@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.plan.util;
+package org.kuali.student.myplan.util;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -6,8 +6,8 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
+
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -19,18 +19,22 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 /**
  * Helper methods for dealing with ATPs.
  */
-public class AtpHelper {
+public class DegreeAuditAtpHelper {
 
     private static String term1 = "winter";
     private static String term2 = "spring";
     private static String term3 = "summer";
     private static String term4 = "autumn";
 
+    public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
+
     private static transient AcademicCalendarService academicCalendarService;
 
     public static int TERM_COUNT = 4;
 
-    private static final Logger logger = Logger.getLogger(AtpHelper.class);
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
+
+    private static final Logger logger = Logger.getLogger(DegreeAuditAtpHelper.class);
 
     private static AcademicCalendarService getAcademicCalendarService() {
         if (academicCalendarService == null) {
@@ -51,12 +55,15 @@ public class AtpHelper {
         //   The first arg here is "usageKey" which isn't used.
         List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
         try {
-            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.INPROGRESS)), CourseSearchConstants.CONTEXT_INFO);
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "INPROGRESS")), CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
             populateAtpIdFromCalender(scheduledTerms);
         }
+
+
+
         //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
         //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
         //  is the Right thing to do.
@@ -96,7 +103,7 @@ public class AtpHelper {
 
     public static String getFirstAtpIdOfAcademicYear(String atpId) {
         String firstAtpId = null;
-        String atpSuffix = atpId.replace(PlanConstants.TERM_ID_PREFIX, "");
+        String atpSuffix = atpId.replace(TERM_ID_PREFIX, "");
         String[] termYear = atpSuffix.split("\\.");
         String year = termYear[0];
         String term = termYear[1];
@@ -106,7 +113,7 @@ public class AtpHelper {
             firstAtpId = atpId;
         } else {
             String y = String.valueOf(Integer.valueOf(year) - 1);
-            firstAtpId = AtpHelper.getAtpFromNumTermAndYear("4", y);
+            firstAtpId = getAtpFromNumTermAndYear("4", y);
         }
         return firstAtpId;
     }
@@ -115,7 +122,7 @@ public class AtpHelper {
      * Returns an String[] {term, year} given an ATP ID.
      */
     public static String[] atpIdToTermAndYear(String atpId) {
-        String atpSuffix = atpId.replace(PlanConstants.TERM_ID_PREFIX, "");
+        String atpSuffix = atpId.replace(TERM_ID_PREFIX, "");
 
         //  See if the ATP ID is nearly sane.
         if (!atpSuffix.matches("[0-9]{4}\\.[1-4]{1}")) {
@@ -167,14 +174,14 @@ public class AtpHelper {
             termVal = 4;
         }
         StringBuffer newAtpId = new StringBuffer();
-        newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(termVal);
+        newAtpId = newAtpId.append(TERM_ID_PREFIX).append(year).append(".").append(termVal);
         return newAtpId.toString();
     }
 
     /* Returns ATP ID as kuali.uw.atp.1991.1 for term=1 and year = 1991 */
     public static String getAtpFromNumTermAndYear(String term, String year) {
         StringBuffer newAtpId = new StringBuffer();
-        newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(term);
+        newAtpId = newAtpId.append(TERM_ID_PREFIX).append(year).append(".").append(term);
         return newAtpId.toString();
     }
 
@@ -198,11 +205,11 @@ public class AtpHelper {
         boolean isSetToPlanning = false;
         List<TermInfo> planningTermInfo = null;
         try {
-            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "PLANNING")), CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not load planningTermInfo as service call failed", e);
             /*If SWS Fails to load up planningTermInfo  then current atp Id in TermInfo is populated from the calender month and year and set to the planningTermInfo list*/
-            AtpHelper.populateAtpIdFromCalender(planningTermInfo);
+            populateAtpIdFromCalender(planningTermInfo);
         }
 
         String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
@@ -255,6 +262,6 @@ public class AtpHelper {
     }
 
     public static boolean isAtpIdFormatValid(String atpId) {
-        return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
+        return atpId.matches(TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
     }
 }
