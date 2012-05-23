@@ -75,12 +75,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AcademicPlanService academicPlanService;
 
-    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
-
     private transient AcademicRecordService academicRecordService;
 
-
     private transient CourseInfo courseInfo;
+
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
+
+    //TODO: These should be changed to an ehCache spring bean
+    private Map<String, String> campusLocationCache;
+    private Map<String, String> atpCache;
+
+    /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public CourseInfo getCourseInfo() {
         return courseInfo;
@@ -90,9 +96,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         this.courseInfo = courseInfo;
     }
 
-    /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
-    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
-
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
         return hashMap;
     }
@@ -101,15 +104,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         this.hashMap = hashMap;
     }
 
-    //TODO: These should be changed to an ehCache spring bean
-    private Map<String, String> campusLocationCache;
-    private Map<String, String> atpCache;
-
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
         return retrieveCourseDetails((String) fieldValues.get("courseId"));
     }
-
 
     /**
      * Populates course with catalog information (title, id, code, description) and next offering information.
@@ -325,24 +323,25 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             courseDetails.setCurriculumTitle(value.toString());
         }
-        //If course not scheduled for future terms, Check for the last term when course was offered
+        //  If course not scheduled for future terms, Check for the last term when course was offered
         if (courseDetails.getScheduledTerms().size() == 0) {
             int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
             List<CourseOfferingInfo> courseOfferingInfo = null;
             try {
                 // The right strategy would be using the multiple equal predicates joined using an and
-                courseOfferingInfo = getCourseOfferingService().searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", "" + year + "," + subject + "," + number + "")), CourseSearchConstants.CONTEXT_INFO);
+                String values = String.format("%s, %s, %s", year, subject, number);
+                courseOfferingInfo = getCourseOfferingService()
+                    .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error("could not load courseOfferingInfo list");
+                logger.error("Could not load courseOfferingInfo list.", e);
             }
             if (courseOfferingInfo.size() > 0) {
                 String lastOffered = courseOfferingInfo.get(0).getTermId();
                 lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                 courseDetails.setLastOffered(lastOffered);
             }
-
         }
-        /*********Implemantation to get the Academic Record Data from the SWS and set that to CourseDetails acedRecordList***************/
+        /********* Implementation to get the Academic Record Data from the SWS and set that to CourseDetails acedRecordList ***************/
 
         List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();

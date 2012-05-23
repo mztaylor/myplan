@@ -522,8 +522,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         xpath.setNamespaceURIs(namespaces);
 
         List sections = xpath.selectNodes(document);
-        //From the sections last offered for the course is figured out
-        if (sections != null) {
+        //  From the sections last offered for the course is figured out
+        if (sections != null && sections.size() > 0) {
             StringBuffer cc = new StringBuffer();
             int maxQ = 0;
             String[] quarters = new String[sections.size()];
@@ -568,12 +568,11 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 }
             }
-            if(actualQuarter!=null&&actualYear!=-1){
-            cc = cc.append(actualQuarter).append(" ").append(actualYear);
-            courseOfferingInfo.setTermId(cc.toString().trim());
-            courseOfferingInfos.add(courseOfferingInfo);
+            if (actualQuarter != null && actualYear != -1){
+                cc = cc.append(actualQuarter).append(" ").append(actualYear);
+                courseOfferingInfo.setTermId(cc.toString().trim());
+                courseOfferingInfos.add(courseOfferingInfo);
             }
-
         }
         return courseOfferingInfos;
     }
