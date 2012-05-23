@@ -30,6 +30,7 @@ import org.kuali.student.myplan.audit.service.model.Requirement;
 import org.kuali.student.myplan.audit.service.model.Subrequirement;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
+import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -81,7 +82,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private static transient AcademicCalendarService academicCalendarService;
 
-    public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
 
     public DprogDao getDprogDao() {
         return dprogDao;
@@ -818,7 +818,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         termYear=termYear.append(year).append(currentTermAndYear[0]);
         String[] params = new String[]{termYear.toString()};
         List programs = dao.find(hql, params);
-        List<Dprog> obj = new ArrayList<Dprog>();
         for (int i = 0; i < programs.size(); i++) {
             Object[] objs = null;
             AuditProgramInfo auditProgramInfo = new AuditProgramInfo();
@@ -831,24 +830,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
     /*Implemented to get the current year and the term value from the academic calender service.*/
     public String[] getCurrentYearAndTerm() {
-        List<TermInfo> scheduledTerms = null;
-        try {
-            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "INPROGRESS")), CONTEXT_INFO);
-        } catch (Exception e) {
-            throw new RuntimeException("Query to Academic Calendar Service failed.", e);
-        }
-
-        if (scheduledTerms == null || scheduledTerms.size() == 0) {
-            throw new RuntimeException("No scheduled terms were found.");
-        }
-        TermInfo currentTerm = scheduledTerms.get(0);
-        String atpSuffix = currentTerm.getId().replace(TERM_ID_PREFIX, "");
-        String[] termYear = atpSuffix.split("\\.");
-        String year = termYear[0].trim();
-        String term = termYear[1].trim();
-        return new String[]{term, year};
+        String currentAtp = DegreeAuditAtpHelper.getCurrentAtpId();
+        String[] termYear = DegreeAuditAtpHelper.atpIdToTermAndYear(currentAtp);
+        return new String[]{termYear[0].trim(), termYear[1].trim()};
     }
-
 
 
 }
