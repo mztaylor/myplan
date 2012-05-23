@@ -40,7 +40,6 @@ NOTE: At least one requirement still incomplete.
 		<option value="all">All Requirements</option>
 		<option value="N">Incomplete Only</option>
 		<option value="I">In-Progress Only</option>
-		<option value="C">Complete Only</option>
 	</select>
 </div>
 
@@ -73,24 +72,16 @@ ${advisory}
 		<div class="requirement-body">
 		    <div class="requirement-content">
 
-#if( ${req.getShowTotal()} )
 #if( ${req.hasCredits()} )
-#if( ${req.hasCreditsZeroEarned()} )
                 <ul class="progress">
-                    <li class="needs"><label>Needs:</label> ${req.credits.needs} credits</li>
-                </ul>
-#elseif( ${req.hasCreditsZeroNeeds()} )
-                <ul class="progress">
-                    <li class="needs"><label>Earned:</label> ${req.credits.earned} credits</li>
-                </ul>
-#else
-                <ul class="progress">
-                    <li class="required"><label>Credits required:</label> ${req.credits.required}</li>
-                    <li class="earned"><label>earned:</label> ${req.credits.earned}</li>
+                    <li class="required"><label>Credits earned:</label> ${req.credits.earned}</li>
+#if( ${req.credits.hasInprogress()} )
                     <li class="inprogress"><label>in-progress:</label> ${req.credits.inprogress}</li>
-                    <li class="needs"><label>needs:</label> ${req.credits.needs}</li>
-                </ul>
 #end
+#if( ${req.credits.hasNeeds()} )
+                    <li class="needs"><label>needs:</label> ${req.credits.needs}</li>
+#end
+                </ul>
 #end
 #if( ${req.hasGPA()} )
                 <ul class="progress">
@@ -98,25 +89,14 @@ ${advisory}
                 </ul>
 #end
 #if( ${req.hasCount()} )
-#if( ${req.hasCountZeroEarned()} )
-                <ul class="progress">
-                    <li class="needs"><label>Needs:</label> ${req.count.needs} courses</li>
-                </ul>
-#elseif( ${req.hasCountZeroNeeds()} )
-                <ul class="progress">
-                    <li class="needs"><label>Earned:</label> ${req.count.earned} courses</li>
-                </ul>
-#else
                 <ul class="progress">
                     <li class="required"><label>Courses required:</label> ${req.count.required}</li>
                     <li class="earned"><label>earned:</label> ${req.count.earned}</li>
                     <li class="needs"><label>needs:</label> ${req.count.needs}</li>
                 </ul>
 #end
-#end
-#end
             </div>
-##if( ${req.notComplete()} )
+
 #foreach( $subreq in $req.subrequirementList ) ## subreq
             <div class="subrequirement">
                 <div class="subrequirement-heading">
@@ -128,22 +108,15 @@ ${advisory}
                 </div>
                 <div class="subrequirement-content">
 #if( ${subreq.hasCredits()} )
-#if( ${subreq.hasCreditsZeroEarned()} )
                     <ul class="progress">
-                        <li class="needs"><label>Needs:</label> ${subreq.credits.needs} credits</li>
-                    </ul>
-#elseif( ${subreq.hasCreditsZeroNeeds()} )
-                    <ul class="progress">
-                        <li class="needs"><label>Earned:</label> ${subreq.credits.earned} credits</li>
-                    </ul>
-#else
-                    <ul class="progress">
-                        <li class="required"><label>Credits required:</label> ${subreq.credits.required}</li>
-                        <li class="earned"><label>earned:</label> ${subreq.credits.earned}</li>
+                        <li class="required"><label>Credits earned:</label> ${subreq.credits.earned}</li>
+#if( ${req.credits.hasInprogress()} )
                         <li class="inprogress"><label>in-progress:</label> ${subreq.credits.inprogress}</li>
-                        <li class="needs"><label>needs:</label> ${subreq.credits.needs}</li>
-                    </ul>
 #end
+#if( ${subreq.credits.hasNeeds()} )
+                        <li class="needs"><label>needs:</label> ${subreq.credits.needs}</li>
+#end
+                    </ul>
 #end
 #if( ${subreq.hasGPA()} )
                     <ul class="progress">
@@ -151,46 +124,14 @@ ${advisory}
                     </ul>
 #end
 #if( ${subreq.hasCount()} )
-#if( ${subreq.hasCountZeroEarned()} )
-                    <ul class="progress">
-                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} courses</li>
-                    </ul>
-#elseif( ${subreq.hasCountZeroNeeds()} )
-                    <ul class="progress">
-                        <li class="needs"><label>Earned:</label> ${subreq.count.earned} courses</li>
-                    </ul>
-#else
                     <ul class="progress">
                         <li class="required"><label>Courses required:</label> ${subreq.count.required}</li>
                         <li class="earned"><label>earned:</label> ${subreq.count.earned}</li>
                         <li class="needs"><label>needs:</label> ${subreq.count.needs}</li>
                     </ul>
 #end
-#end
 
-#if( ${subreq.hasCourseAcceptableList()} )
-#set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
-                    <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
-                        <h6>Courses fulfill this requirement</h6>
-                        <table>
-                            <tbody>
-#foreach( $acceptable in $subreq.courseAcceptableList )
 
-#if( ${acceptable.hasCluid()} )
-                                <tr>
-                                    <td><a href="#" onclick="openCourse('${acceptable.cluid}',event,false);"#">${acceptable.dept} ${acceptable.number} ${acceptable.description}</a></td>
-                                </tr>
-#else
-                                <tr>
-                                    <td>${acceptable.dept} ${acceptable.number} ${acceptable.description}</td><td>${acceptable.quarter}</td>
-                                </tr>
-#end
-
-#end
-                            </tbody>
-                        </table>
-                    </div>
-#end
 #if( ${subreq.hasCourseTakenList()} )
                     <div class="subrequirement-courses-taken">
                         <table>
@@ -227,11 +168,9 @@ ${advisory}
             </div>
 #end ## subreq
 
-
-##end ## notComplete
         </div>
 
-	</div> <!-- end requirement-body -->
+	</div>
 
 
 #end ## foreach req

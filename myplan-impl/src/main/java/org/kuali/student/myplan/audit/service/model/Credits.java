@@ -26,11 +26,17 @@ public class Credits {
 
     public String getInprogress() { return smartZero(inprogress); }
 
+    public boolean hasInprogress() {
+        return inprogress > 0.0001f;
+    }
+
     public String getEarned() {
         return smartZero( earned );
     }
 
     public String getNeeds() { return smartZero(needs); }
+
+    public boolean hasNeeds() { return needs > 0.0001f; }
 
     public void setRequired(float required) {
         this.required = required;
