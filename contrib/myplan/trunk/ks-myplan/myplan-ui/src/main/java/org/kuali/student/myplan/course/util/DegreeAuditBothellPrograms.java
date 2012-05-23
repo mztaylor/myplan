@@ -13,9 +13,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,6 +70,7 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
         } catch (Exception e) {
             logger.error("could not retrieve AuditPrograms", e);
         }
+
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
 
         for (AuditProgramInfo programInfo : auditProgramInfoList) {
@@ -80,6 +79,17 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
                 keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
             }
         }
+        /*Removing Duplicate entries from Key values*/
+        HashSet hs = new HashSet();
+        hs.addAll(keyValues);
+        keyValues.clear();
+        keyValues.addAll(hs);
+        Collections.sort(keyValues, new Comparator<KeyValue>() {
+            @Override
+            public int compare(KeyValue keyValue1, KeyValue keyValue2) {
+                return keyValue1.getKey().compareTo(keyValue2.getKey());
+            }
+        });
         return keyValues;
     }
 
