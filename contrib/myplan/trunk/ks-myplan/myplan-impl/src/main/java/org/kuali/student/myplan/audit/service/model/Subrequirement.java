@@ -11,9 +11,6 @@ public class Subrequirement {
     public GPA gpa;
     public Credits credits;
 
-//    public String info = null;
-    public String courseFilter = null;
-
     public String getStatus() {
         return status;
     }
@@ -38,14 +35,6 @@ public class Subrequirement {
         return count != null;
     }
 
-    public boolean hasCountZeroEarned() {
-        return count.getEarned() == 0;
-    }
-
-    public boolean hasCountZeroNeeds() {
-        return count.getNeeds() == 0;
-    }
-
     public Count getCount() {
         return count;
     }
@@ -63,28 +52,14 @@ public class Subrequirement {
     }
 
     public boolean hasCredits() {
-        return credits != null;
-    }
-
-    public boolean hasCreditsZeroEarned() {
-        return credits.earned < 0.0001f;
-    }
-
-    public boolean hasCreditsZeroNeeds() {
-        return credits.needs < 0.0001f;
+        if( credits == null ) return false;
+        if( "0".equals( credits.getInprogress()) && "0".equals( credits.getNeeds() ) ) return false;
+        return true;
     }
 
     public Credits getCredits() {
         return credits;
     }
-
-//    public boolean hasInfo() {
-//        return info != null;
-//    }
-//
-//    public String getInfo() {
-//        return info;
-//    }
 
     public void setCredits(Credits credits) {
         this.credits = credits;
@@ -92,32 +67,6 @@ public class Subrequirement {
 
     public void setGPA(GPA gpa) {
         this.gpa = gpa;
-    }
-
-//    public boolean hasCourseFilter() {
-//        return courseFilter != null;
-//    }
-
-//    public String getCourseFilter() {
-//        return courseFilter;
-//    }
-
-    public ArrayList<CourseAcceptable> courseAcceptableList = new ArrayList<CourseAcceptable>();
-
-    public boolean hasCourseAcceptableList() {
-        return courseAcceptableList.size() > 0;
-    }
-
-//    public int getCourseAcceptableListCount() {
-//        return courseAcceptableList.size();
-//    }
-
-    public ArrayList<CourseAcceptable> getCourseAcceptableList() {
-        return courseAcceptableList;
-    }
-
-    public void addCourseAcceptable(CourseAcceptable course) {
-        courseAcceptableList.add(course);
     }
 
     public ArrayList<CourseTaken> courseTakenList = new ArrayList<CourseTaken>();

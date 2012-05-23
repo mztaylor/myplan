@@ -69,10 +69,6 @@ public class DegreeAuditServiceImplTest {
 
             // TODO: service only returns audittext field for new requests, pending requests don't have this field
             // asked Susan Archdeacon to add that field to all responses.
-//            if( auditID == null )
-//            {
-//                auditID = "2012031413361642";
-//            }
 
             String message = null;
             while( true )

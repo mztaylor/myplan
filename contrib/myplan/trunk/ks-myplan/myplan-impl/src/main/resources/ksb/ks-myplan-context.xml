@@ -75,7 +75,6 @@
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
         <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
         <property name="dprogDao" ref="uachieveapi.dprogDao"/>
-
     </bean>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">

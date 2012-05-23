@@ -56,6 +56,7 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import org.kuali.student.common.search.dto.*;
+import uachieve.apis.requirement.ReqMain;
 import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 import uachieve.apis.requirement.Dprog;
 import uachieve.apis.requirement.dao.DprogDao;
@@ -168,7 +169,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         structureMap.put("UTEXT", Structure.Section);
         structureMap.put("WHAT-IF", Structure.Advisory);
 
-        textMap.put("A&SGENTXT", "GENERAL EDUCATION REQUIREMENTS" );
+        textMap.put("A&SGENTXT", "<div>COLLEGE OF ARTS AND SCIENCES</div><div>GENERAL EDUCATION REQUIREMENTS</div>" );
     }
 
     public Structure getStructure(JobQueueReq jqr )
@@ -367,7 +368,84 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
+    String reqFlagsHQL = "FROM ReqMain r WHERE r.comp_id.rname = ? and r.comp_id.rqfyt <= ? and ? <= r.lyt";
+
+
+    // Requirement report suppression flags: true = render, false = hide
+    class ReqFlags
+    {
+        boolean subreq = true; // ReqMain.reqsrqf
+        boolean credits = true;  // ReqMain.reqhrsf
+        boolean gpa = true; // ReqMain.reqgpaf
+        boolean courses = true; // ReqMain.reqctf
+        String rqfyt = "99994"; //
+    }
+
+    public ReqFlags getReqFlags( String rname, String lyt )
+    {
+        ReqFlags result = new ReqFlags();
+
+        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+
+        Object[] params = new Object[]{ rname, lyt, lyt };
+        List list = dao.find(reqFlagsHQL, params);
+        if( list.size() > 0 )
+        {
+            ReqMain reqMain = (ReqMain) list.get( 0 );
+            result.subreq = !"X".equals( reqMain.getReqsrqf() );
+            result.credits = !"X".equals(reqMain.getReqhrsf());
+            result.gpa = !"X".equals(reqMain.getReqgpaf());
+            result.courses = !"X".equals(reqMain.getReqctf());
+            result.rqfyt = reqMain.getComp_id().getRqfyt();
+        }
+        return result;
+    }
+
+//    String subreqFlagsHQL = "SELECT s.reqhrsf, s.reqgpaf, s.reqctf FROM Subreq s WHERE s.reqMain.rname = ? and s.rqfyt = ? and s.userSeqNo = ?";
+    String subreqFlagsHQL = "SELECT s.reqhrsf, s.reqgpaf, s.reqctf FROM ReqMain r JOIN r.subReqs s WHERE  r.comp_id.rname = ? and r.comp_id.rqfyt = ? and s.userSeqNo = ?";
+
+    class SubreqFlags
+    {
+        boolean credits = true;  // Subreq.reqhrsf
+        boolean gpa = true; // Subreq.reqgpaf
+        boolean courses = true; // Subreq.reqctf
+    }
+
+    public SubreqFlags getSubreqFlags(String rname, String rqfyt, Integer userSeqNo ) {
+        SubreqFlags result = new SubreqFlags();
+
+        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+
+        Object[] params = new Object[]{rname, rqfyt, userSeqNo};
+//        Object[] params = new Object[]{rname, rqfyt};
+        List list = dao.find(subreqFlagsHQL, params);
+        for (Object first : list) {
+            Object[] flags = (Object[]) first;
+            result.credits = !"X".equals(flags[0]);
+            result.gpa = !"X".equals(flags[1]);
+            result.courses = !"X".equals(flags[2]);
+            break;
+        }
+
+        return result;
+    }
+
+
     public Report getAuditReport(String auditid) {
+//        {
+//        String
+//                rname = "JOURSKILL";
+//         String
+//        rqfyt = "20104";
+//        Integer
+//        userSeqNo = new Integer( 1 );
+//        SubreqFlags crank = getSubreqFlags
+//        (
+//        rname,
+//        rqfyt,
+//        userSeqNo)  ;
+//        }
+//        ReqFlags reqFlags1 = getReqFlags("JOURSKILL", "20121");
 
         Report report = new Report();
 
@@ -383,8 +461,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         report.setDatePrepared(formatter.format(runDate));
 
         String yearterm = run.getCatlyt();
-        yearterm = yearTermMagic( yearterm );
-        report.setEntryDateProgram( yearterm );
+        String readableyearterm = yearTermMagic( yearterm );
+        report.setEntryDateProgram(readableyearterm );
 
         String complete = run.getComplete();
         report.setComplete( "C".equals( complete ));
@@ -407,7 +485,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         for (JobQueueReq jqr : list )
         {
-            if ("".equals(jqr.getRname())) continue;
+            String rname = jqr.getRname();
+            if ("".equals( rname )) continue;
             if ("H".equals(jqr.getHidden())) continue;
 
 
@@ -437,7 +516,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     requirement.setStatus(satisfied);
                     requirement.setCaption(reqText);
 
+//                    jqr.getComp_id().get
 
+                    ReqFlags reqFlags = getReqFlags(rname, yearterm);
+
+                    if( reqFlags.credits )
                     {
                         float reqHrs = jqr.getReqhrs().floatValue();
                         float gotHrs = jqr.getGothrs().floatValue();
@@ -453,6 +536,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
+                    if (reqFlags.gpa)
                     {
                         float reqGPA = jqr.getReqgpa().floatValue();
                         float gotGPA = jqr.getGotgpa().floatValue();
@@ -465,6 +549,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
+                    if (reqFlags.courses)
                     {
                         int reqCourses = jqr.getReqct();
                         int gotCourses = jqr.getGotct();
@@ -482,6 +567,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     List<JobQueueSubreq> subreqs = jqr.getJobQueueSubreqs();
                     for (JobQueueSubreq jqsr : subreqs ) {
                         if ("H".equals(jqsr.getHidden())) continue;
+
+                        Integer sno = Integer.valueOf( jqsr.getSno() );
+                        SubreqFlags subreqFlags = getSubreqFlags( rname, reqFlags.rqfyt, sno );
 
                         Subrequirement subrequirement = new Subrequirement();
                         requirement.addSubrequirement(subrequirement);
@@ -502,6 +590,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 subrequirement.setCaption(subReqText);
                             }
                         }
+
+                        if( subreqFlags.credits )
                         {
                             float reqHrs = jqsr.getReqhrs().floatValue();
                             float gotHrs = jqsr.getGothrs().floatValue();
@@ -517,7 +607,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
-                        {
+                        if (subreqFlags.gpa) {
                             float reqGPA = jqr.getReqgpa().floatValue();
                             float gotGPA = jqr.getGotgpa().floatValue();
 
@@ -529,7 +619,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
-                        {
+                        if (subreqFlags.courses) {
                             int reqCourses = jqsr.getReqct();
                             int gotCourses = jqsr.getGotct();
                             int needCourses = jqsr.getNeedct();
@@ -543,42 +633,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
-                        if( false )
-                        {
-                            for (JobQueueAccept accept : jqsr.getJobQueueAccepts()) {
-                                String dept = accept.getDept();
-                                if (dept.startsWith("**")) continue;
-                                String number = accept.getCrsno();
-                                if (number.length() == 0) continue;
-
-                                CourseAcceptable courseAcceptable = new CourseAcceptable();
-                                courseAcceptable.setDept(dept);
-                                courseAcceptable.setNumber(number);
-                                subrequirement.addCourseAcceptable(courseAcceptable);
-
-                                String courseID = getCourseID( dept.trim(), number );
-                                if( courseID != null )
-                                {
-                                    courseAcceptable.setCluId(courseID);
-                                    {
-                                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
-                                        searchRequest.addParam("courseID", courseAcceptable.getCluid());
-                                        try {
-
-                                            SearchResult searchResult = getLuService().search(searchRequest);
-                                            for (SearchResultRow row : searchResult.getRows()) {
-                                                String name = getCellValue(row, "course.name");
-                                                courseAcceptable.setDescription(name);
-
-                                                break;
-                                            }
-                                        } catch (Exception e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-                                }
-                            }
-                        }
                         {
                             for (JobQueueCourse taken : jqsr.getJobQueueCourses()) {
                                 CourseTaken temp = new CourseTaken();
