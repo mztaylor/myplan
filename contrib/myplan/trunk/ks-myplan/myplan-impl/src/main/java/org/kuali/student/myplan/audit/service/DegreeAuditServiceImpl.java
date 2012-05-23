@@ -374,10 +374,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     // Requirement report suppression flags: true = render, false = hide
     class ReqFlags
     {
-        boolean subreq = true; // ReqMain.reqsrqf
-        boolean credits = true;  // ReqMain.reqhrsf
-        boolean gpa = true; // ReqMain.reqgpaf
-        boolean courses = true; // ReqMain.reqctf
+        String subreq = " "; // ReqMain.reqsrqf
+        String credits = " ";  // ReqMain.reqhrsf
+        String gpa = " "; // ReqMain.reqgpaf
+        String courses = " "; // ReqMain.reqctf
         String rqfyt = "99994"; //
     }
 
@@ -392,10 +392,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         if( list.size() > 0 )
         {
             ReqMain reqMain = (ReqMain) list.get( 0 );
-            result.subreq = !"X".equals( reqMain.getReqsrqf() );
-            result.credits = !"X".equals(reqMain.getReqhrsf());
-            result.gpa = !"X".equals(reqMain.getReqgpaf());
-            result.courses = !"X".equals(reqMain.getReqctf());
+            result.subreq = reqMain.getReqsrqf();
+            result.credits = reqMain.getReqhrsf();
+            result.gpa = reqMain.getReqgpaf();
+            result.courses = reqMain.getReqctf();
             result.rqfyt = reqMain.getComp_id().getRqfyt();
         }
         return result;
@@ -520,7 +520,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                     ReqFlags reqFlags = getReqFlags(rname, yearterm);
 
-                    if( reqFlags.credits )
+                    if(!"X".equals( reqFlags.credits ))
                     {
                         float reqHrs = jqr.getReqhrs().floatValue();
                         float gotHrs = jqr.getGothrs().floatValue();
@@ -528,6 +528,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         float ipHrs = jqr.getIphrs().floatValue();
                         if (reqHrs > 1.0f && reqHrs < 999.0f) {
                             Credits credits = new Credits();
+                            credits.setFlag( reqFlags.credits );
                             credits.setRequired(reqHrs);
                             credits.setEarned(gotHrs - ipHrs);
                             credits.setInprogress(ipHrs);
@@ -536,7 +537,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-                    if (reqFlags.gpa)
+                    if (!"X".equals(reqFlags.gpa))
                     {
                         float reqGPA = jqr.getReqgpa().floatValue();
                         float gotGPA = jqr.getGotgpa().floatValue();
@@ -549,7 +550,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-                    if (reqFlags.courses)
+                    if (!"X".equals(reqFlags.courses))
                     {
                         int reqCourses = jqr.getReqct();
                         int gotCourses = jqr.getGotct();
