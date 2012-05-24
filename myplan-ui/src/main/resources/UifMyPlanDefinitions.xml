@@ -292,9 +292,7 @@
         -->
     </bean>
 
-    <bean id="academic_term_message_formatter" class="org.kuali.student.myplan.course.util.academicTermsMessageEditor"/>
-
-    <bean id="crud_message_formatter" class="org.kuali.student.myplan.course.util.crudMessagePropertyEditor"/>
+    <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="emptyListMessage" value="Not currently scheduled"/>
