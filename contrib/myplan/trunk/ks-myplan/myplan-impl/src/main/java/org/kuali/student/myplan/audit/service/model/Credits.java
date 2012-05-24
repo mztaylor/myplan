@@ -7,8 +7,6 @@ public class Credits {
     public float earned = 1;
     public float needs = 1;
 
-//    public float getMinimum() { return minimum; }
-
     public void setFlag( String flag ) {
         this.flag = flag;
     }

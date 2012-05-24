@@ -6,6 +6,9 @@ public class Count {
     public int earned = 1;
     public int needs = 99;
 
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
 
     public void setRequired(int required) {
         this.required = required;

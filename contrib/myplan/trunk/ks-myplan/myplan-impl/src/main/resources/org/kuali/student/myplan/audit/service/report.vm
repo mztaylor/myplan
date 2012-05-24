@@ -44,8 +44,6 @@ NOTE: At least one requirement still incomplete.
 </div>
 
 
-#set( $courseAcceptableCounter = 0 )
-
 #foreach( $advisory in $report.advisoryList )
 <div class="requirement-advisory">
 ${advisory}
@@ -65,8 +63,8 @@ ${advisory}
 		<div class="requirement-heading">
 			<div class="${req.status}">
                 <!-- Course Link Builder example -->
-                <p>$courseLinkBuilder.makeLinks(${req.caption})</p>
-                <!-- <h4>$ {req.caption}</h4> -->
+##                <!-- <p>$courseLinkBuilder.makeLinks(${req.caption})</p> -->
+                <h4>${req.caption}</h4>
 			</div>
 		</div>
 		<div class="requirement-body">
@@ -75,7 +73,7 @@ ${advisory}
 #if( ${req.hasCredits()} )
                 <ul class="progress">
 #if( ${req.credits.showEarned()} )
-                    <li class="required"><label>Earned:</label> ${req.credits.earned} credits</li>
+                    <li class="earned"><label>Earned:</label> ${req.credits.earned} credits</li>
 #end
 #if( ${req.credits.showInprogress()} )
                     <li class="inprogress"><label>In-progress:</label> ${req.credits.inprogress} credits</li>
@@ -85,14 +83,13 @@ ${advisory}
 #end
                 </ul>
 #end
-#if( ${req.hasGPA()} )
+#if( ${req.hasGPA()} && ${req.gpa.showEarned()} )
                 <ul class="progress">
                     <li class="earned"><label>Earned:</label> ${req.gpa.earned} GPA</li>
                 </ul>
 #end
 #if( ${req.hasCount()} )
                 <ul class="progress">
-                    <li class="required"><label>Required:</label> ${req.count.required} courses</li>
 #if( ${req.credits.showEarned()} )
                     <li class="earned"><label>Earned:</label> ${req.count.earned} courses</li>
 #end
@@ -116,7 +113,7 @@ ${advisory}
 #if( ${subreq.hasCredits()} )
                     <ul class="progress">
 #if( ${subreq.credits.showEarned()} )
-                        <li class="required"><label>Earned:</label> ${subreq.credits.earned} credits</li>
+                        <li class="earned"><label>Earned:</label> ${subreq.credits.earned} credits</li>
 #end
 #if( ${subreq.credits.showInprogress()} )
                         <li class="inprogress"><label>In-progress:</label> ${subreq.credits.inprogress} credits</li>
@@ -126,14 +123,13 @@ ${advisory}
 #end
                     </ul>
 #end
-#if( ${subreq.hasGPA()} )
+#if( ${subreq.hasGPA()} && ${subreq.gpa.showEarned()} )
                     <ul class="progress">
                         <li class="earned"><label>Earned:</label>${subreq.gpa.earned} GPA</li>
                     </ul>
 #end
 #if( ${subreq.hasCount()} )
                     <ul class="progress">
-                        <li class="required"><label>Required:</label> ${subreq.count.required} courses</li>
 #if( ${subreq.count.showEarned()} )
                         <li class="earned"><label>Earned:</label> ${subreq.count.earned} courses</li>
 #end
