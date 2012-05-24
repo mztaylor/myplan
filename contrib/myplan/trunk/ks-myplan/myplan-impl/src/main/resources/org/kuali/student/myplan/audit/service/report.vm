@@ -9,6 +9,13 @@
 		<td colspan="2">
 			<table>
 				<tr>
+					<td class="prepared-for">
+                        ## This is replaced by the MyPlan client code, who knows who the logged in
+                        ## student is, versus the DegreeAuditService, who doesn't.
+						<label>Prepared for:</label> $$PreparedFor$$
+					</td>
+				</tr>
+				<tr>
 					<td class="date-prepared">
 						<label>Date Prepared:</label> ${report.datePrepared}
 					</td>
