@@ -152,6 +152,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                         Element dataSection = (Element) data;
                         List<?> dataList = new ArrayList<Object>();
                         dataList = dataSection.elements("Section");
+                        String auditor=dataSection.elementText("Auditor");
+                        if(auditor.equalsIgnoreCase("false")){
                         String calculatedGradeVal = dataSection.elementText("Grade");
                         String creditsEarned = dataSection.elementText("Credits");
                         if(creditsEarned.contains(".")){
@@ -183,6 +185,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             studentCourseRecordInfo.setTermName(termName);
                             studentCourseRecordInfo.setPersonId(regId);
                             studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                        }
                         }
                     }
                 }
