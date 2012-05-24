@@ -32,6 +32,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
@@ -39,6 +40,13 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -115,8 +123,11 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
             planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
-        } catch (Exception e) {
-            return doOperationFailedError(planForm, "Could not retrieve Course Details.", e);
+        } catch (RuntimeException e) {
+            CourseDetails courseDetails = new CourseDetails();
+            planForm.setCourseDetails(courseDetails);
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putErrorForSectionId("add_planned_course", PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
         }
         /*plan item does not exists for academic Record course
         In that case acadRecAtpId is passed in through the UI
@@ -311,8 +322,8 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
         //  Can't validate further up because the new ATP ID can be "other".
-        if (! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
-             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        if (!AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
         }
 
 
@@ -362,12 +373,12 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -453,8 +464,8 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Can't validate further up because the new ATP ID can be "other".
-        if (! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
-             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        if (!AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
         }
 
         PlanItemInfo planItem = null;
@@ -500,12 +511,12 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
-        if ( ! hasCapacity) {
+        if (!hasCapacity) {
             return doPlanCapacityExceededError(form, planItem.getTypeKey());
         }
 
         //  Validate: Adding to historical term.
-        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -578,8 +589,8 @@ public class PlanController extends UifControllerBase {
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
-        if ( ! AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
-             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
+        if (!AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
         }
 
         String studentId = getUserId();
@@ -629,7 +640,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Validate: Adding to historical term.
-        if ( ! AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
+        if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
         }
 
@@ -698,7 +709,7 @@ public class PlanController extends UifControllerBase {
     private List<String> getNewTermIds(String atpId, PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
 
-        if ( ! atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
+        if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
             newTermIds.add(atpId);
         } else {
             //  Create an ATP id from the values in the year and term fields.
@@ -1320,35 +1331,37 @@ public class PlanController extends UifControllerBase {
 
     private void otherOptionValidation(PlanForm form) {
         CourseDetails courseDetails = form.getCourseDetails();
-        for (String term : courseDetails.getScheduledTerms()) {
-            String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            String termsOffered = null;
-            boolean atpAlreadyexists = false;
-            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
-            if (m.matches()) {
-                termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
-            }
-            String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+        if (courseDetails != null && courseDetails.getScheduledTerms() != null) {
+            for (String term : courseDetails.getScheduledTerms()) {
+                String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                String termsOffered = null;
+                boolean atpAlreadyexists = false;
+                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+                if (m.matches()) {
+                    termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
+                }
+                String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
 
-            if (courseDetails.getPlannedList() != null) {
-                for (PlanItemDataObject plan : courseDetails.getPlannedList()) {
-                    if (plan.getAtp().equalsIgnoreCase(atp)) {
-                        atpAlreadyexists = true;
+                if (courseDetails.getPlannedList() != null) {
+                    for (PlanItemDataObject plan : courseDetails.getPlannedList()) {
+                        if (plan.getAtp().equalsIgnoreCase(atp)) {
+                            atpAlreadyexists = true;
+                        }
                     }
                 }
-            }
-            if (courseDetails.getBackupList() != null && !atpAlreadyexists) {
-                for (PlanItemDataObject plan : courseDetails.getBackupList()) {
-                    if (plan.getAtp().equalsIgnoreCase(atp)) {
-                        atpAlreadyexists = true;
+                if (courseDetails.getBackupList() != null && !atpAlreadyexists) {
+                    for (PlanItemDataObject plan : courseDetails.getBackupList()) {
+                        if (plan.getAtp().equalsIgnoreCase(atp)) {
+                            atpAlreadyexists = true;
+                        }
                     }
                 }
-            }
-            if (!atpAlreadyexists) {
-                form.setShowOther(true);
-            }
+                if (!atpAlreadyexists) {
+                    form.setShowOther(true);
+                }
 
 
+            }
         }
     }
 
