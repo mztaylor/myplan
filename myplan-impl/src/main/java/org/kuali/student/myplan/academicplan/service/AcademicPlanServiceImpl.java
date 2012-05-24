@@ -141,8 +141,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<PlanItemInfo> planItemInfos=new ArrayList<PlanItemInfo>();
-        List<PlanItemEntity> planItemEntities=planItemDao.getLearningPlanItems(learningPlanId,planItemTypeKey);
-        if(null == planItemEntities){
+        List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId,planItemTypeKey);
+        if (null == planItemEntities){
             throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] does not exist", learningPlanId));
         }
         else {
@@ -173,7 +173,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                   @WebParam(name = "planItemTypeKey") String planItemTypeKey,
                                                   @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        throw new RuntimeException("Not implemented.");
+
+        List<PlanItemEntity> planItemsList = planItemDao.getLearningPlanItems(learningPlanId, planItemTypeKey);
+
+        List<PlanItemInfo> planItemDtos = new ArrayList<PlanItemInfo>();
+        for (PlanItemEntity pie : planItemsList) {
+            if (pie.getPlanPeriods().contains(atpKey)) {
+                planItemDtos.add(pie.toDto());
+            }
+        }
+
+        return planItemDtos;
     }
 
     @Override

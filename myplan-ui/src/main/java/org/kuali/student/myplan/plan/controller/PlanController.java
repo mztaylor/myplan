@@ -1031,6 +1031,47 @@ public class PlanController extends UifControllerBase {
         return newPlanItem;
     }
 
+    /**
+     * Gets a plan item of a particular type for a particular ATP.
+     * @param planId The id of the learning plan
+     * @param courseId The id of the course
+     * @param atpId The ATP id
+     * @param planItemType The plan item type key.
+     * @return A "planned" or "backup" plan item. Or 'null' if none exists.
+     * @throws RuntimeException on errors.
+     */
+    private PlanItemInfo getPlanItemByAtpAndType(String planId, String courseId, String atpId, String planItemType) {
+        if (StringUtils.isEmpty(planId)) {
+            throw new RuntimeException("Plan Id was empty.");
+        }
+
+        if (StringUtils.isEmpty(courseId)) {
+            throw new RuntimeException("Course Id was empty.");
+        }
+
+        if (StringUtils.isEmpty(atpId)) {
+            throw new RuntimeException("ATP Id was empty.");
+        }
+
+        List<PlanItemInfo> planItems = null;
+        PlanItemInfo item = null;
+
+        try {
+            planItems = getAcademicPlanService().getPlanItemsInPlanByAtp(planId, atpId, planItemType, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve plan items.", e);
+        }
+
+        for (PlanItemInfo p : planItems) {
+            if (p.getRefObjectId().equals(courseId) && p.getTypeKey().equals(planItemType)) {
+                item = p;
+                break;
+            }
+        }
+
+        //  A null here means that no plan item exists for the given course and ATP IDs.
+        return item;
+    }
 
     /**
      * Gets a Plan Item of type "wishlist" for a particular course. There should only ever be one.
@@ -1038,6 +1079,7 @@ public class PlanController extends UifControllerBase {
      * @return A PlanItem of type wishlist.
      */
     protected PlanItemInfo getWishlistPlanItem(String courseId) {
+
         if (StringUtils.isEmpty(courseId)) {
             throw new RuntimeException("Course Id was empty.");
         }
@@ -1080,52 +1122,30 @@ public class PlanController extends UifControllerBase {
      * @throws RuntimeException on errors.
      */
     protected PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        if (StringUtils.isEmpty(courseId)) {
-            throw new RuntimeException("Course Id was empty.");
-        }
-
-        if (StringUtils.isEmpty(atpId)) {
-            throw new RuntimeException("ATP Id was empty.");
-        }
-
         String studentId = getUserId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
         }
 
-        List<PlanItemInfo> planItems = null;
-        PlanItemInfo item = null;
+        PlanItemInfo planItem = null;
 
         try {
-            planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
-                    PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+            planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
-        for (PlanItemInfo p : planItems) {
-            //  Make sure some ATP IDs exist on the plan item. There should never be more than one ATP ID however.
-            List<String> planPeriods = p.getPlanPeriods();
-            if (p.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)
-                    || planPeriods == null || planPeriods.size() == 0) {
-                continue;
-            }
-            //  Throw an error if a plan item has more than one ATP ID associated with it.
-            if (planPeriods.size() > 1) {
-                throw new RuntimeException(String.format("Learning Plan [%s] plan id [%s] has more than one associated ATP ID.",
-                        learningPlan.getId(), p.getId()));
-            }
-
-            String atp = planPeriods.get(0);
-            if (p.getRefObjectId().equals(courseId) && atp.equals(atpId)) {
-                item = p;
-                break;
+        if (planItem == null) {
+            try {
+                planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not retrieve plan items.", e);
             }
         }
 
         //  A null here means that no plan item exists for the given course and ATP IDs.
-        return item;
+        return planItem;
     }
 
     /**
