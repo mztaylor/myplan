@@ -105,6 +105,9 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
             String html = sw.toString();
+
+            String preparedFor = user.getLastName() + ", " + user.getFirstName();
+            html = html.replace( "$$PreparedFor$$", preparedFor );
             form.setAuditHtml(html);
             
             
@@ -155,6 +158,8 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
             String html = sw.toString();
+            String preparedFor = user.getLastName() + ", " + user.getFirstName();
+            html = html.replace("$$PreparedFor$$", preparedFor);
             form.setAuditHtml(html);
 
         } catch (Exception e) {
