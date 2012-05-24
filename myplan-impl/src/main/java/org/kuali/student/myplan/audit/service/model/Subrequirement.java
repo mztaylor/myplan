@@ -10,6 +10,7 @@ public class Subrequirement {
     public Count count;
     public GPA gpa;
     public Credits credits;
+    public String nolist;
 
     public String getStatus() {
         return status;
@@ -81,6 +82,10 @@ public class Subrequirement {
 
     public void addCourseTaken(CourseTaken course) {
         courseTakenList.add(course);
+    }
+
+    public void setNolist( String nolist ) {
+        this.nolist = nolist;
     }
 
 }
