@@ -346,8 +346,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
                 academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                 academicRecordDataObject.setCourseId(studentInfo.getId());
-                academicRecordDataObject.setCredit(studentInfo.getCalculatedGradeValue());
-                academicRecordDataObject.setGrade(studentInfo.getCreditsEarned());
+                academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                 academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                 academicRecordDataObjectList.add(academicRecordDataObject);
                 if (courseDetails.getCourseTitle().equalsIgnoreCase(studentInfo.getCourseTitle())) {
