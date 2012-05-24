@@ -72,6 +72,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String INPROGRESS="INPROGRESS";
     public static final String PUBLISHED="PUBLISHED";
 
+    public static final String WITHDRAWN_GRADE="W";
+
 
 
     /**
