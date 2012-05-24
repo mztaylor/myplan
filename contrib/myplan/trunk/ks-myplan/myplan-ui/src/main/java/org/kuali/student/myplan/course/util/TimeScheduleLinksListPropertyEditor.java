@@ -21,6 +21,7 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 
 import java.beans.PropertyEditorSupport;
@@ -87,7 +88,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
         for (String scheduledTerm : scheduledTerms) {
             String lightboxUrl = makeLightboxTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
-            String urlId = makeTimeScheduleUrlId(scheduledTerm, courseDetails.getCode());
+            String urlId = UUIDHelper.genStringUUID();
             String t = title.replace("{timeScheduleName}", scheduledTerm);
             String l = label.replace("{timeScheduleName}", scheduledTerm);
 
@@ -187,119 +188,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         url.append(courseNumber);
         return url.toString();
     }
-
-
-
-     /**
-     * Format a UW SWS URL as: SPR2012/chem.html#chem142
-     *                         term/curriculmum_abbreviation#curriculmum_abbreviation + course number
-     *
-     * @param term
-     * @param courseCode
-     * @return
-     */
-    private String makeTimeScheduleUrl(String term, String courseCode) {
-
-       final CourseDetails courseDetails = (CourseDetails) super.getValue();
-
-       if (courseDetails == null) {
-           return "";
-       }
-
-       /*
-        *  If the collection is empty and no empty list message is defined then return an empty string.
-        *  Otherwise, add an empty list message to the list.
-        */
-       String styleClassNames = getEmptyListStyleClassesAsString();
-
-       List<String> campusLocation = courseDetails.getCampusLocations();
-
-       String campusLocationString = campusLocation.get(0);
-
-        StringBuilder url = new StringBuilder(baseUrl);
-
-
-        //  Parse out all of the necessary params.
-        String year = term.replaceAll("\\D+", "");
-        String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
-        String courseNumber = courseCode.replaceAll("^\\D+", "");
-        String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
-
-        //  Convert term to SWS format "SPR2012"
-        String swsTerm = termName.substring(0,3).toUpperCase() + year;
-
-
-        if (campusLocationString.equals("Bothell")) { //Bothell
-           url.append("B").append("/");
-        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
-            url.append("T").append("/");
-        }
-
-
-        // Build the URL: SPR2012/chem.html#chem142
-        url.append(swsTerm).append("/");
-
-        //  Query the student web service to convert the curriculum abbreviation to a TimeScheduleLinkAbbreviation.
-        String timeScheduleLinkAbbreviation = null;
-        try {
-            timeScheduleLinkAbbreviation = getStudentServiceClient().getTimeScheduleLinkAbbreviation(year, termName, curriculumCode);
-        } catch (ServiceException e) {
-            //  If the service call fails just return the base URL.
-            logger.error("Call to SWS failed.", e);
-            return baseUrl;
-        }
-
-        url.append(timeScheduleLinkAbbreviation)
-            //.append(".html#")
-            .append(".html?external=true&dialogMode=true#")
-            .append(curriculumCode.toLowerCase())
-            .append(courseNumber);
-        return url.toString();
-    }
-
-    private String makeTimeScheduleUrlId(String term, String courseCode) {
-
-        final CourseDetails courseDetails = (CourseDetails) super.getValue();
-
-        if (courseDetails == null) {
-            return "";
-        }
-
-       /*
-        *  If the collection is empty and no empty list message is defined then return an empty string.
-        *  Otherwise, add an empty list message to the list.
-        */
-       String styleClassNames = getEmptyListStyleClassesAsString();
-
-       String urlId = "";
-
-        //  Parse out all of the necessary params.
-        String year = term.replaceAll("\\D+", "");
-        String termName = term.replaceAll("\\d+", "").toLowerCase().trim();
-        String courseNumber = courseCode.replaceAll("^\\D+", "");
-        String curriculumCode = courseCode.replaceAll("\\d+$", "").toLowerCase().trim();
-
-
-       List<String> campusLocation = courseDetails.getCampusLocations();
-
-       String campusLocationString = campusLocation.get(0);
-
-        if (campusLocationString.equals("Bothell")) { //Bothell
-            curriculumCode = curriculumCode.replaceAll("\\s","");
-        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
-            curriculumCode = curriculumCode.replaceAll("\\s","");
-        }
-
-
-        //  Convert term to SWS format "SPR2012"
-        String swsTerm = termName.substring(0,3).toUpperCase() + year;
-
-        urlId = curriculumCode + courseNumber + swsTerm;
-
-        return urlId;
-    }
-
-
 
     public List<String> getStyleClasses() {
         return this.styleClasses;
