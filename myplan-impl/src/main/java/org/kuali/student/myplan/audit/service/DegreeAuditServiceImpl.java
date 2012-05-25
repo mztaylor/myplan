@@ -437,7 +437,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         JobQueueRunLoader jqrl = getJobQueueRunLoader();
         JobQueueRun run = jqrl.loadJobQueueRun(auditid);
 
-//        report.setStudentName(run.getStuno());
         report.setWebTitle(run.getDptitle1());
         report.setDegreeProgram(run.getDprog());
 
@@ -454,7 +453,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         Section section = null;
         List<JobQueueReq> list = run.getJobQueueReqs();
-        Comparator<JobQueueReq> poppins = new Comparator<JobQueueReq>()
+        Comparator<JobQueueReq> reqSorter = new Comparator<JobQueueReq>()
         {
             public int compare(JobQueueReq o1, JobQueueReq o2) {
                 String f1 = o1.getSortflg();
@@ -466,7 +465,27 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
         };
 
-        Collections.sort( list, poppins );
+        Comparator<CourseTaken> takenSorter = new Comparator<CourseTaken>() {
+            public int compare(CourseTaken t1, CourseTaken t2) {
+                String d1 = t1.getDept();
+                if (d1 == null) return -1;
+                String d2 = t2.getDept();
+                if (d2 == null) return 1;
+                int compare = d1.compareTo( d2  );
+                if( compare == 0 )
+                {
+                    String n1 = t1.getNumber();
+                    if (n1 == null) return -1;
+                    String n2 = t2.getNumber();
+                    if (n2 == null) return 1;
+                    compare = n1.compareTo(n2);
+
+                }
+                return compare;
+            }
+        };
+
+        Collections.sort( list, reqSorter );
 
         for (JobQueueReq jqr : list )
         {
@@ -649,7 +668,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 }
                                 temp.setDept(dept);
                                 temp.setNumber(number);
-                                temp.setGrade( Float.toString( taken.getGpa().floatValue() ));
+                                temp.setGrade( taken.getRgrade() );
                                 temp.setDescription(taken.getCtitle());
                                 temp.setCredits( taken.getCredit().floatValue());
                                 temp.setQuarter(taken.getEditYt());
@@ -660,6 +679,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                                 subrequirement.addCourseTaken(temp);
                             }
+
+                            List<CourseTaken> listx = subrequirement.getCourseTakenList();
+                            Collections.sort(listx, takenSorter);
                         }
 
                     }

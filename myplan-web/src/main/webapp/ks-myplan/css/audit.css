@@ -29,7 +29,10 @@
 	margin: 0;
 	font-family: Helvetica, Arial, clean, sans-serif;
 	font-size: 1.6em !important;
+    line-height: 125%
 }
+
+
 #txtaudit_span .requirement {
 	margin:0 20px;
 }
