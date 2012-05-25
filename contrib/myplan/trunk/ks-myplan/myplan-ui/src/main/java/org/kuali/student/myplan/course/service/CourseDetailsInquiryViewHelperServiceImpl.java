@@ -350,7 +350,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                 academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                 academicRecordDataObjectList.add(academicRecordDataObject);
-                if (courseDetails.getCourseTitle().equalsIgnoreCase(studentInfo.getCourseTitle())) {
+                if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
                     String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
                     courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
                 }

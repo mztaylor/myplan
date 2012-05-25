@@ -9,7 +9,10 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 
 import java.beans.PropertyEditorSupport;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,53 +42,96 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         *"This course was withdrawn on week 6 in Spring 2012" or
         *"You're enrolled in this course for Autumn 2012" */
         if (courseDetails.getAcademicTerms().size() > 0) {
-            boolean courseWithdrawn = false;
-            /*course Withdrawn flag is set to true when the course is in academic record and has the same course id with grade as W*/
-            for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getAcadRecList()) {
-                if (academicRecordDataObject.getCourseId() != null && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId()) && academicRecordDataObject.getGrade().equalsIgnoreCase(PlanConstants.WITHDRAWN_GRADE)) {
-                    courseWithdrawn = true;
+            List<String> withDrawnCourseTerms = new ArrayList<String>();
+            List<String> nonWithDrawnCourseTerms = new ArrayList<String>();
+
+            for (String term : courseDetails.getAcademicTerms()) {
+                String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
+                for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getAcadRecList()) {
+                    if (academicRecordDataObject.getCourseId() != null
+                            && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
+                            && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
+                            && academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                        withDrawnCourseTerms.add(term);
+                    }
+                    if (academicRecordDataObject.getCourseId() != null
+                            && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
+                            && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
+                            && !academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                        nonWithDrawnCourseTerms.add(term);
+                    }
                 }
+
+            }
+            int counter = 0;
+            for (String withdrawnTerm : withDrawnCourseTerms) {
+                String term = withdrawnTerm;
+                String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+
+                if (counter == 0) {
+                    sb = sb.append("<dd>").append("This course was withdrawn in ")
+                            .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                            .append(atpId).append(">")
+                            .append(term).append("</a>");
+                }
+                if (counter > 0) {
+                    sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                            .append(atpId).append(">")
+                            .append(term).append("</a>");
+                }
+                counter++;
             }
 
-            List<String> acadTerms = courseDetails.getAcademicTerms();
 
-
-            for (int i = 0; i < acadTerms.size(); i++) {
-                String term = acadTerms.get(i);
+            int counter2 = 0;
+            int counter3 = 0;
+            for (String nonWithdrawnTerm : nonWithDrawnCourseTerms) {
+                String term = nonWithdrawnTerm;
                 String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
                 List<TermInfo> scheduledTerms = null;
                 String currentTerm = AtpHelper.getCurrentAtpId();
-                /*If course is not a withdrawn course then show messages "You took this course on Winter 2012" or "You're enrolled in this course for Autumn 2012"*/
-                if (!courseWithdrawn) {
-                    if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
+                if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
+                    if (counter2 == 0) {
                         sb = sb.append("<dd>").append("You're currently enrolled in this course for ")
                                 .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
                         currentTermRegistered = true;
                     }
-                    /*If course is a withdrawn course then show messages "This course was withdrawn in Spring 2012"*/
-                    else {
+                    if (counter3 > 0) {
+                        sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                                .append(atpId).append(">")
+                                .append(term).append("</a>");
+                        currentTermRegistered = true;
+                    }
+                    counter2++;
+                } else {
+                    if (counter3 == 0) {
                         sb = sb.append("<dd>").append("You took this course on ")
                                 .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
+
                     }
+                    if (counter3 > 0) {
+                        sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
+                                .append(atpId).append(">")
+                                .append(term).append("</a>");
+                    }
+                    counter3++;
                 }
-                if (courseWithdrawn) {
-                    sb = sb.append("<dd>").append("This course was withdrawn in ")
-                            .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
-                            .append(atpId).append(">")
-                            .append(term).append("</a>");
-                }
+
+
             }
 
         }
 
         /*When plannedList or backupList are not null then populating message
-        *"Added to Spring 2013 Plan, Spring 2014 Plan on 01/18/2012" or
-        *"Added to Spring 2013 Plan on 01/18/2012 and Spring 2014 Plan on 09/18/2012" */
+            *"Added to Spring 2013 Plan, Spring 2014 Plan on 01/18/2012" or
+            *"Added to Spring 2013 Plan on 01/18/2012 and Spring 2014 Plan on 09/18/2012" */
         if (courseDetails.getPlannedList() != null || courseDetails.getBackupList() != null) {
             List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
             if (courseDetails.getPlannedList() != null) {
@@ -174,8 +220,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
         }
         /*When savedItemId and savedItemDateCreated are not null then populating message
-        *"Saved to Your Bookmark List on 8/15/2012" or
-        *"Had saved to Your Bookmark List on 8/15/2012"*/
+            *"Saved to Your Bookmark List on 8/15/2012" or
+            *"Had saved to Your Bookmark List on 8/15/2012"*/
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
             /*When planned List or backup list are equal to null then show message "Saved to Your Bookmark List on 8/15/2012"*/
             if (courseDetails.getPlannedList() == null && courseDetails.getBackupList() == null) {
