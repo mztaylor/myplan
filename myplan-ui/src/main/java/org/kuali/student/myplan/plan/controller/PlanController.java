@@ -17,6 +17,7 @@ package org.kuali.student.myplan.plan.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
@@ -616,7 +617,6 @@ public class PlanController extends UifControllerBase {
                 return doOperationFailedError(form, "Unable to create learning plan.", e);
             }
         }
-
         //  Lookup course details as well need them in case there is an error below.
         CourseDetails courseDetails = null;
         try {
@@ -626,7 +626,6 @@ public class PlanController extends UifControllerBase {
         }
 
         /*  Do validations. */
-
         //  Plan Size exceeded.
         boolean hasCapacity = false;
         try {
@@ -658,6 +657,10 @@ public class PlanController extends UifControllerBase {
                 return doOperationFailedError(form, "Unable to add plan item.", e);
             }
         } else {
+            //  Check for duplicates since addPlanItem isn't being called.
+            if (isDuplicate(plan, null, courseId, planItem.getTypeKey())) {
+                return doDuplicatePlanItem(form, newAtpIds.get(0), courseDetails);
+            }
             //  Create wishlist events before updating the plan item.
             wishlistEvents = makeRemoveEvent(planItem, courseDetails);
             planItem.setTypeKey(newType);
@@ -726,6 +729,31 @@ public class PlanController extends UifControllerBase {
             newTermIds.add(getAtpHelper().getAtpIdFromTermAndYear(term, year));
         }
         return newTermIds;
+    }
+
+    /**
+     * Check for duplicate plan items by type.
+     * @param plan
+     * @param atpId
+     * @param courseId
+     * @param planItemType
+     * @return
+     */
+    private boolean isDuplicate(LearningPlan plan, String atpId, String courseId, String planItemType) {
+         /*
+           Make sure no dups exist. The rules are different for wishlist vs planned or backup courses.
+          */
+        boolean isDuplicate = false;
+        if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            if (getWishlistPlanItem(courseId) != null) {
+                isDuplicate = true;
+            }
+        } else {
+            if (getPlannedOrBackupPlanItem(courseId, atpId) != null) {
+                isDuplicate = true;
+            }
+        }
+        return isDuplicate;
     }
 
     /**
@@ -937,7 +965,7 @@ public class PlanController extends UifControllerBase {
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
         String[] t = {"?", "?"};
         try {
-            t = AtpHelper.atpIdToTermAndYear(atpId);
+            t = AtpHelper.atpIdToTermNameAndYear(atpId);
         } catch (RuntimeException e) {
             logger.error("Could not convert ATP ID to a term and year.", e);
         }
@@ -1007,19 +1035,15 @@ public class PlanController extends UifControllerBase {
         rti.setPlain("");
         pii.setDescr(rti);
 
+        String atpId = null;
         if (null != termIds) {
             pii.setPlanPeriods(termIds);
+            atpId = termIds.get(0);
         }
 
-        //  Make sure no dups exist
-        if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-            if (getWishlistPlanItem(courseId) != null) {
-                throw new DuplicateEntryException("Duplicate plan item exists.");
-            }
-        } else {
-            if (getPlannedOrBackupPlanItem(courseId, termIds.get(0)) != null) {
-                throw new DuplicateEntryException("Duplicate plan item exists.");
-            }
+        //  Don't allow duplicates.
+        if (isDuplicate(plan, atpId, courseId, planItemType)) {
+            throw new DuplicateEntryException("Duplicate plan item exists.");
         }
 
         try {
@@ -1280,6 +1304,7 @@ public class PlanController extends UifControllerBase {
         String courseDetailsAsJson;
         try {
             //  Serialize course details into a string of JSON.
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
             throw new RuntimeException("Could not convert javascript events to JSON.");
