@@ -276,11 +276,11 @@ public class CourseSearchController extends UifControllerBase {
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         try {
-            logger.info("Start Of Method searchForCourses in CourseSearchController:"+System.currentTimeMillis());
+            logger.info("Start Of Method searchForCourses in CourseSearchController:" + System.currentTimeMillis());
             List<SearchRequest> requests = searcher.queryToRequests(form);
 
             List<Hit> hits = processSearchRequests(requests);
-            logger.info("No of actual records pulled in:"+hits.size());
+            logger.info("No of actual records pulled in:" + hits.size());
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
 
             Set<String> savedCourseSet = getSavedCourseSet();
@@ -304,11 +304,11 @@ public class CourseSearchController extends UifControllerBase {
 
             populateFacets(form, courseList);
 
-            logger.info("Start of setting courseSearch Results to form:"+System.currentTimeMillis());
+            logger.info("Start of setting courseSearch Results to form:" + System.currentTimeMillis());
             //  Add the search results to the response.
             form.setCourseSearchResults(courseList);
-            logger.info("End of setting courseSearch Results to form:"+System.currentTimeMillis());
-            logger.info("End Of Method searchForCourses in CourseSearchController:"+System.currentTimeMillis());
+            logger.info("End of setting courseSearch Results to form:" + System.currentTimeMillis());
+            logger.info("End Of Method searchForCourses in CourseSearchController:" + System.currentTimeMillis());
 
             return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
         } catch (Exception e) {
@@ -329,7 +329,7 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
-        logger.info("Start of processSearchRequests of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of processSearchRequests of CourseSearchController:" + System.currentTimeMillis());
         HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
 
         ArrayList<Hit> hits = new ArrayList<Hit>();
@@ -338,8 +338,8 @@ public class CourseSearchController extends UifControllerBase {
             SearchResult searchResult = getLuService().search(request);
             for (SearchResultRow row : searchResult.getRows()) {
                 String id = getCellValue(row, "lu.resultColumn.cluId");
-               /* hitCourseID(courseMap, id);*/
-                Hit hit= new Hit(id);
+                /* hitCourseID(courseMap, id);*/
+                Hit hit = new Hit(id);
                 tempHits.add(hit);
 
             }
@@ -350,7 +350,7 @@ public class CourseSearchController extends UifControllerBase {
 
 //        ArrayList<Hit> hits = new ArrayList<Hit>(courseMap.values());
 //        Collections.sort(hits, new HitComparator());
-        logger.info("End of processSearchRequests of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of processSearchRequests of CourseSearchController:" + System.currentTimeMillis());
         return hits;
     }
 
@@ -384,7 +384,7 @@ public class CourseSearchController extends UifControllerBase {
     //  Fetch the available terms from the Academic Calendar Service.
     private void loadScheduledTerms(CourseSearchItem course) {
         try {
-            logger.info("Start of method loadScheduledTerms of CourseSearchController:"+System.currentTimeMillis());
+            logger.info("Start of method loadScheduledTerms of CourseSearchController:" + System.currentTimeMillis());
             AcademicCalendarService atpService = getAcademicCalendarService();
 
             List<TermInfo> terms = atpService.searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
@@ -405,7 +405,7 @@ public class CourseSearchController extends UifControllerBase {
                     course.addScheduledTerm(term.getName());
                 }
             }
-        logger.info("End of method loadScheduledTerms of CourseSearchController:"+System.currentTimeMillis());
+            logger.info("End of method loadScheduledTerms of CourseSearchController:" + System.currentTimeMillis());
         } catch (Exception e) {
             // TODO: Eating this error sucks
             logger.error("Web service call failed.", e);
@@ -413,7 +413,7 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     private void loadTermsOffered(CourseSearchItem course) throws MissingParameterException {
-        logger.info("Start of method loadTermsOffered of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of method loadTermsOffered of CourseSearchController:" + System.currentTimeMillis());
         String courseId = course.getCourseId();
         SearchRequest request = new SearchRequest("myplan.course.info.atp");
         request.addParam("courseID", courseId);
@@ -432,11 +432,11 @@ public class CourseSearchController extends UifControllerBase {
 
         Collections.sort(termsOffered, getAtpTypeComparator());
         course.setTermInfoList(termsOffered);
-        logger.info("End of method loadTermsOffered of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of method loadTermsOffered of CourseSearchController:" + System.currentTimeMillis());
     }
 
     private void loadGenEduReqs(CourseSearchItem course) throws MissingParameterException {
-        logger.info("Start of method loadGenEduReqs of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of method loadGenEduReqs of CourseSearchController:" + System.currentTimeMillis());
         String courseId = course.getCourseId();
         SearchRequest request = new SearchRequest("myplan.course.info.gened");
         request.addParam("courseID", courseId);
@@ -448,7 +448,7 @@ public class CourseSearchController extends UifControllerBase {
         }
         String formatted = formatGenEduReq(reqs);
         course.setGenEduReq(formatted);
-        logger.info("End of method loadGenEduReqs of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of method loadGenEduReqs of CourseSearchController:" + System.currentTimeMillis());
     }
 
     private transient AcademicPlanService academicPlanService;
@@ -467,7 +467,7 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     private Set<String> getSavedCourseSet() throws Exception {
-        logger.info("Start of method getSavedCourseSet of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of method getSavedCourseSet of CourseSearchController:" + System.currentTimeMillis());
         AcademicPlanService academicPlanService = getAcademicPlanService();
 
         Person user = GlobalVariables.getUserSession().getPerson();
@@ -489,12 +489,12 @@ public class CourseSearchController extends UifControllerBase {
                 savedCourseSet.add(courseID);
             }
         }
-        logger.info("End of method getSavedCourseSet of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of method getSavedCourseSet of CourseSearchController:" + System.currentTimeMillis());
         return savedCourseSet;
     }
 
     private CourseSearchItem getCourseInfo(String courseId) throws MissingParameterException {
-        logger.info("Start of method getCourseInfo of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of method getCourseInfo of CourseSearchController:" + System.currentTimeMillis());
         CourseSearchItem course = new CourseSearchItem();
 
         SearchRequest request = new SearchRequest("myplan.course.info");
@@ -522,12 +522,12 @@ public class CourseSearchController extends UifControllerBase {
             course.setCredit(credit.display);
             break;
         }
-        logger.info("End of method getCourseInfo of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of method getCourseInfo of CourseSearchController:" + System.currentTimeMillis());
         return course;
     }
 
     public void populateFacets(CourseSearchForm form, List<CourseSearchItem> courses) {
-        logger.info("Start of method populateFacets of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of method populateFacets of CourseSearchController:" + System.currentTimeMillis());
         //  Initialize facets.
         CurriculumFacet curriculumFacet = new CurriculumFacet();
         CreditsFacet creditsFacet = new CreditsFacet();
@@ -543,33 +543,37 @@ public class CourseSearchController extends UifControllerBase {
             creditsFacet.process(course);
             termsFacet.process(course);
         }
-
-
-        /*Removing Duplicate entries from genEduReqFacet*/
-        List<FacetItem> genEduReqFacetItems=genEduReqFacet.getFacetItems();
-        HashSet hs = new HashSet();
-        hs.addAll(genEduReqFacetItems);
-        genEduReqFacetItems.clear();
-        genEduReqFacetItems.addAll(hs);
-        Collections.sort(genEduReqFacetItems);
+         /*Removing Duplicate entries from genEduReqFacet*/
+        List<FacetItem> genEduReqFacetItems = new ArrayList<FacetItem>();
+        for (FacetItem facetItem : genEduReqFacet.getFacetItems()) {
+            boolean itemExists = false;
+            for (FacetItem facetItem1 : genEduReqFacetItems) {
+                if (facetItem1.getKey().equalsIgnoreCase(facetItem.getKey())) {
+                    itemExists = true;
+                }
+            }
+            if (!itemExists) {
+                genEduReqFacetItems.add(facetItem);
+            }
+        }
 
         //  Add the facet data to the response.
-        logger.info("Start of populating curriculumFacet  of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("Start of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
-        logger.info("End of populating curriculumFacet  of CourseSearchController:"+System.currentTimeMillis());
-        logger.info("Start of populating creditsFacet  of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("Start of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setCreditsFacetItems(creditsFacet.getFacetItems());
-        logger.info("End of populating creditsFacet  of CourseSearchController:"+System.currentTimeMillis());
-        logger.info("Start of populating genEduReqFacet  of CourseSearchController:"+System.currentTimeMillis());
-        form.setGenEduReqFacetItems(genEduReqFacet.getFacetItems());
-        logger.info("End of populating genEduReqFacet  of CourseSearchController:"+System.currentTimeMillis());
-        logger.info("Start of populating courseLevelFacet  of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("Start of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
+        form.setGenEduReqFacetItems(genEduReqFacetItems);
+        logger.info("End of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("Start of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
-        logger.info("End of populating courseLevelFacet  of CourseSearchController:"+System.currentTimeMillis());
-        logger.info("Start of populating termsFacet  of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("Start of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setTermsFacetItems(termsFacet.getFacetItems());
-        logger.info("End of populating termsFacet  of CourseSearchController:"+System.currentTimeMillis());
-        logger.info("End of method populateFacets of CourseSearchController:"+System.currentTimeMillis());
+        logger.info("End of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());
     }
 
     public HashMap<String, String> fetchCourseDivisions() {
