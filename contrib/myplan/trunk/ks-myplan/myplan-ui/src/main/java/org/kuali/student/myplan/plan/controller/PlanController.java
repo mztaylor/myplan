@@ -658,7 +658,7 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             //  Check for duplicates since addPlanItem isn't being called.
-            if (isDuplicate(plan, null, courseId, planItem.getTypeKey())) {
+            if (isDuplicate(plan, newAtpIds.get(0), courseId, newType)) {
                 return doDuplicatePlanItem(form, newAtpIds.get(0), courseDetails);
             }
             //  Create wishlist events before updating the plan item.

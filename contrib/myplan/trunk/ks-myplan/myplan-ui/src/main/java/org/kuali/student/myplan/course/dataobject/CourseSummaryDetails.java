@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.ArrayList;
@@ -11,14 +12,13 @@ import java.util.List;
  */
 public class CourseSummaryDetails {
 
-    // List of fileds populated when only summary information is loaded
+    // List of fields populated when only summary information is loaded
     private String courseId;
     private String code;
     private String courseTitle;
     private String credit;
     private String courseDescription;
     private List<String> termsOffered;
-
 
     public String getCourseId() {
         return courseId;
@@ -37,7 +37,8 @@ public class CourseSummaryDetails {
     }
 
     public String getCourseTitle() {
-        return courseTitle;
+        //  Double quotes are very problematic in the serialization to JSON so change to single quotes.;
+        return courseTitle.replaceAll("\"", "'");
     }
 
     public void setCourseTitle(String courseTitle) {
@@ -53,7 +54,8 @@ public class CourseSummaryDetails {
     }
 
     public String getCourseDescription() {
-        return courseDescription;
+        //  Double quotes are very problematic in the serialization to JSON so change to single quotes.
+        return courseDescription.replaceAll("\"", "'");
     }
 
     public void setCourseDescription(String courseDescription) {
