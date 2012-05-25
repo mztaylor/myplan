@@ -1257,7 +1257,7 @@ public class PlanController extends UifControllerBase {
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
-            throw new RuntimeException("Could not convert javascript events to JSON.");
+            throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
         params.put("courseDetails", courseDetailsAsJson);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
@@ -1307,7 +1307,7 @@ public class PlanController extends UifControllerBase {
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
-            throw new RuntimeException("Could not convert javascript events to JSON.");
+            throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
         params.put("courseDetails", courseDetailsAsJson);
         events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
