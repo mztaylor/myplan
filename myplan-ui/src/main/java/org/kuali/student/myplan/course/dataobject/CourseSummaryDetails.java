@@ -40,7 +40,7 @@ public class CourseSummaryDetails {
     public String getCourseTitle() {
         //  Double quotes are very problematic in the serialization to JSON so change to single quotes.;
         if (StringUtils.isEmpty(courseTitle)) {
-            return "";
+            return courseTitle;
         }
         return courseTitle.replaceAll("\"", "'");
     }
@@ -60,7 +60,7 @@ public class CourseSummaryDetails {
     public String getCourseDescription() {
         //  Double quotes are very problematic in the serialization to JSON so change to single quotes.
         if (StringUtils.isEmpty(courseDescription)) {
-            return "";
+            return courseDescription;
         }
         return courseDescription.replaceAll("\"", "'");
     }
