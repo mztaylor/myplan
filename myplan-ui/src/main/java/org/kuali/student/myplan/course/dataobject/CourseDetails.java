@@ -26,7 +26,6 @@ public class CourseDetails extends CourseSummaryDetails {
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
 
-
     // Plan related information
     private transient List<PlanItemDataObject> plannedList;
     private transient List<PlanItemDataObject> backupList;
