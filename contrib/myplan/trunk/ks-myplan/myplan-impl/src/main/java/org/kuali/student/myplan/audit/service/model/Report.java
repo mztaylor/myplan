@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
+
+    String graduationDate = "Not Found";
+
     private String webTitle;
 
     String degreeProgram = "XX Bachelor of Arts in Communication XX";
@@ -17,6 +20,14 @@ public class Report {
     private ArrayList<String> advisoryList = new ArrayList<String>();
 
     private boolean complete = false;
+
+    public void setGraduationDate( String graduationDate ) {
+        this.graduationDate = graduationDate;
+    }
+
+    public String getGraduationDate() {
+        return graduationDate;
+    }
 
 
     public String getDegreeProgram() { return degreeProgram; }

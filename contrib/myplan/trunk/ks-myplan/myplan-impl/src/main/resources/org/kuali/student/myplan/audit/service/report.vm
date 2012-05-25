@@ -16,13 +16,18 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="date-prepared">
-						<label>Date Prepared:</label> ${report.datePrepared}
+					<td class="graduation-date">
+						<label>Gradutation Date:</label> ${report.graduationDate}
 					</td>
 				</tr>
 				<tr>
-					<td class="program-entry-date">
-						<label>Program Entry Date:</label> ${report.entryDateProgram}
+					<td class="program-entry-qtr">
+						<label>Program Entry Qtr:</label> ${report.entryDateProgram}
+					</td>
+				</tr>
+				<tr>
+					<td class="date-prepared">
+						<label>Date Prepared:</label> ${report.datePrepared}
 					</td>
 				</tr>
 			</table>
@@ -70,8 +75,8 @@ ${advisory}
 		<div class="requirement-heading">
 			<div class="${req.status}">
                 <!-- Course Link Builder example -->
-##                <!-- <p>$courseLinkBuilder.makeLinks(${req.caption})</p> -->
-                <h4>${req.caption}</h4>
+               <p>$courseLinkBuilder.makeLinks(${req.caption})</p>
+##                <p>${req.caption}</p>
 			</div>
 		</div>
 		<div class="requirement-body">
@@ -193,3 +198,6 @@ ${advisory}
 #end ## if section.hasCaption
 #end ## foreach section
 </div>
+<center>
+<h1>Federal Law Prohibits Transmittal to a Third Party</h1>
+</center>
