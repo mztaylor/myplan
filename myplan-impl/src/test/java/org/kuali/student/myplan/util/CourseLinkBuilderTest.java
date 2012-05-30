@@ -95,6 +95,8 @@ public class CourseLinkBuilderTest {
                     "SP09 [unknown::Unknown::SPAN  202]  5.0 3.6   INTERMEDIATE"},
                 { "AU11 BIOL    180  5.0   2.7    INTRO BIOLOGY",
                     "AU11 [unknown::Unknown::BIOL    180]  5.0   2.7    INTRO BIOLOGY"},
+                {"Biology Admission Requirement: You must complete one of the following options: A) BIOL 180 or 201 with a 2.5 or better; B) One of following sequences with a minimum 2.00 GPA: BIOL 180, 200, 220 -or- 201, 202, 203",
+                    "Biology Admission Requirement: You must complete one of the following options: A) [unknown::Unknown::BIOL 180] or [unknown::Unknown::201] with a 2.5 or better; B) One of following sequences with a minimum 2.00 GPA: [unknown::Unknown::BIOL 180], [unknown::Unknown::200], [unknown::Unknown::220] -or- [unknown::Unknown::201], [unknown::Unknown::202], [unknown::Unknown::203]"}
         };
         return Arrays.asList(data);
     }
