@@ -262,6 +262,7 @@ a:focus {
     width: 160px;
     margin: 0 10px;
     border-radius: 4px;
+    background: url(../images/bkgrdDotted.gif);
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader {
     display:block;
@@ -269,15 +270,14 @@ a:focus {
     text-align:center;
     background:#ccc;
     font-weight:bold;
-    padding:5px 0px;
+    height: 27px;
+    line-height: 27px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout {
     overflow: hidden;
-    background: url(../images/bkgrdDotted.gif);
 }
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-completed .uif-stackedCollectionLayout {
-    height: 27px;
-    overflow: hidden;
+
 }
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-planned .uif-stackedCollectionLayout {
     height: 208px;
@@ -312,7 +312,7 @@ a:focus {
 }
 .myplan-backup-link {
     font-size:90%;
-    background: url(../images/bkgrdDotted.gif);
+    /* background: url(../images/bkgrdDotted.gif); */
     padding: 0 5px;
     height: 25px;
     line-height: 25px;
@@ -328,22 +328,23 @@ a:focus {
 }
 .myplan-carousel-term-total {
     background:#ccc;
-    padding:5px;
     overflow:hidden;
     font-weight:bold;
     color:#666;
     font-size:90%;
+    height: 28px;
+    line-height: 28px;
 }
 .myplan-carousel-term-total table[role="presentation"] {
     margin: 0;
 }
 .myplan-carousel-term-total table[role="presentation"] th {
     text-align: left;
-    padding: 0;
+    padding: 0 0 0 5px;
 }
 .myplan-carousel-term-total table[role="presentation"] td {
     text-align: right;
-    padding: 0;
+    padding: 0 5px 0 0;
 }
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
