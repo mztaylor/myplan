@@ -63,6 +63,9 @@
 	background: url('../images/iconComplete.png') no-repeat 20px;
 	padding-left: 68px;
 }
+#txtaudit_span .requirement .requirement-heading .X {
+	padding-left: 68px;
+}
 #txtaudit_span .requirement .requirement-heading div h4 {
 	font: 12px/20px Helvetica, Arial, clean, sans-serif !important;
 	margin: 0;

@@ -376,6 +376,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String courses = " "; // ReqMain.reqctf
         String rqfyt = "99994"; //
         String nolist = null;
+        String nocompl = " ";
     }
 
     public ReqFlags getReqFlags( String rname, String lyt )
@@ -395,6 +396,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             result.courses = reqMain.getReqctf();
             result.rqfyt = reqMain.getComp_id().getRqfyt();
             result.nolist = reqMain.getNolist();
+            result.nocompl = reqMain.getNocompl();
         }
         return result;
     }
@@ -515,11 +517,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                 case Requirement:
                 {
+                    ReqFlags reqFlags = getReqFlags(rname, yearterm);
 
                     Requirement requirement = report.newRequirement();
                     requirement.setStatus(satisfied);
                     requirement.setCaption(reqText);
-                    ReqFlags reqFlags = getReqFlags(rname, yearterm);
+                    requirement.setNocompl( reqFlags.nocompl );
+
 
                     if(!"X".equals( reqFlags.credits ))
                     {
