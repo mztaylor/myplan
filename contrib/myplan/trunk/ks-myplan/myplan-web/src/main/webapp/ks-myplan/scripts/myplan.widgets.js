@@ -64,12 +64,11 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var popupBoxId = popupBox.GetBubblePopupID();
 	popupBox.FreezeBubblePopup();
 
-    jq("html").click(function() {
-		fnCloseAllPopups();
-	});
-    jq('#' + popupBoxId).click(function(event){
-    	event.stopPropagation();
- 	});
+    jq(document).mouseup(function(e) {
+        if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
+            fnCloseAllPopups();
+        }
+    });
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
@@ -133,10 +132,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
     }
 
-    jq(".myplan-popup-target").each(function() {
-        jq(this).HideAllBubblePopups();
-        jq(this).RemoveBubblePopup();
-    });
+    fnCloseAllPopups();
 
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
     popupBox.ShowBubblePopup(popupSettings, false);
@@ -144,13 +140,11 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     fnPositionPopUp(popupBoxId);
 	popupBox.FreezeBubblePopup();
 
-    jq("html").click(function() {
-		popupBox.HideAllBubblePopups();
-		popupBox.RemoveBubblePopup();
-	});
-    jq('#' + popupBoxId).click(function(event){
-    	event.stopPropagation();
- 	});
+    jq(document).mouseup(function(e) {
+        if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
+            fnCloseAllPopups();
+        }
+    });
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
