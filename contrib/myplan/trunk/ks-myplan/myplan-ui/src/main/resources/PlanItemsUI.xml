@@ -380,6 +380,21 @@
                                         <value>courseDescription</value>
                                     </list>
                                 </property>
+                                <property name="render" value="@{#line.courseDetails.courseDescription ne null ? true : false}"/>
+                            </bean>
+                            <!-- If Course Description is empty-->
+                            <bean parent="Uif-MessageField" p:label="Course Description" p:labelPlacement="TOP" p:messageText="No description is available">
+                                <property name="labelField">
+                                    <bean parent="Uif-Label">
+                                        <property name="styleClasses">
+                                            <list merge="true">
+                                                <value>fl-text-gray</value>
+                                                <value>myplan-text-normal</value>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
+                                <property name="render" value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
                             </bean>
                         </list>
                     </property>
@@ -1720,7 +1735,7 @@
     <!-- ################# Tabular view of full academic plan ############################# -->
 
     <!--Bean for the Full Academic Plan View  -->
-    <bean id="FullPlannedCourses-LookupView" parent="MyPlanLookupView">
+    <bean id="FullPlannedCourses-LookupView" parent="MyPlanBaseLookupView">
         <property name="viewName" value="FullPlannedCourses-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
@@ -1761,37 +1776,39 @@
     <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
         <property name="styleClasses">
             <list merge="true">
-                <value>myplan-container-720</value>
+                <value>myplan-full-plan-detail</value>
+                <value>fl-container-700</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <ref bean="collection1"/>
-
+                <bean parent="Uif-HorizontalBoxGroup" p:errorsField.render="false" p:styleClasses="myplan-remove-margin">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="Year" p:styleClasses="" p:style="display:block; width:97px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Autumn" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Winter" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Spring" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Summer" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="academicYearCollection"/>
             </list>
         </property>
     </bean>
 
     <!--Collection list of the Full Plan Items-->
-    <bean id="collection1" parent="Uif-Disclosure-StackedCollectionSection">
-
-        <property name="styleClasses">
-            <list merge="false">
-                <value>myplan-carousel-term</value>
-                <value>myplan-term-completed</value>
-            </list>
-        </property>
+    <bean id="academicYearCollection" parent="Uif-StackedCollectionGroup">
+        <property name="styleClasses" value=""/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="searchResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false"
-                      p:escapeHtmlInPropertyValue="false" p:width="10.0%"/>
-
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false" p:width="97px" p:styleClasses="myplan-text-nowrap" p:style="display:block;"/>
             </list>
         </property>
         <property name="subCollections">
@@ -1799,11 +1816,10 @@
                 <ref bean="termsCollection"/>
             </list>
         </property>
-
     </bean>
 
-
     <bean id="termsCollection" parent="UifMyPlan-HorizontalStackedSubCollection-WithinSection">
+        <property name="styleClasses" value="myplan-remove-margin"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="terms"/>
@@ -1811,11 +1827,9 @@
         <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="disclosure.render" value="false"/>
-
         <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-
         <property name="subCollections">
             <list>
                 <ref bean="academicRecordDOCollection"/>
@@ -1826,6 +1840,7 @@
     </bean>
 
     <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
+        <property name="styleClasses" value="fl-container-150"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -1852,10 +1867,8 @@
                 <bean parent="Uif-MessageField"
                       p:messageText="add Courses to your plan "
                       p:render="@{#line.courseDetails eq null ? true : false}"/>
-
             </list>
         </property>
-
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
         <property name="footer">
             <bean parent="term_total_credits"/>
@@ -1863,6 +1876,7 @@
     </bean>
 
     <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:title="COMPLETED">
+        <property name="styleClasses" value="fl-container-150"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -1882,16 +1896,13 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-
                 <bean parent="Uif-MessageField"
                       p:messageText="@{#line.courseCode} (@{#line.credit}) @{#line.grade}"
                       p:render="@{#line.courseCode ne null ? true : false}"/>
-
             </list>
         </property>
 
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
     </bean>
-
 
 </beans>
