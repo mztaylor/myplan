@@ -5,8 +5,11 @@ import java.util.ArrayList;
 public class Requirement {
 
     // complete, inprogress
-    public String status = "XX complete XX";
-    public String caption = "XX requirement caption XX";
+    public String status = "X";
+
+    // http://clients.collegesource.com/home/display/HELP/Requirements#Requirements-NOCOMPL%28RQ%29
+    public String nocompl = " ";
+    public String caption = "(caption missing)";
     public Count count;
     public GPA gpa;
     public Credits credits;
@@ -16,9 +19,16 @@ public class Requirement {
     public ArrayList<Subrequirement> getSubrequirementList() { return subrequirementList; }
     public void addSubrequirement(Subrequirement subrequirement) { subrequirementList.add(subrequirement); }
 
-    public String getStatus() { return status; }
+    public void setNocompl( String nocompl ) {
+        this.nocompl = nocompl;
+    }
 
     public void setStatus( String status ) { this.status = status; }
+
+    public String getStatus() {
+        if("-".equals(nocompl)) return "X";
+        return status;
+    }
 
     public String getCaption() { return caption; }
     public void setCaption( String caption ) { this.caption = caption; }

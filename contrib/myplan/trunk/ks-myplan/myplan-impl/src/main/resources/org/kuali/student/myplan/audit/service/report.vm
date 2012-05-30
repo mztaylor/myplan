@@ -71,7 +71,7 @@ ${advisory}
 		<a href="#top" class="back">Back to top</a>
 	</div>
 #foreach( $req in $section.requirementList )
-	<div class="requirement ${req.status}">
+	<div class="requirement">
 		<div class="requirement-heading">
 			<div class="${req.status}">
                 <!-- Course Link Builder example -->
@@ -117,7 +117,8 @@ ${advisory}
                 <div class="subrequirement-heading">
                     <div class="${subreq.status}">
 #if( ${subreq.hasCaption()} )
-                        ${subreq.caption}
+                        $courseLinkBuilder.makeLinks(${subreq.caption})
+##                          ${subreq.caption}
 #end
                     </div>
                 </div>
