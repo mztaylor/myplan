@@ -7,6 +7,9 @@
 #errorsFieldForPage_div {
     display: none;
 }
+.jquerybubblepopup #errorsFieldForPage_div {
+    display: block;
+}
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
@@ -415,7 +418,7 @@ a:focus {
 #course_search_results_datatable td.myplan-text-ellipsis {
     display: table-cell;
 }
-/* Hide search results hidden columns ######################################################### */
+/* Hide search results hidden columns ################################################################### */
 #course_search_results_datatable .col7,
 #course_search_results_datatable .col8,
 #course_search_results_datatable .col9,
@@ -837,4 +840,16 @@ label.scheduled {
     margin-right: 0.33em;
     line-height: 1.8em;
     display: inline-block;
+}
+
+.myplan-full-plan-detail {
+    border: solid 1px #a9a9a9;
+    border-radius: 4px;
+}
+.myplan-full-plan-detail table td,
+.myplan-full-plan-detail table th,
+.myplan-full-plan-detail ul,
+.myplan-full-plan-detail ul li {
+    padding: 0;
+    margin: 0;
 }
