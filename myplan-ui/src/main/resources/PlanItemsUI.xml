@@ -704,6 +704,15 @@
         <property name="page.header.render" value="false"/>
         <property name="onDocumentReadyScript" value="
             if ( jq('#planned_courses_detail_list_group ul:not(.errorLines) li').length > 0 ) {
+                var iMaxHeight = 0;
+                jq('#planned_courses_detail_list_group ul:not(.errorLines) li').each(function() {
+                    if ( jq(this).height() > iMaxHeight ) {
+                        iMaxHeight = jq(this).height();
+                    }
+                });
+                jq('#planned_courses_detail_list_group ul:not(.errorLines) li').each(function() {
+                    jq(this).height(iMaxHeight);
+                });
                 jq('#planned_courses_detail_list_group').jCarouselLite({
                     btnNext: '.myplan-carousel-next',
                     btnPrev: '.myplan-carousel-prev',
