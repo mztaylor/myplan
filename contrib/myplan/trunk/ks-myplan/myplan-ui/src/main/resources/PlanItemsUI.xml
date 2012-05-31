@@ -921,12 +921,12 @@
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.courseId}_completed" parent="Uif-Link"
+                <bean p:id="@{#line.uuid}" parent="Uif-Link"
                       p:linkLabel="@{#line.courseCode} (@{#line.credit}) @{#line.grade}"
                       p:title="@{#line.courseTitle}" p:target="" p:hrefText="#"
                       p:labelField.render="false"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
-                      p:onClickScript="openPopUp('@{#line.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecAtpId:'@{#line.atpId}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);"
+                      p:onClickScript="openPopUp('@{#line.uuid}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecAtpId:'@{#line.atpId}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);"
                         />
                 <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} (@{#line.credit})"
                       p:styleClasses="myplan-carousel-term-credits"

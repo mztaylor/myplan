@@ -44,7 +44,6 @@
 	</build>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.kuali.student.myplan</groupId>
 			<artifactId>myplan-ui</artifactId>
@@ -75,7 +74,6 @@
             <version>${log4j.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts-core</artifactId>
@@ -91,8 +89,5 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
-
 	</dependencies>
 </project>

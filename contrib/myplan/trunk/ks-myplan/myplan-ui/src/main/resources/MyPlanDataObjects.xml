@@ -261,7 +261,7 @@
         </property>
     </bean>
 
-    <!-- TODO: Relable the bean as termYear -->
+    <!-- TODO: Re-label the bean as termYear -->
     <bean id="PlannedTerm.qtrYear" parent="PlannedTerm.qtrYear-parentBean"/>
     <bean id="PlannedTerm.qtrYear-parentBean" abstract="true" parent="AttributeDefinition">
         <property name="name" value="qtrYear"/>
