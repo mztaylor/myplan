@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
+import org.kuali.student.common.util.UUIDHelper;
+
 /**
  * Created by IntelliJ IDEA.
  * User: hemanthg
@@ -8,7 +10,8 @@ package org.kuali.student.myplan.plan.dataobject;
  * To change this template use File | Settings | File Templates.
  */
 public class AcademicRecordDataObject {
-    
+    //  A unique identifier in case a particular record needs to appear more than once in the DOM.
+    private String uuid;
     private transient String personId;
     private transient String courseId;
     private transient String courseTitle;
@@ -17,6 +20,14 @@ public class AcademicRecordDataObject {
     private transient String grade;
     private transient String credit;
     private transient boolean isRepeated;
+
+    public AcademicRecordDataObject() {
+        uuid = UUIDHelper.genStringUUID();
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
 
     public String getPersonId() {
         return personId;
