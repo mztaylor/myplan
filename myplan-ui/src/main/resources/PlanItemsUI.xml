@@ -611,8 +611,8 @@
                               value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Bookmarked List"
-                      p:title="Delete from the Bookmarked List" p:hrefText="#" p:render="@{acadRecAtpId eq null ? true : false}">
+                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkLabel="Delete from the Plan"
+                      p:title="Delete from the Plan" p:hrefText="#" p:render="@{acadRecAtpId eq null ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
