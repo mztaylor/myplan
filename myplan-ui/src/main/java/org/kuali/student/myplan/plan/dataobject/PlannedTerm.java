@@ -78,24 +78,27 @@ public class PlannedTerm {
 
     public String getCredits() {
         String totalCredits = null;
-        int plannedTotalMin = 0;
-        int plannedTotalMax = 0;
-        if (getPlannedList().size() > 0) {
+        double plannedTotalMin = 0;
+        double plannedTotalMax = 0;
+        if (getPlannedList().size() > 0 && isOpenForPlanning()) {
 
             for (PlannedCourseDataObject pc : getPlannedList()) {
-                if (pc.getCourseDetails() != null) {
+                if (pc.getCourseDetails() != null && !pc.getCourseDetails().getCredit().contains(".")) {
                     String[] str = pc.getCourseDetails().getCredit().split("\\D");
                     int min = Integer.parseInt(str[0]);
                     plannedTotalMin += min;
                     int max = Integer.parseInt(str[str.length - 1]);
                     plannedTotalMax += max;
 
+                } else if (pc.getCourseDetails() != null && pc.getCourseDetails().getCredit().contains(".")) {
+                    plannedTotalMin += Double.parseDouble(pc.getCourseDetails().getCredit());
+                    plannedTotalMax += Double.parseDouble(pc.getCourseDetails().getCredit());
                 }
             }
-            totalCredits = Integer.toString(plannedTotalMin);
+            totalCredits = Integer.toString((int) plannedTotalMin);
 
             if (plannedTotalMin != plannedTotalMax) {
-                totalCredits = totalCredits + "-" + Integer.toString(plannedTotalMax);
+                totalCredits = totalCredits + "-" + Integer.toString((int) plannedTotalMax);
 
             }
         }
@@ -126,8 +129,8 @@ public class PlannedTerm {
         /*TODO:Implement this based on the flags (past,present,future) logic*/
         if (getPlannedList().size() > 0 && getAcademicRecord().size() > 0) {
             if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
-                int minVal = 0;
-                int maxVal = 0;
+                double minVal = 0;
+                double maxVal = 0;
                 minVal = Math.min(plannedTotalMin, academicTotalMin);
                 maxVal = plannedTotalMax + academicTotalMax;
                 totalCredits = minVal + "-" + maxVal;
@@ -136,16 +139,16 @@ public class PlannedTerm {
                 totalCredits = String.valueOf(plannedTotalMin + academicTotalMin);
             }
             if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
-                int minVal = 0;
-                int maxVal = 0;
+                double minVal = 0;
+                double maxVal = 0;
                 minVal = plannedTotalMin;
                 maxVal = plannedTotalMax + academicTotalMax;
                 totalCredits = minVal + "-" + maxVal;
 
             }
             if (plannedTotalMin == plannedTotalMax && academicTotalMin != academicTotalMax) {
-                int minVal = 0;
-                int maxVal = 0;
+                double minVal = 0;
+                double maxVal = 0;
                 minVal = academicTotalMin;
                 maxVal = plannedTotalMax + academicTotalMax;
                 totalCredits = minVal + "-" + maxVal;
