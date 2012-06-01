@@ -286,7 +286,7 @@ a:focus {
     height: 52px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
-    margin-top: 1px;
+    /*margin-top: 1px;*/
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {

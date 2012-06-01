@@ -337,7 +337,7 @@ $.fn.jCarouselLite = function(o) {
                 }
 
             }
-            return false;
+            //return false;
         };
     });
 };

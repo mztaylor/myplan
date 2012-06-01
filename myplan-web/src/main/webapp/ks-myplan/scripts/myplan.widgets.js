@@ -64,10 +64,19 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var popupBoxId = popupBox.GetBubblePopupID();
 	popupBox.FreezeBubblePopup();
 
-    /*jq(document).mouseup(function(e) {
+    jq(document).bind('click', function(e) {
+        console.log(e.target);
         if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
             fnCloseAllPopups();
+            jq(this).unbind('click');
         }
+    });
+
+    /*jq('html').click(function(){
+        fnCloseAllPopups();
+    });
+    jq('#' + popupBoxId).click(function(e){
+        e.stopPropagation();
     });*/
 
     var tempForm = jq('<form />').hide();
@@ -140,13 +149,20 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     fnPositionPopUp(popupBoxId);
 	popupBox.FreezeBubblePopup();
 
-    /*
-    jq(document).mouseup(function(e) {
+    jq(document).bind('click', function(e) {
+        console.log(e.target);
         if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
             fnCloseAllPopups();
+            jq(this).unbind('click');
         }
     });
-    */
+
+    /*jq('html').click(function(){
+        fnCloseAllPopups();
+    });
+    jq('#' + popupBoxId).click(function(e){
+        e.stopPropagation();
+    });*/
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
@@ -518,7 +534,7 @@ function fnBuildTitle(aView, termSelector, headerSelector) {
 ######################################################################################
  */
 function fnToggleBackup(e) {
-    stopEvent(e);
+    //stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (!jq(target).hasClass("disabled")) {
         var oBackup = jq(target).parents(".myplan-term-backup").find(".uif-stackedCollectionLayout");
