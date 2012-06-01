@@ -286,7 +286,7 @@ a:focus {
     height: 52px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
-    /*margin-top: 1px;*/
+    margin-top: 1px;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
@@ -332,8 +332,8 @@ a:focus {
     font-weight:bold;
     color:#666;
     font-size:90%;
-    height: 28px;
-    line-height: 28px;
+    height: 27px;
+    line-height: 27px;
 }
 .myplan-carousel-term-total table[role="presentation"] {
     margin: 0;
