@@ -279,7 +279,7 @@ a:focus {
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-completed .uif-stackedCollectionLayout {
 
 }
-.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-planned .uif-stackedCollectionLayout {
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
     height: 208px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-backup .uif-stackedCollectionLayout {

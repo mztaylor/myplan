@@ -64,11 +64,11 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var popupBoxId = popupBox.GetBubblePopupID();
 	popupBox.FreezeBubblePopup();
 
-    jq(document).mouseup(function(e) {
+    /*jq(document).mouseup(function(e) {
         if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
             fnCloseAllPopups();
         }
-    });
+    });*/
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
@@ -140,11 +140,13 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     fnPositionPopUp(popupBoxId);
 	popupBox.FreezeBubblePopup();
 
+    /*
     jq(document).mouseup(function(e) {
         if ( jq('#' + popupBoxId).has(e.target).length === 0 ){
             fnCloseAllPopups();
         }
     });
+    */
 
     var tempForm = jq('<form />').hide();
 	jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
