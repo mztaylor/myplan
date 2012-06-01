@@ -866,6 +866,10 @@
 
                 <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader"
                       p:labelField.render="false"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}">
+                    <property name="style" value="color:#aaa; text-transform:uppercase; font-size:85%; display:block; font-weight:normal; padding:0 5px; height:25px; line-height:25px;"/>
+                    <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
+                </bean>
             </list>
         </property>
         <property name="subCollections">
@@ -892,10 +896,9 @@
         "/>
     </bean>
 
-    <bean id="academicRecordCollection" parent="Uif-StackedCollectionGroup" p:title="Completed">
-        <property name="header">
-            <bean parent="Uif-HeaderField-Six"/>
-        </property>
+    <bean id="academicRecordCollection" parent="Uif-StackedCollectionGroup">
+        <!--<property name="header.render" value="false"/>-->
+        <!--<property name="style" value="@{#line.openForPlanning ? 'background:green; min-height:100px;' : 'background:red; min-height:100px;'}"/>-->
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -907,6 +910,7 @@
             <list merge="false">
                 <value>myplan-carousel-term</value>
                 <value>myplan-term-completed</value>
+                <value>@{#line.openForPlanning ? '' : 'myplan-term-fixed-height'}</value>
             </list>
         </property>
         <property name="collectionObjectClass"
@@ -935,6 +939,9 @@
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
+        <property name="footer">
+            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}"/>
+        </property>
     </bean>
 
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:title="Planned">
@@ -953,6 +960,7 @@
                 <value>myplan-carousel-term</value>
                 <value>@{#line.atpId.replaceAll("\.","-")}</value>
                 <value>myplan-term-planned</value>
+                <value>@{#line.openForPlanning ? 'myplan-term-fixed-height' : ''}</value>
             </list>
         </property>
 
@@ -978,7 +986,7 @@
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"/>
+            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}" />
         </property>
     </bean>
 
