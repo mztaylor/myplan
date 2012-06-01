@@ -15,13 +15,17 @@ public class Count {
     }
     public int getRequired() { return required; }
 
+    public boolean showRequired() {
+        return !"R".equals(flag);
+    }
+
     public void setEarned(int earned) {
         this.earned = earned;
     }
     public int getEarned() { return earned; }
 
     public boolean showEarned() {
-        return !"E".equals(flag) && earned > 0.0001f;
+        return !"E".equals(flag);
     }
 
     public void setNeeds(int needs) {
@@ -30,7 +34,7 @@ public class Count {
     public int getNeeds() { return needs; }
 
     public boolean showNeeds() {
-        return !"R".equals(flag) && needs > 0.0001f;
+        return true;
     }
 
 }

@@ -74,7 +74,6 @@ ${advisory}
 	<div class="requirement">
 		<div class="requirement-heading">
 			<div class="${req.status}">
-                <!-- Course Link Builder example -->
                <p>$courseLinkBuilder.makeLinks(${req.caption})</p>
 ##                <p>${req.caption}</p>
 			</div>
@@ -152,6 +151,20 @@ ${advisory}
                     </ul>
 #end
 
+#if( ${subreq.hasCourseAcceptableList()} )
+#set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
+                    <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
+                        <table>
+                            <tbody>
+#foreach( $acceptable in $subreq.courseAcceptableList )
+                                <tr>
+                                    <td>${acceptable.dept} ${acceptable.number}</td>
+                                </tr>
+#end
+                            </tbody>
+                        </table>
+                    </div>
+#end
 
 #if( ${subreq.hasCourseTakenList()} )
                     <div class="subrequirement-courses-taken">
@@ -164,27 +177,21 @@ ${advisory}
                             <tbody>
 #foreach( $taken in $subreq.courseTakenList )
                                 <tr>
+                                    <td>${taken.quarter}</td>
 #if( ${taken.hasCluid()} )
-                                    <td>${taken.quarter}</td><td><a href="#" onclick="openCourse('${taken.cluid}',event,true);">${taken.dept} ${taken.number} ${taken.description}</a></td>
-#if( ${taken.inProgress} )
-                                    <td>In Progress</td><td></td>
+                                    <td><a href="#" onclick="openCourse('${taken.cluid}',event,true);">${taken.dept} ${taken.number} ${taken.description}</a></td>
 #else
-                                    <td>${taken.credits}</td><td>${taken.grade}</td>
-#end ## if inprogress
-#else
-                                    <td>${taken.quarter}</td><td>${taken.dept} ${taken.number} ${taken.description}</td><td>${taken.credits}</td>
-                                    #if(${taken.inProgress})
-                                    <td>IP</td>
-                                    #else
-                                    <td>${taken.grade}</td>
-                                    #end
+                                    <td>${taken.dept} ${taken.number} ${taken.description}</td>
 #end ## if hasCluid
+                                    <td>${taken.credits}</td>
+                                    <td>${taken.grade}</td>
                                 </tr>
 #end ## foreach taken
                             </tbody>
                         </table>
                     </div>
 #end
+
                 </div>
             </div>
 #end ## subreq

@@ -19,6 +19,10 @@ public class Credits {
         return smartZero( required );
     }
 
+    public boolean showRequired() {
+        return !"R".equals(flag);
+    }
+
     public void setInprogress(float inprogress) {
         this.inprogress = inprogress;
     }
@@ -29,22 +33,22 @@ public class Credits {
         return inprogress > 0.0001f;
     }
 
+    public void setEarned(float earned) {
+        this.earned = earned;
+    }
+
     public String getEarned() {
         return smartZero( earned );
     }
 
     public boolean showEarned() {
-        return !"E".equals(flag) && earned > 0.0001f;
+        return !"E".equals(flag);
     }
 
     public String getNeeds() { return smartZero(needs); }
 
     public boolean showNeeds() {
-        return !"R".equals( flag ) && needs > 0.0001f;
-    }
-
-    public void setEarned(float earned) {
-        this.earned = earned;
+        return true;
     }
 
     public void setNeeds(float needs) {

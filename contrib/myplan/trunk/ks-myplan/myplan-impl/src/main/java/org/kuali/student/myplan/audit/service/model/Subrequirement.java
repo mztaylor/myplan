@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.audit.service.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Subrequirement {
 
@@ -12,12 +13,20 @@ public class Subrequirement {
     public Credits credits;
     public String nolist;
 
+    public ArrayList<CourseTaken> courseTakenList = new ArrayList<CourseTaken>();
+    public ArrayList<CourseAcceptable> courseAcceptableList = new ArrayList<CourseAcceptable>();
+
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isComplete() {
+        return "C".equals( status );
     }
 
     public String getCaption() {
@@ -70,13 +79,12 @@ public class Subrequirement {
         this.gpa = gpa;
     }
 
-    public ArrayList<CourseTaken> courseTakenList = new ArrayList<CourseTaken>();
 
     public boolean hasCourseTakenList() {
         return courseTakenList.size() > 0;
     }
 
-    public ArrayList<CourseTaken> getCourseTakenList() {
+    public List<CourseTaken> getCourseTakenList() {
         return courseTakenList;
     }
 
@@ -87,5 +95,33 @@ public class Subrequirement {
     public void setNolist( String nolist ) {
         this.nolist = nolist;
     }
+
+
+    public boolean showTitle() {
+        return " ".equals( nolist ) || "T".equals( nolist ) || "C".equals( nolist ) || "M".equals( nolist );
+    }
+
+    public boolean showAcceptable() {
+        if( "T".equals( nolist )) return false;
+        return ( "V".equals(nolist) && isComplete()) || ("W".equals(nolist) && !isComplete()) || "M".equals(nolist);
+    }
+
+    public boolean showTaken() {
+        if ("T".equals(nolist)) return false;
+        return " ".equals(nolist) || "C".equals(nolist) || "M".equals(nolist);
+    }
+
+    public void addCourseAcceptable(CourseAcceptable courseAcceptable) {
+        courseAcceptableList.add(courseAcceptable);
+    }
+
+    public List<CourseAcceptable> getCourseAcceptableList() {
+        return courseAcceptableList;
+    }
+
+    public boolean hasCourseAcceptableList() {
+        return courseAcceptableList.size() > 0;
+    }
+
 
 }
