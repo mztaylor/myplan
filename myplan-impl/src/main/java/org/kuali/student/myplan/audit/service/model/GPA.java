@@ -18,6 +18,10 @@ public class GPA {
         return required;
     }
 
+    public boolean showRequired() {
+        return !"R".equals(flag);
+    }
+
     public void setEarned(float earned) {
         this.earned = earned;
     }

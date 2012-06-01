@@ -11,7 +11,7 @@ public class CourseTaken {
     private float credits;
 
     // IP, CR, 0.0,
-    private String grade = "X.X";
+    private String grade = "??";
     private boolean inProgress = false;
 
     private String cluid;
@@ -58,7 +58,7 @@ public class CourseTaken {
     }
 
     public String getGrade() {
-        return grade;
+        return getInProgress() ? "IP" : grade;
     }
 
     public void setGrade(String grade) {

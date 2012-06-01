@@ -372,7 +372,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     {
         String subreq = " "; // ReqMain.reqsrqf
         String credits = " ";  // ReqMain.reqhrsf
-        String gpa = " "; // ReqMain.reqgpaf
+//        String gpa = " "; // ReqMain.reqgpaf
         String courses = " "; // ReqMain.reqctf
         String rqfyt = "99994"; //
         String nolist = null;
@@ -392,7 +392,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             ReqMain reqMain = (ReqMain) list.get( 0 );
             result.subreq = reqMain.getReqsrqf();
             result.credits = reqMain.getReqhrsf();
-            result.gpa = reqMain.getReqgpaf();
+//            result.gpa = reqMain.getReqgpaf();
             result.courses = reqMain.getReqctf();
             result.rqfyt = reqMain.getComp_id().getRqfyt();
             result.nolist = reqMain.getNolist();
@@ -406,7 +406,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     class SubreqFlags
     {
         String credits = " ";  // Subreq.reqhrsf
-        String gpa = " "; // Subreq.reqgpaf
+//        String gpa = " "; // Subreq.reqgpaf
         String courses = " "; // Subreq.reqctf
         String nolist = null;
     }
@@ -422,7 +422,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (Object first : list) {
             Object[] flags = (Object[]) first;
             result.credits = (String) flags[0];
-            result.gpa = (String) flags[1];
+//            result.gpa = (String) flags[1];
             result.courses = (String) flags[2];
             result.nolist = (String) flags[3];
             break;
@@ -542,14 +542,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-                    if (!"X".equals(reqFlags.gpa))
+                    if (! equals( jqr.getReqgpaf(), "X", "A" ))
                     {
                         float reqGPA = jqr.getReqgpa().floatValue();
                         float gotGPA = jqr.getGotgpa().floatValue();
 
                         if (reqGPA > 0.0f) {
                             GPA gpa = new GPA();
-                            gpa.setFlag(reqFlags.gpa);
+                            gpa.setFlag(jqr.getReqgpaf());
                             gpa.setRequired(reqGPA);
                             gpa.setEarned(gotGPA);
                             requirement.setGPA(gpa);
@@ -617,13 +617,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
-                        if (!"X".equals(subreqFlags.gpa)) {
+                        if (!equals(jqsr.getReqgpaf(), "X", "A"))
+                        {
                             float reqGPA = jqr.getReqgpa().floatValue();
                             float gotGPA = jqr.getGotgpa().floatValue();
 
                             if (reqGPA > 0.0f) {
                                 GPA gpa = new GPA();
-                                gpa.setFlag(subreqFlags.gpa);
+                                gpa.setFlag(jqsr.getReqgpaf());
                                 gpa.setRequired(reqGPA);
                                 gpa.setEarned(gotGPA);
                                 subrequirement.setGPA(gpa);
@@ -645,7 +646,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             }
                         }
 
-                        if (!"T".equals(subreqFlags.nolist))
+                        if ( subrequirement.showTaken() )
                         {
                             for (JobQueueCourse taken : jqsr.getJobQueueCourses()) {
                                 CourseTaken temp = new CourseTaken();
@@ -688,12 +689,65 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             Collections.sort(listx, takenSorter);
                         }
 
-                    }
+                        if( subrequirement.showAcceptable() )
+                        {
+                            // Acceptable courses
+                            List<JobQueueAccept> acceptList = jqsr.getJobQueueAccepts();
+                            for (JobQueueAccept accept : acceptList)
+                            {
+                                String dept = accept.getDept();
+                                if (dept.startsWith("**")) continue;
+                                String number = accept.getCrsno();
+                                if (number.length() == 0) continue;
 
+                                CourseAcceptable courseAcceptable = new CourseAcceptable();
+                                courseAcceptable.setDept(dept);
+                                courseAcceptable.setNumber(number);
+                                subrequirement.addCourseAcceptable(courseAcceptable);
+
+//                                String courseID = getCourseID(dept.trim(), number);
+//                                if (courseID != null) {
+//                                    courseAcceptable.setCluId(courseID);
+//                                    {
+//                                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
+//                                        searchRequest.addParam("courseID", courseAcceptable.getCluid());
+//                                        try {
+//
+//                                            SearchResult searchResult = getLuService().search(searchRequest);
+//                                            for (SearchResultRow row : searchResult.getRows()) {
+//                                                String name = getCellValue(row, "course.name");
+//                                                courseAcceptable.setDescription(name);
+//
+//                                                break;
+//                                            }
+//                                        } catch (Exception e) {
+//                                            throw new RuntimeException(e);
+//                                        }
+//                                    }
+//                                }
+                            }
+
+
+                        }
+
+                    }
                 }
             }
         }
         return report;
+    }
+
+    public boolean equals( Object victim, Object... list ) {
+        if( victim == null ) return false;
+        if( list == null ) return false;
+        if( list.length == 0 ) return false;
+        for( Object item : list )
+        {
+            if( item == null ) continue;
+            if( victim.equals( item )) return true;
+
+        }
+        return false;
     }
 
     String scrub( String victim ) {
