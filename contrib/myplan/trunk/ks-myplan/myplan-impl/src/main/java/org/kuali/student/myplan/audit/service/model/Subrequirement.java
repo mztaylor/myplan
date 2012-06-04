@@ -106,6 +106,31 @@ public class Subrequirement {
         return ( "V".equals(nolist) && isComplete()) || ("W".equals(nolist) && !isComplete()) || "M".equals(nolist);
     }
 
+    public String getAcceptableText() {
+        StringBuilder sb = new StringBuilder();
+        String dept = null;
+        boolean comma = false;
+        for (CourseAcceptable a : getCourseAcceptableList() ) {
+            if (!a.getDept().equals(dept)) {
+                if( comma ) {
+                    sb.append(",");
+                }
+                else
+                {
+                    comma = true;
+                }
+                sb.append(" ");
+                sb.append(a.getDept());
+                sb.append(" ");
+                dept = a.getDept();
+            } else {
+                sb.append(", ");
+            }
+            sb.append(a.getNumber());
+        }
+        return sb.toString();
+    }
+
     public boolean showTaken() {
         if ("T".equals(nolist)) return false;
         return " ".equals(nolist) || "C".equals(nolist) || "M".equals(nolist);
