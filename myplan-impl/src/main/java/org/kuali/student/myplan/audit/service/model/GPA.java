@@ -18,6 +18,10 @@ public class GPA {
         return required;
     }
 
+    public String getRequiredText() {
+        return required + "GPA";
+    }
+
     public boolean showRequired() {
         return !"R".equals(flag);
     }

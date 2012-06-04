@@ -120,7 +120,8 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void getAuditReport() {
         String auditID = "2012042713461525";
-        auditID = "2012053111501160";
+        auditID = "2012060116402255";
+        auditID = "2012053111480733";
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
         ContextInfo zero = new ContextInfo();

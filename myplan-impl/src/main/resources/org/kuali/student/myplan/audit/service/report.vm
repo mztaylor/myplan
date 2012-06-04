@@ -75,37 +75,33 @@ ${advisory}
 		<div class="requirement-heading">
 			<div class="${req.status}">
                <p>$courseLinkBuilder.makeLinks(${req.caption})</p>
-##                <p>${req.caption}</p>
 			</div>
 		</div>
 		<div class="requirement-body">
 		    <div class="requirement-content">
 
 #if( ${req.hasCredits()} )
-                <ul class="progress">
+                <ul class="credits">
 #if( ${req.credits.showEarned()} )
-                    <li class="earned"><label>Earned:</label> ${req.credits.earned} credits</li>
+                    <li class="earned"><label>Earned:</label> ${req.credits.earnedText}</li>
 #end
 #if( ${req.credits.showInprogress()} )
-                    <li class="inprogress"><label>In-progress:</label> ${req.credits.inprogress} credits</li>
+                    <li class="inprogress"><label>In-progress:</label> ${req.credits.inprogressText}</li>
 #end
 #if( ${req.credits.showNeeds()} )
-                    <li class="needs"><label>Needs:</label> ${req.credits.needs} credits</li>
+                    <li class="needs"><label>Needs:</label> ${req.credits.needsText}</li>
 #end
                 </ul>
 #end
 #if( ${req.hasGPA()} && ${req.gpa.showEarned()} )
-                <ul class="progress">
-                    <li class="earned"><label>Earned:</label> ${req.gpa.earned} GPA</li>
+                <ul class="gpa">
+                    <li class="earned"><label>Earned:</label> ${req.gpa.earnedText}</li>
                 </ul>
 #end
 #if( ${req.hasCount()} )
-                <ul class="progress">
-#if( ${req.credits.showEarned()} )
-                    <li class="earned"><label>Earned:</label> ${req.count.earned} courses</li>
-#end
-#if( ${req.credits.showNeeds()} )
-                    <li class="needs"><label>Needs:</label> ${req.count.needs} courses</li>
+                <ul class="courses">
+#if( ${req.count.showNeeds()} )
+                    <li class="needs"><label>Needs:</label> ${req.count.needsText}</li>
 #end
                 </ul>
 #end
@@ -117,53 +113,52 @@ ${advisory}
                     <div class="${subreq.status}">
 #if( ${subreq.hasCaption()} )
                         $courseLinkBuilder.makeLinks(${subreq.caption})
-##                          ${subreq.caption}
 #end
                     </div>
                 </div>
                 <div class="subrequirement-content">
 #if( ${subreq.hasCredits()} )
-                    <ul class="progress">
+                    <ul class="credits">
 #if( ${subreq.credits.showEarned()} )
-                        <li class="earned"><label>Earned:</label> ${subreq.credits.earned} credits</li>
+                        <li class="earned"><label>Earned:</label> ${subreq.credits.earnedText}</li>
 #end
 #if( ${subreq.credits.showInprogress()} )
-                        <li class="inprogress"><label>In-progress:</label> ${subreq.credits.inprogress} credits</li>
+                        <li class="inprogress"><label>In-progress:</label> ${subreq.credits.inprogressText}</li>
 #end
 #if( ${subreq.credits.showNeeds()} )
-                        <li class="needs"><label>Needs:</label> ${subreq.credits.needs} credits</li>
+                        <li class="needs"><label>Needs:</label> ${subreq.credits.needsText}</li>
 #end
                     </ul>
 #end
 #if( ${subreq.hasGPA()} && ${subreq.gpa.showEarned()} )
-                    <ul class="progress">
-                        <li class="earned"><label>Earned:</label>${subreq.gpa.earned} GPA</li>
+                    <ul class="gpa">
+                        <li class="earned"><label>Earned:</label>${subreq.gpa.earnedText}</li>
                     </ul>
 #end
 #if( ${subreq.hasCount()} )
-                    <ul class="progress">
-#if( ${subreq.count.showEarned()} )
-                        <li class="earned"><label>Earned:</label> ${subreq.count.earned} courses</li>
-#end
+                    <ul class="courses">
 #if( ${subreq.count.showNeeds()} )
-                        <li class="needs"><label>Needs:</label> ${subreq.count.needs} courses</li>
+                        <li class="needs"><label>Needs:</label> ${subreq.count.needsText}</li>
 #end
                     </ul>
 #end
 
 #if( ${subreq.hasCourseAcceptableList()} )
-#set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
-                    <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
-                        <table>
-                            <tbody>
-#foreach( $acceptable in $subreq.courseAcceptableList )
-                                <tr>
-                                    <td>${acceptable.dept} ${acceptable.number}</td>
-                                </tr>
-#end
-                            </tbody>
-                        </table>
+                    <div class="subrequirement-courses-acceptable">
+                    $courseLinkBuilder.makeLinks(${subreq.acceptableText})
                     </div>
+## #set( $courseAcceptableCounter = $courseAcceptableCounter + 1 )
+##                     <div id="subreq_${courseAcceptableCounter}_div" class="subrequirement-courses-acceptable">
+##                         <table>
+##                             <tbody>
+## #foreach( $acceptable in $subreq.courseAcceptableList )
+##                                 <tr>
+##                                     <td>${acceptable.dept} ${acceptable.number}</td>
+##                                 </tr>
+## #end
+##                             </tbody>
+##                         </table>
+##                     </div>
 #end
 
 #if( ${subreq.hasCourseTakenList()} )
