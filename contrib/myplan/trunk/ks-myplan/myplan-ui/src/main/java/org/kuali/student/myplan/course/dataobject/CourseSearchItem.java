@@ -40,7 +40,22 @@ public class CourseSearchItem {
 
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
-    public enum PlanState { UNPLANNED, SAVED, IN_PLAN }
+    public enum PlanState {
+        UNPLANNED (""),
+        SAVED ("Bookmarked"),
+        IN_PLAN ("Planned");
+
+        //  This is the value that will be displayed in the UI. (TODO: Read from properties file)
+        private final String label;
+
+        PlanState(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+    }
 
     private PlanState status = PlanState.UNPLANNED;
 
@@ -195,6 +210,10 @@ public class CourseSearchItem {
 
     public boolean isStatusInPlan() {
         return status == PlanState.IN_PLAN;
+    }
+
+    public boolean isStatusUnplanned() {
+        return status == PlanState.UNPLANNED;
     }
 
     public Set<String> getCurriculumFacetKeys() {
