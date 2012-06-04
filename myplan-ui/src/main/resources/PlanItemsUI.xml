@@ -1163,7 +1163,7 @@
                         <list>
                             <!-- If not in plan and not in saved courses and not in academic record list -->
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
-                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                                  p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -1175,7 +1175,7 @@
 
                             <!-- If not in plan and in saved courses and not in academic list-->
                             <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false"
-                                  p:render="@{(courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                                  p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="group.errorsField.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -1187,7 +1187,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:errorsField.render="false"
+                      p:render="@{(courseDetails.backupList ne null or courseDetails.plannedList ne null or courseDetails.savedItemId ne null or courseDetails.academicTerms.size() gt 0) ? true : false}">
+
                     <property name="styleClasses">
                         <list merge="true">
                             <value>myplan-message-border</value>
