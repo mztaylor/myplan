@@ -358,7 +358,7 @@
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="genEduReq" p:label="Gen Edu Req" p:readOnly="true"/>
                 <bean parent="Uif-ActionImage" p:label="Bookmark" p:id="@{#line.courseId}_save" p:styleClasses="fl-container-50 fl-text-align-center">
-                    <property name="render" value="@{#line.statusSaved ? false : true}"/>
+                    <property name="render" value="@{#line.statusUnplanned ? true : false}"/>
                     <property name="clientSideJs" value="myPlanAjaxPlanItemMove('@{#line.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="actionImage">
                         <bean parent="Uif-ImageField"
@@ -379,8 +379,8 @@
                             });
                     "/>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="In List" p:id="@{#line.courseId}_save"
-                      p:styleClasses="fl-container-50 fl-text-align-center fl-text-green" p:render="@{#line.statusSaved ? true : false}">
+                <bean parent="Uif-MessageField" p:messageText="@{#line.status.label}" p:id="@{#line.courseId}_save"
+                      p:styleClasses="fl-container-50 fl-text-align-center fl-text-green" p:render="@{#line.statusUnplanned ? false : true}">
                     <property name="onDocumentReadyScript" value="
                         jq('#@{#line.courseId}_save')
                             .subscribe('PLAN_ITEM_ADDED', function(data){
