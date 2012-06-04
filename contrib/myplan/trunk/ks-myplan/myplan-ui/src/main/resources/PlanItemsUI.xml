@@ -380,10 +380,12 @@
                                         <value>courseDescription</value>
                                     </list>
                                 </property>
-                                <property name="render" value="@{#line.courseDetails.courseDescription ne null ? true : false}"/>
+                                <property name="render"
+                                          value="@{#line.courseDetails.courseDescription ne null ? true : false}"/>
                             </bean>
                             <!-- If Course Description is empty-->
-                            <bean parent="Uif-MessageField" p:label="Course Description" p:labelPlacement="TOP" p:messageText="No description is available">
+                            <bean parent="Uif-MessageField" p:label="Course Description" p:labelPlacement="TOP"
+                                  p:messageText="No description is available">
                                 <property name="labelField">
                                     <bean parent="Uif-Label">
                                         <property name="styleClasses">
@@ -394,7 +396,8 @@
                                         </property>
                                     </bean>
                                 </property>
-                                <property name="render" value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
+                                <property name="render"
+                                          value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
                             </bean>
                         </list>
                     </property>
@@ -866,9 +869,12 @@
 
                 <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader"
                       p:labelField.render="false"/>
-                <bean parent="Uif-MessageField" p:messageText="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}">
-                    <property name="style" value="color:#aaa; text-transform:uppercase; font-size:85%; display:block; font-weight:normal; padding:0 5px; height:25px; line-height:25px;"/>
-                    <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
+                <bean parent="Uif-MessageField"
+                      p:messageText="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}">
+                    <property name="style"
+                              value="color:#aaa; text-transform:uppercase; font-size:85%; display:block; font-weight:normal; padding:0 5px; height:25px; line-height:25px;"/>
+                    <property name="render"
+                              value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
                 </bean>
             </list>
         </property>
@@ -940,7 +946,8 @@
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}"/>
+            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"
+                  p:render="@{#line.openForPlanning ? false : true}"/>
         </property>
     </bean>
 
@@ -986,7 +993,8 @@
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}" />
+            <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"
+                  p:render="@{#line.openForPlanning ? true : false}"/>
         </property>
     </bean>
 
@@ -1196,27 +1204,27 @@
                         </list>
                     </property>
                     <property name="items">
-                    <list>
-                    <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
-                        <property name="group.errorsField.render" value="false"/>
-                        <property name="items">
-                            <list>
+                        <list>
+                            <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                                <property name="group.errorsField.render" value="false"/>
+                                <property name="items">
+                                    <list>
 
-                                <bean parent="Uif-DataField"
-                                      p:propertyName="courseDetails"
-                                      p:labelField.styleClasses="fl-text-gray myplan-text-normal"
-                                      p:labelPlacement="LEFT">
-                                    <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
-                                    <property name="styleClasses">
-                                        <list merge="true">
-                                            <value>myplan-data-list</value>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
-                      </list>
+                                        <bean parent="Uif-DataField"
+                                              p:propertyName="courseDetails"
+                                              p:labelField.styleClasses="fl-text-gray myplan-text-normal"
+                                              p:labelPlacement="LEFT">
+                                            <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
+                                            <property name="styleClasses">
+                                                <list merge="true">
+                                                    <value>myplan-data-list</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
             </list>
@@ -1453,11 +1461,47 @@
                 <ref bean="add_planned_course_other"/>
 
                 <!--  Backup checkbox -->
-                <bean parent="Uif-InputField" p:propertyName="backup" p:label="Backup" p:defaultValue="false"
-                      p:instructionalText="Should this course be marked as a backup."
-                      p:render="@{moveCourse eq false ? true : false}">
-                    <property name="control">
-                        <bean parent="Uif-CheckboxControl"/>
+                <bean parent="Uif-MessageField"
+                      p:messageText="[Optional]">
+                    <property name="styleClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false">
+                    <property name="items">
+                        <list>
+
+                            <bean parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
+                                  p:render="@{moveCourse eq false ? true : false}">
+                                <property name="control">
+                                    <bean parent="Uif-CheckboxControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="Mark it as"/>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="'Backup'">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="course."/>
+
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="Backup Courses will be placed below other planned courses and will not be considered when auditing your plan.">
+                                <property name="styleClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
 
@@ -1801,14 +1845,24 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:errorsField.render="false" p:styleClasses="myplan-remove-margin">
+                <bean parent="Uif-HorizontalBoxGroup" p:errorsField.render="false"
+                      p:styleClasses="myplan-remove-margin">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="Year" p:styleClasses="" p:style="display:block; width:97px;"/>
-                            <bean parent="Uif-MessageField" p:messageText="Autumn" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block;"/>
-                            <bean parent="Uif-MessageField" p:messageText="Winter" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
-                            <bean parent="Uif-MessageField" p:messageText="Spring" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
-                            <bean parent="Uif-MessageField" p:messageText="Summer" p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold" p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Year" p:styleClasses=""
+                                  p:style="display:block; width:97px;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Autumn"
+                                  p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold"
+                                  p:style="display:block;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Winter"
+                                  p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold"
+                                  p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Spring"
+                                  p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold"
+                                  p:style="display:block; border-left: solid 1px #a9a9a9;"/>
+                            <bean parent="Uif-MessageField" p:messageText="Summer"
+                                  p:styleClasses="fl-container-150 fl-text-align-center fl-text-bold"
+                                  p:style="display:block; border-left: solid 1px #a9a9a9;"/>
                         </list>
                     </property>
                 </bean>
@@ -1827,7 +1881,8 @@
         <property name="renderLineActions" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false" p:width="97px" p:styleClasses="myplan-text-nowrap" p:style="display:block;"/>
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:labelField.render="false" p:width="97px"
+                      p:styleClasses="myplan-text-nowrap" p:style="display:block;"/>
             </list>
         </property>
         <property name="subCollections">
