@@ -808,7 +808,7 @@
         </property>
         <property name="items">
             <list>
-                <ref bean="overallPlanLink"/>
+                <!--<ref bean="overallPlanLink"/>-->
                 <bean parent="Uif-HorizontalBoxGroup">
                     <property name="errorsField.render" value="false"/>
                     <property name="items">
@@ -867,14 +867,11 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader"
+                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:styleClasses="uif-groupHeader @{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}"
                       p:labelField.render="false"/>
-                <bean parent="Uif-MessageField"
-                      p:messageText="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}">
-                    <property name="style"
-                              value="color:#aaa; text-transform:uppercase; font-size:85%; display:block; font-weight:normal; padding:0 5px; height:25px; line-height:25px;"/>
-                    <property name="render"
-                              value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}">
+                    <property name="style" value="color:#aaa; text-transform:uppercase; font-size:85%; display:block; font-weight:normal; padding:0 5px; height:26px; line-height:26px; background:#f5f5f5;"/>
+                    <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
                 </bean>
             </list>
         </property>
@@ -903,8 +900,6 @@
     </bean>
 
     <bean id="academicRecordCollection" parent="Uif-StackedCollectionGroup">
-        <!--<property name="header.render" value="false"/>-->
-        <!--<property name="style" value="@{#line.openForPlanning ? 'background:green; min-height:100px;' : 'background:red; min-height:100px;'}"/>-->
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -1002,7 +997,7 @@
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="@{#line.credits}" p:labelField.render="true"
+                <bean parent="Uif-MessageField" p:messageText="@{#line.credits ne null ? #line.credits : '0'}" p:labelField.render="true"
                       p:label="Total Credits"
                       p:labelField.renderColon="false" p:styleClasses="myplan-carousel-term-credits"/>
             </list>
@@ -1047,19 +1042,16 @@
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
-        <property name="footer">
-            <bean parent="term_backup_link" p:styleClasses="myplan-backup-link"/>
-        </property>
     </bean>
 
-    <bean id="term_backup_link" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+    <!--<bean id="term_backup_link" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:linkLabel="&lt;span&gt;Show&lt;/span&gt; # more courses" p:hrefText="#"
                       p:onClickScript="fnToggleBackup(e);"/>
             </list>
         </property>
-    </bean>
+    </bean>-->
 
 
     <!-- ################# Course Details Summary Bean ############################# -->
