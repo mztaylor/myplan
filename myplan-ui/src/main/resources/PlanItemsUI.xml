@@ -990,6 +990,16 @@
         <property name="footer">
             <bean parent="term_total_credits" p:styleClasses="myplan-carousel-term-total"
                   p:render="@{#line.openForPlanning ? true : false}"/>
+            <!--<bean parent="term_no_courses"
+                  p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>-->
+        </property>
+    </bean>
+
+    <bean id="term_no_courses" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="No Courses" p:style="display:block; padding:0 5px; margin-top:1px; font-size:90%; height:25px; line-height:25px;"/>
+            </list>
         </property>
     </bean>
 
@@ -1042,6 +1052,10 @@
             </list>
         </property>
         <property name="collectionLookup.quickfinderActionField.render" value="false"/>
+        <property name="footer">
+            <bean parent="term_no_courses"
+                  p:render="@{!#line.openForPlanning and #line.backupList.size() eq 0 ? true : false}"/>
+        </property>
     </bean>
 
     <!--<bean id="term_backup_link" parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
