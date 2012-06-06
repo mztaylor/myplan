@@ -1486,18 +1486,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField"
-                                  p:messageText="Mark it as"/>
-                            <bean parent="Uif-MessageField"
-                                  p:messageText="'Backup'">
-                                <property name="styleClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-MessageField"
-                                  p:messageText="course."/>
-
+                                  p:messageText="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course."/>
                             <bean parent="Uif-MessageField"
                                   p:messageText="Backup Courses will be placed below other planned courses and will not be considered when auditing your plan.">
                                 <property name="styleClasses">
