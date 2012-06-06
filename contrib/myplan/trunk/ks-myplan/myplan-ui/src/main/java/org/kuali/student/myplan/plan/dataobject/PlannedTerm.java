@@ -107,7 +107,7 @@ public class PlannedTerm {
         if (getAcademicRecord().size() > 0) {
 
             for (AcademicRecordDataObject ar : getAcademicRecord()) {
-                if (ar.getCredit() != null) {
+                if (ar.getCredit() != null || !ar.getCredit().isEmpty()) {
                     String[] str = ar.getCredit().split("\\D");
                     int min = Integer.parseInt(str[0]);
                     academicTotalMin += min;
