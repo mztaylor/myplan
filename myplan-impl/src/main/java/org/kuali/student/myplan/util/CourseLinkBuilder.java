@@ -25,7 +25,7 @@ public class CourseLinkBuilder {
 
     private transient static LuService luService;
 
-    enum LINK_TEMPLATE {
+    public enum LINK_TEMPLATE {
         COURSE_DETAILS("<a onclick=\"openCourse('{params}', event);\" href=\"#\" title=\"{title}\">{label}</a>"),
         TEST("[{params}::{title}::{label}]");
 
@@ -252,7 +252,12 @@ public class CourseLinkBuilder {
                 Map<String, String> results = getCourseInfo(code, number);
                 if (results.size() > 0) {
                     courseId = results.get("courseId");
+                    if( courseId.contains( "\""))
+                    {
+                        courseId = courseId.replace("\"", "\\\"");
+                    }
                     courseTitle = results.get("courseTitle");
+                    courseTitle = courseTitle.replace("\"", "\\\"");
                 } else {
                     link = label;
                 }
