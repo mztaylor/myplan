@@ -38,7 +38,8 @@ public class Count {
 
 
     public boolean showNeeds() {
-        return true;
+        return needs > 0.0001f;
     }
+
 
 }

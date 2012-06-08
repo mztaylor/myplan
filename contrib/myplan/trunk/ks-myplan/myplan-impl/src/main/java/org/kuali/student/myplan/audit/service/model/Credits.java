@@ -2,7 +2,6 @@ package org.kuali.student.myplan.audit.service.model;
 
 public class Credits {
     public String flag = " ";
-//    public float required = 100;
     public float inprogress = 10;
     public float earned = 1;
     public float needs = 1;
@@ -10,19 +9,6 @@ public class Credits {
     public void setFlag( String flag ) {
         this.flag = flag;
     }
-
-//    public void setRequired(float required) {
-//        this.required = required;
-//    }
-//
-//    public float getRequired() {
-//        return required;
-//    }
-//
-//    public String getRequiredText() {
-//        return smartZero(required) + " " + (required == 1 ? "credit" : "credit");
-//    }
-
 
     public boolean showRequired() {
         return !"R".equals(flag);
@@ -34,6 +20,10 @@ public class Credits {
 
     public float getInprogress() {
         return inprogress;
+    }
+
+    public boolean showInprogress() {
+        return inprogress > 0.0001f;
     }
 
     public String getInprogressText() {
@@ -65,7 +55,7 @@ public class Credits {
     }
 
     public boolean showNeeds() {
-        return true;
+        return needs > 0.0001f;
     }
 
     public void setNeeds(float needs) {
