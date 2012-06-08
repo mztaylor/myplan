@@ -40,7 +40,7 @@ public class CourseLinkBuilder {
 
     }
     //  This expression defines a curriculum code up to 8 characters long: "CHEM", "A A", "A&E", "A &E", "FRENCH"
-    private static final String curriculumAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
+    private static final String curriculumAbbreviationRegex = "[A-Z]{1}[A-Z &]{1,6}[A-Z]{1}";
 
     //  Groups a course code by looking for a curriculum code (at the beginning of a line or preceded by " " or "(" )
     //  followed by any amount of white space, followed by three digits.
