@@ -65,7 +65,6 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 	popupBox.FreezeBubblePopup();
 
     jq(document).bind('click', function(e) {
-        console.log("document click");
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
             fnCloseAllPopups();
@@ -144,7 +143,6 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 	popupBox.FreezeBubblePopup();
 
     jq(document).bind('click', function(e) {
-        console.log("document click");
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
             fnCloseAllPopups();
