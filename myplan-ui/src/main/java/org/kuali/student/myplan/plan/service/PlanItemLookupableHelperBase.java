@@ -21,12 +21,13 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Base lookup helper for plan items.
  */
 public class PlanItemLookupableHelperBase  extends LookupableImpl {
-
+    private final Logger logger = Logger.getLogger(PlanItemLookupableHelperBase.class);
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
@@ -58,10 +59,16 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
 
                     plannedCourseDO.setPlanItemDataObject( PlanItemDataObject.build(planItem) );
 
-                    if (loadSummaryInfoOnly) {
-                        plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
-                    } else {
-                        plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                    //  If the course info lookup fails just log the error and omit the item.
+                    try {
+                        if (loadSummaryInfoOnly) {
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
+                        } else {
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                        }
+                    } catch (Exception e) {
+                        logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
+                        continue;
                     }
 
                     plannedCoursesList.add(plannedCourseDO);
