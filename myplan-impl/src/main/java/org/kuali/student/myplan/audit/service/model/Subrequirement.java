@@ -7,6 +7,9 @@ public class Subrequirement {
 
     // complete, inprogress
     public String status = "complete";
+    public boolean optional = false;
+    public String or = " ";
+
     public String caption = null;
     public Count count;
     public GPA gpa;

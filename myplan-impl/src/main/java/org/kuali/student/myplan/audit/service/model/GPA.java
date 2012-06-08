@@ -2,7 +2,7 @@ package org.kuali.student.myplan.audit.service.model;
 
 public class GPA {
     public String flag = " ";
-    public String caption = "XX GPA CAPTION XX";
+//    public String caption = "XX GPA CAPTION XX";
     public float required;
     public float earned;
 
@@ -36,6 +36,10 @@ public class GPA {
 
     public boolean showEarned() {
         return !"E".equals(flag) && earned > 0.0001f;
+    }
+
+    public String getEarnedText() {
+        return earned + "GPA";
     }
 
 

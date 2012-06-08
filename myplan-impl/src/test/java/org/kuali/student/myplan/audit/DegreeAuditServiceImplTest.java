@@ -121,7 +121,10 @@ public class DegreeAuditServiceImplTest {
     public void getAuditReport() {
         String auditID = "2012042713461525";
         auditID = "2012060116402255";
-        auditID = "2012053111480733";
+        auditID = "2012053111480733"; // BIO
+        auditID = "2012060513485320"; // COM 0311
+
+        auditID = "2012060713084703"; //             E E   0016
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
         ContextInfo zero = new ContextInfo();
@@ -154,4 +157,5 @@ public class DegreeAuditServiceImplTest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
 }

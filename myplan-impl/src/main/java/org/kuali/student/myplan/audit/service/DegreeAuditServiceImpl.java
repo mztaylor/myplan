@@ -455,7 +455,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return result;
     }
 
-    String subreqFlagsHQL = "SELECT s.reqhrsf, s.reqgpaf, s.reqctf, s.nolist FROM ReqMain r JOIN r.subReqs s WHERE  r.comp_id.rname = ? and r.comp_id.rqfyt = ? and s.sreqno = ?";
+    String subreqFlagsHQL = "SELECT s.reqhrsf, s.reqgpaf, s.reqctf, s.nolist FROM ReqMain r JOIN r.subReqs s WHERE  r.comp_id.rname = ? and s.sreqno = ?";
+//    String subreqFlagsHQL = "SELECT * FROM ReqMain r JOIN r.subReqs s WHERE  r.comp_id.rname = ? and s.sreqno = ?";
 
     class SubreqFlags
     {
@@ -470,8 +471,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
 
-        Object[] params = new Object[]{rname, rqfyt, userSeqNo};
-//        Object[] params = new Object[]{rname, rqfyt};
+//        Object[] params = new Object[]{rname, rqfyt, userSeqNo};
+        Object[] params = new Object[]{rname, userSeqNo};
         List list = dao.find(subreqFlagsHQL, params);
         for (Object first : list) {
             Object[] flags = (Object[]) first;
@@ -537,6 +538,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     String n2 = t2.getNumber();
                     if (n2 == null) return 1;
                     compare = n1.compareTo(n2);
+                    if (compare == 0) {
+                        String q1 = t1.getQuarter();
+                        if (q1 == null) return -1;
+                        String q2 = t2.getQuarter();
+                        if (q2 == null) return 1;
+                        compare = q1.compareTo(q2);
+
+                    }
 
                 }
                 return compare;
@@ -580,6 +589,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     requirement.setCaption(reqText);
                     requirement.setNocompl( reqFlags.nocompl );
 
+                    requirement.optional = "1".equals( jqr.getOptreq() );
+
 
                     if(!"X".equals( reqFlags.credits ))
                     {
@@ -598,16 +609,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-                    if (! equals( jqr.getReqgpaf(), "X", "A" ))
+                    if (! equals( jqr.getReqgpaf(), "X" ))
+//                    if (!equals(jqr.getReqgpaf(), "X", "A"))
                     {
                         float reqGPA = jqr.getReqgpa().floatValue();
-                        float gotGPA = jqr.getGotgpa().floatValue();
+                        float earned = jqr.getGotgpa().floatValue();
 
                         if (reqGPA > 0.0f) {
                             GPA gpa = new GPA();
                             gpa.setFlag(jqr.getReqgpaf());
                             gpa.setRequired(reqGPA);
-                            gpa.setEarned(gotGPA);
+                            gpa.setEarned(earned);
                             requirement.setGPA(gpa);
                         }
                     }
@@ -638,6 +650,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         String subsatisfied = jqsr.getSatisfied();
                         subrequirement.setStatus(subsatisfied);
                         subrequirement.setNolist( subreqFlags.nolist );
+                        subrequirement.optional = "X".equals(jqr.getOptreq());
 
                         {
                             StringBuilder buf = new StringBuilder();
@@ -663,7 +676,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             if (reqHrs > 1.0f && reqHrs < 999.0f) {
                                 Credits credits = new Credits();
                                 credits.setFlag(subreqFlags.credits);
-//                                credits.setRequired(reqHrs);
                                 credits.setEarned(gotHrs - ipHrs);
                                 credits.setInprogress(ipHrs);
                                 credits.setNeeds(needHrs);
@@ -756,32 +768,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 courseAcceptable.setDept(dept);
                                 courseAcceptable.setNumber(number);
                                 subrequirement.addCourseAcceptable(courseAcceptable);
-
-//                                String courseID = getCourseID(dept.trim(), number);
-//                                if (courseID != null) {
-//                                    courseAcceptable.setCluId(courseID);
-//                                    {
-//                                        SearchRequest searchRequest = new SearchRequest("myplan.course.info");
-//                                        searchRequest.addParam("courseID", courseAcceptable.getCluid());
-//                                        try {
-//
-//                                            SearchResult searchResult = getLuService().search(searchRequest);
-//                                            for (SearchResultRow row : searchResult.getRows()) {
-//                                                String name = getCellValue(row, "course.name");
-//                                                courseAcceptable.setDescription(name);
-//
-//                                                break;
-//                                            }
-//                                        } catch (Exception e) {
-//                                            throw new RuntimeException(e);
-//                                        }
-//                                    }
-//                                }
                             }
-
-
                         }
-
                     }
                 }
             }

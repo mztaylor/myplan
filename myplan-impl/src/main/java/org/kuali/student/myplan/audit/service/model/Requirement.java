@@ -6,6 +6,8 @@ public class Requirement {
 
     // complete, inprogress
     public String status = "X";
+    public boolean optional = false;
+    public String or = " ";
 
     // http://clients.collegesource.com/home/display/HELP/Requirements#Requirements-NOCOMPL%28RQ%29
     public String nocompl = " ";
