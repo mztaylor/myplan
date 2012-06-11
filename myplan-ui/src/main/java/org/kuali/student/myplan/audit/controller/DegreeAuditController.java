@@ -95,7 +95,7 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
 
-            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, contextInfo);
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
 
@@ -148,7 +148,7 @@ public class DegreeAuditController extends UifControllerBase {
 
             AuditReportInfo report = degreeAuditService.runAudit(studentId, programId, auditTypeKey, context);
             String auditID = report.getAuditId();
-            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML, context);
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, context);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
 

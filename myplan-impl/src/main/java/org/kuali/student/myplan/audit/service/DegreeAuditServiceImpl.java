@@ -347,7 +347,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         } catch (Exception e) {
             logger.error(e);
         }
-        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey)) {
+        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
+        {
             return getDARSReport(auditId);
         }
         if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
@@ -356,17 +357,69 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
 
+    // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
+    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
+//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
+
+    public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style ) {
+        courseLinkTemplateStyle = style;
+    }
+
     public AuditReportInfo getDARSReport(String auditId) {
         JobQueueRunLoader jqrl = getJobQueueRunLoader();
         JobQueueRun run = jqrl.loadJobQueueRun(auditId);
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
+        pw.println( "<pre>");
 
         List<JobQueueOut> outList = (List<JobQueueOut>) run.getJobQueueOuts();
         for (JobQueueOut out : outList) {
-            String dar = out.getDarout();
-            pw.println(dar);
-        }
+            String darout = out.getDarout();
+            char lasera = out.getLasera().charAt( 0 );
+            switch (lasera) {
+                // Linkify these rows
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'n':
+                case 'A':
+                case 'B':
+                    String victim = CourseLinkBuilder.makeLinks(darout, courseLinkTemplateStyle);
+                    pw.println(victim);
+                    break;
+
+                // Do not linkify these rows
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '7':
+                case '8':
+                case 'g':
+                case 'j':
+                case 'C':
+                case 'D':
+                case 'F':
+                    pw.println(darout);
+                    break;
+
+                // Don't know what to do with these rows
+                case '0':
+                case '9':
+                case 'e':
+                case 'h':
+                case 'i':
+                case 'k':
+                case 'l':
+                case 'm':
+                case 'U':
+                default:
+                    pw.println(darout);
+                    break;
+            }
+       }
+        pw.println("</pre>");
         String html = sw.toString();
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         AuditDataSource dataSource = new AuditDataSource(html, auditId);

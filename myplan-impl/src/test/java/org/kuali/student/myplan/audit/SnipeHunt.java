@@ -4,13 +4,16 @@ import org.kuali.student.myplan.util.CourseLinkBuilder;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public class SnipeHunt {
     public static void main( String[] args )
         throws Exception
     {
-        FileReader file = new FileReader("/Users/jasonosgood/Desktop/dprog POL job_queue_out.csv");
-        BufferedReader buffy = new BufferedReader(file);
+        InputStream ins = ClassLoader.getSystemResourceAsStream("SnipeHunt.csv");
+        BufferedReader buffy = new BufferedReader(new InputStreamReader( ins));
 
         // skip header row
         String lame = buffy.readLine();
@@ -24,6 +27,17 @@ public class SnipeHunt {
                 String darout = weak[11];
                 switch ( lasera )
                 {
+                    // Linkify these rows
+                    case 'b':
+                    case 'c':
+                    case 'n':
+                    case 'A':
+                    case 'B':
+                        String victim = CourseLinkBuilder.makeLinks(darout, CourseLinkBuilder.LINK_TEMPLATE.TEST);
+                        System.out.println(victim);
+                        break;
+
+                    // Do not linkify these rows
                     case '1':
                     case '2':
                     case '3':
@@ -37,12 +51,21 @@ public class SnipeHunt {
                     case 'C':
                     case 'D':
                     case 'F':
-                        // ignore
+                        System.out.println(darout);
                         break;
+
+                    // Don't know what to do with these rows
+                    case '0':
+                    case '9':
+                    case 'e':
+                    case 'h':
+                    case 'i':
+                    case 'k':
+                    case 'l':
+                    case 'm':
+                    case 'U':
                     default:
-                        String victim = CourseLinkBuilder.makeLinks( darout, CourseLinkBuilder.LINK_TEMPLATE.TEST );
-                        System.out.printf("\n[%s]  %s", lasera, victim);
-//                        System.out.println( darout );
+                        System.out.println(darout);
                         break;
                 }
             }

@@ -7,6 +7,7 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl;
+import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -24,6 +25,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.List;
 
+import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT;
 import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -125,11 +127,12 @@ public class DegreeAuditServiceImplTest {
         auditID = "2012060513485320"; // COM 0311
 
         auditID = "2012060713084703"; //             E E   0016
-        DegreeAuditService degreeAuditService = getDegreeAuditService();
+        DegreeAuditServiceImpl degreeAuditService = (DegreeAuditServiceImpl) getDegreeAuditService();
+        degreeAuditService.setCourseLinkTemplateStyle( CourseLinkBuilder.LINK_TEMPLATE.TEST );
 
         ContextInfo zero = new ContextInfo();
         try {
-            AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_HTML, zero);
+            AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_DEFAULT, zero);
             InputStream in = report.getReport().getDataSource().getInputStream();
 
             File target = new File( "auditreport.html" );
