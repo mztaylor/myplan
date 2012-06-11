@@ -33,7 +33,8 @@ public class DegreeAuditInquiryViewHelperServiceImpl extends KualiInquirableImpl
         }
 
         if (auditType == null) {
-            auditType = DegreeAuditConstants.AUDIT_TYPE_KEY_HTML;
+//            auditType = DegreeAuditConstants.AUDIT_TYPE_KEY_HTML;
+            auditType = DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT;
         }
 
         AuditReportInfo degreeAuditReport = null;
