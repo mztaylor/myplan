@@ -117,7 +117,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
-    public String getAcademicRecords(String regId) throws ServiceException{
+    public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException{
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
         //  ... from a text file.

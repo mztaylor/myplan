@@ -67,7 +67,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
         try {
             /*TODO:Replace the hard coded personId with the actual once logic to get that is known */
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("EE0A042A67F911DAAA8C000629C31437", PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("C7484BE9F03D4678ACDDFDD132A86E37", PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
         }
