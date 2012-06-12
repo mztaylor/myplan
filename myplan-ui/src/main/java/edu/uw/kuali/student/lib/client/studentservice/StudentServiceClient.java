@@ -71,7 +71,7 @@ public interface StudentServiceClient {
      * @return
      * @throws ServiceException
      */
-    public abstract String getAcademicRecords(String regId) throws ServiceException;
+    public abstract String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException;
 
     /**
      * Query the student web service (course service) to convert a course abbreviation to a TimeScheduleLinkAbbreviation
