@@ -66,7 +66,7 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "OWNER")
-    private List<PlanItemAttributeEntity> attributes;
+    private Set<PlanItemAttributeEntity> attributes;
 
     @ElementCollection (fetch=FetchType.EAGER)
     @CollectionTable(name="KSPL_LRNG_PLAN_ITEM_ATP_ID",
@@ -80,12 +80,12 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     }
 
 	@Override
-	public List<PlanItemAttributeEntity> getAttributes() {
+	public Set<PlanItemAttributeEntity> getAttributes() {
 		return this.attributes;
 	}
 
 	@Override
-	public void setAttributes(List<PlanItemAttributeEntity> attributes) {
+	public void setAttributes(Set<PlanItemAttributeEntity> attributes) {
 		this.attributes = attributes;
 	}
 

@@ -30,10 +30,15 @@ a:focus {
     border: none;
     color: #1d8fd9;
 }
-#view_div {
+#Uif-Application {
 	margin:0 auto;
 	padding: 10px 0 10px 10px;
 	width: 950px;
+}
+.uif-pageContentWrapper,
+.uif-viewHeader,
+.uif-header {
+    margin: 0;
 }
 #appheader_div {
 	width: 940px;
@@ -98,22 +103,24 @@ a:focus {
     background: #f5f5f5;
     color: #999999;
     padding: 15px;
-    margin: 10px 0px 0px 0px;
+    margin: 10px auto 0px;
     width: 908px;
 }
-.myplan-view #viewpage_div {
+.myplan-view {
+	margin-top:10px;
+}
+.myplan-view #Uif-ViewContentWrapper {
 	min-height: 450px;
 }
 /* Overwrite KRAD Styles ########################################################################### */
-.myplan-view #viewpage_div,
-.myplan-view #viewheader_div,
+.myplan-view #Uif-PageContentWrapper,
 .myplan-view #viewfooter_div {
 	margin: 0;
 	padding: 0;
     width: auto;
     clear: both;
 }
-.myplan-view #viewnavigation_div {
+.myplan-view #Uif-Navigation {
 	display: none;
 }
 .myplan-view .uif-pageHeaderField .uif-header {
@@ -127,15 +134,13 @@ a:focus {
     width: auto;
     clear: both;
 }
-.myplan-view .boxLayoutVerticalItem,
-.jquerybubblepopup .boxLayoutVerticalItem {
+.myplan-view .uif-boxLayoutVerticalItem,
+.jquerybubblepopup .uif-boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
-    padding: 0;
 }
-.myplan-view .boxLayoutHorizontalItem,
-.jquerybubblepopup .boxLayoutHorizontalItem {
+.myplan-view .uif-boxLayoutHorizontalItem,
+.jquerybubblepopup .uif-boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
-    padding:  0;
 }
 .myplan-view .uif-instructionalMessage {
 	max-width: none;
@@ -145,17 +150,18 @@ a:focus {
     padding: 0;
     margin: 0;
 }
-.myplan-button,
-.myplan-button:hover {
+button.myplan-button,
+button.myplan-button:hover  {
     line-height: 22px;
     height: 24px;
 	padding: 0px 10px;
-    margin: 0;
     border: solid 1px #969696;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
 }
-.myplan-button-blue,
-.myplan-button-blue:hover {
+button.myplan-button-blue,
+button.myplan-button-blue:hover {
 	color: #FFF;
     text-shadow: 0px 1px 0px #333;
     background: #007DD6;
@@ -167,8 +173,8 @@ a:focus {
     background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
 }
-.myplan-button-gray,
-.myplan-button-gray:hover {
+button.myplan-button-gray,
+button.myplan-button-gray:hover {
     color: #333;
     text-shadow: 0px 1px 0px #FFF;
     background: #EBEBEB;
@@ -180,8 +186,8 @@ a:focus {
     background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);  /* IE6-9 */
 }
-.myplan-button-transparent,
-.myplan-button-transparent:hover {
+button.myplan-button-transparent,
+button.myplan-button-transparent:hover {
     color: #1D8FD9;
     text-shadow: none;
     border-color: transparent !important;
@@ -221,6 +227,8 @@ a:focus {
     background: #ccc;
     color: #333;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
     font-weight: bold;
     font-size: 80%;
     padding: 0 4px;
@@ -242,10 +250,10 @@ a:focus {
 .myplan-carousel-list > .uif-headerField .uif-header {
     text-align: center;
 }
-.myplan-carousel-list > div[id$='_group'] {
+.myplan-carousel-list {
     overflow: hidden;
 }
-.myplan-carousel-list > div[id$='_group'] ul {
+.myplan-carousel-list ul {
     width: 20000em;
 }
 .myplan-carousel-list ul,
@@ -258,50 +266,59 @@ a:focus {
     float:left;
 }
 .myplan-carousel-list ul li > .uif-group {
-    border:solid 1px #d6d6d6;
+    border:solid 1px #ccc;
     width: 160px;
     margin: 0 10px;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
     background: url(../images/bkgrdDotted.gif);
+    min-height: 520px;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader {
     display:block;
     white-space:nowrap;
     text-align:center;
-    background:#d6d6d6;
+    background:#ccc;
+    color: #333;
     font-weight:bold;
     height: 26px;
     line-height: 26px;
     border-radius: 4px 4px 0px 0px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+	-moz-border-radius: 4px 4px 0px 0px;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader.myplan-term-past {
-    color: #fff;
+    color: #aaa;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader.myplan-term-current {
-    background-color: #797979;
+    background-color: #666;
     color: #fff;
+    font-size: 1.25em;
 }
 .myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout {
     overflow: hidden;
+    background: none;
+    padding: 0px;
 }
-.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-completed .uif-stackedCollectionLayout {
-
+.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout > .uif-collectionItem {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    background: none;
 }
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
     height: 208px;
 }
-.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
-    display: block;
-    padding: 0 5px;
-}
-.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout .uif-collectionItem {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
     margin-top: 1px;
     font-size: 90%;
     height: 25px;
     line-height: 25px;
+    padding: 0 4px 0 24px;
+    display: block;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-headerField .uif-header {
+.myplan-carousel-list ul li .myplan-carousel-term h6.uif-headerText {
     color: #aaa;
     font-weight: normal;
     text-transform: uppercase;
@@ -309,6 +326,8 @@ a:focus {
     background: #f5f5f5;
     height: 26px;
     line-height: 26px;
+    padding: 0 4px;
+    display: block;
 }
 .myplan-carousel-prev,
 .myplan-carousel-next {
@@ -318,41 +337,15 @@ a:focus {
 .myplan-carousel-next.disabled {
     visibility: hidden;
 }
-.myplan-backup-link {
-    font-size:90%;
-    /* background: url(../images/bkgrdDotted.gif); */
-    padding: 0 5px;
-    height: 25px;
-    line-height: 25px;
-}
-.myplan-backup-link a {
-    display: block;
-    padding-left: 12px;
-    cursor: pointer;
-    background: url(../images/sortDesc.png) no-repeat -5px -1px;
-}
-.myplan-backup-link a.expanded {
-    background: url(../images/sortAsc.png) no-repeat -5px 7px;
-}
 .myplan-carousel-term-total {
-    background: #d6d6d6;
-    overflow:hidden;
+    background:#ccc;
     font-weight:bold;
     color:#666;
     font-size:90%;
     height: 26px;
     line-height: 26px;
-}
-.myplan-carousel-term-total table[role="presentation"] {
-    margin: 0;
-}
-.myplan-carousel-term-total table[role="presentation"] th {
-    text-align: left;
-    padding: 0 0 0 5px;
-}
-.myplan-carousel-term-total table[role="presentation"] td {
-    text-align: right;
-    padding: 0 5px 0 0;
+    padding: 0 4px;
+    display: block;
 }
 /* Layout styles ########################################################################### */
 .myplan-container-720 {
@@ -363,10 +356,12 @@ a:focus {
 	border: solid 2px #a9a9a9;
 	padding: 10px 0 0 10px;
 	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
     overflow: hidden;
 }
-.myplan-remove-margin span.boxLayoutVerticalItem,
-.myplan-remove-margin span.boxLayoutHorizontalItem {
+.myplan-remove-margin .uif-boxLayoutVerticalItem,
+.myplan-remove-margin .uif-boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
 }
@@ -424,19 +419,7 @@ a:focus {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
-#course_search_results_datatable td.myplan-text-ellipsis {
-    display: table-cell;
-}
-/* Hide search results hidden columns ################################################################### */
-#course_search_results_datatable .col7,
-#course_search_results_datatable .col8,
-#course_search_results_datatable .col9,
-#course_search_results_datatable .col10,
-#course_search_results_datatable .col11,
-#course_search_results_datatable .col12 {
-	display: none;
-}
-/* Styles for Facet Panel ################################################################################## */
+/* Styles for Course Search Panel ################################################################################## */
 .myplan-course-search-panel input[type='text'] {
     border: solid 1px #969696;
     padding: 4px;
@@ -452,7 +435,7 @@ a:focus {
 .myplan-facets-panel a, .myplan-facets-panel a:hover{
     color: #000;
 }
-.myplan-facets-panel .boxLayoutVerticalItem,
+.myplan-facets-panel .uif-boxLayoutVerticalItem,
 .myplan-facets-panel .myplan-facets-group ul,
 .myplan-facets-panel .myplan-facets-group ul li {
     margin: 0;
@@ -472,18 +455,23 @@ a:focus {
 }
 .myplan-facets-panel .uif-header {
 	display: block;
-	font-weight: normal;
 	background: #cccccc;
 	border-top: solid 1px #a9a9a9;
 	padding: 4px 0px 4px 4px;
     white-space: nowrap;
-    color: #000;
+}
+.myplan-facets-panel .uif-header .uif-headerText {
     text-transform: none;
+	font-weight: normal;
+	color: #000;
+	font-size: 1em;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header {
-    font-weight: bold;
     background: #e9e9e9;
-    font-size: 1em !important;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header .uif-headerText {
+	font-size: 1em !important;
+	font-weight: bold;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons {
     float: right;
@@ -533,68 +521,76 @@ a:focus {
     opacity: 0.33;
 }
 /* Styles for course search results ########################################################################### */
-.myplan-course-search-results {
-    width: 568px;
-    line-height: 1.8em;
+.dataTables_wrapper {
+	width: 580px;
+	float: left;
 }
-.myplan-course-search-results .dataTables_info {
+.dataTables_wrapper .dataTables_info {
     float: none;
     font-size: 150%;
-    width: 100%;
     margin: 0;
 }
-.myplan-course-search-results .dataTables_length {
+.dataTables_wrapper .dataTables_length {
     float: right;
     text-align: right;
-    width: 100%;
     clear: both;
     margin: 0 0 0.5em 0;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable {
+.dataTables_wrapper .myplan-course-search-results-datatable {
     border: solid 1px #a9a9a9;
     border-bottom: none;
-    width: 100%;
+    line-height: 1.8em;
     margin: 0;
+    width: 578px;
+    clear: both;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable th,
-.myplan-course-search-results .myplan-course-search-results-datatable td {
-    vertical-align: middle;
+.dataTables_wrapper .myplan-course-search-results-datatable .fl-text-align-center {
+	text-align: center;
 }
-.myplan-course-search-results-datatable .sorting,
-.myplan-course-search-results-datatable .sorting_asc,
-.myplan-course-search-results-datatable .sorting_desc {
-    background-repeat: no-repeat;
-    background-position: center right;
-}
-.myplan-course-search-results-datatable .sorting {
-    background-image: url('../images/sortBoth.png');
-}
-.myplan-course-search-results-datatable .sorting_asc {
-    background-image: url('../images/sortAsc.png');
-}
-.myplan-course-search-results-datatable .sorting_desc {
-    background-image: url('../images/sortDesc.png');
-}
-.myplan-course-search-results .myplan-course-search-results-datatable thead tr {
+table.myplan-course-search-results-datatable thead tr {
 	background: #d6d6d6;
+	border: none;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable thead tr th {
+table.myplan-course-search-results-datatable thead tr th {
     border: none;
-    padding: 4px;
-    line-height: 1.5em;
-}
-.myplan-course-search-results .myplan-course-search-results-datatable thead tr th label {
+    padding: 3px;
+    line-height: 19px;
     font-weight: bold;
     color: #5f5e5f;
     font-size: 88%;
     text-transform: none;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable tbody tr td {
+table.myplan-course-search-results-datatable .sorting,
+table.myplan-course-search-results-datatable .sorting_disabled,
+table.myplan-course-search-results-datatable .sorting_asc,
+table.myplan-course-search-results-datatable .sorting_desc {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+table.myplan-course-search-results-datatable .sorting {
+    background-image: url('../images/sortBoth.png');
+}
+table.myplan-course-search-results-datatable .sorting_asc {
+    background-image: url('../images/sortAsc.png');
+}
+table.myplan-course-search-results-datatable .sorting_desc {
+    background-image: url('../images/sortDesc.png');
+}
+table.myplan-course-search-results-datatable tbody tr {
+	border: none;
+}
+table.myplan-course-search-results-datatable tbody tr th,
+table.myplan-course-search-results-datatable tbody tr td {
+    vertical-align: middle;
+    border: none;
+}
+table.myplan-course-search-results-datatable tbody tr td {
 	line-height: 1.8em;
     height: 1.8em;
-    padding: 2px 4px;
+    padding: 2px 3px;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
+table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -602,46 +598,64 @@ a:focus {
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable .odd,
-.myplan-course-search-results .myplan-course-search-results-datatable .odd td[class^='sorting_'] {
+table.myplan-course-search-results-datatable .odd,
+table.myplan-course-search-results-datatable .odd td[class^='sorting_'] {
     background: #fff;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable .even,
-.myplan-course-search-results .myplan-course-search-results-datatable .even td[class^='sorting_'] {
+table.myplan-course-search-results-datatable .even,
+table.myplan-course-search-results-datatable .even td[class^='sorting_'] {
     background: #eee;
 }
-.myplan-course-search-results .myplan-course-search-results-datatable .odd:hover,
-.myplan-course-search-results .myplan-course-search-results-datatable .even:hover {
+table.myplan-course-search-results-datatable .odd:hover,
+table.myplan-course-search-results-datatable .even:hover {
     background: #ddd;
 }
-.myplan-course-search-results .dataTables_paginate.paging_full_numbers {
+.dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     width: auto;
     float: none;
+    clear: both;
     background: #d6d6d6;
     border: solid 1px #a9a9a9;
     border-top: none;
+    text-align: right;
+    overflow: hidden;
+    padding: 5px 0px;
 }
-.myplan-course-search-results .dataTables_paginate .first,
-.myplan-course-search-results .dataTables_paginate .last,
-.myplan-course-search-results .dataTables_paginate .paginate_button,
-.myplan-course-search-results .dataTables_paginate .paginate_active,
-.myplan-course-search-results .dataTables_paginate .paginate_button:hover {
-	background: none;
-	border: none;
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_paginate .paginate_active {
+	padding: 2px 7px;
+	margin: 0 3px;
 }
-.myplan-course-search-results .dataTables_paginate .first,
-.myplan-course-search-results .dataTables_paginate .last {
+.dataTables_wrapper .dataTables_paginate .first,
+.dataTables_wrapper .dataTables_paginate .last {
 	display:none;
 }
-.myplan-course-search-results .dataTables_paginate .paginate_active {
+.dataTables_wrapper .dataTables_paginate .previous{
+	border-right: solid 1px #000;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.dataTables_wrapper .dataTables_paginate .next {
+	border-left: solid 1px #000;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_active {
     font-weight:bold;
     background: #666;
     color:#fff;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
 }
-.myplan-course-search-results .dataTables_paginate .first:hover,
-.myplan-course-search-results .dataTables_paginate .last:hover,
-.myplan-course-search-results .dataTables_paginate .paginate_button:hover {
+.dataTables_wrapper .dataTables_paginate .paginate_active:hover {
+	cursor: pointer;
+}
+.dataTables_wrapper .dataTables_paginate .previous:hover,
+.dataTables_wrapper .dataTables_paginate .next:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
 	text-decoration: underline;
+	cursor: pointer;
 }
 /* Styles for empty result set page ########################################################################### */
 .myplan-course-search-empty {
@@ -664,45 +678,42 @@ a:focus {
 .myplan-course-details table th {
     padding-bottom: 1.8em;
 }
-.myplan-course-details table td .boxLayoutHorizontalItem {
+.myplan-course-details table td .uif-boxLayoutHorizontalItem {
     margin: 0 0.33em 0 0;
 }
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-section {
     border: solid 1px #ccc;
 }
-.myplan-section .boxLayoutVerticalItem,
-.myplan-section .boxLayoutHorizontalItem {
+.myplan-section .uif-boxLayoutVerticalItem,
+.myplan-section .uif-boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
 }
-.myplan-section .uif-headerField {
+.myplan-section .uif-header {
     font-weight: normal;
     display: block;
     text-align:center;
     line-height: 1.5em;
     padding: 5px;
     background: #e4e4e4;
+    margin: 0;
 }
-.myplan-section .uif-headerField .uif-header {
+.myplan-section .uif-header .uif-headerText {
     font-weight: normal;
     text-align: center;
     text-transform: none;
 }
-.myplan-section .uif-headerField.uif-subSectionHeaderField {
-    background: #ccc;
+.myplan-section .uif-listCollectionGroup ul {
+    min-height: 24px;
 }
-/* Saved Courses Summary Styles ########################################################################### */
-.myplan-saved-courses-summary div.blockElement {
+.myplan-section div.blockElement {
     left: 92px !important;
     top: 4px !important;
     border: none;
     width: 16px;
 }
-.myplan-saved-courses-summary > div[id$='_group']{
-    min-height: 24px;
-}
-.myplan-saved-courses-summary ul li {
+.myplan-section .uif-listCollectionGroup ul li {
     border-bottom:dotted 1px #aaaaaa;
     padding: 6px 4px;
     display: block;
@@ -710,21 +721,15 @@ a:focus {
     cursor: pointer;
     font-size: 95%;
 }
-.myplan-saved-courses-summary ul li:hover {
+.myplan-section .uif-listCollectionGroup ul li:hover {
     background: #a9a9a9;
 }
-.myplan-saved-courses-summary ul li .boxLayoutHorizontalItem span {
-    float: left;
-    margin-right: 0.4em;
-}
-.myplan-saved-courses-summary ul li .boxLayoutHorizontalItem span.ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -ms-text-overflow: ellipsis;
-}
+/* Saved Courses Summary Styles ########################################################################### */
 
+/* Recent Audit List Styles ########################################################################### */
+.myplan-recent-audit ul li:first-child {
+    border: none;
+}
 /* Saved Courses Detail Styles ########################################################################### */
 .myplan-saved-courses-detail {
     line-height: 1.8em;
@@ -751,18 +756,7 @@ a:focus {
 .myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout {
 	float: none !important;
 }
-.myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout span.boxLayoutHorizontalItem {
-    width: 19%;
-}
-.myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout span.boxLayoutHorizontalItem:first-child {
-    width: 62%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -ms-text-overflow: ellipsis;
-}
 /* Course Details Popup ########################################################################### */
-
 .myplan-popup-close {
     cursor: pointer;
     position: absolute;
@@ -776,34 +770,6 @@ a:focus {
 }
 .jquerybubblepopup-innerHtml div.blockElement {
     top: 0px !important;
-}
-/* Recent Audit List Styles ########################################################################### */
-.myplan-recent-audit div.blockElement {
-    left: 92px !important;
-    top: 4px !important;
-    border: none;
-    width: 16px;
-}
-.myplan-recent-audit > div[id$='_group']{
-    min-height: 24px;
-}
-.myplan-recent-audit ul li {
-    border-top:dotted 1px #aaaaaa;
-    padding: 6px 4px;
-    display: block;
-    clear:both;
-    cursor: pointer;
-    font-size: 95%;
-}
-.myplan-recent-audit ul li:hover {
-    background: #a9a9a9;
-}
-.myplan-recent-audit ul li:first-child {
-    border: none;
-}
-.myplan-recent-audit ul li .boxLayoutHorizontalItem span {
-    float: left;
-    margin-right: 0.4em;
 }
 
 /* beginning of scrollbar ########################################################################### */
@@ -846,6 +812,8 @@ label.scheduled {
     background: #ccc;
     color: #333;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
     font-weight: bold;
     font-size: 80%;
     padding: 0 4px;
@@ -858,6 +826,8 @@ label.scheduled {
 .myplan-full-plan-detail {
     border: solid 1px #a9a9a9;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
 }
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,

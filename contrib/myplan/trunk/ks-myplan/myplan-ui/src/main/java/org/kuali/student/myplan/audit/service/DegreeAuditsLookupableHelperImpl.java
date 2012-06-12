@@ -11,11 +11,12 @@ import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 
 import org.apache.log4j.Logger;
+import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 
 import javax.xml.namespace.QName;
 import java.util.*;
 
-public class DegreeAuditsLookupableHelperImpl extends LookupableImpl {
+public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
 

@@ -35,6 +35,7 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Academic Plan Service Implementation.
@@ -290,7 +291,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         pie.setPlanPeriods(new HashSet<String>(planItem.getPlanPeriods()));
 
         //  Set attributes.
-        pie.setAttributes(new ArrayList<PlanItemAttributeEntity>());
+        pie.setAttributes(new HashSet<PlanItemAttributeEntity>());
         if (planItem.getAttributes() != null) {
             for (Attribute att : planItem.getAttributes()) {
                 PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att);
@@ -342,7 +343,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
 
-        lpe.setAttributes(new ArrayList<LearningPlanAttributeEntity>());
+        lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
             for (Attribute att : learningPlan.getAttributes()) {
                 LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att);
@@ -388,7 +389,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  Update attributes.
         if (planItem.getAttributes() != null) {
-            List<PlanItemAttributeEntity> attributeEntities = new ArrayList<PlanItemAttributeEntity>();
+            Set<PlanItemAttributeEntity> attributeEntities = new HashSet<PlanItemAttributeEntity>();
             for (AttributeInfo att : planItem.getAttributes()) {
                 attributeEntities.add(new PlanItemAttributeEntity(att));
             }

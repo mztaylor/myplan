@@ -4,12 +4,14 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.lookup.LookupableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -21,12 +23,14 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 /**
  * Base lookup helper for plan items.
  */
-public class PlanItemLookupableHelperBase  extends LookupableImpl {
+public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private final Logger logger = Logger.getLogger(PlanItemLookupableHelperBase.class);
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
@@ -57,7 +61,7 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
                 //  Only create a data object for the specified type.
                 if (planItem.getTypeKey().equals(planItemType)) {
 
-                    plannedCourseDO.setPlanItemDataObject( PlanItemDataObject.build(planItem) );
+                    plannedCourseDO.setPlanItemDataObject(PlanItemDataObject.build(planItem));
 
                     //  If the course info lookup fails just log the error and omit the item.
                     try {
@@ -78,10 +82,22 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
         return plannedCoursesList;
     }
 
+
+    /**
+     * Override and ignore criteria validation
+     * @param form
+     * @param searchCriteria
+     * @return
+     */
+    @Override
+    public boolean validateSearchParameters(LookupForm form, Map<String, String> searchCriteria) {
+        return true;
+    }
+
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
             academicPlanService = (AcademicPlanService)
-                GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
         }
         return academicPlanService;
     }
@@ -91,8 +107,8 @@ public class PlanItemLookupableHelperBase  extends LookupableImpl {
     }
 
     public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
-        if(this.courseDetailsInquiryService == null) {
-            this.courseDetailsInquiryService =  new CourseDetailsInquiryViewHelperServiceImpl();
+        if (this.courseDetailsInquiryService == null) {
+            this.courseDetailsInquiryService = new CourseDetailsInquiryViewHelperServiceImpl();
         }
         return courseDetailsInquiryService;
     }
