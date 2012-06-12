@@ -21,14 +21,14 @@
     -->
     <bean id="MyPlanTheme" abstract="true" parent="MyPlanTheme-parentBean"/>
     <bean id="MyPlanTheme-parentBean" parent="Uif-KradTheme">
-        <property name="stylesheets">
+        <property name="cssFiles">
             <list merge="true">
-                <value>/ks-myplan/css/myplan.css</value>
-                <value>/ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
-                <value>/ks-myplan/jquery-ui/jquery-ui.css</value>
+                <value>ks-myplan/css/myplan.css</value>
+                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
+                <value>ks-myplan/jquery-ui/jquery-ui.css</value>
             </list>
         </property>
-        <property name="jsFiles">
+        <property name="scriptFiles">
             <list merge="true">
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
                 <value>ks-myplan/scripts/myplan.events.js</value>
@@ -50,14 +50,14 @@
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
 
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
-                  p:styleClasses="fl-container-flex"/>
+                  p:cssClasses="fl-container-flex"/>
         </property>
 
         <property name="applicationFooter">
             <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+                  p:cssClasses="fl-container-flex ks-page-bottom"/>
         </property>
 
     </bean>
@@ -71,14 +71,14 @@
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
-                  p:styleClasses="fl-container-flex"/>
+                  p:cssClasses="fl-container-flex"/>
         </property>
 
         <property name="applicationFooter">
             <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+                  p:cssClasses="fl-container-flex ks-page-bottom"/>
         </property>
     </bean>
 
@@ -91,14 +91,14 @@
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
 
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
-                  p:styleClasses="fl-container-flex"/>
+                  p:cssClasses="fl-container-flex"/>
         </property>
 
         <property name="applicationFooter">
             <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+                  p:cssClasses="fl-container-flex ks-page-bottom"/>
         </property>
 
     </bean>
@@ -114,14 +114,14 @@
         <property name="footer" ref="MyPlanFooterDocument"/>
 
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderField-One" p:id="ks-banner"
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
-                  p:styleClasses="fl-container-flex"/>
+                  p:cssClasses="fl-container-flex"/>
         </property>
 
         <property name="applicationFooter">
             <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:styleClasses="fl-container-flex ks-page-bottom"/>
+                  p:cssClasses="fl-container-flex ks-page-bottom"/>
         </property>
 
     </bean>
@@ -176,7 +176,7 @@
         </property>
     </bean>
 
-    <bean id="MyPlanHeader_Empty" parent="Uif-HeaderField-One">
+    <bean id="MyPlanHeader_Empty" parent="Uif-HeaderOne">
         <property name="items">
             <list/>
         </property>
@@ -196,7 +196,7 @@
 
         <property name="addLineGroup">
             <bean parent="Uif-CollectionVerticalBoxItem">
-                <property name="styleClasses">
+                <property name="cssClasses">
                     <list merge="true">
                         <value>uif-collectionAddItem</value>
                     </list>
@@ -208,14 +208,16 @@
         </property>
 
         <property name="subCollectionFieldGroupPrototype">
-            <bean parent="Uif-VerticalFieldGroup" p:styleClasses="uif-subCollection"/>
+            <bean parent="Uif-VerticalFieldGroup" p:cssClasses="uif-subCollection"/>
         </property>
 
     </bean>
 
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:title="YOUR STUFF (TBD)"
-          p:errorsField.render="false">
-        <property name="styleClasses">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)">
+        <property name="header">
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;" />
+        </property>
+        <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-200</value>
                 <value>myplan-section</value>
@@ -230,15 +232,15 @@
     </bean>
 
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:title="Bookmarked Courses List" p:errorsField.render="false">
-        <property name="styleClasses">
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses List" >
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
                 <value>myplan-stacked-list</value>
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderField-Five"/>
+            <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
@@ -261,16 +263,15 @@
         "/>
     </bean>
 
-    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:title="Recent Audit Reports"
-          p:errorsField.render="false">
-        <property name="styleClasses">
+    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-recent-audit</value>
                 <value>myplan-stacked-list</value>
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderField-Five"/>
+            <bean parent="Uif-HeaderSix"/>
         </property>
 
         <property name="onDocumentReadyScript"

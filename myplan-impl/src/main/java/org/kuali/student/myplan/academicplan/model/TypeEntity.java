@@ -23,6 +23,7 @@ import org.kuali.student.r2.common.util.RichTextHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,7 +34,7 @@ import javax.persistence.OneToMany;
 public abstract class TypeEntity<T extends BaseAttributeEntity<?>> extends BaseTypeEntity implements AttributeOwner<T> {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-	private List<T> attributes;
+	private Set<T> attributes;
 
     @Column(name = "REF_OBJECT_URI")
     private String refObjectURI;
@@ -44,7 +45,7 @@ public abstract class TypeEntity<T extends BaseAttributeEntity<?>> extends BaseT
 	 * @see org.kuali.student.r2.common.entity.AttributeOwner#setAttributes(java.util.List)
 	 */
 	@Override
-	public void setAttributes(List<T> attributes) { 
+	public void setAttributes(Set<T> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -54,7 +55,7 @@ public abstract class TypeEntity<T extends BaseAttributeEntity<?>> extends BaseT
 	 * @see org.kuali.student.r2.common.entity.AttributeOwner#getAttributes()
 	 */
 	@Override
-	public List<T> getAttributes() {
+	public Set<T> getAttributes() {
 		return attributes;
 	}
 

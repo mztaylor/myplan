@@ -82,7 +82,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var elementToBlock = jq("#" + id  + "_popup");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + getId + "_div", htmlContent);
+		var component = jq("#" + getId, htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
             if (jq("#" + id  + "_popup").length){
                 popupBox.SetBubblePopupInnerHtml(component);
@@ -91,7 +91,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                     fnCloseAllPopups();
                 });
             }
-            runHiddenScripts(getId + "_div");
+            runHiddenScripts(getId);
 			}
 		});
 	};
@@ -167,7 +167,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var oError = jq("<div />").attr("id","error_div").html(sError).addClass("myplan-message-border myplan-message-error");
             var component = jq("<div />").css("padding-right","24px").html(oError);
         } else {
-            var component = jq("#" + getId + "_div", htmlContent);
+            var component = jq("#" + getId, htmlContent);
             var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         }
         elementToBlock.unblock({onUnblock: function(){
@@ -181,14 +181,14 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
                     popupBox.RemoveBubblePopup();
                 });
             }
-            runHiddenScripts(getId + "_div");
+            runHiddenScripts(getId);
         }});
 	};
 
 	myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jq("form#"+ id + "_form").remove();
 }
-function openDialog(sText, e) {
+function openDialog(sText, e, close) {
     stopEvent(e);
 
     var dialogHtml = jq('<div />').html(sText).css({
@@ -220,12 +220,16 @@ function openDialog(sText, e) {
 
     fnPositionPopUp(popupBoxId);
 
-    jq("html, #" + popupBoxId + " img.myplan-popup-close").click(function() {
-		fnCloseAllPopups();
-	});
-    jq('#' + popupBoxId).click(function(event){
-    	event.stopPropagation();
- 	});
+    jq(document).bind('click', function(e) {
+        var tempTarget = (e.target) ? e.target : e.srcElement;
+        if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            fnCloseAllPopups();
+            jq(document).unbind('click');
+        }
+    });
+    jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
+        fnCloseAllPopups();
+    });
 }
 
 function fnPositionPopUp(popupBoxId) {
@@ -251,12 +255,14 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     jq('form#' + id + '_form input[name="viewId"]').remove();
     jq('<input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jq("form#" + id + "_form"));
     var updateRefreshableComponentCallback = function(htmlContent){
-        var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
+        // if (typeof (console) !== "undefined") console.log( jq('<div>').append(htmlContent).html() );
+        var status = jq.trim( jq("span#request_status_item_key", htmlContent).text().toLowerCase() );
+        eval( jq("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
         elementToBlock.unblock();
         switch (status) {
             case 'success':
-                var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_infoMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-success' };
-                var json = jq.parseJSON( jq.trim( jq("#json_events_item_key", htmlContent).text().replace(/\\/g,"") ) );
+                var oMessage = { 'message' : jq('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
+                var json = jq.parseJSON( jq.trim( jq("span#json_events_item_key", htmlContent).text().replace(/\\/g,"") ) );
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
@@ -264,7 +270,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 }
                 break;
             case 'error':
-                var oMessage = { 'message' : jq.trim( jq("#errorsFieldForPage_errorMessages ul li:first", htmlContent).text() ), 'cssClass':'myplan-message-border myplan-message-error' };
+                var oMessage = { 'message' : jq('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
                 if (!bDialog) {
                     var sContent = jq("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"transparent","color":"#ff0606","border":"none"});
                     var sHtml = jq("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
@@ -314,17 +320,17 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
     });
     jq("body").append(tempForm);
 
-    var elementToBlock = jq("#" + id + "_group");
+    var elementToBlock = jq("#" + id );
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + getId + "_group", htmlContent);
+		var component = jq("#" + getId , htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
 				// replace component
-				if(jq("#" + id + "_group").length){
-					jq("#" + id + "_group").replaceWith(component);
+				if(jq("#" + id).length){
+					jq("#" + id).replaceWith(component);
 				}
 
-				runHiddenScripts(getId + "_group");
+				runHiddenScripts(getId);
 
                 if(highlightId) {
                 	jq("[id^='" + highlightId + "']").parents('li').animate( {backgroundColor:"#ffffcc"}, 1 ).animate( {backgroundColor:"#ffffff"}, 3000 );
@@ -389,10 +395,10 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 				if(!hasError){
                     var newServerErrors = jq("#errorsFieldForPage_div", tempDiv).clone();
 					successCallback(tempDiv);
-                    if(successCallback !== replacePage){
-                        jq("#errorsFieldForPage_div").replaceWith(newServerErrors);
-                        runHiddenScripts("errorsFieldForPage_div");
-                    }
+//                    if(successCallback !== replacePage){
+//                        jq("#errorsFieldForPage_div").replaceWith(newServerErrors);
+//                        runHiddenScripts("errorsFieldForPage_div");
+//                    }
 				}
 				jq("#formComplete").html("");
 			},
@@ -455,17 +461,16 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 ######################################################################################
  */
 function truncateField(id) {
-    jq("[id^='" + id + "']").each(function() {
+    jq("#" + id).each(function() {
         jq(this).css("display","block");
-        var margin = Math.ceil(parseFloat(jq(this).find("span.boxLayoutHorizontalItem span").css("margin-right")));
-        var fixed = 0;
-        var fields = jq(this).find("span.boxLayoutHorizontalItem span").not(".myplan-text-ellipsis").length;
-        jq(this).find("span.boxLayoutHorizontalItem span").not(".myplan-text-ellipsis").each(function() {
+        var fixed = margin = 0;
+        jq(this).find(".uif-boxLayoutHorizontalItem:not(.myplan-text-ellipsis)").each(function() {
         	fixed = fixed + jq(this).width();
+            margin = margin + Math.ceil(parseFloat(jq(this).css("margin-right")));
         });
-        var ellipsis = jq(this).width() - ( ( fixed + 1 ) + ( margin * fields ) );
-        jq(this).find("span.boxLayoutHorizontalItem span").last().css("margin-right", 0);
-        jq(this).find("span.boxLayoutHorizontalItem span.myplan-text-ellipsis").width(ellipsis);
+        var ellipsis = jq(this).width() - ( ( fixed + 1 ) + margin );
+        jq(this).find(".uif-boxLayoutHorizontalItem").last().css("margin-right", 0);
+        jq(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
     });
 }
 /*
@@ -481,10 +486,10 @@ function fnPopoverSlider(showId, parentId, direction) {
     } else {
         newDirection = 'left';
     }
-    jq("#" + parentId + "_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem > div:visible").hide("slide", {
+    jq("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem:visible").hide("slide", {
         direction: direction
     }, 100, function() {
-        jq("#" + parentId + "_group > .uif-horizontalBoxLayout > .boxLayoutHorizontalItem > div").filter("#" + showId + "_div").show("slide", {
+        jq("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem").filter("#" + showId).show("slide", {
             direction: newDirection
         }, 100, function() {});
     });
@@ -496,12 +501,14 @@ function fnPopoverSlider(showId, parentId, direction) {
  */
 function fnCloseAllPopups() {
     jq("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
+    /*
     jq("*").each(function() {
         if ( jq(this).HasBubblePopup() ) {
             jq(this).HideAllBubblePopups();
             jq(this).RemoveBubblePopup();
         }
     });
+    */
 }
 /*
 ######################################################################################
@@ -520,7 +527,7 @@ function fnBuildTitle(aView, termSelector, headerSelector) {
 ######################################################################################
  */
 function fnToggleBackup(e) {
-    //stopEvent(e);
+    stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (!jq(target).hasClass("disabled")) {
         var oBackup = jq(target).parents(".myplan-term-backup").find(".uif-stackedCollectionLayout");

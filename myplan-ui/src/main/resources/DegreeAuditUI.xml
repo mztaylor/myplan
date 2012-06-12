@@ -23,41 +23,41 @@
     <!-- Inquiry View -->
     <bean id="DegreeAuditDetails-InquiryView" parent="MyPlanInquiryView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
+        <property name="viewHelperServiceClass" value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
-        <property name="styleClasses">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderField-Two"/>
+            <bean parent="Uif-HeaderTwo"/>
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/scripts/audit.js</value>
+                <value>ks-myplan/scripts/audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
             <list>
-                <value>/ks-myplan/css/audit.css</value>
+                <value>ks-myplan/css/audit.css</value>
             </list>
         </property>
         <property name="Items">
             <list>
                 <!-- <bean parent="Uif-Page" p:id="degree_audit_details_page"
-                      p:title="@{dataObject.report.auditId} (@{dataObject.report.runDate})"> -->
-                <bean parent="Uif-Page" p:id="degree_audit_details_page" p:title="Degree Audit">
+                      p:headerText="@{dataObject.report.auditId} (@{dataObject.report.runDate})"> -->
+                <bean parent="Uif-Page" p:id="degree_audit_details_page" p:headerText="Degree Audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
                             <ref bean="degree_audit_details_section" />
-                            <bean parent="myplan_section" p:title="AUDIT (TBD)">
+                            <bean parent="myplan_section" p:headerText="AUDIT (TBD)">
                                 <property name="items">
                                     <list>
                                         <ref bean="degree_audits_list"/>
@@ -72,18 +72,18 @@
         </property>
     </bean>
 
-    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false">
-         <property name="styleClasses">
+    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection">
+         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
             </list>
         </property>
          <property name="items">
             <list>
-                 <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                 <bean parent="Uif-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit2" parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                            <bean id="txtaudit2" parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
                         </list>
                     </property>
                 </bean>
@@ -91,8 +91,8 @@
         </property>
     </bean>
 
-    <bean id="degree_audit_details_overview" parent="Uif-GridGroup" p:errorsField.render="false">
-        <property name="styleClasses">
+    <bean id="degree_audit_details_overview" parent="Uif-GridGroup">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-details</value>
             </list>
@@ -102,22 +102,22 @@
         <property name="items">
             <list>
                 <!-- Report Body -->
-                <bean parent="Uif-MessageField" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                <bean parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
             </list>
         </property>
     </bean>
 
     <!-- Lookup View -->
-    <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanLookupView">
-        <property name="title" value="Recent Audit Reports"/>
+    <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
+        <property name="headerText" value="Recent Audit Reports"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="viewHelperServiceClassName" value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
+        <property name="viewHelperServiceClass" value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
-        <property name="styleClasses">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
             </list>
@@ -138,27 +138,31 @@
         </property>
     </bean>
 
-    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection">
-        <property name="header.render" value="false"/>
+    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+            </list>
+        </property>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.errorsField.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="searchResults"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:labelField.render="false" p:id="@{#line.report.auditId}">
-                    <property name="group.errorsField.render" value="false"/>
-                    <property name="onDocumentReadyScript" value="truncateField('@{#line.report.auditId}');"/>
+                <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:linkLabel="@{#line.programTitle}"
-                                p:hrefText="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>
+                            <bean parent="Uif-LinkField" p:linkText="@{#line.programTitle}"
+                                p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>
 
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
-                                  p:labelField.renderColon="false" p:labelField.styleClasses="myplan-text-normal"  p:labelField.render="true">
+                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"  p:fieldLabel.render="true">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
-                                <property name="styleClasses">
+                                <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>
                                         <value>myplan-text-italic</value>

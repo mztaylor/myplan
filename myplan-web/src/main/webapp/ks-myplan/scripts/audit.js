@@ -9,9 +9,6 @@ jq(document).ready(function(){
     	*/
     	var status = jq(this).attr("class");
     	switch (status) {
-    	    case "X":
-    	        // do nothing
-    	        break;
     		case "C":
                 jq(this).parent(".requirement-heading").addClass("collapsed");
                 jq(this).parent(".requirement-heading").next(".requirement-body").hide();

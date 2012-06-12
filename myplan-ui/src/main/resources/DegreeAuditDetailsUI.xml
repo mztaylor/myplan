@@ -17,14 +17,14 @@
        <bean id="DegreeAuditRaw-FormView" parent="MyPlanFormView">
            <property name="id" value="degreeAuditView"/>
            <property name="breadcrumbs.render" value="false"/>
-           <property name="styleClasses" value="myplan"/>
+           <property name="cssClasses" value="myplan"/>
            <property name="entryPageId" value="degree_audit"/>
            <property name="items">
                <list>
-                   <bean parent="Uif-Page" p:id="degree_audit" p:title="Degree Audit">
+                   <bean parent="Uif-Page" p:id="degree_audit" p:headerText="Degree Audit">
                        <property name="items">
                            <list>
-                               <bean id="yippee" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"/>
+                               <bean id="yippee" parent="Uif-Message" p:messageText="@{getAuditHtml()}"/>
                            </list>
                        </property>
                    </bean>
@@ -43,27 +43,27 @@
         <property name="id" value="DegreeAudit-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
-        <property name="styleClasses">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderField-Two"/>
+            <bean parent="Uif-HeaderTwo"/>
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>/ks-myplan/scripts/audit.js</value>
+                <value>ks-myplan/scripts/audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
             <list>
-                <value>/ks-myplan/css/audit.css</value>
+                <value>ks-myplan/css/audit.css</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search" p:title="Degree Audit">
+                <bean parent="Uif-Page" p:id="course_search" p:headerText="Degree Audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -96,10 +96,10 @@
                                             </property>
                                         </bean>
                                         <bean parent="myplan_section">
-                                            <property name="title" value="OTHER STUFF[TBD]"/>
+                                            <property name="headerText" value="OTHER STUFF[TBD]"/>
                                             <property name="items">
                                                 <list>
-                                                      <ref bean="watch_list"/>
+                                                    <ref bean="watch_list"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -115,19 +115,19 @@
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
     </bean>
 
-    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:errorsField.render="false"
-          p:progressiveRenderViaAJAX="true" p:refreshWhenChanged="#form.field44">
-        <property name="styleClasses">
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection"
+          p:progressiveRenderViaAJAX="true" p:refreshWhenChangedPropertyNames="#form.field44">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-container-720</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalBoxGroup" p:errorsField.render="false">
+                <bean parent="Uif-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit" parent="Uif-MessageField" p:messageText="@{getAuditHtml()}"
+                            <bean id="txtaudit" parent="Uif-Message" p:messageText="@{getAuditHtml()}"
                                   p:style="display:block;"></bean>
                         </list>
                     </property>
@@ -136,34 +136,34 @@
         </property>
     </bean>
 
-    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:errorsField.render="false" p:width="700px">
-        <property name="styleClasses">
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:width="700px">
+        <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-700</value>
                 <value>myplan-course-search-panel</value>
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderField-Five"/>
+            <bean parent="Uif-HeaderFive"/>
         </property>
         <property name="items">
             <list>
                 <ref bean="select_instruction"/>
                 <ref bean="campus_params"/>
                 <ref bean="program_params"/>
+                <ref bean="audit_type"/>
                 <ref bean="audit_instruction"/>
             </list>
         </property>
     </bean>
 
-    <bean id="select_instruction" parent="Uif-MessageField" p:styleClasses="myplan-text-normal"
+    <bean id="select_instruction" parent="Uif-Message" p:cssClasses="myplan-text-normal"
           p:style="margin: 10px; width: 600px; display:block;">
         <property name="messageText"
                   value="Select the campus and enter degree program or minor to run audit. It may take 1-5 minutes."/>
     </bean>
 
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
-        <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-InputField" p:propertyName="campusParam" p:width="600px">
@@ -178,12 +178,11 @@
         </property>
     </bean>
     <bean id="program_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
-        <property name="group.errorsField.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                      p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -193,7 +192,7 @@
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                      p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -203,7 +202,7 @@
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'"
-                      p:labelField.styleClasses="myplan-text-normal" p:labelField.renderColon="false">
+                      p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -221,7 +220,7 @@
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit"
           p:refreshId="audit_report_section"
           p:actionLabel="Run Degree Audit" p:jumpToIdAfterSubmit="TOP">
-        <property name="styleClasses">
+        <property name="cssClasses">
             <list merge="true">
                 <value>myplan-button</value>
                 <value>myplan-button-blue</value>
@@ -229,7 +228,27 @@
         </property>
     </bean>
 
-    <bean id="audit_instruction" parent="Uif-MessageField" p:styleClasses="fl-text-gray fl-font-size-90"
+
+    <bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="auditType" p:width="200px" p:defaultValue="kauli.audit.type.default">
+                    <property name="control">
+                        <bean parent="Uif-HorizontalRadioControl">
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.default" p:value="Text"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.html" p:value="HTML"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="audit_instruction" parent="Uif-Message" p:cssClasses="fl-text-gray fl-font-size-90"
           p:style="margin: 10px; width: 600px; display:block;">
         <property name="messageText"
                   value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit."/>

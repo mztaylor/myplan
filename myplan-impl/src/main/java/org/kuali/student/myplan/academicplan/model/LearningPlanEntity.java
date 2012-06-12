@@ -9,6 +9,7 @@ import org.kuali.student.r2.common.entity.MetaEntity;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "KSPL_LRNG_PLAN")
@@ -27,19 +28,19 @@ public class LearningPlanEntity extends MetaEntity
     private LearningPlanTypeEntity learningPlanType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private  List<LearningPlanAttributeEntity> attributes;
+    private  Set<LearningPlanAttributeEntity> attributes;
 
     public LearningPlanEntity() {
         super();
     }
 
     @Override
-    public void setAttributes(List<LearningPlanAttributeEntity> attributes) {
+    public void setAttributes(Set<LearningPlanAttributeEntity> attributes) {
         this.attributes = attributes;
     }
 
     @Override
-    public List<LearningPlanAttributeEntity> getAttributes() {
+    public Set<LearningPlanAttributeEntity> getAttributes() {
         return attributes;
     }
 

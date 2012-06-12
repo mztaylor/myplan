@@ -17,9 +17,8 @@ import java.util.Set;
  * User: kmuthu
  * Date: 11/3/11
  * Time: 11:08 AM
- *
- *  Wrapper for CourseInfo data.
- *
+ * <p/>
+ * Wrapper for CourseInfo data.
  */
 public class CourseSearchItem {
 
@@ -41,9 +40,9 @@ public class CourseSearchItem {
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
     public enum PlanState {
-        UNPLANNED (""),
-        SAVED ("Bookmarked"),
-        IN_PLAN ("Planned");
+        UNPLANNED("<input type=\\\"image\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" />"),
+        SAVED("Bookmarked"),
+        IN_PLAN("Planned");
 
         //  This is the value that will be displayed in the UI. (TODO: Read from properties file)
         private final String label;
@@ -80,17 +79,17 @@ public class CourseSearchItem {
     public String getNumber() {
         return number;
     }
-    
-    public void setNumber( String number ) {
+
+    public void setNumber(String number) {
         this.number = number;
     }
-    
+
     // aka KSLU_CLU_IDENT.DIVISION
     public String getSubject() {
         return subject;
     }
 
-    public void setSubject( String subject ) {
+    public void setSubject(String subject) {
         this.subject = subject;
     }
 
@@ -142,7 +141,7 @@ public class CourseSearchItem {
         this.creditMax = creditMax;
     }
 
-    public enum CreditType { fixed, range, multiple, unknown }
+    public enum CreditType {fixed, range, multiple, unknown}
 
     public CreditType getCreditType() {
         return creditType;
@@ -154,6 +153,7 @@ public class CourseSearchItem {
 
     /**
      * TODO: This should be handled with a Formatter.
+     *
      * @return
      */
     public String getScheduledAndOfferedTerms() {
@@ -191,7 +191,7 @@ public class CourseSearchItem {
     }
 
     public void setGenEduReq(String genEduReq) {
-        if(StringUtils.hasText(genEduReq)) {
+        if (StringUtils.hasText(genEduReq)) {
             this.genEduReq = genEduReq;
         }
     }
@@ -232,7 +232,7 @@ public class CourseSearchItem {
         return termsFacetKeys;
     }
 
-     public Set<String> getScheduledFacetKeys() {
+    public Set<String> getScheduledFacetKeys() {
         return scheduledFacetKeys;
     }
 
@@ -273,11 +273,11 @@ public class CourseSearchItem {
     }
 
     public String getCreditsFacetKey() {
-         return FacetKeyFormatter.format(creditsFacetKeys);
+        return FacetKeyFormatter.format(creditsFacetKeys);
     }
 
     public String getQuartersFacetKey() {
-          return FacetKeyFormatter.format(getQuartersFacetKeys());
+        return FacetKeyFormatter.format(getQuartersFacetKeys());
     }
 
     public void setCurriculumFacetKeys(Set<String> curriculumFacetKeys) {
@@ -322,8 +322,8 @@ public class CourseSearchItem {
         this.scheduledTermsList = scheduledTermsList;
     }
 
-    public void addScheduledTerm( String term ) {
-        scheduledTermsList.add( term );
+    public void addScheduledTerm(String term) {
+        scheduledTermsList.add(term);
     }
 
     @Override

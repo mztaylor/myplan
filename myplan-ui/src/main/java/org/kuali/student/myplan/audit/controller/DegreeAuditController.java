@@ -95,7 +95,8 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
 
-            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
+            // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
 
@@ -143,12 +144,12 @@ public class DegreeAuditController extends UifControllerBase {
             String studentId = user.getPrincipalId();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String programId = form.getProgramParam();
-            String auditTypeKey = "blah";
             ContextInfo context = new ContextInfo();
 
-            AuditReportInfo report = degreeAuditService.runAudit(studentId, programId, auditTypeKey, context);
+            AuditReportInfo report = degreeAuditService.runAudit(studentId, programId, form.getAuditType(), context);
             String auditID = report.getAuditId();
-            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT, context);
+            // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
+            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID,form.getAuditType(), context);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
 
