@@ -44,7 +44,11 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 		position: 'left',
         align: 'center',
         alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'}
+        themeMargins: {total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance: '0px',
+        openingSpeed: 0,
+        closingSpeed: 0
 	};
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -121,7 +125,11 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 		position: 'left',
         align: 'center',
         alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'}
+        themeMargins: {total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance: '0px',
+        openingSpeed: 0,
+        closingSpeed: 0
 	};
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -204,7 +212,11 @@ function openDialog(sText, e, close) {
 		position: 'top',
         align: 'center',
         alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'}
+        themeMargins: {total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance: '0px',
+        openingSpeed: 0,
+        closingSpeed: 0
 	};
 
     var popupBox = jq("body");

@@ -151,6 +151,11 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="searchResults"/>
+        <property name="filters">
+            <list>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}">
