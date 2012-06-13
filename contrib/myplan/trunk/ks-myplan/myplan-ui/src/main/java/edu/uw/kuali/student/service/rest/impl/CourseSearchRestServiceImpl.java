@@ -103,7 +103,12 @@ public class CourseSearchRestServiceImpl extends ServerResource {
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).append("\"]").append(", ");
         }
-        String jsonStr = jsonString.substring(0, jsonString.lastIndexOf(","));
+        String jsonStr=null;
+        if(!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")){
+            jsonStr = jsonString.substring(0, jsonString.lastIndexOf(","));
+        }                  else {
+            jsonStr=jsonString.toString();
+        }
         jsonStr = jsonStr + "]" + "}";
 
         return jsonStr;
