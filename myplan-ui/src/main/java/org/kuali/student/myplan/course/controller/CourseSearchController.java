@@ -270,7 +270,7 @@ public class CourseSearchController extends UifControllerBase {
         return credit;
     }
 
-    public CourseSearchForm courseSearch(CourseSearchForm form, String studentId) {
+    public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId) {
         try {
             List<SearchRequest> requests = searcher.queryToRequests(form);
             List<Hit> hits = processSearchRequests(requests);
@@ -292,8 +292,8 @@ public class CourseSearchController extends UifControllerBase {
                     }
                 }
             }
-            form.setCourseSearchResults(courseList);
-            return form;
+            populateFacets(form,courseList);
+            return courseList;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -584,8 +584,9 @@ public class CourseSearchController extends UifControllerBase {
                 genEduReqFacetItems.add(facetItem);
             }
         }
+        
 
-        //  Add the facet data to the response.
+        /*//  Add the facet data to the response.
         logger.info("Start of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
         logger.info("End of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
@@ -601,7 +602,7 @@ public class CourseSearchController extends UifControllerBase {
         logger.info("Start of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
         form.setTermsFacetItems(termsFacet.getFacetItems());
         logger.info("End of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());
+        logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());*/
     }
 
     public HashMap<String, String> fetchCourseDivisions() {

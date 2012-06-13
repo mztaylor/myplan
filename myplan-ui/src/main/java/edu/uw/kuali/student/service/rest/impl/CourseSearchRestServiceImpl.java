@@ -79,8 +79,7 @@ public class CourseSearchRestServiceImpl extends ServerResource {
         /*populating the CourseSearchItem list*/
 
         controller.setAtpTypeComparator(new TermInfoComparator());
-        controller.courseSearch(form, user);
-        courses = form.getCourseSearchResults();
+        courses =controller.courseSearch(form, user);
 
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
@@ -101,7 +100,9 @@ public class CourseSearchRestServiceImpl extends ServerResource {
                     append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
                     append("\"myplan-text-ellipsis\\").append("\"  >").append(item.getCourseName()).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
-                    append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).append("\"]").append(", ");
+                    append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).append("\",\"").append(item.getGenEduReqFacetKeys()).append("\",\"").
+                    append(item.getCreditsFacetKeys()).append("\",\"").append(item.getCurriculumFacetKeys()).append("\",\"").append(item.getCourseLevelFacetKeys()).
+                    append("\",\"").append(item.getTermsFacetKeys()).append("\"]").append(", ");
         }
         String jsonStr=null;
         if(!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")){
