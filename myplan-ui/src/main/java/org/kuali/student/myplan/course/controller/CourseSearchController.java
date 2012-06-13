@@ -304,48 +304,7 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        try {
-            logger.info("Start Of Method searchForCourses in CourseSearchController:" + System.currentTimeMillis());
-            List<SearchRequest> requests = searcher.queryToRequests(form);
-
-            List<Hit> hits = processSearchRequests(requests);
-            logger.info("No of actual records pulled in:" + hits.size());
-            List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
-            Person user = GlobalVariables.getUserSession().getPerson();
-            String studentID = user.getPrincipalId();
-            Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentID);
-            for (Hit hit : hits) {
-                CourseSearchItem course = getCourseInfo(hit.courseID);
-                if (isCourseOffered(form, course)) {
-                    loadScheduledTerms(course);
-                    loadTermsOffered(course);
-                    loadGenEduReqs(course);
-                    String courseId = course.getCourseId();
-                    if (courseStatusMap.containsKey(courseId)) {
-                        course.setStatus(courseStatusMap.get(courseId));
-                    }
-
-                    courseList.add(course);
-
-                    if (courseList.size() >= MAX_HITS) {
-                        break;
-                    }
-                }
-            }
-
-            populateFacets(form, courseList);
-
-            logger.info("Start of setting courseSearch Results to form:" + System.currentTimeMillis());
-            //  Add the search results to the response.
-            form.setCourseSearchResults(courseList);
-            logger.info("End of setting courseSearch Results to form:" + System.currentTimeMillis());
-            logger.info("End Of Method searchForCourses in CourseSearchController:" + System.currentTimeMillis());
-
-            return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
     public void hitCourseID(Map<String, Hit> courseMap, String id) {

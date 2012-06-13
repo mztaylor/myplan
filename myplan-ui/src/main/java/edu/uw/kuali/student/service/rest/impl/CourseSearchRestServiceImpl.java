@@ -55,6 +55,7 @@ public class CourseSearchRestServiceImpl extends ServerResource {
         String user = null;
         if (getClientInfo().getPrincipals().size() > 0) {
             user = getClientInfo().getPrincipals().get(0).getName();
+            logger.info("Course search using USER:" + user);
         } else {
             user = "admin";
         }
