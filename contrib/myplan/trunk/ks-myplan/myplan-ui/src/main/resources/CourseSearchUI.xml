@@ -144,7 +144,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean p:id="searchForCourses" parent="Uif-AjaxActionButton" p:refreshId="course_search_results_panel" p:methodToCall="searchForCourses"
+                <bean p:id="searchForCourses" parent="Uif-AjaxActionButton"  p:methodToCall="searchForCourses"
                       p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
                     <property name="onClickScript" value="
                         jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
@@ -476,8 +476,8 @@
             </property>
         </bean>
     -->
-    <!--
-    &lt;!&ndash; Group for Search Facets &ndash;&gt;
+
+    <!-- Group for Search Facets --><!--
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results By">
         <property name="header">
             <bean parent="Uif-HeaderFive"/>
@@ -499,8 +499,8 @@
     </bean>
 
     &lt;!&ndash; Terms/Scheduled Terms/Quarters Facet &ndash;&gt;
-    <bean id="facet_quarter" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Quarter">
-        &lt;!&ndash;<property name="disclosure.render" value="true"/>&ndash;&gt;
+    <bean id="facet_quarter" parent="Uif-VerticalBoxGroup" p:headerText="Quarter">
+        <property name="disclosure.render" value="true"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
