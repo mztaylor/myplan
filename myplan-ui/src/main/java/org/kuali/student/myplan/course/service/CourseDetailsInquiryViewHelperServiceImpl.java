@@ -331,8 +331,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
 
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String regId = user.getPrincipalId();
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("C7484BE9F03D4678ACDDFDD132A86E37", CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(regId, CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }

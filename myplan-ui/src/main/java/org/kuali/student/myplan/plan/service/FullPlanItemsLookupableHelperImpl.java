@@ -3,6 +3,8 @@ package org.kuali.student.myplan.plan.service;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
@@ -55,10 +57,11 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
         }
         /****academic record SWS call to get the studentCourseRecordInfo list *****/
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String regId = user.getPrincipalId();
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
         try {
-            /*TODO:Replace the hard coded personId with the actual once logic to get that is known */
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords("C7484BE9F03D4678ACDDFDD132A86E37", PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(regId, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
         }

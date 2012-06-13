@@ -2,14 +2,12 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
@@ -21,8 +19,6 @@ import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -37,8 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -106,7 +100,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public List<StudentCourseRecordInfo> getAttemptedCourseRecordsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -149,9 +143,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("s", "http://webservices.washington.edu/student/");
         xpath.setNamespaceURIs(namespaces);
-        String regId = null;
         List sections = xpath.selectNodes(document);
-        List<String> queryString = new ArrayList<String>();
+
         /*Implementation for populating the StudentCourseRecordInfo list*/
         if (sections != null) {
             StringBuffer cc = new StringBuffer();
@@ -208,7 +201,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
                                 studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                 studentCourseRecordInfo.setTermName(termName);
-                                studentCourseRecordInfo.setPersonId(regId);
+                                studentCourseRecordInfo.setPersonId(personId);
                                 studentCourseRecordInfoList.add(studentCourseRecordInfo);
                             }
                         }
@@ -228,14 +221,11 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
             }
             for (String registrationResponseText : registrationResponseTexts) {
                 Document registrationDocument = null;
-
                 try {
                     registrationDocument = reader.read(new StringReader(registrationResponseText));
                 } catch (DocumentException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-
-
                 DefaultXPath regXpath = new DefaultXPath("//s:Registrations");
                 Map<String, String> regNamespaces = new HashMap<String, String>();
                 regNamespaces.put("s", "http://webservices.washington.edu/student/");
@@ -267,15 +257,12 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
 
-
                     Document document1 = null;
-
                     try {
                         document1 = reader.read(new StringReader(registration));
                     } catch (DocumentException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
-
 
                     DefaultXPath regXpath1 = new DefaultXPath("//s:Registration");
                     Map<String, String> regNamespaces1 = new HashMap<String, String>();
@@ -306,7 +293,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
                                 String courseNumber = section.elementText("CourseNumber");
                                 String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
-                                /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
+                                /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
                                 if (results.length > 0 && results[0] != null) {
                                     studentCourseRecordInfo.setId(results[0]);
                                 }
@@ -319,7 +306,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
                                 studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                 studentCourseRecordInfo.setTermName(termName);
-                                studentCourseRecordInfo.setPersonId(regId);
+                                studentCourseRecordInfo.setPersonId(personId);
                                 studentCourseRecordInfoList.add(studentCourseRecordInfo);
                             }
                         }
@@ -328,8 +315,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
                 }
             }
-
-
         }
 
         return studentCourseRecordInfoList;
@@ -362,7 +347,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         return responseTexts;
     }
 
-
     /**
      * populate the courseTitle for studentCourseRecordInfo for course code
      *
@@ -388,9 +372,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
             results[1] = searchResult.getRows().get(0).getCells().get(1).getValue();
 
         }
-
         return results;
-
     }
 
     /**
@@ -411,7 +393,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecordsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -432,7 +414,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getGPAForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -452,7 +434,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getGPAForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -471,7 +453,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public GPAInfo getCumulativeGPA(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -492,7 +474,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCreditsForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     /**
@@ -513,9 +495,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCreditsForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
-
 
     /**
      * This method returns the number of credits a student earned
@@ -534,6 +515,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      */
     @Override
     public String getEarnedCredits(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }
