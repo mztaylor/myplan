@@ -42,7 +42,7 @@
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="id" value="DegreeAudit-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
-        <property name="entryPageId" value="course_search"/>
+        <property name="entryPageId" value="degree_audit"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -63,13 +63,13 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search" p:headerText="Degree Audit">
+                <bean parent="Uif-Page" p:headerText="Degree Audit" p:id="degree_audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Page" p:id="course_search">
+                            <bean parent="Uif-VerticalBoxSection">
                                 <property name="layoutManager">
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
@@ -80,7 +80,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Page" p:id="course_search">
+                            <bean parent="Uif-VerticalBoxSection">
                                 <property name="layoutManager">
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
@@ -88,7 +88,6 @@
                                     <list>
                                         <bean parent="myplan_section">
                                             <property name="header.render" value="false"/>
-
                                             <property name="items">
                                                 <list>
                                                     <ref bean="degree_audits_list"/>

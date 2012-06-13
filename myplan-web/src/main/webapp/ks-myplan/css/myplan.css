@@ -301,22 +301,24 @@ button.myplan-button-transparent:hover {
     background: none;
     padding: 0px;
 }
-.myplan-carousel-list ul li .uif-group .uif-stackedCollectionLayout > .uif-collectionItem {
-    display: block;
-    margin: 0px;
-    padding: 0px;
-    background: none;
-}
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
     height: 208px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
-    margin-top: 1px;
+    margin: 1px 0 0 0;
     font-size: 90%;
+    padding: 0px;
+    background: none;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
     height: 25px;
     line-height: 25px;
     padding: 0 4px 0 24px;
-    display: block;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
+    background: #a9a9a9;
+    cursor:pointer;
 }
 .myplan-carousel-list ul li .myplan-carousel-term h6.uif-headerText {
     color: #aaa;
@@ -714,7 +716,7 @@ table.myplan-course-search-results-datatable .even:hover {
     width: 16px;
 }
 .myplan-section .uif-listCollectionGroup ul li {
-    border-bottom:dotted 1px #aaaaaa;
+    border-bottom:dotted 1px #ccc;
     padding: 6px 4px;
     display: block;
     clear:both;
