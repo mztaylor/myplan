@@ -100,9 +100,13 @@ public class CourseSearchRestServiceImpl extends ServerResource {
                     append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
                     append("\"myplan-text-ellipsis\\").append("\"  >").append(item.getCourseName()).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
-                    append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).append("\",\"").append(item.getGenEduReqFacetKeys()).append("\",\"").
-                    append(item.getCreditsFacetKeys()).append("\",\"").append(item.getCurriculumFacetKeys()).append("\",\"").append(item.getCourseLevelFacetKeys()).
-                    append("\",\"").append(item.getTermsFacetKeys()).append("\"]").append(", ");
+                    append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).
+                    append("\",\"").append(item.getTermsFacetKeys()).
+                    append("\",\"").append(item.getGenEduReqFacetKeys()).
+                    append("\",\"").append(item.getCreditsFacetKeys()).
+                    append("\",\"").append(item.getCourseLevelFacetKeys()).
+                    append("\",\"").append(item.getCurriculumFacetKeys()).
+                    append("\"]").append(", ");
         }
         String jsonStr=null;
         if(!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")){
