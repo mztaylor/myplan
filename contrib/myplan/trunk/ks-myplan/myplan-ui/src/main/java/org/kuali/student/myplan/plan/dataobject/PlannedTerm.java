@@ -85,9 +85,9 @@ public class PlannedTerm {
             for (PlannedCourseDataObject pc : getPlannedList()) {
                 if (pc.getCourseDetails() != null && !pc.getCourseDetails().getCredit().contains(".")) {
                     String[] str = pc.getCourseDetails().getCredit().split("\\D");
-                    int min = Integer.parseInt(str[0]);
+                    double min = Double.parseDouble(str[0]);
                     plannedTotalMin += min;
-                    int max = Integer.parseInt(str[str.length - 1]);
+                    double max = Double.parseDouble(str[str.length - 1]);
                     plannedTotalMax += max;
 
                 } else if (pc.getCourseDetails() != null && pc.getCourseDetails().getCredit().contains(".")) {
@@ -95,30 +95,30 @@ public class PlannedTerm {
                     plannedTotalMax += Double.parseDouble(pc.getCourseDetails().getCredit());
                 }
             }
-            totalCredits = Integer.toString((int) plannedTotalMin);
+            totalCredits = Double.toString(plannedTotalMin);
 
             if (plannedTotalMin != plannedTotalMax) {
-                totalCredits = totalCredits + "-" + Integer.toString((int) plannedTotalMax);
+                totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
 
             }
         }
-        int academicTotalMin = 0;
-        int academicTotalMax = 0;
+        double academicTotalMin = 0;
+        double academicTotalMax = 0;
         if (getAcademicRecord().size() > 0) {
 
             for (AcademicRecordDataObject ar : getAcademicRecord()) {
                 if (ar.getCredit() != null || !ar.getCredit().isEmpty()) {
                     String[] str = ar.getCredit().split("\\D");
-                    int min = Integer.parseInt(str[0]);
+                    double min = Double.parseDouble(str[0]);
                     academicTotalMin += min;
-                    int max = Integer.parseInt(str[str.length - 1]);
+                    double max = Double.parseDouble(str[str.length - 1]);
                     academicTotalMax += max;
                 }
             }
-            totalCredits = Integer.toString(academicTotalMin);
+            totalCredits = Double.toString(academicTotalMin);
 
             if (academicTotalMin != academicTotalMax) {
-                totalCredits = totalCredits + "-" + Integer.toString(academicTotalMax);
+                totalCredits = totalCredits + "-" + Double.toString(academicTotalMax);
 
 
             }

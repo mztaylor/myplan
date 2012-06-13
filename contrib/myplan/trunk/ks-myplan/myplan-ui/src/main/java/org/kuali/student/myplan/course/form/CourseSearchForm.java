@@ -37,15 +37,15 @@ public class CourseSearchForm extends UifFormBase {
     private String searchTerm = SEARCH_TERM_ANY_ITEM;
     private String campusSelect;
 
-    /** Search results list. */
+/*    *//** Search results list. *//*
     private List<CourseSearchItem> courseSearchResults = new ArrayList<CourseSearchItem>();
 
-    /** Facet data lists */
+    *//** Facet data lists *//*
     private List<FacetItem> curriculumFacetItems;
     private List<FacetItem> courseLevelFacetItems;
     private List<FacetItem> termsFacetItems;
     private List<FacetItem> genEduReqFacetItems;
-    private List<FacetItem> creditsFacetItems;
+    private List<FacetItem> creditsFacetItems;*/
 
     public String getCampusSelect() {
         return campusSelect;
@@ -59,13 +59,13 @@ public class CourseSearchForm extends UifFormBase {
         super();
     }
 
-    public List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> getCourseSearchResults() {
+/*    public List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> getCourseSearchResults() {
         return courseSearchResults;
     }
 
     public void setCourseSearchResults(List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> courseSearchResults) {
         this.courseSearchResults = courseSearchResults;
-    }
+    }*/
 
     public Boolean getCampusBothell() {
 		return campusBothell;
@@ -103,15 +103,15 @@ public class CourseSearchForm extends UifFormBase {
         return searchTerm;
     }
 
-    public List<FacetItem> getCurriculumFacetItems() {
+   /* public List<FacetItem> getCurriculumFacetItems() {
         return curriculumFacetItems;
     }
-
+*/
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
     }
 
-    public void setCurriculumFacetItems(List<FacetItem> curriculumFacetItems) {
+    /*public void setCurriculumFacetItems(List<FacetItem> curriculumFacetItems) {
         this.curriculumFacetItems = curriculumFacetItems;
     }
 
@@ -145,5 +145,5 @@ public class CourseSearchForm extends UifFormBase {
 
     public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
         this.creditsFacetItems = creditsFacetItems;
-    }
+    }*/
 }
