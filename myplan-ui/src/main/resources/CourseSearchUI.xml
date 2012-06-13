@@ -144,7 +144,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:methodToCall="searchForCourses"
+                <bean p:id="searchForCourses" parent="Uif-AjaxActionButton" p:refreshId="course_search_results_panel" p:methodToCall="searchForCourses"
                       p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
                     <property name="onClickScript" value="
                         jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
@@ -186,7 +186,7 @@
             <list>
                 <ref bean="course_search_results_facets"/>
                 <ref bean="course_search_results"/>
-                <ref bean="course_search_results_empty"/>
+                <!--<ref bean="course_search_results_empty"/>-->
             </list>
         </property>
     </bean>
@@ -573,7 +573,7 @@
     <bean id="course_search_facet_genedureq" parent="Uif-ListCollectionGroup">
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
+        value="org.kuali.student.myplan.course.dataobject.FacetItem"/>
         <property name="propertyName" value="genEduReqFacetItems"/>
         <property name="items">
             <list>
