@@ -44,6 +44,7 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="persistFormToSession" value="false"/>
     </bean>
 
 
@@ -66,6 +67,7 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="persistFormToSession" value="false"/>
     </bean>
 
 
@@ -86,6 +88,7 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="persistFormToSession" value="false"/>
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
