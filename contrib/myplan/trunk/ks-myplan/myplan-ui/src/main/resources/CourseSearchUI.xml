@@ -184,7 +184,7 @@
     <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <ref bean="course_search_results_facets"/>
+                <!--<ref bean="course_search_results_facets"/>-->
                 <ref bean="course_search_results"/>
                 <!--<ref bean="course_search_results_empty"/>-->
             </list>
@@ -273,7 +273,12 @@
                             {'sTitle':'Credit','bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
                             {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'122px'},
                             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'74px'},
-                            {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center', 'sWidth':'72px'}
+                            {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center', 'sWidth':'72px'},
+                            {'sTitle':'facetQuarter', 'bVisible':false},
+                            {'sTitle':'facetGenEduReq', 'bVisible':false},
+                            {'sTitle':'facetCredits', 'bVisible':false},
+                            {'sTitle':'facetLevel', 'bVisible':false},
+                            {'sTitle':'facetCurriculum', 'bVisible':false}
                         ]"/>
                 <entry key="fnDrawCallback"
                        value="function() {
@@ -471,8 +476,8 @@
             </property>
         </bean>
     -->
-
-    <!-- Group for Search Facets -->
+    <!--
+    &lt;!&ndash; Group for Search Facets &ndash;&gt;
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results By">
         <property name="header">
             <bean parent="Uif-HeaderFive"/>
@@ -493,9 +498,9 @@
         </property>
     </bean>
 
-    <!-- Terms/Scheduled Terms/Quarters Facet -->
-    <bean id="facet_quarter" parent="Uif-VerticalBoxGroup" p:headerText="Quarter">
-        <property name="disclosure.render" value="true"/>
+    &lt;!&ndash; Terms/Scheduled Terms/Quarters Facet &ndash;&gt;
+    <bean id="facet_quarter" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Quarter">
+        &lt;!&ndash;<property name="disclosure.render" value="true"/>&ndash;&gt;
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -541,7 +546,7 @@
         </property>
     </bean>
 
-    <!-- Gen Edu Req Facets -->
+    &lt;!&ndash; Gen Edu Req Facets &ndash;&gt;
     <bean id="facet_genedureq" parent="Uif-VerticalBoxGroup" p:headerText="Gen. Edu. Req.">
         <property name="disclosure.render" value="true"/>
         <property name="header">
@@ -590,7 +595,7 @@
         </property>
     </bean>
 
-    <!-- Credits Facets -->
+    &lt;!&ndash; Credits Facets &ndash;&gt;
     <bean id="facet_credits" parent="Uif-VerticalBoxGroup" p:headerText="Credits">
         <property name="disclosure.render" value="true"/>
         <property name="header">
@@ -639,7 +644,7 @@
         </property>
     </bean>
 
-    <!-- Course Level Facets -->
+    &lt;!&ndash; Course Level Facets &ndash;&gt;
     <bean id="facet_level" parent="Uif-VerticalBoxGroup" p:headerText="Course Level">
         <property name="disclosure.render" value="true"/>
         <property name="header">
@@ -688,7 +693,7 @@
         </property>
     </bean>
 
-    <!-- Subject Area Facets -->
+    &lt;!&ndash; Subject Area Facets &ndash;&gt;
     <bean id="facet_curriculum" parent="Uif-VerticalBoxGroup" p:headerText="Course Prefix">
         <property name="disclosure.render" value="true"/>
         <property name="header">
@@ -735,5 +740,5 @@
                 </bean>
             </list>
         </property>
-    </bean>
+    </bean>-->
 </beans>
