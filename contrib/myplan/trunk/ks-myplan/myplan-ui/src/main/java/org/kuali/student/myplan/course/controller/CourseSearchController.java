@@ -70,7 +70,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
-    private static final int MAX_HITS = 250;
+    private static final int MAX_HITS = 1000;
 
     private transient LuService luService;
 
