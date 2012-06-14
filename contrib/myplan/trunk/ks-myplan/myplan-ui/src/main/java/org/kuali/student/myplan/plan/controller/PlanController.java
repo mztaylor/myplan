@@ -415,7 +415,7 @@ public class PlanController extends UifControllerBase {
 
         String atpId = planItem.getPlanPeriods().get(0);
         String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
-        String[] params = {link};
+        String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_MOVED, params);
     }
 
@@ -555,7 +555,7 @@ public class PlanController extends UifControllerBase {
 
         String atpId = planItem.getPlanPeriods().get(0);
         String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(atpId));
-        String[] params = {link};
+        String[] params = {AtpHelper.atpIdToTermName(atpId)};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_COPIED, params);
     }
 
@@ -700,7 +700,7 @@ public class PlanController extends UifControllerBase {
         //}
 
         String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
-        String[] params = {link};
+        String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
 
