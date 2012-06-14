@@ -723,6 +723,10 @@ table.myplan-course-search-results-datatable .even:hover {
     cursor: pointer;
     font-size: 95%;
 }
+.myplan-section .uif-listCollectionGroup.myplan-recent-audit ul li {
+    border-bottom: none;
+    border-top:dotted 1px #ccc;
+}
 .myplan-section .uif-listCollectionGroup ul li:hover {
     background: #a9a9a9;
 }
