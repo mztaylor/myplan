@@ -163,6 +163,9 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
             int count = 0;
             StringBuffer startsSub = new StringBuffer();
+            if(sb.toString().length()>0){
+                startsSub=startsSub.append(sb);
+            }
             if (!currentTermRegistered) {
                 startsSub = startsSub.append("<dd>").append("Added to ");
             } else {
