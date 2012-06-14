@@ -1214,7 +1214,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup">
+                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup"
+                      p:render="@{(courseDetails.backupList ne null or courseDetails.plannedList ne null or courseDetails.savedItemId ne null or courseDetails.academicTerms.size() gt 0) ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-message-border</value>
