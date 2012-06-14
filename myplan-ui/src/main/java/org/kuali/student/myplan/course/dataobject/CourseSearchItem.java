@@ -40,7 +40,7 @@ public class CourseSearchItem {
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
     public enum PlanState {
-        UNPLANNED("<input type=\\\"image\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" />"),
+        UNPLANNED(""),
         SAVED("Bookmarked"),
         IN_PLAN("Planned");
 

@@ -87,10 +87,16 @@ public class CourseSearchRestServiceImpl extends ServerResource {
         int count = 0;
         for (CourseSearchItem item : courses) {
             String scheduledAndOfferedTerms = null;
+            String status="";
             try {
                 scheduledAndOfferedTerms = mapper.writeValueAsString(item.getScheduledAndOfferedTerms());
             } catch (IOException e) {
                 throw new RuntimeException("Could not write the value using mapper", e);
+            }
+            if(item.getStatus().getLabel().length()>0){
+                status=item.getStatus().getLabel();
+            } else {
+               status= "<input type=\\\"image\\\" id=\\\""+item.getCourseId()+"\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" />";
             }
             jsonString = jsonString.append("[\"").append(item.getCode()).
                     append("\",\"").append(" <a href=\\").
@@ -100,7 +106,7 @@ public class CourseSearchRestServiceImpl extends ServerResource {
                     append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
                     append("\"myplan-text-ellipsis\\").append("\"  >").append(item.getCourseName()).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
-                    append(item.getGenEduReq()).append("\",\"").append(item.getStatus().getLabel()).
+                    append(item.getGenEduReq()).append("\",\"").append(status).
                     append("\",\"").append(item.getTermsFacetKeys()).
                     append("\",\"").append(item.getGenEduReqFacetKeys()).
                     append("\",\"").append(item.getCreditsFacetKeys()).
