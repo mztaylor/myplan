@@ -1,26 +1,22 @@
 package org.kuali.student.myplan.audit.service;
 
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.*;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.jacorb.sasPolicy.ATLASPolicyHelper;
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.dom4j.io.SAXReader;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.darsws.AuditRequestSvc;
@@ -41,16 +37,18 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.xml.sax.XMLReader;
 import uachieve.apis.audit.*;
 import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
+import uachieve.apis.audit.dao.hibernate.JobQueueRunHibernateDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
+import javax.xml.bind.Element;
 import javax.xml.namespace.QName;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -62,7 +60,12 @@ import uachieve.apis.requirement.ReqMain;
 import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 import uachieve.apis.requirement.Dprog;
 import uachieve.apis.requirement.dao.DprogDao;
-import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
+
+import org.dom4j.Document;
+import org.dom4j.io.HTMLWriter;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXContentHandler;
+import org.xml.sax.InputSource;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -347,19 +350,19 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         } catch (Exception e) {
             logger.error(e);
         }
-        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
-        {
-            return getDARSReport(auditId);
-        }
-        if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
+//        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
+//        {
+//            return getDARSReport(auditId);
+//        }
+//        if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
             return getHTMLReport(auditId);
-        }
-        throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
+//        }
+//        throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
 
     // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
-    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
-//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
+//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
+    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
 
     public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style ) {
         courseLinkTemplateStyle = style;
@@ -431,6 +434,43 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public AuditReportInfo getHTMLReport(String auditId) throws OperationFailedException {
+        AuditReportInfo auditReportInfo = new AuditReportInfo();
+        auditReportInfo.setAuditId(auditId);
+        String answer = "Audit ID " + auditId + " not available";
+//        try {
+//            JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
+//            String sql = "SELECT report.report FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
+//
+//            List list = dao.find(sql, new Object[]{auditId});
+//            byte[] report = (byte[]) list.get(0);
+//            String garbage = new String(report);
+//            garbage = garbage.replace( "<html xmlns=\"http://www.w3.org/1999/xhtml\">", "<html>" );
+//            InputStream in = new ByteArrayInputStream(garbage.getBytes() );
+//
+//            SAXReader reader = new SAXReader();
+//            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+//            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+//
+//            Document document = reader.read(in);
+//
+//            List children = document.selectNodes("/html/body/*");
+//            StringWriter sw = new StringWriter();
+//            OutputFormat format = OutputFormat.createPrettyPrint();
+//            HTMLWriter writer = new HTMLWriter(sw, format);
+//            writer.write(children);
+//            writer.flush();
+//            answer = sw.toString();
+//
+//        } catch (Exception e) {
+//            logger.error( "getHTMLReport failed", e);
+//        }
+        AuditDataSource dataSource = new AuditDataSource(answer, auditId);
+        DataHandler dh = new DataHandler(dataSource);
+        auditReportInfo.setReport(dh);
+        return auditReportInfo;
+    }
+
+    public AuditReportInfo getHTMLReportXYZ(String auditId) throws OperationFailedException {
         try {
             Velocity.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             Velocity.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -766,12 +806,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                         if ( subrequirement.showTaken() )
                         {
-                            for (JobQueueCourse taken : jqsr.getJobQueueCourses()) {
-                                CourseTaken temp = new CourseTaken();
+                            for (JobQueueCourse jqc : jqsr.getJobQueueCourses()) {
+                                CourseTaken taken = new CourseTaken();
                                 String dept = "";
                                 String number = "";
 
-                                String course = taken.getCourse().trim();
+                                String course = jqc.getCourse().trim();
                                 if ("FL-HS".equals(course)) {
                                     dept = course;
                                 } else if ("NATSPEAK".equals(course)) {
@@ -789,18 +829,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                         dept = course.trim();
                                     }
                                 }
-                                temp.setDept(dept);
-                                temp.setNumber(number);
-                                temp.setGrade( taken.getRgrade() );
-                                temp.setDescription(taken.getCtitle());
-                                temp.setCredits( taken.getCredit().floatValue());
-                                temp.setQuarter(taken.getEditYt());
-                                boolean inProgress = "I".equals(taken.getIp());
-                                temp.setInProgress(inProgress);
-                                String courseID = getCourseID(dept, number);
-                                temp.setCluid(courseID);
+                                taken.setDept(dept);
+                                taken.setNumber(number);
+                                taken.setGrade(jqc.getRgrade());
+                                taken.setDescription(jqc.getCtitle());
+                                taken.setCredits(jqc.getCredit().floatValue());
+                                taken.setQuarter(jqc.getEditYt());
+                                boolean inProgress = "I".equals(jqc.getIp());
+                                taken.setInProgress(inProgress);
 
-                                subrequirement.addCourseTaken(temp);
+                                subrequirement.addCourseTaken(taken);
                             }
 
                             List<CourseTaken> listx = subrequirement.getCourseTakenList();
@@ -863,7 +901,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public String hardcodedStudentID( String studentId ) {
         // Used by devs when logged in as admin
-        if( "admin".equals( studentId )) return   "100190981";
+//        if( "admin".equals( studentId )) return   "100190981";
         // Used by Jill for demos
         if( "jjulius".equals( studentId )) return "101360188";
 
@@ -950,25 +988,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
         }
         return result;
-    }
-
-    public String getCourseID( String dept, String number )
-    {
-        String courseID = null;
-//        try {
-//            SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-//            searchRequest.addParam("number", number);
-//            searchRequest.addParam("subject", dept.trim());
-//            SearchResult searchResult = getLuService().search(searchRequest);
-//            for (SearchResultRow row : searchResult.getRows()) {
-//                courseID = getCellValue(row, "lu.resultColumn.cluId");
-//                break;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-////            throw new RuntimeException(e);
-//        }
-        return courseID;
     }
 
     @Override
