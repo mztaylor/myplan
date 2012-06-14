@@ -55,4 +55,5 @@ public interface DegreeAuditService {
 
 
     public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException;
+
 }
