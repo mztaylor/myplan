@@ -206,7 +206,20 @@ public class PlannedTermsHelperBase {
             List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
             String currentAtpId = AtpHelper.getCurrentAtpId();
             populateFutureData(currentAtpId, plannedTermList);
+            /*Implementation to set the conditional flags based on each plannedTerm atpId*/
+            for (PlannedTerm pl : plannedTermList) {
 
+                if (AtpHelper.isAtpSetToPlanning(pl.getAtpId())) {
+                    pl.setOpenForPlanning(true);
+                }
+                if (AtpHelper.isAtpCompletedTerm(pl.getAtpId())) {
+                    pl.setCompletedTerm(true);
+                }
+                if (AtpHelper.getCurrentAtpId().equalsIgnoreCase(pl.getAtpId())) {
+                    pl.setCurrentTermForView(true);
+                }
+
+            }
             return plannedTermList;
 
 
