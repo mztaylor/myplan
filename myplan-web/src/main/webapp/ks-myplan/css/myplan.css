@@ -76,7 +76,7 @@ a:focus {
 #appheader_div #appnav_div {
     clear: both;
     border: solid 1px #e5e5e5;
-    background: #f5f5f5;
+    background: #eee;
     color: #999999;
     padding: 15px;
     margin: 10px 0px 0px 0px;
@@ -100,7 +100,7 @@ a:focus {
 }
 #appfooter_div {
 	border: solid 1px #e5e5e5;
-    background: #f5f5f5;
+    background: #eee;
     color: #999999;
     padding: 15px;
     margin: 10px auto 0px;
@@ -602,15 +602,18 @@ table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis 
 }
 table.myplan-course-search-results-datatable .odd,
 table.myplan-course-search-results-datatable .odd td[class^='sorting_'] {
-    background: #fff;
+    background-color: #fff;
 }
 table.myplan-course-search-results-datatable .even,
 table.myplan-course-search-results-datatable .even td[class^='sorting_'] {
-    background: #eee;
+    background-color: #eee;
 }
 table.myplan-course-search-results-datatable .odd:hover,
 table.myplan-course-search-results-datatable .even:hover {
-    background: #ddd;
+    background-color: #ddd;
+}
+table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
+    background-color: transparent;
 }
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     width: auto;
@@ -620,13 +623,13 @@ table.myplan-course-search-results-datatable .even:hover {
     border: solid 1px #a9a9a9;
     border-top: none;
     text-align: right;
-    overflow: hidden;
-    padding: 5px 0px;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button,
 .dataTables_wrapper .dataTables_paginate .paginate_active {
 	padding: 2px 7px;
-	margin: 0 3px;
+	margin: 5px 3px;
+    line-height: 2em;
+    height: 2em;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
@@ -661,15 +664,9 @@ table.myplan-course-search-results-datatable .even:hover {
 }
 /* Styles for empty result set page ########################################################################### */
 .myplan-course-search-empty {
-    border: solid 1px #a9a9a9;
-    padding: 10px 10px 0 10px;
+    padding: 25px 100px;
 }
-.myplan-course-search-empty > div[id$='_group'] {
-    margin: 0 auto;
-    width: 80%;
-    padding: 25px 0;
-}
-.myplan-course-search-empty > div[id$='_group'] div[id$='_group']>div>span>span {
+.myplan-course-search-empty ul li {
     display: list-item;
     margin: 0;
     list-style-type: disc;

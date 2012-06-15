@@ -17,7 +17,7 @@
     <bean id="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="id" value="CourseSearch-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
-        <property name="entryPageId" value="course_search"/>
+        <property name="entryPageId" value="course_search_result"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -29,11 +29,12 @@
         <property name="additionalScriptFiles">
             <list>
                 <value>ks-myplan/scripts/course-search.js</value>
+                <value>ks-myplan/scripts/myplan.search.js</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search" p:headerText="Find Courses">
+                <!--<bean parent="Uif-Page" p:id="course_search" p:headerText="Find Courses">
                     <property name="instructionalText"
                               value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
                     <property name="layoutManager">
@@ -45,7 +46,7 @@
                             <ref bean="myplan_section"/>
                         </list>
                     </property>
-                </bean>
+                </bean>-->
                 <bean parent="Uif-Page" p:id="course_search_result" p:headerText="Find Courses">
                     <property name="instructionalText"
                               value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
@@ -144,7 +145,18 @@
                         </bean>
                     </property>
                 </bean>
-                <bean p:id="searchForCourses" parent="Uif-AjaxActionButton"  p:methodToCall="searchForCourses"
+                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Search" p:style="padding: 0px 30px;">
+                    <property name="clientSideJs" value="searchForCourses('course_search_results','course_search_results_panel');"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>course-search-submit</value>
+                            <value>myplan-button</value>
+                            <value>myplan-button-blue</value>
+                        </list>
+                    </property>
+                </bean>
+                <!--<bean p:id="searchForCourses" parent="Uif-AjaxActionButton"  p:methodToCall="searchForCourses"
                       p:actionLabel="Search" p:jumpToIdAfterSubmit="TOP" p:style="padding: 0px 30px;">
                     <property name="onClickScript" value="
                         jq.cookie( 'course_search_facets', null, { expires: -1, path: '/' } );
@@ -157,7 +169,7 @@
                             <value>myplan-button-blue</value>
                         </list>
                     </property>
-                </bean>
+                </bean>-->
             </list>
         </property>
     </bean>
@@ -181,10 +193,10 @@
 
 
     <!-- Layout for Search Facets and Search Results -->
-    <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup">
+    <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup" p:style="display: none;">
         <property name="items">
             <list>
-                <!--<ref bean="course_search_results_facets"/>-->
+                <ref bean="course_search_results_facets"/>
                 <ref bean="course_search_results"/>
                 <!--<ref bean="course_search_results_empty"/>-->
             </list>
@@ -192,7 +204,7 @@
     </bean>
 
     <!-- Group for Empty Table Result Set -->
-    <bean id="course_search_results_empty" parent="Uif-VerticalBoxGroup">
+    <!--<bean id="course_search_results_empty" parent="Uif-VerticalBoxGroup">
         <property name="render" value="@{getCourseSearchResults().size() gt 0 ? false : true}"/>
         <property name="cssClasses">
             <list merge="true">
@@ -242,9 +254,11 @@
                 </bean>
             </list>
         </property>
-    </bean>
-    <bean id="course_search_results" parent="Uif-DataTable"
-          p:ajaxSource="@{#ConfigProperties['courseSearchBaseUrl']}/search/course/@{searchQuery}/@{searchTerm}/@{campusSelect}">
+    </bean>-->
+
+
+    <bean id="course_search_results" parent="Uif-DataTable" p:style="width: 578px;">
+         <!-- p:ajaxSource="@{#ConfigProperties['courseSearchBaseUrl']}/search/course/@{searchQuery}/@{searchTerm}/@{campusSelect}">-->
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-results-datatable</value>
@@ -253,7 +267,13 @@
         <property name="richTable.templateOptions">
             <map merge="true">
                 <entry key="oLanguage"
-                       value="{'sLengthMenu':'Show _MENU_', 'sEmptyTable':'0 results found', 'sZeroRecords':'0 results found', 'sProcessing':'DataTables is currently busy', 'sInfo':'Showing _START_-_END_ of _TOTAL_ results', 'sInfoFiltered':''}"/>
+                       value="{
+                            'sLengthMenu':'Show _MENU_',
+                            'sEmptyTable':'0 results found (bean sEmptyTable)',
+                            'sZeroRecords':'0 results found (bean sZeroRecords)',
+                            'sInfo':'Showing _START_-_END_ of _TOTAL_ results',
+                            'sInfoFiltered':''
+                       }"/>
                 <entry key="iDisplayLength" value="20"/>
                 <entry key="aLengthMenu" value="[ 20, 50, 100 ]"/>
                 <entry key="sDom" value="ilrtSp"/>
@@ -261,7 +281,6 @@
                 <entry key="bRetrieve" value="true"/>
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bDeferRender" value="true"/>
-                <entry key="bProcessing" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
                 <entry key="bStateSave" value="true"/>
                 <entry key="bSortClasses" value="false"/>
@@ -477,7 +496,7 @@
         </bean>
     -->
 
-    <!-- Group for Search Facets --><!--
+    <!-- Group for Search Facets -->
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results By">
         <property name="header">
             <bean parent="Uif-HeaderFive"/>
@@ -498,6 +517,63 @@
         </property>
     </bean>
 
+    <bean id="facet_quarter" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Quarter">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+                <value>facetQuarter</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="facet_genedureq" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Gen. Edu. Req.">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+                <value>facetGenEduReq</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="facet_credits" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Credits">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+                <value>facetCredits</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="facet_level" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Level">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+                <value>facetLevel</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="facet_curriculum" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Prefix">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+                <value>facetCurriculum</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--
     &lt;!&ndash; Terms/Scheduled Terms/Quarters Facet &ndash;&gt;
     <bean id="facet_quarter" parent="Uif-VerticalBoxGroup" p:headerText="Quarter">
         <property name="disclosure.render" value="true"/>
