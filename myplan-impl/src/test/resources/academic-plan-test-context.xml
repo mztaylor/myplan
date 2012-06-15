@@ -35,7 +35,6 @@
         <property name="entityManagerFactory" ref="lpEntityManagerFactory"/>
     </bean>
 
-
     <!-- Add the myplan data dictionaries -->
     <import resource="classpath:ks-academic-plan-data-dictionary-services-configuration.xml" />
 
@@ -87,12 +86,15 @@
         </property>
     </bean>
 
+    <bean id="atpServiceMock" class="org.kuali.student.myplan.service.mock.AtpServiceMockImpl"/>
+
     <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
         <property name="planItemTypeDao" ref="planItemTypeDao"/>
         <property name="courseService" ref="courseServiceMock"/>
+        <property name="atpService" ref="atpServiceMock" />
     </bean>
 
     <!-- Academic Plan Service Decorators -->

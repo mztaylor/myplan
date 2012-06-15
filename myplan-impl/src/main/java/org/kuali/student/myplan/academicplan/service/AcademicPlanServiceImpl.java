@@ -3,7 +3,6 @@ package org.kuali.student.myplan.academicplan.service;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.util.UUIDHelper;
 
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.service.CourseService;
 
@@ -17,7 +16,6 @@ import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
 import org.kuali.student.myplan.academicplan.model.*;
 
-import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -32,10 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Academic Plan Service Implementation.
@@ -75,6 +70,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
         }
         return this.atpService;
+    }
+
+     /**
+     * This method provides a way to manually provide a CourseService implementation during testing.
+     * @param atpService
+     */
+    public void setAtpService(AtpService atpService) {
+        this.atpService = atpService;
     }
 
     public PlanItemDao getPlanItemDao() {
@@ -230,7 +233,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         for (LearningPlanEntity lpe : lpeList) {
             learningPlanDtos.add(lpe.toDto());
         }
-
         return learningPlanDtos;
     }
 
@@ -253,6 +255,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setStudentId(learningPlan.getStudentId());
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
+        //  Update meta
+        lpe.setCreateId(context.getPrincipalId());
+        lpe.setCreateTime(new Date());
+        lpe.setUpdateId(context.getPrincipalId());
+        lpe.setUpdateTime(new Date());
+
         LearningPlanEntity existing = learningPlanDao.find(lpe.getId());
         if (existing != null) {
             throw new AlreadyExistsException();
@@ -272,8 +280,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  FIXME: For a given plan there should be only one planned course item per course id. So, do a lookup to see
         //  if a plan item exists if the type is "planned" and do an update of ATPid instead of creating a new plan item.
-
-
         PlanItemEntity pie = new PlanItemEntity();
         String planItemId = UUIDHelper.genStringUUID();
         pie.setId(planItemId);
@@ -302,6 +308,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Create text entity.
         pie.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
+        //  Set meta data.
+        pie.setCreateId(context.getPrincipalId());
+        pie.setCreateTime(new Date());
+        pie.setUpdateId(context.getPrincipalId());
+        pie.setUpdateTime(new Date());
+
         //  Set the learning plan.
         String planId = planItem.getLearningPlanId();
         if (planId == null) {
@@ -313,7 +325,13 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
         pie.setLearningPlan(plan);
 
+        //  Save the new plan item.
         planItemDao.persist(pie);
+
+        //  Update the metadata (timestamp, updated-by) on the plan.
+        plan.setUpdateId(context.getPrincipalId());
+        plan.setUpdateTime(new Date());
+        learningPlanDao.update(plan);
 
         return planItemDao.find(planItemId).toDto();
     }
@@ -342,7 +360,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setStudentId(learningPlan.getStudentId());
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
-
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
             for (Attribute att : learningPlan.getAttributes()) {
@@ -350,6 +367,10 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 lpe.getAttributes().add(attEntity);
             }
         }
+
+        //  Update meta data.
+        lpe.setUpdateId(context.getPrincipalId());
+        lpe.setUpdateTime(new Date());
 
         learningPlanDao.merge(lpe);
         return learningPlanDao.find(learningPlanId).toDto();
@@ -361,7 +382,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                        @WebParam(name = "planItem") PlanItemInfo planItem,
                                        @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
-            MissingParameterException, OperationFailedException, PermissionDeniedException {
+                MissingParameterException, OperationFailedException, PermissionDeniedException {
 
         //  See if the plan item exists before trying to update it.
         PlanItemEntity planItemEntity = planItemDao.find(planItemId);
@@ -399,20 +420,42 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Update text entity.
         planItemEntity.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
-        //  Update the learning plan.
+         //  Update meta data.
+        planItemEntity.setUpdateId(context.getPrincipalId());
+        planItemEntity.setUpdateTime(new Date());
+
+        //   If the the learning plan has changed update the plan item and update the meta data (update date, user) on the old plan.
+        LearningPlanEntity originalPlan = learningPlanDao.find(planItem.getLearningPlanId());
+        if (originalPlan == null) {
+            throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
+        }
+
+        LearningPlanEntity newPlan = null;
         if ( ! planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
             String planId = planItem.getLearningPlanId();
             if (planId == null) {
                 throw new InvalidParameterException("Learning plan id was null.");
             }
-            LearningPlanEntity plan = learningPlanDao.find(planItem.getLearningPlanId());
-            if (plan == null) {
+            newPlan = learningPlanDao.find(planItem.getLearningPlanId());
+            if (newPlan == null) {
                 throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
             }
-            planItemEntity.setLearningPlan(plan);
+            planItemEntity.setLearningPlan(newPlan);
         }
 
         planItemDao.merge(planItemEntity);
+
+         //  Update meta data on the original plan.
+        originalPlan.setUpdateId(context.getPrincipalId());
+        originalPlan.setUpdateTime(new Date());
+        learningPlanDao.update(originalPlan);
+
+        //  Update the new plan meta data if the plan changed.
+        if (newPlan != null) {
+            newPlan.setUpdateId(context.getPrincipalId());
+            newPlan.setUpdateTime(new Date());
+            learningPlanDao.update(newPlan);
+        }
 
         return planItemDao.find(planItemEntity.getId()).toDto();
     }

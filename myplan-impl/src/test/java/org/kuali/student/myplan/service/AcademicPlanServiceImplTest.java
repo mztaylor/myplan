@@ -14,6 +14,7 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
@@ -63,7 +64,6 @@ public class AcademicPlanServiceImplTest {
          academicPlanService.getLearningPlan("unknown_plan", context);
     }
 
-
     @Test
     public void getLearningPlan() {
         String planId = "lp1";
@@ -111,6 +111,9 @@ public class AcademicPlanServiceImplTest {
         desc.setPlain(planDesc);
         learningPlan.setDescr(desc);
 
+        //  Set meta data object.
+        learningPlan.setMeta(new MetaInfo());
+
         learningPlan.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
 
         LearningPlanInfo newLearningPlan = null;
@@ -125,6 +128,12 @@ public class AcademicPlanServiceImplTest {
         assertEquals(principalId, newLearningPlan.getStudentId());
         assertEquals(formattedDesc, newLearningPlan.getDescr().getFormatted());
         assertEquals(planDesc, newLearningPlan.getDescr().getPlain());
+
+        //  Validate metadata was set.
+        assertEquals(principalId, newLearningPlan.getMeta().getCreateId());
+        assertNotNull(newLearningPlan.getMeta().getCreateTime());
+        assertEquals(principalId, newLearningPlan.getMeta().getUpdateId());
+        assertNotNull(newLearningPlan.getMeta().getUpdateTime());
     }
 
     @Test
@@ -162,8 +171,7 @@ public class AcademicPlanServiceImplTest {
         Date updated2 = plan.getMeta().getUpdateTime();
         assertNotNull(updated2);
 
-        //  TODO: FIXME: Determine how metadata is supposed to be updated during updates.
-       // assertFalse(updated1.equals(updated2));
+        assertFalse(updated1.equals(updated2));
     }
 
 
@@ -288,8 +296,8 @@ public class AcademicPlanServiceImplTest {
 
         //  Set some ATP info since this is a planned course.
         List<String> planPeriods = new ArrayList<String>();
-        planPeriods.add("kuali.uw.atp.winter2011");
-        planPeriods.add("kuali.uw.atp.autumn2011");
+        planPeriods.add("kuali.uw.atp.2011.1");
+        planPeriods.add("kuali.uw.atp.2011.4");
         planItem.setPlanPeriods(planPeriods);
 
         String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
@@ -346,13 +354,14 @@ public class AcademicPlanServiceImplTest {
         desc.setFormatted(formattedDesc);
         desc.setPlain(planDesc);
         planItemInfo.setDescr(desc);
+        planItemInfo.setMeta(new MetaInfo());
 
         planItemInfo.setLearningPlanId(planId);
 
         //  Set some ATP info since this is a planned course.
         List<String> planPeriods = new ArrayList<String>();
-        planPeriods.add("kuali.uw.atp.winter2011");
-        planPeriods.add("kuali.uw.atp.autumn2011");
+        planPeriods.add("kuali.uw.atp.2011.1");
+        planPeriods.add("kuali.uw.atp.2011.4");
         planItemInfo.setPlanPeriods(planPeriods);
 
         String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
@@ -364,7 +373,7 @@ public class AcademicPlanServiceImplTest {
         planItemInfo.setTypeKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         planItemInfo.setStateKey(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
-        //  Create the plan item
+        //  Save the plan item
         PlanItemInfo newPlanItem = null;
         try {
             newPlanItem = academicPlanService.createPlanItem(planItemInfo, context);
@@ -384,9 +393,14 @@ public class AcademicPlanServiceImplTest {
         assertEquals(planItemInfo.getTypeKey(), fetchedPlanItem.getTypeKey());
         assertEquals(planItemInfo.getStateKey(), fetchedPlanItem.getStateKey());
         assertEquals(2, fetchedPlanItem.getPlanPeriods().size());
+        assertEquals(principalId, fetchedPlanItem.getMeta().getUpdateId());
+        assertNotNull(fetchedPlanItem.getMeta().getUpdateTime());
+
+        //  Save meta data info.
+        Date originalUpdateDate = newPlanItem.getMeta().getUpdateTime();
 
         //  Update the plan item and save.
-        fetchedPlanItem.getPlanPeriods().remove("kuali.uw.atp.winter2011");
+        fetchedPlanItem.getPlanPeriods().remove("kuali.uw.atp.2011.1");
         assertEquals(1, fetchedPlanItem.getPlanPeriods().size());
 
         PlanItemInfo updatedPlanItem = null;
@@ -404,7 +418,8 @@ public class AcademicPlanServiceImplTest {
         assertEquals(courseId, updatedPlanItem.getRefObjectId());
         assertEquals(courseType, updatedPlanItem.getRefObjectType());
         assertEquals(1, updatedPlanItem.getPlanPeriods().size());
-        assertTrue(updatedPlanItem.getPlanPeriods().contains("kuali.uw.atp.autumn2011"));
+        assertTrue(updatedPlanItem.getPlanPeriods().contains("kuali.uw.atp.2011.4"));
+        assertFalse(originalUpdateDate.equals(updatedPlanItem.getMeta().getUpdateTime()));
     }
 
     @Test (expected = AlreadyExistsException.class)
@@ -426,8 +441,8 @@ public class AcademicPlanServiceImplTest {
 
         //  Set some ATP info since this is a planned course.
         List<String> planPeriods = new ArrayList<String>();
-        planPeriods.add("kuali.uw.atp.winter2011");
-        planPeriods.add("kuali.uw.atp.autumn2011");
+        planPeriods.add("kuali.uw.atp.2011.1");
+        planPeriods.add("kuali.uw.atp.2011.4");
         planItem.setPlanPeriods(planPeriods);
 
         String courseId = "02711400-c66d-4ecb-aca5-565118f167cf";
@@ -651,7 +666,6 @@ public class AcademicPlanServiceImplTest {
         }
 
         fail("Was able to add a duplicate course id to saved courses list.");
-
     }
 
     @Test
@@ -704,8 +718,8 @@ public class AcademicPlanServiceImplTest {
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
-            assertEquals("error.required",validationResultInfos.get(0).getMessage());
-            assertEquals("refObjectType",validationResultInfos.get(0).getElement());
+        assertEquals("error.required",validationResultInfos.get(0).getMessage());
+        assertEquals("refObjectType",validationResultInfos.get(0).getElement());
         assertEquals("error.required",validationResultInfos.get(1).getMessage());
         assertEquals("learningPlanId",validationResultInfos.get(1).getElement());
         assertEquals("error.required",validationResultInfos.get(2).getMessage());
@@ -726,7 +740,7 @@ public class AcademicPlanServiceImplTest {
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
-       assertEquals("error.required",validationResultInfos.get(0).getMessage());
+        assertEquals("error.required",validationResultInfos.get(0).getMessage());
         assertEquals("refObjectType",validationResultInfos.get(0).getElement());
         assertEquals("error.required",validationResultInfos.get(1).getMessage());
         assertEquals("learningPlanId",validationResultInfos.get(1).getElement());
@@ -760,6 +774,4 @@ public class AcademicPlanServiceImplTest {
         assertEquals("Plan Item Type was [kuali.academicplan.item.backup], but no plan periods were defined.",validationResultInfos.get(4).getMessage());
         assertEquals("typeKey",validationResultInfos.get(4).getElement());
     }
-
-
 }

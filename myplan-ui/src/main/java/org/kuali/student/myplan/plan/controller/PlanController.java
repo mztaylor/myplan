@@ -35,15 +35,14 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.utils.ContextInfoFactory;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -209,7 +208,7 @@ public class PlanController extends UifControllerBase {
         //  Update
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, ContextInfoFactory.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not update plan item.", e);
         }
@@ -280,7 +279,7 @@ public class PlanController extends UifControllerBase {
 
         //  Update
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, PlanConstants.CONTEXT_INFO);
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, ContextInfoFactory.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not udpate plan item.", e);
         }
@@ -405,7 +404,7 @@ public class PlanController extends UifControllerBase {
         //planItem.setTypeKey(newType);
 
         try {
-            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, PlanConstants.CONTEXT_INFO);
+            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, ContextInfoFactory.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not udpate plan item.", e);
         }
@@ -683,7 +682,7 @@ public class PlanController extends UifControllerBase {
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
             try {
-                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, PlanConstants.CONTEXT_INFO);
+                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, ContextInfoFactory.makeContextInfoInstance());
             } catch (Exception e) {
                 return doOperationFailedError(form, "Unable to update wishlist plan item.", e);
             }
@@ -707,14 +706,6 @@ public class PlanController extends UifControllerBase {
 
         //  Populate the form.
         form.setJavascriptEvents(events);
-
-        //  TODO: Hold on this for now. Unclear how meta data gets updated.
-        //  Update the timestamp on the plan.
-        //try {
-        //    academicPlanService.updateLearningPlan(plan.getId(), (LearningPlanInfo) plan, PlanConstants.CONTEXT_INFO);
-        //} catch (Exception e) {
-        //    logger.error("Unable to update the plan.", e);
-        //}
 
         String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
         String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
@@ -904,7 +895,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             // Delete the plan item
-            getAcademicPlanService().deletePlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+            getAcademicPlanService().deletePlanItem(planItemId, ContextInfoFactory.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
         }
@@ -1068,7 +1059,7 @@ public class PlanController extends UifControllerBase {
         }
 
         try {
-            newPlanItem = getAcademicPlanService().createPlanItem(pii, PlanConstants.CONTEXT_INFO);
+            newPlanItem = getAcademicPlanService().createPlanItem(pii, ContextInfoFactory.makeContextInfoInstance());
         } catch (Exception e) {
             throw new RuntimeException("Could not create plan item.", e);
         }
@@ -1248,10 +1239,13 @@ public class PlanController extends UifControllerBase {
         plan.setDescr(rti);
         plan.setStudentId(studentId);
         plan.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+        plan.setMeta(new MetaInfo());
 
-        LearningPlan newPlan = getAcademicPlanService().createLearningPlan(plan, PlanConstants.CONTEXT_INFO);
+        //  Set the user id in the context used in the web service call.
+        ContextInfo context = new ContextInfo();
+        context.setPrincipalId(getUserId());
 
-        return newPlan;
+        return getAcademicPlanService().createLearningPlan(plan, context);
     }
 
     /**
@@ -1362,18 +1356,16 @@ public class PlanController extends UifControllerBase {
         String studentID = user.getPrincipalId();
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
-        ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
         List<LearningPlanInfo> learningPlanList = null;
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
 
         List<PlanItemInfo> planItemList = null;
-
         try {
             learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
-                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, context);
+                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
                 studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
@@ -1381,8 +1373,6 @@ public class PlanController extends UifControllerBase {
                     for (String atp : planItem.getPlanPeriods()) {
                         if (atp.equalsIgnoreCase(termId)) {
                             CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
-
-
                             if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
                                 String[] str = courseDetails.getCredit().split("\\D");
                                 double min = Double.parseDouble(str[0]);
@@ -1396,20 +1386,15 @@ public class PlanController extends UifControllerBase {
                             }
                         }
                         totalCredits = Double.toString(plannedTotalMin);
-
                         if (plannedTotalMin != plannedTotalMax) {
                             totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
-
                         }
                     }
-
-
                 }
 
                 double academicTotalMin = 0;
                 double academicTotalMax = 0;
                 if (studentCourseRecordInfos.size() > 0) {
-
                     for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
                         if (ar.getTermName().equalsIgnoreCase(termId)) {
                             if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && !ar.getCreditsEarned().contains(".")) {
@@ -1428,11 +1413,7 @@ public class PlanController extends UifControllerBase {
 
                     if (academicTotalMin != academicTotalMax) {
                         totalCredits = totalCredits + "-" + Double.toString(academicTotalMax);
-
-
                     }
-
-
                 }
 
                 if (planItemList.size() > 0 && studentCourseRecordInfos.size() > 0) {
@@ -1462,20 +1443,12 @@ public class PlanController extends UifControllerBase {
                         totalCredits = minVal + "-" + maxVal;
                     }
                 }
-
-
             }
-
-
         } catch (Exception e) {
-
             logger.error("could not load total credits");
         }
-
-
         return totalCredits;
     }
-
 
     private void otherOptionValidation(PlanForm form) {
         CourseDetails courseDetails = form.getCourseDetails();
@@ -1507,12 +1480,9 @@ public class PlanController extends UifControllerBase {
                 if (!atpAlreadyexists) {
                     form.setShowOther(true);
                 }
-
-
             }
         }
     }
-
 
     public synchronized AtpHelper getAtpHelper() {
         if (this.atpHelper == null) {
