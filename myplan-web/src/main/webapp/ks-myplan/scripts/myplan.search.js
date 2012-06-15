@@ -25,7 +25,6 @@ oFacets = new Object();
             var aData = this.fnGetData(iRow);
             //var sValue = aData[iColumn]; //.toString().replace(/(<([^>]+)>)/ig,"");
             var aTemp = aData[iColumn];
-            console.log( aTemp );
             if (!oFacets[iColumn]) oFacets[iColumn] = {};
             for (var n = 0; n < aTemp.length; n++) {
                 var sTemp = aTemp[n];
@@ -100,7 +99,6 @@ function searchForCourses(id, parentId) {
                     oTable.fnGetColumnData(i);
                 }
             });
-            console.log( oFacets );
         }
     });
 }
