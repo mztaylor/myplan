@@ -96,7 +96,7 @@ public class CourseSearchRestServiceImpl extends ServerResource {
             if(item.getStatus().getLabel().length()>0){
                 status=item.getStatus().getLabel();
             } else {
-               status= "<input type=\\\"image\\\" id=\\\""+item.getCourseId()+"\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" />";
+               status= "<input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" id=\\\""+item.getCourseId()+"\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" />";
             }
             jsonString = jsonString.append("[\"").append(item.getCode()).
                     append("\",\"").append(" <a href=\\").
