@@ -107,12 +107,15 @@ public class PlannedTerm {
         if (getAcademicRecord().size() > 0) {
 
             for (AcademicRecordDataObject ar : getAcademicRecord()) {
-                if (ar.getCredit() != null || !ar.getCredit().isEmpty()) {
+                if (ar.getCredit() != null || !ar.getCredit().isEmpty() && !ar.getCredit().contains(".")) {
                     String[] str = ar.getCredit().split("\\D");
                     double min = Double.parseDouble(str[0]);
                     academicTotalMin += min;
                     double max = Double.parseDouble(str[str.length - 1]);
                     academicTotalMax += max;
+                }  else if(ar.getCredit() != null || !ar.getCredit().isEmpty() && ar.getCredit().contains(".")){
+                    academicTotalMin += Double.parseDouble(ar.getCredit());
+                    academicTotalMax += Double.parseDouble(ar.getCredit());
                 }
             }
             totalCredits = Double.toString(academicTotalMin);
@@ -131,7 +134,7 @@ public class PlannedTerm {
             if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
                 double minVal = 0;
                 double maxVal = 0;
-                minVal = Math.min(plannedTotalMin, academicTotalMin);
+                minVal = plannedTotalMin + academicTotalMin;
                 maxVal = plannedTotalMax + academicTotalMax;
                 totalCredits = minVal + "-" + maxVal;
             }
@@ -141,7 +144,7 @@ public class PlannedTerm {
             if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
                 double minVal = 0;
                 double maxVal = 0;
-                minVal = plannedTotalMin;
+                minVal = plannedTotalMin + academicTotalMin;
                 maxVal = plannedTotalMax + academicTotalMax;
                 totalCredits = minVal + "-" + maxVal;
 
