@@ -25,6 +25,8 @@ import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -35,6 +37,7 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperSer
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -75,6 +78,19 @@ public class PlanController extends UifControllerBase {
 
     // Used for getting the term and year from Atp
     private transient AtpHelper atpHelper;
+    private transient AcademicRecordService academicRecordService;
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (this.academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return this.academicRecordService;
+    }
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
+    }
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -421,6 +437,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Build an HTML link to a specific ATP in the quarter view.
+     *
      * @param atpId
      * @param text
      * @return
@@ -706,6 +723,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Gets a list of term ids taking into account "other" items. Currently this list should only contain a single item.
+     *
      * @param atpId
      * @return
      */
@@ -733,6 +751,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Check for duplicate plan items by type.
+     *
      * @param plan
      * @param atpId
      * @param courseId
@@ -740,9 +759,9 @@ public class PlanController extends UifControllerBase {
      * @return
      */
     private boolean isDuplicate(LearningPlan plan, String atpId, String courseId, String planItemType) {
-         /*
-           Make sure no dups exist. The rules are different for wishlist vs planned or backup courses.
-          */
+        /*
+         Make sure no dups exist. The rules are different for wishlist vs planned or backup courses.
+        */
         boolean isDuplicate = false;
         if (planItemType.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
             if (getWishlistPlanItem(courseId) != null) {
@@ -900,6 +919,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Blow up response of the plan capacity validation fails.
+     *
      * @param form
      * @return
      */
@@ -913,6 +933,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Blow up response if the user tries to update plan items in past terms.
+     *
      * @param form
      * @return
      */
@@ -1057,9 +1078,10 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Gets a plan item of a particular type for a particular ATP.
-     * @param planId The id of the learning plan
-     * @param courseId The id of the course
-     * @param atpId The ATP id
+     *
+     * @param planId       The id of the learning plan
+     * @param courseId     The id of the course
+     * @param atpId        The ATP id
      * @param planItemType The plan item type key.
      * @return A "planned" or "backup" plan item. Or 'null' if none exists.
      * @throws RuntimeException on errors.
@@ -1099,6 +1121,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Gets a Plan Item of type "wishlist" for a particular course. There should only ever be one.
+     *
      * @param courseId The id of the course.
      * @return A PlanItem of type wishlist.
      */
@@ -1266,6 +1289,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Creates an update credits event.
+     *
      * @param atpId The id of the term.
      * @return
      */
@@ -1284,6 +1308,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Creates an add plan item event.
+     *
      * @param planItem
      * @param courseDetails
      * @return
@@ -1328,14 +1353,19 @@ public class PlanController extends UifControllerBase {
     }
 
     private String getTotalCredits(String termId) {
-        int totalMin = 0;
-        int totalMax = 0;
+        double totalMin = 0;
+        double totalMax = 0;
+        double plannedTotalMin = 0;
+        double plannedTotalMax = 0;
+        String totalCredits = null;
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
         ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
         List<LearningPlanInfo> learningPlanList = null;
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+
         List<PlanItemInfo> planItemList = null;
 
         try {
@@ -1344,6 +1374,7 @@ public class PlanController extends UifControllerBase {
                 String learningPlanID = learningPlan.getId();
 
                 planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, context);
+                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
                     String courseID = planItem.getRefObjectId();
@@ -1351,24 +1382,96 @@ public class PlanController extends UifControllerBase {
                         if (atp.equalsIgnoreCase(termId)) {
                             CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
 
-                            String[] str = courseDetails.getCredit().split("\\D");
-                            int min = Integer.parseInt(str[0]);
-                            totalMin += min;
-                            int max = Integer.parseInt(str[str.length - 1]);
-                            totalMax += max;
+
+                            if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
+                                String[] str = courseDetails.getCredit().split("\\D");
+                                double min = Double.parseDouble(str[0]);
+                                plannedTotalMin += min;
+                                double max = Double.parseDouble(str[str.length - 1]);
+                                plannedTotalMax += max;
+
+                            } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
+                                plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
+                                plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                            }
+                        }
+                        totalCredits = Double.toString(plannedTotalMin);
+
+                        if (plannedTotalMin != plannedTotalMax) {
+                            totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
+
                         }
                     }
+
+
                 }
+
+                double academicTotalMin = 0;
+                double academicTotalMax = 0;
+                if (studentCourseRecordInfos.size() > 0) {
+
+                    for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
+                        if (ar.getTermName().equalsIgnoreCase(termId)) {
+                            if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && !ar.getCreditsEarned().contains(".")) {
+                                String[] str = ar.getCreditsEarned().split("\\D");
+                                double min = Double.parseDouble(str[0]);
+                                academicTotalMin += min;
+                                double max = Double.parseDouble(str[str.length - 1]);
+                                academicTotalMax += max;
+                            } else if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && ar.getCreditsEarned().contains(".")) {
+                                academicTotalMin += Double.parseDouble(ar.getCreditsEarned());
+                                academicTotalMax += Double.parseDouble(ar.getCreditsEarned());
+                            }
+                        }
+                    }
+                    totalCredits = Double.toString(academicTotalMin);
+
+                    if (academicTotalMin != academicTotalMax) {
+                        totalCredits = totalCredits + "-" + Double.toString(academicTotalMax);
+
+
+                    }
+
+
+                }
+
+                if (planItemList.size() > 0 && studentCourseRecordInfos.size() > 0) {
+                    if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
+                        double minVal = 0;
+                        double maxVal = 0;
+                        minVal = plannedTotalMin + academicTotalMin;
+                        maxVal = plannedTotalMax + academicTotalMax;
+                        totalCredits = minVal + "-" + maxVal;
+                    }
+                    if (plannedTotalMin == plannedTotalMax && academicTotalMin == academicTotalMax) {
+                        totalCredits = String.valueOf(plannedTotalMin + academicTotalMin);
+                    }
+                    if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
+                        double minVal = 0;
+                        double maxVal = 0;
+                        minVal = plannedTotalMin + academicTotalMin;
+                        maxVal = plannedTotalMax + academicTotalMax;
+                        totalCredits = minVal + "-" + maxVal;
+
+                    }
+                    if (plannedTotalMin == plannedTotalMax && academicTotalMin != academicTotalMax) {
+                        double minVal = 0;
+                        double maxVal = 0;
+                        minVal = academicTotalMin;
+                        maxVal = plannedTotalMax + academicTotalMax;
+                        totalCredits = minVal + "-" + maxVal;
+                    }
+                }
+
+
             }
+
+
         } catch (Exception e) {
 
             logger.error("could not load total credits");
         }
 
-        String totalCredits = Integer.toString(totalMin);
-        if (totalMin != totalMax) {
-            totalCredits = totalCredits + "-" + Integer.toString(totalMax);
-        }
 
         return totalCredits;
     }
