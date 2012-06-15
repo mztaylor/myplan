@@ -1479,10 +1479,34 @@
 
                 <!--  Backup checkbox -->
                 <bean parent="Uif-MessageField"
-                      p:messageText="[Optional]">
+                      p:messageText="[Optional]" p:render="@{moveCourse eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                    <property name="items">
+                        <list>
+
+                            <bean parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
+                                  p:render="@{moveCourse eq false ? true : false}">
+                                <property name="control">
+                                    <bean parent="Uif-CheckboxControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course." p:render="@{moveCourse eq false ? true : false}"/>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="Backup Courses will be placed below other planned courses and will not be considered when auditing your plan." p:render="@{moveCourse eq false ? true : false}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
