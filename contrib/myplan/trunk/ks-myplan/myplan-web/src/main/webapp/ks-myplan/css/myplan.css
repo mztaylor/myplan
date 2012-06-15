@@ -839,3 +839,7 @@ label.scheduled {
     padding: 0;
     margin: 0;
 }
+.myplan-audit-report div.blockElement {
+    left: 0px !important;
+    top: 0px !important;
+}
