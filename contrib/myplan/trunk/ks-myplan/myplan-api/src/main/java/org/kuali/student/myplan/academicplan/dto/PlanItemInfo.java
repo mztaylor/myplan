@@ -44,7 +44,6 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     @XmlAnyElement
     private List<Element> _futureElements;
 
-
     public PlanItemInfo() {
         this.id = null;
         this.descr = null;
