@@ -127,12 +127,16 @@ public class DegreeAuditServiceImplTest {
         auditID = "2012060513485320"; // COM 0311
 
         auditID = "2012060713084703"; //             E E   0016
-        DegreeAuditServiceImpl degreeAuditService = (DegreeAuditServiceImpl) getDegreeAuditService();
-        degreeAuditService.setCourseLinkTemplateStyle( CourseLinkBuilder.LINK_TEMPLATE.TEST );
+        auditID = "2012060713342707"; // 0ACCTG 0012
+
+        auditID = "2012061115183688"; // has an HTML report
+        auditID = "2012061115531178";
+        DegreeAuditService degreeAuditService = getDegreeAuditService();
+//        degreeAuditService.setCourseLinkTemplateStyle( CourseLinkBuilder.LINK_TEMPLATE.TEST );
 
         ContextInfo zero = new ContextInfo();
         try {
-            AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_DEFAULT, zero);
+            AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_HTML, zero);
             InputStream in = report.getReport().getDataSource().getInputStream();
 
             File target = new File( "auditreport.html" );
