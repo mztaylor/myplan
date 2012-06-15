@@ -118,6 +118,7 @@
           p:progressiveRenderViaAJAX="true" p:refreshWhenChangedPropertyNames="#form.field44">
         <property name="cssClasses">
             <list merge="true">
+                <value>myplan-audit-report</value>
                 <value>myplan-container-720</value>
             </list>
         </property>
