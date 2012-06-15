@@ -571,8 +571,8 @@
                 </bean>
 
                 <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target=""
-                      p:linkText="Delete from the Bookmarked List"
-                      p:title="Delete from the Bookmarked List" p:href="#"
+                      p:linkText="Delete from the Plan"
+                      p:title="Delete from the Plan" p:href="#"
                       p:render="@{acadRecAtpId eq null ? true : false}">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
