@@ -2,14 +2,12 @@ package org.kuali.student.myplan.audit.service;
 
 import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.*;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.dom4j.io.SAXReader;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
