@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.dom4j.io.SAXReader;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -59,11 +60,21 @@ import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 import uachieve.apis.requirement.Dprog;
 import uachieve.apis.requirement.dao.DprogDao;
 
-import org.dom4j.Document;
-import org.dom4j.io.HTMLWriter;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXContentHandler;
-import org.xml.sax.InputSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -435,33 +446,45 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
         String answer = "Audit ID " + auditId + " not available";
-//        try {
-//            JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
-//            String sql = "SELECT report.report FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
-//
-//            List list = dao.find(sql, new Object[]{auditId});
-//            byte[] report = (byte[]) list.get(0);
-//            String garbage = new String(report);
-//            garbage = garbage.replace( "<html xmlns=\"http://www.w3.org/1999/xhtml\">", "<html>" );
-//            InputStream in = new ByteArrayInputStream(garbage.getBytes() );
-//
-//            SAXReader reader = new SAXReader();
-//            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-//            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-//
-//            Document document = reader.read(in);
-//
-//            List children = document.selectNodes("/html/body/*");
-//            StringWriter sw = new StringWriter();
-//            OutputFormat format = OutputFormat.createPrettyPrint();
-//            HTMLWriter writer = new HTMLWriter(sw, format);
-//            writer.write(children);
-//            writer.flush();
-//            answer = sw.toString();
-//
-//        } catch (Exception e) {
-//            logger.error( "getHTMLReport failed", e);
-//        }
+        try {
+            JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
+            String sql = "SELECT report.report FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
+
+            List list = dao.find(sql, new Object[]{auditId});
+            byte[] report = (byte[]) list.get(0);
+            String garbage = new String(report);
+            InputStream in = new ByteArrayInputStream(garbage.getBytes() );
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document doc = builder.parse(in);
+            XPathFactory crapfactory = XPathFactory.newInstance();
+            XPath xpath = crapfactory.newXPath();
+            XPathExpression expr = xpath.compile("/html/body/*");
+            Object ugh = expr.evaluate(doc, XPathConstants.NODESET);
+            NodeList nodeList = (NodeList) ugh;
+
+            System.out.println("found: " + nodeList.getLength());
+            Node node = nodeList.item(0);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "html");
+            DOMSource source = new DOMSource(node);
+            StringWriter sw = new StringWriter();
+            StreamResult result = new StreamResult(sw);
+
+            transformer.transform(source, result);
+            answer = sw.toString();
+
+        } catch (Exception e) {
+            logger.error( "getHTMLReport failed", e);
+        }
         AuditDataSource dataSource = new AuditDataSource(answer, auditId);
         DataHandler dh = new DataHandler(dataSource);
         auditReportInfo.setReport(dh);
