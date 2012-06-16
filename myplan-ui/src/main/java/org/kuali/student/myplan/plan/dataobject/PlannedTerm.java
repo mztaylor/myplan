@@ -157,6 +157,9 @@ public class PlannedTerm {
                 totalCredits = minVal + "-" + maxVal;
             }
         }
+        if(totalCredits!=null){
+            if(totalCredits.contains(".0")) totalCredits=totalCredits.replace(".0","");
+        }
         return totalCredits;
     }
 
