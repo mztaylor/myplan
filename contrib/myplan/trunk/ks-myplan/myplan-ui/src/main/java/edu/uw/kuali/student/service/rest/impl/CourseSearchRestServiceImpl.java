@@ -98,13 +98,18 @@ public class CourseSearchRestServiceImpl extends ServerResource {
             } else {
                status= "<input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" id=\\\""+item.getCourseId()+"\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" />";
             }
+            String courseName ="";
+            if(item.getCourseName()!=null){
+                    courseName=item.getCourseName().replace("\"","'");
+            }
+
             jsonString = jsonString.append("[\"").append(item.getCode()).
                     append("\",\"").append(" <a href=\\").
                     append("\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
                     append(item.getCourseId()).append("\\").append("\" target=\\").append("\"_self\\").
-                    append("\" title=\\").append("\"").append(item.getCourseName()).append("\\").append("\"").
+                    append("\" title=\\").append("\"").append(courseName).append("\\").append("\"").
                     append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
-                    append("\"myplan-text-ellipsis\\").append("\"  >").append(item.getCourseName()).append("</a>\"").append(",\"").
+                    append("\"myplan-text-ellipsis\\").append("\"  >").append(courseName).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
                     append("\",\"").append(item.getTermsFacetKeys()).
