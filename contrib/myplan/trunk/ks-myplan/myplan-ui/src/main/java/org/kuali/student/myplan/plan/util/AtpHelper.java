@@ -55,7 +55,7 @@ public class AtpHelper {
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
-            populateAtpIdFromCalender(scheduledTerms);
+            scheduledTerms=populateAtpIdFromCalender();
         }
         //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
         //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
@@ -65,10 +65,10 @@ public class AtpHelper {
     }
 
 
-    public static void populateAtpIdFromCalender(List<TermInfo> scheduledTerms) {
-        if (scheduledTerms == null) {
-            scheduledTerms = new ArrayList<TermInfo>();
-        }
+    public static List<TermInfo> populateAtpIdFromCalender() {
+
+        List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
+
         TermInfo termInfo = new TermInfo();
         String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         int month = Calendar.getInstance().get(Calendar.MONTH);
@@ -87,6 +87,7 @@ public class AtpHelper {
         }
         termInfo.setId(atp);
         scheduledTerms.add(termInfo);
+        return scheduledTerms;
     }
 
 
@@ -202,7 +203,7 @@ public class AtpHelper {
         } catch (Exception e) {
             logger.error("Could not load planningTermInfo as service call failed", e);
             /*If SWS Fails to load up planningTermInfo  then current atp Id in TermInfo is populated from the calender month and year and set to the planningTermInfo list*/
-            AtpHelper.populateAtpIdFromCalender(planningTermInfo);
+            planningTermInfo=AtpHelper.populateAtpIdFromCalender();
         }
 
         String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());

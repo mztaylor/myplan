@@ -59,7 +59,7 @@ public class DegreeAuditAtpHelper {
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
-            populateAtpIdFromCalender(scheduledTerms);
+            scheduledTerms= populateAtpIdFromCalender();
         }
 
 
@@ -72,10 +72,8 @@ public class DegreeAuditAtpHelper {
     }
 
 
-    public static void populateAtpIdFromCalender(List<TermInfo> scheduledTerms) {
-        if (scheduledTerms == null) {
-            scheduledTerms = new ArrayList<TermInfo>();
-        }
+    public static List<TermInfo> populateAtpIdFromCalender() {
+        List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
         TermInfo termInfo = new TermInfo();
         String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         int month = Calendar.getInstance().get(Calendar.MONTH);
@@ -94,6 +92,7 @@ public class DegreeAuditAtpHelper {
         }
         termInfo.setId(atp);
         scheduledTerms.add(termInfo);
+        return scheduledTerms;
     }
 
 
@@ -209,7 +208,7 @@ public class DegreeAuditAtpHelper {
         } catch (Exception e) {
             logger.error("Could not load planningTermInfo as service call failed", e);
             /*If SWS Fails to load up planningTermInfo  then current atp Id in TermInfo is populated from the calender month and year and set to the planningTermInfo list*/
-            populateAtpIdFromCalender(planningTermInfo);
+            planningTermInfo= populateAtpIdFromCalender();
         }
 
         String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
