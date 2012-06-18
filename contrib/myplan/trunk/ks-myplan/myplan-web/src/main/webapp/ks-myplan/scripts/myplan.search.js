@@ -22,7 +22,7 @@ oFacets = new Object();
         for (var i = 0, c = aiRows.length; i < c; i++) {
             iRow = aiRows[i];
             var aData = this.fnGetData(iRow);
-            var aTemp = aData[iColumn].replace(/(\[|\]|;)/gi,"").split(",");
+            var aTemp = aData[iColumn].replace(/(\[|\]|;)/gi,"").split(",").sort();
             if (!oFacets[iColumn]) oFacets[iColumn] = {};
             for (var n = 0; n < aTemp.length; n++) {
                 var sTemp = jq.trim( aTemp[n] );
