@@ -10,7 +10,6 @@ oFacets = new Object();
         if (typeof bFiltered == "undefined") bFiltered = true;
         // by default ignore empty values
         if (typeof bIgnoreEmpty == "undefined") bIgnoreEmpty = true;
-
         // list of rows which we're going to loop through
         var aiRows;
 
@@ -23,11 +22,10 @@ oFacets = new Object();
         for (var i = 0, c = aiRows.length; i < c; i++) {
             iRow = aiRows[i];
             var aData = this.fnGetData(iRow);
-            //var sValue = aData[iColumn]; //.toString().replace(/(<([^>]+)>)/ig,"");
-            var aTemp = aData[iColumn];
+            var aTemp = aData[iColumn].replace(/(\[|\]|;)/gi,"").split(",");
             if (!oFacets[iColumn]) oFacets[iColumn] = {};
             for (var n = 0; n < aTemp.length; n++) {
-                var sTemp = aTemp[n];
+                var sTemp = jq.trim( aTemp[n] );
                 if (!oFacets[iColumn][sTemp]) oFacets[iColumn][sTemp] = {count: 0};
                 if (!oFacets[iColumn][sTemp].checked) oFacets[iColumn][sTemp].checked = false;
                 if (bIgnoreEmpty === true && aTemp[n].length === 0) {
@@ -97,8 +95,24 @@ function searchForCourses(id, parentId) {
             jq.each(oTable.fnSettings().aoColumns, function(i) {
                 if (oTable.fnSettings().aoColumns[i].bSearchable) {
                     oTable.fnGetColumnData(i);
+                    jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout").html(fnCreateFacets(oFacets[i]));
                 }
             });
+            console.log(oFacets);
         }
     });
+}
+
+function fnCreateFacets(oData) {
+    var jFacetSet = jq('<ul />').append('<li class="all"><a href="#">All</a></li>');
+    for (var key in oData) {
+        if (oData.hasOwnProperty(key)) {
+            var jItem = jq('<li />');
+            var jLink = jq('<a href="#">' + key + '</a>');
+            if (oData[key].checked) jLink.addClass("checked");
+            var jCount = jq('<span>(' + oData[key].count + ')</span>');
+            jFacetSet.append(jItem.append(jLink).append(jCount));
+        }
+    }
+    return jFacetSet.prop('outerHTML');
 }
