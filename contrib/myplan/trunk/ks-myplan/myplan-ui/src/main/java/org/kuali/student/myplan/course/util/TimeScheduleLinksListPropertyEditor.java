@@ -36,7 +36,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private StudentServiceClient studentServiceClient;
 
     private String baseUrl = "";
-    private String label = "See full details about this course in {timeScheduleName} Time Schedule";
+    private String label = "See {timeScheduleName} Time Schedule";
     private String title = label;
 
     private List<String> styleClasses;
