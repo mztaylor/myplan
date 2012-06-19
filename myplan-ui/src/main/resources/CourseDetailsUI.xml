@@ -99,7 +99,7 @@
                     <property name="onDocumentReadyScript"
                               value="jq('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
                                   if (data.planItemType === 'wishlist') {
-                                      fnDisplayMessage(data.message, data.cssClass, '@{dataObject.courseId}_addSavedCourse', false);
+                                      fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true);
                                   }
                               });"/>
                     <property name="clientSideJs"
@@ -111,13 +111,13 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}"
+                <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
                       p:render="@{dataObject.inSavedCourseList ? true : false}"
                       p:groupBeginDelimiter="This course is in your" p:groupEndDelimiter="" p:linkSeparator="">
                     <property name="onDocumentReadyScript"
-                              value="jq('#@{dataObject.courseId}_div').subscribe('PLAN_ITEM_DELETED', function(data){
+                              value="jq('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
                                   if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
-                                      fnRestoreDetailsAddButton('@{dataObject.courseId}');
+                                      fnRestoreDetailsAddButton(data.courseDetails.courseId);
                                   }
                               });"/>
                     <property name="cssClasses">

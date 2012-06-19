@@ -627,10 +627,10 @@
                     </property>
                     <property name="onDocumentReadyScript" value="
                         jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
-                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true);
+                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                             setTimeout('fnCloseAllPopups()', 2000);
                         }).subscribe('ERROR', function(data) {
-                                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true);
+                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                         });"/>
                 </bean>
 
@@ -763,7 +763,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField" p:altText="Previous Academic Year"
-                                  p:cssClasses="myplan-carousel-prev" p:style="line-height:24px !important;"
+                                  p:cssClasses="myplan-carousel-prev"
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>
                             <bean parent="Uif-MessageField"
                                   p:cssClasses="myplan-plan-header fl-text-bold fl-font-size-130"
@@ -1521,11 +1521,11 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 5000);
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
+                                            setTimeout('fnCloseAllPopups()', 5500);
                                         })
                                         .subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                         });"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1542,10 +1542,10 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 5000);
+                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
+                                            setTimeout('fnCloseAllPopups()', 5500);
                                         }).subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                         });"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1633,10 +1633,10 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 5000);
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
+                                            setTimeout('fnCloseAllPopups()', 5500);
                                         }).subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                         });"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1654,8 +1654,8 @@
                                 <property name="onDocumentReadyScript" value="
                                     jq('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 5000);
+                                            fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
+                                            setTimeout('fnCloseAllPopups()', 5500);
                                         });"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1702,16 +1702,6 @@
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
                     </property>
-                    <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse')
-                                        .subscribe('BUTTON_ENABLE', function(data){
-                                            fnEnableButton(data.message, data.cssClass, 'addPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
-                                        })
-                                        .subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
-                                        });"/>
-
                 </bean>
                 <bean parent="Uif-InputField" p:propertyName="year" p:label="Year" p:cssClasses="myplan-select-other"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
@@ -1722,16 +1712,6 @@
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
-                    <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
-                                            setTimeout('fnCloseAllPopups()', 2000);
-                                        })
-                                        .subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true);
-                                        });"/>
-
                 </bean>
             </list>
         </property>
@@ -1777,7 +1757,7 @@
                                             fnCloseAllPopups();
                                         }
                                     }).subscribe('ERROR', function(data) {
-                                            fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true, true);
                                     });"/>
                             </bean>
                             <bean p:id="deleteCourseNoButton" parent="Uif-PrimaryActionButton" p:actionLabel="No">

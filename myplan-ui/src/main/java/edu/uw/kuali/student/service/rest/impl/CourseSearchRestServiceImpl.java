@@ -94,9 +94,9 @@ public class CourseSearchRestServiceImpl extends ServerResource {
                 throw new RuntimeException("Could not write the value using mapper", e);
             }
             if(item.getStatus().getLabel().length()>0){
-                status=item.getStatus().getLabel();
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\">"+item.getStatus().getLabel()+"</span>";
             } else {
-               status= "<input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" id=\\\""+item.getCourseId()+"\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" />";
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('"+item.getCourseId()+"', 'courseId', 'addSavedCourse', event);\\\" /></span>";
             }
             String courseName ="";
             if(item.getCourseName()!=null){
