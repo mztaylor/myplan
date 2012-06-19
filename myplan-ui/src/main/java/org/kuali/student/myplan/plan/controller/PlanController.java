@@ -1357,7 +1357,7 @@ public class PlanController extends UifControllerBase {
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
         List<LearningPlanInfo> learningPlanList = null;
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
 
         List<PlanItemInfo> planItemList = null;
         try {
@@ -1366,7 +1366,6 @@ public class PlanController extends UifControllerBase {
                 String learningPlanID = learningPlan.getId();
 
                 planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
-                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
                     String courseID = planItem.getRefObjectId();
@@ -1452,6 +1451,18 @@ public class PlanController extends UifControllerBase {
             if(totalCredits.contains(".0")) totalCredits=totalCredits.replace(".0","");
         }
         return totalCredits;
+    }
+    
+    private List<StudentCourseRecordInfo> getAcadRecs(String studentID){
+        List<StudentCourseRecordInfo> studentCourseRecordInfos=new ArrayList<StudentCourseRecordInfo>(); 
+        try{
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
+
+        } catch (Exception e){
+            logger.error("Query to fetch Academic records failed with SWS");
+            return studentCourseRecordInfos;
+        }
+        return studentCourseRecordInfos;
     }
 
     private void otherOptionValidation(PlanForm form) {
