@@ -12,15 +12,15 @@ import javax.xml.namespace.QName;
 import java.util.*;
 
 /**
-*  Logic for building list of FacetItems and coding CourseSearchItems.
-*/
+ * Logic for building list of FacetItems and coding CourseSearchItems.
+ */
 public class GenEduReqFacet extends AbstractFacet {
 
     private final Logger logger = Logger.getLogger(GenEduReqFacet.class);
 
     private transient EnumerationManagementService enumService;
 
-    private  HashMap<String,List<EnumeratedValueInfo>> enumServiceCache =new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, List<EnumeratedValueInfo>> enumServiceCache = new HashMap<String, List<EnumeratedValueInfo>>();
 
     private HashSet<String> GenEduReqFacetSet = new HashSet<String>();
 
@@ -51,7 +51,7 @@ public class GenEduReqFacet extends AbstractFacet {
         String genEdString = item.getGenEduReq();
         //  Set of keys which pertain to this course.
         Set<String> facetKeys = new HashSet<String>();
-
+        StringBuffer genEdus = new StringBuffer();
         //  If no gen edu req info was set then setup for an "Unknown" facet.
         if (genEdString == null || genEdString.equals(CourseSearchItem.EMPTY_RESULT_VALUE_KEY) || genEdString.equals("")) {
             facetKeys.add(FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER);
@@ -64,11 +64,12 @@ public class GenEduReqFacet extends AbstractFacet {
             String saveKey = null;
             for (String key : keys) {
                 saveKey = key;
-                if (isNewFacetKey( FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER )) {
+                if (isNewFacetKey(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER)) {
                     EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX + key);
                     saveKey = e.getAbbrevValue();
+                    genEdus=genEdus.append(saveKey).append(",");
                     String title = e.getValue();
-                    if ( ! StringUtils.isEmpty(title)){
+                    if (!StringUtils.isEmpty(title)) {
                         itemFacet.setTitle(title);
                         itemFacet.setKey(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER);
                         itemFacet.setDisplayName(saveKey);
@@ -78,17 +79,18 @@ public class GenEduReqFacet extends AbstractFacet {
                 facetKeys.add(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER);
             }
         }
+        item.setGenEduReq(genEdus.substring(0,genEdus.lastIndexOf(",")));
         item.setGenEduReqFacetKeys(facetKeys);
     }
 
     /**
-     *  FIXME: This code is duplicated in CourseDetailsInquiryViewHelperService.java. This code will go away with facet refactor
+     * FIXME: This code is duplicated in CourseDetailsInquiryViewHelperService.java. This code will go away with facet refactor
      */
     private EnumeratedValueInfo getGenEdReqEnumInfo(String key) {
         EnumeratedValueInfo enumValueInfo = null;
         try {
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if ( ! enumServiceCache.containsKey("kuali.uw.lu.genedreq")) {
+            if (!enumServiceCache.containsKey("kuali.uw.lu.genedreq")) {
                 enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
             } else {
                 enumeratedValueInfoList = enumServiceCache.get("kuali.uw.lu.genedreq");
