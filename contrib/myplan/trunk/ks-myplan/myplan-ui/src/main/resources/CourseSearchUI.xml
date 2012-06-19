@@ -264,6 +264,24 @@
                 <value>myplan-course-search-results-datatable</value>
             </list>
         </property>
+        <property name="onDocumentReadyScript" value="
+            jq('#course_search_results')
+                .subscribe('PLAN_ITEM_DELETED', function(data){
+                    if (data.planItemType === 'wishlist') {
+                        fnRestoreSearchAddButton(data.courseDetails.courseId);
+                    }
+                })
+                .subscribe('PLAN_ITEM_ADDED', function(data){
+                    if (data.planItemType === 'wishlist') {
+                        fnDisplayMessage('Bookmarked', '', data.courseDetails.courseId+'_status', false);
+                    }
+                })
+                .subscribe('PLAN_ITEM_ADDED', function(data){
+                    if (data.planItemType === 'planned') {
+                        fnDisplayMessage('Planned', '', data.courseDetails.courseId+'_status', false);
+                    }
+                });
+        "/>
         <property name="richTable.templateOptions">
             <map merge="true">
                 <entry key="oLanguage"

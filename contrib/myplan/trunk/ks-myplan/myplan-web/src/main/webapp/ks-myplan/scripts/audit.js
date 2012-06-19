@@ -1,12 +1,7 @@
+/*
 jq(document).ready(function(){
     //var count = 0;
     jq(".requirement .requirement-heading > div").each(function() {
-    	/*
-    	if (count == 3) {
-    		jq(this).attr("class","C");
-    	}
-    	++count;
-    	*/
     	var status = jq(this).attr("class");
     	switch (status) {
     		case "C":
@@ -51,5 +46,43 @@ jq(document).ready(function(){
     	e.preventDefault();
     	//var id = jq(this).attr("href");
     	//openPopUp(id+'_popup', id, 'audit', 'audit', {viewId:'DegreeAudit-FormView'}, event, null, {width:'400px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
+    });
+});
+*/
+
+jq(document).ready(function(){
+    jq(".myplan-audit-report .requirement > .reqText").each(function() {
+        jq(this).find("br").remove();
+    });
+    jq(".myplan-audit-report .requirement > .status").each(function() {
+        if ( jq(this).hasClass("statusOK") ) {
+            jq(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed")
+            jq(this).siblings(".reqBody").hide();
+        }
+    });
+    jq(".myplan-audit-report .requirement > .reqText").click(function(){
+        if ( jq(this).siblings(".toggler").hasClass("togglerExpanded") ) {
+            jq(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed");
+            jq(this).siblings(".reqBody").slideUp("400");
+        } else {
+            jq(this).siblings(".toggler").removeClass("togglerCollapsed").addClass("togglerExpanded");
+            jq(this).siblings(".reqBody").slideDown("400");
+        }
+    });
+    jq(".myplan-audit-report .requirement").each(function() {
+        var content = jq.trim( jq(this).text() );
+        if (content === '') {
+            jq(this).remove();
+        }
+        jq(this).find(".status.statusNONE").hide();
+        jq(this).find(".toggler").not(".togglerExpanded, .togglerCollapsed").hide();
+    });
+    jq(".myplan-audit-report .requirement > .reqBody").each(function() {
+        var content = jq.trim( jq(this).text() );
+        if (content === '') {
+            jq(this).siblings(".toggler").removeClass("togglerExpanded");
+            jq(this).siblings(".reqText").unbind("click").css("cursor","default");
+            jq(this).remove();
+        }
     });
 });

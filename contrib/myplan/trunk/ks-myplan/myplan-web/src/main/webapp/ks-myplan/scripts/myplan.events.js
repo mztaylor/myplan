@@ -62,13 +62,14 @@ function fnUpdateCredits (atpId, termCredits) {
     Function: swap action button with feedback message
 #################################################################
  */
-function fnDisplayMessage (message, cssClass, targetId, buttons) {
-    if (buttons) {
-        jq("#" + targetId).parent().parent("div").fadeOut(250, function() {
+function fnDisplayMessage (message, cssClass, targetId, button, full) {
+    if (button) {
+        if (!full) jq("#" + targetId).wrap("<div/>");
+        jq("#" + targetId).parent("div").fadeOut(250, function() {
             jq(this).addClass(cssClass).html(message).fadeIn(250);
         });
     } else {
-        jq("#" + targetId).parent().fadeOut(250, function() {
+        jq("#" + targetId).fadeOut(250, function() {
             jq(this).addClass(cssClass).html(message).fadeIn(250);
         });
     }
@@ -79,16 +80,10 @@ function fnDisplayMessage (message, cssClass, targetId, buttons) {
 #################################################################
  */
 function fnRestoreSearchAddButton (courseId) {
-    var oTable = jq('#course_search_results_datatable').dataTable();
+    var oTable = jq('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
     var oNodes = oTable.fnGetNodes();
-    jq(oNodes).find("#" + courseId + "_save_span").removeClass().fadeOut(250, function() {
-        if ( jq.trim( jq(this).text() ) === 'In List') {
-            var sOriginalScript = jq(this).parent().find("input[type='hidden']").attr("value");
-            var sAppendScript = "jq('#' + '" + courseId + "_save').click(function(e){e.preventDefault();myPlanAjaxPlanItemMove('" + courseId + "', 'courseId', 'addSavedCourse', e);});";
-            jq(this).parent().find("input[type='hidden']").attr("name","script").attr("value", sOriginalScript + " " + sAppendScript);
-        }
-        jq(this).html("<input type=\"image\" id=\"" + courseId + "_save\" src=\"/student/ks-myplan/images/btnAdd.png\" alt=\"Save to Your Courses List\" class=\"uif-field uif-imageField\" />");
-        runHiddenScripts();
+    jq(oNodes).find("#" + courseId + "_status").fadeOut(250, function() {
+        jq(this).html('<input type="image" title="Bookmark This Course" src="/student/ks-myplan/images/btnAdd.png" alt="Bookmark This Course" class="uif-field uif-imageField" onclick="myPlanAjaxPlanItemMove(\''+courseId+'\', \'courseId\', \'addSavedCourse\', event);">');
         jq(this).fadeIn(250);
     });
 }
@@ -98,9 +93,10 @@ function fnRestoreSearchAddButton (courseId) {
 #################################################################
  */
 function fnRestoreDetailsAddButton (courseId) {
-    jq("#" + courseId + "_div").parent().fadeOut(250, function() {
-        jq("#" + courseId + "_div").replaceWith("<button id=\"" + courseId + "_addSavedCourse\" class=\"uif-field uif-action myplan-button myplan-button-gray\" onClick=\"event.preventDefault(); myPlanAjaxPlanItemMove('" + courseId + "', 'courseId', 'addSavedCourse', event);\">Save to Your Courses List</button>");
-        jq("#" + courseId + "_addSavedCourse").after('<input name="script" type="hidden" value="jq(document).ready(function() {jq(\'#' + courseId + '_addSavedCourse\').subscribe(\'PLAN_ITEM_ADDED\', function(data){ if (data.planItemType === \'wishlist\') { fnDisplayMessage(data.message, data.cssClass, \'' + courseId + '_addSavedCourse\', false); } });});" />');
+    jq("#" + courseId + "_bookmarked").wrap("<div/>");
+    jq("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
+        jq(this).replaceWith('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
+        jq(this).append("jq(document).ready(function () {jq('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
         runHiddenScripts();
         jq(this).fadeIn(250);
     });
