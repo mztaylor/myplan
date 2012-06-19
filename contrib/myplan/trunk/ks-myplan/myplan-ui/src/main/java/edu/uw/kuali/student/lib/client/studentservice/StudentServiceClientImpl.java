@@ -298,7 +298,7 @@ public class StudentServiceClientImpl
             url.append(registrationUrl);
         } else if (regId != null && year != null && term != null && registrationUrl == null) {
             url.append("/").append(getServiceVersion()).append("/").append("registration.xml?year=").append(year).append("&")
-                    .append("quarter=").append(term).append("&").append("reg_id=").append(regId);
+                    .append("quarter=").append(term).append("&").append("reg_id=").append(regId).append("&is_active=on");
         } else {
             url.append("/").append(getServiceVersion()).append("/")
                     .append("enrollment.xml?reg_id=").append(regId).append("&").append("verbose=on");
