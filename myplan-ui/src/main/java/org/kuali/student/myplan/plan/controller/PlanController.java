@@ -120,6 +120,7 @@ public class PlanController extends UifControllerBase {
                     if (!planForm.isSetToPlanning()) {
                         planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
                     }
+                    planForm.setAtpId(planItem.getPlanPeriods().get(0));
                 }
             } catch (Exception e) {
                 return doPageRefreshError(planForm, "Plan item not found.", e);
