@@ -36,6 +36,8 @@ import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import uachieve.apis.audit.*;
 import uachieve.apis.audit.dao.JobQueueListDao;
@@ -67,10 +69,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -370,8 +369,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
-//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
-    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
+    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
+//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
 
     public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style ) {
         courseLinkTemplateStyle = style;
@@ -462,6 +461,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             Document doc = builder.parse(in);
+
             XPathFactory crapfactory = XPathFactory.newInstance();
             XPath xpath = crapfactory.newXPath();
             XPathExpression expr = xpath.compile("/html/body/*");
@@ -469,13 +469,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             NodeList nodeList = (NodeList) ugh;
 
             System.out.println("found: " + nodeList.getLength());
-            Node node = nodeList.item(0);
+            Node root = nodeList.item(0);
+
+            String path = "//div[@class='reqText']/text()";
+            crazyDOMLinkifier( doc, xpath, path, builder );
+
+            path = "//span[@class='subreqTitleText']/text()";
+            crazyDOMLinkifier(doc, xpath, path, builder);
+
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "html");
-            DOMSource source = new DOMSource(node);
+            DOMSource source = new DOMSource(root);
             StringWriter sw = new StringWriter();
             StreamResult result = new StreamResult(sw);
 
@@ -489,6 +496,34 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         DataHandler dh = new DataHandler(dataSource);
         auditReportInfo.setReport(dh);
         return auditReportInfo;
+    }
+
+    public void crazyDOMLinkifier( Document doc, XPath xpath, String path, DocumentBuilder builder ) throws XPathExpressionException, IOException, SAXException {
+        XPathExpression godot = xpath.compile(path);
+        Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
+        NodeList godotList = (NodeList) godotSet;
+        for (int nth = 0; nth < godotList.getLength(); nth++) {
+            Node child = godotList.item(nth);
+            String scurge = child.getTextContent();
+            String victim = CourseLinkBuilder.makeLinks(scurge, courseLinkTemplateStyle);
+            if (!scurge.equals(victim)) {
+                victim = victim.replace( "&", "&amp;");
+
+                victim = "<fake>" + victim + "</fake>";
+                builder.reset();
+                Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
+                Node fake = whoopie.getDocumentElement();
+
+                Node parent = child.getParentNode();
+                parent.removeChild(child);
+                NodeList lamesters = fake.getChildNodes();
+                for (int xing = 0; xing < lamesters.getLength(); xing++) {
+                    Node tank = lamesters.item(xing);
+                    Node crank = doc.importNode(tank, true);
+                    parent.appendChild(crank);
+                }
+            }
+        }
     }
 
     public AuditReportInfo getHTMLReportXYZ(String auditId) throws OperationFailedException {
@@ -854,6 +889,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                 taken.setNumber(number);
                                 taken.setGrade(jqc.getRgrade());
                                 taken.setDescription(jqc.getCtitle());
+                                taken.setCredits(jqc.getCredit().floatValue());
                                 taken.setCredits(jqc.getCredit().floatValue());
                                 taken.setQuarter(jqc.getEditYt());
                                 boolean inProgress = "I".equals(jqc.getIp());

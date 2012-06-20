@@ -122,14 +122,6 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void getAuditReport() {
         String auditID = "2012042713461525";
-        auditID = "2012060116402255";
-        auditID = "2012053111480733"; // BIO
-        auditID = "2012060513485320"; // COM 0311
-
-        auditID = "2012060713084703"; //             E E   0016
-        auditID = "2012060713342707"; // 0ACCTG 0012
-
-        auditID = "2012061115183688"; // has an HTML report
         auditID = "2012061115531178";
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 //        degreeAuditService.setCourseLinkTemplateStyle( CourseLinkBuilder.LINK_TEMPLATE.TEST );
