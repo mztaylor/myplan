@@ -777,21 +777,25 @@
             <list>
                 <!--<ref bean="overallPlanLink"/>-->
                 <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-plan-heading</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField" p:altText="Previous Academic Year"
-                                  p:cssClasses="myplan-carousel-prev"
+                                  p:cssClasses="myplan-carousel-prev" p:style="margin:0;"
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>
                             <bean parent="Uif-MessageField"
-                                  p:cssClasses="myplan-plan-header fl-text-bold fl-font-size-130"
-                                  p:style="line-height:24px !important;">
+                                  p:cssClasses="myplan-plan-header fl-text-bold fl-font-size-140"
+                                  p:style="line-height:24px !important; height:24px; margin:0; text-align:center; width:227px;">
                                 <property name="message">
                                     <bean parent="Uif-Message" p:messageText="Academic Year"/>
                                 </property>
-
                             </bean>
                             <bean parent="Uif-ImageField" p:altText="Next Academic Year"
-                                  p:cssClasses="myplan-carousel-next" p:style="line-height:24px !important;"
+                                  p:cssClasses="myplan-carousel-next" p:style="margin:0;"
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnNext.png"/>
                         </list>
                     </property>
@@ -1908,7 +1912,7 @@
         </property>
     </bean>
 
-    <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="COMPLETED">
+    <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Completed">
         <property name="cssClasses" value="fl-container-150"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems"/>

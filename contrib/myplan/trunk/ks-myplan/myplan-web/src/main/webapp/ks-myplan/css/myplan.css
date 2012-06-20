@@ -109,6 +109,9 @@ a:focus {
 .myplan-view {
 	margin-top:10px;
 }
+.myplan-view .uif-pageHeader {
+    margin: 0 0 1em 0;
+}
 .myplan-view #Uif-ViewContentWrapper {
 	min-height: 450px;
 }
@@ -334,6 +337,12 @@ button.myplan-button-transparent:hover {
 .myplan-carousel-prev,
 .myplan-carousel-next {
     cursor: pointer;
+    line-height:24px;
+    height:24px;
+}
+.myplan-carousel-prev img,
+.myplan-carousel-next img {
+    margin: 4px;
 }
 .myplan-carousel-prev.disabled,
 .myplan-carousel-next.disabled {
@@ -813,10 +822,10 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 }
 
 /* Planned Courses ################################################################################### */
-.myplan-view #planned_courses_detail_page_div {
-	padding-top: 10px;
+.myplan-plan-heading > .uif-boxLayout {
+    margin: auto;
+    width: 275px;
 }
-
 .myplan-audit-widget select {
     width: 180px;
     margin: 10px 0px 0px;
