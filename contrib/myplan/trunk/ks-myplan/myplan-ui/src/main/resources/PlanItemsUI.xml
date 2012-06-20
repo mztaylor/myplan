@@ -617,7 +617,7 @@
         </property>
     </bean>
     <!--Delete confirmation Dialog Box content -->
-    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection" p:headerText="Delete Course">
+    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection" p:headerText="Delete @{atpId eq null ? 'Bookmark' : 'from the Plan'}">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1669,7 +1669,7 @@
     <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
+                <bean id="select_quarter" parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
                       p:cssClasses="myplan-select-other"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
                       p:labelPlacement="TOP">
@@ -1680,7 +1680,8 @@
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="year" p:label="Year" p:cssClasses="myplan-select-other"
+                <bean id="select_year" parent="Uif-InputField" p:propertyName="year" p:label="Year"
+                      p:cssClasses="myplan-select-other"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
                       p:labelPlacement="TOP">
                     <property name="control">
@@ -1690,7 +1691,7 @@
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
+                <bean id="hidden_other" parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
