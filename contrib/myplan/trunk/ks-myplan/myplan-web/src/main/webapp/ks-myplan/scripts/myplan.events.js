@@ -36,14 +36,23 @@ function fnRemovePlanItem (atpId, type, planItemId) {
         jq(this).remove();
     });
 }
-
+/*
+#################################################################
+    Function: remove course from saved courses list
+#################################################################
+ */
+function fnRemoveSavedItem (planItemId, cssStyle) {
+    jq("." + cssStyle + " #" + planItemId).parents("li").fadeOut(250, function(){
+        jq(this).remove();
+    });
+}
 /*
 #################################################################
     Function: update the count of saved courses
 #################################################################
  */
 function fnUpdateSavedCount (savedItemCount) {
-    jq(".myplan-saved-courses-detail .uif-headerField.uif-sectionHeaderField .uif-header strong").fadeOut(250, function() {
+    jq(".myplan-saved-courses-detail .uif-sectionHeader .uif-headerText strong").fadeOut(250, function() {
 	    jq(this).html(savedItemCount - 1).fadeIn(250);
 	});
 }

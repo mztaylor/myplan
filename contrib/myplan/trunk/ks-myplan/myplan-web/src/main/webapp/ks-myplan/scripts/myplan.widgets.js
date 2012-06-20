@@ -183,10 +183,9 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
                 popupBox.SetBubblePopupInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
                 if ( status != 'error' ) jq(".jquerybubblepopup-innerHtml").wrapInner(planForm);
-                if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").prepend('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").click(function() {
-                    popupBox.HideAllBubblePopups();
-                    popupBox.RemoveBubblePopup();
+                    fnCloseAllPopups();
                 });
             }
             runHiddenScripts(getId);
