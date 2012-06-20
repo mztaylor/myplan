@@ -55,7 +55,7 @@
     <bean id="course_details_back_link" parent="Uif-ViewHeader">
         <property name="items">
             <bean parent="Uif-Link" p:linkText="Back to Previous Page" p:href="javascript:history.go(-1)"
-                  p:style="display:block; margin-top:1em;"/>
+                  p:style="display:block; margin:1em 0;"/>
         </property>
     </bean>
 
