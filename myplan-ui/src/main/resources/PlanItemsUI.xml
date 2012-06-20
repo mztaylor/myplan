@@ -225,10 +225,10 @@
         <property name="propertyName" value="searchResults"/>
         <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="onDocumentReadyScript" value="
-            jq('#saved_courses_detail_list_div').subscribe('PLAN_ITEM_DELETED', function(data){
+            jq('.myplan-saved-courses-detail').subscribe('PLAN_ITEM_DELETED', function(data){
                 if (data.planItemType === 'wishlist') {
                     fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
-                    fnUpdateSavedCount( jq(this).find('.uif-headerField.uif-sectionHeaderField .uif-header strong').text() );
+                    fnUpdateSavedCount( jq(this).find('.uif-sectionHeader .uif-headerText strong').text() );
                 }
             });
         "/>
@@ -484,7 +484,6 @@
         <property name="header.render" value="false"/>
         <property name="entryPageId" value="add_planned_course"/>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
-
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -529,7 +528,8 @@
 
                 <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkText="Mark it as Backup course"
                       p:title="Mark it as Backup course"
-                      p:render="@{setToPlanning eq true and backup eq false and acadRecAtpId eq null  ? true : false}">
+                      p:render="@{setToPlanning eq true and backup eq false and acadRecAtpId eq null  ? true : false}"
+                      p:style="margin:0;">
                     <property name="onClickScript"
                               value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','plannedToBackup',e);"/>
                 </bean>
@@ -547,9 +547,7 @@
                       p:cssClasses="fl-text-gray fl-font-size-90"
                       p:render="@{setToPlanning eq true and backup eq true and acadRecAtpId eq null ? true : false}"/>
 
-                <!--<bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkText="Set Credit" p:headerText="Set Credit" p:href="#" >
-
-                </bean>-->
+                <!--<bean p:id="@{planItemId}_credits" parent="Uif-Link" p:target="" p:linkText="Set Credit" p:headerText="Set Credit" p:href="#"/>-->
 
                 <bean p:id="@{planItemId}_move" parent="Uif-Link" p:target="" p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter" p:render="@{acadRecAtpId eq null ? true : false}">
@@ -570,10 +568,10 @@
                               value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target=""
-                      p:linkText="Delete from the Plan"
+                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkText="Delete from the Plan"
                       p:title="Delete from the Plan" p:href="#"
-                      p:render="@{acadRecAtpId eq null ? true : false}">
+                      p:render="@{acadRecAtpId eq null ? true : false}"
+                      p:style="margin:0;">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{planItemId}','plan_item_delete_page',{planItemId:'@{planItemId}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
@@ -586,6 +584,9 @@
 
     <!--View Course Summary Dialog Box content -->
     <bean id="plan_item_course_summary_dialog" parent="Uif-VerticalBoxSection" p:headerText="View Course Summary">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_title_link"/>
@@ -596,6 +597,9 @@
     <!--Move Course to another Quarter Dialog Box Content-->
 
     <bean id="plan_item_course_move_dialog" parent="Uif-VerticalBoxSection" p:headerText="Move to Another Quarter">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="add_planned_course_fields" p:style="display:block;"/>
@@ -603,6 +607,9 @@
         </property>
     </bean>
     <bean id="plan_item_course_copy_dialog" parent="Uif-VerticalBoxSection" p:headerText="Copy to Another Quarter">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="copy_planned_course_fields" p:style="display:block;"/>
@@ -610,40 +617,50 @@
         </property>
     </bean>
     <!--Delete confirmation Dialog Box content -->
-    <bean id="plan_item_delete_dialog" parent="Uif-HorizontalBoxSection" p:title="Delete from the Bookmarked List"
-          p:instructionalText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo.">
+    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection" p:headerText="Delete Course">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
         <property name="items">
             <list>
-                <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
-                      p:actionLabel="Delete">
-                    <property name="clientSideJs"
-                              value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem', e);"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-90</value>
-                            <value>myplan-button</value>
-                            <value>myplan-button-blue</value>
-                        </list>
-                    </property>
-                    <property name="onDocumentReadyScript" value="
-                        jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
-                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
-                            setTimeout('fnCloseAllPopups()', 2000);
-                        }).subscribe('ERROR', function(data) {
-                            fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
-                        });"/>
-                </bean>
+                <bean parent="Uif-Message"
+                      p:messageText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo."/>
+                <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Delete">
+                                <property name="clientSideJs"
+                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem', e);"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-90</value>
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-blue</value>
+                                    </list>
+                                </property>
+                                <property name="onDocumentReadyScript" value="
+                                    jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
+                                        fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
+                                        setTimeout('fnCloseAllPopups()', 2000);
+                                    }).subscribe('ERROR', function(data) {
+                                        fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
+                                    });"/>
+                            </bean>
 
-                <bean parent="Uif-Message" p:messageText="or"/>
+                            <bean parent="Uif-Message" p:messageText="or" p:style="height:24px; line-height:24px; margin:0px;"/>
 
-                <bean p:id="cancelPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
-                    <property name="clientSideJs"
-                              value="fnCloseAllPopups();"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-button</value>
-                            <value>myplan-button-transparent</value>
-                            <value>fl-font-size-90</value>
+                            <bean p:id="cancelPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                <property name="clientSideJs"
+                                          value="fnCloseAllPopups();"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-transparent</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -875,8 +892,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <!-- TODO: Change ID to unique for repeated courses -->
-                <bean p:id="@{#line.courseId}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
+                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
                       p:onClickScript="openPopUp('@{#line.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecAtpId:'@{#line.atpId}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                     <property name="cssClasses">
                         <list merge="true">
@@ -901,8 +918,8 @@
                         </list>
                     </property>
                 </bean>
-                <!-- TODO: Change ID to unique for repeated courses -->
-                <bean p:id="@{#line.courseId}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
+                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-invalid</value>
@@ -1442,8 +1459,8 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="Which quarter would you like @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue=""
+                      p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                <!--<bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue=""
                       p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl"/>
@@ -1454,57 +1471,36 @@
                         </list>
                     </property>
                     <property name="optionsFinder">
-
                         <bean class="org.kuali.student.myplan.utils.AddPlanPublishedTermsListBuilder">
                             <property name="additionalListItemsBottom">
                                 <map>
                                     <entry key="other" value="Other"/>
                                 </map>
                             </property>
-
                         </bean>
-
                     </property>
-                </bean>
-                <bean parent="Uif-Message"
-                      p:messageText="Note: This Course MAY NOT be offered in your selected quarter.Check back when Time Schedule is released."/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other"
-                      p:render="@{showOther eq false ? true : false}">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
+                </bean>-->
+                <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
+                      p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
+                    <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                        </list>
                     </property>
                 </bean>
 
                 <ref bean="add_planned_course_other"/>
 
                 <!--  Backup checkbox -->
-                <bean parent="Uif-MessageField"
-                      p:messageText="[Optional]" p:render="@{moveCourse eq false ? true : false}">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-gray</value>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;">
                     <property name="items">
                         <list>
-
-                            <bean parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
+                            <bean parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
+                                  p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:constraintText="Should this course be marked as backup?"
                                   p:render="@{moveCourse eq false ? true : false}">
                                 <property name="control">
                                     <bean parent="Uif-CheckboxControl"/>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-MessageField"
-                                  p:messageText="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course." p:render="@{moveCourse eq false ? true : false}"/>
-                            <bean parent="Uif-MessageField"
-                                  p:messageText="Backup Courses will be placed below other planned courses and will not be considered when auditing your plan." p:render="@{moveCourse eq false ? true : false}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
                                 </property>
                             </bean>
                         </list>
@@ -1595,28 +1591,14 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="Which quarter would you like copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue=""
-                      p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}">
-                    <property name="control">
-                        <bean parent="Uif-VerticalRadioControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.utils.AddPlanPublishedTermsListBuilder">
-                            <property name="additionalListItemsBottom">
-                                <map>
-                                    <entry key="other" value="Other"/>
-                                </map>
-                            </property>
-                        </bean>
-                    </property>
-                </bean>
-                <bean parent="Uif-Message"
-                      p:messageText="Note: This Course MAY NOT be offered in yout selected quarter.Check back when Time Schedule is released."/>
-                <bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue="Other"
-                      p:render="@{showOther eq false ? true : false}">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
+                      p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
+                      p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
+                    <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                        </list>
                     </property>
                 </bean>
 
@@ -1684,12 +1666,7 @@
         </property>
     </bean>
 
-    <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup" p:style="display:block; margin-left:1.5em;">
-        <property name="onDocumentReadyScript" value="
-            jq('.myplan-select-other select.uif-dropdownControl').change(function() {
-                jq(&quot;input[name='atpId'][value='other']&quot;).attr('checked', true);
-            });
-        "/>
+    <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;">
         <property name="items">
             <list>
                 <bean parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
@@ -1711,6 +1688,11 @@
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
             </list>
