@@ -79,7 +79,9 @@ public class GenEduReqFacet extends AbstractFacet {
                 facetKeys.add(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER);
             }
         }
+        if(!item.getGenEduReq().equalsIgnoreCase(CourseSearchItem.EMPTY_RESULT_VALUE_KEY )&& genEdus.toString().length()>0) {
         item.setGenEduReq(genEdus.substring(0,genEdus.lastIndexOf(",")));
+        }
         item.setGenEduReqFacetKeys(facetKeys);
     }
 
