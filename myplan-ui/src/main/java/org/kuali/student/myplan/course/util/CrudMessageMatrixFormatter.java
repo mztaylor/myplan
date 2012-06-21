@@ -180,7 +180,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
                             String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = startsSub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
+                            sb = startsSub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(", ");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(",") - 1);
                         StringBuffer formattedSubBuf = new StringBuffer();
@@ -191,10 +191,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
                         if (!currentTermRegistered) {
                             sb = sb.append("<dd>").append("Added to ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
-                                    .append(" on ").append(key);
+                                    .append(" on ").append(key).append(" ");
                         } else {
                             sb = sb.append("<dd>").append("This course was also added to ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
-                                    .append(" on ").append(key);
+                                    .append(" on ").append(key).append(" ");
                         }
                     }
 
