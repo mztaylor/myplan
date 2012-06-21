@@ -310,12 +310,9 @@ public class PlanController extends UifControllerBase {
         if (StringUtils.isEmpty(planItemId)) {
             return doOperationFailedError(form, "Plan Item ID was missing.", null);
         }
-
-        //  This is the new/destination ATP.
-        String newAtpId = form.getAtpId();
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(newAtpId)) {
-            return doOperationFailedError(form, "ATP ID was missing.", null);
+        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isBlank(form.getTerm())) {
+            return doOperationFailedError(form, "Year and/or Term missing", null);
         }
 
         /*
@@ -334,7 +331,7 @@ public class PlanController extends UifControllerBase {
         //  Use LinkedList here so that the remove method works during "other" option processing.
         List<String> newAtpIds = null;
         try {
-            newAtpIds = getNewTermIds(newAtpId, form);
+            newAtpIds = getNewTermIds(form);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
@@ -457,11 +454,9 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Plan Item ID was missing.", null);
         }
 
-        //  This is the new/destination ATP.
-        String newAtpId = form.getAtpId();
-        //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(newAtpId)) {
-            return doOperationFailedError(form, "ATP ID was missing.", null);
+        // validation of Year and Term will happen in the service validation methods.
+        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isEmpty(form.getTerm())) {
+            return doOperationFailedError(form, "Year and Term are missing.", null);
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
@@ -476,7 +471,7 @@ public class PlanController extends UifControllerBase {
         //  Use LinkedList here so that the remove method works during "other" option processing.
         List<String> newAtpIds = null;
         try {
-            newAtpIds = getNewTermIds(newAtpId, form);
+            newAtpIds = getNewTermIds(form);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
@@ -587,10 +582,9 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
-        String atpId = form.getAtpId();
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(atpId)) {
-            return doOperationFailedError(form, "ATP ID was missing.", null);
+        if (StringUtils.isEmpty(form.getYear())||StringUtils.isEmpty(form.getTerm())) {
+            return doOperationFailedError(form, "Year and/or Term missing.", null);
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
@@ -603,7 +597,7 @@ public class PlanController extends UifControllerBase {
         //  This list can only contain one item, otherwise the backend validation will fail.
         List<String> newAtpIds = null;
         try {
-            newAtpIds = getNewTermIds(atpId, form);
+            newAtpIds = getNewTermIds(form);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to process request.", e);
         }
@@ -708,36 +702,30 @@ public class PlanController extends UifControllerBase {
         //  Populate the form.
         form.setJavascriptEvents(events);
 
-        String link = makeLinkToAtp(atpId, AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
+        String link = makeLinkToAtp(newAtpIds.get(0), AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
         String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
 
     /**
-     * Gets a list of term ids taking into account "other" items. Currently this list should only contain a single item.
-     *
-     * @param atpId
+     * AtpId generated from the year and the term in the form .
+     * @param form
      * @return
      */
-    private List<String> getNewTermIds(String atpId, PlanForm form) {
+    private List<String> getNewTermIds(PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
-
-        if (!atpId.equalsIgnoreCase(PlanConstants.OTHER_TERM_KEY)) {
-            newTermIds.add(atpId);
-        } else {
-            //  Create an ATP id from the values in the year and term fields.
-            String year = form.getYear();
-            if (StringUtils.isBlank(year)) {
-                throw new RuntimeException("Could not construct ATP id for 'other' option because year was blank.");
-            }
-
-            String term = form.getTerm();
-            if (StringUtils.isBlank(term)) {
-                throw new RuntimeException("Could not construct ATP id for 'other' option because term was blank.");
-            }
-
-            newTermIds.add(getAtpHelper().getAtpIdFromTermAndYear(term, year));
+        //  Create an ATP id from the values in the year and term fields.
+        String year = form.getYear();
+        if (StringUtils.isBlank(year)) {
+            throw new RuntimeException("Could not construct ATP id for Given Year option because year was blank.");
         }
+
+        String term = form.getTerm();
+        if (StringUtils.isBlank(term)) {
+            throw new RuntimeException("Could not construct ATP id for 'other' option because term was blank.");
+        }
+
+        newTermIds.add(getAtpHelper().getAtpIdFromTermAndYear(term, year));
         return newTermIds;
     }
 
@@ -1448,18 +1436,18 @@ public class PlanController extends UifControllerBase {
             logger.error("could not load total credits");
         }
 
-        if(totalCredits!=null){
-            if(totalCredits.contains(".0")) totalCredits=totalCredits.replace(".0","");
+        if (totalCredits != null) {
+            if (totalCredits.contains(".0")) totalCredits = totalCredits.replace(".0", "");
         }
         return totalCredits;
     }
-    
-    private List<StudentCourseRecordInfo> getAcadRecs(String studentID){
-        List<StudentCourseRecordInfo> studentCourseRecordInfos=new ArrayList<StudentCourseRecordInfo>(); 
-        try{
+
+    private List<StudentCourseRecordInfo> getAcadRecs(String studentID) {
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+        try {
             studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Query to fetch Academic records failed with SWS");
             return studentCourseRecordInfos;
         }

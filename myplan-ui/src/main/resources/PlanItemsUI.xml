@@ -1695,11 +1695,11 @@
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
                 </bean>
-                <bean id="hidden_other" parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
+                <!--<bean parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
-                </bean>
+                </bean>-->
             </list>
         </property>
     </bean>
