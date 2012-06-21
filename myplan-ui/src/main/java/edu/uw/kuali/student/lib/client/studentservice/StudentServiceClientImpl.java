@@ -7,6 +7,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -24,10 +25,8 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 /**
  * Client for the Student Service.
@@ -175,72 +174,77 @@ public class StudentServiceClientImpl
     }
 
     @Override
-    public String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException {
-        /*
-         *  First get the section info for the given term and curriculum.
-         */
-        String sectionXml = getSectionInfo(year, term, curriculumCode);
-        Document document;
+
+    public Set<String> getTimeSchedulesAbbreviations(String year, String term, String curriculumCode, String courseNumber) throws ServiceException {
+        String responseText = null;
+        Set<String> timeScheduleAbbr = new HashSet<String>();
+        List<String> hrefs = new ArrayList<String>();
         try {
-            document = reader.read(new StringReader(sectionXml));
+            responseText = getTimeSchedules(year, term, curriculumCode, courseNumber, null);
+        } catch (ServiceException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        Document document = null;
+        try {
+            document = reader.read(new StringReader(responseText));
         } catch (Exception e) {
-            throw new ServiceException("Could not read the reply.", e);
+            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
         }
 
-        /*
-         *  Parse a section href out of the response.
-         */
+        DefaultXPath xpath = new DefaultXPath("//s:Sections");
         Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("sws", "http://webservices.washington.edu/student/");
-
-        String xpathExpression = "//sws:Section/sws:Href";
-        DefaultXPath xpath = new DefaultXPath(xpathExpression);
+        namespaces.put("s", "http://webservices.washington.edu/student/");
         xpath.setNamespaceURIs(namespaces);
+        List sections = xpath.selectNodes(document);
+        if (sections != null) {
+            StringBuffer cc = new StringBuffer();
+            for (Object node : sections) {
+                Element element = (Element) node;
+                List<?> sectionlist = new ArrayList<Object>();
+                sectionlist = element.elements("Section");
+                for (Object section : sectionlist) {
+                    Element secElement = (Element) section;
+                    hrefs.add(secElement.elementText("Href"));
+                }
 
-        Node node = xpath.selectSingleNode(document);
-        if (node == null) {
-            throw new ServiceException(String.format("XPath query for [%s] produced no results.", xpathExpression));
+            }
         }
 
-        Element e = null;
-        try {
-            e = (Element) node;
-        } catch (ClassCastException cce) {
-            throw new ServiceException("Href was not an Element.", cce);
+        if (hrefs.size() > 0) {
+
+            for (String href : hrefs) {
+                href = href.replace("/student", "").trim();
+                try {
+                    responseText = getTimeSchedules(null, null, null, null, href);
+                } catch (ServiceException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                Document document2 = null;
+                try {
+                    document2 = reader.read(new StringReader(responseText));
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+                }
+                DefaultXPath xpath2 = new DefaultXPath("//s:Curriculum");
+                Map<String, String> namespaces2 = new HashMap<String, String>();
+                namespaces2.put("s", "http://webservices.washington.edu/student/");
+                xpath2.setNamespaceURIs(namespaces2);
+                List curriculum = xpath2.selectNodes(document2);
+                if (curriculum != null) {
+                    StringBuffer cc = new StringBuffer();
+                    for (Object node : curriculum) {
+                        Element element = (Element) node;
+                        timeScheduleAbbr.add(element.elementText("TimeScheduleLinkAbbreviation"));
+
+                    }
+                }
+
+            }
         }
 
-        /*
-         *  Query up the section and read the TimeScheduleLinkAbbreviation from the response.
-         */
-        String sectionUrl = e.getTextTrim();
-        //  Get rid of the service name since we supply it in the baseUrl.
-        sectionUrl = sectionUrl.replace("student/", "");
-        String url = baseUrl + sectionUrl;
-
-        logger.info("Querying SWS section service at [" + url + "].");
-        String sectionInfoXml = sendQuery(baseUrl + sectionUrl);
-        try {
-            document = reader.read(new StringReader(sectionInfoXml));
-        } catch (Exception ex) {
-            throw new ServiceException("Could not read the reply.", ex);
-        }
-
-        xpathExpression = "/sws:Section/sws:Curriculum/sws:TimeScheduleLinkAbbreviation";
-        xpath = new DefaultXPath(xpathExpression);
-        xpath.setNamespaceURIs(namespaces);
-        node = xpath.selectSingleNode(document);
-        if (node == null) {
-            throw new ServiceException(String.format("XPath query for [%s] produced no results.", xpathExpression));
-        }
-
-        try {
-            e = (Element) node;
-        } catch (ClassCastException cce) {
-            throw new ServiceException("TimeScheduleLinkAbbreviation was not an Element.", cce);
-        }
-
-        return e.getTextTrim();
+        return timeScheduleAbbr;
     }
+
 
     /**
      * @return
@@ -302,6 +306,22 @@ public class StudentServiceClientImpl
         } else {
             url.append("/").append(getServiceVersion()).append("/")
                     .append("enrollment.xml?reg_id=").append(regId).append("&").append("verbose=on");
+        }
+        return sendQuery(url.toString().trim());
+
+    }
+
+    @Override
+    public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
+        StringBuilder url = new StringBuilder(getBaseUrl());
+        if (sectionUrl != null) {
+            url.append(sectionUrl);
+        } else {
+            url.append("/").append(getServiceVersion())
+                    .append("/").append("public/section.xml?")
+                    .append("year=").append(year).append("&")
+                    .append("quarter=").append(term).append("&")
+                    .append("curriculum_abbreviation=").append(curriculum).append("&course_number=").append(courseNumber);
         }
         return sendQuery(url.toString().trim());
 

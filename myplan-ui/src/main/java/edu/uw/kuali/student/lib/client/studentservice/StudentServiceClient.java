@@ -3,6 +3,7 @@ package edu.uw.kuali.student.lib.client.studentservice;
 import org.restlet.representation.Representation;
 
 import java.util.List;
+import java.util.Set;
 
 public interface StudentServiceClient {
 
@@ -73,8 +74,25 @@ public interface StudentServiceClient {
      */
     public abstract String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException;
 
-    /**
-     * Query the student web service (course service) to convert a course abbreviation to a TimeScheduleLinkAbbreviation
+     /**
+     *
+     * @param year
+     * @param term
+     * @param curriculumCode
+     * @return
+     * @throws ServiceException
      */
-    public abstract String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException;
+    public Set<String> getTimeSchedulesAbbreviations(String year, String term, String curriculumCode,String courseNumber) throws ServiceException;
+
+    /**
+     *
+     * @param year
+     * @param term
+     * @param curriculum
+     * @param sectionUrl
+     * @return
+     * @throws ServiceException
+     */
+    public String getTimeSchedules(String year, String term, String curriculum,String courseNumber, String sectionUrl) throws ServiceException ;
+
 }
