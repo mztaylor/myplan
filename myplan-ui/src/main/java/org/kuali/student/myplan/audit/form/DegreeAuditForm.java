@@ -5,7 +5,6 @@ import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 
 public class DegreeAuditForm extends UifFormBase {
 
-
     private String auditHtml =
             "<div>" +
                 "<ul>\n" +

@@ -810,10 +810,8 @@
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkText" value="View Overall Academic Plan"/>
                     <property name="title" value="View Overall Academic Plan"/>
-                    <property name="href"
-                              value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
+                    <property name="href" value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
                 </bean>
-
             </list>
         </property>
     </bean>

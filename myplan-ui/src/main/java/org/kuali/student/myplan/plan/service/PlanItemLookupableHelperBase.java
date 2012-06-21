@@ -1,9 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.lookup.LookupableImpl;
-import org.kuali.rice.krad.util.GlobalVariables;
+
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -35,22 +33,17 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
-    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly)
+    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly, String studentId)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
 
         AcademicPlanService academicPlanService = getAcademicPlanService();
-
-        Person user = GlobalVariables.getUserSession().getPerson();
-
         ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
-
-        String studentID = user.getPrincipalId();
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
 
-        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
@@ -66,9 +59,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     //  If the course info lookup fails just log the error and omit the item.
                     try {
                         if (loadSummaryInfoOnly) {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID));
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID, studentId));
                         } else {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID));
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID, studentId));
                         }
                     } catch (Exception e) {
                         logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);

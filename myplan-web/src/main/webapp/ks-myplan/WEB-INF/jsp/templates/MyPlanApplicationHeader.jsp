@@ -1,3 +1,4 @@
+<%@ page import="org.kuali.student.myplan.utils.UserSessionHelper" %>
 <%--
 
     Copyright 2005-2012 The Kuali Foundation
@@ -15,27 +16,33 @@
     limitations under the License.
 
 --%>
- <div id="appheader_div">
-        <div id="appheading_div">
-            <div id="applogo_div">
-                My<strong>Plan</strong> <span>One-stop Academic Planner</span>
-            </div>
-            <div id="appuser_div">
-                <div class="name">Welcome, ${UserSession.person.firstName}</div>
-                <div class="links">
-                    <ul>
-                        <li><a href="#">Log out</a></li>
-                    </ul>
-                </div>
+<div id="appheader_div">
+    <div id="appheading_div">
+        <div id="applogo_div">
+            My<strong>Plan</strong> <span>One-stop Academic Planner</span>
+        </div>
+        <div id="appuser_div">
+            <div class="name">Welcome, ${UserSession.person.firstName}</div>
+            <div class="links">
+                <ul>
+                    <li><a href="#">Log out</a></li>
+                </ul>
             </div>
         </div>
+    </div>
 
-        <div id="appnav_div">
-            <ul>
-                <li><a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a></li>
-                <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
-                <%--<li><a href="#">Explore Programs</a></li>--%>
-                <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
-            </ul>
+    <div id="appnav_div">
+        <ul>
+            <li><a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a></li>
+            <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
+            <%--<li><a href="#">Explore Programs</a></li>--%>
+            <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
+        </ul>
+    </div>
+
+    <% if ( UserSessionHelper.isAdvisor() ) { %>
+        <div id="adviser_banner" style="border: 1px dashed red;">
+          <span>!!! You are currently looking at the academic plan of student <%= UserSessionHelper.getStudentId() %> !!!</span>
         </div>
-  </div>
+    <% } %>
+</div>

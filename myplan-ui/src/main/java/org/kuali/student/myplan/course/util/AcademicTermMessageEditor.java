@@ -1,20 +1,12 @@
 package org.kuali.student.myplan.course.util;
 
 import org.apache.log4j.Logger;
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
-import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
-import javax.xml.namespace.QName;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,11 +14,15 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
  * Date: 5/3/12
  * Time: 10:48 AM
  * To change this template use File | Settings | File Templates.
+ *
+ *
+ * Pretty sure this one isn't being used.
+ *
  */
-public class academicTermsMessageEditor extends CollectionListPropertyEditor {
+@Deprecated
+public class AcademicTermMessageEditor extends CollectionListPropertyEditor {
 
-    private final static Logger logger = Logger.getLogger(academicTermsMessageEditor.class);
-
+    private final static Logger logger = Logger.getLogger(AcademicTermMessageEditor.class);
 
     @Override
     protected String makeHtmlList(Collection c) {

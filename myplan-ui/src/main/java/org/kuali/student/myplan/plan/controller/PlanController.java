@@ -39,7 +39,7 @@ import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.utils.ContextInfoFactory;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
@@ -139,7 +139,7 @@ public class PlanController extends UifControllerBase {
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
-            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId()));
+            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId(), getUserId()));
         } catch (RuntimeException e) {
             CourseDetails courseDetails = new CourseDetails();
             planForm.setCourseDetails(courseDetails);
@@ -198,7 +198,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -209,7 +209,7 @@ public class PlanController extends UifControllerBase {
         //  Update
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, ContextInfoFactory.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not update plan item.", e);
         }
@@ -267,7 +267,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -280,7 +280,7 @@ public class PlanController extends UifControllerBase {
 
         //  Update
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, ContextInfoFactory.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not udpate plan item.", e);
         }
@@ -356,7 +356,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details as they will be needed for errors.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
@@ -402,7 +402,7 @@ public class PlanController extends UifControllerBase {
         //planItem.setTypeKey(newType);
 
         try {
-            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, ContextInfoFactory.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not udpate plan item.", e);
         }
@@ -496,7 +496,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details as they will be needed for errors.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -631,7 +631,7 @@ public class PlanController extends UifControllerBase {
         //  Lookup course details as well need them in case there is an error below.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
@@ -677,7 +677,7 @@ public class PlanController extends UifControllerBase {
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
             try {
-                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, ContextInfoFactory.makeContextInfoInstance());
+                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
             } catch (Exception e) {
                 return doOperationFailedError(form, "Unable to update wishlist plan item.", e);
             }
@@ -833,7 +833,7 @@ public class PlanController extends UifControllerBase {
         //  Grab course details.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
         } catch (Exception e) {
             return doOperationFailedError(form, String.format("Unable to retrieve Course Details for [%s].", courseId), e);
         }
@@ -884,7 +884,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             // Delete the plan item
-            getAcademicPlanService().deletePlanItem(planItemId, ContextInfoFactory.makeContextInfoInstance());
+            getAcademicPlanService().deletePlanItem(planItemId, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
         }
@@ -988,7 +988,7 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
@@ -1048,7 +1048,7 @@ public class PlanController extends UifControllerBase {
         }
 
         try {
-            newPlanItem = getAcademicPlanService().createPlanItem(pii, ContextInfoFactory.makeContextInfoInstance());
+            newPlanItem = getAcademicPlanService().createPlanItem(pii, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
             throw new RuntimeException("Could not create plan item.", e);
         }
@@ -1258,7 +1258,7 @@ public class PlanController extends UifControllerBase {
         String courseDetailsAsJson;
         try {
             if (courseDetails == null) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId());
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
             }
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
@@ -1336,8 +1336,6 @@ public class PlanController extends UifControllerBase {
     }
 
     private String getTotalCredits(String termId) {
-        double totalMin = 0;
-        double totalMax = 0;
         double plannedTotalMin = 0;
         double plannedTotalMax = 0;
         String totalCredits = null;
@@ -1360,7 +1358,7 @@ public class PlanController extends UifControllerBase {
                     String courseID = planItem.getRefObjectId();
                     for (String atp : planItem.getPlanPeriods()) {
                         if (atp.equalsIgnoreCase(termId)) {
-                            CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID);
+                            CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID, getUserId());
                             if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
                                 String[] str = courseDetails.getCredit().split("\\D");
                                 double min = Double.parseDouble(str[0]);

@@ -1,9 +1,6 @@
 package org.kuali.student.myplan.audit.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.lookup.LookupableImpl;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -12,6 +9,7 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperSer
 
 import org.apache.log4j.Logger;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -24,15 +22,9 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+        String studentId = UserSessionHelper.getStudentId();
 
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
-
-        Person person = GlobalVariables.getUserSession().getPerson();
-
-        //  TODO: Determine where this info lives.
-        String studentId = person.getPrincipalId();
-
-
         DegreeAuditService degreeAuditService = getDegreeAuditService();
 
         if (degreeAuditService == null) {
