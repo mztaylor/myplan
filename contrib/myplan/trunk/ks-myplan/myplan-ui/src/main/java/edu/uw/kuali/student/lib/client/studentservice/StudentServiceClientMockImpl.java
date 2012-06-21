@@ -5,7 +5,9 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,7 +19,8 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
 
     private static final Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
-    public StudentServiceClientMockImpl() {}
+    public StudentServiceClientMockImpl() {
+    }
 
     /**
      * This constructor is here to make the Spring config consistent with the other implementation.
@@ -26,33 +29,33 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
                                         String keyStoreFilename, String keyStorePasswd) {
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setBaseUrl(String baseUri) {
-		//  Unused.
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setServiceVersion(String version) {
-		//  Unused.
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setBaseUrl(String baseUri) {
+        //  Unused.
+    }
 
-	public String getBaseUrl() {
-		return "Unset";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setServiceVersion(String version) {
+        //  Unused.
+    }
 
-	public String getServiceVersion() {
-		return "v4";
-	}
+    public String getBaseUrl() {
+        return "Unset";
+    }
 
-	public List<String> getAvailableVersions() throws ServiceException {
-		List<String> versions = new ArrayList<String>();
+    public String getServiceVersion() {
+        return "v4";
+    }
+
+    public List<String> getAvailableVersions() throws ServiceException {
+        List<String> versions = new ArrayList<String>();
         versions.add("v4");
-		return versions;
-	}
+        return versions;
+    }
 
     @Override
     public String getCurrentTerm() throws ServiceException {
@@ -102,7 +105,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
-    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException{
+    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/public/section?year=2002&quarter=&curriculum_abbreviation=ESS&course_number=101&reg_id=&search_by=Instructor
         //  ... from a text file.
@@ -117,7 +120,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
-    public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException{
+    public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
         //  ... from a text file.
@@ -131,10 +134,15 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         return out;
     }
 
+    @Override
+    public Set<String> getTimeSchedulesAbbreviations(String year, String term, String curriculumCode, String courseNumber) throws ServiceException {
+        //  The TimeScheduleLinkAbbreviation often doesn't match the curriculum code, but sometimes it does.
+        Set<String> timeScheduleAbbreStrings = new HashSet<String>();
+        return timeScheduleAbbreStrings;
+    }
 
     @Override
-    public String getTimeScheduleLinkAbbreviation(String year, String term, String curriculumCode) throws ServiceException {
-        //  The TimeScheduleLinkAbbreviation often doesn't match the curriculum code, but sometimes it does.
-        return curriculumCode;
+    public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
+        return curriculum;
     }
 }
