@@ -43,9 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
-
 
 @Controller
 @RequestMapping(value = "/audit/**")
@@ -73,7 +71,6 @@ public class DegreeAuditController extends UifControllerBase {
         return new DegreeAuditForm();
     }
 
-
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
@@ -94,8 +91,7 @@ public class DegreeAuditController extends UifControllerBase {
                 programParam=auditReportInfos.get(0).getProgramId();
             }
 
-
-            // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
+            // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
@@ -126,9 +122,6 @@ public class DegreeAuditController extends UifControllerBase {
                     break;
                 }
             }
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,7 +162,6 @@ public class DegreeAuditController extends UifControllerBase {
 
         return getUIFModelAndView(form);
     }
-
 }
 
 

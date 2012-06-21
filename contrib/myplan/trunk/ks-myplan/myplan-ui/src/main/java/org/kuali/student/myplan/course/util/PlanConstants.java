@@ -8,14 +8,13 @@ import java.util.regex.Pattern;
 
 public class PlanConstants extends AcademicPlanServiceConstants {
 
-    public static final String PLAN_ITEM_ID_PARAM_NAME = "planItemId";
-    public static final String COURSE_ID = "courseId";
-    public static final String TERM_ID = "term";
+    public static final String PARAM_COURSE_ID = "courseId";
 
     public static final int PLANNED_PLAN_ITEM_CAPACITY = 8;
     public static final int BACKUP_PLAN_ITEM_CAPACITY = 8;
 
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
+    public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
 
@@ -50,6 +49,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_MISSING_PARAM = "myplan.text.error.missingParameter";
     public static final String ERROR_KEY_PERMISSION_DENIED = "myplan.text.error.permissionDenied";
 
+    public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
+    public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
+
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
@@ -75,6 +77,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String WITHDRAWN_GRADE="W";
 
 
+    /* Keys for storing info in the session. */
+    public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
+    public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.

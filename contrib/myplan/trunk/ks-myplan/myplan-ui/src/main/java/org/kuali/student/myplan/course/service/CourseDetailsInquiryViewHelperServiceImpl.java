@@ -7,8 +7,6 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
@@ -27,7 +25,6 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 
-
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -44,7 +41,7 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
-import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
 
@@ -71,8 +68,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient CourseInfo courseInfo;
 
-    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
-
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
@@ -98,7 +93,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
-        return retrieveCourseDetails((String) fieldValues.get("courseId"));
+        String studentId = UserSessionHelper.getStudentId();
+        return retrieveCourseDetails((String) fieldValues.get(PlanConstants.PARAM_COURSE_ID), studentId);
     }
 
     /**
@@ -108,7 +104,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * @param courseId
      * @return
      */
-    public CourseDetails retrieveCourseSummary(String courseId) {
+    public CourseDetails retrieveCourseSummary(String courseId, String studentId) {
         CourseDetails courseDetails = new CourseDetails();
         courseDetails.setSummaryOnly(true);
 
@@ -139,15 +135,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         courseDetails.setTermsOffered(termsOffered);
 
-
         return courseDetails;
-
     }
 
 
-    public CourseDetails retrieveCourseDetails(String courseId) {
+    public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
 
-        CourseDetails courseDetails = retrieveCourseSummary(courseId);
+        CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         courseDetails.setSummaryOnly(false);
 
         CourseInfo course = null;
@@ -246,19 +240,14 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             AcademicPlanService academicPlanService = getAcademicPlanService();
 
-            Person user = GlobalVariables.getUserSession().getPerson();
-
-            ContextInfo context = new ContextInfo();
-            String studentID = user.getPrincipalId();
-
             //   Get the first learning plan. There should only be one ...
             String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
+            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, PlanConstants.CONTEXT_INFO);
             if (plans.size() > 0) {
                 LearningPlan plan = plans.get(0);
 
                 //  Fetch the plan items which are associated with the plan.
-                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), context);
+                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), PlanConstants.CONTEXT_INFO);
 
                 List<PlanItemDataObject> plannedList = new ArrayList<PlanItemDataObject>();
                 List<PlanItemDataObject> backupList = new ArrayList<PlanItemDataObject>();
@@ -330,11 +319,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String regId = user.getPrincipalId();
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(regId, CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }

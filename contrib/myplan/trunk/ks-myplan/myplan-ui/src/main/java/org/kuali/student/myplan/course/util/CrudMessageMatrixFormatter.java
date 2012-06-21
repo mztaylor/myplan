@@ -24,7 +24,6 @@ import java.util.Map;
 public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(CrudMessageMatrixFormatter.class);
 
-
     @Override
     public void setValue(Object value) {
         super.setValue(value);

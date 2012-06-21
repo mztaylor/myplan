@@ -28,8 +28,6 @@ import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
@@ -490,34 +488,6 @@ public class CourseSearchController extends UifControllerBase {
             }
         }
         logger.info("End of method getCourseStatusMap of CourseSearchController:" + System.currentTimeMillis());
-        return savedCourseSet;
-    }
-
-
-    private Set<String> getSavedCourseSet() throws Exception {
-        logger.info("Start of method getSavedCourseSet of CourseSearchController:" + System.currentTimeMillis());
-        AcademicPlanService academicPlanService = getAcademicPlanService();
-
-        Person user = GlobalVariables.getUserSession().getPerson();
-
-        ContextInfo context = new ContextInfo();
-        String studentID = user.getPrincipalId();
-
-        String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-
-        Set<String> savedCourseSet = new HashSet<String>();
-
-        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentID, planTypeKey, context);
-        for (LearningPlan learningPlan : learningPlanList) {
-            String learningPlanID = learningPlan.getId();
-            List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
-
-            for (PlanItem planItem : planItemList) {
-                String courseID = planItem.getRefObjectId();
-                savedCourseSet.add(courseID);
-            }
-        }
-        logger.info("End of method getSavedCourseSet of CourseSearchController:" + System.currentTimeMillis());
         return savedCourseSet;
     }
 
