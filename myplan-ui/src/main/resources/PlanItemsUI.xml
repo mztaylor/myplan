@@ -1232,7 +1232,20 @@
                                         <ref bean="addSavedCourseButton"/>
                                     </list>
                                 </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                            <property name="replacement">
+                                                <list>
+                                                    <ref bean="adviser_actions_message" />
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
+
 
                             <!-- If not in plan and in saved courses and not in academic list-->
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
@@ -1241,6 +1254,18 @@
                                     <list>
                                         <ref bean="addToPlanButton"/>
                                         <ref bean="removeSavedCourseButton"/>
+                                    </list>
+                                </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                            <property name="replacement">
+                                                <list>
+                                                    <ref bean="adviser_actions_message" />
+                                                </list>
+                                            </property>
+                                        </bean>
                                     </list>
                                 </property>
                             </bean>
