@@ -118,7 +118,7 @@
     <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
+                <bean id="text_searchQuery" parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142">
@@ -131,7 +131,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="searchTerm" p:label="in"
+                <bean id="select_searchTerm" parent="Uif-InputField" p:propertyName="searchTerm" p:label="in"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
@@ -181,7 +181,7 @@
 
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" p:defaultValue="0">
+                <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" p:defaultValue="0">
                     <property name="control">
                         <bean parent="Uif-HorizontalCheckboxesControl"/>
                     </property>

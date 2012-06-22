@@ -165,7 +165,7 @@
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="campusParam" p:width="600px">
+                <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="campusParam" p:width="600px">
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
                     </property>
@@ -179,7 +179,7 @@
     <bean id="program_params" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
@@ -189,7 +189,7 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
@@ -199,7 +199,7 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
                     </property>
                 </bean>
-                <bean parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
+                <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParam" p:width="600px"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false">
                     <property name="control">
@@ -228,10 +228,10 @@
     </bean>
 
 
-    <bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin: 0px 7px; display:block;">
+    <bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin:0px 7px; display:block;">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:propertyName="auditType" p:width="200px" p:defaultValue="kauli.audit.type.default">
+                <bean id="radio_auditType" parent="Uif-InputField" p:propertyName="auditType" p:width="200px" p:defaultValue="kauli.audit.type.default">
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl">
                             <property name="options">
