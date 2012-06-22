@@ -43,7 +43,6 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     protected List<FullPlanItemsDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
         String studentId = UserSessionHelper.getStudentId();
-
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {

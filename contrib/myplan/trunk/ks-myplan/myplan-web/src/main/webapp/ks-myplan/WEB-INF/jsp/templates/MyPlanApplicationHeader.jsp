@@ -40,7 +40,7 @@
         </ul>
     </div>
 
-    <% if ( UserSessionHelper.isAdvisor() ) { %>
+    <% if ( UserSessionHelper.isAdviser() ) { %>
         <div id="adviser_banner" style="border: 1px dashed red;">
           <span>!!! You are currently looking at the academic plan of student <%= UserSessionHelper.getStudentId() %> !!!</span>
         </div>
