@@ -20,19 +20,24 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.kns.web.struts.form.KualiForm;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.PlanConstants;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping(value = "/advise/**")
@@ -61,25 +66,25 @@ public class AdviserController extends UifControllerBase {
     }
 
     @RequestMapping(value = "/advise", method = RequestMethod.GET)
-    public String doGet(@ModelAttribute("KualiForm") DegreeAuditForm form) {
+    public String doGet(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
         form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
-        return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+        return "redirect:/myplan/advise/error";
     }
 
     @RequestMapping(value = "/advise/", method = RequestMethod.GET)
-    public String get(@ModelAttribute("KualiForm") DegreeAuditForm form) {
+    public String get(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
         form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
-        return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+        return "redirect:/myplan/advise/error";
     }
 
     /**
@@ -91,7 +96,7 @@ public class AdviserController extends UifControllerBase {
      * @return A redirect to the start page.
      */
     @RequestMapping(value = "/advise/{studentId}", method = RequestMethod.GET)
-    public String get(@PathVariable("studentId") String studentId, @ModelAttribute("KualiForm") DegreeAuditForm form) {
+    public String get(@PathVariable("studentId") String studentId, @ModelAttribute("KualiForm") UifFormBase form) {
 
         form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
         form.setRequestRedirect(true);
@@ -120,15 +125,24 @@ public class AdviserController extends UifControllerBase {
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
             session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName() + " " + person.getLastName());
+            return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+
         } else {
             clearSession(session);
+            return "redirect:/myplan/advise/error";
 
-            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
         }
-
-        return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
     }
+    @RequestMapping(value = "/advise/error", method = RequestMethod.GET)
+   public ModelAndView returnErrorForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                       HttpServletRequest request, HttpServletResponse response) {
 
+                UifFormBase formBase=(UifFormBase)form;
+        formBase.setView(getViewService().getViewById("Advisor-FormView"));
+        formBase.setPageId("advisor_page");
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
+        return getUIFModelAndView(formBase);
+    }
 
     private void clearSession(UserSession session) {
         session.removeObject(PlanConstants.SESSION_KEY_STUDENT_ID);
