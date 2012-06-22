@@ -20,6 +20,10 @@ public class UserSessionHelper {
         return contextInfo;
     }
 
+    /**
+     *  Returns true if the user has an adviser role. All sorts of conditional behavior depends on this method.
+     *  @return True if the user is an adviser. Otherwise, false.
+     */
     public synchronized static boolean isAdviser() {
         UserSession session = GlobalVariables.getUserSession();
         return session.retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER) != null;
