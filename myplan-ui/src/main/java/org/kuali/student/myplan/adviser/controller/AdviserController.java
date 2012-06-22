@@ -17,6 +17,10 @@ package org.kuali.student.myplan.adviser.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
@@ -38,9 +42,46 @@ public class AdviserController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(AdviserController.class);
 
+    private transient PersonService personService;
+
+    public PersonService getPersonService() {
+
+        if (personService == null) {
+            personService = KimApiServiceLocator.getPersonService();
+        }
+        return personService;
+
+    }
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new DegreeAuditForm();
+    }
+
+    @RequestMapping(value = "/advise", method = RequestMethod.GET)
+    public String doGet(@ModelAttribute("KualiForm") DegreeAuditForm form) {
+        UserSession session = GlobalVariables.getUserSession();
+        clearSession(session);
+        form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
+        form.setRequestRedirect(true);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
+
+        return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+    }
+
+    @RequestMapping(value = "/advise/", method = RequestMethod.GET)
+    public String get(@ModelAttribute("KualiForm") DegreeAuditForm form) {
+        UserSession session = GlobalVariables.getUserSession();
+        clearSession(session);
+        form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
+        form.setRequestRedirect(true);
+        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
+
+        return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
     }
 
     /**
@@ -67,10 +108,10 @@ public class AdviserController extends UifControllerBase {
         if (StringUtils.isEmpty(studentId)) {
             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
             studentId = "unset";
-        }  else {
+        } else {
             //  Check the session flag.
             String oldId = (String) session.retrieveObject(PlanConstants.SESSION_KEY_STUDENT_ID);
-            if (! StringUtils.isEmpty(oldId) && ! studentId.equals(oldId)) {
+            if (!StringUtils.isEmpty(oldId) && !studentId.equals(oldId)) {
                 GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.WARNING_STUDENT_CONTEXT_SWITCH, oldId, studentId);
             }
         }
@@ -78,7 +119,24 @@ public class AdviserController extends UifControllerBase {
         //   Put the student Id in the session.
         session.addObject(PlanConstants.SESSION_KEY_STUDENT_ID, studentId);
 
+        Person person = getPersonService().getPerson(studentId);
+        if (person != null) {
+            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName() + " " + person.getLastName());
+        } else {
+            clearSession(session);
+
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
+        }
+
         return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+    }
+
+
+    private void clearSession(UserSession session) {
+        session.removeObject(PlanConstants.SESSION_KEY_STUDENT_ID);
+        session.addObject(PlanConstants.SESSION_KEY_STUDENT_ID, "");
+        session.removeObject(PlanConstants.SESSION_KEY_STUDENT_NAME);
+        session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, "");
     }
 }
 
