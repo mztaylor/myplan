@@ -22,7 +22,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getAuditSystemKey();
 
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
         DegreeAuditService degreeAuditService = getDegreeAuditService();

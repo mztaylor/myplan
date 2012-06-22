@@ -66,4 +66,38 @@ public class UserSessionHelper {
         }
         return studentName;
     }
+
+    public synchronized static String getAuditSystemKey() {
+        UserSession session = GlobalVariables.getUserSession();
+        String systemKey;
+        String studentId=getStudentId();
+        if (isAdviser()) {
+            // Used by devs when logged in as admin
+//        if( "admin".equals( studentId )) return   "100190981";
+            // Used by Jill for demos
+            if( "jjulius".equals( studentId )) systemKey= "101360188";
+
+            if (true) systemKey= "101360188";
+            else {
+                // do nothing
+                systemKey= studentId;
+            }
+            if (systemKey == null) {
+                throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
+            }
+        } else {
+            // Used by devs when logged in as admin
+//        if( "admin".equals( studentId )) return   "100190981";
+            // Used by Jill for demos
+            if( "jjulius".equals( studentId )) systemKey= "101360188";
+
+            if (true) systemKey= "101360188";
+            else {
+            // do nothing
+            systemKey= studentId;
+            }
+        }
+
+        return systemKey;
+    }
 }
