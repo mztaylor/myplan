@@ -48,4 +48,23 @@ public class UserSessionHelper {
         }
         return studentId;
     }
+    /**
+     *  Determines the student id that should be used for queries. If the user has the
+     *  adviser flag set in the session then there should also be a student id. Otherwise,
+     *  just return the principal it.
+     *  @return Student Name
+     */
+    public synchronized static String getStudentName() {
+        UserSession session = GlobalVariables.getUserSession();
+        String studentName;
+        if (isAdviser()) {
+            studentName = (String) session.retrieveObject(PlanConstants.SESSION_KEY_STUDENT_NAME);
+            if (studentName == null) {
+                throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
+            }
+        } else {
+            studentName = session.getPerson().getFirstName()+" "+session.getPerson().getLastName();
+        }
+        return studentName;
+    }
 }
