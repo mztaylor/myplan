@@ -1462,26 +1462,6 @@
             <list>
                 <bean parent="Uif-Message"
                       p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <!--<bean parent="Uif-InputField" p:propertyName="atpId" p:width="auto" p:defaultValue=""
-                      p:render="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}">
-                    <property name="control">
-                        <bean parent="Uif-VerticalRadioControl"/>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                        </list>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.utils.AddPlanPublishedTermsListBuilder">
-                            <property name="additionalListItemsBottom">
-                                <map>
-                                    <entry key="other" value="Other"/>
-                                </map>
-                            </property>
-                        </bean>
-                    </property>
-                </bean>-->
                 <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
                       p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -1498,7 +1478,7 @@
                 <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
+                            <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
                                   p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:constraintText="Should this course be marked as backup?"
                                   p:render="@{moveCourse eq false ? true : false}">
                                 <property name="control">
@@ -1693,11 +1673,6 @@
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
                 </bean>
-                <!--<bean parent="Uif-InputField" p:propertyName="atpId" p:defaultValue="Other">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>-->
             </list>
         </property>
     </bean>
@@ -1716,7 +1691,7 @@
                 <bean parent="Uif-Message"
                       p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;?"/>
 
-                <bean parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
+                <bean id="hidden_planItemId" parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
