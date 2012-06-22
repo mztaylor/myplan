@@ -976,7 +976,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
 
 
-        studentId = hardcodedStudentID( studentId );
+        /*studentId = hardcodedStudentID( studentId );*/
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
         JobQueueRunDao runrun = getJobQueueRunDao();
 
