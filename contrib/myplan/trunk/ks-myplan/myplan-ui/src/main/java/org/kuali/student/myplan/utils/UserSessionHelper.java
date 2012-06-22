@@ -16,7 +16,6 @@ public class UserSessionHelper {
         ContextInfo contextInfo = new ContextInfo();
         Person user = GlobalVariables.getUserSession().getPerson();
         contextInfo.setPrincipalId(user.getPrincipalId());
-        contextInfo.setCurrentDate(new Date());
         return contextInfo;
     }
 

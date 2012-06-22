@@ -41,8 +41,8 @@
     </div>
 
     <% if ( UserSessionHelper.isAdviser() ) { %>
-        <div id="adviser_banner" style="border: 1px dashed red;">
-          <span>!!! You are currently looking at the academic plan of student <%= UserSessionHelper.getStudentName() %> !!!</span>
+        <div id="adviser_banner">
+            You are currently looking at the academic plan of student <span id="adviser_banner_name"><%= UserSessionHelper.getStudentName() %></span>
         </div>
     <% } %>
 </div>

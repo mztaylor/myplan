@@ -394,6 +394,19 @@
                             </bean>
                         </list>
                     </property>
+                     <!--  Alternate rendering for advisors -->
+                    <property name="propertyReplacers">
+                        <list>
+                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                  p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                <property name="replacement">
+                                    <list>
+                                        <ref bean="adviser_actions_message" />
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>
