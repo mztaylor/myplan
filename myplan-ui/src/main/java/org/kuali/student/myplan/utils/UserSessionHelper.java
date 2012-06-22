@@ -20,7 +20,7 @@ public class UserSessionHelper {
         return contextInfo;
     }
 
-    public synchronized static boolean isAdvisor() {
+    public synchronized static boolean isAdviser() {
         UserSession session = GlobalVariables.getUserSession();
         return session.retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER) != null;
     }
@@ -34,7 +34,7 @@ public class UserSessionHelper {
     public synchronized static String getStudentId() {
         UserSession session = GlobalVariables.getUserSession();
         String studentId;
-        if (isAdvisor()) {
+        if (isAdviser()) {
             studentId = (String) session.retrieveObject(PlanConstants.SESSION_KEY_STUDENT_ID);
             if (studentId == null) {
                 throw new RuntimeException("User is in adviser mode, but no student id was set in the session. (This shouldn't happen and should be reported).");
