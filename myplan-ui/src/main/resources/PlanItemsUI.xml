@@ -524,7 +524,7 @@
                                   p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
                                 <property name="replacement">
                                     <list>
-                                        <ref bean="adviser_actions_message" />
+                                        <ref bean="plan_item_course_summary_dialog" />
                                     </list>
                                 </property>
                             </bean>
@@ -1251,7 +1251,7 @@
                                               p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
                                             <property name="replacement">
                                                 <list>
-                                                    <ref bean="adviser_actions_message" />
+                                                    <bean parent="Uif-Message" p:messageText=""/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -1275,7 +1275,7 @@
                                               p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
                                             <property name="replacement">
                                                 <list>
-                                                    <ref bean="adviser_actions_message" />
+                                                    <bean parent="Uif-Message" p:messageText=""/>
                                                 </list>
                                             </property>
                                         </bean>

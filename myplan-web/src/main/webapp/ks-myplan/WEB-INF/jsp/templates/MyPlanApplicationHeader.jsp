@@ -40,9 +40,11 @@
         </ul>
     </div>
 
-    <% if ( UserSessionHelper.isAdviser() ) { %>
-        <div id="adviser_banner">
-            You are currently looking at the academic plan of student <span id="adviser_banner_name"><%= UserSessionHelper.getStudentName() %></span>
-        </div>
+    <% if (UserSessionHelper.isAdviser()) { %>
+    <div id="adviser_banner" class="fl-container-945 myplan-section " style="background: #ccc; height:25px;">
+          <span id="adviser_banner_name"><center><font size="2">You are viewing <b><%= UserSessionHelper.getStudentName() %>.</b>'s MyPlan: functionalities are limited except <u>leaving
+              a message</u> to <b><%= UserSessionHelper.getStudentName() %>.</b><u><font color="gray">Learn more about Advisor View</font>
+              </u></font></center></span>
+    </div>
     <% } %>
 </div>

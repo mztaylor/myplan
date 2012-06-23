@@ -323,5 +323,24 @@
     <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor"/>
 
     <!--  Message to use when an adviser can't perform a particular action. -->
-    <bean id="adviser_actions_message" parent="Uif-Message" p:messageText="You are accessing the application in adviser mode so you can't change anything."/>
+    <bean id="adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-message-border</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Features are disabled for advisors. &lt;a href='#'&gt;Learn more about Advisor View.&lt;a&gt;"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
 </beans>

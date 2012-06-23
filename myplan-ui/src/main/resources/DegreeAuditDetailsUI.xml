@@ -79,6 +79,18 @@
                                         <ref bean="audit_report_section"/>
                                     </list>
                                 </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                            <property name="replacement">
+                                                <list>
+                                                    <ref bean="audit_report_section"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection">
                                 <property name="layoutManager">
