@@ -188,16 +188,6 @@
         <property name="resultFields">
             <list/>
         </property>
-        <!-- Not Displaying any criteria -->
-        <!--
-        <property name="criteriaGroup">
-            <bean parent="Uif-VerticalBoxGroup"/>
-        </property>
-
-        <property name="resultsGroup">
-            <bean id="saved_courses_detail" parent="saved_courses_detail_list"/>
-        </property>
-        -->
 
         <property name="footer.render" value="false"/>
     </bean>
@@ -621,25 +611,247 @@
             </list>
         </property>
     </bean>
-    <!--Move Course to another Quarter Dialog Box Content-->
+    <!-- Add Course to plan Dialog Box Content-->
+    <bean id="plan_item_course_add_dialog" parent="Uif-VerticalBoxSection" p:headerText="Add to Plan">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-VerticalBoxGroup" p:style="display:block;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
+                                <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-data-list</value>
+                                    </list>
+                                </property>
+                            </bean>
 
+                            <ref bean="planned_course_quarter_selection"/>
+
+                            <!--  Backup checkbox -->
+                            <ref bean="planned_course_backup"/>
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Add To Plan">
+                                            <property name="clientSideJs"
+                                                      value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jq('#addPlannedCourse')
+                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
+                                                        setTimeout('fnCloseAllPopups()', 5500);
+                                                    })
+                                                    .subscribe('ERROR', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
+                                                    });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-font-size-90</value>
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                            <property name="clientSideJs"
+                                                      value="fnCloseAllPopups();"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-transparent</value>
+                                                    <value>fl-font-size-90</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <!--Move Course to another Quarter Dialog Box Content-->
     <bean id="plan_item_course_move_dialog" parent="Uif-VerticalBoxSection" p:headerText="Move to Another Quarter">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="add_planned_course_fields" p:style="display:block;"/>
+                <bean parent="Uif-VerticalBoxGroup" p:style="display:block;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
+                                <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-data-list</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <ref bean="planned_course_quarter_selection"/>
+
+                            <!--  Backup checkbox -->
+                            <!--<ref bean="planned_course_backup"/>-->
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Move">
+                                            <property name="clientSideJs"
+                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jq('#movePlannedCourse')
+                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
+                                                        setTimeout('fnCloseAllPopups()', 5500);
+                                                    }).subscribe('ERROR', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
+                                                    });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-font-size-90</value>
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean p:id="cancelMovePlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                            <property name="clientSideJs"
+                                                      value="fnCloseAllPopups();"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-transparent</value>
+                                                    <value>fl-font-size-90</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
+    <!--Copy Course to another Quarter Dialog Box Content-->
     <bean id="plan_item_course_copy_dialog" parent="Uif-VerticalBoxSection" p:headerText="Copy to Another Quarter">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="copy_planned_course_fields" p:style="display:block;"/>
+                <bean parent="Uif-VerticalBoxGroup" p:style="display:block;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-300</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
+                                <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-data-list</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <ref bean="planned_course_quarter_selection"/>
+
+                            <!--  Backup checkbox -->
+                            <!--<ref bean="planned_course_backup"/>-->
+
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:render="@{setToPlanning eq true ? true : false}"
+                                              p:actionLabel="Copy">
+                                            <property name="clientSideJs"
+                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jq('#movePlannedCourse')
+                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
+                                                        setTimeout('fnCloseAllPopups()', 5500);
+                                                    }).subscribe('ERROR', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
+                                                    });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-font-size-90</value>
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton"
+                                              p:render="@{setToPlanning eq false ? true : false}"
+                                              p:actionLabel="Copy">
+                                            <property name="clientSideJs"
+                                                      value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jq('#movePlannedCourse')
+                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
+                                                        setTimeout('fnCloseAllPopups()', 5500);
+                                                    });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-font-size-90</value>
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                            <property name="clientSideJs"
+                                                      value="fnCloseAllPopups();"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>myplan-button</value>
+                                                    <value>myplan-button-transparent</value>
+                                                    <value>fl-font-size-90</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -1426,7 +1638,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="plan_item_course_move_dialog" p:headerText="Add to Plan"/>
+                            <bean parent="plan_item_course_add_dialog"/>
                         </list>
                     </property>
                 </bean>
@@ -1507,8 +1719,7 @@
     </bean>
 
     <!-- Group for "Add Plan Item" inputs -->
-    <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup"
-          p:style="display:none;">
+    <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup" p:style="display:none;">
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -1528,22 +1739,11 @@
                     </property>
                 </bean>
 
-                <ref bean="add_planned_course_other"/>
+                <ref bean="planned_course_quarter_selection"/>
 
                 <!--  Backup checkbox -->
-                <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;">
-                    <property name="items">
-                        <list>
-                            <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
-                                  p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:constraintText="Should this course be marked as backup?"
-                                  p:render="@{moveCourse eq false ? true : false}">
-                                <property name="control">
-                                    <bean parent="Uif-CheckboxControl"/>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="planned_course_backup"/>
+
 
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
                     <property name="items">
@@ -1590,7 +1790,7 @@
                                 </property>
                             </bean>
                             <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
-                                  p:render="@{moveCourse eq false ? true : false}">
+                                  p:render="@{moveCourse ? false : true}">
                                 <property name="clientSideJs"
                                           value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
                                 <property name="cssClasses">
@@ -1602,91 +1802,7 @@
                                 </property>
                             </bean>
                             <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
-                                  p:render="@{moveCourse eq true ? true : false}">
-                                <property name="clientSideJs"
-                                          value="fnCloseAllPopups();"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    <bean id="copy_planned_course_fields" parent="Uif-VerticalBoxGroup"
-          p:style="display:none;">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>fl-container-300</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Message"
-                      p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
-                <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
-                      p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
-                    <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                        </list>
-                    </property>
-                </bean>
-
-                <ref bean="add_planned_course_other"/>
-
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
-                    <property name="items">
-                        <list>
-                            <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
-                                  p:render="@{setToPlanning eq true ? true : false}"
-                                  p:actionLabel="Copy">
-                                <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
-                                <property name="onDocumentReadyScript" value="
-                                    jq('#movePlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
-                                            setTimeout('fnCloseAllPopups()', 5500);
-                                        }).subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
-                                        });"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton"
-                                  p:render="@{setToPlanning eq false ? true : false}"
-                                  p:actionLabel="Copy">
-                                <property name="clientSideJs"
-                                          value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e);"/>
-                                <property name="onDocumentReadyScript" value="
-                                    jq('#movePlannedCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
-                                            setTimeout('fnCloseAllPopups()', 5500);
-                                        });"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
-                                  p:render="true">
+                                  p:render="@{moveCourse ? true : false}">
                                 <property name="clientSideJs"
                                           value="fnCloseAllPopups();"/>
                                 <property name="cssClasses">
@@ -1704,7 +1820,7 @@
         </property>
     </bean>
 
-    <bean id="add_planned_course_other" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;">
+    <bean id="planned_course_quarter_selection" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;">
         <property name="items">
             <list>
                 <bean id="select_quarter" parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
@@ -1727,6 +1843,21 @@
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!--  Backup checkbox -->
+    <bean id="planned_course_backup" parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;">
+        <property name="items">
+            <list>
+                <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
+                      p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:constraintText="Should this course be marked as backup?"
+                      p:render="@{moveCourse eq false ? true : false}">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl"/>
                     </property>
                 </bean>
             </list>
