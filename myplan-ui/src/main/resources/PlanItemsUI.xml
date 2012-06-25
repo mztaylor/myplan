@@ -137,7 +137,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="You don't have any saved courses. Save a course by adding from the search results (TBD)"/>
+                                  p:messageText="You haven't bookmarked any courses. Bookmark a course by adding from the search results."/>
                         </list>
                     </property>
                 </bean>
