@@ -98,7 +98,6 @@ function searchForCourses(id, parentId) {
                     jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout").html(fnCreateFacets(oFacets[i]));
                 }
             });
-            console.log(oFacets);
         }
     });
 }
