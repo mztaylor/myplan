@@ -62,7 +62,7 @@ public class AdviserController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return new DegreeAuditForm();
+        return new UifFormBase();
     }
 
     @RequestMapping(value = "/advise", method = RequestMethod.GET)
