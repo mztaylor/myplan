@@ -205,6 +205,20 @@
                 <ref bean="saved_courses_detail_list_empty"/>
             </list>
         </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                    <property name="replacement">
+                        <list>
+                            <ref bean="adviser_actions_message" />
+                            <ref bean="saved_courses_detail_list"/>
+                            <ref bean="saved_courses_detail_list_empty"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
     </bean>
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
@@ -391,7 +405,7 @@
                                   p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
                                 <property name="replacement">
                                     <list>
-                                        <ref bean="adviser_actions_message" />
+                                        <bean parent="Uif-Message" p:messageText=""/>
                                     </list>
                                 </property>
                             </bean>
