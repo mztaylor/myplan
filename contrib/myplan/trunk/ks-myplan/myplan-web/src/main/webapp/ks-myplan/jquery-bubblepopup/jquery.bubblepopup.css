@@ -37,7 +37,7 @@
 	.jquerybubblepopup-top-middle,  .jquerybubblepopup-bottom-middle{overflow:hidden;background-repeat:repeat-x;height:21px;line-height:1px;}
 	.jquerybubblepopup-middle-left, .jquerybubblepopup-middle-right{overflow:hidden;background-repeat:repeat-y;width:21px;}
 	.jquerybubblepopup-tail{border:0px;margin:0px;padding:0px;display:inline;}
-    .jquerybubblepopup-innerHtml{position:relative;}
+    .jquerybubblepopup-innerHtml{position:relative;display:block;min-height:26px;}
 
 /*  
 	Themes:
@@ -91,11 +91,3 @@
         height:24px;
         margin-bottom:1em;
     }
-    .jquerybubblepopup .close {
-        cursor:pointer;
-    }
-    .jquerybubblepopup img.close {
-        float:right;
-        opacity:0.6;
-    }
-
