@@ -21,10 +21,12 @@ import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
@@ -58,6 +60,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
@@ -90,6 +93,10 @@ public class CourseSearchController extends UifControllerBase {
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new CourseSearchForm();
     }
+
+
+    //  Java to JSON outputter.
+    private transient ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(value = "/course/{courseCd}", method = RequestMethod.GET)
     public String get(@PathVariable("courseCd") String courseCd, @ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
@@ -290,7 +297,7 @@ public class CourseSearchController extends UifControllerBase {
                     }
                 }
             }
-            populateFacets(form,courseList);
+            populateFacets(form, courseList);
             return courseList;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -298,6 +305,83 @@ public class CourseSearchController extends UifControllerBase {
 
     }
 
+    @RequestMapping(value = "/course/search")
+    public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
+        List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
+
+        String user = UserSessionHelper.getStudentId();
+
+        /*Params from the Url*/
+        String queryText = request.getParameter("queryText");
+        if (queryText.contains("%20")) {
+            queryText = queryText.replace("%20", " ");
+        }
+
+        String campusParam = request.getParameter("campusParam");
+        String termParam = request.getParameter("termParam");
+        /*populating the form with the params*/
+        CourseSearchForm form = new CourseSearchForm();
+        form.setSearchQuery(queryText);
+        form.setCampusSelect(campusParam);
+        form.setSearchTerm(termParam);
+
+        /*populating the CourseSearchItem list*/
+
+
+        courses = courseSearch(form, user);
+
+        /*Building the Json String*/
+        StringBuilder jsonString = new StringBuilder();
+        jsonString = jsonString.append("{ \"aaData\":[");
+        int count = 0;
+        for (CourseSearchItem item : courses) {
+            String scheduledAndOfferedTerms = null;
+            String status = "";
+            try {
+                scheduledAndOfferedTerms = mapper.writeValueAsString(item.getScheduledAndOfferedTerms());
+            } catch (IOException e) {
+                throw new RuntimeException("Could not write the value using mapper", e);
+            }
+            if (item.getStatus().getLabel().length() > 0) {
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + item.getStatus().getLabel() + "</span>";
+            } else {
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('" + item.getCourseId() + "', 'courseId', 'addSavedCourse', event);\\\" /></span>";
+            }
+            String courseName = "";
+            if (item.getCourseName() != null) {
+                courseName = item.getCourseName().replace("\"", "'");
+            }
+
+            jsonString = jsonString.append("[\"").append(item.getCode()).
+                    append("\",\"").append(" <a href=\\").
+                    append("\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
+                    append(item.getCourseId()).append("\\").append("\" target=\\").append("\"_self\\").
+                    append("\" title=\\").append("\"").append(courseName).append("\\").append("\"").
+                    append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
+                    append("\"myplan-text-ellipsis\\").append("\"  >").append(courseName).append("</a>\"").append(",\"").
+                    append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
+                    append(item.getGenEduReq()).append("\",\"").append(status).
+                    append("\",\"").append(item.getTermsFacetKeys()).
+                    append("\",\"").append(item.getGenEduReqFacetKeys()).
+                    append("\",\"").append(item.getCreditsFacetKeys()).
+                    append("\",\"").append(item.getCourseLevelFacetKeys()).
+                    append("\",\"").append(item.getCurriculumFacetKeys()).
+                    append("\"]").append(", ");
+        }
+        String jsonStr = null;
+        if (!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")) {
+            jsonStr = jsonString.substring(0, jsonString.lastIndexOf(","));
+        } else {
+            jsonStr = jsonString.toString();
+        }
+        jsonStr = jsonStr + "]" + "}";
+        try {
+            response.setHeader("content-type", "application/json");
+            response.getWriter().println(jsonStr);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
@@ -554,25 +638,25 @@ public class CourseSearchController extends UifControllerBase {
                 genEduReqFacetItems.add(facetItem);
             }
         }
-        
+
 
         /*//  Add the facet data to the response.
-        logger.info("Start of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
-        form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
-        logger.info("End of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("Start of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
-        form.setCreditsFacetItems(creditsFacet.getFacetItems());
-        logger.info("End of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("Start of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
-        form.setGenEduReqFacetItems(genEduReqFacetItems);
-        logger.info("End of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("Start of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
-        form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
-        logger.info("End of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("Start of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
-        form.setTermsFacetItems(termsFacet.getFacetItems());
-        logger.info("End of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
-        logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());*/
+ logger.info("Start of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
+ form.setCurriculumFacetItems(curriculumFacet.getFacetItems());
+ logger.info("End of populating curriculumFacet  of CourseSearchController:" + System.currentTimeMillis());
+ logger.info("Start of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
+ form.setCreditsFacetItems(creditsFacet.getFacetItems());
+ logger.info("End of populating creditsFacet  of CourseSearchController:" + System.currentTimeMillis());
+ logger.info("Start of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
+ form.setGenEduReqFacetItems(genEduReqFacetItems);
+ logger.info("End of populating genEduReqFacet  of CourseSearchController:" + System.currentTimeMillis());
+ logger.info("Start of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
+ form.setCourseLevelFacetItems(courseLevelFacet.getFacetItems());
+ logger.info("End of populating courseLevelFacet  of CourseSearchController:" + System.currentTimeMillis());
+ logger.info("Start of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
+ form.setTermsFacetItems(termsFacet.getFacetItems());
+ logger.info("End of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
+ logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());*/
     }
 
     public HashMap<String, String> fetchCourseDivisions() {
