@@ -80,7 +80,7 @@ function searchForCourses(id, parentId) {
             {'sTitle':'facetLevel', 'bVisible':false},
             {'sTitle':'facetCurriculum', 'bVisible':false}
         ],
-        sAjaxSource: '/student/search/course/'+sQuery+'/'+sTerm+'/'+aCampus,
+        sAjaxSource: '/student/myplan/course/search?queryText='+sQuery+'&termParam='+sTerm+'&campusParam='+aCampus,
         fnDrawCallback: function() {
             if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
                 jq(".dataTables_paginate span").not(".first, .last").show();
