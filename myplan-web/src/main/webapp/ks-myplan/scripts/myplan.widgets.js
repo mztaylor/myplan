@@ -1,3 +1,9 @@
+/*
+if(window.location.hash != '') {
+    window.location.href = window.location.href.split('#')[0];
+}
+*/
+
 function stopEvent(e) {
     if(!e) var e = window.event;
     if (e.stopPropagation) {
@@ -56,9 +62,9 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
-        var popupBox = jq(target).addClass("myplan-popup-target");
+        popupBox = jq(target);
     } else {
-        var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
+        popupBox = jq(target).parents(selector);
     }
 
     fnCloseAllPopups();
@@ -71,8 +77,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     jq(document).on('click', function(e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
             fnCloseAllPopups();
-            jq(this).off();
         }
     });
 
@@ -101,6 +107,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                 popupBox.SetBubblePopupInnerHtml(component);
                 if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").on('click', function() {
+                    popupBox.RemoveBubblePopup();
                     fnCloseAllPopups();
                 });
             }
@@ -146,9 +153,9 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
-        var popupBox = jq(target).addClass("myplan-popup-target");
+        popupBox = jq(target);
     } else {
-        var popupBox = jq(target).parents(selector).addClass("myplan-popup-target");
+        popupBox = jq(target).parents(selector);
     }
 
     fnCloseAllPopups();
@@ -162,8 +169,8 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     jq(document).on('click', function(e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
             fnCloseAllPopups();
-            jq(this).off();
         }
     });
 
@@ -195,6 +202,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
                 if ( status != 'error' ) jq(".jquerybubblepopup-innerHtml").wrapInner(planForm);
                 if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jq("#" + popupBoxId + " img.myplan-popup-close").on('click', function() {
+                    popupBox.RemoveBubblePopup();
                     fnCloseAllPopups();
                 });
             }
@@ -244,12 +252,13 @@ function openDialog(sText, e, close) {
     jq(document).on('click', function(e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if ( jq(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
             fnCloseAllPopups();
-            jq(this).off();
         }
     });
 
     jq("#" + popupBoxId + " img.myplan-popup-close").on('click', function() {
+        popupBox.RemoveBubblePopup();
         fnCloseAllPopups();
     });
 }
@@ -520,7 +529,8 @@ function fnPopoverSlider(showId, parentId, direction) {
 ######################################################################################
  */
 function fnCloseAllPopups() {
-    jq("body > div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
+    jq("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
+    jq(document).off();
     /*
     jq("*").each(function() {
         if ( jq(this).HasBubblePopup() ) {
@@ -567,10 +577,3 @@ function fnToggleBackup(e) {
         oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
     }
 }
-/*
-jq(document).ready(function(){
-    if(window.location.hash != '') {
-        window.location.href = window.location.href.split('#')[0];
-    }
-});
-*/
