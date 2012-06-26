@@ -40,6 +40,9 @@
 
     <!-- Not used to view audit reports. -->
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
+        <!-- To Support progressive disclosure of campus select -->
+        <property name="persistFormToSession" value="true"/>
+        <property name="viewName" value="DegreeAudit-FormView"/>
         <property name="id" value="DegreeAudit-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="degree_audit"/>
@@ -163,7 +166,7 @@
                 <ref bean="select_instruction"/>
                 <ref bean="campus_params"/>
                 <ref bean="program_params"/>
-                <ref bean="audit_type"/>
+                <!--<ref bean="audit_type"/>-->
                 <ref bean="audit_instruction"/>
             </list>
         </property>
@@ -241,24 +244,24 @@
     </bean>
 
 
-    <bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin:0px 7px; display:block;">
-        <property name="items">
-            <list>
-                <bean id="radio_auditType" parent="Uif-InputField" p:propertyName="auditType" p:width="200px" p:defaultValue="kauli.audit.type.default">
-                    <property name="control">
-                        <bean parent="Uif-HorizontalRadioControl">
-                            <property name="options">
-                                <list>
-                                    <bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.default" p:value="Text"/>
-                                    <bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.html" p:value="HTML"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
+    <!--<bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin:0px 7px; display:block;">-->
+        <!--<property name="items">-->
+            <!--<list>-->
+                <!--<bean id="radio_auditType" parent="Uif-InputField" p:propertyName="auditType" p:width="200px" p:defaultValue="kauli.audit.type.default">-->
+                    <!--<property name="control">-->
+                        <!--<bean parent="Uif-HorizontalRadioControl">-->
+                            <!--<property name="options">-->
+                                <!--<list>-->
+                                    <!--<bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.default" p:value="Text"/>-->
+                                    <!--<bean parent="Uif-KeyLabelPair" p:key="kauli.audit.type.html" p:value="HTML"/>-->
+                                <!--</list>-->
+                            <!--</property>-->
+                        <!--</bean>-->
+                    <!--</property>-->
+                <!--</bean>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
 
     <bean id="audit_instruction" parent="Uif-Message" p:cssClasses="fl-text-gray fl-font-size-90"
           p:style="margin: 10px; width: 600px; display:block;">

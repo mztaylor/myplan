@@ -129,9 +129,7 @@
         <dependency>
             <groupId>org.kuali.rice</groupId>
             <artifactId>rice-krad-web-framework</artifactId>
-            <!--<version>${kuali.rice.version}</version>-->
-            <!-- TEMPORARY HACK TILL RICE 2.2 m2 -->
-            <version>${kuali.rice.version.m1.patch}</version>
+            <version>${kuali.rice.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>rice-api</artifactId>

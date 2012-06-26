@@ -184,6 +184,23 @@
         </property>
     </bean>
 
+    <bean id="MyPlanHelpImage" parent="Uif-HelpImage"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}icon_help.png"
+          p:altText="Help" p:title="Help">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>uif-helpImage</value>
+            </list>
+        </property>
+        <property name="captionHeader">
+            <null/>
+        </property>
+        <property name="cutlineMessage">
+            <null/>
+        </property>
+    </bean>
+
+
     <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
           parent="Uif-StackedSubCollection-WithinSection-parentBean">
         <property name="layoutManager">
@@ -217,7 +234,7 @@
 
     <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)">
         <property name="header">
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;" />
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
@@ -234,7 +251,7 @@
     </bean>
 
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses List" >
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses List">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
