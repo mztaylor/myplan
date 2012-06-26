@@ -1,8 +1,8 @@
-/*
-if(window.location.hash != '') {
+/* This is for DOM changes to refresh the view on back to keep the view updated */
+if(window.location.hash != "" && jq("input#viewId").val() != "CourseSearch-FormView") {
     window.location.href = window.location.href.split('#')[0];
 }
-*/
+
 
 function stopEvent(e) {
     if(!e) var e = window.event;
