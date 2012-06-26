@@ -20,8 +20,9 @@ public class UserSessionHelper {
     }
 
     /**
-     *  Returns true if the user has an adviser role. All sorts of conditional behavior depends on this method.
-     *  @return True if the user is an adviser. Otherwise, false.
+     * Returns true if the user has an adviser role. All sorts of conditional behavior depends on this method.
+     *
+     * @return True if the user is an adviser. Otherwise, false.
      */
     public synchronized static boolean isAdviser() {
         UserSession session = GlobalVariables.getUserSession();
@@ -29,10 +30,11 @@ public class UserSessionHelper {
     }
 
     /**
-     *  Determines the student id that should be used for queries. If the user has the
-     *  adviser flag set in the session then there should also be a student id. Otherwise,
-     *  just return the principal it.
-     *  @return The Id
+     * Determines the student id that should be used for queries. If the user has the
+     * adviser flag set in the session then there should also be a student id. Otherwise,
+     * just return the principal it.
+     *
+     * @return The Id
      */
     public synchronized static String getStudentId() {
         UserSession session = GlobalVariables.getUserSession();
@@ -47,11 +49,13 @@ public class UserSessionHelper {
         }
         return studentId;
     }
+
     /**
-     *  Determines the student id that should be used for queries. If the user has the
-     *  adviser flag set in the session then there should also be a student id. Otherwise,
-     *  just return the principal it.
-     *  @return Student Name
+     * Determines the student id that should be used for queries. If the user has the
+     * adviser flag set in the session then there should also be a student id. Otherwise,
+     * just return the principal it.
+     *
+     * @return Student Name
      */
     public synchronized static String getStudentName() {
         UserSession session = GlobalVariables.getUserSession();
@@ -62,7 +66,7 @@ public class UserSessionHelper {
                 throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
             }
         } else {
-            studentName = session.getPerson().getFirstName()+" "+session.getPerson().getLastName();
+            studentName = session.getPerson().getFirstName().substring(0, 1).toUpperCase() + session.getPerson().getFirstName().substring(1, session.getPerson().getFirstName().length()) + " " + session.getPerson().getLastName().substring(0, 1).toUpperCase();
         }
         return studentName;
     }
@@ -70,17 +74,17 @@ public class UserSessionHelper {
     public synchronized static String getAuditSystemKey() {
         UserSession session = GlobalVariables.getUserSession();
         String systemKey;
-        String studentId=getStudentId();
+        String studentId = getStudentId();
         if (isAdviser()) {
             // Used by devs when logged in as admin
 //        if( "admin".equals( studentId )) return   "100190981";
             // Used by Jill for demos
-            if( "jjulius".equals( studentId )) systemKey= "101360188";
+            if ("jjulius".equals(studentId)) systemKey = "101360188";
 
-            if (true) systemKey= "101360188";
+            if (true) systemKey = "101360188";
             else {
                 // do nothing
-                systemKey= studentId;
+                systemKey = studentId;
             }
             if (systemKey == null) {
                 throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
@@ -89,12 +93,12 @@ public class UserSessionHelper {
             // Used by devs when logged in as admin
 //        if( "admin".equals( studentId )) return   "100190981";
             // Used by Jill for demos
-            if( "jjulius".equals( studentId )) systemKey= "101360188";
+            if ("jjulius".equals(studentId)) systemKey = "101360188";
 
-            if (true) systemKey= "101360188";
+            if (true) systemKey = "101360188";
             else {
-            // do nothing
-            systemKey= studentId;
+                // do nothing
+                systemKey = studentId;
             }
         }
 
