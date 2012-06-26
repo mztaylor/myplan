@@ -88,8 +88,15 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     var elementToBlock = jq("#" + id  + "_popup");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jq("#" + getId, htmlContent);
-		elementToBlock.unblock({onUnblock: function(){
+        var component;
+        if (jq("span#request_status_item_key", htmlContent).length <= 0) {
+            component = jq("#" + getId, htmlContent);
+        } else {
+            eval( jq("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
+            var sError = jq('body').data('validationMessages').serverErrors[0];
+            component = jq("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+        }
+        elementToBlock.unblock({onUnblock: function(){
             if (jq("#" + id  + "_popup").length){
                 popupBox.SetBubblePopupInnerHtml(component);
                 if (close || typeof close === 'undefined') jq("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
@@ -98,8 +105,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                 });
             }
             runHiddenScripts(getId);
-			}
-		});
+            }
+        });
 	};
 
 	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
@@ -172,14 +179,14 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     var elementToBlock = jq("#" + id  + "_popup");
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-        var status = jq.trim( jq("#request_status_item_key", htmlContent).text().toLowerCase() );
-        if ( status === 'error' ) {
-            var sError = jq.trim( jq("#errorsFieldForPage_errorMessages ul li:first", htmlContent).text() );
-            var oError = jq("<div />").attr("id","error_div").html(sError).addClass("myplan-message-border myplan-message-error");
-            var component = jq("<div />").css("padding-right","24px").html(oError);
-        } else {
+        var component;
+        if (jq("span#request_status_item_key", htmlContent).length <= 0) {
             var component = jq("#" + getId, htmlContent);
             var planForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+        } else {
+            eval( jq("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
+            var sError = jq('body').data('validationMessages').serverErrors[0];
+            component = jq("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
         }
         elementToBlock.unblock({onUnblock: function(){
             if (jq("#" + id  + "_popup").length){
@@ -280,6 +287,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
+                window.location.hash = new Date().getTime();
                 break;
             case 'error':
                 var oMessage = { 'message' : jq('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
@@ -512,7 +520,7 @@ function fnPopoverSlider(showId, parentId, direction) {
 ######################################################################################
  */
 function fnCloseAllPopups() {
-    jq("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
+    jq("body > div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
     /*
     jq("*").each(function() {
         if ( jq(this).HasBubblePopup() ) {
@@ -559,3 +567,10 @@ function fnToggleBackup(e) {
         oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
     }
 }
+/*
+jq(document).ready(function(){
+    if(window.location.hash != '') {
+        window.location.href = window.location.href.split('#')[0];
+    }
+});
+*/
