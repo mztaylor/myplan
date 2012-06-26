@@ -40,12 +40,14 @@
 
     <!-- Not used to view audit reports. -->
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
+
         <!-- To Support progressive disclosure of campus select -->
         <property name="persistFormToSession" value="true"/>
         <property name="viewName" value="DegreeAudit-FormView"/>
         <property name="id" value="DegreeAudit-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="degree_audit"/>
+        <property name="applyDirtyCheck" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
