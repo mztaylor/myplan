@@ -7,6 +7,7 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
@@ -94,7 +95,12 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String currentTerm = AtpHelper.getCurrentAtpId();
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                     if (counter2 == 0) {
-                        sb = sb.append("<dd>").append("You're currently enrolled in this course for ")
+                        String message="You're currently enrolled in this course for ";
+                        if(UserSessionHelper.isAdviser()){
+                            String user=UserSessionHelper.getStudentName();
+                            message= user+". currently enrolled in this course for ";
+                        }
+                        sb = sb.append("<dd>").append(message)
                                 .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
@@ -109,7 +115,12 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     counter2++;
                 } else {
                     if (counter3 == 0) {
-                        sb = sb.append("<dd>").append("You took this course on ")
+                        String message="You took this course on ";
+                        if(UserSessionHelper.isAdviser()){
+                            String user=UserSessionHelper.getStudentName();
+                            message= user+". took this course on ";
+                        }
+                        sb = sb.append("<dd>").append(message)
                                 .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
@@ -227,7 +238,12 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
             /*When planned List or backup list are equal to null then show message "Saved to Your Bookmark List on 8/15/2012"*/
             if (courseDetails.getPlannedList() == null && courseDetails.getBackupList() == null) {
-                sb = sb.append("<dd>").append("Saved to your ")
+                String message="Saved to your ";
+                if(UserSessionHelper.isAdviser()){
+                    String user=UserSessionHelper.getStudentName();
+                    message= "Saved to "+user+"'s. ";
+                }
+                sb = sb.append("<dd>").append(message)
                         .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked Courses List").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
             }
             /*When planned List or backup list are not null then show message "Had saved to Your Courses List on 8/15/2012"*/

@@ -344,8 +344,11 @@ public class CourseSearchController extends UifControllerBase {
             }
             if (item.getStatus().getLabel().length() > 0) {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + item.getStatus().getLabel() + "</span>";
+            } else if (UserSessionHelper.isAdviser()) {
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark This Course\\\" src=\\\"/student/ks-myplan/images/btnAdd.png\\\" alt=\\\"Save to Your Courses List\\\" class=\\\"uif-field uif-imageField\\\" onclick=\\\"myPlanAjaxPlanItemMove('" + item.getCourseId() + "', 'courseId', 'addSavedCourse', event);\\\" /></span>";
+
             }
             String courseName = "";
             if (item.getCourseName() != null) {

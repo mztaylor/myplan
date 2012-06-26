@@ -1408,7 +1408,7 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                      p:onClickScript="openPlanItemPopUp('@{#line.courseDetails.courseId}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>

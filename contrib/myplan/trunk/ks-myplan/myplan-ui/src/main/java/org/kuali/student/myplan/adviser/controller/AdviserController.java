@@ -124,7 +124,7 @@ public class AdviserController extends UifControllerBase {
 
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
-            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName() + " " + person.getLastName());
+            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase());
             return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
 
         } else {
@@ -133,11 +133,12 @@ public class AdviserController extends UifControllerBase {
 
         }
     }
-    @RequestMapping(value = "/advise/error", method = RequestMethod.GET)
-   public ModelAndView returnErrorForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                       HttpServletRequest request, HttpServletResponse response) {
 
-                UifFormBase formBase=(UifFormBase)form;
+    @RequestMapping(value = "/advise/error", method = RequestMethod.GET)
+    public ModelAndView returnErrorForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                        HttpServletRequest request, HttpServletResponse response) {
+
+        UifFormBase formBase = (UifFormBase) form;
         formBase.setView(getViewService().getViewById("Advisor-FormView"));
         formBase.setPageId("advisor_page");
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
