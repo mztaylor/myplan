@@ -1347,7 +1347,7 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPopUp('@{#line.courseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                      p:onClickScript="openPopUp('@{#line.courseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1468,7 +1468,7 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                      p:onClickScript="openPopUp('@{#line.CourseDetails.courseId}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>

@@ -116,11 +116,15 @@ public class PlanController extends UifControllerBase {
                 }
                 /*if a plan item exists the this is used for populating the menu items*/
                 if (planItem.getPlanPeriods().size() > 0) {
+                    if(planForm.getAtpId()==null || planItem.getPlanPeriods().get(0).equalsIgnoreCase(planForm.getAtpId())){
                     /*Condition to check if the atp is greater than or equal to planning term*/
                     if (!planForm.isSetToPlanning()) {
                         planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
                     }
                     planForm.setAtpId(planItem.getPlanPeriods().get(0));
+                    }else {
+                        return doPageRefreshError(planForm, "Plan item not found.", new Exception());
+                    }
                 }
             } catch (Exception e) {
                 return doPageRefreshError(planForm, "Plan item not found.", e);
@@ -145,6 +149,8 @@ public class PlanController extends UifControllerBase {
             planForm.setCourseDetails(courseDetails);
             GlobalVariables.getMessageMap().clearErrorMessages();
             GlobalVariables.getMessageMap().putErrorForSectionId("add_planned_course", PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
+            return doPageRefreshError(planForm, "Plan item not found.", e);
+
         }
         /*plan item does not exists for academic Record course
         In that case acadRecAtpId is passed in through the UI
