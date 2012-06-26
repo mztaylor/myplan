@@ -926,7 +926,8 @@ public class PlanController extends UifControllerBase {
      */
     private ModelAndView doPageRefreshError(PlanForm form, String errorMessage, Exception e) {
         // <a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Reset your academic plan</a>
-        String[] params = {"<a href=\"/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView\">Reset your academic plan</a>"};
+        // Removed link because html string is being encoded in the view
+        String[] params = {"Refresh your page."};
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, params, e);
     }
 
