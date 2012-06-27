@@ -2085,6 +2085,16 @@
     <bean id="planned_course_backup" parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;">
         <property name="items">
             <list>
+                <bean parent="Uif-Message"
+                      p:messageText="[Optional]" >
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                            <value>fl-font-size-90</value>
+                        </list>
+                    </property>
+                        </bean>
+
                 <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Backup"
                       p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:constraintText="Should this course be marked as backup?"
                       p:render="@{moveCourse eq false ? true : false}">
