@@ -478,30 +478,32 @@ button.myplan-button-transparent:hover {
 	font-size: 1em !important;
 	font-weight: bold;
 }
-.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons {
+.myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image {
     float: right;
     background: url('../images/facetExpandCollapse.png') no-repeat 0px 0px;
     margin: 0;
 }
-.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons[alt="expand"] {
+.myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="expand"] {
     background-position: 0px 0px;
 }
-.myplan-facets-panel .myplan-facets-group .uif-header img.expand_collapse-buttons[alt="collapse"] {
+.myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="collapse"] {
     background-position: 0px -14px;
 }
-.myplan-facets-panel .myplan-facets-group .uif-disclosureContent {
+.myplan-facets-panel .myplan-facets-group div.facets {
 	max-height: 95px;
 	overflow-y: auto;
-    border-top: solid 1px #a9a9a9;
 }
-.myplan-facets-panel .myplan-facets-group .uif-disclosureContent .uif-boxLayout {
+.myplan-facets-panel .myplan-facets-group div.facets ul {
     overflow:  hidden;
 }
-.myplan-facets-panel .myplan-facets-group ul li.all {
-    border-bottom: solid 1px #a9a9a9;
+.myplan-facets-panel .myplan-facets-group div.all,
+.myplan-facets-panel .myplan-facets-group div.facets {
+    padding: 3px 0 0 3px;
+    border-top: solid 1px #a9a9a9;
 }
 .myplan-facets-panel .myplan-facets-group ul li {
     padding: 0 0 0 21px;
+    margin:  0 0 3px 0;
     background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
     min-height: 16px;
     line-height: 16px;
@@ -519,12 +521,15 @@ button.myplan-button-transparent:hover {
 	cursor: default;
     text-decoration: none;
 }
-.myplan-facets-panel .myplan-facets-group ul li a span {
+.myplan-facets-panel .myplan-facets-group ul li span {
     color: #999;
-    text-decoration: none;
+    margin-left: 0.33em;
 }
-.myplan-facets-panel .myplan-facets-group ul li.disabled a,
-.myplan-facets-panel .myplan-facets-group ul li.disabled a:hover {
+.myplan-facets-panel .myplan-facets-group ul li:hover a {
+    text-decoration: underline;
+}
+.myplan-facets-panel .myplan-facets-group ul li.disabled,
+.myplan-facets-panel .myplan-facets-group ul li.disabled:hover {
     text-decoration: none;
     cursor: default;
     opacity: 0.33;

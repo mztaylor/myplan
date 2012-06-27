@@ -1,5 +1,13 @@
 oFacets = new Object();
 
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
 (function($) {
     $.fn.dataTableExt.oApi.fnGetColumnData = function(oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty) {
         // check for column id
@@ -14,7 +22,7 @@ oFacets = new Object();
         var aiRows;
 
         // use only filtered rows
-        if (bFiltered == true) aiRows = oSettings.aiDisplay;
+        if (bFiltered) aiRows = oSettings.aiDisplay;
         else aiRows = oSettings.aiDisplayMaster;
         for (var key in oFacets[iColumn]) {
             if (oFacets[iColumn].hasOwnProperty(key)) oFacets[iColumn][key].count = 0;
@@ -48,6 +56,7 @@ function searchForCourses(id, parentId) {
     jq.each( jq("input[name='campusSelect']:checked"), function() {
         aCampus.push( jq(this).val() );
     });
+    oFacets = new Object();
     var oTable = jq("#" + id).dataTable({
         bDestroy: true,
         bAutoWidth: false,
@@ -96,6 +105,11 @@ function searchForCourses(id, parentId) {
                 if (oTable.fnSettings().aoColumns[i].bSearchable) {
                     oTable.fnGetColumnData(i);
                     jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout").html(fnCreateFacets(oFacets[i]));
+                    jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout ul li").each(function() {
+                        jq(this).click(function(e) {
+                            fnFacetFilter(jq(this).find("a").text(), id, i, e);
+                        });
+                    });
                 }
             });
         }
@@ -103,15 +117,67 @@ function searchForCourses(id, parentId) {
 }
 
 function fnCreateFacets(oData) {
-    var jFacetSet = jq('<ul />').append('<li class="all"><a href="#">All</a></li>');
+    var jAll = jq('<div class="all"><ul><li class="all checked"><a href="#">All</a></li></ul></div>').hide();
+    if(Object.size(oData) > 1) {
+        jAll.show();
+    }
+    var jFacets = jq('<ul />');
     for (var key in oData) {
         if (oData.hasOwnProperty(key)) {
             var jItem = jq('<li />');
-            var jLink = jq('<a href="#">' + key + '</a>');
-            if (oData[key].checked) jLink.addClass("checked");
-            var jCount = jq('<span>(' + oData[key].count + ')</span>');
-            jFacetSet.append(jItem.append(jLink).append(jCount));
+            var jLink = jq('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>');
+            //if(Object.size(oData) == 1)
+            jFacets.append(jItem.append(jLink));
         }
     }
-    return jFacetSet.prop('outerHTML');
+    return jAll.prop('outerHTML') + '<div class="facets">' + jFacets.prop('outerHTML') + '</div>';
+}
+
+function fnFacetFilter(sFilter, id, i, e) {
+    stopEvent(e);
+    var oTable = jq("#" + id).dataTable();
+    if (sFilter === 'All') {
+        for (var key in oFacets[i]) {
+            if (oFacets[i].hasOwnProperty(key)) {
+                oFacets[i][key].checked = false;
+            }
+        }
+        oTable.fnFilter('', i, true, false);
+        jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").addClass("checked");
+        fnUpdateFacets(oTable, -1);
+    } else {
+        oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
+        var aSelections = [];
+        for (var key in oFacets[i]) {
+            if (oFacets[i].hasOwnProperty(key)) {
+                if (oFacets[i][key].checked === true) {
+                    aSelections.push(";"+key+";");
+                }
+            }
+        }
+        oTable.fnFilter(aSelections.join("|"), i, true, false);
+        if (oFacets[i][sFilter].checked) {
+            fnUpdateFacets(oTable, i);
+        } else {
+            fnUpdateFacets(oTable, -1);
+        }
+    }
+}
+
+function fnUpdateFacets(oTable, n) {
+    jq.each(oTable.fnSettings().aoColumns, function(i) {
+        if (i != n && oTable.fnSettings().aoColumns[i].bSearchable) {
+            oTable.fnGetColumnData(i);
+        }
+        jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul").find("li").not(".all").each(function() {
+            if (oFacets[i][jq(this).find("a").text()].checked) {
+                jq(this).addClass("checked");
+                jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").removeClass("checked");
+            } else {
+                jq(this).removeClass("checked");
+            }
+            jq(this).find("span").text("(" + oFacets[i][jq(this).find("a").text()].count + ")");
+        });
+    });
+    //console.log(oFacets);
 }
