@@ -1,5 +1,5 @@
 /* This is for DOM changes to refresh the view on back to keep the view updated */
-if(window.location.hash != "" && jq("input#viewId").val() != "CourseSearch-FormView") {
+if(window.location.hash != "" && window.location.hash.indexOf("CourseSearch-FormView") == -1) {
     window.location.href = window.location.href.split('#')[0];
 }
 
@@ -278,7 +278,7 @@ function fnPositionPopUp(popupBoxId) {
 function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var targetText = ( jq.trim( jq(target).text() ) != '') ? jq.trim( jq(target).text() ) : "Error";
-    var elementToBlock = jq(target);
+    var elementToBlock = (target.nodeName != 'INPUT') ? jq(target) : jq(target).parent();
     jq('input[name="methodToCall"]').remove();
     jq('form#' + id + '_form input[name="' + type + '"]').remove();
     jq('form#' + id + '_form input[name="viewId"]').remove();
@@ -296,7 +296,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
-                window.location.hash = new Date().getTime();
+                window.location.hash = new Date().getTime() + '-' + jq("input#viewId").val();
                 break;
             case 'error':
                 var oMessage = { 'message' : jq('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
@@ -329,8 +329,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
 /*Function used for moving the plan Item from planned to backup*/
 function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     stopEvent(e);
-    var tempForm = jq('<form />').hide();
-    jq(tempForm).attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+    var tempForm = jq('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
     jq("body").append(tempForm);
     myplanAjaxSubmitPlanItem(id, type, methodToCall, e, false);
     fnCloseAllPopups();
@@ -342,8 +341,7 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
 ######################################################################################
  */
 function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
-    var tempForm = jq('<form />').hide();
-	jq(tempForm).attr("id", id + "_form").attr("action", action).attr("method", "post");
+    var tempForm = jq('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
     jQuery.each(retrieveOptions, function(name, value) {
         jq(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
     });
