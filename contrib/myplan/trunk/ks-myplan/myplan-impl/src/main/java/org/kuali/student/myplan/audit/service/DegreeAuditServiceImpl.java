@@ -360,10 +360,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
 //        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
 //        {
-//            return getDARSReport(auditId);
+            return getDARSReport(auditId);
 //        }
 //        if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
-            return getHTMLReport(auditId);
+//            return getHTMLReport(auditId);
 //        }
 //        throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
