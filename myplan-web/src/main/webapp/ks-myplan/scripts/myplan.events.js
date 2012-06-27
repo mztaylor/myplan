@@ -73,7 +73,7 @@ function fnUpdateCredits (atpId, termCredits) {
  */
 function fnDisplayMessage (message, cssClass, targetId, button, full) {
     if (button) {
-        if (!full) jq("#" + targetId).wrap("<div/>");
+        if (!full) jq("#" + targetId).wrap("<div></div>");
         jq("#" + targetId).parent("div").fadeOut(250, function() {
             jq(this).addClass(cssClass).html(message).fadeIn(250);
         });
@@ -92,7 +92,7 @@ function fnRestoreSearchAddButton (courseId) {
     var oTable = jq('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
     var oNodes = oTable.fnGetNodes();
     jq(oNodes).find("#" + courseId + "_status").fadeOut(250, function() {
-        jq(this).html('<input type="image" title="Bookmark This Course" src="/student/ks-myplan/images/btnAdd.png" alt="Bookmark This Course" class="uif-field uif-imageField" onclick="myPlanAjaxPlanItemMove(\''+courseId+'\', \'courseId\', \'addSavedCourse\', event);">');
+        jq(this).html('<input type="image" title="Bookmark This Course" src="/student/ks-myplan/images/btnAdd.png" alt="Bookmark This Course" class="uif-field uif-imageField" onclick="myPlanAjaxPlanItemMove(\''+courseId+'\', \'courseId\', \'addSavedCourse\', event);" />');
         jq(this).fadeIn(250);
     });
 }
@@ -102,7 +102,7 @@ function fnRestoreSearchAddButton (courseId) {
 #################################################################
  */
 function fnRestoreDetailsAddButton (courseId) {
-    jq("#" + courseId + "_bookmarked").wrap("<div/>");
+    jq("#" + courseId + "_bookmarked").wrap("<div></div>");
     jq("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
         jq(this).replaceWith('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
         jq(this).append("jq(document).ready(function () {jq('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
