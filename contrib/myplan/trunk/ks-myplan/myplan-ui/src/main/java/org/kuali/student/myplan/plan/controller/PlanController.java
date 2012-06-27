@@ -868,10 +868,16 @@ public class PlanController extends UifControllerBase {
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         String planItemId = form.getPlanItemId();
-        if (StringUtils.isEmpty(planItemId)) {
-            return doOperationFailedError(form, "Plan item id was missing.", null);
+        String courseId=form.getCourseId();
+        if (StringUtils.isEmpty(planItemId) && StringUtils.isEmpty(courseId)) {
+            return doOperationFailedError(form, "Plan item id and courseId are missing.", null);
         }
 
+        if(StringUtils.isEmpty(planItemId)){
+                planItemId=getPlanIdFromCourseId(courseId);
+        }
+        
+        
         //  See if the plan item exists.
         PlanItemInfo planItem = null;
         try {
@@ -1445,6 +1451,36 @@ public class PlanController extends UifControllerBase {
             if (totalCredits.contains(".0")) totalCredits = totalCredits.replace(".0", "");
         }
         return totalCredits;
+    }
+    
+    private String getPlanIdFromCourseId(String courseId){
+        String planItemId=null;
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String studentID = user.getPrincipalId();
+
+        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
+        List<LearningPlanInfo> learningPlanList = null;
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
+
+        List<PlanItemInfo> planItemList = null;
+        try {
+            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                String learningPlanID = learningPlan.getId();
+
+                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
+
+                for (PlanItemInfo planItem : planItemList) {
+                                 if(planItem.getRefObjectId().equalsIgnoreCase(courseId)){
+                                     planItemId=planItem.getId();
+                                     break;
+                                 }
+                }
+            }
+        }catch(Exception e){
+            logger.error("could not get the planItemId");
+        }
+        return planItemId;
     }
 
     private List<StudentCourseRecordInfo> getAcadRecs(String studentID) {
