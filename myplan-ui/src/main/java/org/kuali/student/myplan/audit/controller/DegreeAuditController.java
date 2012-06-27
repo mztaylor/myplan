@@ -27,6 +27,8 @@ import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -106,8 +108,8 @@ public class DegreeAuditController extends UifControllerBase {
             String preparedFor = user.getLastName() + ", " + user.getFirstName();
             html = html.replace( "$$PreparedFor$$", preparedFor );
             form.setAuditHtml(html);
-            
-            
+
+
             /*Impl to set the default values for campusParam and programParam properties*/
             List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
             try {
@@ -132,6 +134,11 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=runAudit")
     public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
+        if(UserSessionHelper.isAdviser()){
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putError("audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
+            return getUIFModelAndView(form);
+        }
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
             String studentId = user.getPrincipalId();
