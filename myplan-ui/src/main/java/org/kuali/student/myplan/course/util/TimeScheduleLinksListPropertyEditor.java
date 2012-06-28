@@ -22,6 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.util.UUIDHelper;
+import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
+import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
@@ -31,10 +33,7 @@ import org.kuali.student.r2.common.exceptions.*;
 import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport implements Serializable {
 
@@ -43,15 +42,41 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private StudentServiceClient studentServiceClient;
 
     private String baseUrl = "";
+
     private String label = "See {timeScheduleName} Time Schedule";
+
     private String title = label;
 
     private List<String> styleClasses;
 
     private transient CourseOfferingService courseOfferingService;
 
+    private transient EnumerationManagementService enumService;
+
     private List<String> emptyListStyleClasses;
+
+    private HashMap<String, String> instAbbreviations;
+
+    public HashMap<String, String> getInstAbbreviations() {
+        return instAbbreviations;
+    }
+
+    public void setInstAbbreviations(HashMap<String, String> instAbbreviations) {
+        this.instAbbreviations = instAbbreviations;
+    }
+
     private final static CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.UL;
+
+    /*TODO:Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+
+    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
+        return hashMap;
+    }
+
+    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+        this.hashMap = hashMap;
+    }
 
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
@@ -69,6 +94,15 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         styleClasses = new ArrayList<String>();
         emptyListStyleClasses = new ArrayList<String>();
     }
+
+    protected synchronized EnumerationManagementService getEnumerationService() {
+        if (this.enumService == null) {
+            this.enumService = (EnumerationManagementService) GlobalResourceLoader
+                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
+        }
+        return this.enumService;
+    }
+
 
     @Override
     public void setValue(Object value) {
@@ -114,6 +148,9 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 String urlId = UUIDHelper.genStringUUID();
                 String t = title.replace("{timeScheduleName}", scheduledTerm);
                 String l = label.replace("{timeScheduleName}", scheduledTerm);
+                if(getInstAbbreviations().size()>0 && getInstAbbreviations().containsKey(lightboxUrl)){
+                    l=l+"("+getInstAbbreviations().get(lightboxUrl)+")";
+                }
 
 
                 //need to change lightbox link url b bus --> bbus for bothell and tacoma
@@ -148,6 +185,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private Set<String> makeLightboxTimeScheduleUrl(String term, String courseCode) {
 
         final CourseDetails courseDetails = (CourseDetails) super.getValue();
+        HashMap<String, String> inst = new HashMap<String, String>();
         Set<String> urls = new HashSet<String>();
         if (courseDetails == null) {
             return new HashSet<String>();
@@ -195,7 +233,25 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
             logger.error("could not load the ActivityOfferinInfo from SWS", e);
         }
         for (AttributeInfo timeScheduleLinkAbbreviation : activityOfferingInfo.getAttributes()) {
+            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
             if (timeScheduleLinkAbbreviation.getKey().equalsIgnoreCase(CourseSearchConstants.TIME_SCHEDULE_KEY) && !timeScheduleLinkAbbreviation.getValue().isEmpty()) {
+                String instCd = timeScheduleLinkAbbreviation.getValue().replaceAll("\\D+", "").trim();
+                String instAbbr = null;
+                if (!instCd.isEmpty()) {
+
+                    if (!this.getHashMap().containsKey(CourseSearchConstants.COURSE_OFFERING_INSTITUTE)) {
+                        enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.COURSE_OFFERING_INSTITUTE);
+
+                    } else {
+                        enumeratedValueInfoList = hashMap.get(CourseSearchConstants.COURSE_OFFERING_INSTITUTE);
+                    }
+                    for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
+                        if (instCd.equalsIgnoreCase(enumeratedValueInfo.getSortKey())) {
+                            instAbbr = enumeratedValueInfo.getAbbrevValue();
+                        }
+                    }
+
+                }
                 StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder = urlBuilder.append(url);
                 urlBuilder.append(timeScheduleLinkAbbreviation.getValue())
@@ -212,9 +268,28 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
                 urlBuilder.append(courseNumber);
                 urls.add(urlBuilder.toString());
+                if (enumeratedValueInfoList != null) {
+                    inst.put(urlBuilder.toString(), instAbbr);
+                }
             }
         }
+        setInstAbbreviations(inst);
         return urls;
+    }
+
+    public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+
+        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+
+        try {
+
+            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
+            hashMap.put(param, enumeratedValueInfoList);
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
+        }
+
+        return enumeratedValueInfoList;
     }
 
     public List<String> getStyleClasses() {

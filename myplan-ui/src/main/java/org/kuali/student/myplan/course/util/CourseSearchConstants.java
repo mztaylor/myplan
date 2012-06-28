@@ -36,4 +36,6 @@ public class CourseSearchConstants {
     public static final String CAMPUS_LOCATION = "kuali.lu.campusLocation";
 
     public static final String TIME_SCHEDULE_KEY = "TimeScheduleLinkAbbreviation";
+    
+    public static final String COURSE_OFFERING_INSTITUTE ="kuali.uw.course.offering.institute";
 }
