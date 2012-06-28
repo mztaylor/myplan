@@ -195,7 +195,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
             logger.error("could not load the ActivityOfferinInfo from SWS", e);
         }
         for (AttributeInfo timeScheduleLinkAbbreviation : activityOfferingInfo.getAttributes()) {
-            if (timeScheduleLinkAbbreviation.getKey().equalsIgnoreCase(CourseSearchConstants.TIME_SCHEDULE_KEY)) {
+            if (timeScheduleLinkAbbreviation.getKey().equalsIgnoreCase(CourseSearchConstants.TIME_SCHEDULE_KEY) && !timeScheduleLinkAbbreviation.getValue().isEmpty()) {
                 StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder = urlBuilder.append(url);
                 urlBuilder.append(timeScheduleLinkAbbreviation.getValue())
