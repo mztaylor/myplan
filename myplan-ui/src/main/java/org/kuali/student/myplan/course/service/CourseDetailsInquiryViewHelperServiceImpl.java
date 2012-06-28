@@ -7,6 +7,8 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.rice.krad.UserSession;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
@@ -305,7 +307,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 // The right strategy would be using the multiple equal predicates joined using an and
                 String values = String.format("%s, %s, %s", year, subject, number);
                 courseOfferingInfo = getCourseOfferingService()
-                    .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
+                        .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
                 logger.error("Could not load courseOfferingInfo list.", e);
             }
@@ -349,7 +351,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
         }
 
-
         return courseDetails;
     }
 
@@ -361,7 +362,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         EnumeratedValueInfo enumValueInfo = null;
         try {
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if ( ! enumServiceCache.containsKey("kuali.uw.lu.genedreq")) {
+            if (!enumServiceCache.containsKey("kuali.uw.lu.genedreq")) {
                 enumeratedValueInfoList = getEnumerationService().getEnumeratedValues("kuali.uw.lu.genedreq", null, null, null);
             } else {
                 enumeratedValueInfoList = enumServiceCache.get("kuali.uw.lu.genedreq");
@@ -389,7 +390,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         String titleValue = null;
         try {
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if ( ! enumServiceCache.containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+            if (!enumServiceCache.containsKey(CourseSearchConstants.SUBJECT_AREA)) {
                 enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
             } else {
                 enumeratedValueInfoList = enumServiceCache.get(CourseSearchConstants.SUBJECT_AREA);

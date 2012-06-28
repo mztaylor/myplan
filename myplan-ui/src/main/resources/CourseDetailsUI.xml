@@ -71,6 +71,41 @@
                     <property name="items">
                         <list>
                             <ref bean="course_details_actions"/>
+
+                            <bean id="course_details_page_messaging" parent="Uif-VerticalBoxGroup"
+                                  p:render="@{(dataObject.backupList ne null or dataObject.plannedList ne null or dataObject.academicTerms.size() gt 0) ? true : false}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-message-border</value>
+                                        <value>myplan-message-info</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                                            <property name="items">
+                                                <list>
+
+                                                    <bean parent="Uif-DataField"
+                                                          p:propertyName="details"
+                                                          p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
+                                                          p:labelPlacement="LEFT">
+                                                        <property name="propertyEditor"
+                                                                  ref="crud_message_matrix_formatter"/>
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-data-list</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+
                             <ref bean="course_details_overview"/>
                             <ref bean="course_details_links"/>
                         </list>
@@ -112,7 +147,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
-                      p:render="@{dataObject.inSavedCourseList ? true : false}"
+                      p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
                       p:groupBeginDelimiter="This course is in your" p:groupEndDelimiter="" p:linkSeparator="">
                     <property name="onDocumentReadyScript"
                               value="jq('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
@@ -142,13 +177,14 @@
                       p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
                     <property name="replacement">
                         <list>
-                            <ref bean="adviser_actions_message" />
+                            <ref bean="adviser_actions_message"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
+
 
     <bean id="course_details_overview" parent="Uif-GridGroup">
         <property name="cssClasses">
@@ -175,8 +211,8 @@
                             </bean>
                             <!-- If Course Description is empty-->
                             <bean parent="Uif-Message" p:messageText="No description is available">
-                            <property name="render" value="@{dataObject.courseDescription ne null ? false : true}"/>
-                        </bean>
+                                <property name="render" value="@{dataObject.courseDescription ne null ? false : true}"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -240,7 +276,8 @@
                             <bean parent="Uif-HorizontalBoxGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-DataField" p:propertyName="scheduledTerms" p:escapeHtmlInPropertyValue="false">
+                                        <bean parent="Uif-DataField" p:propertyName="scheduledTerms"
+                                              p:escapeHtmlInPropertyValue="false">
                                             <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -259,10 +296,12 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-HorizontalBoxGroup" p:render="@{dataObject.scheduledTerms.size() gt 0 ? false : true}">
+                            <bean parent="Uif-HorizontalBoxGroup"
+                                  p:render="@{dataObject.scheduledTerms.size() gt 0 ? false : true}">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Message" p:messageText="Last offered in @{dataObject.lastOffered}"
+                                        <bean parent="Uif-Message"
+                                              p:messageText="Last offered in @{dataObject.lastOffered}"
                                               p:render="@{dataObject.lastOffered ne null ? true : false}"/>
                                         <bean parent="Uif-Message" p:messageText="Not offered for more than 10 years."
                                               p:render="@{dataObject.lastOffered eq null ? true : false}"/>
@@ -273,8 +312,10 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Message" p:messageText="Projected to be offered in "
-                                              p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}" p:style="margin: 0 0.33em 0 0;"/>
-                                        <bean parent="Uif-DataField" p:propertyName="termsOffered" p:fieldLabel.render="false" p:style="margin: 0 0.33em 0 0;">
+                                              p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"
+                                              p:style="margin: 0 0.33em 0 0;"/>
+                                        <bean parent="Uif-DataField" p:propertyName="termsOffered"
+                                              p:fieldLabel.render="false" p:style="margin: 0 0.33em 0 0;">
                                             <property name="propertyEditor" ref="terms_formatter"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -430,7 +471,8 @@
                                         <value>fl-font-size-90</value>
 
                                     </list>
-                                </property></bean>
+                                </property>
+                            </bean>
                             <bean id="potal_page_link" parent="Uif-ViewHeader">
                                 <property name="items">
                                     <bean parent="Uif-Link" p:linkText="Go to Home Page" p:href="/student/portal.do"
