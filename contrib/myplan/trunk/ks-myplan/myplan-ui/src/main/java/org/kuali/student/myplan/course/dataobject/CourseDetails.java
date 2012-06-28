@@ -180,5 +180,13 @@ public class CourseDetails extends CourseSummaryDetails {
         return this;
     }
 
+    //  Using this as a property for the crudMessageMatrixFormatter property editor
+    // because getThis() is already used for the timeschedule property editor
+    // so it overides crudmessage with timeschedule if we use  the same property .
+    @JsonIgnore
+    public CourseDetails getDetails() {
+        return this;
+    }
+
 
 }
