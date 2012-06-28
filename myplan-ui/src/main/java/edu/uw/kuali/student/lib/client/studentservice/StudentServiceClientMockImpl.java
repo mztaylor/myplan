@@ -134,12 +134,6 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         return out;
     }
 
-    @Override
-    public Set<String> getTimeSchedulesAbbreviations(String year, String term, String curriculumCode, String courseNumber) throws ServiceException {
-        //  The TimeScheduleLinkAbbreviation often doesn't match the curriculum code, but sometimes it does.
-        Set<String> timeScheduleAbbreStrings = new HashSet<String>();
-        return timeScheduleAbbreStrings;
-    }
 
     @Override
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
