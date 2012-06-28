@@ -149,7 +149,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 String t = title.replace("{timeScheduleName}", scheduledTerm);
                 String l = label.replace("{timeScheduleName}", scheduledTerm);
                 if(getInstAbbreviations().size()>0 && getInstAbbreviations().containsKey(lightboxUrl)){
-                    l=l+"("+getInstAbbreviations().get(lightboxUrl)+")";
+                    l=l+" ("+getInstAbbreviations().get(lightboxUrl)+")";
                 }
 
 
