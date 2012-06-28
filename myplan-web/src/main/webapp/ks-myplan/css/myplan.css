@@ -490,7 +490,7 @@ button.myplan-button-transparent:hover {
     background-position: 0px -14px;
 }
 .myplan-facets-panel .myplan-facets-group div.facets {
-	max-height: 95px;
+	max-height: 76px;
 	overflow-y: auto;
 }
 .myplan-facets-panel .myplan-facets-group div.facets ul {
@@ -515,12 +515,6 @@ button.myplan-button-transparent:hover {
 .myplan-facets-panel .myplan-facets-group ul li.checked {
     background-position: 0px -32px;
 }
-.myplan-facets-panel .myplan-facets-group ul li.static,
-.myplan-facets-panel .myplan-facets-group ul li.static:hover {
-    background-position: 0px -32px;
-	cursor: default;
-    text-decoration: none;
-}
 .myplan-facets-panel .myplan-facets-group ul li span {
     color: #999;
     margin-left: 0.33em;
@@ -533,6 +527,14 @@ button.myplan-button-transparent:hover {
     text-decoration: none;
     cursor: default;
     opacity: 0.33;
+}
+.myplan-facets-panel .myplan-facets-group ul li.static,
+.myplan-facets-panel .myplan-facets-group ul li.static:hover,
+.myplan-facets-panel .myplan-facets-group ul li.static a,
+.myplan-facets-panel .myplan-facets-group ul li.static a:hover {
+    background-position: 0px -32px;
+	cursor: default;
+    text-decoration: none;
 }
 /* Styles for course search results ########################################################################### */
 .dataTables_wrapper {
@@ -868,4 +870,10 @@ label.scheduled {
 .myplan-audit-report div.blockElement {
     left: 0px !important;
     top: 0px !important;
+}
+#select_programParam_seattle,
+#select_programParam_bothell,
+#select_programParam_tacoma {
+    width: auto !important;
+    background: transparent !important;
 }

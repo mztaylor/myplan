@@ -296,7 +296,10 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jq.publish("' + key + '", [' + JSON.stringify( jq.extend(json[key], oMessage) ) + ']);');
                     }
                 }
-                window.location.hash = new Date().getTime() + '-' + jq("input#viewId").val();
+                if (window.location.hash == '') {
+                    var hash  = new Date().getTime() + '-' + jq("input#viewId").val();
+                    window.location.hash = hash;
+                }
                 break;
             case 'error':
                 var oMessage = { 'message' : jq('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
