@@ -1,11 +1,57 @@
 oFacets = new Object();
 
+Array.prototype.alphanumSort = function(caseInsensitive) {
+  for (var z = 0, t; t = this[z]; z++) {
+    this[z] = [];
+    var x = 0, y = -1, n = 0, i, j;
+
+    while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+      var m = (i == 46 || (i >=48 && i <= 57));
+      if (m !== n) {
+        this[z][++y] = "";
+        n = m;
+      }
+      this[z][y] += j;
+    }
+  }
+
+  this.sort(function(a, b) {
+    for (var x = 0, aa, bb; (aa = a[x]) && (bb = b[x]); x++) {
+      if (caseInsensitive) {
+        aa = aa.toLowerCase();
+        bb = bb.toLowerCase();
+      }
+      if (aa !== bb) {
+        var c = Number(aa), d = Number(bb);
+        if (c == aa && d == bb) {
+          return c - d;
+        } else return (aa > bb) ? 1 : -1;
+      }
+    }
+    return a.length - b.length;
+  });
+
+  for (var z = 0; z < this.length; z++)
+    this[z] = this[z].join("");
+}
+
 Object.size = function(obj) {
     var size = 0, key;
     for (key in obj) {
         if (obj.hasOwnProperty(key)) size++;
     }
     return size;
+};
+
+jQuery.fn.iterateSorted = function(print) {
+    var keys = [];
+    jq.each(this[0], function(key) {
+        keys.push(key);
+    });
+    keys.alphanumSort(true);
+    for (var i = 0; i < keys.length; i++) {
+        print(keys[i]);
+    }
 };
 
 (function($) {
@@ -25,7 +71,7 @@ Object.size = function(obj) {
         if (bFiltered) aiRows = oSettings.aiDisplay;
         else aiRows = oSettings.aiDisplayMaster;
         for (var key in oFacets[iColumn]) {
-            if (oFacets[iColumn].hasOwnProperty(key)) oFacets[iColumn][key].count = 0;
+            if (oFacets[iColumn].hasOwnProperty( String(key) )) oFacets[iColumn][ String(key) ].count = 0;
         }
         for (var i = 0, c = aiRows.length; i < c; i++) {
             iRow = aiRows[i];
@@ -117,19 +163,17 @@ function searchForCourses(id, parentId) {
 }
 
 function fnCreateFacets(oData) {
-    var jAll = jq('<div class="all"><ul><li class="all checked"><a href="#">All</a></li></ul></div>').hide();
+    var jAll = jq('<div class="all"><ul><li class="all checked" title="All"><a href="#">All</a></li></ul></div>').hide();
     if(Object.size(oData) > 1) {
         jAll.show();
     }
     var jFacets = jq('<ul />');
-    for (var key in oData) {
-        if (oData.hasOwnProperty(key)) {
-            var jItem = jq('<li />');
-            var jLink = jq('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>');
-            //if(Object.size(oData) == 1)
-            jFacets.append(jItem.append(jLink));
-        }
-    }
+    jq(oData).iterateSorted(function(key) {
+        var jItem = jq('<li />').attr("title", key);
+        var jLink = jq('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>');
+        if(Object.size(oData) == 1) jItem.addClass("static");
+        jFacets.append(jItem.append(jLink));
+    });
     return jAll.prop('outerHTML') + '<div class="facets">' + jFacets.prop('outerHTML') + '</div>';
 }
 
@@ -137,16 +181,19 @@ function fnFacetFilter(sFilter, id, i, e) {
     stopEvent(e);
     var oTable = jq("#" + id).dataTable();
     if (sFilter === 'All') {
+        // Set all facets within column to checked false
         for (var key in oFacets[i]) {
             if (oFacets[i].hasOwnProperty(key)) {
                 oFacets[i][key].checked = false;
             }
         }
+        // Clear filter
         oTable.fnFilter('', i, true, false);
-        jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").addClass("checked");
         fnUpdateFacets(oTable, -1);
     } else {
+        // Update checked status of facet
         oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
+        // Build filter regex query
         var aSelections = [];
         for (var key in oFacets[i]) {
             if (oFacets[i].hasOwnProperty(key)) {
@@ -155,29 +202,40 @@ function fnFacetFilter(sFilter, id, i, e) {
                 }
             }
         }
+        // Filter results of facet selection
         oTable.fnFilter(aSelections.join("|"), i, true, false);
-        if (oFacets[i][sFilter].checked) {
-            fnUpdateFacets(oTable, i);
-        } else {
-            fnUpdateFacets(oTable, -1);
-        }
+        fnUpdateFacets(oTable, i);
     }
 }
 
 function fnUpdateFacets(oTable, n) {
-    jq.each(oTable.fnSettings().aoColumns, function(i) {
+    jq.each(oFacets, function(i) {
+        // Update facet group data (counts) except the group the selection came from
         if (i != n && oTable.fnSettings().aoColumns[i].bSearchable) {
             oTable.fnGetColumnData(i);
         }
+        // Update the style (checked/not checked) on facet links and the count view
         jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul").find("li").not(".all").each(function() {
             if (oFacets[i][jq(this).find("a").text()].checked) {
                 jq(this).addClass("checked");
-                jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").removeClass("checked");
             } else {
                 jq(this).removeClass("checked");
             }
             jq(this).find("span").text("(" + oFacets[i][jq(this).find("a").text()].count + ")");
         });
+        // Update the style on the 'All' facet option (checked if none in the group are selected, not checked if any are selected)
+        var bAll = true;
+        for (var key in oFacets[i]) {
+            if (oFacets[i].hasOwnProperty(key)) {
+                if (oFacets[i][key].checked === true) {
+                    bAll = false;
+                }
+            }
+        }
+        if (bAll) {
+            jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").addClass("checked");
+        } else {
+            jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").removeClass("checked");
+        }
     });
-    //console.log(oFacets);
 }
