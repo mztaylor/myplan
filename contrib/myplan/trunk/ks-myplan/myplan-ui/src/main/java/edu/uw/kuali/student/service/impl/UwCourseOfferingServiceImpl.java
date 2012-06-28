@@ -15,11 +15,14 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.kuali.student.enrollment.courseregistration.dto.CourseRegistrationInfo;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
+import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 
 import javax.jws.WebParam;
 import java.io.StringReader;
@@ -32,7 +35,9 @@ import java.util.regex.Pattern;
  */
 public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
-    public enum terms {autumn, winter, spring, summer};
+    public enum terms {autumn, winter, spring, summer}
+
+    ;
 
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
 
@@ -350,7 +355,81 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     public ActivityOfferingInfo getActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
+        ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
+        String[] params = activityOfferingId.split(",");
+        List<AttributeInfo> timeScheduleAbbrevations = new ArrayList<AttributeInfo>();
+        String responseText = null;
+        List<String> hrefs = new ArrayList<String>();
+        try {
+            responseText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
+        } catch (ServiceException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        Document document = null;
+        try {
+            document = reader.read(new StringReader(responseText));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+        }
+
+        DefaultXPath xpath = new DefaultXPath("//s:Sections");
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("s", "http://webservices.washington.edu/student/");
+        xpath.setNamespaceURIs(namespaces);
+        List sections = xpath.selectNodes(document);
+        if (sections != null) {
+            StringBuffer cc = new StringBuffer();
+            for (Object node : sections) {
+                Element element = (Element) node;
+                List<?> sectionlist = new ArrayList<Object>();
+                sectionlist = element.elements("Section");
+                for (Object section : sectionlist) {
+                    Element secElement = (Element) section;
+                    hrefs.add(secElement.elementText("Href"));
+                }
+
+            }
+        }
+
+        if (hrefs.size() > 0) {
+
+            for (String href : hrefs) {
+                href = href.replace("/student", "").trim();
+                try {
+                    responseText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
+                } catch (ServiceException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                Document document2 = null;
+                try {
+                    document2 = reader.read(new StringReader(responseText));
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
+                }
+                DefaultXPath xpath2 = new DefaultXPath("//s:Curriculum");
+                Map<String, String> namespaces2 = new HashMap<String, String>();
+                namespaces2.put("s", "http://webservices.washington.edu/student/");
+                xpath2.setNamespaceURIs(namespaces2);
+                List curriculum = xpath2.selectNodes(document2);
+                if (curriculum != null) {
+                    StringBuffer cc = new StringBuffer();
+                    for (Object node : curriculum) {
+                        Element element = (Element) node;
+                        AttributeInfo attributeInfo = new AttributeInfo();
+                        attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
+                        attributeInfo.setValue(element.elementText("TimeScheduleLinkAbbreviation"));
+                        timeScheduleAbbrevations.add(attributeInfo);
+                    }
+                }
+
+            }
+        }
+
+        if (timeScheduleAbbrevations.size() > 0) {
+            activityOfferingInfo.setAttributes(timeScheduleAbbrevations);
+        }
+        return activityOfferingInfo;
+
     }
 
     @Override
@@ -602,7 +681,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 }
             }
-            if (actualQuarter != null && actualYear != -1){
+            if (actualQuarter != null && actualYear != -1) {
                 cc = cc.append(actualQuarter).append(" ").append(actualYear);
                 courseOfferingInfo.setTermId(cc.toString().trim());
                 courseOfferingInfos.add(courseOfferingInfo);

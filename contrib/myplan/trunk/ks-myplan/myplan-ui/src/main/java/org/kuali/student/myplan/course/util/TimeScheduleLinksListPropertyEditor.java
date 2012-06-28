@@ -22,8 +22,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.util.UUIDHelper;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.exceptions.*;
 
+import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,8 +48,22 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     private List<String> styleClasses;
 
+    private transient CourseOfferingService courseOfferingService;
+
     private List<String> emptyListStyleClasses;
     private final static CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.UL;
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
 
     public TimeScheduleLinksListPropertyEditor() {
         styleClasses = new ArrayList<String>();
@@ -91,26 +110,26 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         // For all published terms
         for (String scheduledTerm : scheduledTerms) {
             Set<String> lightboxUrls = makeLightboxTimeScheduleUrl(scheduledTerm, courseDetails.getCode());
-            for(String lightboxUrl:lightboxUrls){
-            String urlId = UUIDHelper.genStringUUID();
-            String t = title.replace("{timeScheduleName}", scheduledTerm);
-            String l = label.replace("{timeScheduleName}", scheduledTerm);
+            for (String lightboxUrl : lightboxUrls) {
+                String urlId = UUIDHelper.genStringUUID();
+                String t = title.replace("{timeScheduleName}", scheduledTerm);
+                String l = label.replace("{timeScheduleName}", scheduledTerm);
 
 
-            //need to change lightbox link url b bus --> bbus for bothell and tacoma
+                //need to change lightbox link url b bus --> bbus for bothell and tacoma
 
 
-            formattedText.append("<" + listType.getListItemElementName() + ">")
+                formattedText.append("<" + listType.getListItemElementName() + ">")
 
-                    /*
-                    <input type="hidden" value=" createLightBoxLink('u86', {autoScale:true,centerOnScroll:true,transitionIn:"fade",transitionOut:"fade",speedIn:200,speedOut:200,hideOnOverlayClick:false,type:"iframe",width:"75%",height:"95%"}); " script="first_run">
-                     */
-                    .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
-                    .append("<a id=\"" + urlId + "\" href=\"" + lightboxUrl + "\" target=\"_self\">")
-                    .append(l)
-                    .append("</a>")
-                    .append("</" + listType.getListItemElementName() + ">");
-        }
+                        /*
+                       <input type="hidden" value=" createLightBoxLink('u86', {autoScale:true,centerOnScroll:true,transitionIn:"fade",transitionOut:"fade",speedIn:200,speedOut:200,hideOnOverlayClick:false,type:"iframe",width:"75%",height:"95%"}); " script="first_run">
+                        */
+                        .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
+                        .append("<a id=\"" + urlId + "\" href=\"" + lightboxUrl + "\" target=\"_self\">")
+                        .append(l)
+                        .append("</a>")
+                        .append("</" + listType.getListItemElementName() + ">");
+            }
         }
         formattedText.append("</" + listType.getListElementName() + ">");
 
@@ -129,7 +148,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private Set<String> makeLightboxTimeScheduleUrl(String term, String courseCode) {
 
         final CourseDetails courseDetails = (CourseDetails) super.getValue();
-        Set<String> urls=new HashSet<String>();
+        Set<String> urls = new HashSet<String>();
         if (courseDetails == null) {
             return new HashSet<String>();
         }
@@ -168,32 +187,32 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         url.append(swsTerm).append("/");
 
         //  Query the student web service to convert the curriculum abbreviation to a TimeScheduleLinkAbbreviation.
-        Set<String> timeScheduleLinkAbbreviations = null;
+
+        ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
         try {
-            timeScheduleLinkAbbreviations = getStudentServiceClient().getTimeSchedulesAbbreviations(year, termName, curriculumCode,courseNumber);
-        } catch (ServiceException e) {
-            //  If the service call fails just return the base URL.
-            logger.error("Call to SWS failed.", e);
-            timeScheduleLinkAbbreviations.add(baseUrl);
-            return timeScheduleLinkAbbreviations;
+            activityOfferingInfo = getCourseOfferingService().getActivityOffering(year + "," + termName + "," + curriculumCode + "," + courseNumber, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not load the ActivityOfferinInfo from SWS", e);
         }
-        for (String timeScheduleLinkAbbreviation:timeScheduleLinkAbbreviations){
-            StringBuilder urlBuilder=new StringBuilder();
-            urlBuilder=urlBuilder.append(url);
-            urlBuilder.append(timeScheduleLinkAbbreviation)
-                    //.append(".html#")
-                    .append(".html?external=true&dialogMode=true#");
+        for (AttributeInfo timeScheduleLinkAbbreviation : activityOfferingInfo.getAttributes()) {
+            if (timeScheduleLinkAbbreviation.getKey().equalsIgnoreCase(CourseSearchConstants.TIME_SCHEDULE_KEY)) {
+                StringBuilder urlBuilder = new StringBuilder();
+                urlBuilder = urlBuilder.append(url);
+                urlBuilder.append(timeScheduleLinkAbbreviation.getValue())
+                        //.append(".html#")
+                        .append(".html?external=true&dialogMode=true#");
 
-        if (campusLocationString.equals("Seattle")) { //Seattle
-            urlBuilder.append(curriculumCode.toLowerCase());
-        } else if (campusLocationString.equals("Bothell")) { //Bothell
-            urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
-        } else if (campusLocationString.equals("Tacoma")) { //Tacoma
-            urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
-        }
+                if (campusLocationString.equals("Seattle")) { //Seattle
+                    urlBuilder.append(curriculumCode.toLowerCase());
+                } else if (campusLocationString.equals("Bothell")) { //Bothell
+                    urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
+                } else if (campusLocationString.equals("Tacoma")) { //Tacoma
+                    urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
+                }
 
-            urlBuilder.append(courseNumber);
-        urls.add(urlBuilder.toString());
+                urlBuilder.append(courseNumber);
+                urls.add(urlBuilder.toString());
+            }
         }
         return urls;
     }
