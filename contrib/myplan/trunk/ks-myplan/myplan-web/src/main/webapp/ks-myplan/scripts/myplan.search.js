@@ -1,3 +1,4 @@
+var oTable;
 oFacets = new Object();
 
 Array.prototype.alphanumSort = function(caseInsensitive) {
@@ -33,7 +34,7 @@ Array.prototype.alphanumSort = function(caseInsensitive) {
 
   for (var z = 0; z < this.length; z++)
     this[z] = this[z].join("");
-}
+};
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -103,39 +104,30 @@ function searchForCourses(id, parentId) {
         aCampus.push( jq(this).val() );
     });
     oFacets = new Object();
-    var oTable = jq("#" + id).dataTable({
-        bDestroy: true,
-        bAutoWidth: false,
-        bDeferRender: true,
-        bSortClasses: false,
-        bScrollCollapse: true,
-        oLanguage: {
-            "sInfo":"Showing _START_-_END_ of _TOTAL_ results",
-            "sLengthMenu":"Show _MENU_",
-            "sEmptyTable":'<div class="myplan-course-search-empty"><p class="fl-font-size-130">We couldn&#39;t find anything matching your search.</p><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 2 characters</li></ul></div>',
-            "sZeroRecords":"0 results found",
-            "sInfoEmpty": "0 results found",
-            "sInfoFiltered":""
-        },
-        iDisplayLength: 20,
+    oTable = jq("#" + id).dataTable({
         aLengthMenu: [20,50,100],
-        sDom: "ilrtSp",
-        sPaginationType: "full_numbers",
         aaSorting : [],
         aoColumns: [
-            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'69px'},
+            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'69px', 'sSortDataType': 'dom-text'},
             {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'171px'},
             {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
             {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'122px'},
             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'74px'},
             {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center myplan-course-search-results-status', 'sWidth':'72px'},
-            {'sTitle':'facetQuarter', 'bVisible':false},
-            {'sTitle':'facetGenEduReq', 'bVisible':false},
-            {'sTitle':'facetCredits', 'bVisible':false},
-            {'sTitle':'facetLevel', 'bVisible':false},
-            {'sTitle':'facetCurriculum', 'bVisible':false}
+            {'bVisible':false},
+            {'bVisible':false},
+            {'bVisible':false},
+            {'bVisible':false},
+            {'bVisible':false}
         ],
-        sAjaxSource: '/student/myplan/course/search?queryText='+sQuery+'&termParam='+sTerm+'&campusParam='+aCampus,
+        bAutoWidth: false,
+        bDeferRender: true,
+        bDestroy: true,
+        bScrollCollapse: true,
+        bSortClasses: false,
+        bStateSave: true,
+        iCookieDuration: 600,
+        iDisplayLength: 20,
         fnDrawCallback: function() {
             if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
                 jq(".dataTables_paginate span").not(".first, .last").show();
@@ -147,95 +139,110 @@ function searchForCourses(id, parentId) {
             oTable.fnDraw();
             results.fadeIn("fast");
             results.find("table#" + id).width(578);
-            jq.each(oTable.fnSettings().aoColumns, function(i) {
-                if (oTable.fnSettings().aoColumns[i].bSearchable) {
-                    oTable.fnGetColumnData(i);
-                    jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout").html(fnCreateFacets(oFacets[i]));
-                    jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " .uif-disclosureContent .uif-boxLayout ul li").each(function() {
-                        jq(this).click(function(e) {
-                            fnFacetFilter(jq(this).find("a").text(), id, i, e);
-                        });
-                    });
-                }
-            });
-        }
+            jq.publish("GENERATE_FACETS");
+        },
+        oLanguage: {
+            "sInfo":"Showing _START_-_END_ of _TOTAL_ results",
+            "sLengthMenu":"Show _MENU_",
+            "sEmptyTable":'<div class="myplan-course-search-empty"><p class="fl-font-size-130">We couldn&#39;t find anything matching your search.</p><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 2 characters</li></ul></div>',
+            "sZeroRecords":"0 results found",
+            "sInfoEmpty": "0 results found",
+            "sInfoFiltered":""
+        },
+        sAjaxSource: '/student/myplan/course/search?queryText='+sQuery+'&termParam='+sTerm+'&campusParam='+aCampus,
+        sCookiePrefix: "myplan_",
+        sDom: "ilrtSp",
+        sPaginationType: "full_numbers"
     });
 }
 
-function fnCreateFacets(oData) {
-    var jAll = jq('<div class="all"><ul><li class="all checked" title="All"><a href="#">All</a></li></ul></div>').hide();
+function fnGenerateFacetGroup(iColumn, obj) {
+    if (oTable.fnSettings().aoColumns[iColumn].bSearchable) {
+        oTable.fnGetColumnData(iColumn);
+        fnCreateFacetList(oFacets[iColumn], iColumn, obj);
+    }
+}
+
+function fnCreateFacetList(oData, i, obj) {
+    var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
     if(Object.size(oData) > 1) {
-        jAll.show();
-    }
-    var jFacets = jq('<ul />');
-    jq(oData).iterateSorted(function(key) {
-        var jItem = jq('<li />').attr("title", key);
-        var jLink = jq('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>');
-        if(Object.size(oData) == 1) jItem.addClass("static");
-        jFacets.append(jItem.append(jLink));
-    });
-    return jAll.prop('outerHTML') + '<div class="facets">' + jFacets.prop('outerHTML') + '</div>';
-}
-
-function fnFacetFilter(sFilter, id, i, e) {
-    stopEvent(e);
-    var oTable = jq("#" + id).dataTable();
-    if (sFilter === 'All') {
-        // Set all facets within column to checked false
-        for (var key in oFacets[i]) {
-            if (oFacets[i].hasOwnProperty(key)) {
-                oFacets[i][key].checked = false;
-            }
-        }
-        // Clear filter
-        oTable.fnFilter('', i, true, false);
-        fnUpdateFacets(oTable, -1);
-    } else {
-        // Update checked status of facet
-        oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
-        // Build filter regex query
-        var aSelections = [];
-        for (var key in oFacets[i]) {
-            if (oFacets[i].hasOwnProperty(key)) {
-                if (oFacets[i][key].checked === true) {
-                    aSelections.push(";"+key+";");
-                }
-            }
-        }
-        // Filter results of facet selection
-        oTable.fnFilter(aSelections.join("|"), i, true, false);
-        fnUpdateFacets(oTable, i);
-    }
-}
-
-function fnUpdateFacets(oTable, n) {
-    jq.each(oFacets, function(i) {
-        // Update facet group data (counts) except the group the selection came from
-        if (i != n && oTable.fnSettings().aoColumns[i].bSearchable) {
-            oTable.fnGetColumnData(i);
-        }
-        // Update the style (checked/not checked) on facet links and the count view
-        jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul").find("li").not(".all").each(function() {
-            if (oFacets[i][jq(this).find("a").text()].checked) {
-                jq(this).addClass("checked");
-            } else {
-                jq(this).removeClass("checked");
-            }
-            jq(this).find("span").text("(" + oFacets[i][jq(this).find("a").text()].count + ")");
+        jFacets.append( jq('<div class="all"><ul /></div>') );
+        var jAll = jq('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
+            fnFacetFilter('All', i, e);
         });
-        // Update the style on the 'All' facet option (checked if none in the group are selected, not checked if any are selected)
-        var bAll = true;
-        for (var key in oFacets[i]) {
-            if (oFacets[i].hasOwnProperty(key)) {
-                if (oFacets[i][key].checked === true) {
-                    bAll = false;
-                }
+        jFacets.find(".all ul").append(jAll);
+    }
+    jFacets.append( jq('<div class="facets"><ul /></div>') );
+    jq(oData).iterateSorted(function(key) {
+        var jItem = jq('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
+            fnFacetFilter(key, i, e);
+        });
+        if(Object.size(oData) == 1) jItem.addClass("static");
+        jFacets.find(".facets ul").append(jItem);
+    });
+}
+
+function fnUpdateFacetList(n, i, obj) {
+    if (i != n && oTable.fnSettings().aoColumns[i].bSearchable) {
+        oTable.fnGetColumnData(i);
+    }
+    // Update the style (checked/not checked) on facet links and the count view
+    obj.find("li").not(".all").each(function() {
+        if (oFacets[i][jq(this).find("a").text()].checked) {
+            jq(this).addClass("checked");
+        } else {
+            jq(this).removeClass("checked");
+        }
+        jq(this).find("span").text("(" + oFacets[i][jq(this).find("a").text()].count + ")");
+    });
+    // Update the style on the 'All' facet option (checked if none in the group are selected, not checked if any are selected)
+    var bAll = true;
+    for (var key in oFacets[i]) {
+        if (oFacets[i].hasOwnProperty(key)) {
+            if (oFacets[i][key].checked === true) {
+                bAll = false;
             }
         }
-        if (bAll) {
-            jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").addClass("checked");
+    }
+    if (bAll) {
+        obj.find("ul li.all").addClass("checked");
+    } else {
+        obj.find("ul li.all").removeClass("checked");
+    }
+}
+
+function fnFacetFilter(sFilter, i, e) {
+    stopEvent(e);
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    if ( !jq(target).is('.disabled') && !jq(target).is('.static') ) {
+        //var oCookie = eval('(' + unescape(jq.cookie('myplan_course_search_results_course')) + ')');
+        if (sFilter === 'All') {
+            // Set all facets within column to checked false
+            for (var key in oFacets[i]) {
+                if (oFacets[i].hasOwnProperty(key)) {
+                    oFacets[i][key].checked = false;
+                }
+            }
+            // Clear filter
+            oTable.fnFilter('', i, true, false);
+            //oCookie.aaSearchCols[i][0] = '';
+            jq.publish("UPDATE_FACETS", [-1]);
         } else {
-            jq(".myplan-facets-group." + oTable.fnSettings().aoColumns[i].sTitle + " ul li.all").removeClass("checked");
+            // Update checked status of facet
+            oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
+            // Build filter regex query
+            var aSelections = [];
+            for (var key in oFacets[i]) {
+                if (oFacets[i].hasOwnProperty(key)) {
+                    if (oFacets[i][key].checked === true) {
+                        aSelections.push(";"+key+";");
+                    }
+                }
+            }
+            // Filter results of facet selection
+            oTable.fnFilter(aSelections.join("|"), i, true, false);
+            //oCookie.aaSearchCols[i][0] = aSelections.join("|");
+            jq.publish("UPDATE_FACETS", [i]);
         }
-    });
+    }
 }
