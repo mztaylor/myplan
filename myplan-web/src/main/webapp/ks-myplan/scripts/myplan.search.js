@@ -32,8 +32,8 @@ function numeric(a, b){
 
 function alpha(a, b){
     //  Unknown is always last.
-    if (a == 'Unknown') return 1;
-    if (b == 'Unknown') return -1;
+    if (a == 'Unknown' || a == 'None') return 1;
+    if (b == 'Unknown' || b == 'None') return -1;
     if ( a > b ) return 1;
     else if ( a < b ) return -1;
     else return 0;
@@ -199,6 +199,7 @@ function fnGenerateFacetGroup(iColumn, obj, sorter) {
 
 function fnCreateFacetList(oData, i, obj, sorter) {
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
+    jFacets.html("");
     if(Object.size(oData) > 1) {
         jFacets.append( jq('<div class="all"><ul /></div>') );
         var jAll = jq('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
