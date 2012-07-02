@@ -569,28 +569,33 @@ table.myplan-course-search-results-datatable thead tr {
 }
 table.myplan-course-search-results-datatable thead tr th {
     border: none;
-    padding: 3px;
-    line-height: 19px;
+    padding: 2px 3px;
     font-weight: bold;
     color: #5f5e5f;
     font-size: 88%;
     text-transform: none;
+    line-height: 19px;
+    height: 19px;
+    background: #d6d6d6;
 }
-table.myplan-course-search-results-datatable .sorting,
-table.myplan-course-search-results-datatable .sorting_disabled,
-table.myplan-course-search-results-datatable .sorting_asc,
-table.myplan-course-search-results-datatable .sorting_desc {
+table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper {
+    display: inline;
+}
+table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon {
+    float: right;
+    width: 19px;
+    height: 19px;
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center right;
 }
-table.myplan-course-search-results-datatable .sorting {
+table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-carat-2-n-s {
     background-image: url('../images/sortBoth.png');
 }
-table.myplan-course-search-results-datatable .sorting_asc {
+table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-n {
     background-image: url('../images/sortAsc.png');
 }
-table.myplan-course-search-results-datatable .sorting_desc {
+table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-s {
     background-image: url('../images/sortDesc.png');
 }
 table.myplan-course-search-results-datatable tbody tr {
@@ -631,19 +636,21 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 }
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     width: auto;
-    float: none;
     clear: both;
     background: #d6d6d6;
     border: solid 1px #a9a9a9;
     border-top: none;
     text-align: right;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button,
-.dataTables_wrapper .dataTables_paginate .paginate_active {
-	padding: 2px 7px;
-	margin: 5px 3px;
+    margin: 0;
     line-height: 2em;
     height: 2em;
+}
+.dataTables_wrapper .dataTables_paginate .ui-button {
+	padding: 2px 7px;
+	margin: 5px 3px;
+    background: none;
+    border: none;
+    display: inline;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
@@ -653,28 +660,13 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 	border-right: solid 1px #000;
 	padding-top: 0px;
 	padding-bottom: 0px;
+    display: inline;
 }
 .dataTables_wrapper .dataTables_paginate .next {
 	border-left: solid 1px #000;
 	padding-top: 0px;
 	padding-bottom: 0px;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_active {
-    font-weight:bold;
-    background: #666;
-    color:#fff;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_active:hover {
-	cursor: pointer;
-}
-.dataTables_wrapper .dataTables_paginate .previous:hover,
-.dataTables_wrapper .dataTables_paginate .next:hover,
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-	text-decoration: underline;
-	cursor: pointer;
+    display: inline;
 }
 /* Styles for empty result set page ########################################################################### */
 .myplan-course-search-empty {

@@ -142,10 +142,10 @@ function searchForCourses(id, parentId) {
         aLengthMenu: [20,50,100],
         aaSorting : [],
         aoColumns: [
-            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'69px', 'sSortDataType': 'dom-text'},
-            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'171px'},
+            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'72px', 'sType': 'string'},
+            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'171px', 'sType': 'string'},
             {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
-            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'122px'},
+            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'119px'},
             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'74px'},
             {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center myplan-course-search-results-status', 'sWidth':'72px'},
             {'bVisible':false},
@@ -157,16 +157,21 @@ function searchForCourses(id, parentId) {
         bAutoWidth: false,
         bDeferRender: true,
         bDestroy: true,
+        bJQueryUI: true,
         bScrollCollapse: true,
         bSortClasses: false,
         bStateSave: true,
         iCookieDuration: 600,
         iDisplayLength: 20,
         fnDrawCallback: function() {
-            if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
-                jq(".dataTables_paginate span").not(".first, .last").show();
+            if ( Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength ) > 1)  {
+                jq(".dataTables_paginate .ui-button").not(".first, .last").show();
             } else {
-                jq(".dataTables_paginate span").hide();
+                jq(".dataTables_paginate .ui-button").hide();
+            }
+            if ( this.fnSettings()._iDisplayStart != 0 && jq("#" + parentId).height() > jq(window).height() ) {
+                var targetOffset = jq("#" + parentId).offset().top;
+                jq('html,body').animate({scrollTop: targetOffset}, 250);
             }
         },
         fnInitComplete: function(oSettings, json) {
