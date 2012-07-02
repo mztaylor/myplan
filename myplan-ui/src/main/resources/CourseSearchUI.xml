@@ -280,7 +280,7 @@
         <property name="onDocumentReadyScript" value="
             jq('#facet_quarter')
                 .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(6, this);
+                    fnGenerateFacetGroup(6, this, terms);
                 })
                 .subscribe('UPDATE_FACETS', function(data){
                     fnUpdateFacetList(data, 6, this);
@@ -299,7 +299,7 @@
         <property name="onDocumentReadyScript" value="
             jq('#facet_genedureq')
                 .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(7, this);
+                    fnGenerateFacetGroup(7, this, alpha);
                 })
                 .subscribe('UPDATE_FACETS', function(data){
                     fnUpdateFacetList(data, 7, this);
@@ -318,7 +318,7 @@
         <property name="onDocumentReadyScript" value="
             jq('#facet_credits')
                 .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(8, this);
+                    fnGenerateFacetGroup(8, this, numeric);
                 })
                 .subscribe('UPDATE_FACETS', function(data){
                     fnUpdateFacetList(data, 8, this);
@@ -337,7 +337,7 @@
         <property name="onDocumentReadyScript" value="
             jq('#facet_level')
                 .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(9, this);
+                    fnGenerateFacetGroup(9, this, numeric);
                 })
                 .subscribe('UPDATE_FACETS', function(data){
                     fnUpdateFacetList(data, 9, this);
@@ -356,7 +356,7 @@
         <property name="onDocumentReadyScript" value="
             jq('#facet_curriculum')
                 .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(10, this);
+                    fnGenerateFacetGroup(10, this, alpha);
                 })
                 .subscribe('UPDATE_FACETS', function(data){
                     fnUpdateFacetList(data, 10, this);

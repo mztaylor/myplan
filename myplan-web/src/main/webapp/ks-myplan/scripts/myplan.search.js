@@ -1,40 +1,20 @@
 var oTable;
 oFacets = new Object();
 
-Array.prototype.alphanumSort = function(caseInsensitive) {
-  for (var z = 0, t; t = this[z]; z++) {
-    this[z] = [];
-    var x = 0, y = -1, n = 0, i, j;
-
-    while (i = (j = t.charAt(x++)).charCodeAt(0)) {
-      var m = (i == 46 || (i >=48 && i <= 57));
-      if (m !== n) {
-        this[z][++y] = "";
-        n = m;
-      }
-      this[z][y] += j;
-    }
-  }
-
-  this.sort(function(a, b) {
-    for (var x = 0, aa, bb; (aa = a[x]) && (bb = b[x]); x++) {
-      if (caseInsensitive) {
-        aa = aa.toLowerCase();
-        bb = bb.toLowerCase();
-      }
-      if (aa !== bb) {
-        var c = Number(aa), d = Number(bb);
-        if (c == aa && d == bb) {
-          return c - d;
-        } else return (aa > bb) ? 1 : -1;
-      }
-    }
-    return a.length - b.length;
-  });
-
-  for (var z = 0; z < this.length; z++)
-    this[z] = this[z].join("");
+var oProjectedTermOrder = {
+    "AU":1,
+    "WI":2,
+    "SP":3,
+    "SU":4
 };
+
+var oScheduledTermOrder = {
+    "WI":1,
+    "SP":2,
+    "SU":3,
+    "AU":4
+};
+
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -44,12 +24,66 @@ Object.size = function(obj) {
     return size;
 };
 
-jQuery.fn.iterateSorted = function(print) {
+function numeric(a, b){
+    if ( parseInt(a) > parseInt(b) ) return 1;
+    else if ( parseInt(a) < parseInt(b) ) return -1;
+    else return 0;
+}
+
+function alpha(a, b){
+    //  Unknown is always last.
+    if (a == 'Unknown') return 1;
+    if (b == 'Unknown') return -1;
+    if ( a > b ) return 1;
+    else if ( a < b ) return -1;
+    else return 0;
+}
+
+function terms(a, b){
+    //  Unknown is always last.
+    if (a == 'Unknown') return 1;
+    if (b == 'Unknown') return -1;
+
+    //  If the facet items that end with a year are scheduled terms and should precede terms.
+    var bYearA = a.match(/.*\d{2}$/gi);
+    var bYearB = b.match(/.*\d{2}$/gi);
+
+    //  Two scheduled terms.
+    if (bYearA && bYearB) {
+        var sTermA = a.replace(/\d{2}/gi, "").replace(" ","").toUpperCase();
+        var sTermB = b.replace(/\d{2}/gi, "").replace(" ","").toUpperCase();
+        var iYearA = parseInt(a.replace(/\D*/gi, ""));
+        var iYearB = parseInt(b.replace(/\D*/gi, ""));
+
+        if (iYearA != iYearB) {
+            if(iYearA < iYearB) return -1;
+            return 1;
+        } else {
+            if(oScheduledTermOrder[sTermA] < oScheduledTermOrder[sTermB]) return -1;
+            else if(oScheduledTermOrder[sTermA] > oScheduledTermOrder[sTermB]) return 1;
+            else return 0;
+        }
+    }
+
+    if (bYearA && !bYearB) return -1;
+    if (!bYearA && bYearB) return 1;
+
+    //  Two terms.
+    if (!bYearA && !bYearB) {
+        var sTermA = a.replace("Projected ", "").toUpperCase();
+        var sTermB = b.replace("Projected ", "").toUpperCase();
+        if(oProjectedTermOrder[sTermA] < oProjectedTermOrder[sTermB]) return -1;
+        else if(oProjectedTermOrder[sTermA] > oProjectedTermOrder[sTermB]) return 1;
+        else return 0;
+    }
+}
+
+jQuery.fn.iterateSorted = function(sorter, print) {
     var keys = [];
     jq.each(this[0], function(key) {
         keys.push(key);
     });
-    keys.alphanumSort(true);
+    keys.sort(sorter);
     for (var i = 0; i < keys.length; i++) {
         print(keys[i]);
     }
@@ -156,14 +190,14 @@ function searchForCourses(id, parentId) {
     });
 }
 
-function fnGenerateFacetGroup(iColumn, obj) {
+function fnGenerateFacetGroup(iColumn, obj, sorter) {
     if (oTable.fnSettings().aoColumns[iColumn].bSearchable) {
         oTable.fnGetColumnData(iColumn);
-        fnCreateFacetList(oFacets[iColumn], iColumn, obj);
+        fnCreateFacetList(oFacets[iColumn], iColumn, obj, sorter);
     }
 }
 
-function fnCreateFacetList(oData, i, obj) {
+function fnCreateFacetList(oData, i, obj, sorter) {
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
     if(Object.size(oData) > 1) {
         jFacets.append( jq('<div class="all"><ul /></div>') );
@@ -173,7 +207,7 @@ function fnCreateFacetList(oData, i, obj) {
         jFacets.find(".all ul").append(jAll);
     }
     jFacets.append( jq('<div class="facets"><ul /></div>') );
-    jq(oData).iterateSorted(function(key) {
+    jq(oData).iterateSorted(sorter, function(key) {
         var jItem = jq('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
             fnFacetFilter(key, i, e);
         });
