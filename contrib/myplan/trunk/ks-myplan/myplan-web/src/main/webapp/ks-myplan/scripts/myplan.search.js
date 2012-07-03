@@ -178,15 +178,18 @@ function searchForCourses(id, parentId) {
             oTable.fnDraw();
             results.fadeIn("fast");
             results.find("table#" + id).width(578);
-            jq.publish("GENERATE_FACETS");
+            jq(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
+                jq(this).html("");
+            });
+            if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jq.publish("GENERATE_FACETS");
         },
         oLanguage: {
-            "sInfo":"Showing _START_-_END_ of _TOTAL_ results",
-            "sLengthMenu":"Show _MENU_",
             "sEmptyTable":'<div class="myplan-course-search-empty"><p class="fl-font-size-130">We couldn&#39;t find anything matching your search.</p><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 2 characters</li></ul></div>',
-            "sZeroRecords":"0 results found",
+            "sInfo":"Showing _START_-_END_ of _TOTAL_ results",
             "sInfoEmpty": "0 results found",
-            "sInfoFiltered":""
+            "sInfoFiltered":"",
+            "sLengthMenu":"Show _MENU_",
+            "sZeroRecords":"0 results found"
         },
         sAjaxSource: '/student/myplan/course/search?queryText='+sQuery+'&termParam='+sTerm+'&campusParam='+aCampus,
         sCookiePrefix: "myplan_",
@@ -204,7 +207,6 @@ function fnGenerateFacetGroup(iColumn, obj, sorter) {
 
 function fnCreateFacetList(oData, i, obj, sorter) {
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
-    jFacets.html("");
     if(Object.size(oData) > 1) {
         jFacets.append( jq('<div class="all"><ul /></div>') );
         var jAll = jq('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
