@@ -1,5 +1,5 @@
 var oTable;
-oFacets = new Object();
+var oFacets = new Object();
 
 var oProjectedTermOrder = {
     "AU":1,
@@ -160,7 +160,7 @@ function searchForCourses(id, parentId) {
         bJQueryUI: true,
         bScrollCollapse: true,
         bSortClasses: false,
-        bStateSave: true,
+        bStateSave: false,
         iCookieDuration: 600,
         iDisplayLength: 20,
         fnDrawCallback: function() {
