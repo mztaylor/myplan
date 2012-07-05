@@ -795,33 +795,6 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     top: 0px !important;
 }
 
-/* beginning of scrollbar ########################################################################### */
-::-webkit-scrollbar {
-        width:8px;
-        height:8px;
-}
-::-webkit-scrollbar-button:start:decrement,
-::-webkit-scrollbar-button:end:increment {
-        display:block;
-        height:0;
-        background-color:transparent;
-}
-::-webkit-scrollbar-track {
-		margin: 2px;
-}
-::-webkit-scrollbar-track-piece{
-        background-color:#eee;
-        -webkit-border-radius:8px;
-}
-::-webkit-scrollbar-thumb:vertical {
-        height:50px;background-color:#999;
-        -webkit-border-radius:8px;
-}
-::-webkit-scrollbar-thumb:horizontal {
-        width:50px;background-color:#999;
-        -webkit-border-radius:8px;
-}
-
 /* Planned Courses ################################################################################### */
 .myplan-plan-heading > .uif-boxLayout {
     margin: auto;
@@ -868,4 +841,39 @@ label.scheduled {
 #select_programParam_tacoma {
     width: auto !important;
     background: transparent !important;
+}
+
+/* beginning of scrollbar ########################################################################### */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+    display: block;
+    height: 0;
+    background-color: transparent;
+}
+::-webkit-scrollbar-track {
+    margin: 2px;
+}
+::-webkit-scrollbar-track-piece{
+    background-color: #eee;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:vertical {
+    /* height:50px; */
+    background-color: #999;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+    /* width:50px; */
+    background-color: #999;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
 }

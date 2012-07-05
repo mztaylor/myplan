@@ -41,8 +41,8 @@ function alpha(a, b){
 
 function terms(a, b){
     //  Unknown is always last.
-    if (a == 'Unknown') return 1;
-    if (b == 'Unknown') return -1;
+    if (a == 'Unknown' || a == 'None') return 1;
+    if (b == 'Unknown' || b == 'None') return -1;
 
     //  If the facet items that end with a year are scheduled terms and should precede terms.
     var bYearA = a.match(/.*\d{2}$/gi);
@@ -179,7 +179,7 @@ function searchForCourses(id, parentId) {
             results.fadeIn("fast");
             results.find("table#" + id).width(578);
             jq(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
-                jq(this).html("");
+                jq(this).empty();
             });
             if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jq.publish("GENERATE_FACETS");
         },
