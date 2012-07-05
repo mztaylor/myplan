@@ -3,7 +3,6 @@ if(window.location.hash != "" && window.location.hash.indexOf("CourseSearch-Form
     window.location.href = window.location.href.split('#')[0];
 }
 
-
 function stopEvent(e) {
     if(!e) var e = window.event;
     if (e.stopPropagation) {
@@ -532,25 +531,17 @@ function fnPopoverSlider(showId, parentId, direction) {
 function fnCloseAllPopups() {
     jq("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
     jq(document).off();
-    /*
-    jq("*").each(function() {
-        if ( jq(this).HasBubblePopup() ) {
-            jq(this).HideAllBubblePopups();
-            jq(this).RemoveBubblePopup();
-        }
-    });
-    */
 }
 /*
 ######################################################################################
     Function:   Build Term Plan View heading
 ######################################################################################
  */
-function fnBuildTitle(aView, termSelector, headerSelector) {
+function fnBuildTitle(aView) {
     var sText = 'Academic Year';
-    var sFirst = jq.trim ( jq(aView[0]).find("." + termSelector).text() );
-    var sLast = jq.trim ( jq(aView[aView.length-1]).find("." + termSelector).text() );
-    jq("#" + headerSelector + " .myplan-plan-header").html(sText + ' ' + sFirst.substr(-4) + '-' + sLast.substr(-4));
+    var aFirst = jq.trim( jq(aView[0]).find("input[type='hidden'][id^='atpId']").val() ).split(".");
+    var aLast = jq.trim( jq(aView[aView.length-1]).find("input[type='hidden'][id^='atpId']").val() ).split(".");
+    jq("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
 }
 /*
 ######################################################################################
