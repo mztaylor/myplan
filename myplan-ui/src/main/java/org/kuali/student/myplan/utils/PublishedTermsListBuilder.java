@@ -9,10 +9,8 @@ import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.course.util.PlanConstants;
-import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.PlanConstants;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;

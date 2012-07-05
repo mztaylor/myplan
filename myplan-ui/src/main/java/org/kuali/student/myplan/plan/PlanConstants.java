@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.course.util;
+package org.kuali.student.myplan.plan;
 
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
@@ -56,7 +56,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
-    public static final String OTHER_TERM_KEY = "other";
     public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
     public static final String FOCUS_ATP_ID_KEY = "focusAtpId";
 
@@ -82,7 +81,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
     public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
     public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
-
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
