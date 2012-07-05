@@ -1,7 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import org.kuali.rice.krad.web.form.LookupForm;
-import org.kuali.student.myplan.course.util.PlanConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 

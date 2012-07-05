@@ -35,9 +35,9 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
-import org.kuali.student.myplan.course.util.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -1021,7 +1021,7 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     * Blow-up response for all plan item actions.
+     * Success response for all plan item actions.
      */
     private ModelAndView doPlanActionSuccess(PlanForm form, String key, String[] params) {
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
