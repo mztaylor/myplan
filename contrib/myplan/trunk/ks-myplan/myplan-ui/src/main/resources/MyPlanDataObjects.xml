@@ -917,5 +917,100 @@
     </bean>-->
     <!--*********************** AcademicRecord Data Object End ********************-->
 
+    <!-- *********************** Adviser Message and Comment Data Objects ******************** -->
+    <bean id="CommentDataObject" parent="CommentDataObject-parentBean"/>
+    <bean id="CommentDataObject-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Comment"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="titleAttribute" value="Comment"/>
+        <property name="attributes">
+            <list>
+                <ref bean="CommentDataObject.timestamp"/>
+                <ref bean="CommentDataObject.from"/>
+                <ref bean="CommentDataObject.body"/>
+            </list>
+        </property>
+    </bean>
 
+    <bean id="CommentDataObject.timestamp" parent="CommentDataObject.timestamp-parentBean"/>
+    <bean id="CommentDataObject.timestamp-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="timestamp"/>
+        <property name="dataType" value="DATE"/>
+        <property name="label" value="When"/>
+        <property name="shortLabel" value="When"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="16"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="16"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="CommentDataObject.from" parent="CommentDataObject.from-parentBean"/>
+    <bean id="CommentDataObject.from-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="from"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="From"/>
+        <property name="shortLabel" value="From"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="40"/>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="40"/>
+        </property>
+    </bean>
+
+    <bean id="CommentDataObject.body" parent="CommentDataObject.body-parentBean"/>
+    <bean id="CommentDataObject.body-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="body"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Body"/>
+        <property name="shortLabel" value="Body"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="1000"/>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="1000"/>
+        </property>
+    </bean>
+
+    <!-- Message data object extends CommentDataObject-->
+    <bean id="MessageDataObject" parent="CommentDataObject-parentBean">
+        <property name="objectLabel" value="Adviser Message"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list merge="true">
+                <ref bean="MessageDataObject.subject"/>
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="MessageDataObject.comments"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MessageDataObject.subject" parent="MessageDataObject.subject-parentBean"/>
+    <bean id="MessageDataObject.subject-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="subject"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Subject"/>
+        <property name="shortLabel" value="Subject"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="100"/>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="100"/>
+        </property>
+    </bean>
+
+    <bean id="MessageDataObject.comments" parent="CollectionDefinition">
+        <property name="name" value="comments"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.comment.dataobject.CommentDataObject"/>
+    </bean>
+
+    <!-- *********************** Adviser Message and Comment Data Object End ******************** -->
 </beans>
