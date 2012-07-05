@@ -13,9 +13,9 @@ public abstract class AbstractFacet {
 
     protected List<FacetItem> facetItems;
 
-    protected String unknownFacetKey = "Unknown";
+    protected String unknownFacetKey = "None";
 
-    protected String unknownFacetDisplayName = "Unknown";
+    protected String unknownFacetDisplayName = "None";
 
     protected boolean showUnknownKey = false;
 

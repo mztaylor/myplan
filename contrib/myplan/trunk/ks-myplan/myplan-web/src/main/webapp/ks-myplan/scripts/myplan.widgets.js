@@ -303,7 +303,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
             case 'error':
                 var oMessage = { 'message' : jq('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
                 if (!bDialog) {
-                    var sContent = jq("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"transparent","color":"#ff0606","border":"none"});
+                    var sContent = jq("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff","color":"#ff0606","border":"none"});
                     var sHtml = jq("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     openDialog(sHtml.html(), e);
                 } else {
@@ -429,7 +429,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 //                        runHiddenScripts("errorsFieldForPage_div");
 //                    }
 				}
-				jq("#formComplete").html("");
+				jq("#formComplete").empty();
 			},
             error: function(jqXHR, textStatus) {
                 alert( "Request failed: " + textStatus );
