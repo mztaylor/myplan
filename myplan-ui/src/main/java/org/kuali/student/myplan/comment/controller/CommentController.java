@@ -58,6 +58,7 @@ public class CommentController extends UifControllerBase {
                               HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
         CommentForm commentForm = (CommentForm) form;
+        commentForm.setStudentName(UserSessionHelper.getStudentName());
         return getUIFModelAndView(commentForm);
     }
 
