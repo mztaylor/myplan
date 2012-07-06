@@ -51,7 +51,7 @@
         </property>
     </bean>
 
-    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:headerText="Messages">
+    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:headerText="Messages (@{searchResults.size()})">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -69,7 +69,7 @@
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="filters">
             <list>
-                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 4"/>
             </list>
         </property>
         <property name="items">
@@ -77,23 +77,36 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:style="cursor:pointer;">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="@{#line.subject}">
-                                <property name="style" value="margin-right:0.4em;"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
+                            <bean parent="Uif-VerticalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField" p:messageText="@{#line.subject}">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-text-bold</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-HorizontalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-MessageField" p:messageText="@{#line.from}" p:label="from"
+                                                          p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"/>
+                                                    <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()}"/>
+                                                </list>
+                                            </property>
+                                        </bean>
                                     </list>
                                 </property>
                             </bean>
-
-                            <bean parent="Uif-Message" p:messageText="@{#line.from}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
+                            <bean parent="Uif-VerticalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <!--<bean parent="Uif-MessageField" p:messageText="@{#line.timestamp}" p:label="Last Comment"
+                                              p:labelPlacement="TOP" p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"/>-->
                                     </list>
                                 </property>
                             </bean>
-
                         </list>
                     </property>
                 </bean>
