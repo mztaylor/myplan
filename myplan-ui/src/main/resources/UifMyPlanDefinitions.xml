@@ -337,7 +337,9 @@
         </property>
     </bean>
 
-    <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor"/>
+    <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+        <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
+    </bean>
 
     <!--  Message to use when an adviser can't perform a particular action. -->
     <bean id="adviser_actions_message" parent="Uif-VerticalBoxGroup">
