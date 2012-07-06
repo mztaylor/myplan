@@ -7,12 +7,11 @@ import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.util.constants.CommentServiceConstants;
+import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 
 public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
@@ -37,6 +36,13 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
         m1.setBody("This is a test body.");
         m1.setCreateDate(new java.util.Date());
         m1.setLastCommentDate(new java.util.Date());
+        CommentDataObject m1c1 = new CommentDataObject();
+        m1c1.setBody("Hie hello");
+        m1c1.setCreateDate(new Date());
+        List<CommentDataObject> commentDataObjects=new ArrayList<CommentDataObject>();
+        commentDataObjects.add(m1c1);
+        m1.setComments(commentDataObjects);
+
 
         MessageDataObject m2 = new MessageDataObject();
         m2.setFrom("Hemanth");
@@ -47,7 +53,7 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
 
         MessageDataObject m3 = new MessageDataObject();
         m3.setFrom("Jason");
-        m3.setSubject("My $.02 ...");
+        m3.setSubject("This is a longer message subject so I can test the ellipsis");
         m3.setBody("Result: An error message with red text.  The red text appears to have a transparent background because page elements behind it show through (see attachement from Firefox)");
         m3.setCreateDate(new java.util.Date());
         m3.setLastCommentDate(new java.util.Date());

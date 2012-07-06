@@ -1625,15 +1625,6 @@
                         <bean parent="Uif-Message" p:messageText="Not offered for more than 10 years"/>
                     </property>
                 </bean>
-
-                <!-- <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="lastOffered"
-                     p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
-                   <property name="render" value="@{courseDetails.lastOffered ne null and courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
-              </bean>
-               <bean parent="Uif-DataField" p:label="Last Offered" p:messageText="Not offered for more than 10 years."
-                     p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
-               <property name="render" value="@{courseDetails.lastOffered eq null and courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
-                </bean>-->
                 <!-- Projected Terms -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseDetails.termsOffered"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT">
@@ -1750,7 +1741,6 @@
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
                                 <property name="items">
                                     <list>
-
                                         <bean parent="Uif-DataField"
                                               p:propertyName="courseDetails"
                                               p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
@@ -1771,7 +1761,6 @@
             </list>
         </property>
     </bean>
-
 
     <!--  Add to plan button. Used contextually in course details popup actions -->
     <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
