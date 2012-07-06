@@ -43,9 +43,14 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
 
     private String baseUrl = "";
 
-    private String label = "See {timeScheduleName} Time Schedule";
+    private String label1 = "See ";
 
-    private String title = label;
+    //separated the lable to make the time schedule name bold
+    private String label2 = "{timeScheduleName} ";
+
+    private String label3 = "Time Schedule";
+
+    private String title = label1 + label2 + label3;
 
     private List<String> styleClasses;
 
@@ -147,9 +152,11 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
             for (String lightboxUrl : lightboxUrls) {
                 String urlId = UUIDHelper.genStringUUID();
                 String t = title.replace("{timeScheduleName}", scheduledTerm);
-                String l = label.replace("{timeScheduleName}", scheduledTerm);
+                String l1 = label1;
+                String l2 = label2.replace("{timeScheduleName}", scheduledTerm);
+                String l3 = label3;
                 if(getInstAbbreviations().size()>0 && getInstAbbreviations().containsKey(lightboxUrl)){
-                    l=l+" ("+getInstAbbreviations().get(lightboxUrl)+")";
+                    l3 = l3 +" ("+getInstAbbreviations().get(lightboxUrl)+")";
                 }
 
 
@@ -163,7 +170,9 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                         */
                         .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
                         .append("<a id=\"" + urlId + "\" href=\"" + lightboxUrl + "\" target=\"_self\">")
-                        .append(l)
+                        .append(l1)
+                        .append("<b>" + l2 + "</b>")
+                        .append(l3)
                         .append("</a>")
                         .append("</" + listType.getListItemElementName() + ">");
             }
