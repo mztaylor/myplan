@@ -925,19 +925,19 @@
         <property name="titleAttribute" value="Comment"/>
         <property name="attributes">
             <list>
-                <ref bean="CommentDataObject.timestamp"/>
+                <ref bean="CommentDataObject.createDate"/>
                 <ref bean="CommentDataObject.from"/>
                 <ref bean="CommentDataObject.body"/>
             </list>
         </property>
     </bean>
 
-    <bean id="CommentDataObject.timestamp" parent="CommentDataObject.timestamp-parentBean"/>
-    <bean id="CommentDataObject.timestamp-parentBean" abstract="true" parent="AttributeDefinition">
-        <property name="name" value="timestamp"/>
+    <bean id="CommentDataObject.createDate" parent="CommentDataObject.createDate-parentBean"/>
+    <bean id="CommentDataObject.createDate-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="createDate"/>
         <property name="dataType" value="DATE"/>
-        <property name="label" value="When"/>
-        <property name="shortLabel" value="When"/>
+        <property name="label" value="Created"/>
+        <property name="shortLabel" value="Created"/>
         <property name="forceUppercase" value="false"/>
         <property name="maxLength" value="16"/>
         <property name="validCharactersConstraint">
@@ -1004,6 +1004,25 @@
         <property name="maxLength" value="100"/>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="100"/>
+        </property>
+    </bean>
+
+    <bean id="CommentDataObject.lastCommentDate" parent="CommentDataObject.lastCommentDate-parentBean"/>
+    <bean id="CommentDataObject.lastCommentDate-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="lastCommentDate"/>
+        <property name="dataType" value="DATE"/>
+        <property name="label" value="Last Comment"/>
+        <property name="shortLabel" value="Last Comment"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="16"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="16"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
         </property>
     </bean>
 

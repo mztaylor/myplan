@@ -35,19 +35,22 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
         m1.setFrom("Glenn");
         m1.setSubject("Hello World");
         m1.setBody("This is a test body.");
-        m1.setTimestamp(new java.util.Date());
+        m1.setCreateDate(new java.util.Date());
+        m1.setLastCommentDate(new java.util.Date());
 
         MessageDataObject m2 = new MessageDataObject();
         m2.setFrom("Hemanth");
         m2.setSubject("Hello from Hemanth");
         m2.setBody("That is a lot of bookkeeping.");
-        m2.setTimestamp(new java.util.Date());
+        m2.setCreateDate(new java.util.Date());
+        m2.setLastCommentDate(new java.util.Date());
 
         MessageDataObject m3 = new MessageDataObject();
         m3.setFrom("Jason");
         m3.setSubject("My $.02 ...");
         m3.setBody("Result: An error message with red text.  The red text appears to have a transparent background because page elements behind it show through (see attachement from Firefox)");
-        m3.setTimestamp(new java.util.Date());
+        m3.setCreateDate(new java.util.Date());
+        m3.setLastCommentDate(new java.util.Date());
 
         messages.add(m1);
         messages.add(m2);
