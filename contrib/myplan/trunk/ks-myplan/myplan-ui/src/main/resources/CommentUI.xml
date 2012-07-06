@@ -18,13 +18,114 @@
      See the License for the specific language governing permissions and
      limitations under the License.
     -->
+    <bean id="Message-FormView" parent="MyPlanBaseFormView">
+        <property name="id" value="Message-FormView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderTwo"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:headerText="Leave a Message to Jana">
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="message_dialog_subject"/>
+                            <ref bean="message_dialog_message"/>
+                            <ref bean="message_actions"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
+    </bean>
+    <bean id="message_dialog_subject" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-90">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="Subject"/>
+                    </property>
+                </bean>
+                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="70" p:watermarkText="Maximum characters are 70"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="message_dialog_message" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-90">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="Message"/>
+                    </property>
+                </bean>
+                <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="10" p:cols="70" p:textExpand="false"
+                              p:watermarkText="Maximum characters are 1000"/>
+
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="message_actions" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Leave a Message" p:methodToCall="addMessage">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-button</value>
+                            <value>myplan-button-blue</value>
+                            <value>fl-font-size-90</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                    <property name="clientSideJs"
+                              value="fnCloseAllPopups();"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-button</value>
+                            <value>myplan-button-transparent</value>
+                            <value>fl-font-size-90</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
     <!--  Messages Summary (Gutter) Lookup -->
     <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="headerText" value="Messages"/>
+        <property name="headerText" value="Messages (@{searchResults.size()})"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="viewHelperServiceClass"
@@ -32,7 +133,8 @@
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-view</value>
+                <value>fl-container-200</value>
+                <value>myplan-section</value>
             </list>
         </property>
         <property name="criteriaFields">
@@ -51,14 +153,27 @@
         </property>
     </bean>
 
-    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:headerText="Messages (@{searchResults.size()})">
+    <bean id="messages_summary_list" parent="Uif-ListCollectionSection">
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+
+
+            <bean id="messsage_header" parent="Uif-ViewHeader">
+                <property name="items">
+
+                    <bean parent="Uif-Link" p:linkText="Leave a Message">
+                        <property name="href"
+                                  value="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"/>
+                        <property name="lightBox">
+                            <bean parent="Uif-LightBox" />
+                        </property>
+                    </bean>
+                </property>
+            </bean>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-comments-summary</value>
-                <value>fl-container-250</value>
+                <value>fl-container-200</value>
+                <value>myplan-section</value>
             </list>
         </property>
         <property name="collectionObjectClass"
@@ -167,5 +282,4 @@
             </list>
         </property>
     </bean>
-
 </beans>
