@@ -17,8 +17,10 @@ package org.kuali.student.myplan.adviser.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.permission.PermissionService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -44,7 +46,13 @@ public class AdviserController extends UifControllerBase {
 
     private transient PersonService personService;
 
-    public PersonService getPersonService() {
+    private transient PermissionService permissionService;
+
+    private transient String ADVISE_NM_CODE;
+
+    private transient String ADVISE_PERM_NAME;
+
+    public synchronized PersonService getPersonService() {
 
         if (personService == null) {
             personService = KimApiServiceLocator.getPersonService();
@@ -55,6 +63,22 @@ public class AdviserController extends UifControllerBase {
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
+    }
+
+    public synchronized PermissionService getPermissionService() {
+        if(permissionService == null) {
+
+            ADVISE_NM_CODE = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.namespacecode");
+            ADVISE_PERM_NAME = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname");
+
+            permissionService = KimApiServiceLocator.getPermissionService();
+        }
+
+        return this.permissionService;
+    }
+
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -99,7 +123,12 @@ public class AdviserController extends UifControllerBase {
         form.setRequestRedirect(true);
         UserSession session = GlobalVariables.getUserSession();
 
-        //  FIXME!!! ... Do stuff to verify that the user has an ASTRA adviser role.
+        if(!getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, ADVISE_PERM_NAME)) {
+            //  FIXME!!! ... Do stuff to verify that the user has an Grad advisor role adviser role.
+             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_ILLEGAL_ADVISER_ACCESS);
+             return "redirect:/myplan/advise/error";
+        }
+
 
         //  Set the adviser session flag. (The value isn't important)
         session.addObject(PlanConstants.SESSION_KEY_IS_ADVISER, true);

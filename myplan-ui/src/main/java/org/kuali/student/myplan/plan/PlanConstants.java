@@ -40,6 +40,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_PAGE_RESET_REQUIRED = "myplan.text.error.pageResetRequired";
 
     public static final String ERROR_KEY_ADVISER_ACCESS="myplan.text.error.adviserAccess";
+    public static final String ERROR_KEY_ILLEGAL_ADVISER_ACCESS="myplan.text.error.illegalAdviserAccess";
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_COURSE = "myplan.text.error.unknownCourse";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "myplan.text.error.savedCoursesList.unknownPlanItem";
