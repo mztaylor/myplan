@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.comment.dataobject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,10 +10,21 @@ import java.util.List;
 public class MessageDataObject extends CommentDataObject {
 
     private String subject;
+
+    private Date lastCommentDate;
+
     private List<CommentDataObject> comments;
 
     public MessageDataObject() {
         comments = new ArrayList<CommentDataObject>();
+    }
+
+    public Date getLastCommentDate() {
+        return lastCommentDate;
+    }
+
+    public void setLastCommentDate(Date lastCommentDate) {
+        this.lastCommentDate = lastCommentDate;
     }
 
     public List<CommentDataObject> getComments() {

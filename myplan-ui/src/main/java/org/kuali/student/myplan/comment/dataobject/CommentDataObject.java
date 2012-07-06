@@ -6,7 +6,7 @@ import java.util.Date;
  *  Data object for comments.
  */
 public class CommentDataObject implements Comparable<CommentDataObject> {
-    private Date timestamp;
+    private Date createDate;
     private String body;
     private String from;
 
@@ -26,18 +26,18 @@ public class CommentDataObject implements Comparable<CommentDataObject> {
         this.body = body;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public int compareTo(CommentDataObject other) {
         if (other == null) {
             return 1;
         }
-        return this.getTimestamp().compareTo(other.getTimestamp());
+        return this.getCreateDate().compareTo(other.getCreateDate());
     }
 }
