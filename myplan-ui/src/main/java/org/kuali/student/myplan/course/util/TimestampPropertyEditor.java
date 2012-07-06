@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class TimestampPropertyEditor extends PropertyEditorSupport implements Serializable {
@@ -29,6 +30,8 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
     private final static Logger logger = Logger.getLogger(TimestampPropertyEditor.class);
 
     private List<String> styleClasses;
+
+    private String simpleDateFormat = "";
 
     public TimestampPropertyEditor() {
         styleClasses = new ArrayList<String>();
@@ -52,7 +55,20 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
     @Override
     public String getAsText() {
         Date date = (Date) super.getValue();
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+        if (this.simpleDateFormat.length() == 0) {
+            return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat(simpleDateFormat);
+            return format.format(date);
+        }
+    }
+
+    public void setSimpleDateFormat(String simpleDateFormat) {
+        this.simpleDateFormat = simpleDateFormat;
+    }
+
+    public String getSimpleDateFormat() {
+        return this.simpleDateFormat;
     }
 
     public List<String> getStyleClasses() {
