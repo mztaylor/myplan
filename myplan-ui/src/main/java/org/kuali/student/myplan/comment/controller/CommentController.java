@@ -20,6 +20,10 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.dto.MetaInfo;
+import org.kuali.student.common.dto.RichTextInfo;
+import org.kuali.student.common.exceptions.*;
+import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.form.CommentForm;
@@ -33,6 +37,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/comment")
@@ -71,10 +77,31 @@ public class CommentController extends UifControllerBase {
         }
 
 
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, "Test Subject");
+        CommentInfo ci = new CommentInfo();
+        ci.setAttributes(attributes);
+
+        MetaInfo m = new MetaInfo();
+        m.setCreateId("princileId");
+        m.setUpdateId("pricipleId");
+        ci.setMetaInfo(m);
+
+        RichTextInfo body = new RichTextInfo();
+        body.setPlain("This is the body.");
+        body.setFormatted("This is the body.");
+        ci.setCommentText(body);
+
+        try {
+            CommentInfo x = getCommentService().addComment("refId", "refType", ci);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return doSuccess(form, CommentConstants.SUCCESS_KEY_MESSAGE_ADDED, new String[0]);
     }
 
-   /**
+    /**
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doSuccess(CommentForm form, String messageKey, String[] params) {
