@@ -424,7 +424,8 @@ button.myplan-button-transparent:hover {
 .myplan-text-normal label {
     font-weight: normal !important;
 }
-.myplan-text-ellipsis {
+.myplan-text-ellipsis,
+.myplan-text-ellipsis > span{
     display: block;
     white-space: nowrap;
     overflow: hidden;
