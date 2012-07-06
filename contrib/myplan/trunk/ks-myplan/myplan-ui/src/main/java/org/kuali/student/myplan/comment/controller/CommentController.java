@@ -24,7 +24,6 @@ import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.util.constants.CommentServiceConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -86,7 +85,7 @@ public class CommentController extends UifControllerBase {
     public CommentService getCommentService() {
         if (commentService == null) {
             commentService = (CommentService)
-                    GlobalResourceLoader.getService(new QName(CommentServiceConstants.NAMESPACE, "CommentService"));
+                    GlobalResourceLoader.getService(new QName(CommentConstants.NAMESPACE, CommentConstants.SERVICE_NAME));
         }
         return commentService;
     }
