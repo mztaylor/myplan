@@ -32,7 +32,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:headerText="Leave a Message to Jana">
+                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:headerText="Leave a Message to @{studentName}.">
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
