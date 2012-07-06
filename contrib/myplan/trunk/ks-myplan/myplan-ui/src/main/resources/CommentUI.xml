@@ -24,6 +24,7 @@
         <property name="applyDirtyCheck" value="false"/>
         <property name="cssClasses">
             <list merge="true">
+                <value>fl-container-600</value>
                 <value>myplan-view</value>
             </list>
         </property>
@@ -124,8 +125,9 @@
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
         </property>
+
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="viewHelperServiceClass"
@@ -133,7 +135,7 @@
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-200</value>
+                <value>fl-container-300</value>
                 <value>myplan-section</value>
             </list>
         </property>
@@ -172,7 +174,7 @@
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-200</value>
+                <value>fl-container-300</value>
                 <value>myplan-section</value>
             </list>
         </property>
