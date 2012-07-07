@@ -34,14 +34,47 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="message_dialog_response_page" p:headerText="Leave a Message to @{studentName}.">
+                    <property name="header">
+                        <bean parent="Uif-HeaderFour"/>
+                    </property>
+                <property name="layoutManager">
+                    <bean parent="Uif-VerticalBoxLayout"/>
+                </property>
+                <property name="items">
+                    <list>
+                        <ref bean="message_dialog_subject"/>
+                        <ref bean="message_dialog_message"/>
+                        <ref bean="message_actions"/>
+                    </list>
+                </property>
+            </bean>
+                <bean parent="Uif-Page" p:id="comment_dialog_response_page" p:headerText="View Message">
+                    <property name="header">
+                        <bean parent="Uif-HeaderFour"/>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="message_dialog_subject"/>
-                            <ref bean="message_dialog_message"/>
-                            <ref bean="message_actions"/>
+                            <ref bean="comment_dialog_subject"/>
+                            <bean parent="Uif-MessageField"
+                                  p:cssClasses="fl-font-size-90 fl-text-bold">
+                                <property name="message">
+                                    <bean parent="Uif-Message" p:messageText="Post your comment to this message"/>
+                                </property>
+                            </bean>
+                            <ref bean="comment_dialog_message"/>
+                            <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Post a Comment" p:methodToCall="addComment">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-button</value>
+                                        <value>myplan-button-blue</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -50,6 +83,59 @@
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
     </bean>
+
+    <bean id="comment_dialog_subject" parent="Uif-VerticalBoxSubSection" p:style="background: #EEE;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-90 fl-text-gray">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="From David Sarys on 11/5/2012   9: 20 AM"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-120 fl-text-bold">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="Advisor feedback on your plan"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-90">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="You only need 15 more credits for Sociology. Did you look at SOC 345?"/>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="comment_dialog_message" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-MessageField"
+                      p:cssClasses="fl-font-size-90">
+                    <property name="message">
+                        <bean parent="Uif-Message" p:messageText="David S."/>
+                    </property>
+                </bean>
+                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="body"
+                      p:fieldLabel.renderColon="false">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="4" p:cols="70" p:textExpand="false"
+                              p:watermarkText="Maximum characters are 500"/>
+
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+
+
+
     <bean id="message_dialog_subject" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
