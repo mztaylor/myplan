@@ -29,6 +29,11 @@ public class CommentQueryHelper {
         this.commentService = commentService;
     }
 
+    /**
+     * Retrieve a single message.
+     * @param messageId
+     * @return
+     */
     public synchronized MessageDataObject getMessage(String messageId) {
         CommentInfo commentInfo = null;
         try {
@@ -53,7 +58,11 @@ public class CommentQueryHelper {
         return messageDataObject;
     }
 
-
+    /**
+     * Get all messages for a particular student.
+     * @param studentId
+     * @return
+     */
     public synchronized List<MessageDataObject> getMessages(String studentId) {
         List<MessageDataObject> messages = new ArrayList<MessageDataObject>();
 
