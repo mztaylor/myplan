@@ -69,6 +69,10 @@ public class UserSessionHelper {
         return studentName;
     }
 
+    public synchronized static String getName(String principleId) {
+        return "Jimbo";
+    }
+
     public synchronized static String getAuditSystemKey() {
         UserSession session = GlobalVariables.getUserSession();
         String systemKey;

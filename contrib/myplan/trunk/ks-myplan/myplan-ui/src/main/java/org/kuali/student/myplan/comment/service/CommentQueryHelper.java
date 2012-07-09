@@ -7,6 +7,8 @@ import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.apache.log4j.Logger;
+import org.kuali.student.myplan.utils.UserSessionHelper;
+
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +52,7 @@ public class CommentQueryHelper {
         messageDataObject.setCreateDate(commentInfo.getMetaInfo().getCreateTime());
         messageDataObject.setSubject(commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
         messageDataObject.setBody(commentInfo.getCommentText().getPlain());
-        //  FIXME: This needs to be a name and not the id.
-        messageDataObject.setFrom(commentInfo.getMetaInfo().getCreateId());
+        messageDataObject.setFrom(UserSessionHelper.getName(commentInfo.getMetaInfo().getCreateId()));
 
         //  Pass the id of the message to get the comments associated with this message.
         messageDataObject.setComments(getComments(commentInfo.getId()));
@@ -93,8 +94,7 @@ public class CommentQueryHelper {
             CommentDataObject commentDataObject = new CommentDataObject();
             commentDataObject.setCreateDate(ci.getMetaInfo().getCreateTime());
             commentDataObject.setBody(ci.getCommentText().getPlain());
-            //  FIXME: THis needs to be a name and not the id.
-            commentDataObject.setFrom(ci.getMetaInfo().getCreateId());
+            commentDataObject.setFrom(UserSessionHelper.getName(ci.getMetaInfo().getCreateId()));
         }
         return comments;
     }
