@@ -17,6 +17,7 @@ package org.kuali.student.myplan.comment.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -64,7 +65,7 @@ public class CommentController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=addComment")
     public ModelAndView addComment(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
-                                       HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+                                   HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
 
         return null;
@@ -72,29 +73,34 @@ public class CommentController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=addMessage")
     public ModelAndView addMessage(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
-                                       HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if ( ! UserSessionHelper.isAdviser()){
-            //  Only advisers can leave messages.
+                                   HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+        if (!UserSessionHelper.isAdviser()) {
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
         }
 
 
         Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, "Test Subject");
+        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, form.getSubject());
         CommentInfo ci = new CommentInfo();
         ci.setAttributes(attributes);
 
-        MetaInfo m = new MetaInfo();
-        m.setCreateId("princileId");
-        m.setUpdateId("pricipleId");
-        ci.setMetaInfo(m);
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String principleId = user.getPrincipalId();
 
+        MetaInfo m = new MetaInfo();
+        m.setCreateId(principleId);
+        m.setUpdateId(principleId);
+        ci.setMetaInfo(m);
+        ci.setType(CommentConstants.MESSAGE_TYPE);
+        ci.setState("ACTIVE");
         RichTextInfo body = new RichTextInfo();
-        body.setPlain("This is the body.");
-        body.setFormatted("This is the body.");
+        body.setPlain(form.getBody());
+        body.setFormatted(form.getBody());
         ci.setCommentText(body);
 
         try {
-            CommentInfo x = getCommentService().addComment("refId", "refType", ci);
+            CommentInfo x = getCommentService().addComment(UserSessionHelper.getStudentId(), CommentConstants.MESSAGE_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,8 +109,15 @@ public class CommentController extends UifControllerBase {
     }
 
     /**
-     * Blow-up response for all plan item actions.
+     * Initializes the error page.
      */
+    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params) {
+        GlobalVariables.getMessageMap().clearErrorMessages();
+        GlobalVariables.getMessageMap().putErrorForSectionId(CommentConstants.MESSAGE_RESPONSE_PAGE, errorKey, params);
+        return getUIFModelAndView(form, CommentConstants.MESSAGE_RESPONSE_PAGE);
+    }
+
+
     private ModelAndView doSuccess(CommentForm form, String messageKey, String[] params) {
         GlobalVariables.getMessageMap().putInfoForSectionId("Page Id", messageKey, params);
         return getUIFModelAndView(form, "Page Id");
