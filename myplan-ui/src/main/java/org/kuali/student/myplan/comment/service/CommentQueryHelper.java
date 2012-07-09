@@ -35,7 +35,7 @@ public class CommentQueryHelper {
      * @return
      */
     public synchronized MessageDataObject getMessage(String messageId) {
-        CommentInfo commentInfo = null;
+        CommentInfo commentInfo;
         try {
             commentInfo = getCommentService().getComment(messageId);
         } catch (Exception e) {
@@ -49,12 +49,12 @@ public class CommentQueryHelper {
         MessageDataObject messageDataObject = new MessageDataObject();
         messageDataObject.setCreateDate(commentInfo.getMetaInfo().getCreateTime());
         messageDataObject.setSubject(commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
-        //  FIXME: THis needs to be a name and not the id.
+        messageDataObject.setBody(commentInfo.getCommentText().getPlain());
+        //  FIXME: This needs to be a name and not the id.
         messageDataObject.setFrom(commentInfo.getMetaInfo().getCreateId());
 
         //  Pass the id of the message to get the comments associated with this message.
-        List<CommentDataObject> comments = getComments(commentInfo.getId());
-        messageDataObject.setComments(comments);
+        messageDataObject.setComments(getComments(commentInfo.getId()));
         return messageDataObject;
     }
 
@@ -92,6 +92,7 @@ public class CommentQueryHelper {
         for (CommentInfo ci : commentInfos) {
             CommentDataObject commentDataObject = new CommentDataObject();
             commentDataObject.setCreateDate(ci.getMetaInfo().getCreateTime());
+            commentDataObject.setBody(ci.getCommentText().getPlain());
             //  FIXME: THis needs to be a name and not the id.
             commentDataObject.setFrom(ci.getMetaInfo().getCreateId());
         }
