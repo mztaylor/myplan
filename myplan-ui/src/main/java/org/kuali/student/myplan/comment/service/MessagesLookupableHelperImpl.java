@@ -23,7 +23,7 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
     @Override
     protected List<MessageDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         String studentId = UserSessionHelper.getStudentId();
-        List<MessageDataObject> messages = new ArrayList<MessageDataObject>();
+        List<MessageDataObject> messages;
         try {
             messages = getCommentQueryHelper().getMessages(studentId);
             Collections.sort(messages);
