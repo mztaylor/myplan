@@ -1,6 +1,8 @@
 package org.kuali.student.myplan.utils;
 
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -10,6 +12,20 @@ import org.kuali.student.r2.common.dto.ContextInfo;
  * Provides an initialized Context which can be used for service requests.
  */
 public class UserSessionHelper {
+
+    private static transient PersonService personService;
+
+    public synchronized static PersonService getPersonService() {
+        if (personService == null) {
+            personService = KimApiServiceLocator.getPersonService();
+        }
+        return personService;
+    }
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
+
     public synchronized static ContextInfo makeContextInfoInstance() {
         ContextInfo contextInfo = new ContextInfo();
         Person user = GlobalVariables.getUserSession().getPerson();
@@ -69,8 +85,14 @@ public class UserSessionHelper {
         return studentName;
     }
 
+    /**
+     * Get the name (first last) of a person given a principle ID.
+     * @param principleId
+     * @return The name in first last format.
+     */
     public synchronized static String getName(String principleId) {
-        return "Jimbo";
+        Person person = getPersonService().getPerson(principleId);
+        return String.format("%s %s", person.getFirstName(), person.getLastName());
     }
 
     public synchronized static String getAuditSystemKey() {
