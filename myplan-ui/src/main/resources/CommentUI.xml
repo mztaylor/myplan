@@ -497,7 +497,19 @@
                     <property name="items">
                         <list>
                             <ref bean="messages_detail"/>
-                            <ref bean="saved_course_myplan_section"/>
+                            <bean parent="myplan_section">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="your_stuff_widget">
+                                            <property name="items">
+                                                <list>
+                                                    <ref bean="degree_audits_list"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -525,10 +537,9 @@
         </property>
     </bean>
     <bean id="messages_detail_list" parent="Uif-ListCollectionSection">
-    <!--<bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4">-->
+    <!--<bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="1">-->
         <property name="headerText" value="You have @{searchResults.size()} messages"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="propertyName" value="searchResults"/>
         <property name="items">
             <list>
@@ -551,7 +562,7 @@
 
                 <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments" p:label="Comments" p:render="true"/>
 
-                <bean parent="Uif-MessageField" p:messageText="--" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>
+                <bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>
 
                 <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
                     <property name="render" value="@{#line.comments.size() gt 0}"/>
