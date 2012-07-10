@@ -75,14 +75,6 @@ public class CommentController extends UifControllerBase {
                 commentForm.setSubject(messageDataObject.getBody());
                 commentForm.setFrom(messageDataObject.getFrom());
                 commentForm.setCreatedDate(messageDataObject.getCreateDate());
-
-                /*Testing purspoe*/
-                CommentDataObject commentDataObject=new CommentDataObject();
-                commentDataObject.setBody("hie hello");
-                commentDataObject.setCreateDate(new Date());
-                commentDataObject.setFrom("ME");
-                messageDataObject.getComments().add(commentDataObject);
-                /*test ends*/
                 commentForm.setComments(messageDataObject.getComments());
 
             }
