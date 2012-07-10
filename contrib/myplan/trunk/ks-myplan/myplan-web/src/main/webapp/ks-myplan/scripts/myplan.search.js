@@ -143,7 +143,7 @@ function searchForCourses(id, parentId) {
         aaSorting : [],
         aoColumns: [
             {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'72px', 'sType': 'string'},
-            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'144px'},
+            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'180px'},
             {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
             {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'88px'},
             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'76px'},

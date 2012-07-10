@@ -361,7 +361,7 @@ public class CourseSearchController extends UifControllerBase {
                     append("\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
                     append(item.getCourseId()).append("\\").append("\" target=\\").append("\"_self\\").
                     append("\" title=\\").append("\"").append(courseName).append("\\").append("\"").
-                    append(" style=\\").append("\"width: 171px;\\").append("\" class=\\").
+                    append(" style=\\").append("\"width: 180px;\\").append("\" class=\\").
                     append("\"myplan-text-ellipsis\\").append("\"  >").append(courseName).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
