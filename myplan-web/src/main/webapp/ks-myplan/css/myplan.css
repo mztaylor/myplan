@@ -32,7 +32,7 @@ a:focus {
 }
 #Uif-Application {
 	margin:0 auto;
-	padding: 10px 0 10px 10px;
+	padding: 10px;
 	width: 950px;
 }
 .uif-pageContentWrapper,
@@ -41,7 +41,7 @@ a:focus {
     margin: 0;
 }
 #appheader_div {
-	width: 940px;
+	width: 950px;
 }
 #appheader_div #appheading_div {
     overflow:auto;
@@ -104,7 +104,7 @@ a:focus {
     color: #999999;
     padding: 15px;
     margin: 10px auto 0px;
-    width: 908px;
+    width: 918px;
 }
 .myplan-view {
 	margin-top:10px;
@@ -270,8 +270,8 @@ button.myplan-button-transparent:hover {
 }
 .myplan-carousel-list ul li > .uif-group {
     border:solid 1px #ccc;
-    width: 160px;
-    margin: 0 10px;
+    width: 145px;
+    margin: 0 5px;
     border-radius: 4px;
     -webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -361,9 +361,6 @@ button.myplan-button-transparent:hover {
     padding: 0 4px;
 }
 /* Layout styles ########################################################################### */
-.myplan-container-720 {
-    width: 720px;
-}
 .myplan-course-search-panel {
 	background: #d6d6d6;
 	border: solid 2px #a9a9a9;
@@ -444,7 +441,6 @@ button.myplan-button-transparent:hover {
 	border: solid 1px #a9a9a9;
     border-top: none;
     font-size: 90%;
-    width: 128px;
 }
 .myplan-facets-panel a, .myplan-facets-panel a:hover{
     color: #000;
@@ -539,7 +535,7 @@ button.myplan-button-transparent:hover {
 }
 /* Styles for course search results ########################################################################### */
 .dataTables_wrapper {
-	width: 580px;
+	width: 550px;
 	float: left;
 }
 .dataTables_wrapper .dataTables_info {
@@ -558,7 +554,7 @@ button.myplan-button-transparent:hover {
     border-bottom: none;
     line-height: 1.8em;
     margin: 0;
-    width: 578px;
+    width: 538px;
     clear: both;
 }
 .dataTables_wrapper .myplan-course-search-results-datatable .fl-text-align-center {
@@ -570,7 +566,7 @@ table.myplan-course-search-results-datatable thead tr {
 }
 table.myplan-course-search-results-datatable thead tr th {
     border: none;
-    padding: 2px 3px;
+    padding: 2px;
     font-weight: bold;
     color: #5f5e5f;
     font-size: 88%;
@@ -610,7 +606,7 @@ table.myplan-course-search-results-datatable tbody tr td {
 table.myplan-course-search-results-datatable tbody tr td {
 	line-height: 1.8em;
     height: 1.8em;
-    padding: 2px 3px;
+    padding: 2px;
 }
 table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
     display: block;
@@ -688,7 +684,7 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     margin: 0 0.33em 0 0;
 }
 /* MyPlan Section (right side container) ########################################################################### */
-.myplan-section {
+.myplan-widget {
     border: solid 1px #ccc;
 }
 .myplan-section .uif-boxLayoutVerticalItem,
@@ -699,7 +695,6 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 .myplan-section .uif-header {
     font-weight: normal;
     display: block;
-    text-align:center;
     line-height: 1.5em;
     padding: 5px;
     background: #e4e4e4;
@@ -707,7 +702,6 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 }
 .myplan-section .uif-header .uif-headerText {
     font-weight: normal;
-    text-align: center;
     text-transform: none;
 }
 .myplan-section .uif-listCollectionGroup ul {

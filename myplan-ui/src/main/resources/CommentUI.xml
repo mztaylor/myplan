@@ -207,13 +207,10 @@
 
     <!--  Messages Summary (Gutter) Lookup -->
     <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="headerText" value="Messages (@{searchResults.size()})"/>
+        <property name="headerText" value="Messages Summary"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
-        <property name="header">
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
-        </property>
-
+        <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="viewHelperServiceClass"
@@ -221,7 +218,6 @@
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-300</value>
                 <value>myplan-section</value>
             </list>
         </property>
@@ -241,13 +237,13 @@
         </property>
     </bean>
 
-    <bean id="messages_summary_list" parent="Uif-ListCollectionSection">
+    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:headerText="MESSAGES (@{searchResults.size()})" p:style="margin-bottom: 10px;">
         <property name="header">
-
-
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+        </property>
+        <!--<property name="header">
             <bean id="messsage_header" parent="Uif-ViewHeader">
                 <property name="items">
-
                     <bean parent="Uif-Link" p:linkText="Leave a Message">
                         <property name="href"
                                   value="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"/>
@@ -257,11 +253,12 @@
                     </bean>
                 </property>
             </bean>
-        </property>
+        </property>-->
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-300</value>
-                <value>myplan-section</value>
+                <value>myplan-widget</value>
+                <value>myplan-messages-summary</value>
+                <value>myplan-stacked-list</value>
             </list>
         </property>
         <property name="collectionObjectClass"
@@ -281,10 +278,10 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:style="cursor:pointer;">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="width:175px; margin:0;">
+                            <bean parent="Uif-VerticalFieldGroup" p:style="width:190px; margin:0 10px 0 0;">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="@{#line.subject}" p:style="width:175px;">
+                                        <bean parent="Uif-MessageField" p:messageText="@{#line.subject}" p:style="width:190px;">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>fl-text-bold</value>
@@ -316,11 +313,11 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-HorizontalFieldGroup" p:style="width:75px; margin:0;">
+                            <bean parent="Uif-VerticalFieldGroup" p:style="width:100px; margin:0;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-DataField" p:propertyName="createDate" p:label="Posted" p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-80" p:fieldLabel.style="visibility: hidden;"
+                                              p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90" p:fieldLabel.style="visibility: hidden;"
                                               p:render="@{#line.comments.size() eq 0}">
                                             <property name="propertyEditor" ref="timestamp_formatter"/>
                                             <property name="cssClasses">
@@ -331,7 +328,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment" p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-80"
+                                              p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
                                               p:render="@{#line.comments.size() gt 0}">
                                             <property name="propertyEditor" ref="timestamp_formatter"/>
                                             <property name="cssClasses">
@@ -369,5 +366,145 @@
                 </bean>
             </list>
         </property>
+        <property name="footer">
+            <bean parent="messages_summary_footer"/>
+        </property>
     </bean>
+
+    <bean id="messages_summary_footer" parent="Uif-VerticalBoxSection" p:header.render="false" p:style="padding: 6px 4px;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-right</value>
+                        </list>
+                    </property>
+                    <property name="linkText"
+                              value="View @{(searchResults eq null or searchResults.size() lt 2) ? 'message' : 'all '+searchResults.size()+' messages'}"/>
+                    <property name="title"
+                              value="View @{(searchResults eq null or searchResults.size() lt 2) ? 'message' : 'all '+searchResults.size()+' messages'}"/>
+                    <property name="href"
+                              value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
+                    <property name="render"
+                              value="@{searchResults ne null and searchResults.size() gt 0 ? true : false}"/>
+                    <property name="target" value=""/>
+                </bean>
+                <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="render"
+                              value="@{searchResults ne null and searchResults.size() gt 0 ? false : true}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="You don't have any messages."/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MessagesDetail-LookupView" parent="MyPlanLookupView">
+        <property name="viewName" value="MessagesDetail-LookupView"/>
+        <property name="headerText" value="Messages Summary"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.comment.service.MessagesLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" p:id="messages_detail_page" p:headerText="Messages &amp; Comments">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="messages_detail"/>
+                            <ref bean="saved_course_myplan_section"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+    </bean>
+
+    <bean id="messages_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-messages-detail</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="messages_detail_list"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="messages_detail_list" parent="Uif-ListCollectionSection">
+    <!--<bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4">-->
+        <property name="headerText" value="You have @{searchResults.size()} messages"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="propertyName" value="searchResults"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="subject" p:label="Subject">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-font-bold</value>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-DataField" p:propertyName="createDate" p:label="Received">
+                    <property name="propertyEditor" ref="timestamp_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments" p:label="Comments" p:render="true"/>
+
+                <bean parent="Uif-MessageField" p:messageText="--" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>
+
+                <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
+                    <property name="render" value="@{#line.comments.size() gt 0}"/>
+                    <property name="propertyEditor" ref="timestamp_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                        </list>
+                    </property>
+                </bean>
+
+
+
+            </list>
+        </property>
+    </bean>
+
 </beans>
