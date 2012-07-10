@@ -55,6 +55,7 @@ public class CommentQueryHelper {
         messageDataObject.setSubject(commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
         messageDataObject.setBody(commentInfo.getCommentText().getPlain());
         messageDataObject.setFrom(UserSessionHelper.getName(commentInfo.getMetaInfo().getCreateId()));
+        messageDataObject.setMessageId(commentInfo.getId());
 
         //  Pass the id of the message to get the comments associated with this message.
         List<CommentDataObject> comments = getComments(commentInfo.getId());
@@ -115,6 +116,7 @@ public class CommentQueryHelper {
             commentDataObject.setCreateDate(ci.getMetaInfo().getCreateTime());
             commentDataObject.setBody(ci.getCommentText().getPlain());
             commentDataObject.setFrom(UserSessionHelper.getName(ci.getMetaInfo().getCreateId()));
+            comments.add(commentDataObject);
         }
 
         Collections.sort(comments);
