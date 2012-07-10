@@ -11,6 +11,8 @@ import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class CommentQueryHelper {
@@ -55,7 +57,24 @@ public class CommentQueryHelper {
         messageDataObject.setFrom(UserSessionHelper.getName(commentInfo.getMetaInfo().getCreateId()));
 
         //  Pass the id of the message to get the comments associated with this message.
-        messageDataObject.setComments(getComments(commentInfo.getId()));
+        List<CommentDataObject> comments = getComments(commentInfo.getId());
+
+        //  Determine the last update date for the message. If comments exist then use the most recent comment create date.
+        //  Otherwise, use the message create date.
+        Date lastCommentDate = null;
+        for (CommentDataObject comment : comments) {
+            Date d = comment.getCreateDate();
+            if (lastCommentDate == null || d.after(lastCommentDate)) {
+                lastCommentDate = d;
+            }
+        }
+        if (lastCommentDate == null) {
+            messageDataObject.setLastCommentDate(commentInfo.getMetaInfo().getCreateTime());
+        } else {
+            messageDataObject.setLastCommentDate(lastCommentDate);
+        }
+
+        messageDataObject.setComments(comments);
         return messageDataObject;
     }
 
@@ -66,18 +85,19 @@ public class CommentQueryHelper {
      */
     public synchronized List<MessageDataObject> getMessages(String studentId) {
         List<MessageDataObject> messages = new ArrayList<MessageDataObject>();
-
         List<CommentInfo> commentInfos = new ArrayList<CommentInfo>();
         try {
             commentInfos = getCommentService().getComments(studentId, CommentConstants.MESSAGE_REF_TYPE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.format("Failed to retrieve messages for student [%s].", studentId), e);
         }
 
         for (CommentInfo ci : commentInfos) {
             MessageDataObject messageDataObject = makeMessageDataObject(ci);
             messages.add(messageDataObject);
         }
+
+        Collections.sort(messages);
         return messages;
     }
 
@@ -87,7 +107,7 @@ public class CommentQueryHelper {
         try {
             commentInfos = getCommentService().getComments(messageId, CommentConstants.COMMENT_REF_TYPE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(String.format("Failed to retrieve messages for messages id [%s].", messageId), e);
         }
 
         for (CommentInfo ci : commentInfos) {
@@ -96,6 +116,8 @@ public class CommentQueryHelper {
             commentDataObject.setBody(ci.getCommentText().getPlain());
             commentDataObject.setFrom(UserSessionHelper.getName(ci.getMetaInfo().getCreateId()));
         }
+
+        Collections.sort(comments);
         return comments;
     }
 }
