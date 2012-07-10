@@ -6,15 +6,14 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.xpath.DefaultXPath;
-import org.joda.time.YearMonth;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
-import org.kuali.student.enrollment.courseregistration.dto.CourseRegistrationInfo;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -22,7 +21,6 @@ import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
-import org.kuali.student.r2.lum.course.dto.ActivityInfo;
 
 import javax.jws.WebParam;
 import java.io.StringReader;
@@ -721,5 +719,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     @Override
     public List<String> searchForSeatpoolDefinitionIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public TermInfo getTerm(@WebParam(name = "termId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public List<TypeInfo> getTermTypes(@WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+       throw new RuntimeException("Not implemented.");
     }
 }
