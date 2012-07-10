@@ -1,11 +1,44 @@
 package org.kuali.student.myplan.comment.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
+
+import java.util.Date;
+import java.util.List;
 
 public class CommentForm extends UifFormBase {
+    private String from;
+    private Date createdDate;
     private String studentName;
     private String subject;
     private String body;
+    private String studentId;
+    private String messageId;
+    private List<CommentDataObject> comments;
+
+    public List<CommentDataObject> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDataObject> comments) {
+        this.comments = comments;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
 
     public String getSubject() {
         return subject;
@@ -29,5 +62,21 @@ public class CommentForm extends UifFormBase {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }
