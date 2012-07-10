@@ -928,6 +928,7 @@
                 <ref bean="CommentDataObject.createDate"/>
                 <ref bean="CommentDataObject.from"/>
                 <ref bean="CommentDataObject.body"/>
+                <ref bean="CommentDataObject.messageId"/>
             </list>
         </property>
     </bean>
@@ -974,6 +975,19 @@
         <property name="maxLength" value="1000"/>
         <property name="controlField">
             <bean parent="Uif-TextControl" p:size="1000"/>
+        </property>
+    </bean>
+
+    <bean id="CommentDataObject.messageId" parent="CommentDataObject.messageId-parentBean"/>
+    <bean id="CommentDataObject.messageId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="messageId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Message Id"/>
+        <property name="shortLabel" value="Message Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="40"/>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="40"/>
         </property>
     </bean>
 
