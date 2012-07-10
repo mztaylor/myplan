@@ -143,10 +143,10 @@ function searchForCourses(id, parentId) {
         aaSorting : [],
         aoColumns: [
             {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'fl-text-bold myplan-text-nowrap', 'sWidth':'72px', 'sType': 'string'},
-            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'171px'},
-            {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
-            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'119px'},
-            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'74px'},
+            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'144px'},
+            {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
+            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'88px'},
+            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'76px'},
             {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center myplan-course-search-results-status', 'sWidth':'72px'},
             {'bVisible':false},
             {'bVisible':false},
@@ -177,7 +177,7 @@ function searchForCourses(id, parentId) {
         fnInitComplete: function(oSettings, json) {
             oTable.fnDraw();
             results.fadeIn("fast");
-            results.find("table#" + id).width(578);
+            results.find("table#" + id).width(548);
             jq(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
                 jq(this).empty();
             });

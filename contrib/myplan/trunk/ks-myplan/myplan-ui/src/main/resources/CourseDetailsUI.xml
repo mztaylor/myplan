@@ -59,12 +59,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_section" parent="Uif-VerticalBoxSubSection">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-container-720</value>
-            </list>
-        </property>
+    <bean id="course_details_section" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">

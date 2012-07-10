@@ -232,14 +232,29 @@
 
     </bean>
 
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:style="width: 230px; margin: 0;">
+        <property name="header.render" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-section</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <!--<ref bean="messages_widget"/>-->
+                <ref bean="your_stuff_widget"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)">
         <property name="header">
             <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-200</value>
-                <value>myplan-section</value>
+                <value>myplan-widget</value>
             </list>
         </property>
         <property name="items">
@@ -248,6 +263,22 @@
                 <ref bean="degree_audits_list"/>
             </list>
         </property>
+    </bean>
+
+    <bean id="messages_widget" parent="Uif-VerticalBoxGroup" p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-widget</value>
+                <value>myplan-messages-summary</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+        </property>
+        <property name="onDocumentReadyScript" value="
+            myplanRetrieveComponent('messages_widget','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+        "/>
     </bean>
 
 

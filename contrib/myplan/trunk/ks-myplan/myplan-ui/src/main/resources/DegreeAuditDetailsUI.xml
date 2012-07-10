@@ -133,11 +133,10 @@
     </bean>
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection"
-          p:progressiveRenderViaAJAX="true" p:refreshWhenChangedPropertyNames="#form.field44">
+          p:progressiveRenderViaAJAX="true" p:refreshWhenChangedPropertyNames="#form.field44" p:style="width: 710px; margin-right: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-audit-report</value>
-                <value>myplan-container-720</value>
             </list>
         </property>
         <property name="items">
