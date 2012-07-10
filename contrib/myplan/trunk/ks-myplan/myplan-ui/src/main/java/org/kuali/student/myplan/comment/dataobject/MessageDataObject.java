@@ -9,11 +9,21 @@ import java.util.List;
  */
 public class MessageDataObject extends CommentDataObject {
 
+    private String messageId;
+    
     private String subject;
 
     private Date lastCommentDate;
 
     private List<CommentDataObject> comments;
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
 
     public MessageDataObject() {
         comments = new ArrayList<CommentDataObject>();
