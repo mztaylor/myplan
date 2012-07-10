@@ -2,6 +2,7 @@ package edu.uw.kuali.student.myplan.tests.unit;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.enrollment.courseregistration.dto.CourseRegistrationInfo;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FakeCourseOfferingService implements CourseOfferingService {
-
 
     @Override
     public CourseOfferingAdminDisplayInfo getCourseOfferingAdminDisplay(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
@@ -401,5 +401,13 @@ public class FakeCourseOfferingService implements CourseOfferingService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public TermInfo getTerm(@WebParam(name = "termId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
 
+    @Override
+    public List<TypeInfo> getTermTypes(@WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+       throw new RuntimeException("Not implemented.");
+    }
 }
