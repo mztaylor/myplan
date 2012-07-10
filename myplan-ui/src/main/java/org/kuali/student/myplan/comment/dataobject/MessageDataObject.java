@@ -46,4 +46,14 @@ public class MessageDataObject extends CommentDataObject {
     public void setSubject(String subject) {
         this.subject = subject;
     }
+
+    /**
+     * Sort messages by the last update date.
+     */
+    public int compareTo(MessageDataObject other) {
+        if (other == null) {
+            return 1;
+        }
+        return this.getLastCommentDate().compareTo(other.getLastCommentDate());
+    }
 }

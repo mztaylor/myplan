@@ -37,8 +37,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     public enum terms {autumn, winter, spring, summer}
 
-    ;
-
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
 
     private static final String REGEX_TERM = "\\d{4}\\.([1-4]{1})$";
