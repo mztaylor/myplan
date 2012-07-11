@@ -101,10 +101,9 @@ public class CommentController extends UifControllerBase {
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
         }*/
         CommentInfo ci = new CommentInfo();
-        MetaInfo m = new MetaInfo();
-        m.setCreateId(principleId);
-        m.setUpdateId(principleId);
-        ci.setMetaInfo(m);
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
+        ci.setAttributes(attributes);
         ci.setType(CommentConstants.COMMENT_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo body = new RichTextInfo();
@@ -115,7 +114,7 @@ public class CommentController extends UifControllerBase {
         ci.setReferenceTypeKey(CommentConstants.COMMENT_REF_TYPE);
 
         try {
-            CommentInfo x = getCommentService().addComment(commentInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
+            getCommentService().addComment(commentInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,18 +129,15 @@ public class CommentController extends UifControllerBase {
             String[] params = {};
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
         }*/
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, form.getSubject());
-        CommentInfo ci = new CommentInfo();
-        ci.setAttributes(attributes);
 
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
 
-        MetaInfo m = new MetaInfo();
-        m.setCreateId(principleId);
-        m.setUpdateId(principleId);
-        ci.setMetaInfo(m);
+        CommentInfo ci = new CommentInfo();
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, form.getSubject());
+        attributes.put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
+        ci.setAttributes(attributes);
         ci.setType(CommentConstants.MESSAGE_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo body = new RichTextInfo();
@@ -152,7 +148,7 @@ public class CommentController extends UifControllerBase {
         ci.setReferenceTypeKey(CommentConstants.MESSAGE_REF_TYPE);
 
         try {
-            CommentInfo x = getCommentService().addComment(UserSessionHelper.getStudentId(), CommentConstants.MESSAGE_REF_TYPE, ci);
+            getCommentService().addComment(UserSessionHelper.getStudentId(), CommentConstants.MESSAGE_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -184,10 +180,6 @@ public class CommentController extends UifControllerBase {
             commentQueryHelper = new CommentQueryHelper();
         }
         return commentQueryHelper;
-    }
-
-    public void setCommentQueryHelper(CommentQueryHelper commentQueryHelper) {
-        this.commentQueryHelper = commentQueryHelper;
     }
 
     public CommentService getCommentService() {
