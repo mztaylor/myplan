@@ -104,7 +104,7 @@ public class UserSessionHelper {
         if (person != null) {
             return String.format("%s %s", person.getFirstName(), person.getLastName());
         } else {
-            return "jimbo";
+            return null;
         }
     }
 
