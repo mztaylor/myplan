@@ -569,3 +569,46 @@ function fnToggleBackup(e) {
         oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
     }
 }
+/*
+######################################################################################
+    Function:   expand/collapse backup course set within plan view
+######################################################################################
+ */
+function myplanCreateLightBoxLink(controlId, options) {
+    jQuery(function () {
+        var showHistory = false;
+
+        // Check if this is called within a light box
+        if (!jQuery("#fancybox-frame", parent.document).length) {
+
+            // Perform cleanup when lightbox is closed
+            options['onCleanup'] = cleanupClosedLightboxForms;
+            options['onComplete'] = function() {
+                jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+                    jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+20 );
+                });
+            };
+
+            // If this is not the top frame, then create the lightbox
+            // on the top frame to put overlay over whole window
+            if (top == self) {
+                jQuery("#" + controlId).fancybox(options);
+            } else {
+                jQuery("#" + controlId).click(function (e) {
+                    e.preventDefault();
+                    top.jQuery.fancybox(options);
+                });
+            }
+        } else {
+            //jQuery("#" + controlId).attr('target', '_self');
+            showHistory = true;
+        }
+
+        // Set the renderedInLightBox = true param
+        if (options['href'].indexOf('&renderedInLightBox=true') == -1) {
+            options['href'] =  options['href'] + '&renderedInLightBox=true'
+                    + '&showHome=false' + '&showHistory=' + showHistory
+                    + '&history=' + jQuery('#formHistory\\.historyParameterString').val();
+        }
+    });
+}

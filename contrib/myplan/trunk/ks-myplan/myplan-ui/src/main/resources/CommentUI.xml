@@ -22,14 +22,13 @@
         <property name="id" value="Message-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>fl-container-600</value>
-                <value>myplan-view</value>
-            </list>
-        </property>
         <property name="header">
             <bean parent="Uif-HeaderTwo"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>base-view</value>
+            </list>
         </property>
         <property name="items">
             <list>
@@ -52,8 +51,14 @@
                 <!--Comment Page-->
                 <bean parent="Uif-Page" p:id="comment_dialog_response_page"
                       p:headerText="View Message and @{comments.size()} comments">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-messages-lightbox</value>
+                            <value>fl-container-650</value>
+                        </list>
+                    </property>
                     <property name="header">
-                        <bean parent="Uif-HeaderFour"/>
+                        <bean parent="Uif-HeaderSix"/>
                     </property>
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
@@ -61,12 +66,6 @@
                     <property name="items">
                         <list>
                             <ref bean="comment_dialog_subject"/>
-                            <!--<bean parent="Uif-MessageField"
-                                  p:cssClasses="fl-font-size-90 fl-text-bold">
-                                <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="Post your comment to this message"/>
-                                </property>
-                            </bean>-->
                             <ref bean="comment_dialog_comments_list"/>
                             <ref bean="comment_dialog_message"/>
                             <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
@@ -94,15 +93,26 @@
         <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
     </bean>
 
-    <bean id="comment_dialog_subject" parent="Uif-VerticalBoxSubSection" p:style="background: #EEE;">
+    <bean id="comment_dialog_subject" parent="Uif-VerticalBoxSubSection">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-messages-original</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean id="comment_text_box" parent="Uif-HorizontalBoxSubSection" p:style="background: #EEE;">
+                <bean id="comment_text_box" parent="Uif-HorizontalBoxSubSection">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-gray"
-                                  p:messageText="From @{from} on "/>
-                            <bean parent="Uif-DataField" p:propertyName="createdDate" >
+                            <bean parent="Uif-DataField" p:propertyName="from" p:label="From" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>fl-text-bold</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-DataField" p:propertyName="createdDate" p:label="on" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -113,21 +123,8 @@
                         </list>
                     </property>
                 </bean>
-                <!--<bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-gray"
-                      p:messageText="From @{from} on @{createdDate}"/>-->
-                <bean parent="Uif-MessageField"
-                      p:cssClasses="fl-font-size-120 fl-text-bold">
-                    <property name="message">
-                        <bean parent="Uif-Message" p:messageText="Adviser feedback on your plan"/>
-                    </property>
-                </bean>
-                <bean parent="Uif-DataField" p:propertyName="subject">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                        </list>
-                    </property>
-                </bean>
+                <bean parent="Uif-DataField" p:propertyName="subject"/>
+                <bean parent="Uif-DataField" p:propertyName="body"/>
             </list>
         </property>
     </bean>
@@ -135,12 +132,7 @@
     <bean id="comment_dialog_comments_list" parent="Uif-ListCollectionSection"
           p:headerText="@{comments.size()} comments to this message were posted">
         <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-saved-courses-summary</value>
-            </list>
+            <bean parent="Uif-HeaderSix" p:style="margin:0 0 10px 0;"/>
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.comment.dataobject.CommentDataObject"/>
@@ -312,11 +304,12 @@
     </bean>
 
     <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
-          p:headerText="MESSAGES (@{searchResults.size()})" p:style="margin-bottom: 10px;">
+          p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
         </property>
-        <!--<property name="header">
+        <!--
+        <property name="header">
             <bean id="messsage_header" parent="Uif-ViewHeader">
                 <property name="items">
                     <bean parent="Uif-Link" p:linkText="Leave a Message">
@@ -328,7 +321,8 @@
                     </bean>
                 </property>
             </bean>
-        </property>-->
+        </property>
+        -->
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-widget</value>
@@ -350,19 +344,13 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:style="cursor:pointer;">
+                <bean p:id="@{#line.messageId}" parent="Uif-HorizontalFieldGroup" p:style="cursor:pointer;">
+                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}', {autoScale:true,autoDimensions:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-VerticalFieldGroup" p:style="width:190px; margin:0 10px 0 0;">
                                 <property name="items">
                                     <list>
-                                        <!--<bean parent="Uif-Link" p:linkText="comment">
-                                            <property name="href"
-                                                      value="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}"/>
-                                            <property name="lightBox">
-                                                <bean parent="Uif-LightBox"/>
-                                            </property>
-                                        </bean>-->
                                         <bean parent="Uif-MessageField" p:messageText="@{#line.subject}"
                                               p:style="width:190px;">
                                             <property name="cssClasses">
@@ -432,7 +420,8 @@
                                         </bean>
                                     </list>
                                 </property>
-                                <!--<property name="propertyReplacers">
+                                <!--
+                                <property name="propertyReplacers">
                                     <list>
                                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
                                               p:condition="#line.comments.size() gt 0">
@@ -451,7 +440,8 @@
                                             </property>
                                         </bean>
                                     </list>
-                                </property>-->
+                                </property>
+                                -->
                             </bean>
                         </list>
                     </property>
@@ -577,7 +567,7 @@
                 <bean parent="Uif-DataField" p:propertyName="subject" p:label="Subject">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>fl-font-bold</value>
+                            <value>fl-text-bold</value>
                         </list>
                     </property>
                 </bean>
@@ -605,8 +595,6 @@
                         </list>
                     </property>
                 </bean>
-
-
 
             </list>
         </property>
