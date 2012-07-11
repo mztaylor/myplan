@@ -15,6 +15,15 @@ public class CommentForm extends UifFormBase {
     private String studentId;
     private String messageId;
     private List<CommentDataObject> comments;
+    private boolean feedBackMode;
+
+    public boolean isFeedBackMode() {
+        return feedBackMode;
+    }
+
+    public void setFeedBackMode(boolean feedBackMode) {
+        this.feedBackMode = feedBackMode;
+    }
 
     public List<CommentDataObject> getComments() {
         return comments;
