@@ -780,7 +780,7 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 }
 .myplan-messages-lightbox .myplan-messages-original {
     background: #eaeaea;
-    border-top: #a9a9a9;
+    border-top: solid 1px #a9a9a9;
     padding:  20px;
     margin: 0 0 20px 0;
 }
