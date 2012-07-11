@@ -252,7 +252,7 @@
         <property name="items">
             <list>
                 <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton"
-                      p:actionLabel="Leave a Message" p:methodToCall="addMessage">
+                      p:actionLabel="Leave a Message" p:methodToCall="addMessage" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -261,9 +261,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="clientSideJs"
-                              value="fnCloseAllPopups();"/>
+                              value="fnCloseAllPopups();" />
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -272,6 +272,9 @@
                         </list>
                     </property>
                 </bean>
+
+                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green"
+                      p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}"/>
             </list>
         </property>
     </bean>
