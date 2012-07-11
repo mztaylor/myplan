@@ -48,7 +48,6 @@
 
 
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
-
         <property name="applicationHeader">
             <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"
@@ -91,7 +90,6 @@
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
-
         <property name="applicationHeader">
             <bean parent="Uif-HeaderOne" p:id="ks-banner"
                   p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationHeader.jsp"

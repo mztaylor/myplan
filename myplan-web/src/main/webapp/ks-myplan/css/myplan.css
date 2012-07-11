@@ -3,13 +3,6 @@
 *:focus {
 	outline: 0;
 }
-/* Hide messaging globally */
-#errorsFieldForPage_div {
-    display: none;
-}
-.jquerybubblepopup #errorsFieldForPage_div {
-    display: block;
-}
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
@@ -30,90 +23,77 @@ a:focus {
     border: none;
     color: #1d8fd9;
 }
-#Uif-Application {
-	margin:0 auto;
-	padding: 10px;
-	width: 950px;
-}
 .uif-pageContentWrapper,
 .uif-viewHeader,
 .uif-header {
     margin: 0;
 }
-#appheader_div {
-	width: 950px;
+#applicationHeader,
+.myplan-view,
+#applicationFooter {
+	margin:0 auto;
+    width: 950px;
 }
-#appheader_div #appheading_div {
+.myplan-view {
+    min-height: 425px;
+}
+#applicationHeader #applicationHeading {
     overflow:auto;
 }
-#appheader_div #applogo_div,
-#appheader_div #appuser_div {
+#applicationHeading #applicationLogo,
+#applicationHeading #applicationUser {
     width:50%;
     float:left;
     overflow:auto;
 }
-#appheader_div #applogo_div {
+#applicationHeading #applicationLogo {
     font-size: 3em;
     line-height: normal;
 }
-#appheader_div #applogo_div span{
+#applicationHeading #applicationLogo span{
     font-size: 50%;
     color: #999999;
 }
-#appheader_div #appuser_div {
+#applicationHeading #applicationUser {
     text-align:right;
     overflow: hidden;
 }
-#appheader_div #appuser_div .links ul,
-#appheader_div #appuser_div .links ul li {
+#applicationHeading #applicationUser .links ul,
+#applicationHeading #applicationUser .links ul li {
     list-style:none;
     margin: 0;
     padding: 0;
 }
-#appheader_div #appuser_div .links ul li {
+#applicationHeading #applicationUser .links ul li {
     display:inline-block;
 }
-#appheader_div #appnav_div {
+#applicationNavigation ul,
+#applicationFooter ul {
     clear: both;
     border: solid 1px #e5e5e5;
     background: #eee;
     color: #999999;
     padding: 15px;
-    margin: 10px 0px 0px 0px;
-}
-#appnav_div ul,
-#appnav_div ul li,
-#appfooter_div ul,
-#appfooter_div ul li {
+    display: block;
+    margin: 10px 0;
     list-style: none;
-    margin:  0;
+}
+#applicationNavigation ul li,
+#applicationFooter ul li {
+    list-style: none;
+    display: inline-block;
+    margin:  0 0 0 2em;
     padding:  0;
 }
-#appnav_div ul li,
-#appfooter_div ul li {
-    display: inline-block;
-    margin-left: 2em;
-}
-#appnav_div ul li:first-child,
-#appfooter_div ul li:first-child {
+#applicationNavigation ul li:first-child,
+#applicationFooter ul li:first-child {
     margin:  0;
-}
-#appfooter_div {
-	border: solid 1px #e5e5e5;
-    background: #eee;
-    color: #999999;
-    padding: 15px;
-    margin: 10px auto 0px;
-    width: 918px;
-}
-.myplan-view {
-	margin-top:10px;
 }
 .myplan-view .uif-pageHeader {
     margin: 0 0 1em 0;
 }
 .myplan-view #Uif-ViewContentWrapper {
-	min-height: 450px;
+	/*min-height: 450px;*/
 }
 /* Overwrite KRAD Styles ########################################################################### */
 .myplan-view #Uif-PageContentWrapper,
@@ -138,10 +118,12 @@ a:focus {
     clear: both;
 }
 .myplan-view .uif-boxLayoutVerticalItem,
+.base-view .uif-boxLayoutVerticalItem,
 .jquerybubblepopup .uif-boxLayoutVerticalItem {
 	margin: 0 0 10px 0;
 }
 .myplan-view .uif-boxLayoutHorizontalItem,
+.base-view .uif-boxLayoutHorizontalItem,
 .jquerybubblepopup .uif-boxLayoutHorizontalItem {
 	margin: 0 10px 0 0;
 }
@@ -789,6 +771,19 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 .jquerybubblepopup-innerHtml div.blockElement {
     top: 0px !important;
 }
+/* Messaging and Comments ################################################################################### */
+.myplan-messages-lightbox h6 {
+    font-weight: bold;
+    text-transform: none;
+    font-size: 1.25em;
+    line-height: 1.75em;
+}
+.myplan-messages-lightbox .myplan-messages-original {
+    background: #eaeaea;
+    border-top: #a9a9a9;
+    padding:  20px;
+    margin: 0 0 20px 0;
+}
 
 /* Planned Courses ################################################################################### */
 .myplan-plan-heading > .uif-boxLayout {
@@ -837,7 +832,13 @@ label.scheduled {
     width: auto !important;
     background: transparent !important;
 }
-
+/* Hide messaging globally */
+#errorsFieldForPage_div {
+    display: none;
+}
+.jquerybubblepopup #errorsFieldForPage_div {
+    display: block;
+}
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
     width: 8px;
