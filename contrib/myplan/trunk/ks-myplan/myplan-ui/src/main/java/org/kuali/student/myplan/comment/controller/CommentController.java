@@ -119,20 +119,17 @@ public class CommentController extends UifControllerBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        return doSuccess(form, CommentConstants.SUCCESS_KEY_MESSAGE_ADDED, new String[0]);
+        form.setBody(null);
+        return start(form, result, httprequest, httpresponse);
     }
 
     @RequestMapping(params = "methodToCall=addMessage")
     public ModelAndView addMessage(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        /*if (!UserSessionHelper.isAdviser() || !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())) {
+        if (!UserSessionHelper.isAdviser() || !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
-        }*/
-
-
+        }
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, form.getSubject());
         CommentInfo ci = new CommentInfo();

@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.utils;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
@@ -12,6 +13,8 @@ import org.kuali.student.r2.common.dto.ContextInfo;
  * Provides an initialized Context which can be used for service requests.
  */
 public class UserSessionHelper {
+
+    private static final Logger logger = Logger.getLogger(UserSessionHelper.class);
 
     private static transient PersonService personService;
 
@@ -87,12 +90,22 @@ public class UserSessionHelper {
 
     /**
      * Get the name (first last) of a person given a principle ID.
+     *
      * @param principleId
      * @return The name in first last format.
      */
     public synchronized static String getName(String principleId) {
-        Person person = getPersonService().getPerson(principleId);
-        return String.format("%s %s", person.getFirstName(), person.getLastName());
+        Person person = null;
+        try {
+            person = getPersonService().getPerson(principleId);
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+        }
+        if (person != null) {
+            return String.format("%s %s", person.getFirstName(), person.getLastName());
+        } else {
+            return null;
+        }
     }
 
     public synchronized static String getAuditSystemKey() {
