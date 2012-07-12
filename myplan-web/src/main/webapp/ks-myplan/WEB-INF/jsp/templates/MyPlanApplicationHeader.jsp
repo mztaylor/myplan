@@ -22,12 +22,10 @@
             My<strong>Plan</strong> <span>One-stop Academic Planner</span>
         </div>
         <div id="applicationUser">
-            <div class="name">Welcome, ${UserSession.person.firstName}</div>
-            <div class="links">
-                <ul>
-                    <li><a href="#">Log out</a></li>
-                </ul>
-            </div>
+
+
+            <div class="name"><a href="plan?methodToCall=startAcademicPlannerForm&viewId=StudentAcademicPlanner-FormView&pageId=student_academic_planner_page">
+                Welcome, ${UserSession.person.firstName}</a></div>
         </div>
     </div>
 

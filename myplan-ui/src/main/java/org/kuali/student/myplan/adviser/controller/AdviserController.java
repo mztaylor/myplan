@@ -18,6 +18,7 @@ package org.kuali.student.myplan.adviser.controller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.permission.PermissionService;
@@ -26,6 +27,8 @@ import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -37,6 +40,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/advise/**")
@@ -52,6 +57,8 @@ public class AdviserController extends UifControllerBase {
 
     private transient String ADVISE_PERM_NAME;
 
+    private transient AcademicPlanService academicPlanService;
+
     public synchronized PersonService getPersonService() {
 
         if (personService == null) {
@@ -66,7 +73,7 @@ public class AdviserController extends UifControllerBase {
     }
 
     public synchronized PermissionService getPermissionService() {
-        if(permissionService == null) {
+        if (permissionService == null) {
 
             ADVISE_NM_CODE = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.namespacecode");
             ADVISE_PERM_NAME = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname");
@@ -79,6 +86,18 @@ public class AdviserController extends UifControllerBase {
 
     public void setPermissionService(PermissionService permissionService) {
         this.permissionService = permissionService;
+    }
+
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
     }
 
     @Override
@@ -118,15 +137,26 @@ public class AdviserController extends UifControllerBase {
      */
     @RequestMapping(value = "/advise/{studentId}", method = RequestMethod.GET)
     public String get(@PathVariable("studentId") String studentId, @ModelAttribute("KualiForm") UifFormBase form) {
-
         form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
         form.setRequestRedirect(true);
+        List<LearningPlanInfo> plan = null;
+        try {
+            //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Query for learning plan failed.", e);
+        }
+        if (plan != null && plan.size() > 0) {
+            if (plan.get(0).getShared().toString().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_FALSE_KEY)) {
+                return "redirect:/myplan/advise/error";
+            }
+        }
         UserSession session = GlobalVariables.getUserSession();
 
-        if(!getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, ADVISE_PERM_NAME)) {
+        if (!getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, ADVISE_PERM_NAME)) {
             //  FIXME!!! ... Do stuff to verify that the user has an Grad advisor role adviser role.
-             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_ILLEGAL_ADVISER_ACCESS);
-             return "redirect:/myplan/advise/error";
+            GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_ILLEGAL_ADVISER_ACCESS);
+            return "redirect:/myplan/advise/error";
         }
 
 
