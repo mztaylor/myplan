@@ -460,7 +460,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="Invalid or Empty RegId. Please pass Correct RegId to access the Application.">
+                                  p:messageText="Invalid RegId passed (or) Student has a private access to the Academic Plan">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-font-size-90</value>
