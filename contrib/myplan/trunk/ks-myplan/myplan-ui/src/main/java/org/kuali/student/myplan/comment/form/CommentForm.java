@@ -12,10 +12,19 @@ public class CommentForm extends UifFormBase {
     private String studentName;
     private String subject;
     private String body;
+    private String commentBody;
     private String studentId;
     private String messageId;
     private List<CommentDataObject> comments;
     private boolean feedBackMode;
+
+    public String getCommentBody() {
+        return commentBody;
+    }
+
+    public void setCommentBody(String commentBody) {
+        this.commentBody = commentBody;
+    }
 
     public boolean isFeedBackMode() {
         return feedBackMode;

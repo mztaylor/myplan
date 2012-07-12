@@ -123,7 +123,14 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="subject"/>
+                <bean parent="Uif-DataField" p:propertyName="subject">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>fl-font-size-120</value>
+                        <value>fl-text-bold</value>
+                    </list>
+                </property>
+                </bean>
                 <bean parent="Uif-DataField" p:propertyName="body"/>
             </list>
         </property>
@@ -186,7 +193,7 @@
 
                 <bean parent="Uif-Message" p:messageText="@{studentName}."/>
 
-                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="body"  p:required="true"
+                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody"  p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="4" p:cols="70" p:textExpand="false"

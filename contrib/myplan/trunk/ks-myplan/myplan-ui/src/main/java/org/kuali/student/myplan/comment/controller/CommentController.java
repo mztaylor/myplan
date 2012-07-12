@@ -72,7 +72,8 @@ public class CommentController extends UifControllerBase {
                 return null;
             }
             if (messageDataObject != null) {
-                commentForm.setSubject(messageDataObject.getBody());
+                commentForm.setSubject(messageDataObject.getSubject());
+                commentForm.setBody(messageDataObject.getBody());
                 commentForm.setFrom(messageDataObject.getFrom());
                 commentForm.setCreatedDate(messageDataObject.getCreateDate());
                 commentForm.setComments(messageDataObject.getComments());
@@ -86,6 +87,7 @@ public class CommentController extends UifControllerBase {
     public ModelAndView addComment(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
+
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo commentInfo = null;
@@ -95,8 +97,8 @@ public class CommentController extends UifControllerBase {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
-        /*If not a Adviser of if the user accesing is not the owner of the message*/
-        /*if (!UserSessionHelper.isAdviser() && !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
+        /*If not a Adviser or if the user accessing is not the owner of the message*/
+        /*if (!UserSessionHelper.isAdviser() || !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
         }*/
@@ -107,8 +109,8 @@ public class CommentController extends UifControllerBase {
         ci.setType(CommentConstants.COMMENT_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo body = new RichTextInfo();
-        body.setPlain(form.getBody());
-        body.setFormatted(form.getBody());
+        body.setPlain(form.getCommentBody());
+        body.setFormatted(form.getCommentBody());
         ci.setCommentText(body);
         ci.setReferenceId(commentInfo.getId());
         ci.setReferenceTypeKey(CommentConstants.COMMENT_REF_TYPE);
@@ -118,7 +120,7 @@ public class CommentController extends UifControllerBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        form.setBody(null);
+        form.setCommentBody(null);
         return start(form, result, httprequest, httpresponse);
     }
 
