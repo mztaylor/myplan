@@ -191,9 +191,9 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
                             String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = startsSub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(", ");
+                            sb = startsSub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a>").append(", ");
                         }
-                        String formattedString = sb.substring(0, sb.lastIndexOf(",") - 1);
+                        String formattedString = sb.substring(0, sb.lastIndexOf(","));
                         StringBuffer formattedSubBuf = new StringBuffer();
                         formattedSubBuf = formattedSubBuf.append(formattedString);
                         sb = formattedSubBuf.append(" on ").append(key);
