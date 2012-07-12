@@ -305,24 +305,25 @@
 
     <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
           p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
-        <property name="header">
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
-        </property>
-        <!--
+        <!--<property name="header">-->
+            <!--<bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>-->
+        <!--</property>-->
         <property name="header">
             <bean id="messsage_header" parent="Uif-ViewHeader">
                 <property name="items">
-                    <bean parent="Uif-Link" p:linkText="Leave a Message">
-                        <property name="href"
-                                  value="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"/>
-                        <property name="lightBox">
-                            <bean parent="Uif-LightBox"/>
+                    <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message">
+                        <property name="clientSideJs"
+                                  value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>myplan-button</value>
+                                <value>myplan-button-blue</value>
+                            </list>
                         </property>
                     </bean>
                 </property>
             </bean>
         </property>
-        -->
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-widget</value>
@@ -593,7 +594,7 @@
                 <!--<bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>-->
 
                 <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
-                    <property name="propertyEditor" ref="timestamp_formatterX"/>
+                    <property name="propertyEditor" ref="last_comment_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
@@ -607,7 +608,7 @@
 
 
     <!-- last comment time stamp formatter -->
-    <bean id="timestamp_formatterX" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+    <bean id="last_comment_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
         <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
         <property name="emptyDateText" value="--"/>
     </bean>
