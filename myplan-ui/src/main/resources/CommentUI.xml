@@ -557,11 +557,17 @@
             </list>
         </property>
     </bean>
-    <bean id="messages_detail_list" parent="Uif-ListCollectionSection">
-    <!--<bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="1">-->
+
+    <!--<bean id="messages_detail_list" parent="Uif-ListCollectionSection">-->
+    <bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="1">
         <property name="headerText" value="You have @{searchResults.size()} messages"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="propertyName" value="searchResults"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="subject" p:label="Subject">
@@ -586,15 +592,15 @@
 
                 <bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>
 
-                <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
-                    <property name="render" value="@{#line.comments.size() gt 0}"/>
-                    <property name="propertyEditor" ref="timestamp_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-gray</value>
-                        </list>
-                    </property>
-                </bean>
+                <!--<bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">-->
+                    <!--<property name="render" value="@{#line.comments.size() gt 0}"/>-->
+                    <!--<property name="propertyEditor" ref="timestamp_formatter"/>-->
+                    <!--<property name="cssClasses">-->
+                        <!--<list merge="true">-->
+                            <!--<value>fl-text-gray</value>-->
+                        <!--</list>-->
+                    <!--</property>-->
+                <!--</bean>-->
 
             </list>
         </property>
