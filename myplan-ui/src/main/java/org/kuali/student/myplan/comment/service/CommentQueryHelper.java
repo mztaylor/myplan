@@ -69,12 +69,8 @@ public class CommentQueryHelper {
                 lastCommentDate = d;
             }
         }
-        if (lastCommentDate == null) {
-            messageDataObject.setLastCommentDate(commentInfo.getMetaInfo().getCreateTime());
-        } else {
-            messageDataObject.setLastCommentDate(lastCommentDate);
-        }
 
+        messageDataObject.setLastCommentDate(lastCommentDate);
         messageDataObject.setComments(comments);
         return messageDataObject;
     }

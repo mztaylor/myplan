@@ -33,6 +33,8 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
 
     private String simpleDateFormat = "";
 
+    private String emptyDateText = "";
+
     public TimestampPropertyEditor() {
         styleClasses = new ArrayList<String>();
     }
@@ -55,6 +57,11 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
     @Override
     public String getAsText() {
         Date date = (Date) super.getValue();
+
+        if(null == date) {
+            return this.emptyDateText;
+        }
+
         if (this.simpleDateFormat.length() == 0) {
             return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
         } else {
@@ -84,5 +91,13 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
             return StringUtils.join(styleClasses, " ");
         }
         return "";
+    }
+
+    public String getEmptyDateText() {
+        return emptyDateText;
+    }
+
+    public void setEmptyDateText(String emptyDateText) {
+        this.emptyDateText = emptyDateText;
     }
 }

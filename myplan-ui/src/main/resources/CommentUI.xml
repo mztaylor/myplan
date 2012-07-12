@@ -590,20 +590,26 @@
                 <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments" p:label="Comments"
                       p:render="true"/>
 
-                <bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>
+                <!--<bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>-->
 
-                <!--<bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">-->
-                    <!--<property name="render" value="@{#line.comments.size() gt 0}"/>-->
-                    <!--<property name="propertyEditor" ref="timestamp_formatter"/>-->
-                    <!--<property name="cssClasses">-->
-                        <!--<list merge="true">-->
-                            <!--<value>fl-text-gray</value>-->
-                        <!--</list>-->
-                    <!--</property>-->
-                <!--</bean>-->
+                <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
+                    <property name="propertyEditor" ref="timestamp_formatterX"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                        </list>
+                    </property>
+                </bean>
 
             </list>
         </property>
+    </bean>
+
+
+    <!-- last comment time stamp formatter -->
+    <bean id="timestamp_formatterX" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+        <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
+        <property name="emptyDateText" value="--"/>
     </bean>
 
 </beans>
