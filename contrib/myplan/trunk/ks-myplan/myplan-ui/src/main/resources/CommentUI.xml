@@ -186,7 +186,7 @@
 
                 <bean parent="Uif-Message" p:messageText="@{studentName}."/>
 
-                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="body"
+                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="body"  p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="4" p:cols="70" p:textExpand="false"
@@ -208,7 +208,7 @@
                         <bean parent="Uif-Message" p:messageText="Subject"/>
                     </property>
                 </bean>
-                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
+                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject" p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="70" p:watermarkText="Maximum characters are 70"/>
@@ -227,7 +227,7 @@
                         <bean parent="Uif-Message" p:messageText="Message"/>
                     </property>
                 </bean>
-                <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body"
+                <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body" p:required="true"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="10" p:cols="70" p:textExpand="false"
