@@ -62,6 +62,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
+    <bean id="LearningPlanInfo.shared" parent="LearningPlanInfo.shared-parent"/>
+    <bean id="LearningPlanInfo.shared-parent" abstract="true" parent="LearningPlanInfo.shared-generated">
+    <!-- insert any overrides to the generated attribute definitions here -->
+    </bean>
+
 	<bean id="LearningPlanInfo.descr" parent="LearningPlanInfo.descr-parent"/>
 	<bean id="LearningPlanInfo.descr-parent" abstract="true" parent="LearningPlanInfo.descr-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->

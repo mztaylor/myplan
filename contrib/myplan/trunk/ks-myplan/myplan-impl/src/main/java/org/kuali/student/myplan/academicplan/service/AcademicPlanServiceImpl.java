@@ -260,6 +260,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setCreateTime(new Date());
         lpe.setUpdateId(context.getPrincipalId());
         lpe.setUpdateTime(new Date());
+        lpe.setShared(learningPlan.getShared());
 
         LearningPlanEntity existing = learningPlanDao.find(lpe.getId());
         if (existing != null) {
@@ -360,6 +361,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setStudentId(learningPlan.getStudentId());
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
+
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
             for (Attribute att : learningPlan.getAttributes()) {
@@ -368,6 +370,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             }
         }
 
+        lpe.setShared(learningPlan.getShared());
         //  Update meta data.
         lpe.setUpdateId(context.getPrincipalId());
         lpe.setUpdateTime(new Date());

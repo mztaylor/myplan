@@ -96,6 +96,32 @@ public class PlanController extends UifControllerBase {
         return new PlanForm();
     }
 
+    @RequestMapping(params = "methodToCall=startAcademicPlannerForm")
+    public ModelAndView startAcademicPlannerForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                                 HttpServletRequest request, HttpServletResponse response) {
+        super.start(form, result, request, response);
+        PlanForm planForm = (PlanForm) form;
+        List<LearningPlanInfo> plan = null;
+        try {
+            //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(getUserId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            return doOperationFailedError(planForm, "Query for learning plan failed.", e);
+        }
+        if (plan != null && plan.size() > 0) {
+            if (plan.get(0).getShared()) {
+                planForm.setEnableAdviserView(plan.get(0).getShared().toString());
+            } else {
+                planForm.setEnableAdviserView(plan.get(0).getShared().toString());
+
+            }
+
+        } else {
+            planForm.setEnableAdviserView(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY);
+        }
+        return getUIFModelAndView(planForm);
+    }
+
     @RequestMapping(params = "methodToCall=startAddPlannedCourseForm")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
@@ -116,13 +142,13 @@ public class PlanController extends UifControllerBase {
                 }
                 /*if a plan item exists the this is used for populating the menu items*/
                 if (planItem.getPlanPeriods().size() > 0) {
-                    if(planForm.getAtpId()==null || planItem.getPlanPeriods().get(0).equalsIgnoreCase(planForm.getAtpId())){
-                    /*Condition to check if the atp is greater than or equal to planning term*/
-                    if (!planForm.isSetToPlanning()) {
-                        planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
-                    }
-                    planForm.setAtpId(planItem.getPlanPeriods().get(0));
-                    }else {
+                    if (planForm.getAtpId() == null || planItem.getPlanPeriods().get(0).equalsIgnoreCase(planForm.getAtpId())) {
+                        /*Condition to check if the atp is greater than or equal to planning term*/
+                        if (!planForm.isSetToPlanning()) {
+                            planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItem.getPlanPeriods().get(0)));
+                        }
+                        planForm.setAtpId(planItem.getPlanPeriods().get(0));
+                    } else {
                         return doPageRefreshError(planForm, "Plan item not found.", null);
                     }
                 }
@@ -169,8 +195,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=plannedToBackup")
     public ModelAndView plannedToBackup(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
         String planItemId = form.getPlanItemId();
@@ -242,8 +268,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=backupToPlanned")
     public ModelAndView backupToPlanned(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
         String planItemId = form.getPlanItemId();
@@ -315,8 +341,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=movePlannedCourse")
     public ModelAndView movePlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /**
          * This method needs a Plan Item ID and an ATP ID.
@@ -461,8 +487,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=copyPlannedCourse")
     public ModelAndView copyPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /**
          * This method needs a Plan Item ID and an ATP ID.
@@ -592,8 +618,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addPlannedCourse")
     public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /**
          * This method needs a Course ID and an ATP ID.
@@ -604,7 +630,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(form.getYear())||StringUtils.isEmpty(form.getTerm())) {
+        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isEmpty(form.getTerm())) {
             return doOperationFailedError(form, "Year and/or Term missing.", null);
         }
 
@@ -728,8 +754,61 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
 
+
+    /*Academic Planner*/
+
+    @RequestMapping(params = "methodToCall=academicPlanner")
+    public ModelAndView academicPlanner(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
+        try {
+            String studentId = getUserId();
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+            if (plan.size() > 0) {
+                if (!plan.get(0).getShared().toString().equalsIgnoreCase(form.getEnableAdviserView())) {
+                    if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
+                        plan.get(0).setShared(true);
+                    } else {
+                        plan.get(0).setShared(false);
+                    }
+                    plan.get(0).setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+                    getAcademicPlanService().updateLearningPlan(plan.get(0).getId(), plan.get(0), PlanConstants.CONTEXT_INFO);
+                }
+            } else {
+                LearningPlanInfo planInfo = new LearningPlanInfo();
+                planInfo.setTypeKey(PlanConstants.LEARNING_PLAN_TYPE_PLAN);
+                RichTextInfo rti = new RichTextInfo();
+                rti.setFormatted("");
+                rti.setPlain("");
+                if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
+                    plan.get(0).setShared(true);
+                } else {
+                    plan.get(0).setShared(false);
+                }
+                planInfo.setDescr(rti);
+                planInfo.setStudentId(studentId);
+                planInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+                planInfo.setMeta(new MetaInfo());
+
+                ContextInfo context = new ContextInfo();
+                context.setPrincipalId(studentId);
+                getAcademicPlanService().createLearningPlan(planInfo, context);
+            }
+        } catch (Exception e) {
+            return doOperationFailedError(form, "Query for default learning plan failed.", e);
+        }
+
+
+        return getUIFModelAndView(form);
+
+
+    }
+
+
     /**
      * AtpId generated from the year and the term in the form .
+     *
      * @param form
      * @return
      */
@@ -825,8 +904,8 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addSavedCourse")
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
         String courseId = form.getCourseId();
@@ -884,18 +963,18 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=removeItem")
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
-            return doAdviserAccessError(form,"Adviser Access Denied",null);
+        if (UserSessionHelper.isAdviser()) {
+            return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
         String planItemId = form.getPlanItemId();
-        String courseId=form.getCourseId();
+        String courseId = form.getCourseId();
         if (StringUtils.isEmpty(planItemId) && StringUtils.isEmpty(courseId)) {
             return doOperationFailedError(form, "Plan item id and courseId are missing.", null);
         }
 
-        if(StringUtils.isEmpty(planItemId)){
-                planItemId=getPlanIdFromCourseId(courseId);
+        if (StringUtils.isEmpty(planItemId)) {
+            planItemId = getPlanIdFromCourseId(courseId);
         }
 
 
@@ -938,7 +1017,6 @@ public class PlanController extends UifControllerBase {
         String[] params = {};
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params, e);
     }
-
 
 
     /**
@@ -1270,6 +1348,7 @@ public class PlanController extends UifControllerBase {
         RichTextInfo rti = new RichTextInfo();
         rti.setFormatted("");
         rti.setPlain("");
+        plan.setShared(true);
         plan.setDescr(rti);
         plan.setStudentId(studentId);
         plan.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
@@ -1485,8 +1564,8 @@ public class PlanController extends UifControllerBase {
         return totalCredits;
     }
 
-    private String getPlanIdFromCourseId(String courseId){
-        String planItemId=null;
+    private String getPlanIdFromCourseId(String courseId) {
+        String planItemId = null;
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
@@ -1503,13 +1582,13 @@ public class PlanController extends UifControllerBase {
                 planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
-                                 if(planItem.getRefObjectId().equalsIgnoreCase(courseId)){
-                                     planItemId=planItem.getId();
-                                     break;
-                                 }
+                    if (planItem.getRefObjectId().equalsIgnoreCase(courseId)) {
+                        planItemId = planItem.getId();
+                        break;
+                    }
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             logger.error("could not get the planItemId");
         }
         return planItemId;

@@ -30,6 +30,9 @@ public class LearningPlanEntity extends MetaEntity
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private  Set<LearningPlanAttributeEntity> attributes;
 
+    @Column(name="SHARED")
+    private Boolean shared;
+
     public LearningPlanEntity() {
         super();
     }
@@ -68,6 +71,14 @@ public class LearningPlanEntity extends MetaEntity
         this.learningPlanType = learningPlanType;
     }
 
+    public Boolean getShared() {
+        return shared;
+    }
+
+    public void setShared(Boolean shared) {
+        this.shared = shared;
+    }
+
     @Override
     public String toString() {
         return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
@@ -83,6 +94,7 @@ public class LearningPlanEntity extends MetaEntity
         dto.setId(getId());
         dto.setStudentId(this.studentId);
         dto.setTypeKey(this.getLearningPlanType().getId());
+        dto.setShared(this.shared);
 
         dto.setMeta(super.toDTO());
 

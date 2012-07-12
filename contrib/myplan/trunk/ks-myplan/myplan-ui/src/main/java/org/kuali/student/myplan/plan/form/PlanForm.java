@@ -53,6 +53,11 @@ public class PlanForm extends UifFormBase {
     private String planItemId;
 
     private String courseId;
+
+    //Flag Used for student to hide or un hide
+    // plan view to adviser
+    private String enableAdviserView;
+
     private CourseDetails courseDetails;
 
     //  Form fields.
@@ -208,6 +213,14 @@ public class PlanForm extends UifFormBase {
 
     public void setShowOther(boolean showOther) {
         this.showOther = showOther;
+    }
+
+    public String getEnableAdviserView() {
+        return enableAdviserView;
+    }
+
+    public void setEnableAdviserView(String enableAdviserView) {
+        this.enableAdviserView = enableAdviserView;
     }
 
     /**

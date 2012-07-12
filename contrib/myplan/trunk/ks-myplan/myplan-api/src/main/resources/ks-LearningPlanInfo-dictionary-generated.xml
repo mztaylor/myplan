@@ -60,6 +60,7 @@ LearningPlan message structure
 				<ref bean="LearningPlanInfo.id"/>
 				<ref bean="LearningPlanInfo.typeKey"/>
 				<ref bean="LearningPlanInfo.stateKey"/>
+                <ref bean="LearningPlanInfo.shared"/>
 			</list>
 		</property>
 
@@ -92,6 +93,10 @@ Plan's associated student id
 		</property>
 		<property name="required" value="false"/>
 	</bean>
+
+    <bean id="LearningPlanInfo.shared-generated" abstract="true" parent="BaseKuali.boolean">
+        <property name="name" value="shared"/>
+    </bean>
 
 	<bean id="LearningPlanInfo.id-generated" abstract="true" parent="BaseKuali.id">
 		<property name="name" value="id"/>
