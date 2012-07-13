@@ -276,6 +276,10 @@
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('messages_widget','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+            jQuery('#messages_widget')
+                .subscribe('MESSAGE_SENT', function(){
+                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+                });
         "/>
     </bean>
 
