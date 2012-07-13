@@ -44,7 +44,7 @@
           <span id="adviser_banner_name">
               <center>
                   <font size="2">You are viewing <b><%= UserSessionHelper.getStudentName() %>.</b>'s MyPlan: functionalities are limited except <u><b><a href="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"><font color="black">leaving
-              a message</font></a></b></u> to <b><%= UserSessionHelper.getStudentName() %>. </b><u><a href="#"><font color="gray">Learn more about Advisor View</font>
+              a message</font></a></b></u> to <b><%= UserSessionHelper.getStudentName() %>. </b><u><a href="#"><font color="gray">Learn more about Adviser View</font>
               </a></u></font>
               </center>
           </span>
