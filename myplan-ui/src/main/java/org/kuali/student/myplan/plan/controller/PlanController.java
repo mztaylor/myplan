@@ -138,8 +138,6 @@ public class PlanController extends UifControllerBase {
                 planForm.setBookmarkedCount(planItems.size());
             }
 
-        } else {
-            planForm.setEnableAdviserView(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY);
         }
         return getUIFModelAndView(planForm);
     }
@@ -782,7 +780,10 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=academicPlanner")
     public ModelAndView academicPlanner(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
+        if(!UserSessionHelper.isAdviser()){
+            String[] params = {};
+            return doErrorPage(form, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params);
+        }
         List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
         try {
             String studentId = getUserId();

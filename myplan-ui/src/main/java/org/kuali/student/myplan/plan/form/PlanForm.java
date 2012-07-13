@@ -56,7 +56,7 @@ public class PlanForm extends UifFormBase {
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
-    private String enableAdviserView;
+    private String enableAdviserView=PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
 
     private CourseDetails courseDetails;
 
