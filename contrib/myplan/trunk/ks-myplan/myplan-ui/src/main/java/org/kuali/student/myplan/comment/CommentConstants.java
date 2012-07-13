@@ -17,6 +17,12 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String SUCCESS_KEY_COMMENT_ADDED = "myplan.text.success.comment.commentAdded";
 
     public static final String MESSAGE_RESPONSE_PAGE="message_dialog_response_page";
+    public static final String COMMENT_RESPONSE_PAGE="comment_dialog_response_page";
     public static final String ADVISER_ACCESS_ERROR="Only Adviser's can access!!";
+
+    public static final String EMPTY_MESSAGE="Subject or Message Missing";
+    public static final String EMPTY_COMMENT="Comment is Required";
+
+
 
 }

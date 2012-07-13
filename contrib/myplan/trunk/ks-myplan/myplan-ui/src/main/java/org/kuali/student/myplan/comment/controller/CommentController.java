@@ -16,6 +16,7 @@
 package org.kuali.student.myplan.comment.controller;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -97,6 +98,10 @@ public class CommentController extends UifControllerBase {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
+        if(StringUtils.isEmpty(form.getCommentBody())){
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params,CommentConstants.COMMENT_RESPONSE_PAGE);
+        }
         /*If not a Adviser or if the user accessing is not the owner of the message*/
         /*if (!UserSessionHelper.isAdviser() || !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
             String[] params = {};
@@ -112,8 +117,8 @@ public class CommentController extends UifControllerBase {
         body.setPlain(form.getCommentBody());
         body.setFormatted(form.getCommentBody());
         ci.setCommentText(body);
-        ci.setReferenceId(commentInfo.getId());
-        ci.setReferenceTypeKey(CommentConstants.COMMENT_REF_TYPE);
+        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME,principleId);
+
 
         try {
             getCommentService().addComment(commentInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
@@ -127,11 +132,17 @@ public class CommentController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addMessage")
     public ModelAndView addMessage(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-       /* if (!UserSessionHelper.isAdviser() || !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())) {
-            String[] params = {};
-            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params);
-        }*/
 
+        /* Add this int the if condition to check if the user in session and the user for which the message is added are equal.
+         !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())*/
+        if (!UserSessionHelper.isAdviser() ) {
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
+        }
+        if(StringUtils.isEmpty(form.getBody()) || StringUtils.isEmpty(form.getSubject())){
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
+        }
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
 
@@ -146,11 +157,10 @@ public class CommentController extends UifControllerBase {
         body.setPlain(form.getBody());
         body.setFormatted(form.getBody());
         ci.setCommentText(body);
-        ci.setReferenceId(principleId);
-        ci.setReferenceTypeKey(CommentConstants.MESSAGE_REF_TYPE);
+        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME,principleId);
 
         try {
-            getCommentService().addComment(UserSessionHelper.getStudentId(), CommentConstants.MESSAGE_REF_TYPE, ci);
+            getCommentService().addComment(principleId, CommentConstants.MESSAGE_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,10 +175,10 @@ public class CommentController extends UifControllerBase {
     /**
      * Initializes the error page.
      */
-    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params) {
+    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params,String page) {
         GlobalVariables.getMessageMap().clearErrorMessages();
         GlobalVariables.getMessageMap().putErrorForSectionId(CommentConstants.MESSAGE_RESPONSE_PAGE, errorKey, params);
-        return getUIFModelAndView(form, CommentConstants.MESSAGE_RESPONSE_PAGE);
+        return getUIFModelAndView(form, page);
     }
 
 
