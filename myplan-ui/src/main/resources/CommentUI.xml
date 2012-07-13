@@ -417,13 +417,26 @@
                         </property>
                         <property name="items">
                             <list>
-                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
-                                    <property name="clientSideJs"
-                                              value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
-                                    <property name="cssClasses">
-                                        <list merge="true">
-                                            <value>myplan-button</value>
-                                            <value>myplan-button-blue</value>
+                                <bean parent="Uif-Message" p:messageText=""/>
+                            </list>
+                        </property>
+                        <property name="propertyReplacers">
+                            <list>
+                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                    <property name="replacement">
+                                        <list>
+                                            <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
+                                                <property name="clientSideJs"
+                                                          value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
+                                                <property name="cssClasses">
+                                                    <list merge="true">
+                                                        <value>myplan-button</value>
+                                                        <value>myplan-button-blue</value>
+                                                    </list>
+                                                </property>
+                                            </bean>
+
                                         </list>
                                     </property>
                                 </bean>
