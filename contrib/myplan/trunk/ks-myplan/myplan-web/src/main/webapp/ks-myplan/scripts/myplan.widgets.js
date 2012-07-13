@@ -612,3 +612,45 @@ function myplanCreateLightBoxLink(controlId, options) {
         }
     });
 }
+
+
+(function($) {
+
+	$.fn.characterCount = function(options) {
+
+		var oDefaults = {
+			maxLength: 100,
+			warningLength: 20,
+			classCounter: 'counter',
+			classWarning: 'warning'
+		};
+
+		var options = $.extend(oDefaults, options);
+
+        function calculate(obj, options) {
+			var iCount = $(obj).val().length;
+			var iAvailable = options.maxLength - iCount;
+            var sValue = $(obj).val();
+            if (iCount > options.maxLength) {
+                $(obj).val( sValue.substr(0, options.maxLength) );
+            }
+            if (iAvailable <= options.warningLength && iAvailable >= 0) {
+				$('.' + options.classCounter).addClass(options.classWarning);
+			} else {
+				$('.' + options.classCounter).removeClass(options.classWarning);
+			}
+			$('.' + options.classCounter).html( '<strong>' + $(obj).val().length + '</strong> / ' + options.maxLength + ' characters' );
+		};
+
+		this.each(function() {
+			calculate(this, options);
+			$(this).keyup(function(){
+                calculate(this, options);
+            });
+			$(this).change(function(){
+                calculate(this, options);
+            });
+		});
+	};
+
+})(jQuery);

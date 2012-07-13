@@ -6,6 +6,9 @@
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
 }
+strong {
+    font-weight: bold;
+}
 pre {
     overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
     white-space: pre-wrap; /* css-3 */
@@ -772,6 +775,62 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     top: 0px !important;
 }
 /* Messaging and Comments ################################################################################### */
+.myplan-messages-detail .dataTables_wrapper {
+	width: 710px;
+	float: none;
+}
+.myplan-messages-detail .dataTables_wrapper table {
+    border: solid 1px #a9a9a9;
+    border-bottom: none;
+    margin: 0;
+    clear: both;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr {
+	background: #d6d6d6;
+	border: none;
+    border-bottom: solid 1px #a9a9a9;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th {
+    border: none;
+    background-image: none;
+    font-size: 0.9em;
+    height: 18px;
+    line-height: 18px;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper {
+    display: inline;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon {
+    float: right;
+    width: 19px;
+    height: 19px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-carat-2-n-s {
+    background-image: url('../images/sortBoth.png');
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-n {
+    background-image: url('../images/sortAsc.png');
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-s {
+    background-image: url('../images/sortDesc.png');
+}
+.myplan-messages-detail .dataTables_wrapper table tbody tr {
+    border-bottom: dotted 1px #a9a9a9;
+    cursor: pointer;
+}
+.myplan-messages-detail .dataTables_wrapper table tbody tr:first-child {
+    border: none;
+}
+.myplan-messages-detail .dataTables_wrapper table tbody tr:hover {
+    background-color: #ddd;
+}
+.myplan-messages-detail .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
+    line-height: normal;
+    height: auto;
+}
 .myplan-messages-lightbox h6 {
     font-weight: bold;
     text-transform: none;
@@ -784,7 +843,32 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     padding:  20px;
     margin: 0 0 20px 0;
 }
-
+.myplan-messages-lightbox .myplan-comments-list ul {
+    max-height: 200px;
+    overflow: auto;
+}
+.myplan-messages-comments {
+    margin: 0 0 20px 0;
+}
+.myplan-messages-comments .myplan-messages-comments-body {
+    border: solid 1px #ececec;
+    background: #f3f3f3;
+    margin: 0;
+    padding: 10px;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    overflow: hidden;
+}
+.myplan-comment-bubble {
+    background: url('../images/bkgrdCommentBubble.png') no-repeat;
+    width: 25px;
+    height: 22px;
+    line-height: 19px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 90%;
+}
 /* Planned Courses ################################################################################### */
 .myplan-plan-heading > .uif-boxLayout {
     margin: auto;
