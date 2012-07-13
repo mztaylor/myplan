@@ -30,6 +30,7 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        Collections.reverse(messages);
         return messages;
     }
 
