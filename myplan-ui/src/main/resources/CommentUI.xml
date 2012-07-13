@@ -366,7 +366,10 @@
                 </bean>
 
                 <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green"
-                      p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}"/>
+                      p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
+                    <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT');"/>
+                </bean>
+
             </list>
         </property>
     </bean>
@@ -719,7 +722,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="from" p:fieldLabel.render="false">
+                            <bean parent="Uif-DataField" p:propertyName="from" p:label="from" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>

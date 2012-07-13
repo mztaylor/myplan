@@ -818,7 +818,7 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     background-image: url('../images/sortDesc.png');
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr {
-    border-bottom: dotted 1px #a9a9a9;
+    border-top: dotted 1px #a9a9a9;
     cursor: pointer;
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr:first-child {
@@ -916,12 +916,9 @@ label.scheduled {
     width: auto !important;
     background: transparent !important;
 }
-/* Hide messaging globally */
-#errorsFieldForPage_div {
-    display: none;
-}
-.jquerybubblepopup #errorsFieldForPage_div {
-    display: block;
+/* Fix overlay ########################################################################### */
+body div.blockElement {
+    z-index: 1001 !important;
 }
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
