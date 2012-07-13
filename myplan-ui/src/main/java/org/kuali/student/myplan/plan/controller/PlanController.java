@@ -782,9 +782,9 @@ public class PlanController extends UifControllerBase {
                 rti.setFormatted("");
                 rti.setPlain("");
                 if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
-                    plan.get(0).setShared(true);
+                    planInfo.setShared(true);
                 } else {
-                    plan.get(0).setShared(false);
+                    planInfo.setShared(false);
                 }
                 planInfo.setDescr(rti);
                 planInfo.setStudentId(studentId);
