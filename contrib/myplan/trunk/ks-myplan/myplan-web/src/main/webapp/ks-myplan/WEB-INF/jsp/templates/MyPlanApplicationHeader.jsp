@@ -23,9 +23,11 @@
         </div>
         <div id="applicationUser">
 
-
+            <% if (!UserSessionHelper.isAdviser()) { %>
             <div class="name"><a href="plan?methodToCall=startAcademicPlannerForm&viewId=StudentAcademicPlanner-FormView&pageId=student_academic_planner_page">
-                Welcome, ${UserSession.person.firstName}</a></div>
+                Welcome, ${UserSession.person.firstName}</a></div> <% } %>
+            <% if (UserSessionHelper.isAdviser()) { %>
+            <span>Welcome, ${UserSession.person.firstName}</span><% } %>
         </div>
     </div>
 
@@ -41,9 +43,8 @@
     <div id="adviser_banner" class="fl-container-945 myplan-section " style="background: #ccc; height:25px;">
           <span id="adviser_banner_name">
               <center>
-                  <font size="2">You are viewing
-                      <b><%= UserSessionHelper.getStudentName() %>.</b>'s MyPlan: functionalities are limited except <u><b><a href="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"><font color="black">leaving
-                a message</font></a></b></u> to <b><%= UserSessionHelper.getStudentName() %>. </b><u><a href="#"><font color="gray">Learn more about Advisor View</font>
+                  <font size="2">You are viewing <b><%= UserSessionHelper.getStudentName() %>.</b>'s MyPlan: functionalities are limited except <u><b><a href="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page"><font color="black">leaving
+              a message</font></a></b></u> to <b><%= UserSessionHelper.getStudentName() %>. </b><u><a href="#"><font color="gray">Learn more about Advisor View</font>
               </a></u></font>
               </center>
           </span>
