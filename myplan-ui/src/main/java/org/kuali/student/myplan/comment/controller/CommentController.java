@@ -126,6 +126,7 @@ public class CommentController extends UifControllerBase {
             e.printStackTrace();
         }
         form.setCommentBody(null);
+        form.setFeedBackMode(true);
         return start(form, result, httprequest, httpresponse);
     }
 
