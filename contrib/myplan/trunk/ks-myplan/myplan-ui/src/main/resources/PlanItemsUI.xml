@@ -466,7 +466,7 @@
                                         <bean parent="Uif-Message"
                                               p:messageText="Save courses before moving to Plan to sleep on"/>
                                         <bean parent="Uif-Message"
-                                              p:messageText="Share your list with friends &amp; advisors"/>
+                                              p:messageText="Share your list with friends &amp; advisers"/>
                                     </list>
                                 </property>
                             </bean>
@@ -2381,11 +2381,11 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Link" p:linkText="Messages">
+                                        <bean parent="Uif-Link" p:linkText="Messages (@{messagesCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
                                         </bean>
-                                        <bean parent="Uif-Link" p:linkText="Bookmarked Courses">
+                                        <bean parent="Uif-Link" p:linkText="Bookmarked Courses (@{bookmarkedCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                                         </bean>

@@ -84,13 +84,35 @@ public class PlanForm extends UifFormBase {
     /*Flag used for populating the exact menu items for a course in past,present, future terms */
     private boolean setToPlanning=false;
 
+    private int messagesCount=0;
+
+    private int bookmarkedCount=0;
+
+    public int getBookmarkedCount() {
+        return bookmarkedCount;
+    }
+
+    public void setBookmarkedCount(int bookmarkedCount) {
+        this.bookmarkedCount = bookmarkedCount;
+    }
+
+    public int getMessagesCount() {
+        return messagesCount;
+    }
+
+    public void setMessagesCount(int messagesCount) {
+        this.messagesCount = messagesCount;
+    }
+
     public boolean isSetToPlanning() {
         return setToPlanning;
     }
 
     public void setSetToPlanning(boolean setToPlanning) {
         this.setToPlanning = setToPlanning;
-    }
+    }                  
+    
+    
 
 
     /**

@@ -32,6 +32,8 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
+import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
@@ -108,12 +110,32 @@ public class PlanController extends UifControllerBase {
         } catch (Exception e) {
             return doOperationFailedError(planForm, "Query for learning plan failed.", e);
         }
+        List<MessageDataObject> messages = null;
+        try {
+            CommentQueryHelper commentQueryHelper = new CommentQueryHelper();
+            messages = commentQueryHelper.getMessages(getUserId());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve messages.", e);
+        }
+        if (messages != null && messages.size() > 0) {
+            planForm.setMessagesCount(messages.size());
+        }
         if (plan != null && plan.size() > 0) {
             if (plan.get(0).getShared()) {
                 planForm.setEnableAdviserView(plan.get(0).getShared().toString());
             } else {
                 planForm.setEnableAdviserView(plan.get(0).getShared().toString());
 
+            }
+            List<PlanItemInfo> planItems = null;
+            PlanItem item = null;
+            try {
+                planItems = getAcademicPlanService().getPlanItemsInPlanByType(plan.get(0).getId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not retrieve plan items.", e);
+            }
+            if (planItems != null && planItems.size() > 0) {
+                planForm.setBookmarkedCount(planItems.size());
             }
 
         } else {
