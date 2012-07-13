@@ -311,23 +311,48 @@
     </bean>
 
     <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
-          p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
+           p:style="margin-bottom: 10px;">
         <!--<property name="header">-->
             <!--<bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>-->
         <!--</property>-->
         <property name="header">
-            <bean id="messsage_header" parent="Uif-ViewHeader">
+            <bean id="messsage_header" parent="Uif-ViewHeader" p:style="background: #ccc;">
                 <property name="items">
-                    <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message">
-                        <property name="clientSideJs"
-                                  value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>myplan-button</value>
-                                <value>myplan-button-blue</value>
+                    <bean parent="Uif-HorizontalFieldGroup">
+                        <property name="items">
+                            <list>
+                                <bean parent="Uif-Message" p:cssClasses="fl-font-size-120"
+                                      p:messageText="MESSAGES(@{searchResults.size()}) "/>
+                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message">
+                                    <property name="clientSideJs"
+                                              value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
+                                    <property name="cssClasses">
+                                        <list merge="true">
+                                            <value>fl-text-align-right</value>
+                                            <value>myplan-button</value>
+                                            <value>myplan-button-blue</value>
+                                        </list>
+                                    </property>
+                                </bean>
                             </list>
                         </property>
                     </bean>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </property>
             </bean>
         </property>
