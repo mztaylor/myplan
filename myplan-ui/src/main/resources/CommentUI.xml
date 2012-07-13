@@ -34,8 +34,14 @@
             <list>
                 <bean parent="Uif-Page" p:id="message_dialog_response_page"
                       p:headerText="Leave a Message to @{studentName}.">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-messages-lightbox</value>
+                            <value>fl-container-650</value>
+                        </list>
+                    </property>
                     <property name="header">
-                        <bean parent="Uif-HeaderFour"/>
+                        <bean parent="Uif-HeaderSix" p:style="border-bottom:solid 1px #a9a9a9; margin-bottom:20px; padding-bottom:10px;"/>
                     </property>
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
@@ -44,6 +50,7 @@
                         <list>
                             <ref bean="message_dialog_subject"/>
                             <ref bean="message_dialog_message"/>
+                            <ref bean="message_dialog_message_count"/>
                             <ref bean="message_actions"/>
                         </list>
                     </property>
@@ -68,18 +75,19 @@
                             <ref bean="comment_dialog_subject"/>
                             <ref bean="comment_dialog_comments_list"/>
                             <ref bean="comment_dialog_message"/>
+                            <ref bean="comment_dialog_message_count"/>
                             <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Post a Comment" p:methodToCall="addComment">
+                                  p:actionLabel="Post a Comment" p:methodToCall="addComment" p:style="margin:0 0 0 100px;">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-button</value>
-                                        <value>myplan-button-blue</value>
+                                        <value>myplan-button-gray</value>
                                         <value>fl-font-size-90</value>
                                     </list>
                                 </property>
                             </bean>
                             <bean id="hidden_messageId" parent="Uif-InputField" p:propertyName="messageId"
-                                  p:defaultValue="@{messageId}">
+                                  p:defaultValue="@{messageId}" p:style="margin:0;">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
@@ -131,7 +139,7 @@
                     </list>
                 </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="body"/>
+                <bean parent="Uif-DataField" p:propertyName="body" p:style="margin:0;"/>
             </list>
         </property>
     </bean>
@@ -148,37 +156,62 @@
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-stacked-list</value>
+                <value>myplan-comments-list</value>
+            </list>
+        </property>
+        <property name="onDocumentReadyScript" value="if ( jQuery('.myplan-comments-list ul')[0].scrollHeight > jQuery('.myplan-comments-list ul').height() ) {
+            jQuery('.myplan-comments-list ul').scrollTop(jQuery('.myplan-comments-list ul')[0].scrollHeight);
+        }"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" >
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-messages-comments</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup">
+                            <bean parent="Uif-VerticalFieldGroup" p:style="margin:0;">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-container-100</value>
+                                    </list>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="@{#line.from}">
-                                            <property name="style" value="margin-right:0.4em;"/>
+                                        <bean parent="Uif-DataField" p:propertyName="from">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>fl-text-bold</value>
                                                     <value>fl-text-gray</value>
+                                                    <value>fl-font-size-110</value>
                                                 </list>
                                             </property>
                                         </bean>
-
-                                        <bean parent="Uif-DataField" p:propertyName="createDate">
-                                            <property name="style" value="margin-right:0.4em;"/>
+                                        <bean parent="Uif-DataField" p:propertyName="createDate" p:style="margin:0;">
                                             <property name="propertyEditor" ref="timestamp_formatter"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>fl-text-gray</value>
+                                                    <value>fl-font-size-90</value>
                                                 </list>
                                             </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="@{#line.body}"/>
+                            <bean parent="Uif-DataField" p:propertyName="body">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-messages-comments-body</value>
+                                        <value>fl-container-500</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -191,15 +224,60 @@
         <property name="items">
             <list>
 
-                <bean parent="Uif-Message" p:messageText="@{studentName}."/>
-
-                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody"  p:required="true"
-                      p:fieldLabel.renderColon="false">
-                    <property name="control">
-                        <bean parent="Uif-TextAreaControl" p:rows="4" p:cols="70" p:textExpand="false"
-                              p:watermarkText="Maximum characters are 500"/>
-
+                <bean parent="Uif-DataField" p:propertyName="studentName" p:style="margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-100</value>
+                            <value>fl-text-bold</value>
+                            <value>fl-text-gray</value>
+                            <value>fl-font-size-110</value>
+                        </list>
                     </property>
+                </bean>
+
+                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody" p:required="true"
+                      p:fieldLabel.render="false" p:style="margin:0;">
+                    <property name="control">
+                        <bean parent="Uif-TextAreaControl" p:rows="5" p:style="padding:10px;" p:textExpand="false"
+                              p:watermarkText="Write comment... (500 characters max)">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-container-500</value>
+                                    <value>myplan-textarea</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="comment_dialog_message_count" parent="Uif-HorizontalBoxSubSection" p:style="float:right;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="" p:style="margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-counter</value>
+                        </list>
+                    </property>
+                    <property name="onDocumentReadyScript" value="jQuery('.myplan-textarea').characterCount({maxLength:500,classCounter:'myplan-counter'});"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="message_dialog_message_count" parent="Uif-HorizontalBoxSubSection" p:style="float:right;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="" p:style="margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-counter</value>
+                        </list>
+                    </property>
+                    <property name="onDocumentReadyScript" value="jQuery('.myplan-textarea').characterCount({maxLength:1000,classCounter:'myplan-counter'});"/>
                 </bean>
             </list>
         </property>
@@ -209,16 +287,23 @@
     <bean id="message_dialog_subject" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField"
-                      p:cssClasses="fl-font-size-90">
-                    <property name="message">
-                        <bean parent="Uif-Message" p:messageText="Subject"/>
+                <bean parent="Uif-MessageField" p:messageText="Subject" p:style="margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-100</value>
+                        </list>
                     </property>
                 </bean>
                 <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject" p:required="true"
-                      p:fieldLabel.renderColon="false">
+                      p:fieldLabel.render="false">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:size="70" p:watermarkText="Maximum characters are 70"/>
+                        <bean parent="Uif-TextControl" p:maxLength="70" p:watermarkText="Maximum characters are 70">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-container-500</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                 </bean>
             </list>
@@ -228,17 +313,25 @@
     <bean id="message_dialog_message" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField"
-                      p:cssClasses="fl-font-size-90">
-                    <property name="message">
-                        <bean parent="Uif-Message" p:messageText="Message"/>
+                <bean parent="Uif-MessageField" p:messageText="Message" p:style="margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-100</value>
+                        </list>
                     </property>
                 </bean>
                 <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body" p:required="true"
-                      p:fieldLabel.renderColon="false">
+                      p:fieldLabel.render="false">
                     <property name="control">
-                        <bean parent="Uif-TextAreaControl" p:rows="10" p:cols="70" p:textExpand="false"
-                              p:watermarkText="Maximum characters are 1000"/>
+                        <bean parent="Uif-TextAreaControl" p:rows="10" p:textExpand="false"
+                              p:watermarkText="Maximum characters are 1000">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>myplan-textarea</value>
+                                    <value>fl-container-500</value>
+                                </list>
+                            </property>
+                        </bean>
 
                     </property>
                 </bean>
@@ -250,19 +343,19 @@
     <bean id="message_actions" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton"
+                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton" p:style="margin:0 0 0 100px;"
                       p:actionLabel="Leave a Message" p:methodToCall="addMessage" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-button</value>
-                            <value>myplan-button-blue</value>
+                            <value>myplan-button-gray</value>
                             <value>fl-font-size-90</value>
                         </list>
                     </property>
                 </bean>
                 <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="clientSideJs"
-                              value="fnCloseAllPopups();" />
+                              value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-button</value>
@@ -312,23 +405,20 @@
 
     <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
            p:style="margin-bottom: 10px;">
-        <!--<property name="header">-->
-            <!--<bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>-->
-        <!--</property>-->
         <property name="header">
-            <bean id="messsage_header" parent="Uif-ViewHeader" p:style="background: #ccc;">
+            <bean id="messsage_header" parent="Uif-ViewHeader" p:style="padding:0;">
                 <property name="items">
-                    <bean parent="Uif-HorizontalFieldGroup">
+                    <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES" p:style="float:none;">
+                        <property name="header">
+                            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+                        </property>
                         <property name="items">
                             <list>
-                                <bean parent="Uif-Message" p:cssClasses="fl-font-size-120"
-                                      p:messageText="MESSAGES(@{searchResults.size()}) "/>
-                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message">
+                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
                                     <property name="clientSideJs"
                                               value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
                                     <property name="cssClasses">
                                         <list merge="true">
-                                            <value>fl-text-align-right</value>
                                             <value>myplan-button</value>
                                             <value>myplan-button-blue</value>
                                         </list>
@@ -337,22 +427,6 @@
                             </list>
                         </property>
                     </bean>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 </property>
             </bean>
         </property>
@@ -399,7 +473,7 @@
                                                     <bean parent="Uif-MessageField" p:messageText="@{#line.from}"
                                                           p:label="from"
                                                           p:fieldLabel.renderColon="false"
-                                                          p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray">
+                                                          p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:style="line-height:22px;">
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>fl-text-gray</value>
@@ -408,10 +482,10 @@
                                                     </bean>
                                                     <bean parent="Uif-MessageField"
                                                           p:messageText="@{#line.comments.size()}"
-                                                          p:render="@{#line.comments.size() gt 0}">
+                                                          p:render="@{#line.comments.size() gt 0}" p:style="margin-left:0.5em;">
                                                         <property name="cssClasses">
                                                             <list merge="true">
-                                                                <value>fl-text-bold</value>
+                                                                <value>myplan-comment-bubble</value>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -591,8 +665,7 @@
         </property>
     </bean>
 
-    <!--<bean id="messages_detail_list" parent="Uif-ListCollectionSection">-->
-    <bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="1">
+    <bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4">
         <property name="headerText" value="You have @{searchResults.size()} messages"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="propertyName" value="searchResults"/>
@@ -600,13 +673,59 @@
         <property name="renderLineActions" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
-
+        <property name="header.render" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="layoutManager.richTable.templateOptions">
+            <map merge="true">
+                <entry key="bJQueryUI" value="true"/>
+                <entry key="sDom" value="irtp"/>
+                <entry key="aaSorting" value="[[3,'desc']]"/>
+                <entry key="oLanguage"
+                       value="{
+                            'sEmptyTable':'You do not have any messages',
+                            'sZeroRecords':'You do not have any messages',
+                            'sInfo':'You have _TOTAL_ messages',
+                            'sInfoFiltered':''
+                       }"/>
+                <entry key="aoColumns"
+                       value="[
+                            {'sTitle':'Subject','bSortable':true,'sWidth':'35%'},
+                            {'sTitle':'Received','bSortable':true,'sWidth':'25%'},
+                            {'sTitle':'Comments','bSortable':false,'sWidth':'15%'},
+                            {'sTitle':'Last Comment','bSortable':true,'sWidth':'25%'}
+                        ]"/>
+                <entry key="sPaginationType" value="full_numbers"/>
+                <entry key="fnDrawCallback"
+                       value="function() {
+                            if ( Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength ) > 1)  {
+                                jq('.dataTables_paginate .ui-button').not('.first, .last').show();
+                            } else {
+                                jq('.dataTables_paginate .ui-button').hide();
+                            }
+                       }"/>
+            </map>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="subject" p:label="Subject">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-bold</value>
+                <bean parent="Uif-VerticalFieldGroup" p:label="Subject">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="subject" p:fieldLabel.render="false">
+                                <property name="style" value="width:100%;"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-bold</value>
+                                        <value>myplan-text-ellipsis</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-DataField" p:propertyName="from" p:fieldLabel.render="false">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -620,10 +739,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments" p:label="Comments"
+                <bean parent="Uif-MessageField" p:messageText="&lt;strong&gt;@{#line.comments.size()}&lt;/strong&gt; comments" p:label="Comments"
                       p:render="true"/>
-
-                <!--<bean parent="Uif-MessageField" p:messageText="-" p:label="Last Comment" p:render="@{#line.comments.size() eq 0}"/>-->
 
                 <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
                     <property name="propertyEditor" ref="last_comment_formatter"/>
