@@ -780,7 +780,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=academicPlanner")
     public ModelAndView academicPlanner(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(!UserSessionHelper.isAdviser()){
+        if(UserSessionHelper.isAdviser()){
             String[] params = {};
             return doErrorPage(form, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params);
         }
