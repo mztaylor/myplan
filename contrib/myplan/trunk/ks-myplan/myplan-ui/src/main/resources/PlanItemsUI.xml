@@ -2418,6 +2418,18 @@
                                         </bean>
                                     </list>
                                 </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                            <property name="replacement">
+                                                <list>
+                                                    <bean parent="Uif-Message" p:messageText="Adviser Access Restricted"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
