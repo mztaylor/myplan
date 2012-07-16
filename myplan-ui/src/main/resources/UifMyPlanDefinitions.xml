@@ -279,6 +279,9 @@
             jQuery('#messages_widget')
                 .subscribe('MESSAGE_SENT', function(){
                     myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+                })
+                .subscribe('COMMENT_SENT', function(){
+                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
                 });
         "/>
     </bean>
@@ -296,11 +299,11 @@
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-            jq('#watch_list_div')
+            jQuery('#watch_list_div')
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     if (data.planItemType === 'wishlist') {
                         deleteIntervalId = setInterval(function(){
-                            if (!jq('.jquerybubblepopup.jquerybubblepopup-myplan').length) {
+                            if (!jQuery('.jquerybubblepopup.jquerybubblepopup-myplan').length) {
                                 myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
                                 clearInterval(deleteIntervalId);
                             }

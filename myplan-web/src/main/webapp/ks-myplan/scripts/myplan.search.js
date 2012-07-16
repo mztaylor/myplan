@@ -80,7 +80,7 @@ function terms(a, b){
 
 jQuery.fn.iterateSorted = function(sorter, print) {
     var keys = [];
-    jq.each(this[0], function(key) {
+    jQuery.each(this[0], function(key) {
         keys.push(key);
     });
     keys.sort(sorter);
@@ -114,7 +114,7 @@ jQuery.fn.iterateSorted = function(sorter, print) {
             var aTemp = aData[iColumn].replace(/(\[|\]|;)/gi,"").split(",").sort();
             if (!oFacets[iColumn]) oFacets[iColumn] = {};
             for (var n = 0; n < aTemp.length; n++) {
-                var sTemp = jq.trim( aTemp[n] );
+                var sTemp = jQuery.trim( aTemp[n] );
                 if (!oFacets[iColumn][sTemp]) oFacets[iColumn][sTemp] = {count: 0};
                 if (!oFacets[iColumn][sTemp].checked) oFacets[iColumn][sTemp].checked = false;
                 if (bIgnoreEmpty === true && aTemp[n].length === 0) {
@@ -129,16 +129,16 @@ jQuery.fn.iterateSorted = function(sorter, print) {
 }(jQuery));
 
 function searchForCourses(id, parentId) {
-    var results = jq("#" + parentId); // course_search_results_panel
+    var results = jQuery("#" + parentId); // course_search_results_panel
     results.fadeOut("fast");
-    var sQuery = jq("input[name='searchQuery']").val();
-    var sTerm = jq("select[name='searchTerm'] option:selected").val();
+    var sQuery = jQuery("input[name='searchQuery']").val();
+    var sTerm = jQuery("select[name='searchTerm'] option:selected").val();
     var aCampus = new Array();
-    jq.each( jq("input[name='campusSelect']:checked"), function() {
-        aCampus.push( jq(this).val() );
+    jQuery.each( jQuery("input[name='campusSelect']:checked"), function() {
+        aCampus.push( jQuery(this).val() );
     });
     oFacets = new Object();
-    oTable = jq("#" + id).dataTable({
+    oTable = jQuery("#" + id).dataTable({
         aLengthMenu: [20,50,100],
         aaSorting : [],
         aoColumns: [
@@ -165,23 +165,23 @@ function searchForCourses(id, parentId) {
         iDisplayLength: 20,
         fnDrawCallback: function() {
             if ( Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength ) > 1)  {
-                jq(".dataTables_paginate .ui-button").not(".first, .last").show();
+                jQuery(".dataTables_paginate .ui-button").not(".first, .last").show();
             } else {
-                jq(".dataTables_paginate .ui-button").hide();
+                jQuery(".dataTables_paginate .ui-button").hide();
             }
-            if ( this.fnSettings()._iDisplayStart != 0 && jq("#" + parentId).height() > jq(window).height() ) {
-                var targetOffset = jq("#" + parentId).offset().top;
-                jq('html,body').animate({scrollTop: targetOffset}, 250);
+            if ( this.fnSettings()._iDisplayStart != 0 && jQuery("#" + parentId).height() > jQuery(window).height() ) {
+                var targetOffset = jQuery("#" + parentId).offset().top;
+                jQuery('html,body').animate({scrollTop: targetOffset}, 250);
             }
         },
         fnInitComplete: function(oSettings, json) {
             oTable.fnDraw();
             results.fadeIn("fast");
             results.find("table#" + id).width(548);
-            jq(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
-                jq(this).empty();
+            jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
+                jQuery(this).empty();
             });
-            if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jq.publish("GENERATE_FACETS");
+            if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jQuery.publish("GENERATE_FACETS");
         },
         oLanguage: {
             "sEmptyTable":'<div class="myplan-course-search-empty"><p class="fl-font-size-130">We couldn&#39;t find anything matching your search.</p><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 2 characters</li></ul></div>',
@@ -208,15 +208,15 @@ function fnGenerateFacetGroup(iColumn, obj, sorter) {
 function fnCreateFacetList(oData, i, obj, sorter) {
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
     if(Object.size(oData) > 1) {
-        jFacets.append( jq('<div class="all"><ul /></div>') );
-        var jAll = jq('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
+        jFacets.append( jQuery('<div class="all"><ul /></div>') );
+        var jAll = jQuery('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
             fnFacetFilter('All', i, e);
         });
         jFacets.find(".all ul").append(jAll);
     }
-    jFacets.append( jq('<div class="facets"><ul /></div>') );
-    jq(oData).iterateSorted(sorter, function(key) {
-        var jItem = jq('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
+    jFacets.append( jQuery('<div class="facets"><ul /></div>') );
+    jQuery(oData).iterateSorted(sorter, function(key) {
+        var jItem = jQuery('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
             fnFacetFilter(key, i, e);
         });
         if(Object.size(oData) == 1) jItem.addClass("static");
@@ -230,12 +230,12 @@ function fnUpdateFacetList(n, i, obj) {
     }
     // Update the style (checked/not checked) on facet links and the count view
     obj.find("li").not(".all").each(function() {
-        if (oFacets[i][jq(this).find("a").text()].checked) {
-            jq(this).addClass("checked");
+        if (oFacets[i][jQuery(this).find("a").text()].checked) {
+            jQuery(this).addClass("checked");
         } else {
-            jq(this).removeClass("checked");
+            jQuery(this).removeClass("checked");
         }
-        jq(this).find("span").text("(" + oFacets[i][jq(this).find("a").text()].count + ")");
+        jQuery(this).find("span").text("(" + oFacets[i][jQuery(this).find("a").text()].count + ")");
     });
     // Update the style on the 'All' facet option (checked if none in the group are selected, not checked if any are selected)
     var bAll = true;
@@ -256,8 +256,8 @@ function fnUpdateFacetList(n, i, obj) {
 function fnFacetFilter(sFilter, i, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if ( !jq(target).is('.disabled') && !jq(target).is('.static') ) {
-        //var oCookie = eval('(' + unescape(jq.cookie('myplan_course_search_results_course')) + ')');
+    if ( !jQuery(target).is('.disabled') && !jQuery(target).is('.static') ) {
+        //var oCookie = eval('(' + unescape(jQuery.cookie('myplan_course_search_results_course')) + ')');
         if (sFilter === 'All') {
             // Set all facets within column to checked false
             for (var key in oFacets[i]) {
@@ -268,7 +268,7 @@ function fnFacetFilter(sFilter, i, e) {
             // Clear filter
             oTable.fnFilter('', i, true, false);
             //oCookie.aaSearchCols[i][0] = '';
-            jq.publish("UPDATE_FACETS", [-1]);
+            jQuery.publish("UPDATE_FACETS", [-1]);
         } else {
             // Update checked status of facet
             oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
@@ -284,7 +284,7 @@ function fnFacetFilter(sFilter, i, e) {
             // Filter results of facet selection
             oTable.fnFilter(aSelections.join("|"), i, true, false);
             //oCookie.aaSearchCols[i][0] = aSelections.join("|");
-            jq.publish("UPDATE_FACETS", [i]);
+            jQuery.publish("UPDATE_FACETS", [i]);
         }
     }
 }

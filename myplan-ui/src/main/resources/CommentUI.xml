@@ -87,10 +87,14 @@
                                 </property>
                             </bean>
                             <bean id="hidden_messageId" parent="Uif-InputField" p:propertyName="messageId"
-                                  p:defaultValue="@{messageId}" p:style="margin:0;">
+                                  p:defaultValue="@{messageId}" p:style="margin:0; display:none;">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:style="margin:0; display:none;"
+                                  p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
+                                <property name="onDocumentReadyScript" value="parent.jQuery.publish('COMMENT_SENT');"/>
                             </bean>
                         </list>
                     </property>
@@ -691,11 +695,16 @@
         <property name="layoutManager.renderSequenceField" value="false"/>
         <property name="header.render" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="onDocumentReadyScript" value="jQuery('#messages_detail_list')
+            .subscribe('COMMENT_SENT', function(){
+                myplanRetrieveComponent('messages_detail_list','messages_detail_list','search','lookup',{viewId:'MessagesDetail-LookupView'});
+            });
+        "/>
         <property name="layoutManager.richTable.templateOptions">
             <map merge="true">
                 <entry key="bJQueryUI" value="true"/>
                 <entry key="sDom" value="irtp"/>
-                <entry key="aaSorting" value="[[3,'desc']]"/>
+                <entry key="aaSorting" value="[]"/>
                 <entry key="oLanguage"
                        value="{
                             'sEmptyTable':'You do not have any messages',
@@ -706,9 +715,9 @@
                 <entry key="aoColumns"
                        value="[
                             {'sTitle':'Subject','bSortable':true,'sWidth':'35%'},
-                            {'sTitle':'Received','bSortable':true,'sWidth':'25%'},
+                            {'sTitle':'Received','bSortable':true,'sWidth':'25%','sType':'longdate'},
                             {'sTitle':'Comments','bSortable':false,'sWidth':'15%'},
-                            {'sTitle':'Last Comment','bSortable':true,'sWidth':'25%'}
+                            {'sTitle':'Last Comment','bSortable':true,'sWidth':'25%','sType':'longdate'}
                         ]"/>
                 <entry key="sPaginationType" value="full_numbers"/>
                 <entry key="fnDrawCallback"
@@ -723,7 +732,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalFieldGroup" p:label="Subject">
+                <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject">
+                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_subject', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="subject" p:fieldLabel.render="false">
@@ -735,7 +745,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="from" p:label="from" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false">
+                            <bean parent="Uif-DataField" p:propertyName="from" p:label="from" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false"
+                                  p:style="margin:0;">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-gray</value>
@@ -746,27 +757,59 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField" p:propertyName="createDate" p:label="Received">
-                    <property name="propertyEditor" ref="timestamp_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-gray</value>
+                <bean p:id="@{#line.messageId}_received" parent="Uif-VerticalFieldGroup" p:label="Received">
+                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_received', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="createDate" p:fieldLabel.render="false">
+                                <property name="propertyEditor" ref="timestamp_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-SpaceField" p:style="margin:0;"/> <!--<bean parent="Uif-MessageField" p:messageText="Received"/>-->
                         </list>
                     </property>
                 </bean>
 
-                <bean parent="Uif-MessageField" p:messageText="&lt;strong&gt;@{#line.comments.size()}&lt;/strong&gt; comments" p:label="Comments"
-                      p:render="true"/>
-
-                <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:label="Last Comment">
-                    <property name="propertyEditor" ref="last_comment_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-gray</value>
+                <bean p:id="@{#line.messageId}_comments" parent="Uif-VerticalFieldGroup" p:label="Comments">
+                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_comments', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="&lt;strong&gt;@{#line.comments.size()}&lt;/strong&gt; comments" p:fieldLabel.render="false"
+                                  p:render="true"/>
+                            <bean parent="Uif-SpaceField" p:style="margin:0;"/> <!--<bean parent="Uif-MessageField" p:messageText="Comments"/>-->
                         </list>
                     </property>
                 </bean>
 
+                <bean p:id="@{#line.messageId}_lastcomment" parent="Uif-VerticalFieldGroup" p:label="Last Comment">
+                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_lastcomment', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:fieldLabel.render="false">
+                                <property name="propertyEditor" ref="last_comment_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-DataField" p:propertyName="lastCommentBy" p:label="by" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false"
+                                  p:style="margin:0;">
+                                <property name="render" value="@{#line.lastCommentBy eq null ? false : true}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>myplan-sort-remove</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
