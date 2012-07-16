@@ -432,7 +432,17 @@
                                         <list>
                                             <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
                                                 <property name="clientSideJs"
-                                                          value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page'});"/>
+                                                          value="myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});"/>
+                                                <!--<property name="onDocumentReadyScript" value="
+                                                    event.preventDefault();
+                                                    writeHiddenToForm('actionParameters[showHistory]','false');
+                                                    writeHiddenToForm('actionParameters[showHome]','false');
+                                                    writeHiddenToForm('showHistory','false');
+                                                    writeHiddenToForm('showHome','false');
+                                                    writeHiddenToForm('focusId','leave_message_button');
+                                                    writeHiddenToForm('jumpToId','leave_message_button');
+                                                    myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
+                                                "/>-->
                                                 <property name="cssClasses">
                                                     <list merge="true">
                                                         <value>myplan-button</value>
