@@ -22,6 +22,7 @@ import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.mail.*;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -94,11 +95,11 @@ public class CommentController extends UifControllerBase {
 
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
-        CommentInfo commentInfo = null;
+        CommentInfo messageInfo = null;
 
         //  Look up the message
         try {
-            commentInfo = getCommentService().getComment(form.getMessageId());
+            messageInfo = getCommentService().getComment(form.getMessageId());
         } catch (Exception e) {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
@@ -125,7 +126,7 @@ public class CommentController extends UifControllerBase {
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
         try {
-            getCommentService().addComment(commentInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
+            getCommentService().addComment(messageInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -148,7 +149,7 @@ public class CommentController extends UifControllerBase {
             toName = UserSessionHelper.getStudentName();
         } else {
             //  Get the created by user Id from the message.
-            toId = commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
+            toId = messageInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
             toName = UserSessionHelper.getName(toId);
         }
 
@@ -157,7 +158,7 @@ public class CommentController extends UifControllerBase {
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a comment", fromName);
         String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a comment to message [%s].",
-            toName, fromName, commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
+                toName, fromName, messageInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
@@ -204,8 +205,12 @@ public class CommentController extends UifControllerBase {
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
+
+        String studentPrincipleId = UserSessionHelper.getStudentId();
+
+
         try {
-            getCommentService().addComment(principleId, CommentConstants.MESSAGE_REF_TYPE, ci);
+            getCommentService().addComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, ci);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -215,7 +220,6 @@ public class CommentController extends UifControllerBase {
          * Create an email notification. Messages are only initiated by an adviser.
          * The from address should always be the system default.
          */
-        String studentPrincipleId = UserSessionHelper.getStudentId();
         String studentName = UserSessionHelper.getStudentName();
         String adviserName = UserSessionHelper.getName(principleId);
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
