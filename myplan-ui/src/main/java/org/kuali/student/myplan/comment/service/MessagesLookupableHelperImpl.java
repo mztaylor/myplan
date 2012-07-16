@@ -30,14 +30,28 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        Collections.reverse(messages);
+
+        Collections.sort(messages, new Comparator<MessageDataObject>() {
+            @Override
+            public int compare(MessageDataObject message1, MessageDataObject message2) {
+                Date d1 = message1.getLastCommentDate();
+                Date d2 = message2.getLastCommentDate();
+                if (message1.getLastCommentDate() == null) {
+                    d1 = message1.getCreateDate();
+                }
+                if (message2.getLastCommentDate() == null) {
+                    d2 = message2.getCreateDate();
+                }
+                return d2.compareTo(d1);
+            }
+        });
         return messages;
     }
 
     public CommentService getCommentService() {
         if (commentService == null) {
             commentService = (CommentService)
-                GlobalResourceLoader.getService(new QName(CommentServiceConstants.NAMESPACE, "CommentService"));
+                    GlobalResourceLoader.getService(new QName(CommentServiceConstants.NAMESPACE, "CommentService"));
         }
         return commentService;
     }
