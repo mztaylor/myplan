@@ -1071,6 +1071,14 @@
                         </list>
                     </property>
                 </bean>
+                <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="Create your plan by finding and adding courses to any quarter."/>
+                            <bean parent="Uif-LinkField" p:linkText="Learn more" p:href="#"/>
+                        </list>
+                    </property>
+                </bean>
                 <ref bean="planned_courses_detail_list"/>
             </list>
         </property>
