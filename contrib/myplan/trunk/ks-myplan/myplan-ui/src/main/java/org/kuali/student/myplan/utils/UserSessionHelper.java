@@ -1,13 +1,19 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.kim.api.identity.IdentityService;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.identity.email.EntityEmail;
+import org.kuali.rice.kim.api.identity.entity.Entity;
+import org.kuali.rice.kim.api.identity.type.EntityTypeContactInfo;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
+
+import java.util.List;
 
 /**
  * Provides an initialized Context which can be used for service requests.
@@ -16,13 +22,25 @@ public class UserSessionHelper {
 
     private static final Logger logger = Logger.getLogger(UserSessionHelper.class);
 
+    private static transient IdentityService identityService;
     private static transient PersonService personService;
+
+     public synchronized static IdentityService getIdentityService() {
+        if (identityService == null) {
+            identityService = KimApiServiceLocator.getIdentityService();
+        }
+        return identityService;
+    }
 
     public synchronized static PersonService getPersonService() {
         if (personService == null) {
             personService = KimApiServiceLocator.getPersonService();
         }
         return personService;
+    }
+
+    public void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService;
     }
 
     public void setPersonService(PersonService personService) {
@@ -37,7 +55,7 @@ public class UserSessionHelper {
     }
 
     /**
-     * Returns true if the user has an adviser role. All sorts of conditional behavior depends on this method.
+     * Returns true if a user has authenticated as a adviser. All sorts of conditional behavior depends on this method.
      *
      * @return True if the user is an adviser. Otherwise, false.
      */
@@ -48,8 +66,7 @@ public class UserSessionHelper {
 
     /**
      * Determines the student id that should be used for queries. If the user has the
-     * adviser flag set in the session then there should also be a student id. Otherwise,
-     * just return the principal it.
+     * adviser flag set in the session then there should also be a student id. Otherwise, just return the principal it.
      *
      * @return The Id
      */
@@ -89,7 +106,7 @@ public class UserSessionHelper {
     }
 
     /**
-     * Get the name (first last) of a person given a principle ID.
+     * Queries the person service to get the name (first last) of a person given a principle ID.
      *
      * @param principleId
      * @return The name in first last format.
@@ -106,6 +123,25 @@ public class UserSessionHelper {
         } else {
             return null;
         }
+    }
+
+    public synchronized static String getMailAddress(String principleId) {
+        String emailAddress = null;
+        Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
+        List <EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
+        for (EntityTypeContactInfo ci : contactInfos) {
+            emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
+            /*for (EntityEmail e : ci.getEmailAddresses()) {
+                //  FIXME: Probably want to make this more deterministic.
+                if (e.getEmailType().getName().equals("Student")) {
+                    emailAddress = e.getEmailAddress();
+                }
+                if (e.getEmailType().getName().equals("Employee")) {
+                    emailAddress = e.getEmailAddress();
+                }
+            } */
+        }
+        return emailAddress;
     }
 
     public synchronized static String getAuditSystemKey() {

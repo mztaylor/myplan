@@ -17,17 +17,18 @@ package org.kuali.student.myplan.comment.controller;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
+import org.kuali.rice.core.api.CoreApiServiceLocator;
+import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.rice.core.api.mail.*;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.common.dto.MetaInfo;
 import org.kuali.student.common.dto.RichTextInfo;
 import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
-import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
@@ -52,6 +54,8 @@ public class CommentController extends UifControllerBase {
     private transient CommentService commentService;
 
     private transient CommentQueryHelper commentQueryHelper;
+
+    private transient Mailer mailer;
 
     @Override
     protected CommentForm createInitialForm(HttpServletRequest request) {
@@ -88,17 +92,18 @@ public class CommentController extends UifControllerBase {
     public ModelAndView addComment(@ModelAttribute("KualiForm") CommentForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo commentInfo = null;
+
+        //  Look up the message
         try {
             commentInfo = getCommentService().getComment(form.getMessageId());
         } catch (Exception e) {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
-        if(StringUtils.isEmpty(form.getCommentBody())){
+        if (StringUtils.isEmpty(form.getCommentBody())){
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params,CommentConstants.COMMENT_RESPONSE_PAGE);
         }
@@ -113,12 +118,11 @@ public class CommentController extends UifControllerBase {
         ci.setAttributes(attributes);
         ci.setType(CommentConstants.COMMENT_TYPE);
         ci.setState("ACTIVE");
-        RichTextInfo body = new RichTextInfo();
-        body.setPlain(form.getCommentBody());
-        body.setFormatted(form.getCommentBody());
-        ci.setCommentText(body);
-        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME,principleId);
-
+        RichTextInfo rtiBody = new RichTextInfo();
+        rtiBody.setPlain(form.getCommentBody());
+        rtiBody.setFormatted(form.getCommentBody());
+        ci.setCommentText(rtiBody);
+        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
         try {
             getCommentService().addComment(commentInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
@@ -127,6 +131,46 @@ public class CommentController extends UifControllerBase {
         }
         form.setCommentBody(null);
         form.setFeedBackMode(true);
+
+        /**
+         * Create an email notification. Comments can be from an adviser or a student.
+         * The from address should always be the system default.
+         * If user is an advisor then the "to" address should be the advised student. Otherwise, it
+         * should be the e-mail address of the adviser who initiated the message.
+         * (TODO: What if the student is commenting on a comment left by an adviser who didn't originate the thread)
+         */
+        String toId, toAddress, toName, fromId, fromAddress, fromName;
+
+        fromId = principleId;
+
+        if (UserSessionHelper.isAdviser()) {
+            toId = UserSessionHelper.getStudentId();
+            toName = UserSessionHelper.getStudentName();
+        } else {
+            //  Get the created by user Id from the message.
+            toId = commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
+            toName = UserSessionHelper.getName(toId);
+        }
+
+        fromName = UserSessionHelper.getName(fromId);
+        toAddress = UserSessionHelper.getMailAddress(toId);
+        fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
+        String subject = String.format("[MyPlan] %s left a comment", fromName);
+        String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a comment to message [%s].",
+            toName, fromName, commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
+
+        if (StringUtils.isNotEmpty(toAddress)) {
+            try {
+               sendMessage(fromAddress, toAddress, subject, body);
+            } catch (Exception e) {
+               logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
+               GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+            }
+        } else {
+            logger.error(String.format("No e-mail address found for [%s].", toName));
+            GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+        }
+
         return start(form, result, httprequest, httpresponse);
     }
 
@@ -154,11 +198,11 @@ public class CommentController extends UifControllerBase {
         ci.setAttributes(attributes);
         ci.setType(CommentConstants.MESSAGE_TYPE);
         ci.setState("ACTIVE");
-        RichTextInfo body = new RichTextInfo();
-        body.setPlain(form.getBody());
-        body.setFormatted(form.getBody());
-        ci.setCommentText(body);
-        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME,principleId);
+        RichTextInfo rtiBody = new RichTextInfo();
+        rtiBody.setPlain(form.getBody());
+        rtiBody.setFormatted(form.getBody());
+        ci.setCommentText(rtiBody);
+        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
         try {
             getCommentService().addComment(principleId, CommentConstants.MESSAGE_REF_TYPE, ci);
@@ -166,12 +210,33 @@ public class CommentController extends UifControllerBase {
             e.printStackTrace();
         }
         form.setFeedBackMode(true);
-        return start(form, result, httprequest, httpresponse);
-/*
-        return doSuccess(form, CommentConstants.SUCCESS_KEY_MESSAGE_ADDED, new String[0]);
-*/
-    }
 
+        /**
+         * Create an email notification. Messages are only initiated by an adviser.
+         * The from address should always be the system default.
+         */
+        String studentPrincipleId = UserSessionHelper.getStudentId();
+        String studentName = UserSessionHelper.getStudentName();
+        String adviserName = UserSessionHelper.getName(principleId);
+        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
+        String subject = String.format("[MyPlan] %s left a message for you", adviserName);
+        String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a message for you.", studentName, adviserName);
+
+        if (StringUtils.isNotEmpty(toAddress)) {
+            try {
+               sendMessage(fromAddress, toAddress, subject, body);
+            } catch (Exception e) {
+               logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
+               GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+            }
+        } else {
+            logger.error(String.format("No e-mail address found for [%s][%s].", studentName, studentPrincipleId));
+            GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+        }
+
+        return start(form, result, httprequest, httpresponse);
+    }
 
     /**
      * Initializes the error page.
@@ -182,17 +247,27 @@ public class CommentController extends UifControllerBase {
         return getUIFModelAndView(form, page);
     }
 
-
-    private ModelAndView doSuccess(CommentForm form, String messageKey, String[] params) {
-        GlobalVariables.getMessageMap().putInfoForSectionId("Page Id", messageKey, params);
-        return getUIFModelAndView(form, "Page Id");
-    }
-
     public CommentQueryHelper getCommentQueryHelper() {
         if (commentQueryHelper == null) {
             commentQueryHelper = new CommentQueryHelper();
         }
         return commentQueryHelper;
+    }
+
+    private void sendMessage(String fromAddress, String toAddress, String subjectText, String bodyText) throws MessagingException {
+        MailMessage mm = new MailMessage();
+        mm.addToAddress(toAddress);
+        mm.setFromAddress(fromAddress);
+        mm.setSubject(subjectText);
+        mm.setMessage(bodyText);
+        getMailer().sendEmail(mm);
+    }
+
+    private Mailer getMailer() {
+        if (mailer == null) {
+            mailer = CoreApiServiceLocator.getMailer();
+        }
+        return mailer;
     }
 
     public CommentService getCommentService() {
@@ -205,5 +280,13 @@ public class CommentController extends UifControllerBase {
 
     public void setCommentService(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    public CommentService getMailService() {
+        if (commentService == null) {
+            commentService = (CommentService)
+                    GlobalResourceLoader.getService(new QName(CommentConstants.NAMESPACE, CommentConstants.SERVICE_NAME));
+        }
+        return commentService;
     }
 }
