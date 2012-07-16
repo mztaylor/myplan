@@ -63,13 +63,15 @@ public class CommentQueryHelper {
         //  Determine the last update date for the message. If comments exist then use the most recent comment create date.
         //  Otherwise, use the message create date.
         Date lastCommentDate = null;
+        String lastCommentBy = null;
         for (CommentDataObject comment : comments) {
             Date d = comment.getCreateDate();
             if (lastCommentDate == null || d.after(lastCommentDate)) {
                 lastCommentDate = d;
+                lastCommentBy = comment.getFrom();
             }
         }
-
+        messageDataObject.setLastCommentBy(lastCommentBy);
         messageDataObject.setLastCommentDate(lastCommentDate);
         messageDataObject.setComments(comments);
         return messageDataObject;

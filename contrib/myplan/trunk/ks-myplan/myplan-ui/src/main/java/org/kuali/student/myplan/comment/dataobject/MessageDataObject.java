@@ -14,8 +14,18 @@ public class MessageDataObject extends CommentDataObject {
     private String subject;
 
     private Date lastCommentDate;
+    
+    private String lastCommentBy;
 
     private List<CommentDataObject> comments;
+
+    public String getLastCommentBy() {
+        return lastCommentBy;
+    }
+
+    public void setLastCommentBy(String lastCommentBy) {
+        this.lastCommentBy = lastCommentBy;
+    }
 
     public String getMessageId() {
         return messageId;
