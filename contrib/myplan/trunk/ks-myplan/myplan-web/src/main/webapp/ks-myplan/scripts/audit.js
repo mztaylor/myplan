@@ -1,40 +1,40 @@
 /*
-jq(document).ready(function(){
+jQuery(document).ready(function(){
     //var count = 0;
-    jq(".requirement .requirement-heading > div").each(function() {
-    	var status = jq(this).attr("class");
+    jQuery(".requirement .requirement-heading > div").each(function() {
+    	var status = jQuery(this).attr("class");
     	switch (status) {
     		case "C":
-                jq(this).parent(".requirement-heading").addClass("collapsed");
-                jq(this).parent(".requirement-heading").next(".requirement-body").hide();
+                jQuery(this).parent(".requirement-heading").addClass("collapsed");
+                jQuery(this).parent(".requirement-heading").next(".requirement-body").hide();
     			break;
     		default:
-    			jq(this).parent(".requirement-heading").addClass("expanded");
+    			jQuery(this).parent(".requirement-heading").addClass("expanded");
     	}
     });
-    jq(".requirement .requirement-heading").click(function(){
-        if ( jq(this).hasClass("expanded") ) {
-        		jq(this).removeClass("expanded").addClass("collapsed");
-        		jq(this).next(".requirement-body").slideUp("slow");
+    jQuery(".requirement .requirement-heading").click(function(){
+        if ( jQuery(this).hasClass("expanded") ) {
+        		jQuery(this).removeClass("expanded").addClass("collapsed");
+        		jQuery(this).next(".requirement-body").slideUp("slow");
 		} else {
-        		jq(this).removeClass("collapsed").addClass("expanded");
-        		jq(this).next(".requirement-body").slideDown("slow");
+        		jQuery(this).removeClass("collapsed").addClass("expanded");
+        		jQuery(this).next(".requirement-body").slideDown("slow");
         }
     });
-    jq("#requirement_status").change(function() {
-        var status = jq(this).val();
-        jq(".requirement").each(function() {
+    jQuery("#requirement_status").change(function() {
+        var status = jQuery(this).val();
+        jQuery(".requirement").each(function() {
 			if ( status =='all' ) {
-				jq(this).show();
+				jQuery(this).show();
 			} else {
-				jq(this).filter( "."+status ).show();
-				jq(this).not( "."+status ).hide();
+				jQuery(this).filter( "."+status ).show();
+				jQuery(this).not( "."+status ).hide();
 			}
         });
     });
-    jq("a.jump").click(function(e) {
+    jQuery("a.jump").click(function(e) {
     	e.preventDefault();
-    	var jump = jq(this).parents(".requirement-group").next(".requirement-group").offset();
+    	var jump = jQuery(this).parents(".requirement-group").next(".requirement-group").offset();
     	if ( jump != null ) {
     		window.scrollTo(jump.left,jump.top);
     	} else {
@@ -42,47 +42,47 @@ jq(document).ready(function(){
     	}
     	return false;
     });
-    jq("a.subrequirement-courses-acceptable-link").click(function(e) {
+    jQuery("a.subrequirement-courses-acceptable-link").click(function(e) {
     	e.preventDefault();
-    	//var id = jq(this).attr("href");
+    	//var id = jQuery(this).attr("href");
     	//openPopUp(id+'_popup', id, 'audit', 'audit', {viewId:'DegreeAudit-FormView'}, event, null, {width:'400px'}, {tail:{align:'center', hidden: false}, position: 'bottom'});
     });
 });
 */
 
-jq(document).ready(function(){
-    jq(".myplan-audit-report .requirement > .reqText").each(function() {
-        jq(this).find("br").remove();
+jQuery(document).ready(function(){
+    jQuery(".myplan-audit-report .requirement > .reqText").each(function() {
+        jQuery(this).find("br").remove();
     });
-    jq(".myplan-audit-report .requirement > .status").each(function() {
-        if ( jq(this).hasClass("statusOK") ) {
-            jq(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed")
-            jq(this).siblings(".reqBody").hide();
+    jQuery(".myplan-audit-report .requirement > .status").each(function() {
+        if ( jQuery(this).hasClass("statusOK") ) {
+            jQuery(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed")
+            jQuery(this).siblings(".reqBody").hide();
         }
     });
-    jq(".myplan-audit-report .requirement > .reqText").click(function(){
-        if ( jq(this).siblings(".toggler").hasClass("togglerExpanded") ) {
-            jq(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed");
-            jq(this).siblings(".reqBody").slideUp("400");
+    jQuery(".myplan-audit-report .requirement > .reqText").click(function(){
+        if ( jQuery(this).siblings(".toggler").hasClass("togglerExpanded") ) {
+            jQuery(this).siblings(".toggler").removeClass("togglerExpanded").addClass("togglerCollapsed");
+            jQuery(this).siblings(".reqBody").slideUp("400");
         } else {
-            jq(this).siblings(".toggler").removeClass("togglerCollapsed").addClass("togglerExpanded");
-            jq(this).siblings(".reqBody").slideDown("400");
+            jQuery(this).siblings(".toggler").removeClass("togglerCollapsed").addClass("togglerExpanded");
+            jQuery(this).siblings(".reqBody").slideDown("400");
         }
     });
-    jq(".myplan-audit-report .requirement").each(function() {
-        var content = jq.trim( jq(this).text() );
+    jQuery(".myplan-audit-report .requirement").each(function() {
+        var content = jQuery.trim( jQuery(this).text() );
         if (content === '') {
-            jq(this).remove();
+            jQuery(this).remove();
         }
-        jq(this).find(".status.statusNONE").hide();
-        jq(this).find(".toggler").not(".togglerExpanded, .togglerCollapsed").hide();
+        jQuery(this).find(".status.statusNONE").hide();
+        jQuery(this).find(".toggler").not(".togglerExpanded, .togglerCollapsed").hide();
     });
-    jq(".myplan-audit-report .requirement > .reqBody").each(function() {
-        var content = jq.trim( jq(this).text() );
+    jQuery(".myplan-audit-report .requirement > .reqBody").each(function() {
+        var content = jQuery.trim( jQuery(this).text() );
         if (content === '') {
-            jq(this).siblings(".toggler").removeClass("togglerExpanded");
-            jq(this).siblings(".reqText").unbind("click").css("cursor","default");
-            jq(this).remove();
+            jQuery(this).siblings(".toggler").removeClass("togglerExpanded");
+            jQuery(this).siblings(".reqText").unbind("click").css("cursor","default");
+            jQuery(this).remove();
         }
     });
 });

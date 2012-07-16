@@ -228,9 +228,9 @@
                 <entry key="fnDrawCallback"
                        value="function() {
                             if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1)  {
-                                jq('.dataTables_paginate span').not('.first, .last').show();
+                                jQuery('.dataTables_paginate span').not('.first, .last').show();
                             } else {
-                                jq('.dataTables_paginate span').hide();
+                                jQuery('.dataTables_paginate span').hide();
                             }
                        }"/>
             </map>

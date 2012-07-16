@@ -818,10 +818,12 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     background-image: url('../images/sortDesc.png');
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr {
+    border: none;
     border-top: dotted 1px #a9a9a9;
     cursor: pointer;
 }
-.myplan-messages-detail .dataTables_wrapper table tbody tr:first-child {
+.myplan-messages-detail .dataTables_wrapper table tbody tr:first-child,
+.myplan-messages-detail .dataTables_wrapper table tbody tr td {
     border: none;
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr:hover {

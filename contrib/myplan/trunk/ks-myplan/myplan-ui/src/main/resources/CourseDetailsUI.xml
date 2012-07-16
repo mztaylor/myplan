@@ -127,7 +127,7 @@
                       p:id="@{dataObject.courseId}_addSavedCourse"
                       p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <property name="onDocumentReadyScript"
-                              value="jq('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
+                              value="jQuery('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
                                   if (data.planItemType === 'wishlist') {
                                       fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true);
                                   }
@@ -145,7 +145,7 @@
                       p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
                       p:groupBeginDelimiter="This course is in your" p:groupEndDelimiter="" p:linkSeparator="">
                     <property name="onDocumentReadyScript"
-                              value="jq('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
+                              value="jQuery('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
                                   if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
                                       fnRestoreDetailsAddButton(data.courseDetails.courseId);
                                   }
@@ -402,18 +402,18 @@
                 <bean parent="Uif-DataField" p:propertyName="this" p:fieldLabel.render="false">
                     <!--
                     <property name="onDocumentReadyScript" value="
-                        jq('#course_details_links_div ul li a').each(function(){
-                            var href = jq(this).attr('href');
+                        jQuery('#course_details_links_div ul li a').each(function(){
+                            var href = jQuery(this).attr('href');
                             var id = href.split('#')[1];
                             var quarter = href.split('/')[5];
-                            jq(this).attr('id',id+quarter);
-                            jq(this).attr('href',href.split('#')[0]+'?external=true&amp;dialogMode=true'+'#'+id);
+                            jQuery(this).attr('id',id+quarter);
+                            jQuery(this).attr('href',href.split('#')[0]+'?external=true&amp;dialogMode=true'+'#'+id);
                         });
-                        jq('#course_details_links_div ul li a').click(function(e){
+                        jQuery('#course_details_links_div ul li a').click(function(e){
                             e.preventDefault();
-                            var id = jq(this).attr('href').split('#')[1];
-                            alert(jq(this).attr('id'));
-                            createLightBoxLink(jq(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
+                            var id = jQuery(this).attr('href').split('#')[1];
+                            alert(jQuery(this).attr('id'));
+                            createLightBoxLink(jQuery(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
                         });
                     "/>
 

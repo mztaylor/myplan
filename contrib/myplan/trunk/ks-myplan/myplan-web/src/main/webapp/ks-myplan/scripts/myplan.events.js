@@ -21,7 +21,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
                     '</div>' +
                 '</div>';
 
-    jq(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
+    jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
         runHiddenScripts(planItemId + "_div");
     });
 }
@@ -31,9 +31,9 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
 #################################################################
  */
 function fnRemovePlanItem (atpId, type, planItemId) {
-    jq("#" + planItemId).unbind('click');
-    jq("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type).parents(".uif-collectionItem").fadeOut(250, function(){
-        jq(this).remove();
+    jQuery("#" + planItemId).unbind('click');
+    jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type).parents(".uif-collectionItem").fadeOut(250, function(){
+        jQuery(this).remove();
     });
 }
 /*
@@ -42,8 +42,8 @@ function fnRemovePlanItem (atpId, type, planItemId) {
 #################################################################
  */
 function fnRemoveSavedItem (planItemId, cssStyle) {
-    jq("." + cssStyle + " #" + planItemId).parents("li").fadeOut(250, function(){
-        jq(this).remove();
+    jQuery("." + cssStyle + " #" + planItemId).parents("li").fadeOut(250, function(){
+        jQuery(this).remove();
     });
 }
 /*
@@ -52,8 +52,8 @@ function fnRemoveSavedItem (planItemId, cssStyle) {
 #################################################################
  */
 function fnUpdateSavedCount (savedItemCount) {
-    jq(".myplan-saved-courses-detail .uif-sectionHeader .uif-headerText strong").fadeOut(250, function() {
-	    jq(this).html(savedItemCount - 1).fadeIn(250);
+    jQuery(".myplan-saved-courses-detail .uif-sectionHeader .uif-headerText strong").fadeOut(250, function() {
+	    jQuery(this).html(savedItemCount - 1).fadeIn(250);
 	});
 }
 /*
@@ -62,8 +62,8 @@ function fnUpdateSavedCount (savedItemCount) {
 #################################################################
  */
 function fnUpdateCredits (atpId, termCredits) {
-    jq("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .myplan-carousel-term-credits span.uif-message").not(".uif-requiredMessage").fadeOut(250, function() {
-        jq(this).html(termCredits).fadeIn(250);
+    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .myplan-carousel-term-credits span.uif-message").not(".uif-requiredMessage").fadeOut(250, function() {
+        jQuery(this).html(termCredits).fadeIn(250);
     });
 }
 /*
@@ -73,13 +73,13 @@ function fnUpdateCredits (atpId, termCredits) {
  */
 function fnDisplayMessage (message, cssClass, targetId, button, full) {
     if (button) {
-        if (!full) jq("#" + targetId).wrap("<div></div>");
-        jq("#" + targetId).parent("div").fadeOut(250, function() {
-            jq(this).addClass(cssClass).html(message).fadeIn(250);
+        if (!full) jQuery("#" + targetId).wrap("<div></div>");
+        jQuery("#" + targetId).parent("div").fadeOut(250, function() {
+            jQuery(this).addClass(cssClass).html(message).fadeIn(250);
         });
     } else {
-        jq("#" + targetId).fadeOut(250, function() {
-            jq(this).addClass(cssClass).html(message).fadeIn(250);
+        jQuery("#" + targetId).fadeOut(250, function() {
+            jQuery(this).addClass(cssClass).html(message).fadeIn(250);
         });
     }
 }
@@ -89,11 +89,11 @@ function fnDisplayMessage (message, cssClass, targetId, button, full) {
 #################################################################
  */
 function fnRestoreSearchAddButton (courseId) {
-    var oTable = jq('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
+    var oTable = jQuery('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
     var oNodes = oTable.fnGetNodes();
-    jq(oNodes).find("#" + courseId + "_status").fadeOut(250, function() {
-        jq(this).html('<input type="image" title="Bookmark This Course" src="/student/ks-myplan/images/btnAdd.png" alt="Bookmark This Course" class="uif-field uif-imageField" onclick="myPlanAjaxPlanItemMove(\''+courseId+'\', \'courseId\', \'addSavedCourse\', event);" />');
-        jq(this).fadeIn(250);
+    jQuery(oNodes).find("#" + courseId + "_status").fadeOut(250, function() {
+        jQuery(this).html('<input type="image" title="Bookmark This Course" src="/student/ks-myplan/images/btnAdd.png" alt="Bookmark This Course" class="uif-field uif-imageField" onclick="myPlanAjaxPlanItemMove(\''+courseId+'\', \'courseId\', \'addSavedCourse\', event);" />');
+        jQuery(this).fadeIn(250);
     });
 }
 /*
@@ -102,11 +102,11 @@ function fnRestoreSearchAddButton (courseId) {
 #################################################################
  */
 function fnRestoreDetailsAddButton (courseId) {
-    jq("#" + courseId + "_bookmarked").wrap("<div></div>");
-    jq("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
-        jq(this).replaceWith('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
-        jq(this).append("jq(document).ready(function () {jq('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
+    jQuery("#" + courseId + "_bookmarked").wrap("<div></div>");
+    jQuery("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
+        jQuery(this).replaceWith('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
+        jQuery(this).append("jQuery(document).ready(function () {jQuery('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
         runHiddenScripts();
-        jq(this).fadeIn(250);
+        jQuery(this).fadeIn(250);
     });
 }

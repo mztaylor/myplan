@@ -240,10 +240,10 @@
         <property name="propertyName" value="searchResults"/>
         <property name="render" value="@{searchResults.size() gt 0 ? true : false}"/>
         <property name="onDocumentReadyScript" value="
-            jq('.myplan-saved-courses-detail').subscribe('PLAN_ITEM_DELETED', function(data){
+            jQuery('.myplan-saved-courses-detail').subscribe('PLAN_ITEM_DELETED', function(data){
                 if (data.planItemType === 'wishlist') {
                     fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
-                    fnUpdateSavedCount( jq(this).find('.uif-sectionHeader .uif-headerText strong').text() );
+                    fnUpdateSavedCount( jQuery(this).find('.uif-sectionHeader .uif-headerText strong').text() );
                 }
             });
         "/>
@@ -675,7 +675,7 @@
                                             <property name="clientSideJs"
                                                       value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jq('#addPlannedCourse')
+                                                jQuery('#addPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                                         setTimeout('fnCloseAllPopups()', 5500);
@@ -750,7 +750,7 @@
                                             <property name="clientSideJs"
                                                       value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jq('#movePlannedCourse')
+                                                jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                                         setTimeout('fnCloseAllPopups()', 5500);
@@ -826,7 +826,7 @@
                                             <property name="clientSideJs"
                                                       value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jq('#movePlannedCourse')
+                                                jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                         setTimeout('fnCloseAllPopups()', 5500);
@@ -847,7 +847,7 @@
                                             <property name="clientSideJs"
                                                       value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jq('#movePlannedCourse')
+                                                jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
                                                         setTimeout('fnCloseAllPopups()', 5500);
@@ -904,7 +904,7 @@
                                     </list>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
+                                    jQuery('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                                         setTimeout('fnCloseAllPopups()', 2000);
                                     }).subscribe('ERROR', function(data) {
@@ -945,21 +945,21 @@
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
         <property name="onDocumentReadyScript" value="
-            if ( jq('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
+            if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
                 var iMaxHeight = 0;
-                jq('#planned_courses_detail_list ul:not(.errorLines) li').each(function() {
-                    if ( jq(this).height() > iMaxHeight ) {
-                        iMaxHeight = jq(this).height();
+                jQuery('#planned_courses_detail_list ul:not(.errorLines) li').each(function() {
+                    if ( jQuery(this).height() > iMaxHeight ) {
+                        iMaxHeight = jQuery(this).height();
                     }
                 });
-                jq('#planned_courses_detail_list ul:not(.errorLines) li').each(function() {
-                    jq(this).height(iMaxHeight);
+                jQuery('#planned_courses_detail_list ul:not(.errorLines) li').each(function() {
+                    jQuery(this).height(iMaxHeight);
                 });
                 var iStart = 0;
-                if ( jq(&quot;input[type='hidden'][id^='atp_start_index']&quot;).length > 0 ) {
-                    iStart = parseFloat(jq(&quot;input[type='hidden'][id^='atp_start_index']&quot;).val());
+                if ( jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).length > 0 ) {
+                    iStart = parseFloat(jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).val());
                 }
-                jq('#planned_courses_detail_list').jCarouselLite({
+                jQuery('#planned_courses_detail_list').jCarouselLite({
                     btnNext: '.myplan-carousel-next',
                     btnPrev: '.myplan-carousel-prev',
                     scroll: 4,
@@ -1143,7 +1143,7 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#planned_courses_detail_list')
+            jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
                     fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit);
                 })
@@ -1993,7 +1993,7 @@
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#addPlannedCourse')
+                                    jQuery('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                             setTimeout('fnCloseAllPopups()', 5500);
@@ -2014,7 +2014,7 @@
                                 <property name="clientSideJs"
                                           value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#movePlannedCourse')
+                                    jQuery('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                             setTimeout('fnCloseAllPopups()', 5500);
@@ -2148,8 +2148,8 @@
                                     </list>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    jq('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data) {
-                                        if (jq(this).is(':visible')){
+                                    jQuery('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data) {
+                                        if (jQuery(this).is(':visible')){
                                             fnCloseAllPopups();
                                         }
                                     }).subscribe('ERROR', function(data) {
