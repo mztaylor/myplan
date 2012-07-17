@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 1/5/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LearningPlanInfo", propOrder = {"studentId", "id", "typeKey", "stateKey", "shared","descr", "meta", "attributes", "_futureElements"})
+@XmlType(name = "LearningPlanInfo", propOrder = {"studentId", "id", "typeKey", "stateKey", "shared", "descr", "meta", "attributes", "_futureElements"})
 public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPlan {
 
     @XmlAttribute
@@ -27,11 +27,12 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
     @XmlElement
     private String studentId;
 
+    @XmlElement
+    private Boolean shared;
+
     @XmlAnyElement
     private List<Element> _futureElements;
 
-    @XmlAnyElement
-    private Boolean shared;
 
     public LearningPlanInfo() {
         this.id = null;
