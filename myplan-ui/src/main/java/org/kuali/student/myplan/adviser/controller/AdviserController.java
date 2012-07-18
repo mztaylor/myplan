@@ -105,7 +105,7 @@ public class AdviserController extends UifControllerBase {
         return new UifFormBase();
     }
 
-    @RequestMapping(value = "/advise", method = RequestMethod.GET)
+     @RequestMapping(value = "/advise", method = RequestMethod.GET)
     public String doGet(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
@@ -113,7 +113,7 @@ public class AdviserController extends UifControllerBase {
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
-        return "redirect:/myplan/advise/error";
+        return "redirect:/myplan/unauthorized";
     }
 
     @RequestMapping(value = "/advise/", method = RequestMethod.GET)
@@ -124,7 +124,7 @@ public class AdviserController extends UifControllerBase {
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
-        return "redirect:/myplan/advise/error";
+        return "redirect:/myplan/unauthorized";
     }
 
     /**
@@ -148,7 +148,7 @@ public class AdviserController extends UifControllerBase {
         }
         if (plan != null && plan.size() > 0) {
             if (plan.get(0).getShared().toString().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_FALSE_KEY)) {
-                return "redirect:/myplan/advise/error";
+                return "redirect:/myplan/unauthorized";
             }
         }
         UserSession session = GlobalVariables.getUserSession();
@@ -156,7 +156,7 @@ public class AdviserController extends UifControllerBase {
         if (!getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, ADVISE_PERM_NAME)) {
             //  FIXME!!! ... Do stuff to verify that the user has an Grad advisor role adviser role.
             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_ILLEGAL_ADVISER_ACCESS);
-            return "redirect:/myplan/advise/error";
+            return "redirect:/myplan/unauthorized";
         }
 
 
@@ -185,20 +185,9 @@ public class AdviserController extends UifControllerBase {
 
         } else {
             clearSession(session);
-            return "redirect:/myplan/advise/error";
+            return "redirect:/myplan/unauthorized";
 
         }
-    }
-
-    @RequestMapping(value = "/advise/error", method = RequestMethod.GET)
-    public ModelAndView returnErrorForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                        HttpServletRequest request, HttpServletResponse response) {
-
-        UifFormBase formBase = (UifFormBase) form;
-        formBase.setView(getViewService().getViewById("Advisor-FormView"));
-        formBase.setPageId("advisor_page");
-        GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
-        return getUIFModelAndView(formBase);
     }
 
     private void clearSession(UserSession session) {
