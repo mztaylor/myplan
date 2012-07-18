@@ -2362,7 +2362,7 @@
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-view</value>
+
             </list>
         </property>
         <property name="items">
@@ -2376,7 +2376,7 @@
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>fl-container-300</value>
+                            <value>fl-container-150</value>
                         </list>
                     </property>
                     <property name="items">
@@ -2405,10 +2405,10 @@
                                         </bean>
                                         <bean id="academic_planner_share" parent="Uif-InputField" p:propertyName="enableAdviserView" p:width="auto">
                                             <property name="onDocumentReadyScript" value="jQuery('#' + 'academic_planner_share').change(function(e) {
-                                            e.preventDefault();writeHiddenToForm('methodToCall' , 'academicPlanner');
-                                            writeHiddenToForm('actionParameters[showHistory]' , 'false'); writeHiddenToForm('actionParameters[showHome]' , 'false'); writeHiddenToForm('showHistory', 'false');
-                                            writeHiddenToForm('showHome' , 'false'); writeHiddenToForm('focusId' , 'postCommentButton');
-                                            writeHiddenToForm('jumpToId' , 'postCommentButton'); writeHiddenToForm('renderFullView' , 'true'); jQuery('#kualiForm').submit();});"/>
+                                                e.preventDefault();
+                                                myplanWriteHiddenToForm('methodToCall', 'academicPlanner', 'student_academic_planner_page_form');
+                                                jQuery('#student_academic_planner_page_form').ajaxSubmit();
+                                            });"/>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
                                                     <property name="options">

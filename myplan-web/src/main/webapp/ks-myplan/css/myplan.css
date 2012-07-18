@@ -37,6 +37,9 @@ a:focus {
 	margin:0 auto;
     width: 950px;
 }
+#applicationHeader {
+    margin-top:10px;
+}
 .myplan-view {
     min-height: 425px;
 }
