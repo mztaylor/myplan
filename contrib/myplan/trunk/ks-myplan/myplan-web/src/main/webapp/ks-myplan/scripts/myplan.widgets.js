@@ -111,13 +111,126 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
                 });
             }
             runHiddenScripts(getId);
-            }
-        });
+        }});
 	};
 
 	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
     jQuery("form#"+ id + "_form").remove();
 }
+
+
+
+
+
+
+
+
+
+/*
+######################################################################################
+    Function: Launch generic bubble popup
+######################################################################################
+ */
+function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close) {
+    stopEvent(e);
+
+    var popupHtml = jQuery('<div />').attr("id",id + "_popup");
+
+    if (popupStyles) {
+        jQuery.each(popupStyles, function(property, value) {
+            jQuery(popupHtml).css(property, value);
+        });
+    }
+
+	var popupOptionsDefault = {
+		innerHtml: popupHtml.prop('outerHTML'),
+		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+		manageMouseEvents: true,
+		selectable: true,
+		tail: {align:'middle', hidden: false},
+		position: 'left',
+        align: 'center',
+        alwaysVisible: false,
+        themeMargins: {total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance: '0px',
+        openingSpeed: 0,
+        closingSpeed: 0
+	};
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+
+    var popupBox;
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    if (selector === null) {
+        popupBox = jQuery(target);
+    } else {
+        popupBox = jQuery(target).parents(selector);
+    }
+
+    fnCloseAllPopups();
+
+	popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.ShowBubblePopup(popupSettings, false);
+    var popupBoxId = popupBox.GetBubblePopupID();
+	popupBox.FreezeBubblePopup();
+
+    jQuery(document).on('click', function(e) {
+        var tempTarget = (e.target) ? e.target : e.srcElement;
+        if ( jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
+            fnCloseAllPopups();
+        }
+    });
+
+    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
+    var tempFormInputs = '<div style="display:none;">';
+    jQuery.each(retrieveOptions, function(name, value) {
+        tempFormInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
+    });
+    tempFormInputs += '</div>';
+    jQuery(tempForm).append(tempFormInputs);
+    jQuery("body").append(tempForm);
+
+    var elementToBlock = jQuery("#" + id  + "_popup");
+
+	var updateRefreshableComponentCallback = function(htmlContent){
+        var component;
+        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+            component = jQuery("#" + getId, htmlContent);
+            var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
+        } else {
+            eval( jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
+            var sError = jQuery('body').data('validationMessages').serverErrors[0];
+            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+        }
+        elementToBlock.unblock({onUnblock: function(){
+            if (jQuery("#" + id  + "_popup").length){
+                popupBox.SetBubblePopupInnerHtml(component);
+                jQuery(".jquerybubblepopup-innerHtml").wrapInner(planForm);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function() {
+                    popupBox.RemoveBubblePopup();
+                    fnCloseAllPopups();
+                });
+            }
+            runHiddenScripts(getId);
+        }});
+	};
+
+	myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    jQuery("form#"+ id + "_form").remove();
+}
+
+
+
+
+
+
+
+
+
+
 /*
 ######################################################################################
     Function: Launch plan item bubble popup
@@ -187,7 +300,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 	var updateRefreshableComponentCallback = function(htmlContent){
         var component;
         if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
-            var component = jQuery("#" + getId, htmlContent);
+            component = jQuery("#" + getId, htmlContent);
             var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
             eval( jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
@@ -267,6 +380,20 @@ function fnPositionPopUp(popupBoxId) {
         var iTop = ( jQuery(window).height() / 2 ) - ( jQuery("#" + popupBoxId).height() / 2 );
         var iLeft = ( jQuery(window).width() / 2 ) - ( jQuery("#" + popupBoxId).width() / 2 );
         jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
+    }
+}
+
+
+
+
+function myplanWriteHiddenToForm(propertyName, propertyValue, formId) {
+    //removing because of performFinalize bug
+    jQuery('input[name="' + escapeName(propertyName) + '"]').remove();
+
+    if (propertyValue.indexOf("'") != -1) {
+        jQuery("<input type='hidden' name='" + propertyName + "'" + ' value="' + propertyValue + '"/>').appendTo(jQuery("#"+formId));
+    } else {
+        jQuery("<input type='hidden' name='" + propertyName + "' value='" + propertyValue + "'/>").appendTo(jQuery("#"+formId));
     }
 }
 /*

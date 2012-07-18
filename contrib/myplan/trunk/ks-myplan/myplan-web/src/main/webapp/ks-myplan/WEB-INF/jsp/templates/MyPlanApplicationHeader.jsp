@@ -24,8 +24,13 @@
         <div id="applicationUser">
 
             <% if (!UserSessionHelper.isAdviser()) { %>
-            <div class="name"><a href="plan?methodToCall=startAcademicPlannerForm&viewId=StudentAcademicPlanner-FormView&pageId=student_academic_planner_page">
-                Welcome, ${UserSession.person.firstName}</a></div> <% } %>
+            <div class="name">
+                <a <%--href="plan?methodToCall=startAcademicPlannerForm&viewId=StudentAcademicPlanner-FormView&pageId=student_academic_planner_page"--%>
+                   onclick="openPopUpForm('student_academic_planner_page','student_academic_planner_page','startAcademicPlannerForm','plan',{viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">
+                    Welcome, ${UserSession.person.firstName}
+                </a>
+            </div>
+            <% } %>
             <% if (UserSessionHelper.isAdviser()) { %>
             <span>Welcome, ${UserSession.person.firstName}</span><% } %>
         </div>
