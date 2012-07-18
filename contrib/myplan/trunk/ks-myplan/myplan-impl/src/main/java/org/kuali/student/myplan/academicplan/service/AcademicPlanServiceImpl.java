@@ -301,7 +301,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         pie.setAttributes(new HashSet<PlanItemAttributeEntity>());
         if (planItem.getAttributes() != null) {
             for (Attribute att : planItem.getAttributes()) {
-                PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att);
+                PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att, pie);
                 pie.getAttributes().add(attEntity);
             }
         }
@@ -365,7 +365,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
             for (Attribute att : learningPlan.getAttributes()) {
-                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att);
+                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att, lpe);
                 lpe.getAttributes().add(attEntity);
             }
         }
@@ -415,7 +415,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         if (planItem.getAttributes() != null) {
             Set<PlanItemAttributeEntity> attributeEntities = new HashSet<PlanItemAttributeEntity>();
             for (AttributeInfo att : planItem.getAttributes()) {
-                attributeEntities.add(new PlanItemAttributeEntity(att));
+                attributeEntities.add(new PlanItemAttributeEntity(att, planItemEntity));
             }
             planItemEntity.setAttributes(attributeEntities);
         }

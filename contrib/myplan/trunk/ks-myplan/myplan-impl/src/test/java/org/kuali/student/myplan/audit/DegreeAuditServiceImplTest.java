@@ -119,7 +119,7 @@ public class DegreeAuditServiceImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void getAuditReport() {
         String auditID = "2012042713461525";
         auditID = "2012061115531178";

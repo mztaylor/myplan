@@ -12,27 +12,9 @@ import javax.persistence.Table;
 @Table(name = "KSPL_LRNG_PLAN_TYPE_ATTR")
 public class LearningPlanTypeAttributeEntity extends BaseAttributeEntity<LearningPlanTypeEntity> {
 
-    @ManyToOne
-    @JoinColumn(name = "OWNER")
-    private LearningPlanTypeEntity owner;
-
     public LearningPlanTypeAttributeEntity() {}
 
-    public LearningPlanTypeAttributeEntity(String key, String value) {
-        super(key, value);
-    }
-
-    public LearningPlanTypeAttributeEntity(Attribute att) {
-        super(att);
-    }
-
-    @Override
-    public void setOwner(LearningPlanTypeEntity owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    public LearningPlanTypeEntity getOwner() {
-        return owner;
+    public LearningPlanTypeAttributeEntity(Attribute att, LearningPlanTypeEntity owner) {
+        super(att, owner);
     }
 }

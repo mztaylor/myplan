@@ -205,9 +205,7 @@ public class CommentController extends UifControllerBase {
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
-
         String studentPrincipleId = UserSessionHelper.getStudentId();
-
 
         try {
             getCommentService().addComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, ci);
