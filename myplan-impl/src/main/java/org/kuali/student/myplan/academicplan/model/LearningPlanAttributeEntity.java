@@ -13,27 +13,9 @@ import org.kuali.student.r2.common.infc.Attribute;
 @Table(name = "KSPL_LRNG_PLAN_ATTR")
 public class LearningPlanAttributeEntity extends BaseAttributeEntity<LearningPlanEntity> {
 
-    @ManyToOne
-    @JoinColumn(name = "OWNER")
-    private LearningPlanEntity owner;
-
     public LearningPlanAttributeEntity() {}
 
-    public LearningPlanAttributeEntity(String key, String value) {
-        super(key, value);
-    }
-
-    public LearningPlanAttributeEntity(Attribute att) {
-        super(att);
-    }
-
-    @Override
-    public void setOwner(LearningPlanEntity owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    public LearningPlanEntity getOwner() {
-        return owner;
+    public LearningPlanAttributeEntity(Attribute att, LearningPlanEntity owner) {
+        super(att, owner);
     }
 }

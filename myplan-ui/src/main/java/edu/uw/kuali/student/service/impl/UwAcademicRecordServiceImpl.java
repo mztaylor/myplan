@@ -11,8 +11,7 @@ import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.enrollment.academicrecord.dto.GPAInfo;
-import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.dto.*;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -21,10 +20,7 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.*;
 
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
@@ -320,6 +316,11 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         return studentCourseRecordInfoList;
     }
 
+    @Override
+    public List<StudentCourseRecordInfo> getCompletedCourseRecordsForCourse(@WebParam(name = "personId") String personId, @WebParam(name = "courseId") String courseId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
     private List<String> getRegistrationResponseText(String personId) throws OperationFailedException {
         List<String> responseTexts = new ArrayList<String>();
         String[] currentTerm = AtpHelper.atpIdToTermAndYear(AtpHelper.getCurrentAtpId());
@@ -418,26 +419,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     }
 
     /**
-     * This method returns the GPA of a student for the period of time
-     * indicated by the given Academic Calendar.
-     *
-     * @param personId            an Id of a student
-     * @param academicCalendarKey a key of an Academic Calendar
-     * @param context             Context information containing the principalId
-     *                            and locale information about the caller of service
-     *                            operation
-     * @return a GPA
-     * @throws DoesNotExistException     personId or academicCalendarKey not found
-     * @throws InvalidParameterException invalid parameter
-     * @throws MissingParameterException missing parameter
-     * @throws OperationFailedException  unable to complete request
-     */
-    @Override
-    public GPAInfo getGPAForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
-    }
-
-    /**
      * This method returns the cumulative GPA of a student.
      *
      * @param personId an Id of a student
@@ -454,6 +435,41 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public GPAInfo getCumulativeGPA(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;
+    }
+
+    @Override
+    public GPAInfo getCumulativeGPAForProgram(@WebParam(name = "personId") String personId, @WebParam(name = "programId") String programId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public GPAInfo getCumulativeGPAForTermAndProgram(@WebParam(name = "personId") String personId, @WebParam(name = "programId") String programId, @WebParam(name = "termKey") String termKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public LoadInfo getLoadForTerm(@WebParam(name = "personId") String personId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public List<StudentProgramRecordInfo> getProgramRecords(@WebParam(name = "personId") String personId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public List<StudentCredentialRecordInfo> getAwardedCredentials(@WebParam(name = "personId") String personId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public List<StudentTestScoreRecordInfo> getTestScoreRecords(@WebParam(name = "personId") String personId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public List<StudentTestScoreRecordInfo> getTestScoreRecordsByType(@WebParam(name = "personId") String personId, @WebParam(name = "testTypeKey") String testTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -478,27 +494,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     }
 
     /**
-     * This method returns the number of credits a student earned in a
-     * given Academic Calendar.
-     *
-     * @param personId            an Id of a student
-     * @param academicCalendarKey a key for an AcademicCalendar
-     * @param context             Context information containing the principalId
-     *                            and locale information about the caller of service
-     *                            operation
-     * @return a number of credits represented by a string
-     * @throws DoesNotExistException     personId, academicCalendarKey or
-     *                                   calculationTypeKey not found
-     * @throws InvalidParameterException invalid parameter
-     * @throws MissingParameterException missing parameter
-     * @throws OperationFailedException  unable to complete request
-     */
-    @Override
-    public String getEarnedCreditsForAcademicCalendar(@WebParam(name = "personId") String personId, @WebParam(name = "academicCalendarKey") String academicCalendarKey, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;
-    }
-
-    /**
      * This method returns the number of credits a student earned
      * across all terms.
      *
@@ -516,5 +511,10 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public String getEarnedCredits(@WebParam(name = "personId") String personId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;
+    }
+
+    @Override
+    public String getEarnedCumulativeCreditsForProgramAndTerm(@WebParam(name = "personId") String personId, @WebParam(name = "programId") String programId, @WebParam(name = "termId") String termId, @WebParam(name = "calculationTypeKey") String calculationTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented");
     }
 }
