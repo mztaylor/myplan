@@ -1,6 +1,8 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.util.StringUtils;
 import org.kuali.rice.kim.api.identity.IdentityService;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
@@ -25,7 +27,7 @@ public class UserSessionHelper {
     private static transient IdentityService identityService;
     private static transient PersonService personService;
 
-     public synchronized static IdentityService getIdentityService() {
+    public synchronized static IdentityService getIdentityService() {
         if (identityService == null) {
             identityService = KimApiServiceLocator.getIdentityService();
         }
@@ -148,36 +150,21 @@ public class UserSessionHelper {
     }
 
     public synchronized static String getAuditSystemKey() {
-        UserSession session = GlobalVariables.getUserSession();
-        String systemKey;
+        String systemKey =null;
         String studentId = getStudentId();
-        if (isAdviser()) {
-            // Used by devs when logged in as admin
-//        if( "admin".equals( studentId )) return   "100190981";
-            // Used by Jill for demos
-            if ("jjulius".equals(studentId)) systemKey = "101360188";
-
-            if (true) systemKey = "101360188";
-            else {
-                // do nothing
-                systemKey = studentId;
-            }
-            if (systemKey == null) {
-                throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
-            }
-        } else {
-            // Used by devs when logged in as admin
-//        if( "admin".equals( studentId )) return   "100190981";
-            // Used by Jill for demos
-            if ("jjulius".equals(studentId)) systemKey = "101360188";
-
-            if (true) systemKey = "101360188";
-            else {
-                // do nothing
-                systemKey = studentId;
-            }
+        Person person = null;
+        try {
+            person = getPersonService().getPerson(studentId);
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
         }
+        if (person != null) {
 
+            systemKey = person.getExternalIdentifiers().get("uwStudentSystemKey");
+        }
+        if (!StringUtils.hasText(systemKey)) {
+            throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
+        }
         return systemKey;
     }
 }
