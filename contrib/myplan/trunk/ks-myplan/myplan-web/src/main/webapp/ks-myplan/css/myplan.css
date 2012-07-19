@@ -358,6 +358,15 @@ button.myplan-button-transparent:hover {
 	-moz-border-radius: 8px;
     overflow: hidden;
 }
+.myplan-audit-info-panel {
+    background: #ffffff;
+    border: solid 1px #a9a9a9;
+    padding: 10px 0 0 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    overflow: hidden;
+}
 .myplan-remove-margin .uif-boxLayoutVerticalItem,
 .myplan-remove-margin .uif-boxLayoutHorizontalItem {
     margin: 0;
