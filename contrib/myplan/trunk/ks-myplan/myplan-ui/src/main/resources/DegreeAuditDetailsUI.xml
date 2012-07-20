@@ -176,7 +176,19 @@
                                                         <property name="header.render" value="false"/>
                                                         <property name="items">
                                                             <list>
-                                                                <ref bean="degree_audits_list"/>
+                                                                <ref bean="non_student_degree_audits_list"/>
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list>
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent() }">
+                                                                    <property name="replacement">
+                                                                        <list>
+                                                                            <ref bean="degree_audits_list"/>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
                                                             </list>
                                                         </property>
                                                     </bean>
