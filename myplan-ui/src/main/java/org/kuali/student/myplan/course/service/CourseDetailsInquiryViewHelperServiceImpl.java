@@ -13,7 +13,6 @@ import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
-import org.kuali.student.core.statement.service.StatementService;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
@@ -41,6 +40,7 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
@@ -51,8 +51,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
 
     private transient CourseService courseService;
-
-    private transient StatementService statementService;
 
     private transient CourseOfferingService courseOfferingService;
 
@@ -71,9 +69,25 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
+    
+    private transient CourseLinkBuilder courseLinkBuilder;
+
+    // default is to create real links
+    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<EnumeratedValueInfo>> enumServiceCache = new HashMap<String, List<EnumeratedValueInfo>>();
+
+    public CourseLinkBuilder getCourseLinkBuilder() {
+        if(courseLinkBuilder==null){
+            this.courseLinkBuilder=new CourseLinkBuilder();
+        }
+        return courseLinkBuilder;
+    }
+
+    public void setCourseLinkBuilder(CourseLinkBuilder courseLinkBuilder) {
+        this.courseLinkBuilder = courseLinkBuilder;
+    }
 
     public CourseInfo getCourseInfo() {
         return courseInfo;
@@ -120,9 +134,22 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         String str = course.getDescr().getFormatted();
+        if(str != null && str.contains("Offered:")){
+            str=str.substring(0,str.indexOf("Offered"));
+        }
+        List<String> prerequisites=new ArrayList<String>();
+
         if (str != null && str.contains("Prerequisite")) {
+            String req=(getCourseLinkBuilder().makeLinks(str.substring(str.indexOf("Prerequisite:"), str.length()),courseLinkTemplateStyle));
+            req=req.substring(req.indexOf("Prerequisite:"), req.length());
+            req=req.replace("Prerequisite:","").trim();
+            req=req.substring(0,1).toUpperCase().concat(req.substring(1,req.length()));
+            prerequisites.add(req);
+
             str = str.substring(0, str.indexOf("Prerequisite"));
         }
+
+        courseDetails.setRequisites(prerequisites);
         courseDetails.setCourseDescription(str);
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
@@ -161,29 +188,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         courseDetails.setCampusLocations(enumeratedCampus);
-
-        //  Lookup course statements and build the requisites list.
-        List<StatementTreeViewInfo> statements = null;
-        try {
-            statements = getCourseService().getCourseStatements(courseId, null, null);
-        } catch (DoesNotExistException e) {
-            //  TODO: Is this a problem?
-        } catch (Exception e) {
-            logger.error("Course Statement lookup failed.", e);
-        }
-
-        List<String> reqs = new ArrayList<String>();
-        for (StatementTreeViewInfo stvi : statements) {
-            String statement = null;
-            try {
-                statement = getStatementService().translateStatementTreeViewToNL(stvi, "kuali.uw.rule.crsRequisite.myplan", "en");
-            } catch (Exception e) {
-                logger.error("Translation of Course Statement to natural language failed.", e);
-                continue;
-            }
-            reqs.add(statement);
-        }
-        courseDetails.setRequisites(reqs);
 
         // Get only the abbre_val of gen ed requirements
         List<String> abbrGenEdReqs = new ArrayList<String>();
@@ -432,13 +436,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         this.courseService = courseService;
     }
 
-    protected synchronized StatementService getStatementService() {
-        if (this.statementService == null) {
-            this.statementService = (StatementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.STATEMENT_SERVICE_NAMESPACE, "StatementService"));
-        }
-        return this.statementService;
-    }
 
     protected synchronized EnumerationManagementService getEnumerationService() {
         if (this.enumService == null) {
