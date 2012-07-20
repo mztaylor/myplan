@@ -159,7 +159,7 @@ public class UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-
+            logger.info(person.getExternalIdentifiers().values());
             systemKey = person.getExternalIdentifiers().get("uwStudentSystemKey");
         }
         if (!StringUtils.hasText(systemKey)) {
