@@ -34,6 +34,22 @@
             <list>
                 <bean parent="Uif-Page" p:id="message_dialog_response_page"
                       p:headerText="Leave a Message to @{studentName}.">
+                    <property name="onDocumentReadyScript" value="
+                        jQuery('button#leaveMessageButton').attr('disabled', true);
+                        jQuery('form input, form textarea').keyup(function() {
+                            var empty = false;
+                            jQuery('form .myplan-required').each(function() {
+                                if (jQuery(this).val().length == 0) {
+                                    empty = true;
+                                }
+                            });
+                            if (empty) {
+                                jQuery('button#leaveMessageButton').attr('disabled', true);
+                            } else {
+                                jQuery('button#leaveMessageButton').attr('disabled', false);
+                            }
+                        });
+                    "/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-messages-lightbox</value>
@@ -58,6 +74,22 @@
                 <!--Comment Page-->
                 <bean parent="Uif-Page" p:id="comment_dialog_response_page"
                       p:headerText="View Message and @{comments.size()} comments">
+                    <property name="onDocumentReadyScript" value="
+                        jQuery('button#postCommentButton').attr('disabled', true);
+                        jQuery('form input, form textarea').keyup(function() {
+                            var empty = false;
+                            jQuery('form .myplan-required').each(function() {
+                                if (jQuery(this).val().length == 0) {
+                                    empty = true;
+                                }
+                            });
+                            if (empty) {
+                                jQuery('button#postCommentButton').attr('disabled', true);
+                            } else {
+                                jQuery('button#postCommentButton').attr('disabled', false);
+                            }
+                        });
+                    "/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-messages-lightbox</value>
@@ -239,7 +271,7 @@
                     </property>
                 </bean>
 
-                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody" p:required="true"
+                <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody"
                       p:fieldLabel.render="false" p:style="margin:0;">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="5" p:style="padding:10px;" p:textExpand="false"
@@ -248,6 +280,7 @@
                                 <list merge="true">
                                     <value>fl-container-500</value>
                                     <value>myplan-textarea</value>
+                                    <value>myplan-required</value>
                                 </list>
                             </property>
                         </bean>
@@ -298,13 +331,14 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject" p:required="true"
+                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
                       p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:maxLength="70" p:watermarkText="Maximum characters are 70">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-container-500</value>
+                                    <value>myplan-required</value>
                                 </list>
                             </property>
                         </bean>
@@ -324,7 +358,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body" p:required="true"
+                <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body"
                       p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="10" p:textExpand="false"
@@ -333,6 +367,7 @@
                                 <list merge="true">
                                     <value>myplan-textarea</value>
                                     <value>fl-container-500</value>
+                                    <value>myplan-required</value>
                                 </list>
                             </property>
                         </bean>
