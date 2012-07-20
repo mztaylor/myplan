@@ -246,7 +246,7 @@
     </bean>
 
 
-    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)">
+    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)" p:style="margin-bottom:10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
         </property>
