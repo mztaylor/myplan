@@ -167,4 +167,24 @@ public class UserSessionHelper {
         }
         return systemKey;
     }
+
+    public synchronized static boolean isStudent(){
+        Person person = null;
+        boolean isStudent=false;
+        try {
+            person = getPersonService().getPerson(getStudentId());
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+        }
+        if (person != null) {
+
+        if(person.getExternalIdentifiers().containsKey("systemKey"))
+        {
+            isStudent=true;
+        }
+
+        }
+         return isStudent;
+    }
+
 }
