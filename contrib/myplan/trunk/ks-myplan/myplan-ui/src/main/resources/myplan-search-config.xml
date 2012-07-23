@@ -569,9 +569,9 @@
                         WHERE
                         owner = :courseID
                         AND
-                        ATTR_VALUE = 'true'
+                        ATTR_VALUE = 'Y'
                         AND
-                        ATTR_NAME like 'kuali.uw.lu.genedreq.%'
+                        ATTR_NAME like 'courseGenedrequirement%'
                     </value>
                 </entry>
 

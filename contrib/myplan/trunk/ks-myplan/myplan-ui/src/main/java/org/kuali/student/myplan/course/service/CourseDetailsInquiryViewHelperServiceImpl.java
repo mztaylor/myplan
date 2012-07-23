@@ -193,8 +193,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<String> abbrGenEdReqs = new ArrayList<String>();
         Map<String, String> abbrAttributes = course.getAttributes();
         for (Map.Entry<String, String> entry : abbrAttributes.entrySet()) {
-            if ("true".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
-                EnumeratedValueInfo e = getGenEdReqEnumInfo(entry.getKey());
+            if ("Y".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
+                EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.genEduKeyForEnum.valueOf(entry.getKey().toUpperCase()).getGenEduKeyForEnum());
                 abbrGenEdReqs.add(e.getAbbrevValue());
             }
         }
@@ -204,8 +204,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<String> genEdReqs = new ArrayList<String>();
         Map<String, String> attributes = course.getAttributes();
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            if ("true".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
-                EnumeratedValueInfo e = getGenEdReqEnumInfo(entry.getKey());
+            if ("Y".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
+                EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.genEduKeyForEnum.valueOf(entry.getKey().toUpperCase()).getGenEduKeyForEnum());
                 String genEdText = String.format("%s (%s)", e.getValue(), e.getAbbrevValue());
                 genEdReqs.add(genEdText);
             }
