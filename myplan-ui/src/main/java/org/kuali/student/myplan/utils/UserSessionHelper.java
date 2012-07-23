@@ -128,24 +128,22 @@ public class UserSessionHelper {
     }
 
     public synchronized static String getMailAddress(String principleId) {
-
-        // TODO: Hack put in to avoid sending emails to real students
         Person user = GlobalVariables.getUserSession().getPerson();
         String emailAddress = user.getEmailAddress();
-//        Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
-//        List <EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
-//        for (EntityTypeContactInfo ci : contactInfos) {
-//            emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
-//            /*for (EntityEmail e : ci.getEmailAddresses()) {
-//                //  FIXME: Probably want to make this more deterministic.
-//                if (e.getEmailType().getName().equals("Student")) {
-//                    emailAddress = e.getEmailAddress();
-//                }
-//                if (e.getEmailType().getName().equals("Employee")) {
-//                    emailAddress = e.getEmailAddress();
-//                }
-//            } */
-//        }
+        Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
+        List <EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
+        for (EntityTypeContactInfo ci : contactInfos) {
+            emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
+            /*for (EntityEmail e : ci.getEmailAddresses()) {
+                //  FIXME: Probably want to make this more deterministic.
+                if (e.getEmailType().getName().equals("Student")) {
+                    emailAddress = e.getEmailAddress();
+                }
+                if (e.getEmailType().getName().equals("Employee")) {
+                    emailAddress = e.getEmailAddress();
+                }
+            } */
+        }
         return emailAddress;
     }
 
@@ -159,7 +157,7 @@ public class UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-            logger.info("keys="+person.getExternalIdentifiers().keySet()+"Values="+person.getExternalIdentifiers().values());
+            logger.info(person.getExternalIdentifiers().values());
             systemKey = person.getExternalIdentifiers().get("systemKey");
         }
         if (!StringUtils.hasText(systemKey)) {
