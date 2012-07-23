@@ -132,18 +132,18 @@
     </search:searchType>
 
     <search:searchType id="myplan.lu.search.fulltext">
-    <search:searchResultTypeInfo>
-        <search:name/>
-        <search:desc/>
-        <search:resultColumns>
-            <ref bean="lu.resultColumn.cluId"/>
-        </search:resultColumns>
-    </search:searchResultTypeInfo>
-    <search:searchCriteriaTypeInfo>
-        <search:queryParams>
-        </search:queryParams>
-    </search:searchCriteriaTypeInfo>
-</search:searchType>
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
 
     <search:searchType id="myplan.lu.search.title">
         <search:searchResultTypeInfo>
@@ -334,8 +334,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         JOIN clu.descr cludesc
                         WHERE
@@ -351,7 +351,9 @@
                         UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 ) ORDER BY
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 ) ORDER BY
                         ident.code
                     </value>
                 </entry>
@@ -359,8 +361,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         JOIN clu.descr cludesc
                         WHERE
@@ -376,7 +378,10 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 ) ORDER BY
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
+                        ORDER BY
                         ident.code
                     </value>
                 </entry>
@@ -385,8 +390,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         JOIN clu.descr cludesc
                         WHERE
@@ -404,7 +409,9 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
                     </value>
                 </entry>
 
@@ -412,8 +419,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         WHERE
                         clu.version.currentVersionStart &lt;= CURRENT_DATE
@@ -428,7 +435,9 @@
                         AND
                         ident.suffixCode = :code
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -438,8 +447,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         WHERE
                         clu.version.currentVersionStart &lt;= CURRENT_DATE
@@ -454,7 +463,9 @@
                         AND
                         ident.level = :level
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -463,8 +474,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         WHERE
                         clu.version.currentVersionStart &lt;= CURRENT_DATE
@@ -477,7 +488,9 @@
                         AND
                         ident.division IN (:divisions)
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -486,8 +499,8 @@
                     <value>
                         SELECT
                         clu.id
-                        FROM CluCampusLocation loc
-                        JOIN loc.clu clu
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
                         JOIN clu.officialIdentifier ident
                         WHERE
                         clu.version.currentVersionStart &lt;= CURRENT_DATE
@@ -500,7 +513,9 @@
                         AND
                         ident.division = :division
                         AND
-                        loc.campusLocation IN ( :campus1, :campus2, :campus3 )
+                        attr.name = 'campusLocations'
+                        AND
+                        attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -582,14 +597,14 @@
                 <entry key="myplan.course.prereqsearch.subject">
                     <value>NATIVE:
                         SELECT
-                            clu.id
+                        clu.id
                         FROM
-                            KSLU_CLU clu,
-                            KSLU_CLU_IDENT id
+                        KSLU_CLU clu,
+                        KSLU_CLU_IDENT id
                         WHERE
-                            clu.offic_clu_id = id.id
+                        clu.offic_clu_id = id.id
                         AND
-                            trim( id.division ) = :subject
+                        trim( id.division ) = :subject
                         ORDER BY id.sufx_cd
                     </value>
                 </entry>
@@ -597,16 +612,16 @@
                 <entry key="myplan.course.prereqsearch.range">
                     <value>NATIVE:
                         SELECT
-                            clu.id
+                        clu.id
                         FROM
-                            KSLU_CLU clu,
-                            KSLU_CLU_IDENT id
+                        KSLU_CLU clu,
+                        KSLU_CLU_IDENT id
                         WHERE
-                            clu.offic_clu_id = id.id
+                        clu.offic_clu_id = id.id
                         AND
-                            trim( id.division ) = :subject
+                        trim( id.division ) = :subject
                         AND
-                            trim( id.lvl ) like :range
+                        trim( id.lvl ) like :range
                         ORDER BY id.sufx_cd
                     </value>
                 </entry>
@@ -614,35 +629,35 @@
                 <entry key="myplan.course.prereqsearch.exclusions">
                     <value>NATIVE:
                         SELECT
-                            clu.id,
-                            id.sufx_cd
+                        clu.id,
+                        id.sufx_cd
                         FROM
-                            KSLU_CLU clu,
-                            KSLU_CLU_IDENT id
+                        KSLU_CLU clu,
+                        KSLU_CLU_IDENT id
                         WHERE
-                            clu.offic_clu_id = id.id
+                        clu.offic_clu_id = id.id
                         AND
-                            trim( id.division ) like :subject
+                        trim( id.division ) like :subject
                         AND
-                            trim( id.sufx_cd ) like :range
+                        trim( id.sufx_cd ) like :range
                         ORDER BY
-                            id.sufx_cd
+                        id.sufx_cd
                     </value>
                 </entry>
 
                 <entry key="myplan.course.getcluid">
                     <value>NATIVE:
                         SELECT
-                            clu.id, id.LNG_NAME
+                        clu.id, id.LNG_NAME
                         FROM
-                            KSLU_CLU clu,
-                            KSLU_CLU_IDENT id
+                        KSLU_CLU clu,
+                        KSLU_CLU_IDENT id
                         WHERE
-                            clu.offic_clu_id = id.id
+                        clu.offic_clu_id = id.id
                         AND
-                            trim( id.SUFX_CD ) = :number
+                        trim( id.SUFX_CD ) = :number
                         AND
-                            trim( id.DIVISION ) = :subject
+                        trim( id.DIVISION ) = :subject
                     </value>
                 </entry>
                 <entry key="myplan.course.getCourseTitleAndId">
