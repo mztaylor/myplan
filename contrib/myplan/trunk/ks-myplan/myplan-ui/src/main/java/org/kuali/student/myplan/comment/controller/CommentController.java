@@ -17,18 +17,18 @@ package org.kuali.student.myplan.comment.controller;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.kuali.rice.core.api.CoreApiServiceLocator;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.mail.*;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.UserSession;
+import org.kuali.rice.krad.exception.InvalidAddressException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.dto.RichTextInfo;
 import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
+import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.form.CommentForm;
@@ -56,7 +56,7 @@ public class CommentController extends UifControllerBase {
 
     private transient CommentQueryHelper commentQueryHelper;
 
-    private transient Mailer mailer;
+    private transient MyPlanMailService mailService;
 
     @Override
     protected CommentForm createInitialForm(HttpServletRequest request) {
@@ -256,20 +256,20 @@ public class CommentController extends UifControllerBase {
         return commentQueryHelper;
     }
 
-    private void sendMessage(String fromAddress, String toAddress, String subjectText, String bodyText) throws MessagingException {
+    private void sendMessage(String fromAddress, String toAddress, String subjectText, String bodyText) throws MessagingException, InvalidAddressException {
         MailMessage mm = new MailMessage();
         mm.addToAddress(toAddress);
         mm.setFromAddress(fromAddress);
         mm.setSubject(subjectText);
         mm.setMessage(bodyText);
-        getMailer().sendEmail(mm);
+        getMailService().sendMessage(mm);
     }
 
-    private Mailer getMailer() {
-        if (mailer == null) {
-            mailer = CoreApiServiceLocator.getMailer();
+    private MyPlanMailService getMailService() {
+        if (mailService == null) {
+            mailService = (MyPlanMailService) GlobalResourceLoader.getService(MyPlanMailService.SERVICE_NAME);
         }
-        return mailer;
+        return mailService;
     }
 
     public CommentService getCommentService() {
@@ -282,13 +282,5 @@ public class CommentController extends UifControllerBase {
 
     public void setCommentService(CommentService commentService) {
         this.commentService = commentService;
-    }
-
-    public CommentService getMailService() {
-        if (commentService == null) {
-            commentService = (CommentService)
-                    GlobalResourceLoader.getService(new QName(CommentConstants.NAMESPACE, CommentConstants.SERVICE_NAME));
-        }
-        return commentService;
     }
 }
