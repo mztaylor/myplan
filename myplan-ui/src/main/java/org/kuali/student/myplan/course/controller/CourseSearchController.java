@@ -725,8 +725,7 @@ public class CourseSearchController extends UifControllerBase {
                 genEdsOut.append(", ");
             }
 
-            req = req.replace(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX, "");
-
+            req=CourseSearchConstants.genEduVal.valueOf(req.toUpperCase()).getGenEdVal();
             genEdsOut.append(req);
         }
         return genEdsOut.toString();

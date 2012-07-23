@@ -65,7 +65,7 @@ public class GenEduReqFacet extends AbstractFacet {
             for (String key : keys) {
                 saveKey = key;
                 if (isNewFacetKey(FACET_KEY_DELIMITER + saveKey + FACET_KEY_DELIMITER)) {
-                    EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX + key);
+                    EnumeratedValueInfo e = getGenEdReqEnumInfo(CourseSearchConstants.genEduKeyForEnum.valueOf(CourseSearchConstants.genEduKey.valueOf(key).getGenEduKey()).getGenEduKeyForEnum());
                     saveKey = e.getAbbrevValue();
                     genEdus=genEdus.append(saveKey).append(",");
                     String title = e.getValue();

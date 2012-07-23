@@ -996,6 +996,10 @@
                                     </list>
                                 </property>
                             </bean>
+                            <ref bean="planned_menu_items"/>
+                            <ref bean="backup_menu_items"/>
+                            <ref bean="completed_menu_items"/>
+                            <ref bean="completed_backup_menu_items"/>
                             <!--<ref bean="myplan_section"/>-->
                             <!-- <ref bean="saved_course_myplan_section"/> -->
                         </list>
@@ -1012,6 +1016,138 @@
         </property>
         <property name="footer.render" value="false"/>
     </bean>
+
+
+    <!--Planned Menu Items-->
+    <bean id="planned_menu_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="fl-container-150">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+
+                <bean p:id="planned_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                      p:title="View Course Summary">
+                </bean>
+
+                <bean p:id="planned_menu_backup" parent="Uif-Link" p:target="" p:linkText="Mark it as Backup course"
+                      p:title="Mark it as Backup course"
+                      p:style="margin:0;">
+                </bean>
+
+                <bean parent="Uif-Message" p:messageText="Will be moved below the Total Credit line"
+                      p:cssClasses="fl-text-gray fl-font-size-90"/>
+
+                <bean p:id="planned_menu_move" parent="Uif-Link" p:target="" p:linkText="Move to Another Quarter"
+                      p:title="Move to Another Quarter" >
+                </bean>
+
+                <bean p:id="planned_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                      p:title="Copy to Another Quarter">
+                </bean>
+
+                <bean p:id="planned_menu_delete" parent="Uif-Link" p:target="" p:linkText="Delete from the Plan"
+                      p:title="Delete from the Plan" p:href="#"
+                      p:style="margin:0;">
+                </bean>
+
+                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                      p:cssClasses="fl-text-gray fl-font-size-90" />
+
+            </list>
+        </property>
+    </bean>
+
+
+    <!--Backup menu items-->
+    <bean id="backup_menu_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="fl-container-150">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+
+                <bean p:id="backup_menu_summary" parent="Uif-Link" p:target=""
+                      p:linkText="View Course Summary"
+                      p:title="View Course Summary">
+                </bean>
+
+                <bean p:id="backup_menu_planned" parent="Uif-Link" p:target=""
+                      p:linkText="Mark it as Planned course"
+                      p:title="Mark it as Planned course">
+                </bean>
+
+                <bean parent="Uif-Message" p:messageText="Will be moved above the Total Credit line"
+                      p:cssClasses="fl-text-gray fl-font-size-90"/>
+
+                <bean p:id="backup_menu_move" parent="Uif-Link" p:target=""
+                      p:linkText="Move to Another Quarter"
+                      p:title="Move to Another Quarter">
+
+                </bean>
+
+                <bean p:id="backup_menu_copy" parent="Uif-Link" p:target=""
+                      p:linkText="Copy to Another Quarter"
+                      p:title="Copy to Another Quarter">
+                </bean>
+
+                <bean p:id="backup_menu_delete" parent="Uif-Link" p:target=""
+                      p:linkText="Delete from the Plan"
+                      p:title="Delete from the Plan" p:href="#"
+                      p:style="margin:0;">
+                </bean>
+                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                      p:cssClasses="fl-text-gray fl-font-size-90"/>
+
+            </list>
+        </property>
+    </bean>
+
+
+    <!--Completed backup Menu Items-->
+    <bean id="completed_backup_menu_items" parent="Uif-VerticalBoxSubSection" p:style="" p:cssClasses="fl-container-150">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+
+                <bean p:id="completed_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                      p:title="View Course Summary">
+                </bean>
+
+                <bean p:id="completed_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                      p:title="Copy to Another Quarter">
+                </bean>
+
+                <bean p:id="backup_menu_delete" parent="Uif-Link" p:target=""
+                      p:linkText="Delete from the Plan"
+                      p:title="Delete from the Plan" p:href="#"
+                      p:style="margin:0;">
+                </bean>
+                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                      p:cssClasses="fl-text-gray fl-font-size-90"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <!--Completed Menu Items-->
+    <bean id="completed_menu_items" parent="Uif-VerticalBoxSubSection" p:style="" p:cssClasses="fl-container-150">
+        <property name="hidden" value="true"/>
+        <property name="items">
+            <list>
+
+                <bean p:id="registered_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                      p:title="View Course Summary">
+                </bean>
+
+                <bean p:id="registered_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                      p:title="Copy to Another Quarter">
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+
+
+
+
 
     <!-- Page displaying all plan action response
          This page is returned in response to any action on a plan item. It passes data base to javascripts on the UI-->
@@ -1205,6 +1341,12 @@
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseCode} (@{#line.credit})"/>
                                 <property name="title" value="@{#line.courseTitle}"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseId}"/>
+                                        <entry key="acadRecAtpId" value="@{#line.atpId}"/>
+                                    </map>
+                                </property>
                             </bean>
                             <bean parent="Uif-MessageField" p:render="@{#line.grade ne null ? true : false}">
                                 <property name="messageText" value="@{#line.grade}"/>
@@ -1294,6 +1436,12 @@
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseCode} (@{#line.credit})"/>
                                 <property name="title" value="@{#line.courseTitle}"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseId}"/>
+                                        <entry key="pageId" value="course_summary_dialog_page"/>
+                                    </map>
+                                </property>
                             </bean>
                             <bean parent="Uif-MessageField" p:render="@{#line.grade ne null ? true : false}">
                                 <property name="messageText" value="@{#line.grade}"/>
@@ -1384,6 +1532,13 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                                        <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
+                                        <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                                    </map>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1445,6 +1600,12 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                                        <entry key="pageId" value="course_summary_dialog_page"/>
+                                    </map>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1505,6 +1666,13 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                                        <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
+                                        <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                                    </map>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1557,6 +1725,12 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                                        <entry key="pageId" value="course_summary_dialog_page"/>
+                                    </map>
+                                </property>
                             </bean>
                         </list>
                     </property>
