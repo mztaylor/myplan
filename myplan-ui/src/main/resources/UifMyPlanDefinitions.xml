@@ -332,6 +332,20 @@
         <property name="onDocumentReadyScript"
                   value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});"/>
     </bean>
+
+    <bean id="non_student_degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="instructionalText"
+                  value="Sorry No Audit For you !! You are not a Student!!"/>
+    </bean>
     <bean id="text1">
         <property name="instructionalText"
                   value="Select the campus and enter degree program to run audit"/>
