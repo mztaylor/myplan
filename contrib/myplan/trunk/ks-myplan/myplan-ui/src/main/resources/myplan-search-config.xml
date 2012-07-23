@@ -351,7 +351,7 @@
                         UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 ) ORDER BY
                         ident.code
@@ -378,7 +378,7 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
@@ -409,7 +409,7 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                     </value>
@@ -435,7 +435,7 @@
                         AND
                         ident.suffixCode = :code
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
@@ -463,7 +463,7 @@
                         AND
                         ident.level = :level
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
@@ -488,7 +488,7 @@
                         AND
                         ident.division IN (:divisions)
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY
@@ -513,7 +513,7 @@
                         AND
                         ident.division = :division
                         AND
-                        attr.name = 'campusLocations'
+                        attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         ORDER BY

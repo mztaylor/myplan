@@ -70,7 +70,7 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-        String str = form.getCampusSelect();
+        /*String str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
             results = str.split(",");
@@ -105,12 +105,19 @@ public class CourseSearchStrategy {
                 String campusKey = "campus" + count;
                 request.addParam(campusKey, campus[j]);
             }
+        }*/
+        for (SearchRequest request : requests) {
+
+            request.addParam("campus1", "306");
+            request.addParam("campus2", "310");
+            request.addParam("campus3", "323");
         }
+
     }
 
 
     public void addCampusParam(SearchRequest request, CourseSearchForm form) {
-        String str = form.getCampusSelect();
+        /*String str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
             results = str.split(",");
@@ -143,7 +150,11 @@ public class CourseSearchStrategy {
             int count = j + 1;
             String campusKey = "campus" + count;
             request.addParam(campusKey, campus[j]);
-        }
+        }*/
+
+            request.addParam("campus1", "306");
+            request.addParam("campus2", "310");
+            request.addParam("campus3", "323");
 
     }
 
@@ -188,7 +199,7 @@ public class CourseSearchStrategy {
             for (String code : codes) {
                 needDivisionQuery = false;
                 SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndCode");
-                request.addParam("division", division);
+                request.addParam("division", division.trim());
                 request.addParam("code", code);
                 requests.add(request);
             }
@@ -200,14 +211,14 @@ public class CourseSearchStrategy {
                 level = level.substring(0, 1) + "00";
 
                 SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndLevel");
-                request.addParam("division", division);
+                request.addParam("division", division.trim());
                 request.addParam("level", level);
                 requests.add(request);
             }
 
             if (needDivisionQuery) {
                 SearchRequest request = new SearchRequest("myplan.lu.search.division");
-                request.addParam("division", division);
+                request.addParam("division", division.trim());
                 requests.add(request);
             }
         }
@@ -315,7 +326,7 @@ public class CourseSearchStrategy {
                         if (additionalDivisions.length() > 0) {
                             String div = additionalDivisions.substring(0, additionalDivisions.length() - 1);
                             SearchRequest request1 = new SearchRequest("myplan.lu.search.additionalDivision");
-                            request1.addParam("divisions", div);
+                            request1.addParam("divisions", div.trim());
                             addCampusParam(request1, form);
                             requests.add(request1);
                         }
