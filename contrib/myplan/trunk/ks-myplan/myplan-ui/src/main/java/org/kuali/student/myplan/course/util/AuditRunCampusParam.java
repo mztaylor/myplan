@@ -7,11 +7,10 @@ import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Logic for building list of FacetItems and coding CourseSearchItems.
@@ -24,13 +23,16 @@ public class AuditRunCampusParam extends KeyValuesBase {
 
     private transient EnumerationManagementService enumService;
 
-    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, Map<String, String>> hashMap;
 
-    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
-        return hashMap;
+    public HashMap<String, Map<String, String>> getHashMap() {
+        if (this.hashMap == null) {
+            this.hashMap = new HashMap<String, Map<String, String>>();
+        }
+        return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
         this.hashMap = hashMap;
     }
 
@@ -49,26 +51,29 @@ public class AuditRunCampusParam extends KeyValuesBase {
         if (blankOption) {
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        Map<String, String> campusValues = new HashMap<String, String>();
         try {
             if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(CourseSearchConstants.CAMPUS_LOCATION, null, null, null);
-                hashMap.put(CourseSearchConstants.CAMPUS_LOCATION, enumeratedValueInfoList);
+                campusValues = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, campusValues);
             } else {
-                enumeratedValueInfoList = this.hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
+                campusValues = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
             }
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
         }
-        if (enumeratedValueInfoList != null) {
-            //  Add the individual term items.
-            for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                if (!enumeratedValueInfo.getCode().equalsIgnoreCase("AL")) {
-                    keyValues.add(new ConcreteKeyValue(enumeratedValueInfo.getCode(), enumeratedValueInfo.getValue()+ " campus"));
-                }
+        if (campusValues != null) {
+            for (Map.Entry<String, String> entry : campusValues.entrySet()) {
+                keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue() + " campus"));
             }
         }
-
+        Collections.sort(keyValues,
+                new Comparator<KeyValue>() {
+                    @Override
+                    public int compare(KeyValue keyValue1, KeyValue keyValue2) {
+                        return keyValue1.getKey().compareTo(keyValue2.getKey());
+                    }
+                });
         return keyValues;
     }
 

@@ -111,7 +111,19 @@
                                                         <property name="header.render" value="false"/>
                                                         <property name="items">
                                                             <list>
-                                                                <ref bean="degree_audits_list"/>
+                                                                <ref bean="non_student_degree_audits_list"/>
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list>
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent() }">
+                                                                    <property name="replacement">
+                                                                        <list>
+                                                                            <ref bean="degree_audits_list"/>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -344,7 +356,7 @@
         <property name="items">
             <list>
                 <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParam"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '0'">
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '306'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -353,7 +365,7 @@
                     </property>
                 </bean>
                 <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParam"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '1'">
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '310'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -362,7 +374,7 @@
                     </property>
                 </bean>
                 <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParam"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '2'">
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '323'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
