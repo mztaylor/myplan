@@ -121,6 +121,71 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 
 
 
+function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
+    stopEvent(e);
+
+    var popupHtml = jQuery('<div />').attr("id",id + "_popup").attr("class",popupClasses).html( jQuery("#" + getId).html() );
+
+	var popupOptionsDefault = {
+		innerHtml: popupHtml.prop('outerHTML'),
+		themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+		manageMouseEvents: true,
+		selectable: true,
+		tail: {align:'middle', hidden: false},
+		position: 'left',
+        align: 'center',
+        alwaysVisible: false,
+        themeMargins: {total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance: '0px',
+        openingSpeed: 0,
+        closingSpeed: 0
+	};
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+
+    var popupBox;
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    if (selector === null) {
+        popupBox = jQuery(target);
+    } else {
+        popupBox = jQuery(target).parents(selector);
+    }
+
+
+
+    fnCloseAllPopups();
+
+	popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.ShowBubblePopup(popupSettings, false);
+    var popupBoxId = popupBox.GetBubblePopupID();
+	popupBox.FreezeBubblePopup();
+
+    jQuery("#" + id + "_popup a").each(function(){
+        var linkId = jQuery(this).attr("id");
+        jQuery(this).siblings("input[data-for='"+ linkId + "']").removeAttr("script").attr("name", "script").val(function(index, value) {
+            return value.replace("'"+ linkId +"'", "'"+ linkId +"_popup'");
+        });
+        jQuery(this).attr("id", linkId + "_popup");
+        jQuery.each(target.dataset, function(key, value){
+            jQuery("a#" + linkId + "_popup").attr("data-" + key, value);
+        });
+    });
+
+    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+
+    runHiddenScripts(id + "_popup");
+
+    jQuery(document).on('click', function(e) {
+        var tempTarget = (e.target) ? e.target : e.srcElement;
+        if ( jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
+            fnCloseAllPopups();
+        }
+    });
+}
+
+
 
 
 
@@ -377,8 +442,8 @@ function openDialog(sText, e, close) {
 
 function fnPositionPopUp(popupBoxId) {
     if ( parseFloat(jQuery("#" + popupBoxId).css("top")) < 0 || parseFloat(jQuery("#" + popupBoxId).css("left")) < 0 ) {
-        var iTop = ( jQuery(window).height() / 2 ) - ( jQuery("#" + popupBoxId).height() / 2 );
-        var iLeft = ( jQuery(window).width() / 2 ) - ( jQuery("#" + popupBoxId).width() / 2 );
+        var iTop = ( document.body.scrollTop + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
+        var iLeft = ( document.body.scrollLeft + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
         jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
     }
 }
@@ -710,6 +775,7 @@ function myplanCreateLightBoxLink(controlId, options) {
 
             // Perform cleanup when lightbox is closed
             options['onCleanup'] = cleanupClosedLightboxForms;
+
             options['onComplete'] = function() {
                 jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
                     jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+20 );

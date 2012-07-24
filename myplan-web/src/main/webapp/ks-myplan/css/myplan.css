@@ -674,6 +674,9 @@ table.myplan-course-search-results-datatable .even:hover {
 table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
     background-color: transparent;
 }
+table.myplan-course-search-results-datatable .blockUI {
+    display: none !important;
+}
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     width: auto;
     clear: both;
@@ -817,6 +820,7 @@ table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
 }
 .jquerybubblepopup-myplan .jquerybubblepopup-innerHtml {
     padding: 5px;
+    overflow: hidden;
 }
 .jquerybubblepopup-myplan .jquerybubblepopup-innerHtml .uif-headerText {
     text-transform: none;
