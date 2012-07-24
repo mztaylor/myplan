@@ -159,6 +159,7 @@ function searchForCourses(id, parentId) {
         bDestroy: true,
         bJQueryUI: true,
         bScrollCollapse: true,
+        bServerSide: false,
         bSortClasses: false,
         bStateSave: false,
         iCookieDuration: 600,
@@ -182,6 +183,20 @@ function searchForCourses(id, parentId) {
                 jQuery(this).empty();
             });
             if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jQuery.publish("GENERATE_FACETS");
+        },
+        fnServerData: function(sSource, aoData, fnCallback) {
+            jQuery.ajax({
+                dataType: 'json',
+                type: "GET",
+                url: sSource,
+                data: aoData,
+                success: fnCallback,
+                statusCode: {
+                    404: function() {
+                        window.location = '/student/';
+                    }
+                }
+            });
         },
         oLanguage: {
             "sEmptyTable":'<div class="myplan-course-search-empty"><p class="fl-font-size-130">We couldn&#39;t find anything matching your search.</p><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 2 characters</li></ul></div>',

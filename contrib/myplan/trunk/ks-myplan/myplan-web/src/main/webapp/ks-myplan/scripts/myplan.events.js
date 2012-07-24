@@ -6,7 +6,7 @@
 function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
     var item = '<div id="' + planItemId + '_div" title="' + courseTitle + '" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
                     '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
-                        '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid">' +
+                        '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace("-",".") + '">' +
                             '<fieldset>' +
                                 '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
                                     '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
@@ -17,7 +17,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
                                 '</div>' +
                             '</fieldset>' +
                         '</div>' +
-                        '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openPopUp(\'' + planItemId + '\',\'add_planned_course\',\'startAddPlannedCourseForm\',\'plan\',{viewId:\'PlannedCourseMenuItem-FormView\',dateAdded:\'2012-06-04 10:34:05.21\',planItemId:\'' + planItemId + '\'},e,\'.uif-collectionItem\',{width:\'150px\'},{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
+                        '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
                     '</div>' +
                 '</div>';
 

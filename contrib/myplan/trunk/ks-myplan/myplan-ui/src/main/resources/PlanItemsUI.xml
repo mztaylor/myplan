@@ -1024,32 +1024,47 @@
         <property name="items">
             <list>
 
-                <bean p:id="planned_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="View Course Summary"
                       p:title="View Course Summary">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="planned_menu_backup" parent="Uif-Link" p:target="" p:linkText="Mark it as Backup course"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="Mark it as Backup course"
                       p:title="Mark it as Backup course"
                       p:style="margin:0;">
+                    <property name="onClickScript"
+                              value="myPlanAjaxPlanItemMove(e.currentTarget.dataset.planitemid,'planItemId','plannedToBackup',e);"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Will be moved below the Total Credit line"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
 
-                <bean p:id="planned_menu_move" parent="Uif-Link" p:target="" p:linkText="Move to Another Quarter"
-                      p:title="Move to Another Quarter" >
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="Move to Another Quarter"
+                      p:title="Move to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'move_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="planned_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="planned_menu_delete" parent="Uif-Link" p:target="" p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan" p:href="#"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="Delete from the Plan"
+                      p:title="Delete from the Plan"
                       p:style="margin:0;">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90" />
 
             </list>
@@ -1063,36 +1078,46 @@
         <property name="items">
             <list>
 
-                <bean p:id="backup_menu_summary" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="backup_menu_planned" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Mark it as Planned course"
-                      p:title="Mark it as Planned course">
+                      p:title="Mark it as Planned course"
+                      p:style="margin:0;">
+                    <property name="onClickScript"
+                              value="myPlanAjaxPlanItemMove(e.currentTarget.dataset.planitemid,'planItemId','backupToPlanned',e);"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Will be moved above the Total Credit line"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
 
-                <bean p:id="backup_menu_move" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter">
-
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'move_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="backup_menu_copy" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="backup_menu_delete" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan" p:href="#"
+                      p:title="Delete from the Plan"
                       p:style="margin:0;">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
-                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
 
             </list>
@@ -1106,20 +1131,28 @@
         <property name="items">
             <list>
 
-                <bean p:id="completed_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="View Course Summary"
                       p:title="View Course Summary">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="completed_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="backup_menu_delete" parent="Uif-Link" p:target=""
+                <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan" p:href="#"
+                      p:title="Delete from the Plan"
                       p:style="margin:0;">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
-                <bean parent="Uif-Message" p:messageText="Cannot Undo"
+                <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
 
             </list>
@@ -1132,12 +1165,18 @@
         <property name="items">
             <list>
 
-                <bean p:id="registered_menu_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
+                <bean parent="Uif-Link" p:target="" p:href="#"
+                      p:linkText="View Course Summary"
                       p:title="View Course Summary">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.courseid,'course_summary_dialog_page',{courseId:e.currentTarget.dataset.courseid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="registered_menu_copy" parent="Uif-Link" p:target="" p:linkText="Copy to Another Quarter"
+                <bean parent="Uif-Link" p:target="" p:href="#" p:style="margin:0;"
+                      p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
+                    <property name="onClickScript"
+                              value="openPlanItemPopUp(e.currentTarget.dataset.courseid,'copy_dialog_page',{courseId:e.currentTarget.dataset.courseid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
             </list>
@@ -1328,9 +1367,17 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
-                    <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}">
+                    <!--
                       p:onClickScript="openPopUp('@{#line.uuid}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecAtpId:'@{#line.atpId}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                    -->
+                    <property name="onClickScript" value="openMenu('@{#line.uuid}_completed','completed_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="courseId" value="@{#line.courseId}"/>
+                            <entry key="acadRecAtpId" value="@{#line.atpId}"/>
+                        </map>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1341,12 +1388,6 @@
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseCode} (@{#line.credit})"/>
                                 <property name="title" value="@{#line.courseTitle}"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseId}"/>
-                                        <entry key="acadRecAtpId" value="@{#line.atpId}"/>
-                                    </map>
-                                </property>
                             </bean>
                             <bean parent="Uif-MessageField" p:render="@{#line.grade ne null ? true : false}">
                                 <property name="messageText" value="@{#line.grade}"/>
@@ -1360,7 +1401,6 @@
                         </list>
                     </property>
                 </bean>
-                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1422,7 +1462,6 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
                       p:onClickScript="
                       openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
@@ -1436,12 +1475,6 @@
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseCode} (@{#line.credit})"/>
                                 <property name="title" value="@{#line.courseTitle}"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseId}"/>
-                                        <entry key="pageId" value="course_summary_dialog_page"/>
-                                    </map>
-                                </property>
                             </bean>
                             <bean parent="Uif-MessageField" p:render="@{#line.grade ne null ? true : false}">
                                 <property name="messageText" value="@{#line.grade}"/>
@@ -1455,7 +1488,6 @@
                         </list>
                     </property>
                 </bean>
-                <!-- TODO: Change ID (uuid) to unique for repeated courses -->
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1521,8 +1553,20 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}">
+                    <!--
+                    p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                    -->
+                    <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
+                    <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                            <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
+                            <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                        </map>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1532,19 +1576,11 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                                        <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
-                                        <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
-                                    </map>
-                                </property>
+
                             </bean>
                         </list>
                     </property>
                 </bean>
-
-
             </list>
         </property>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
@@ -1600,12 +1636,6 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                                        <entry key="pageId" value="course_summary_dialog_page"/>
-                                    </map>
-                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1655,8 +1685,20 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
+                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}">
+                      <!--
                       p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                    -->
+                    <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
+                    <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
+                            <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
+                            <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                        </map>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1666,13 +1708,6 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                                        <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
-                                        <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
-                                    </map>
-                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1725,12 +1760,6 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                                        <entry key="pageId" value="course_summary_dialog_page"/>
-                                    </map>
-                                </property>
                             </bean>
                         </list>
                     </property>
