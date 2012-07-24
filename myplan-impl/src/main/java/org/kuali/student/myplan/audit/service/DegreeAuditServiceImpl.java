@@ -34,6 +34,7 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.InputSource;
@@ -974,11 +975,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                                                 @WebParam(name = "endDate") Date endDate,
                                                                 @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
+        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
 
         /*studentId = hardcodedStudentID( studentId );*/
-        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
-        JobQueueRunDao runrun = getJobQueueRunDao();
 
         // TODO: configurable constant for UW
         String instid = "4854";
@@ -987,17 +987,25 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         // I have no idea what 'instcd' list does
         List<String> instcd = new ArrayList<String>();
         instcd.add("");
-        List<JobQueueRun> load = runrun.load(instid, instidq, instcd, studentId);
+        try
+        {
+            JobQueueRunDao runrun = getJobQueueRunDao();
+            List<JobQueueRun> load = runrun.load(instid, instidq, instcd, studentId);
 
-        for (JobQueueRun jqr : load) {
-            AuditReportInfo audit = new AuditReportInfo();
-            audit.setAuditId(jqr.getJobid());
-            audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
-            audit.setStudentId(studentId);
-            audit.setProgramId(jqr.getWebtitle());
-            audit.setRunDate(jqr.getRundate());
-            audit.setRequirementsSatisfied("Unknown");
-            list.add(audit);
+            for (JobQueueRun jqr : load) {
+                AuditReportInfo audit = new AuditReportInfo();
+                audit.setAuditId(jqr.getJobid());
+                audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
+                audit.setStudentId(studentId);
+                audit.setProgramId(jqr.getWebtitle());
+                audit.setRunDate(jqr.getRundate());
+                audit.setRequirementsSatisfied("Unknown");
+                list.add(audit);
+            }
+        }
+        catch( DataRetrievalFailureException e )
+        {
+            // Stupid exception for when no results found. ignore it.
         }
 
         return list;
