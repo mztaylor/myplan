@@ -40,6 +40,7 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 
@@ -69,7 +70,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, String> campusLocationCache;
     private Map<String, String> atpCache;
-    
+
     private transient CourseLinkBuilder courseLinkBuilder;
 
     // default is to create real links
@@ -79,8 +80,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private HashMap<String, List<EnumeratedValueInfo>> enumServiceCache = new HashMap<String, List<EnumeratedValueInfo>>();
 
     public CourseLinkBuilder getCourseLinkBuilder() {
-        if(courseLinkBuilder==null){
-            this.courseLinkBuilder=new CourseLinkBuilder();
+        if (courseLinkBuilder == null) {
+            this.courseLinkBuilder = new CourseLinkBuilder();
         }
         return courseLinkBuilder;
     }
@@ -134,16 +135,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         String str = course.getDescr().getFormatted();
-        if(str != null && str.contains("Offered:")){
-            str=str.substring(0,str.indexOf("Offered"));
+        if (str != null && str.contains("Offered:")) {
+            str = str.substring(0, str.indexOf("Offered"));
         }
-        List<String> prerequisites=new ArrayList<String>();
+        List<String> prerequisites = new ArrayList<String>();
 
         if (str != null && str.contains("Prerequisite")) {
-            String req=(getCourseLinkBuilder().makeLinks(str.substring(str.indexOf("Prerequisite:"), str.length()),courseLinkTemplateStyle));
-            req=req.substring(req.indexOf("Prerequisite:"), req.length());
-            req=req.replace("Prerequisite:","").trim();
-            req=req.substring(0,1).toUpperCase().concat(req.substring(1,req.length()));
+            String req = (getCourseLinkBuilder().makeLinks(str.substring(str.indexOf("Prerequisite:"), str.length()), courseLinkTemplateStyle));
+            req = req.substring(req.indexOf("Prerequisite:"), req.length());
+            req = req.replace("Prerequisite:", "").trim();
+            req = req.substring(0, 1).toUpperCase().concat(req.substring(1, req.length()));
             prerequisites.add(req);
 
             str = str.substring(0, str.indexOf("Prerequisite"));
@@ -181,7 +182,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         // Campus Locations
-        initializeCampusLocations();
+        this.campusLocationCache = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+
         List<String> enumeratedCampus = new ArrayList<String>();
         for (String campus : course.getCampusLocations()) {
             enumeratedCampus.add(this.campusLocationCache.get(campus));
@@ -483,28 +485,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
         this.academicCalendarService = academicCalendarService;
-    }
-
-    protected synchronized void initializeCampusLocations() {
-        if (null == campusLocationCache || campusLocationCache.isEmpty()) {
-            try {
-                List<EnumeratedValueInfo> campusLocations = null;
-                if (!enumServiceCache.containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                    campusLocations = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
-                } else {
-                    campusLocations = enumServiceCache.get(CourseSearchConstants.CAMPUS_LOCATION);
-                }
-                if (this.campusLocationCache == null) {
-                    this.campusLocationCache = new HashMap<String, String>();
-                }
-                for (EnumeratedValueInfo campus : campusLocations) {
-                    this.campusLocationCache.put(campus.getCode(), campus.getValue());
-                }
-
-            } catch (Exception e) {
-                logger.error("Could not load campus locations..");
-            }
-        }
     }
 
     public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {

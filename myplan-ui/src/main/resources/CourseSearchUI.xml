@@ -143,7 +143,7 @@
 
         <property name="items">
             <list>
-                <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" p:defaultValue="0">
+                <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" p:defaultValue="306">
                     <property name="control">
                         <bean parent="Uif-HorizontalCheckboxesControl"/>
                     </property>
