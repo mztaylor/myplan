@@ -9,12 +9,10 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CourseSearchStrategy {
     private final Logger logger = Logger.getLogger(CourseSearchStrategy.class);
@@ -23,10 +21,25 @@ public class CourseSearchStrategy {
 
     private transient LuService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
-    private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, Map<String, String>> orgTypeCache;
+    private HashMap<String, List<EnumeratedValueInfo>> hashMap;
+
+    public HashMap<String, Map<String, String>> getOrgTypeCache() {
+        if (this.orgTypeCache == null) {
+            this.orgTypeCache = new HashMap<String, Map<String, String>>();
+        }
+        return this.orgTypeCache;
+    }
+
+    public void setOrgTypeCache(HashMap<String, Map<String, String>> orgTypeCache) {
+        this.orgTypeCache = orgTypeCache;
+    }
 
     public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
-        return hashMap;
+        if (this.hashMap == null) {
+            this.hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+        }
+        return this.hashMap;
     }
 
     public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
@@ -70,28 +83,28 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-        /*String str = form.getCampusSelect();
+        String str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
             results = str.split(",");
         }
 
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
-
+        Map<String, String> campusLocations = new HashMap<String, String>();
+        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+            campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
         } else {
-            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);
         }
 
-        String[] campus = new String[enumeratedValueInfoList.size() - 1];
+        String[] campus = new String[campusLocations.size()];
         for (int k = 0; k < campus.length; k++) {
             campus[k] = NO_CAMPUS;
         }
         if (results != null) {
             for (int i = 0; i < results.length; i++) {
-                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
+                for (Map.Entry<String, String> entry : campusLocations.entrySet()) {
+                    if (results[i].equalsIgnoreCase(entry.getKey())) {
                         campus[i] = results[i];
                         break;
                     }
@@ -105,56 +118,44 @@ public class CourseSearchStrategy {
                 String campusKey = "campus" + count;
                 request.addParam(campusKey, campus[j]);
             }
-        }*/
-        for (SearchRequest request : requests) {
-
-            request.addParam("campus1", "306");
-            request.addParam("campus2", "310");
-            request.addParam("campus3", "323");
         }
 
     }
 
 
     public void addCampusParam(SearchRequest request, CourseSearchForm form) {
-        /*String str = form.getCampusSelect();
+        String str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
             results = str.split(",");
         }
-
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.CAMPUS_LOCATION);
-
+        Map<String, String> campusLocations = new HashMap<String, String>();
+        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
+            campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
         } else {
-            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);
         }
-        String[] campus = new String[enumeratedValueInfoList.size() - 1];
+
+        String[] campus = new String[campusLocations.size()];
         for (int k = 0; k < campus.length; k++) {
             campus[k] = NO_CAMPUS;
         }
         if (results != null) {
             for (int i = 0; i < results.length; i++) {
-                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                    if (results[i].equalsIgnoreCase(enumeratedValueInfo.getCode())) {
+                for (Map.Entry<String, String> entry : campusLocations.entrySet()) {
+                    if (results[i].equalsIgnoreCase(entry.getKey())) {
                         campus[i] = results[i];
                         break;
                     }
                 }
             }
         }
-
-
         for (int j = 0; j < campus.length; j++) {
             int count = j + 1;
             String campusKey = "campus" + count;
             request.addParam(campusKey, campus[j]);
-        }*/
-
-            request.addParam("campus1", "306");
-            request.addParam("campus2", "310");
-            request.addParam("campus3", "323");
+        }
 
     }
 
@@ -309,7 +310,7 @@ public class CourseSearchStrategy {
                             enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
 
                         } else {
-                            enumeratedValueInfoList = hashMap.get(CourseSearchConstants.SUBJECT_AREA);
+                            enumeratedValueInfoList = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                         }
                         StringBuffer additionalDivisions = new StringBuffer();
                         if (enumeratedValueInfoList != null) {
@@ -351,7 +352,7 @@ public class CourseSearchStrategy {
                                 enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
 
                             } else {
-                                enumeratedValueInfoList = hashMap.get(CourseSearchConstants.SUBJECT_AREA);
+                                enumeratedValueInfoList = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                             }
 
 
@@ -403,7 +404,7 @@ public class CourseSearchStrategy {
         try {
 
             enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            hashMap.put(param, enumeratedValueInfoList);
+            getHashMap().put(param, enumeratedValueInfoList);
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
         }

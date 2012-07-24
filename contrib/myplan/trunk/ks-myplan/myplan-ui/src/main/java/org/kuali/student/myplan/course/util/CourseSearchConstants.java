@@ -94,9 +94,13 @@ public class CourseSearchConstants {
 
     public static final String SUBJECT_AREA = "kuali.lu.subjectArea";
 
-    public static final String CAMPUS_LOCATION = "kuali.lu.campusLocation";
+    public static final String CAMPUS_LOCATION = "kuali.uw.org.type.campus";
 
     public static final String TIME_SCHEDULE_KEY = "TimeScheduleLinkAbbreviation";
     
     public static final String COURSE_OFFERING_INSTITUTE ="kuali.uw.course.offering.institute";
+
+    public static final String ORG_QUERY_SEARCH_REQUEST= "org.search.orgQuickViewByOrgType";
+
+    public static final String ORG_QUERY_PARAM = "org_queryParam_orgType";
 }
