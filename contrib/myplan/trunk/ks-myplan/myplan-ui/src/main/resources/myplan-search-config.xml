@@ -353,7 +353,8 @@
                         AND
                         attr.name = 'courseCampus'
                         AND
-                        attr.value IN ( :campus1, :campus2, :campus3 ) ORDER BY
+                        attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit') ORDER BY
                         ident.code
                     </value>
                 </entry>
@@ -381,6 +382,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                         ORDER BY
                         ident.code
                     </value>
@@ -412,6 +414,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                     </value>
                 </entry>
 
@@ -438,6 +441,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -466,6 +470,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -491,6 +496,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                         ORDER BY
                         ident.suffixCode
                     </value>
@@ -516,6 +522,7 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
                         ORDER BY
                         ident.suffixCode
                     </value>
