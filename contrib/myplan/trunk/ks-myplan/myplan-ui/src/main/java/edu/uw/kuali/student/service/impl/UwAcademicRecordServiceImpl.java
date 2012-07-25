@@ -176,6 +176,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             String isRepeated = dataSection.elementText("RepeatCourse");
                             if (isRepeated.equalsIgnoreCase("true")) {
                                 studentCourseRecordInfo.setIsRepeated(true);
+                            }else {
+                                studentCourseRecordInfo.setIsRepeated(false);
                             }
                             studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
                             studentCourseRecordInfo.setCreditsEarned(creditsEarned.trim());
