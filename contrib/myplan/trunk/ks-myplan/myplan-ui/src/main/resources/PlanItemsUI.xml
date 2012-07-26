@@ -2003,6 +2003,13 @@
     <!--  Add to saved courses. Used contextually in course details popup actions -->
     <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton"
           p:actionLabel="Bookmark Course">
+        <property name="onDocumentReadyScript"
+                  value="jQuery('#addSavedCourseButton').subscribe('PLAN_ITEM_ADDED', function(data){
+                      if (data.planItemType === 'wishlist') {
+                          fnDisplayMessage(data.message, data.cssClass, 'addSavedCourseButton', true);
+                          setTimeout('fnCloseAllPopups()', 5500);
+                      }
+                  });"/>
         <property name="clientSideJs"
                   value="myPlanAjaxPlanItemMove('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
         <property name="cssClasses">

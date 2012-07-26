@@ -73,7 +73,7 @@ function fnUpdateCredits (atpId, termCredits) {
  */
 function fnDisplayMessage (message, cssClass, targetId, button, full) {
     if (button) {
-        if (!full) jQuery("#" + targetId).wrap("<div></div>");
+        if (!full) jQuery("#" + targetId).wrap('<div style="float:left;" />');
         jQuery("#" + targetId).parent("div").fadeOut(250, function() {
             jQuery(this).addClass(cssClass).html(message).fadeIn(250);
         });
@@ -104,8 +104,8 @@ function fnRestoreSearchAddButton (courseId) {
 function fnRestoreDetailsAddButton (courseId) {
     jQuery("#" + courseId + "_bookmarked").wrap("<div></div>");
     jQuery("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
-        jQuery(this).replaceWith('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
-        jQuery(this).append("jQuery(document).ready(function () {jQuery('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
+        jQuery(this).html('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-primaryActionButton myplan-button myplan-button-gray uif-boxLayoutHorizontalItem" onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
+        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
         runHiddenScripts();
         jQuery(this).fadeIn(250);
     });

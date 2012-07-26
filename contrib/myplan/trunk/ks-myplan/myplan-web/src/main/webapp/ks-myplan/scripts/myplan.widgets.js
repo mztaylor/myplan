@@ -471,9 +471,9 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     var targetText = ( jQuery.trim( jQuery(target).text() ) != '') ? jQuery.trim( jQuery(target).text() ) : "Error";
     var elementToBlock = (target.nodeName != 'INPUT') ? jQuery(target) : jQuery(target).parent();
     jQuery('input[name="methodToCall"]').remove();
-    jQuery('form#' + id + '_form input[name="' + type + '"]').remove();
-    jQuery('form#' + id + '_form input[name="viewId"]').remove();
-    jQuery('<input type="hidden" name="methodToCall" value="' + methodToCall + '" /><input type="hidden" name="' + type + '" value="' + id + '" /><input type="hidden" name="viewId" value="PlannedCourse-FormView" />').appendTo(jQuery("form#" + id + "_form"));
+    jQuery('#' + id + '_form input[name="' + type + '"]').remove();
+    jQuery('#' + id + '_form input[name="viewId"]').remove();
+    jQuery("#" + id + "_form").append('<input type="hidden" name="methodToCall" value="' + methodToCall + '" /><input type="hidden" name="' + type + '" value="' + id + '" /><input type="hidden" name="viewId" value="PlannedCourse-FormView" />');
     var updateRefreshableComponentCallback = function(htmlContent){
         var status = jQuery.trim( jQuery("span#request_status_item_key", htmlContent).text().toLowerCase() );
         eval( jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page","body") );
@@ -497,6 +497,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 if (!bDialog) {
                     var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff","color":"#ff0606","border":"none"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
+                    if ( jQuery("body").HasBubblePopup() ) jQuery("body").RemoveBubblePopup();
                     openDialog(sHtml.html(), e);
                 } else {
                     eval('jQuery.publish("ERROR", [' + JSON.stringify( oMessage ) + ']);');
@@ -523,11 +524,13 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
 /*Function used for moving the plan Item from planned to backup*/
 function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     stopEvent(e);
-    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
-    jQuery("body").append(tempForm);
+    if (jQuery("#" + id + "_form").length === 0) {
+        var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
+        jQuery("body").append(tempForm);
+    }
     myplanAjaxSubmitPlanItem(id, type, methodToCall, e, false);
-    fnCloseAllPopups();
-    jQuery("form#"+ id + "_form").remove();
+    var tempTarget = (e.target) ? e.target : e.srcElement;
+    if ( jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) jQuery("form#"+ id + "_form").remove();
 }
 /*
 ######################################################################################
