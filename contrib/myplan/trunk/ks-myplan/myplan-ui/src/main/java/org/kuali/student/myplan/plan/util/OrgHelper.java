@@ -55,13 +55,13 @@ public class OrgHelper {
     }
 
 
-    public static List<OrgInfo> getOrgInfoFromType(String param) {
+    public static List<OrgInfo> getOrgInfo(String param, String searchRequestKey, String paramKey) {
         if (OrgHelper.getOrgTypeCache() != null && OrgHelper.getOrgTypeCache().containsKey(param)) {
             return getOrgTypeCache().get(param);
         } else {
             List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
-            SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST);
-            searchRequest.addParam(CourseSearchConstants.ORG_QUERY_PARAM, param);
+            SearchRequest searchRequest = new SearchRequest(searchRequestKey);
+            searchRequest.addParam(paramKey, param);
             SearchResult searchResult = new SearchResult();
             try {
                 searchResult = getOrganizationService().search(searchRequest);

@@ -92,7 +92,7 @@ public class CourseSearchStrategy {
 
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
         if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
             this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
         } else {
             campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);
@@ -132,7 +132,7 @@ public class CourseSearchStrategy {
         }
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
         if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
             this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
         } else {
             campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);

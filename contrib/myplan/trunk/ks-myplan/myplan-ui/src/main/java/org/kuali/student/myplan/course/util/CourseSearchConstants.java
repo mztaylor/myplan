@@ -102,5 +102,5 @@ public class CourseSearchConstants {
 
     public static final String ORG_QUERY_SEARCH_BY_TYPE_REQUEST= "org.search.orgInfoByType";
 
-    public static final String ORG_QUERY_PARAM = "org_queryParam_orgType";
+    public static final String ORG_TYPE_PARAM = "org_queryParam_orgType";
 }
