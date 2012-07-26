@@ -5,6 +5,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
@@ -21,17 +22,17 @@ public class CourseSearchStrategy {
 
     private transient LuService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
-    private HashMap<String, Map<String, String>> orgTypeCache;
+    private HashMap<String, List<OrgInfo>> orgTypeCache;
     private HashMap<String, List<EnumeratedValueInfo>> hashMap;
 
-    public HashMap<String, Map<String, String>> getOrgTypeCache() {
+    public HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (this.orgTypeCache == null) {
-            this.orgTypeCache = new HashMap<String, Map<String, String>>();
+            this.orgTypeCache = new HashMap<String, List<OrgInfo>>();
         }
         return this.orgTypeCache;
     }
 
-    public void setOrgTypeCache(HashMap<String, Map<String, String>> orgTypeCache) {
+    public void setOrgTypeCache(HashMap<String, List<OrgInfo>> orgTypeCache) {
         this.orgTypeCache = orgTypeCache;
     }
 
@@ -89,7 +90,7 @@ public class CourseSearchStrategy {
             results = str.split(",");
         }
 
-        Map<String, String> campusLocations = new HashMap<String, String>();
+        List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
         if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
             campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
             this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
@@ -103,8 +104,8 @@ public class CourseSearchStrategy {
         }
         if (results != null) {
             for (int i = 0; i < results.length; i++) {
-                for (Map.Entry<String, String> entry : campusLocations.entrySet()) {
-                    if (results[i].equalsIgnoreCase(entry.getKey())) {
+                for (OrgInfo entry : campusLocations) {
+                    if (results[i].equalsIgnoreCase(entry.getId())) {
                         campus[i] = results[i];
                         break;
                     }
@@ -129,7 +130,7 @@ public class CourseSearchStrategy {
         if (str != null) {
             results = str.split(",");
         }
-        Map<String, String> campusLocations = new HashMap<String, String>();
+        List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
         if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
             campusLocations = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
             this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
@@ -143,8 +144,8 @@ public class CourseSearchStrategy {
         }
         if (results != null) {
             for (int i = 0; i < results.length; i++) {
-                for (Map.Entry<String, String> entry : campusLocations.entrySet()) {
-                    if (results[i].equalsIgnoreCase(entry.getKey())) {
+                for (OrgInfo entry : campusLocations) {
+                    if (results[i].equalsIgnoreCase(entry.getId())) {
                         campus[i] = results[i];
                         break;
                     }

@@ -29,23 +29,23 @@ public class OrgHelper {
     private static final Logger logger = Logger.getLogger(OrgHelper.class);
     public static OrganizationService organizationService;
 
-    public static HashMap<String, Map<String, String>> orgTypeCache;
+    public static HashMap<String, List<OrgInfo>> orgTypeCache;
 
-    public static HashMap<String, Map<String, String>> getOrgTypeCache() {
+    public static HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if(OrgHelper.orgTypeCache==null){
-            OrgHelper.orgTypeCache=new HashMap<String, Map<String, String>>();
+            OrgHelper.orgTypeCache=new HashMap<String, List<OrgInfo>>();
         }
         return OrgHelper.orgTypeCache;
     }
 
-    public static void setOrgTypeCache(HashMap<String, Map<String, String>> orgTypeCache) {
+    public static void setOrgTypeCache(HashMap<String, List<OrgInfo>> orgTypeCache) {
         OrgHelper.orgTypeCache = orgTypeCache;
     }
 
     public static OrganizationService getOrganizationService() {
         if (OrgHelper.organizationService == null) {
             //   TODO: Use constants for namespace.
-            OrgHelper.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "OrganizationService"));
+            OrgHelper.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "orgService"));
         }
         return OrgHelper.organizationService;
     }
@@ -55,12 +55,12 @@ public class OrgHelper {
     }
 
 
-    public static Map<String, String> getOrgInfoFromType(String param) {
+    public static List<OrgInfo> getOrgInfoFromType(String param) {
         if (OrgHelper.getOrgTypeCache() != null && OrgHelper.getOrgTypeCache().containsKey(param)) {
             return getOrgTypeCache().get(param);
         } else {
-            Map<String, String> orgTypes = new HashMap<String, String>();
-            SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_REQUEST);
+            List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
+            SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST);
             searchRequest.addParam(CourseSearchConstants.ORG_QUERY_PARAM, param);
             SearchResult searchResult = new SearchResult();
             try {
@@ -69,12 +69,17 @@ public class OrgHelper {
                 logger.error("Search Failed to get the Organization Data ", e);
             }
             for (SearchResultRow row : searchResult.getRows()) {
-                orgTypes.put(getCellValue(row, "org.resultColumn.orgId"), getCellValue(row, "org.resultColumn.orgShortName"));
+                OrgInfo orgInfo=new OrgInfo();
+                orgInfo.setId(getCellValue(row, "org.resultColumn.orgId"));
+                orgInfo.setShortName(getCellValue(row, "org.resultColumn.orgShortName"));
+                orgInfo.setLongName(getCellValue(row, "org.resultColumn.orgLongName"));
+                orgInfoList.add(orgInfo);
+
             }
-            if (orgTypes.size() > 0) {
-                OrgHelper.getOrgTypeCache().put(param, orgTypes);
+            if (orgInfoList.size() > 0) {
+                OrgHelper.getOrgTypeCache().put(param, orgInfoList);
             }
-            return orgTypes;
+            return orgInfoList;
         }
     }
 

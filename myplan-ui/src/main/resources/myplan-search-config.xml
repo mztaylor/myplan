@@ -317,6 +317,22 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.course.getCampusLocations">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <search:resultColumn id="lu.resultColumn.campusVal">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
     <bean id="queryMap" parent="queryMap-parent">
         <property name="sourceMap">
             <map merge="true">
@@ -680,6 +696,32 @@
                         trim( id.SUFX_CD ) = :number
                         AND
                         trim( id.DIVISION ) = :subject
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.getCampusLocations">
+                    <value>
+                        SELECT
+                        attr.value
+                        FROM CluAttribute attr
+                        JOIN attr.owner clu
+                        JOIN clu.officialIdentifier ident
+                        WHERE
+                        clu.version.currentVersionStart &lt;= CURRENT_DATE
+                        AND
+                        (
+                        clu.version.currentVersionEnd &gt; CURRENT_DATE
+                        OR
+                        clu.version.currentVersionEnd IS NULL
+                        )
+                        AND
+                        clu.id = :cluId
+                        AND
+                        attr.name = 'courseCampus'
+                        AND
+                        clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        ORDER BY
+                        ident.suffixCode
                     </value>
                 </entry>
             </map>

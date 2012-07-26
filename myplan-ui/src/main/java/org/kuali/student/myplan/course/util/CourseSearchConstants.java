@@ -100,7 +100,7 @@ public class CourseSearchConstants {
     
     public static final String COURSE_OFFERING_INSTITUTE ="kuali.uw.course.offering.institute";
 
-    public static final String ORG_QUERY_SEARCH_REQUEST= "org.search.orgQuickViewByOrgType";
+    public static final String ORG_QUERY_SEARCH_BY_TYPE_REQUEST= "org.search.orgInfoByType";
 
     public static final String ORG_QUERY_PARAM = "org_queryParam_orgType";
 }

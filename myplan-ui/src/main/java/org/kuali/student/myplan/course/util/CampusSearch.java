@@ -32,16 +32,16 @@ public class CampusSearch extends KeyValuesBase {
     private boolean blankOption;
 
 
-    private HashMap<String, Map<String, String>> hashMap;
+    private HashMap<String, List<OrgInfo>> hashMap;
 
-    public HashMap<String, Map<String, String>> getHashMap() {
+    public HashMap<String, List<OrgInfo>> getHashMap() {
         if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, Map<String, String>>();
+            this.hashMap = new HashMap<String, List<OrgInfo>>();
         }
         return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
+    public void setHashMap(HashMap<String, List<OrgInfo>> hashMap) {
         this.hashMap = hashMap;
     }
 
@@ -52,20 +52,20 @@ public class CampusSearch extends KeyValuesBase {
         if (blankOption) {
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        Map<String, String> campusValues = new HashMap<String, String>();
+        List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
         try {
             if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                campusValues = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
-                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, campusValues);
+                orgInfoList = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
             } else {
-                campusValues = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
+                orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
             }
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
         }
-        if (campusValues != null) {
-            for (Map.Entry<String, String> entry : campusValues.entrySet()) {
-                keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue() + " campus"));
+        if (orgInfoList != null && orgInfoList.size()>0) {
+            for (OrgInfo entry : orgInfoList) {
+                keyValues.add(new ConcreteKeyValue(entry.getId(), entry.getLongName() + " campus"));
             }
         }
         Collections.sort(keyValues,

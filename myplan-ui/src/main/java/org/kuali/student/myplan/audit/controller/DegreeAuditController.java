@@ -206,7 +206,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     public Map<String, String> populateCampusMap() {
         Map<String, String> orgCampusTypes = new HashMap<String, String>();
-        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_REQUEST);
+        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST);
         searchRequest.addParam(DegreeAuditConstants.ORG_QUERY_PARAM, DegreeAuditConstants.CAMPUS_LOCATION);
         SearchResult searchResult = new SearchResult();
         try {
