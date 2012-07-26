@@ -1,8 +1,14 @@
 /* This is for DOM changes to refresh the view on back to keep the view updated */
-if(window.location.hash != "" && window.location.hash.indexOf("CourseSearch-FormView") == -1) {
-    window.location.href = window.location.href.split('#')[0];
+if (jQuery("#dirtyView").length > 0 && jQuery("#dirtyView").val() != "CourseSearch-FormView") {
+    window.location.href = window.location.href;
 }
 
+/*
+if(window.location.hash != "" && window.location.hash.indexOf("CourseSearch-FormView") == -1) {
+
+    window.location.href = window.location.href.split('#')[0];
+}
+ */
 function stopEvent(e) {
     if(!e) var e = window.event;
     if (e.stopPropagation) {
@@ -487,10 +493,16 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify( jQuery.extend(json[key], oMessage) ) + ']);');
                     }
                 }
+                if (jQuery("#myplanDirty").length === 0) {
+                    jQuery("body").append('<form id="myplanDirty"><input type="hidden" id="dirtyView" name="dirtyView" value="'+jQuery("input#viewId").val()+'" </form>');
+                }
+                /*
                 if (window.location.hash == '') {
+
                     var hash  = new Date().getTime() + '-' + jQuery("input#viewId").val();
                     window.location.hash = hash;
                 }
+                */
                 break;
             case 'error':
                 var oMessage = { 'message' : jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
@@ -524,13 +536,11 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
 /*Function used for moving the plan Item from planned to backup*/
 function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     stopEvent(e);
-    if (jQuery("#" + id + "_form").length === 0) {
-        var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
-        jQuery("body").append(tempForm);
-    }
+    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
+    jQuery("body").append(tempForm);
     myplanAjaxSubmitPlanItem(id, type, methodToCall, e, false);
-    var tempTarget = (e.target) ? e.target : e.srcElement;
-    if ( jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) jQuery("form#"+ id + "_form").remove();
+    fnCloseAllPopups();
+    jQuery("form#"+ id + "_form").remove();
 }
 /*
 ######################################################################################
