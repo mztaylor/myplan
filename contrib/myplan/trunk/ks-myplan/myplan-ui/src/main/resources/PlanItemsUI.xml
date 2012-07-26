@@ -184,6 +184,9 @@
                                                     <ref bean="degree_audits_list"/>
                                                 </list>
                                             </property>
+                                            <property name="propertyReplacers">
+                                                <list/>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -956,15 +959,23 @@
                     jQuery(this).height(iMaxHeight);
                 });
                 var iStart = 0;
-                if ( jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).length > 0 ) {
-                    iStart = parseFloat(jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).val());
+                if (window.location.hash == '') {
+                    if ( jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).length > 0 ) {
+                        iStart = parseFloat(jQuery(&quot;input[type='hidden'][id^='atp_start_index']&quot;).val());
+                    }
+                } else {
+                    iStart = parseFloat(window.location.hash.replace('#',''));
                 }
+
                 jQuery('#planned_courses_detail_list').jCarouselLite({
                     btnNext: '.myplan-carousel-next',
                     btnPrev: '.myplan-carousel-prev',
                     scroll: 4,
                     start: iStart,
-                    afterEnd: function(a) { fnBuildTitle(a); },
+                    afterEnd: function(a) {
+                        fnBuildTitle(a);
+                        location.replace( '#'+jQuery(a[0]).index() );
+                    },
                     initCallback: function(a) { fnBuildTitle(a); }
                 });
             }
@@ -2011,7 +2022,7 @@
                       }
                   });"/>
         <property name="clientSideJs"
-                  value="myPlanAjaxPlanItemMove('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
+                  value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-button</value>
