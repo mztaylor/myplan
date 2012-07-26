@@ -167,15 +167,22 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="subject">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>fl-font-size-120</value>
-                        <value>fl-text-bold</value>
-                    </list>
-                </property>
+                <bean parent="Uif-DataField" p:propertyName="subject" p:style="width:610px;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-font-size-120</value>
+                            <value>fl-text-bold</value>
+                            <value>myplan-text-ellipsis</value>
+                        </list>
+                    </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="body" p:style="margin:0;"/>
+                <bean parent="Uif-DataField" p:propertyName="body" p:style="width:610px; margin:0;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-text-ellipsis</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

@@ -226,7 +226,6 @@
                         </list>
                     </property>
                 </bean>
-
             </list>
         </property>
         <property name="footer.render" value="false"/>
