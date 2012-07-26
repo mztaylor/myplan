@@ -21,12 +21,19 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.exceptions.MissingParameterException;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultCell;
+import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -42,9 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
@@ -55,6 +60,8 @@ public class DegreeAuditController extends UifControllerBase {
     private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
     private transient DegreeAuditService degreeAuditService;
+
+    public static OrganizationService organizationService;
 
     public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
@@ -74,12 +81,28 @@ public class DegreeAuditController extends UifControllerBase {
         return new DegreeAuditForm();
     }
 
+
+    public OrganizationService getOrganizationService() {
+        if (this.organizationService == null) {
+            //   TODO: Use constants for namespace.
+            this.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "OrganizationService"));
+        }
+        return this.organizationService;
+    }
+
+    public void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService;
+    }
+
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         try {
+            Map<String, String> campusMap = populateCampusMap();
+
             Person user = GlobalVariables.getUserSession().getPerson();
             String studentID = user.getPrincipalId();
+            String systemKey = UserSessionHelper.getAuditSystemKey();
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String auditId = form.getAuditId();
@@ -87,15 +110,22 @@ public class DegreeAuditController extends UifControllerBase {
             Date startDate = new Date();
             Date endDate = new Date();
             String programParam = null;
-            form.setCampusParam("306");
+            form.setCampusParam(campusMap.get("0"));
+            List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
             if (auditId == null) {
-                List<AuditReportInfo> auditReportInfos = degreeAuditService.getAuditsForStudentInDateRange(studentID, startDate, endDate, contextInfo);
-                auditId = auditReportInfos.get(0).getAuditId();
-                programParam = auditReportInfos.get(0).getProgramId();
+                auditId = auditReportInfoList.get(0).getAuditId();
+                programParam = auditReportInfoList.get(0).getProgramId();
             }
 
             // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
+            if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
+                for (AuditReportInfo report : auditReportInfoList) {
+                if(report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())){
+                    programParam=report.getProgramId();
+                }
+                }
+            }
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
             StringWriter sw = new StringWriter();
 
@@ -121,7 +151,7 @@ public class DegreeAuditController extends UifControllerBase {
             for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
                 if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
                     form.setProgramParam(auditProgramInfo.getProgramId());
-                    form.setCampusParam(auditProgramInfo.getProgramId().substring(0, 1));
+                    form.setCampusParam(campusMap.get(auditProgramInfo.getProgramId().substring(0, 1)));
                     break;
                 }
             }
@@ -145,11 +175,12 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
             String studentId = user.getPrincipalId();
+            String systemKey = UserSessionHelper.getAuditSystemKey();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String programId = form.getProgramParam();
             ContextInfo context = new ContextInfo();
 
-            AuditReportInfo report = degreeAuditService.runAudit(studentId, programId, form.getAuditType(), context);
+            AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
             String auditID = report.getAuditId();
             // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
@@ -171,6 +202,42 @@ public class DegreeAuditController extends UifControllerBase {
         }
 
         return getUIFModelAndView(form);
+    }
+
+    public Map<String, String> populateCampusMap() {
+        Map<String, String> orgCampusTypes = new HashMap<String, String>();
+        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_REQUEST);
+        searchRequest.addParam(DegreeAuditConstants.ORG_QUERY_PARAM, DegreeAuditConstants.CAMPUS_LOCATION);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getOrganizationService().search(searchRequest);
+        } catch (MissingParameterException e) {
+            logger.error("Search Failed to get the Organization Data ", e);
+        }
+        for (SearchResultRow row : searchResult.getRows()) {
+
+            if (getCellValue(row, "org.resultColumn.orgShortName").equalsIgnoreCase("seattle")) {
+                orgCampusTypes.put("0", getCellValue(row, "org.resultColumn.orgId"));
+            }
+            if (getCellValue(row, "org.resultColumn.orgShortName").equalsIgnoreCase("bothell")) {
+                orgCampusTypes.put("1", getCellValue(row, "org.resultColumn.orgId"));
+            }
+            if (getCellValue(row, "org.resultColumn.orgShortName").equalsIgnoreCase("tacoma")) {
+                orgCampusTypes.put("2", getCellValue(row, "org.resultColumn.orgId"));
+            }
+
+        }
+        return orgCampusTypes;
+    }
+
+
+    public String getCellValue(SearchResultRow row, String key) {
+        for (SearchResultCell cell : row.getCells()) {
+            if (key.equals(cell.getKey())) {
+                return cell.getValue();
+            }
+        }
+        throw new RuntimeException("cell result '" + key + "' not found");
     }
 }
 

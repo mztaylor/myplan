@@ -273,7 +273,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         try {
-            studentId = hardcodedStudentID(studentId);
+            /*studentId = hardcodedStudentID(studentId);*/
             if( studentId.startsWith( "1") && studentId.length() == 9 )
             {
                 studentId = studentId.substring( 1 );
