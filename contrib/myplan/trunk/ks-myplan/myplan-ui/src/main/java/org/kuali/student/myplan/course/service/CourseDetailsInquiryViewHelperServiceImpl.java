@@ -8,10 +8,14 @@ import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.common.exceptions.*;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
@@ -26,6 +30,8 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -59,6 +65,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AtpService atpService;
 
+    private transient LuService luService;
+
+
     private transient EnumerationManagementService enumService;
 
     private transient AcademicPlanService academicPlanService;
@@ -68,8 +77,26 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient CourseInfo courseInfo;
 
     //TODO: These should be changed to an ehCache spring bean
-    private Map<String, String> campusLocationCache;
+    private Map<String, List<OrgInfo>> campusLocationCache;
     private Map<String, String> atpCache;
+
+    public Map<String, List<OrgInfo>> getCampusLocationCache() {
+        if (this.campusLocationCache == null) {
+            this.campusLocationCache = new HashMap<String, List<OrgInfo>>();
+        }
+        return this.campusLocationCache;
+    }
+
+    public void setCampusLocationCache(Map<String, List<OrgInfo>> campusLocationCache) {
+        this.campusLocationCache = campusLocationCache;
+    }
+
+    protected LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
 
     private transient CourseLinkBuilder courseLinkBuilder;
 
@@ -182,14 +209,22 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         // Campus Locations
-        this.campusLocationCache = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+        List<OrgInfo> orgInfoList = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+        getCampusLocationCache().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
 
-        List<String> enumeratedCampus = new ArrayList<String>();
-        for (String campus : course.getCampusLocations()) {
-            enumeratedCampus.add(this.campusLocationCache.get(campus));
+        List<String> campusLocations = new ArrayList<String>();
+
+        for (String campus : getCampusLocationsOfferedIn(courseId)) {
+
+            for (OrgInfo orgInfo : orgInfoList) {
+                if (campus.equalsIgnoreCase(orgInfo.getId())) {
+                    campusLocations.add(orgInfo.getLongName());
+                    break;
+                }
+            }
         }
 
-        courseDetails.setCampusLocations(enumeratedCampus);
+        courseDetails.setCampusLocations(campusLocations);
 
         // Get only the abbre_val of gen ed requirements
         List<String> abbrGenEdReqs = new ArrayList<String>();
@@ -412,6 +447,25 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         return titleValue;
+    }
+
+    private List<String> getCampusLocationsOfferedIn(String courseId) {
+        List<String> campusLocations = new ArrayList<String>();
+        SearchRequest searchRequest = new SearchRequest("myplan.course.getCampusLocations");
+        searchRequest.addParam("cluId", courseId);
+        SearchResult searchResult = null;
+        try {
+            searchResult = getLuService().search(searchRequest);
+        } catch (MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        if (searchResult != null) {
+            for (SearchResultRow row : searchResult.getRows()) {
+                campusLocations.add(OrgHelper.getCellValue(row, "lu.resultColumn.campusVal"));
+            }
+        }
+        return campusLocations;
     }
 
     public AcademicRecordService getAcademicRecordService() {

@@ -1,12 +1,10 @@
 package org.kuali.student.myplan.course.util;
 
 import org.apache.log4j.Logger;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
@@ -21,29 +19,19 @@ public class AuditRunCampusParam extends KeyValuesBase {
 
     private boolean blankOption;
 
-    private transient EnumerationManagementService enumService;
 
-    private HashMap<String, Map<String, String>> hashMap;
+    private HashMap<String, List<OrgInfo>> hashMap;
 
-    public HashMap<String, Map<String, String>> getHashMap() {
+    public HashMap<String, List<OrgInfo>> getHashMap() {
         if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, Map<String, String>>();
+            this.hashMap = new HashMap<String, List<OrgInfo>>();
         }
         return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
+    public void setHashMap(HashMap<String, List<OrgInfo>> hashMap) {
         this.hashMap = hashMap;
     }
-
-    protected synchronized EnumerationManagementService getEnumerationService() {
-        if (this.enumService == null) {
-            this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
-        }
-        return this.enumService;
-    }
-
 
     @Override
     public List<KeyValue> getKeyValues() {
@@ -51,20 +39,20 @@ public class AuditRunCampusParam extends KeyValuesBase {
         if (blankOption) {
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        Map<String, String> campusValues = new HashMap<String, String>();
+        List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
         try {
             if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                campusValues = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
-                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, campusValues);
+                orgInfoList = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
             } else {
-                campusValues = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
+                orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
             }
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
         }
-        if (campusValues != null) {
-            for (Map.Entry<String, String> entry : campusValues.entrySet()) {
-                keyValues.add(new ConcreteKeyValue(entry.getKey(), entry.getValue() + " campus"));
+        if (orgInfoList != null && orgInfoList.size() > 0) {
+            for (OrgInfo entry : orgInfoList) {
+                keyValues.add(new ConcreteKeyValue(entry.getId(), entry.getLongName() + " campus"));
             }
         }
         Collections.sort(keyValues,
