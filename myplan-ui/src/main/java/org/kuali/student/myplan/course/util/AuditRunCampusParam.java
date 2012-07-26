@@ -7,7 +7,6 @@ import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
-import javax.xml.namespace.QName;
 import java.util.*;
 
 /**
@@ -42,7 +41,7 @@ public class AuditRunCampusParam extends KeyValuesBase {
         List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
         try {
             if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                orgInfoList = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+                orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
                 getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
             } else {
                 orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);

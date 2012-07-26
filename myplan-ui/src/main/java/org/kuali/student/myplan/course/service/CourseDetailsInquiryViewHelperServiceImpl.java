@@ -16,7 +16,6 @@ import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.organization.dto.OrgInfo;
-import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.constants.AcademicCalendarServiceConstants;
@@ -209,7 +208,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         // Campus Locations
-        List<OrgInfo> orgInfoList = OrgHelper.getOrgInfoFromType(CourseSearchConstants.CAMPUS_LOCATION);
+        List<OrgInfo> orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
         getCampusLocationCache().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
 
         List<String> campusLocations = new ArrayList<String>();
