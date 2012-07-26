@@ -1,21 +1,26 @@
 <%@ page import="java.util.*" %>
-
+<!DOCTYPE html>
 <html>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
-"http://www.w3.org/TR/html4/frameset.dtd">
-<body bgcolor="#f7f4ec">
-<div class="form-all">
-    <ul class="form-section" style="list-style-type:none"/>
-    <li id="cid_2" class="form-input-wide">
-        <div class="form-header-group">
-            <h1 id="header_2" style="font-size:400%">
-                <font color="#39275b">UH-OH...</font>
-            </h1>
-            <li><font color="#777777">ERROR 500 - INTERNAL SERVER ERROR</font></li>
-            <li style="font-size:100%">It's looking like you may have taken a wrong turn. </li>
-            <li style="font-size:100%">Check the URL and try again. </li>
-        </div>
-    </li>
+<head>
+    <title>Error 500 - Internal Server Error</title>
+    <link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
+    <link href="/student/ks-myplan/css/error.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+    <h1>UH-OH...</h1>
+    <div id="content">
+        <h2>Error 500 - Internal Server Error</h2>
+        <p>It's looking like you may have taken a wrong turn.</p>
+        <p>Check the URL and try again.</p>
+    </div>
+    <h3>Try MyPlan site that might help you:</h3>
+    <ul id="links">
+        <li><a href="#">Plan</a></li>
+        <li><a href="#">Find Courses</a></li>
+        <li><a href="#">Audit Degree</a></li>
+    </ul>
+    <div id="more">Completely Lost? Go to <a href="#">Help</a> section or <a href="#">let us know</a>.</div>
 </div>
 </body>
 

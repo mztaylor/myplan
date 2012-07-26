@@ -971,6 +971,9 @@ label.scheduled {
     left: 0px !important;
     top: 0px !important;
 }
+.myplan-audit-report pre a {
+    text-decoration: underline;
+}
 #select_programParam_seattle,
 #select_programParam_bothell,
 #select_programParam_tacoma {
