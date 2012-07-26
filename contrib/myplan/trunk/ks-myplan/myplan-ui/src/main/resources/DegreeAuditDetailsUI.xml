@@ -56,7 +56,7 @@
         <property name="header">
             <bean parent="Uif-HeaderTwo"/>
         </property>
-        <property name="additionalScriptFiles">
+        <!--<property name="additionalScriptFiles">
             <list>
                 <value>ks-myplan/scripts/audit.js</value>
             </list>
@@ -65,7 +65,7 @@
             <list>
                 <value>ks-myplan/css/audit.css</value>
             </list>
-        </property>
+        </property>-->
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:headerText="Degree Audit" p:id="degree_audit">
@@ -134,6 +134,9 @@
                                                                 <ref bean="watch_list"/>
                                                             </list>
                                                         </property>
+                                                        <property name="propertyReplacers">
+                                                            <list/>
+                                                        </property>
                                                     </bean>
                                                 </list>
                                             </property>
@@ -158,7 +161,6 @@
                                     <list>
                                         <ref bean="run_degree_audits"/>
                                         <ref bean="empty_degree_audits"/>
-
                                     </list>
                                 </property>
                                 <property name="propertyReplacers">
@@ -210,6 +212,9 @@
                                                             <list>
                                                                 <ref bean="watch_list"/>
                                                             </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list/>
                                                         </property>
                                                     </bean>
                                                 </list>
