@@ -23,10 +23,10 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.*;
 
@@ -55,8 +55,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     private List<String> styleClasses;
 
     private transient CourseOfferingService courseOfferingService;
-
-    private transient EnumerationManagementService enumService;
 
     private List<String> emptyListStyleClasses;
 
@@ -98,14 +96,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
     public TimeScheduleLinksListPropertyEditor() {
         styleClasses = new ArrayList<String>();
         emptyListStyleClasses = new ArrayList<String>();
-    }
-
-    protected synchronized EnumerationManagementService getEnumerationService() {
-        if (this.enumService == null) {
-            this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
-        }
-        return this.enumService;
     }
 
 
@@ -155,8 +145,8 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 String l1 = label1;
                 String l2 = label2.replace("{timeScheduleName}", scheduledTerm);
                 String l3 = label3;
-                if(getInstAbbreviations().size()>0 && getInstAbbreviations().containsKey(lightboxUrl)){
-                    l3 = l3 +" ("+getInstAbbreviations().get(lightboxUrl)+")";
+                if (getInstAbbreviations().size() > 0 && getInstAbbreviations().containsKey(lightboxUrl)) {
+                    l3 = l3 + " (" + getInstAbbreviations().get(lightboxUrl) + ")";
                 }
 
 
@@ -249,7 +239,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 if (!instCd.isEmpty()) {
 
                     if (!this.getHashMap().containsKey(CourseSearchConstants.COURSE_OFFERING_INSTITUTE)) {
-                        enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.COURSE_OFFERING_INSTITUTE);
+                        enumeratedValueInfoList = EnumerationHelper.getEnumerationValueInfoList(CourseSearchConstants.COURSE_OFFERING_INSTITUTE);
 
                     } else {
                         enumeratedValueInfoList = hashMap.get(CourseSearchConstants.COURSE_OFFERING_INSTITUTE);
@@ -286,20 +276,6 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         return urls;
     }
 
-    public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
-
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-
-        try {
-
-            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            hashMap.put(param, enumeratedValueInfoList);
-        } catch (Exception e) {
-            logger.error("No Values for campuses found", e);
-        }
-
-        return enumeratedValueInfoList;
-    }
 
     public List<String> getStyleClasses() {
         return this.styleClasses;

@@ -594,7 +594,7 @@
                         AND
                         ATTR_VALUE = 'Y'
                         AND
-                        ATTR_NAME like 'courseGenedrequirement%'
+                        ATTR_NAME like 'course.genedrequirement.%'
                     </value>
                 </entry>
 
