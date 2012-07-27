@@ -8,6 +8,7 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
@@ -272,6 +273,7 @@ public class CourseSearchStrategy {
         processRequests(requests, form);
         logger.info("No of Requests after processRequest method:" + requests.size());
         logger.info("End Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
+        addVersionDateParam(requests);
         return requests;
     }
 
@@ -388,20 +390,12 @@ public class CourseSearchStrategy {
         logger.info("End of processRequests method in CourseSearchStrategy:" + System.currentTimeMillis());
     }
 
-   /* public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
-
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-
-        try {
-
-            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-
-        } catch (Exception e) {
-            logger.error("No Values for campuses found", e);
+    private void addVersionDateParam(List<SearchRequest> searchRequests){
+        String currentTerm= AtpHelper.getCurrentAtpId();
+        for(SearchRequest searchRequest:searchRequests){
+            searchRequest.addParam("currentTerm",currentTerm);
         }
-
-        return enumeratedValueInfoList;
-    }*/
+    }
 
 
     //Note: here I am using r1 LuService implementation!!!
