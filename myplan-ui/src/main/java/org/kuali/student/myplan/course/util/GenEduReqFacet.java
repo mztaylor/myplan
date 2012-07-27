@@ -43,6 +43,8 @@ public class GenEduReqFacet extends AbstractFacet {
             String k[] = genEdString.split(",");
             List<String> keys = new ArrayList<String>(Arrays.asList(k));
             for (String key : keys) {
+                /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
+                /*Reversing the above fix for this process*/
                 if(key.contains("&amp;")){
                     key=key.replace("&amp;","&");
                 }

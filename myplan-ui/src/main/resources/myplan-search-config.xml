@@ -370,7 +370,9 @@
                         attr.name = 'courseCampus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit') ORDER BY
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.code
                     </value>
                 </entry>
@@ -399,7 +401,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
-                        ORDER BY
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.code
                     </value>
                 </entry>
@@ -431,6 +434,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm
                     </value>
                 </entry>
 
@@ -458,7 +463,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
-                        ORDER BY
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.suffixCode
                     </value>
                 </entry>
@@ -487,7 +493,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
-                        ORDER BY
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.suffixCode
                     </value>
                 </entry>
@@ -513,7 +520,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
-                        ORDER BY
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.suffixCode
                     </value>
                 </entry>
@@ -539,7 +547,8 @@
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
-                        ORDER BY
+                        AND clu.expectedFirstAtp &lt;= :currentTerm
+                        AND clu.lastAtp &gt;= :currentTerm ORDER BY
                         ident.suffixCode
                     </value>
                 </entry>
