@@ -810,7 +810,7 @@ public class CourseSearchStrategyTest {
         assertEquals(0, requests.size());
     }
 
-    @Test
+    /*@Test
     public void testGetEnumerationValueInfoList() throws Exception {
         String param = CourseSearchConstants.CAMPUS_LOCATION;
         CourseSearchStrategy strategy = getCourseSearchStrategy();
@@ -833,10 +833,10 @@ public class CourseSearchStrategyTest {
         assertEquals("All", enumeratedValueInfoList.get(3).getValue());
 
 
-    }
+    }*/
 
 
-    @Test
+    /*@Test
     public void testGetEnumerationValueInfoList2() throws Exception {
         String param = "";
         CourseSearchStrategy strategy = getCourseSearchStrategy();
@@ -844,7 +844,7 @@ public class CourseSearchStrategyTest {
         assertEquals(0, enumeratedValueInfoList.size());
 
 
-    }
+    }*/
 
     @Test
     public void testProcessRequests() throws Exception {

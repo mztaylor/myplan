@@ -32,8 +32,8 @@ public class OrgHelper {
     public static HashMap<String, List<OrgInfo>> orgTypeCache;
 
     public static HashMap<String, List<OrgInfo>> getOrgTypeCache() {
-        if(OrgHelper.orgTypeCache==null){
-            OrgHelper.orgTypeCache=new HashMap<String, List<OrgInfo>>();
+        if (OrgHelper.orgTypeCache == null) {
+            OrgHelper.orgTypeCache = new HashMap<String, List<OrgInfo>>();
         }
         return OrgHelper.orgTypeCache;
     }
@@ -59,7 +59,7 @@ public class OrgHelper {
         if (OrgHelper.getOrgTypeCache() != null && OrgHelper.getOrgTypeCache().containsKey(param)) {
             return getOrgTypeCache().get(param);
         } else {
-            List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
+            List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
             SearchRequest searchRequest = new SearchRequest(searchRequestKey);
             searchRequest.addParam(paramKey, param);
             SearchResult searchResult = new SearchResult();
@@ -69,7 +69,7 @@ public class OrgHelper {
                 logger.error("Search Failed to get the Organization Data ", e);
             }
             for (SearchResultRow row : searchResult.getRows()) {
-                OrgInfo orgInfo=new OrgInfo();
+                OrgInfo orgInfo = new OrgInfo();
                 orgInfo.setId(getCellValue(row, "org.resultColumn.orgId"));
                 orgInfo.setShortName(getCellValue(row, "org.resultColumn.orgShortName"));
                 orgInfo.setLongName(getCellValue(row, "org.resultColumn.orgLongName"));
@@ -81,6 +81,22 @@ public class OrgHelper {
             }
             return orgInfoList;
         }
+    }
+
+    public static Map<String, String> getSubjectAreas() {
+        Map<String, String> subjects = new HashMap<String, String>();
+        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getOrganizationService().search(searchRequest);
+        } catch (MissingParameterException e) {
+            logger.error("Search Failed to get the Organization Data ", e);
+        }
+        for (SearchResultRow row : searchResult.getRows()) {
+            subjects.put(getCellValue(row, "org.resultColumn.attrValue"), getCellValue(row, "org.resultColumn.name"));
+
+        }
+        return subjects;
     }
 
     public static String getCellValue(SearchResultRow row, String key) {

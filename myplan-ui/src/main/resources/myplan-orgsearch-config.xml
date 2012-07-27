@@ -45,6 +45,20 @@
         <search:dataType>string</search:dataType>
     </search:resultColumn>
 
+    <search:searchCriteriaTypeInfo id="org.criteria.orgByOrgType" parent="org.criteria.orgByOrgType-parent"/>
+    <search:searchCriteriaTypeInfo id="org.criteria.orgByOrgType-parent"  abstract="true">
+        <search:name>OrgByOrgTypeCriteria</search:name>
+        <search:desc>OrgByOrgTypeCriteria Description</search:desc>
+        <search:queryParams>
+            <ref bean="org.queryParam.orgType" />
+        </search:queryParams>
+    </search:searchCriteriaTypeInfo>
+
+    <search:queryParam id="org.queryParam.orgType" parent="org.queryParam.orgType-parent"/>
+    <search:queryParam id="org.queryParam.orgType-parent"  abstract="true">
+        <ref bean="field.orgInfo.type.fd" />
+    </search:queryParam>
+
     <search:searchResultTypeInfo id="org.result.orgQuickView" parent="org.result.orgQuickView-parent"/>
     <search:searchResultTypeInfo id="org.result.orgQuickView-parent"  abstract="true">
         <search:name>Organization Quick View</search:name>
@@ -68,20 +82,29 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
-    <search:queryParam id="org.queryParam.orgType" parent="org.queryParam.orgType-parent"/>
-    <search:queryParam id="org.queryParam.orgType-parent"  abstract="true">
-        <ref bean="field.orgInfo.type.fd" />
-    </search:queryParam>
+    <search:searchType id="org.search.orgCurriculum">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <search:resultColumn id="org.resultColumn.attrValue">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
+                <search:resultColumn id="org.resultColumn.name">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
 
-    <search:searchCriteriaTypeInfo id="org.criteria.orgByOrgType" parent="org.criteria.orgByOrgType-parent"/>
-    <search:searchCriteriaTypeInfo id="org.criteria.orgByOrgType-parent"  abstract="true">
-        <search:name>OrgByOrgTypeCriteria</search:name>
-        <search:desc>OrgByOrgTypeCriteria Description</search:desc>
-        <search:queryParams>
-            <ref bean="org.queryParam.orgType" />
-        </search:queryParams>
-    </search:searchCriteriaTypeInfo>
 
+
+
+    <!--Query Map-->
     <bean id="queryMap" parent="queryMap-parent">
         <property name="sourceMap">
             <map merge="true">
@@ -90,9 +113,15 @@
                         org.type.id = :org_queryParam_orgType
                     </value>
                 </entry>
+                <entry key="org.search.orgCurriculum">
+                    <value>NATIVE:
+                            SELECT attr.ATTR_VALUE,org.LNG_NAME
+                            from KSOR_ORG org JOIN KSOR_ORG_ATTR attr on attr.OWNER=org.ID
+                            where TYPE='kuali.uw.org.type.curriculum' and attr.ATTR_NAME='orgAbbreviation'
+                    </value>
+                </entry>
             </map>
         </property>
-
     </bean>
 
 

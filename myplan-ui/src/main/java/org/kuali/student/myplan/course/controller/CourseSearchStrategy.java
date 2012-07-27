@@ -3,8 +3,6 @@ package org.kuali.student.myplan.course.controller;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.*;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
@@ -18,12 +16,10 @@ import java.util.*;
 public class CourseSearchStrategy {
     private final Logger logger = Logger.getLogger(CourseSearchStrategy.class);
 
-    private transient EnumerationManagementService enumService;
-
     private transient LuService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<OrgInfo>> orgTypeCache;
-    private HashMap<String, List<EnumeratedValueInfo>> hashMap;
+    private HashMap<String, Map<String,String>> hashMap;
 
     public HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (this.orgTypeCache == null) {
@@ -36,24 +32,17 @@ public class CourseSearchStrategy {
         this.orgTypeCache = orgTypeCache;
     }
 
-    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
+    public HashMap<String, Map<String,String>> getHashMap() {
         if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
+            this.hashMap = new HashMap<String, Map<String,String>>();
         }
         return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
+    public void setHashMap(HashMap<String, Map<String,String>> hashMap) {
         this.hashMap = hashMap;
     }
 
-    protected synchronized EnumerationManagementService getEnumerationService() {
-        if (this.enumService == null) {
-            this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
-        }
-        return this.enumService;
-    }
 
     public HashMap<String, String> fetchCourseDivisions() {
         HashMap<String, String> map = new HashMap<String, String>();
@@ -293,7 +282,7 @@ public class CourseSearchStrategy {
     //To process the Request with search key as division or full Text
     public void processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
         logger.info("Start of method processRequests in CourseSearchStrategy:" + System.currentTimeMillis());
-        List<EnumeratedValueInfo> enumeratedValueInfoList = null;
+        Map<String,String> subjects = null;
         int size = requests.size();
         for (int i = 0; i < size; i++) {
             if (requests.get(i).getSearchKey() != null) {
@@ -308,18 +297,19 @@ public class CourseSearchStrategy {
                         addCampusParam(request0, form);
                         requests.add(request0);
                         if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
-                            enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
+                            subjects = OrgHelper.getSubjectAreas();
+                             getHashMap().put(CourseSearchConstants.SUBJECT_AREA,subjects);
 
                         } else {
-                            enumeratedValueInfoList = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
+                            subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                         }
                         StringBuffer additionalDivisions = new StringBuffer();
-                        if (enumeratedValueInfoList != null) {
+                        if (subjects != null && subjects.size()>0) {
                             //  Add the individual term items.
-                            for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                                if (enumeratedValueInfo.getCode().trim().contains(key.trim())) {
-                                    if (!enumeratedValueInfo.getCode().equalsIgnoreCase(queryText)) {
-                                        additionalDivisions.append(enumeratedValueInfo.getCode() + ",");
+                            for (Map.Entry<String,String> entry : subjects.entrySet()) {
+                                if (entry.getKey().trim().contains(key.trim())) {
+                                    if (!entry.getKey().equalsIgnoreCase(queryText)) {
+                                        additionalDivisions.append(entry.getKey() + ",");
                                     }
                                 }
 
@@ -350,18 +340,18 @@ public class CourseSearchStrategy {
                         if (key.length() > 2) {
 
                             if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
-                                enumeratedValueInfoList = getEnumerationValueInfoList(CourseSearchConstants.SUBJECT_AREA);
+                                subjects = OrgHelper.getSubjectAreas();
+                                getHashMap().put(CourseSearchConstants.SUBJECT_AREA,subjects);
 
                             } else {
-                                enumeratedValueInfoList = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
+                                subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                             }
-
-
-                            if (enumeratedValueInfoList != null) {
+                            
+                            if (subjects != null && subjects.size()>0) {
                                 //  Add the individual term items.
-                                for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-                                    if (enumeratedValueInfo.getValue().trim().equalsIgnoreCase(key)) {
-                                        division = enumeratedValueInfo.getCode();
+                                for (Map.Entry<String,String> entry : subjects.entrySet()) {
+                                    if (entry.getValue().trim().equalsIgnoreCase(key)) {
+                                        division = entry.getKey();
 
                                     }
 
@@ -398,20 +388,20 @@ public class CourseSearchStrategy {
         logger.info("End of processRequests method in CourseSearchStrategy:" + System.currentTimeMillis());
     }
 
-    public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+   /* public List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
 
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
 
         try {
 
             enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            getHashMap().put(param, enumeratedValueInfoList);
+
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
         }
 
         return enumeratedValueInfoList;
-    }
+    }*/
 
 
     //Note: here I am using r1 LuService implementation!!!
@@ -426,11 +416,4 @@ public class CourseSearchStrategy {
         this.luService = luService;
     }
 
-    public EnumerationManagementService getEnumService() {
-        return enumService;
-    }
-
-    public void setEnumService(EnumerationManagementService enumService) {
-        this.enumService = enumService;
-    }
 }

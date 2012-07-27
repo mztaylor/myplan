@@ -6,7 +6,7 @@ import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
+
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -29,8 +29,6 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
 
     private boolean blankOption;
 
-    private transient EnumerationManagementService enumService;
-
     private transient DegreeAuditService degreeAuditService;
 
     private HashMap<String, List<EnumeratedValueInfo>> hashMap = new HashMap<String, List<EnumeratedValueInfo>>();
@@ -42,15 +40,6 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
     public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
         this.hashMap = hashMap;
     }
-
-    protected synchronized EnumerationManagementService getEnumerationService() {
-        if (this.enumService == null) {
-            this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
-        }
-        return this.enumService;
-    }
-
 
     public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {

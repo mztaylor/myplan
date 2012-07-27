@@ -27,6 +27,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -724,8 +725,10 @@ public class CourseSearchController extends UifControllerBase {
             if (genEdsOut.length() != 0) {
                 genEdsOut.append(", ");
             }
-
-            req=CourseSearchConstants.genEduVal.valueOf(req.toUpperCase()).getGenEdVal();
+            req = EnumerationHelper.getEnumAbbrValForCode(req);
+            if(req.contains("&")){
+                req=req.replace("&","&amp;");
+            }
             genEdsOut.append(req);
         }
         return genEdsOut.toString();

@@ -3,47 +3,30 @@ package org.kuali.student.myplan.course.util;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.exceptions.DoesNotExistException;
-import org.kuali.student.common.exceptions.InvalidParameterException;
-import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.exceptions.OperationFailedException;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
-import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import java.util.*;
 
 /**
- *  Logic for building list of FacetItems and coding CourseSearchItems.
+ * Logic for building list of FacetItems and coding CourseSearchItems.
  */
 public class CurriculumFacet extends AbstractFacet {
 
     private final Logger logger = Logger.getLogger(CurriculumFacet.class);
 
-    private transient EnumerationManagementService enumService;
-    private  HashMap<String,List<EnumeratedValueInfo>> hashMap=new HashMap<String, List<EnumeratedValueInfo>>();
+    private HashMap<String, Map<String, String>> hashMap;
 
-    public HashMap<String, List<EnumeratedValueInfo>> getHashMap() {
-        return hashMap;
-    }
-
-    public void setHashMap(HashMap<String, List<EnumeratedValueInfo>> hashMap) {
-        this.hashMap = hashMap;
-    }
-
-    protected synchronized EnumerationManagementService getEnumerationService() {
-        if (this.enumService == null) {
-            this.enumService = (EnumerationManagementService) GlobalResourceLoader
-                    .getService(new QName(CourseSearchConstants.ENUM_SERVICE_NAMESPACE, "EnumerationManagementService"));
+    public HashMap<String, Map<String, String>> getHashMap() {
+        if (this.hashMap == null) {
+            this.hashMap = new HashMap<String, Map<String, String>>();
         }
-        return this.enumService;
+        return this.hashMap;
     }
 
-    public void setEnumService(EnumerationManagementService enumService) {
-        this.enumService = enumService;
+    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
+        this.hashMap = hashMap;
     }
 
     public CurriculumFacet() {
@@ -54,22 +37,21 @@ public class CurriculumFacet extends AbstractFacet {
 
     @Override
     public List<FacetItem> getFacetItems() {
-        String[] list = curriculumFacetSet.toArray( new String[0] );
-        Arrays.sort( list );
+        String[] list = curriculumFacetSet.toArray(new String[0]);
+        Arrays.sort(list);
 
 
-
-        for( String display : list ) {
+        for (String display : list) {
             FacetItem item = new FacetItem();
-                       
+
             String key = FACET_KEY_DELIMITER + display + FACET_KEY_DELIMITER;
-            item.setKey( key );
+            item.setKey(key);
             item.setDisplayName(display);
-            String title= this.getTitle(display);
-            if(title != null || title!= ""){
-            item.setTitle(title);
+            String title = this.getTitle(display);
+            if (title != null || title != "") {
+                item.setTitle(title);
             }
-            facetItems.add( item );
+            facetItems.add(item);
         }
 
         return facetItems;
@@ -79,8 +61,7 @@ public class CurriculumFacet extends AbstractFacet {
      * {@inheritDoc}
      */
     @Override
-    public void process(CourseSearchItem course)
-    {
+    public void process(CourseSearchItem course) {
         // TODO: Use the Org Service to lookup curriculum name based on key.
         // For now just use the serviceArea code as the displayName.
         String subject = course.getSubject();
@@ -89,7 +70,7 @@ public class CurriculumFacet extends AbstractFacet {
             subject = unknownFacetKey;
         }
 
-        curriculumFacetSet.add( subject );
+        curriculumFacetSet.add(subject);
 
         String key = FACET_KEY_DELIMITER + subject + FACET_KEY_DELIMITER;
 
@@ -101,36 +82,34 @@ public class CurriculumFacet extends AbstractFacet {
 
     /**
      * To get the title for the respective display name
+     *
      * @param display
      * @return
      */
     protected String getTitle(String display) {
-             String titleValue=null;
-        List<EnumeratedValueInfo> enumeratedValueInfoList =null;
-              try {
-                  if(!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
-                 enumeratedValueInfoList=getEnumerationService().getEnumeratedValues(CourseSearchConstants.SUBJECT_AREA, null, null, null);
-                      hashMap.put(CourseSearchConstants.SUBJECT_AREA,enumeratedValueInfoList);
-                  }
-                  else {
-                      enumeratedValueInfoList=this.hashMap.get(CourseSearchConstants.SUBJECT_AREA);
-                  }
-                for(EnumeratedValueInfo enumVal : enumeratedValueInfoList)
-                {
-                    String code= enumVal.getCode().trim();
-                    if(code.equalsIgnoreCase(display))
-                    {
-                        titleValue=enumVal.getValue().trim();
-                        break;
-                    }
-                }
+        String titleValue = null;
+        Map<String, String> subjects = null;
+        try {
+            if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
+                subjects = OrgHelper.getSubjectAreas();
+                getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
 
-            } catch (Exception e) {
-                logger.error("Could not load title value");
+            } else {
+                subjects = this.hashMap.get(CourseSearchConstants.SUBJECT_AREA);
             }
-        
+            for (Map.Entry<String, String> entry : subjects.entrySet()) {
+                if (entry.getKey().trim().equalsIgnoreCase(display)) {
+                    titleValue = entry.getValue().trim();
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Could not load title value");
+        }
+
         return titleValue;
     }
-    
-    
+
+
 }
