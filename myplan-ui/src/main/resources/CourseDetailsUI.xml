@@ -110,6 +110,19 @@
         </property>
     </bean>
     <bean id="course_details_actions" parent="Uif-HorizontalBoxGroup" p:style="margin-bottom: 25px;">
+        <property name="onDocumentReadyScript"
+                  value="
+                      jQuery('#course_details_actions')
+                          .subscribe('PLAN_ITEM_ADDED', function(data){
+                              if (data.planItemType === 'wishlist') {
+                                  fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, '@{dataObject.courseId}_bookmarked');
+                              }
+                          })
+                          .subscribe('PLAN_ITEM_DELETED', function(data){
+                              if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
+                                  fnRestoreDetailsAddButton(data.courseDetails.courseId);
+                              }
+                          });"/>
         <property name="items">
             <list>
                 <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
@@ -126,12 +139,19 @@
                 <bean parent="Uif-PrimaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseId}_addSavedCourse"
                       p:render="@{dataObject.inSavedCourseList ? false : true}">
-                    <property name="onDocumentReadyScript"
-                              value="jQuery('#@{dataObject.courseId}_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function(data){
-                                  if (data.planItemType === 'wishlist') {
-                                      fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true);
-                                  }
-                              });"/>
+                    <!--<property name="onDocumentReadyScript"
+                              value="
+                              jQuery('#@{dataObject.courseId}_addSavedCourse')
+                                  .subscribe('PLAN_ITEM_ADDED', function(data){
+                                      if (data.planItemType === 'wishlist') {
+                                          fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, '@{dataObject.courseId}_bookmarked');
+                                      }
+                                  })
+                                  .subscribe('PLAN_ITEM_DELETED', function(data){
+                                      if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
+                                          fnRestoreDetailsAddButton(data.courseDetails.courseId);
+                                      }
+                                  });"/>-->
                     <property name="clientSideJs"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="cssClasses">
@@ -144,12 +164,12 @@
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
                       p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
                       p:groupBeginDelimiter="This course is in your" p:groupEndDelimiter="" p:linkSeparator="">
-                    <property name="onDocumentReadyScript"
+                    <!--<property name="onDocumentReadyScript"
                               value="jQuery('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
                                   if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
                                       fnRestoreDetailsAddButton(data.courseDetails.courseId);
                                   }
-                              });"/>
+                              });"/>-->
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-message-border</value>

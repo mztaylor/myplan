@@ -71,9 +71,9 @@ function fnUpdateCredits (atpId, termCredits) {
     Function: swap action button with feedback message
 #################################################################
  */
-function fnDisplayMessage (message, cssClass, targetId, button, full) {
+function fnDisplayMessage (message, cssClass, targetId, button, full, newId) {
     if (button) {
-        if (!full) jQuery("#" + targetId).wrap('<div style="float:left;" />');
+        if (!full) jQuery("#" + targetId).wrap('<div id="' + newId + '" style="float:left;" />');
         jQuery("#" + targetId).parent("div").fadeOut(250, function() {
             jQuery(this).addClass(cssClass).html(message).fadeIn(250);
         });

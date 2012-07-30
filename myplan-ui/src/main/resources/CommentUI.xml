@@ -73,7 +73,7 @@
                 </bean>
                 <!--Comment Page-->
                 <bean parent="Uif-Page" p:id="comment_dialog_response_page"
-                      p:headerText="View Message and @{comments.size()} comments">
+                      p:headerText="View Message">
                     <property name="onDocumentReadyScript" value="
                         jQuery('button#postCommentButton').attr('disabled', true);
                         jQuery('form input, form textarea').keyup(function() {
@@ -188,7 +188,7 @@
     </bean>
 
     <bean id="comment_dialog_comments_list" parent="Uif-ListCollectionSection"
-          p:headerText="@{comments.size()} comments to this message were posted">
+          p:headerText="@{comments.size() gt 0 ? (comments.size() gt 1 ? comments.size() + ' comments to this message were posted' : comments.size() + ' comment to this message was posted') : 'Post your comment to this message'}">
         <property name="header">
             <bean parent="Uif-HeaderSix" p:style="margin:0 0 10px 0;"/>
         </property>
