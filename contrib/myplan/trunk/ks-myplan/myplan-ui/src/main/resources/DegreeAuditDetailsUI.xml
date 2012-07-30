@@ -359,7 +359,7 @@
     <bean id="program_params" parent="Uif-HorizontalFieldGroup">
         <property name="items">
             <list>
-                <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParam"
+                <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '306'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
@@ -368,7 +368,7 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
                     </property>
                 </bean>
-                <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParam"
+                <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParamBothell"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '310'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
@@ -377,7 +377,7 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
                     </property>
                 </bean>
-                <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParam"
+                <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParamTacoma"
                       p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '323'">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>

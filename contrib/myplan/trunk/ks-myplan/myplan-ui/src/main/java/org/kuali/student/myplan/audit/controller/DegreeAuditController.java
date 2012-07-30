@@ -150,8 +150,23 @@ public class DegreeAuditController extends UifControllerBase {
             }
             for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
                 if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
-                    form.setProgramParam(auditProgramInfo.getProgramId());
-                    form.setCampusParam(campusMap.get(auditProgramInfo.getProgramId().substring(0, 1)));
+                    char campusPrefix = auditProgramInfo.getProgramId().charAt( 0 );
+                    form.setCampusParam(campusMap.get(campusPrefix));
+                    switch( campusPrefix)
+                    {
+                        case '0':
+                            form.setProgramParamSeattle(auditProgramInfo.getProgramId());
+                            break;
+                        case '1':
+                            form.setProgramParamBothell(auditProgramInfo.getProgramId());
+                            break;
+                        case '2':
+                            form.setProgramParamTacoma(auditProgramInfo.getProgramId());
+                            break;
+                        default:
+                            break;
+                    }
+
                     break;
                 }
             }
@@ -177,7 +192,23 @@ public class DegreeAuditController extends UifControllerBase {
             String studentId = user.getPrincipalId();
             String systemKey = UserSessionHelper.getAuditSystemKey();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-            String programId = form.getProgramParam();
+            String programId = null;
+            if( "306".equals( form.getCampusParam()))
+            {
+                programId = form.getProgramParamSeattle();
+
+            }
+            else if( "310".equals( form.getCampusParam()))
+            {
+                programId = form.getProgramParamBothell();
+
+            }
+            else if( "323".equals( form.getCampusParam()))
+            {
+                programId = form.getProgramParamTacoma();
+
+            }
+
             ContextInfo context = new ContextInfo();
 
             AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
