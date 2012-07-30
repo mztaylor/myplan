@@ -95,7 +95,7 @@
                 <bean id="text_searchQuery" parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
                       p:fieldLabel.renderColon="false">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:watermarkText="E.g. English 1xx, CHEM 142">
+                        <bean parent="Uif-TextControl" p:watermarkText="e.g. COM, Math 124, ENGL 1XX, sun">
                             <property name="onDocumentReadyScript" value="
                                 jq(&quot;input[name='searchQuery'][type='text']&quot;).blur().bind('keypress', function(e) {
 	                                if ( e.keyCode === 13 ) jq(&quot;button.myplan-button.course-search-submit&quot;).click();

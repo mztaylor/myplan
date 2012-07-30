@@ -158,8 +158,6 @@ function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
         popupBox = jQuery(target).parents(selector);
     }
 
-
-
     fnCloseAllPopups();
 
 	popupBox.CreateBubblePopup({manageMouseEvents: false});
@@ -554,7 +552,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
     });
     jQuery("body").append(tempForm);
 
-    var elementToBlock = jQuery("#" + id );
+    var elementToBlock = jQuery("#" + id);
 
 	var updateRefreshableComponentCallback = function(htmlContent){
 		var component = jQuery("#" + getId , htmlContent);
@@ -818,7 +816,18 @@ function myplanCreateLightBoxLink(controlId, options) {
         }
     });
 }
-
+function myplanLightBoxLink(href, options, e) {
+    stopEvent(e);
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    options['href'] = href;
+    options['onCleanup'] = cleanupClosedLightboxForms;
+    options['onComplete'] = function() {
+        jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
+            jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+20 );
+        });
+    };
+    top.jQuery.fancybox(options);
+}
 
 (function($) {
 

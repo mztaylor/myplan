@@ -774,8 +774,11 @@ table.myplan-course-search-results-datatable .blockUI {
 /* Saved Courses Summary Styles ########################################################################### */
 
 /* Recent Audit List Styles ########################################################################### */
-.myplan-section .uif-listCollectionGroup.myplan-recent-audit ul li:first-child {
+.myplan-section .myplan-recent-audit ul li:first-child {
     border: none;
+}
+.myplan-section .myplan-recent-audit a {
+    white-space: normal;
 }
 /* Saved Courses Detail Styles ########################################################################### */
 .myplan-saved-courses-detail {
