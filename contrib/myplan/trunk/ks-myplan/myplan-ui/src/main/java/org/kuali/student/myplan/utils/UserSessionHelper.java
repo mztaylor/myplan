@@ -128,9 +128,14 @@ public class UserSessionHelper {
     }
 
     public synchronized static String getMailAddress(String principleId) {
+        try{
         Person user = GlobalVariables.getUserSession().getPerson();
         String emailAddress = user.getEmailAddress();
+
         Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
+            if(entity==null){
+                return null;
+            }
         List <EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
         for (EntityTypeContactInfo ci : contactInfos) {
             emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
@@ -145,6 +150,11 @@ public class UserSessionHelper {
             } */
         }
         return emailAddress;
+        }
+        catch (Exception e){
+            logger.error("Could not get the Email Address for the student"+e);
+           return null;
+        }
     }
 
     public synchronized static String getAuditSystemKey() {
