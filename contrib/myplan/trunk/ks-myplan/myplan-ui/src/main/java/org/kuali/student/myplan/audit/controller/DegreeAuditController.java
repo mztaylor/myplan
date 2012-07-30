@@ -85,7 +85,7 @@ public class DegreeAuditController extends UifControllerBase {
     public OrganizationService getOrganizationService() {
         if (this.organizationService == null) {
             //   TODO: Use constants for namespace.
-            this.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "OrganizationService"));
+            this.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "orgService"));
         }
         return this.organizationService;
     }
