@@ -155,6 +155,10 @@ public class CommentController extends UifControllerBase {
 
         fromName = UserSessionHelper.getName(fromId);
         toAddress = UserSessionHelper.getMailAddress(toId);
+        if(toAddress==null){
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.COMMENT_RESPONSE_PAGE);
+        }
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a comment", fromName);
         String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a comment to message [%s].",
@@ -220,7 +224,11 @@ public class CommentController extends UifControllerBase {
          */
         String studentName = UserSessionHelper.getStudentName();
         String adviserName = UserSessionHelper.getName(principleId);
-        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);        
+            if(toAddress==null){
+                    String[] params = {};
+                    return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
+            }
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a message for you", adviserName);
         String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a message for you.", studentName, adviserName);
@@ -245,7 +253,7 @@ public class CommentController extends UifControllerBase {
      */
     private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params,String page) {
         GlobalVariables.getMessageMap().clearErrorMessages();
-        GlobalVariables.getMessageMap().putErrorForSectionId(CommentConstants.MESSAGE_RESPONSE_PAGE, errorKey, params);
+        GlobalVariables.getMessageMap().putErrorForSectionId(page, errorKey, params);
         return getUIFModelAndView(form, page);
     }
 
@@ -263,6 +271,10 @@ public class CommentController extends UifControllerBase {
         mm.setSubject(subjectText);
         mm.setMessage(bodyText);
         getMailService().sendMessage(mm);
+    }
+
+    public String errorPage(@ModelAttribute("KualiForm") CommentForm form) {
+        return "redirect:/myplan/unauthorized";
     }
 
     private MyPlanMailService getMailService() {
