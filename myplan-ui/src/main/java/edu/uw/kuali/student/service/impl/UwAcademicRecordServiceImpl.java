@@ -201,12 +201,12 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 studentCourseRecordInfo.setTermName(termName);
                                 studentCourseRecordInfo.setPersonId(personId);
                                 studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         /**************************************End of Enrollment Section******************************************************************************/
 
         /**************************************************Registration Section****************************************************/
@@ -307,15 +307,15 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                 studentCourseRecordInfo.setTermName(termName);
                                 studentCourseRecordInfo.setPersonId(personId);
-                                studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                }
                             }
                         }
-                    }
 
 
                 }
             }
-        }
+        }        
 
         return studentCourseRecordInfoList;
     }
@@ -364,6 +364,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         SearchRequest request = new SearchRequest("myplan.course.getCourseTitleAndId");
         request.addParam("subject", subject);
         request.addParam("number", number);
+        request.addParam("currentTerm",AtpHelper.getCurrentAtpId());
         requests.add(request);
         SearchResult searchResult = new SearchResult();
         try {
