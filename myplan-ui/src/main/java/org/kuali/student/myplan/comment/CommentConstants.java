@@ -25,6 +25,7 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String EMPTY_MESSAGE="Subject or Message Missing";
     public static final String EMPTY_COMMENT="Comment is Required";
     public static final String EMPTY_TO_ADDRESS="Cannot Process the Mail.";
+    public static final String SPECIAL_CHARACTERS_ERROR="Special Characters are not allowed";
 
 
 
