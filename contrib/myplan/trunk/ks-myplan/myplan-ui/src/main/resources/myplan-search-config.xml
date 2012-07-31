@@ -705,6 +705,8 @@
                         trim( id.SUFX_CD ) = :number
                         AND
                         trim( id.DIVISION ) = :subject
+                        AND clu.EXP_FIRST_ATP &lt;= :currentTerm
+                        AND clu.LAST_ATP &gt;= :currentTerm
                     </value>
                 </entry>
 
