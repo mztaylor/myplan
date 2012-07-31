@@ -28,6 +28,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.dto.RichTextInfo;
 import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
+import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
@@ -104,9 +105,9 @@ public class CommentController extends UifControllerBase {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
-        if (StringUtils.isEmpty(form.getCommentBody())){
+        if (StringUtils.isEmpty(form.getCommentBody())) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params,CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         /*If not a Adviser or if the user accessing is not the owner of the message*/
         /*if (!UserSessionHelper.isAdviser() || !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
@@ -121,14 +122,20 @@ public class CommentController extends UifControllerBase {
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
         rtiBody.setPlain(form.getCommentBody());
-        rtiBody.setFormatted(form.getCommentBody());
+        /*rtiBody.setFormatted(form.getCommentBody());*/
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
         try {
             getCommentService().addComment(messageInfo.getId(), CommentConstants.COMMENT_REF_TYPE, ci);
         } catch (Exception e) {
-            e.printStackTrace();
+            form.setSubject(messageInfo.getAttributes().get("subject"));
+            form.setFrom(UserSessionHelper.getName(messageInfo.getAttributes().get("createdBy")));
+            form.setBody(messageInfo.getCommentText().getPlain());
+            form.setComments(new ArrayList<CommentDataObject>());
+            logger.error("Could not add comment ", e);
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         form.setCommentBody(null);
         form.setFeedBackMode(true);
@@ -155,9 +162,9 @@ public class CommentController extends UifControllerBase {
 
         fromName = UserSessionHelper.getName(fromId);
         toAddress = UserSessionHelper.getMailAddress(toId);
-        if(toAddress==null){
+        if (toAddress == null) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a comment", fromName);
@@ -166,15 +173,16 @@ public class CommentController extends UifControllerBase {
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
-               sendMessage(fromAddress, toAddress, subject, body);
+                sendMessage(fromAddress, toAddress, subject, body);
             } catch (Exception e) {
-               logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
-               GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+                logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
             }
         } else {
             logger.error(String.format("No e-mail address found for [%s].", toName));
             GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
         }
+        GlobalVariables.getMessageMap().clearErrorMessages();
 
         return start(form, result, httprequest, httpresponse);
     }
@@ -185,13 +193,13 @@ public class CommentController extends UifControllerBase {
 
         /* Add this int the if condition to check if the user in session and the user for which the message is added are equal.
          !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())*/
-        if (!UserSessionHelper.isAdviser() ) {
+        if (!UserSessionHelper.isAdviser()) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
-        if(StringUtils.isEmpty(form.getBody()) || StringUtils.isEmpty(form.getSubject())){
+        if (StringUtils.isEmpty(form.getBody()) || StringUtils.isEmpty(form.getSubject())) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
@@ -205,7 +213,7 @@ public class CommentController extends UifControllerBase {
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
         rtiBody.setPlain(form.getBody());
-        rtiBody.setFormatted(form.getBody());
+        /*rtiBody.setFormatted(form.getBody());*/
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
@@ -214,7 +222,10 @@ public class CommentController extends UifControllerBase {
         try {
             getCommentService().addComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, ci);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Could not add Message ", e);
+            form.setStudentName(UserSessionHelper.getStudentName());
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
         form.setFeedBackMode(true);
 
@@ -224,34 +235,34 @@ public class CommentController extends UifControllerBase {
          */
         String studentName = UserSessionHelper.getStudentName();
         String adviserName = UserSessionHelper.getName(principleId);
-        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);        
-            if(toAddress==null){
-                    String[] params = {};
-                    return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.MESSAGE_RESPONSE_PAGE);
-            }
+        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        if (toAddress == null) {
+            String[] params = {};
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
+        }
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a message for you", adviserName);
         String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a message for you.", studentName, adviserName);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
-               sendMessage(fromAddress, toAddress, subject, body);
+                sendMessage(fromAddress, toAddress, subject, body);
             } catch (Exception e) {
-               logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
-               GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+                logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
             }
         } else {
             logger.error(String.format("No e-mail address found for [%s][%s].", studentName, studentPrincipleId));
             GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
         }
-
+        GlobalVariables.getMessageMap().clearErrorMessages();
         return start(form, result, httprequest, httpresponse);
     }
 
     /**
      * Initializes the error page.
      */
-    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params,String page) {
+    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params, String page) {
         GlobalVariables.getMessageMap().clearErrorMessages();
         GlobalVariables.getMessageMap().putErrorForSectionId(page, errorKey, params);
         return getUIFModelAndView(form, page);
