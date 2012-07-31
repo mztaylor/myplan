@@ -127,6 +127,11 @@ public class FakeCourseOfferingService implements CourseOfferingService {
     }
 
     @Override
+    public CourseOfferingInfo copyCourseOffering(@WebParam(name = "sourceCourseOfferingId") String s, @WebParam(name = "targetTermId") String s1, @WebParam(name = "optionKeys") List<String> strings, @WebParam(name = "context") ContextInfo contextInfo) throws AlreadyExistsException, DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public CourseOfferingInfo updateCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "courseOfferingInfo") CourseOfferingInfo courseOfferingInfo, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException, VersionMismatchException {
         throw new RuntimeException("Not implemented");
     }
