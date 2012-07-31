@@ -1308,11 +1308,30 @@
                 </bean>
                 <bean parent="Uif-DataField" p:propertyName="qtrYear" p:cssClasses="uif-groupHeader @{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}"
                       p:fieldLabel.render="false"/>
-                <bean parent="Uif-MessageField">
-                    <property name="style" value="color:#aaa; font-weight:normal; text-transform:uppercase; font-size:85%; background:#f5f5f5; height:26px; line-height:26px; padding:0 5px; display:block;"/>
-                    <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
-                    <property name="messageText" value="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}"/>
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField">
+                                <property name="style" value="color:#aaa; font-weight:normal; text-transform:uppercase; font-size:85%; background:#f5f5f5; height:26px; line-height:26px; padding:0 5px; display:block;"/>
+                                <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
+                                <property name="messageText" value="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}"/>
+                            </bean>
+                            <bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm ? true : false}">
+                                <property name="toolTip">
+                                  <bean parent="Uif-Tooltip" p:tooltipContent="Completed Explanation">
+                                  </bean>
+                                </property>
+                            </bean>
+                            <bean parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) ? true : false}">
+                                <property name="toolTip">
+                                  <bean parent="Uif-Tooltip" p:tooltipContent="Registered Explanation">
+                                  </bean>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
+
             </list>
         </property>
         <property name="subCollections">
@@ -1444,7 +1463,19 @@
         </property>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
          <property name="footer">
-            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}"/>
+            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}">
+                <property name="items">
+                    <list>
+                        <ref bean="term_total_credits_text" />
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Completed quarters.">
+                              </bean>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -1531,13 +1562,38 @@
         </property>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}"/>
+            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}">
+                <property name="items">
+                    <list>
+                        <ref bean="term_total_credits_text" />
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Completed quarters.">
+                              </bean>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="Planned Courses"/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
@@ -1599,7 +1655,19 @@
             <bean parent="Uif-VerticalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}"/>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text" />
+                                    <bean parent="MyPlanHelpImage">
+                                        <property name="toolTip">
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Planning quarters.">
+                                          </bean>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
                         <bean parent="term_no_courses" p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
                     </list>
                 </property>
@@ -1610,6 +1678,19 @@
     <bean id="advisorPlannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="Planned Courses"/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
@@ -1660,7 +1741,19 @@
             <bean parent="Uif-VerticalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}"/>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text" />
+                                    <bean parent="MyPlanHelpImage">
+                                        <property name="toolTip">
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Planning quarters.">
+                                          </bean>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
                         <bean parent="term_no_courses" p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
                     </list>
                 </property>
@@ -1800,11 +1893,17 @@
         </property>
     </bean>
 
-    <bean id="term_total_credits" parent="Uif-VerticalBoxGroup">
+    <bean id="term_total_credits" parent="Uif-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:label="Total Credits" p:cssClasses="myplan-carousel-term-credits">
+                <bean id="term_total_credits_text" parent="Uif-MessageField" p:label="Total Credits" p:cssClasses="myplan-carousel-term-credits">
                     <property name="messageText" value="@{#line.credits ne null ? #line.credits : '0'}"/>
+                </bean>
+                <bean parent="MyPlanHelpImage">
+                    <property name="toolTip">
+                      <bean parent="Uif-Tooltip" p:tooltipContent="This is a header tooltip">
+                      </bean>
+                    </property>
                 </bean>
             </list>
         </property>
