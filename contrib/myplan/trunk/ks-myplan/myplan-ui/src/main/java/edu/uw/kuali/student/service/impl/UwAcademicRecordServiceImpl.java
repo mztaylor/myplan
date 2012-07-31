@@ -117,6 +117,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecords(@WebParam(name = "personId") String personId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String enrollmentResponseText = null;
+        Map<String,String> courseIds = new HashMap<String, String>();
         List<StudentCourseRecordInfo> studentCourseRecordInfoList = new ArrayList<StudentCourseRecordInfo>();
         List<TermInfo> planningTermInfo = null;
         try {
@@ -176,7 +177,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             String isRepeated = dataSection.elementText("RepeatCourse");
                             if (isRepeated.equalsIgnoreCase("true")) {
                                 studentCourseRecordInfo.setIsRepeated(true);
-                            }else {
+                            } else {
                                 studentCourseRecordInfo.setIsRepeated(false);
                             }
                             studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
@@ -200,13 +201,25 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                 studentCourseRecordInfo.setTermName(termName);
                                 studentCourseRecordInfo.setPersonId(personId);
-                                studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                if(!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())){
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                }
+                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode())&&!courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)){
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+
+                                }
+                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)&&!studentCourseRecordInfo.getCreditsEarned().equals("0")){
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
                                 }
                             }
                         }
                     }
                 }
             }
+        }
         /**************************************End of Enrollment Section******************************************************************************/
 
         /**************************************************Registration Section****************************************************/
@@ -283,7 +296,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                             String isRepeated = dataSection.elementText("RepeatCourse");
                             if (isRepeated.equalsIgnoreCase("true")) {
                                 studentCourseRecordInfo.setIsRepeated(true);
-                            }else {
+                            } else {
                                 studentCourseRecordInfo.setIsRepeated(false);
                             }
                             studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
@@ -307,15 +320,29 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                 studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                 studentCourseRecordInfo.setTermName(termName);
                                 studentCourseRecordInfo.setPersonId(personId);
+
+
+                                if(!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())){
                                     studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                }
+                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode())&&!courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)){
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+
+                                }
+                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)&&!studentCourseRecordInfo.getCreditsEarned().equals("0")){
+                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
                                 }
                             }
                         }
+                    }
 
 
                 }
             }
-        }        
+        }
 
         return studentCourseRecordInfoList;
     }
@@ -364,7 +391,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         SearchRequest request = new SearchRequest("myplan.course.getCourseTitleAndId");
         request.addParam("subject", subject);
         request.addParam("number", number);
-        request.addParam("currentTerm",AtpHelper.getCurrentAtpId());
+        request.addParam("currentTerm", AtpHelper.getCurrentAtpId());
         requests.add(request);
         SearchResult searchResult = new SearchResult();
         try {
