@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
+import org.jacorb.sasPolicy.ATLASPolicyHelper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.*;
@@ -290,6 +291,8 @@ public class CourseLinkBuilder {
         SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
         searchRequest.addParam("subject", curriculumCode);
         searchRequest.addParam("number", courseNumber);
+        searchRequest.addParam("currentTerm", DegreeAuditAtpHelper.getCurrentAtpId());
+
 
         SearchResult searchResult = null;
         try {

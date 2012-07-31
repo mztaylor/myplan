@@ -150,17 +150,17 @@ public class DegreeAuditController extends UifControllerBase {
             }
             for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
                 if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
-                    char campusPrefix = auditProgramInfo.getProgramId().charAt( 0 );
-                    form.setCampusParam(campusMap.get(campusPrefix));
+                    int campusPrefix = Integer.parseInt(auditProgramInfo.getProgramId().substring(0,1));
+                    form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
                     switch( campusPrefix)
                     {
-                        case '0':
+                        case 0:
                             form.setProgramParamSeattle(auditProgramInfo.getProgramId());
                             break;
-                        case '1':
+                        case 1:
                             form.setProgramParamBothell(auditProgramInfo.getProgramId());
                             break;
-                        case '2':
+                        case 2:
                             form.setProgramParamTacoma(auditProgramInfo.getProgramId());
                             break;
                         default:
