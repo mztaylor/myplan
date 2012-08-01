@@ -206,7 +206,7 @@ function searchForCourses(id, parentId) {
             "sLengthMenu":"Show _MENU_",
             "sZeroRecords":"0 results found"
         },
-        sAjaxSource: '/student/myplan/course/search?queryText='+sQuery+'&termParam='+sTerm+'&campusParam='+aCampus,
+        sAjaxSource: '/student/myplan/course/search?queryText=' + escape(sQuery) + '&termParam=' + sTerm + '&campusParam=' + aCampus,
         sCookiePrefix: "myplan_",
         sDom: "ilrtSp",
         sPaginationType: "full_numbers"
