@@ -1318,14 +1318,13 @@
                             </bean>
                             <bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm ? true : false}">
                                 <property name="toolTip">
-                                  <bean parent="Uif-Tooltip" p:tooltipContent="Completed Explanation">
+                                  <bean parent="Uif-Tooltip" p:tooltipContent="A completed quarter you registered for. &lt;a href=http://www.uw.edu target=_blank&gt;Learn more&lt;/a&gt;">
                                   </bean>
                                 </property>
                             </bean>
                             <bean parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) ? true : false}">
                                 <property name="toolTip">
-                                  <bean parent="Uif-Tooltip" p:tooltipContent="Registered Explanation">
-                                  </bean>
+                                  <bean parent="Uif-Tooltip" p:tooltipContent="A course you have enrolled in for current or future academic quarter(s)."></bean>
                                 </property>
                             </bean>
                         </list>
@@ -1469,7 +1468,7 @@
                         <ref bean="term_total_credits_text" />
                         <bean parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Completed quarters.">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
                               </bean>
                             </property>
                         </bean>
@@ -1568,7 +1567,7 @@
                         <ref bean="term_total_credits_text" />
                         <bean parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Completed quarters.">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
                               </bean>
                             </property>
                         </bean>
@@ -1588,7 +1587,7 @@
                     <list>
                         <bean parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="Uif-Tooltip" p:tooltipContent="Planned Courses"/>
+                              <bean parent="Uif-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
                             </property>
                         </bean>
                     </list>
@@ -1655,14 +1654,25 @@
             <bean parent="Uif-VerticalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}">
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
                             <property name="items">
                                 <list>
                                     <ref bean="term_total_credits_text" />
                                     <bean parent="MyPlanHelpImage">
                                         <property name="toolTip">
-                                          <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Planning quarters.">
-                                          </bean>
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text" />
+                                    <bean parent="MyPlanHelpImage">
+                                        <property name="toolTip">
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
                                         </property>
                                     </bean>
                                 </list>
@@ -1685,7 +1695,7 @@
                     <list>
                         <bean parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="Uif-Tooltip" p:tooltipContent="Planned Courses"/>
+                              <bean parent="Uif-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
                             </property>
                         </bean>
                     </list>
@@ -1732,8 +1742,6 @@
                         </list>
                     </property>
                 </bean>
-
-
             </list>
         </property>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
@@ -1741,14 +1749,25 @@
             <bean parent="Uif-VerticalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? true : false}">
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
                             <property name="items">
                                 <list>
                                     <ref bean="term_total_credits_text" />
                                     <bean parent="MyPlanHelpImage">
                                         <property name="toolTip">
-                                          <bean parent="Uif-Tooltip" p:tooltipContent="This is the Total Credits explanation for Planning quarters.">
-                                          </bean>
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text" />
+                                    <bean parent="MyPlanHelpImage">
+                                        <property name="toolTip">
+                                          <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
                                         </property>
                                     </bean>
                                 </list>
@@ -1761,9 +1780,52 @@
         </property>
     </bean>
 
+
+    <!--
+    <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                </property>
+            </bean>
+        </property>
+    -->
+
+
+
     <bean id="backupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
@@ -1828,6 +1890,19 @@
     <bean id="advisorBackupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
@@ -1901,7 +1976,7 @@
                 </bean>
                 <bean parent="MyPlanHelpImage">
                     <property name="toolTip">
-                      <bean parent="Uif-Tooltip" p:tooltipContent="This is a header tooltip">
+                      <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter.">
                       </bean>
                     </property>
                 </bean>
