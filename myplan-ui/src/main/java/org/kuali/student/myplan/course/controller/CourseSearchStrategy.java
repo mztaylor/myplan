@@ -191,7 +191,7 @@ public class CourseSearchStrategy {
             for (String code : codes) {
                 needDivisionQuery = false;
                 SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndCode");
-                request.addParam("division", division.trim());
+                request.addParam("division", division);
                 request.addParam("code", code);
                 requests.add(request);
             }
@@ -203,14 +203,14 @@ public class CourseSearchStrategy {
                 level = level.substring(0, 1) + "00";
 
                 SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndLevel");
-                request.addParam("division", division.trim());
+                request.addParam("division", division);
                 request.addParam("level", level);
                 requests.add(request);
             }
 
             if (needDivisionQuery) {
                 SearchRequest request = new SearchRequest("myplan.lu.search.division");
-                request.addParam("division", division.trim());
+                request.addParam("division", division);
                 requests.add(request);
             }
         }
