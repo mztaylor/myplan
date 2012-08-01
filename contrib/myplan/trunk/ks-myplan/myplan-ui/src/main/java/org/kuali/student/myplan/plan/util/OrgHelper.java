@@ -93,7 +93,7 @@ public class OrgHelper {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
-            subjects.put(getCellValue(row, "org.resultColumn.attrValue"), getCellValue(row, "org.resultColumn.name"));
+            subjects.put(getCellValue(row, "org.resultColumn.attrValue").trim(), getCellValue(row, "org.resultColumn.name"));
 
         }
         return subjects;
