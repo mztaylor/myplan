@@ -68,8 +68,11 @@ public class CommentController extends UifControllerBase {
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String principleId = user.getPrincipalId();
         CommentForm commentForm = (CommentForm) form;
         commentForm.setStudentName(UserSessionHelper.getStudentName());
+        commentForm.setPersonName(UserSessionHelper.getName(principleId));
         if (commentForm.getMessageId() != null) {
             MessageDataObject messageDataObject = null;
             try {

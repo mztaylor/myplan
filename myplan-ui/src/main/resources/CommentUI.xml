@@ -267,7 +267,7 @@
         <property name="items">
             <list>
 
-                <bean parent="Uif-DataField" p:propertyName="studentName" p:style="margin:0;">
+                <bean parent="Uif-DataField" p:propertyName="personName" p:style="margin:0;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-container-100</value>
