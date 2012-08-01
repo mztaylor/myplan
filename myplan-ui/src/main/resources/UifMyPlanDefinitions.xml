@@ -183,7 +183,7 @@
     </bean>
 
     <bean id="MyPlanHelpImage" parent="Uif-HelpImage"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}icon_help.png"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconHelp.png"
           p:altText="Help" p:title="Help">
         <property name="cssClasses">
             <list merge="true">
