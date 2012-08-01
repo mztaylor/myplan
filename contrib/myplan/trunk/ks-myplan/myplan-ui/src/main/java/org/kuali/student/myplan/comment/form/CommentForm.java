@@ -10,6 +10,7 @@ public class CommentForm extends UifFormBase {
     private String from;
     private Date createdDate;
     private String studentName;
+    private String personName;
     private String subject;
     private String body;
     private String commentBody;
@@ -96,5 +97,13 @@ public class CommentForm extends UifFormBase {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
     }
 }
