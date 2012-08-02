@@ -1073,6 +1073,11 @@ public class PlanController extends UifControllerBase {
         // <a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Reset your academic plan</a>
         // Removed link because html string is being encoded in the view
         String[] params = {"Refresh your page."};
+        if (e != null) {
+            logger.error(errorMessage, e);
+        } else {
+            logger.error(errorMessage);
+        }
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, params, e);
     }
 
@@ -1081,6 +1086,11 @@ public class PlanController extends UifControllerBase {
      */
     private ModelAndView doOperationFailedError(PlanForm form, String errorMessage, Exception e) {
         String[] params = {};
+        if (e != null) {
+            logger.error(errorMessage, e);
+        } else {
+            logger.error(errorMessage);
+        }
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_OPERATION_FAILED, params, e);
     }
 
@@ -1196,6 +1206,7 @@ public class PlanController extends UifControllerBase {
         try {
             newPlanItem = getAcademicPlanService().createPlanItem(pii, UserSessionHelper.makeContextInfoInstance());
         } catch (Exception e) {
+            logger.error("Could not create plan item.", e);
             throw new RuntimeException("Could not create plan item.", e);
         }
 
@@ -1306,6 +1317,7 @@ public class PlanController extends UifControllerBase {
         try {
             planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (Exception e) {
+            logger.error("Could not retrieve plan items.", e);
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
@@ -1313,6 +1325,7 @@ public class PlanController extends UifControllerBase {
             try {
                 planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
             } catch (Exception e) {
+                logger.error("Could not retrieve plan items.", e);
                 throw new RuntimeException("Could not retrieve plan items.", e);
             }
         }
@@ -1410,6 +1423,7 @@ public class PlanController extends UifControllerBase {
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
+            logger.error("Could not convert javascript events to JSON.",e);
             throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
         params.put("courseDetails", courseDetailsAsJson);
