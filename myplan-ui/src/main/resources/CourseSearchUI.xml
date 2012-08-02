@@ -262,6 +262,19 @@
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="MyPlanHelpImage">
+                            <property name="toolTip">
+                              <bean parent="Uif-Tooltip" p:tooltipContent="Projected For (AU) - Projected quarter a course might be offered based on the Course Catalog. &lt;br&gt; Scheduled For (AU 12) - Course appears in the published Time Schedule for that quarter and year. &lt;br&gt; Unknown - Not every department provides projected course information. If a course is not projected for a given quarter, it does not mean it is not offered. Contact the department to find out when they expect to offer the course next. &lt;br&gt; Last Offered - The quarter the course was last offered by the department. &lt;br&gt; &lt;a href=https://depts.washington.edu/myplan/quarter-description/ target=_blank&gt;Learn more&lt;/a&gt;"/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-facets-group</value>
