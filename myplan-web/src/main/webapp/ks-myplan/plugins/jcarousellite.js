@@ -207,7 +207,7 @@ $.fn.jCarouselLite = function(o) {
         btnNext: null,
         btnGo: null,
         mouseWheel: false,
-        auto: null,
+        auto: false,
 
         speed: 200,
         easing: null,
@@ -285,20 +285,13 @@ $.fn.jCarouselLite = function(o) {
 			o.initCallback.call(this, vis());
             if(!o.circular) {
                 $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
-                $( (curr-o.scroll<0 && o.btnPrev)
-                    ||
-                   (curr+o.scroll > itemLength-v && o.btnNext)
-                    ||
-                   []
-                 ).addClass("disabled");
+                $( (curr-o.scroll<0 && o.btnPrev) || (curr+o.scroll > itemLength-v && o.btnNext) || [] ).addClass("disabled");
             }
 		}
 
         function go(to) {
             if(!running) {
-
-                if(o.beforeStart)
-                    o.beforeStart.call(this, vis());
+                if(o.beforeStart) o.beforeStart.call(this, vis());
 
                 if(o.circular) {            // If circular we are in first or last, then goto the other end
                     if(to<=o.start-v-1) {           // If first, then goto last
@@ -328,14 +321,8 @@ $.fn.jCarouselLite = function(o) {
                 // Disable buttons when the carousel reaches the last/first, and enable when not
                 if(!o.circular) {
                     $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
-                    $( (curr-o.scroll<0 && o.btnPrev)
-                        ||
-                       (curr+o.scroll > itemLength-v && o.btnNext)
-                        ||
-                       []
-                     ).addClass("disabled");
+                    $( (curr-o.scroll<0 && o.btnPrev) || (curr+o.scroll > itemLength-v && o.btnNext) || [] ).addClass("disabled");
                 }
-
             }
             //return false;
         };
@@ -346,7 +333,7 @@ function css(el, prop) {
     return parseInt($.css(el[0], prop)) || 0;
 };
 function width(el) {
-    return  el[0].offsetWidth + css(el, 'marginLeft') + css(el, 'marginRight');
+    return el[0].offsetWidth + css(el, 'marginLeft') + css(el, 'marginRight');
 };
 function height(el) {
     return el[0].offsetHeight + css(el, 'marginTop') + css(el, 'marginBottom');
