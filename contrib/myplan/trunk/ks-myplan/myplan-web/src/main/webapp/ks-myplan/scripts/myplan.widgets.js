@@ -171,8 +171,8 @@ function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
             return value.replace("'"+ linkId +"'", "'"+ linkId +"_popup'");
         });
         jQuery(this).attr("id", linkId + "_popup");
-        jQuery.each(target.dataset, function(key, value){
-            jQuery("a#" + linkId + "_popup").attr("data-" + key, value);
+        jQuery.each(jQuery(target).data(), function(key, value){
+            jQuery("#" + linkId + "_popup").attr("data-" + key, value);
         });
     });
 
@@ -546,10 +546,11 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
 ######################################################################################
  */
 function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
-    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
+    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">'; //jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
     jQuery.each(retrieveOptions, function(name, value) {
-        jQuery(tempForm).append('<input type="hidden" name="' + name + '" value="' + value + '" />');
+        tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
     });
+    tempForm += '</form>';
     jQuery("body").append(tempForm);
 
     var elementToBlock = jQuery("#" + id);
@@ -584,7 +585,9 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 ######################################################################################
  */
 function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, elementBlockingSettings) {
+	/*
 	var data;
+
     // methodToCall checks
 	if(methodToCall != null){
         data = {methodToCall: methodToCall, renderFullView: false};
@@ -617,6 +620,39 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
         jsonViewState = jsonViewState.replace(/"/g, "'");
         jQuery.extend(data, {clientViewState: jsonViewState});
     }
+    */
+    var data = {};
+
+    // methodToCall checks
+    if (methodToCall == null) {
+        var methodToCallInput = jQuery("input[name='methodToCall']");
+        if (methodToCallInput.length > 0) {
+            methodToCall = jQuery("input[name='methodToCall']").val();
+        }
+    }
+
+    // check to see if methodToCall is still null
+    if (methodToCall != null || methodToCall !== "") {
+        data.methodToCall = methodToCall;
+    }
+
+    data.renderFullView = false;
+
+    // remove this since the methodToCall was passed in or extracted from the page, to avoid issues
+    jQuery("input[name='methodToCall']").remove();
+
+	if(additionalData != null){
+        jQuery.extend(data, additionalData);
+	}
+
+    var viewState = jQuery(document).data(kradVariables.VIEW_STATE);
+    if (!jQuery.isEmptyObject(viewState)) {
+        var jsonViewState = jQuery.toJSON(viewState);
+
+        // change double quotes to single because escaping causes problems on URL
+        jsonViewState = jsonViewState.replace(/"/g, "'");
+        jQuery.extend(data, {clientViewState: jsonViewState});
+    }
 
 	var submitOptions = {
 			data: data,
@@ -625,12 +661,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 				tempDiv.innerHTML = response;
 				var hasError = handleIncidentReport(response);
 				if(!hasError){
-                    var newServerErrors = jQuery("#errorsFieldForPage_div", tempDiv).clone();
 					successCallback(tempDiv);
-//                    if(successCallback !== replacePage){
-//                        jQuery("#errorsFieldForPage_div").replaceWith(newServerErrors);
-//                        runHiddenScripts("errorsFieldForPage_div");
-//                    }
 				}
 				jQuery("#formComplete").empty();
 			},
@@ -679,10 +710,11 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 		};
 	}
 	jQuery.extend(submitOptions, elementBlockingOptions);
-	if (formId) {
-        var form = jQuery("#" + formId + "_form");
+	var form;
+    if (formId) {
+        form = jQuery("#" + formId + "_form");
     } else {
-        var form = jQuery("#kualiForm");
+        form = jQuery("#kualiForm");
     }
 	form.ajaxSubmit(submitOptions);
 }

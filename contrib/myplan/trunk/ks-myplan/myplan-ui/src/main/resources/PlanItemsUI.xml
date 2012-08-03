@@ -1061,7 +1061,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1069,7 +1069,7 @@
                       p:title="Mark it as Backup course"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="myPlanAjaxPlanItemMove(e.currentTarget.dataset.planitemid,'planItemId','plannedToBackup',e);"/>
+                              value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','plannedToBackup',e);"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Will be moved below the Total Credit line"
@@ -1079,14 +1079,14 @@
                       p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'move_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1094,7 +1094,7 @@
                       p:title="Delete from the Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
@@ -1115,7 +1115,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1123,7 +1123,7 @@
                       p:title="Mark it as Planned course"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="myPlanAjaxPlanItemMove(e.currentTarget.dataset.planitemid,'planItemId','backupToPlanned',e);"/>
+                              value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','backupToPlanned',e);"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Will be moved above the Total Credit line"
@@ -1133,14 +1133,14 @@
                       p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'move_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1148,7 +1148,7 @@
                       p:title="Delete from the Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
@@ -1168,14 +1168,14 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'course_summary_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'copy_dialog_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1183,7 +1183,7 @@
                       p:title="Delete from the Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.planitemid,'plan_item_delete_page',{planItemId:e.currentTarget.dataset.planitemid,pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
@@ -1202,14 +1202,14 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.courseid,'course_summary_dialog_page',{courseId:e.currentTarget.dataset.courseid,pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('courseid'),'course_summary_dialog_page',{courseId:jQuery(this).data('courseid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#" p:style="margin:0;"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(e.currentTarget.dataset.courseid,'copy_dialog_page',{courseId:e.currentTarget.dataset.courseid,pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('courseid'),'copy_dialog_page',{courseId:jQuery(this).data('courseid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
             </list>
@@ -1425,8 +1425,8 @@
                     <property name="onClickScript" value="openMenu('@{#line.uuid}_completed','completed_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <property name="dataAttributes">
                         <map>
-                            <entry key="courseId" value="@{#line.courseId}"/>
-                            <entry key="acadRecAtpId" value="@{#line.atpId}"/>
+                            <entry key="courseid" value="@{#line.courseId}"/>
+                            <entry key="acadrecatpid" value="@{#line.atpId}"/>
                         </map>
                     </property>
                     <property name="cssClasses">
@@ -1650,9 +1650,9 @@
                     <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">
                         <map>
-                            <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                            <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
-                            <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                            <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
+                            <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
+                            <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
                         </map>
                     </property>
                     <property name="cssClasses">
@@ -1882,9 +1882,9 @@
                     <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">
                         <map>
-                            <entry key="courseId" value="@{#line.courseDetails.courseId}"/>
-                            <entry key="planItemId" value="@{#line.planItemDataObject.id}"/>
-                            <entry key="atpId" value="@{#line.planItemDataObject.atp}"/>
+                            <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
+                            <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
+                            <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
                         </map>
                     </property>
                     <property name="cssClasses">
