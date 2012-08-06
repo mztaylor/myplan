@@ -128,11 +128,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override
-    public CourseOfferingInfo copyCourseOffering(@WebParam(name = "sourceCourseOfferingId") String s, @WebParam(name = "targetTermId") String s1, @WebParam(name = "optionKeys") List<String> strings, @WebParam(name = "context") ContextInfo contextInfo) throws AlreadyExistsException, DoesNotExistException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, ReadOnlyException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     /**
      * Queries the student service and creates a collection of courseCodes for a given termKey (term, year)
      * and subject area (curriculum abbreviation)
