@@ -15,10 +15,25 @@
     limitations under the License.
 
 --%>
+    <%@ page import="java.io.*,java.util.*" %>
+    <%@ page import="javax.servlet.*,java.text.*" %>
 
     <div id="applicationFooter">
-        <ul>
-            <li><a href="#">Help</a></li>
-            <li><a href="#">Contact Us</a></li>
-        </ul>
+        <div id="applicationFooterSection">
+            <ul>
+                <li><a href="#">Feedback</a></li>
+                <li><a href="#">Help</a></li>
+                <li><a href="http://myuw.washington.edu/">MyUW</a></li>
+                <li><a href="http://www.washington.edu/">UW Home</a></li>
+            </ul>
+            <ul class="smaller">
+                <li>&copy; <%
+                   Date dNow = new Date( );
+                   SimpleDateFormat year = new SimpleDateFormat ("yyyy");
+                   out.print( year.format(dNow) );
+                %> University of Washington</li>
+                <li><a href="#">Terms &amp; Conditions</a></li>
+                <li><a href="#">Privacy</a></li>
+            </ul>
+        </div>
     </div>
