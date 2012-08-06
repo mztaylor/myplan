@@ -5,6 +5,8 @@
 }
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
+    background: url(../images/myplanBodyBackground.png) repeat;
+    padding: 0 !important;
 }
 strong {
     font-weight: bold;
@@ -31,69 +33,117 @@ a:focus {
 .uif-header {
     margin: 0;
 }
-#applicationHeader,
+.uif-application {
+    background: #fff;
+}
+#applicationHeading,
+#applicationNavigation,
 .myplan-view,
-#applicationFooter {
+#applicationFooterSection {
 	margin:0 auto;
     width: 950px;
 }
 #applicationHeader {
-    margin-top:10px;
+    border-top:solid 5px #39275b;
+    background: url(../images/myplan_header_bkgrd.png) repeat-x;
+    color: #615f5f;
+    height: 127px;
+    position: relative;
+    margin: 0 0 10px 0;
+}
+#applicationHeader a {
+    color: #39275b;
 }
 .myplan-view {
     min-height: 425px;
 }
 #applicationHeader #applicationHeading {
-    overflow:auto;
-}
-#applicationHeading #applicationLogo,
-#applicationHeading #applicationUser {
-    width:50%;
-    float:left;
-    overflow:auto;
+    position: relative;
+    height: 127px;
 }
 #applicationHeading #applicationLogo {
-    font-size: 3em;
+    font-size: 38px;
     line-height: normal;
-}
-#applicationHeading #applicationLogo span{
-    font-size: 50%;
-    color: #999999;
+    color: #39275b;
+    position: absolute;
+    top: 40px;
+    left: 0px;
 }
 #applicationHeading #applicationUser {
     text-align:right;
-    overflow: hidden;
+    position: absolute;
+    top: 45px;
+    right: 95px;
 }
-#applicationHeading #applicationUser .links ul,
-#applicationHeading #applicationUser .links ul li {
-    list-style:none;
-    margin: 0;
-    padding: 0;
+#applicationHeading #applicationUser a.name {
+    display: inline-block;
+    padding: 0 12px 0 0;
+    background: url(../images/myplan_icon_id_arrow.png) no-repeat bottom right;
 }
-#applicationHeading #applicationUser .links ul li {
-    display:inline-block;
+#myplanUwPatch {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+#applicationNavigation {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
 }
 #applicationNavigation ul,
-#applicationFooter ul {
-    clear: both;
-    border: solid 1px #e5e5e5;
-    background: #eee;
-    color: #999999;
-    padding: 15px;
-    display: block;
-    margin: 10px 0;
+#applicationNavigation ul li {
     list-style: none;
 }
-#applicationNavigation ul li,
-#applicationFooter ul li {
+#applicationNavigation ul li {
+    display: inline-block;
+    margin: 0 60px 0 0;
+    padding: 5px;
+    border-bottom: solid 4px transparent;/*#fea931;*/
+    font-size: 18px;
+}
+#applicationNavigation ul li.home {
+    background: url(../images/myplan_icon_home.png) no-repeat 5px 3px;
+    padding-left: 25px;
+}
+#applicationNavigation ul li.active {
+    border-bottom-color: #fea931;
+    font-weight: bold;
+}
+#applicationFooter {
+    background-image: -ms-linear-gradient(top, #878787 0%, #A4A4A4 100%);
+    background-image: -moz-linear-gradient(top, #878787 0%, #A4A4A4 100%);
+    background-image: -o-linear-gradient(top, #878787 0%, #A4A4A4 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #878787), color-stop(1, #A4A4A4));
+    background-image: -webkit-linear-gradient(top, #878787 0%, #A4A4A4 100%);
+    background-image: linear-gradient(to bottom, #878787 0%, #A4A4A4 100%);
+    border-top: solid 1px #e1d8be;
+    border-bottom: solid 1px #c8c8c8;
+    color: #000;
+    font-size: 13px;
+}
+#applicationFooter .smaller {
+    font-size: 11px;
+}
+#applicationFooter a {
+    color: #fff;
+}
+#applicationFooterSection ul {
+    list-style: none;
+    margin: 20px auto;
+    display: block;
+    text-align: center;
+}
+#applicationFooterSection ul li {
     list-style: none;
     display: inline-block;
-    margin:  0 0 0 2em;
-    padding:  0;
+    margin: 0 0 0 10px;
+    padding: 0 0 0 10px;
+    border-left: solid 1px #7e7e7e;
 }
-#applicationNavigation ul li:first-child,
-#applicationFooter ul li:first-child {
-    margin:  0;
+#applicationFooterSection ul li:first-child {
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 .myplan-view .uif-pageHeader {
     margin: 0 0 1em 0;
@@ -1021,3 +1071,39 @@ body div.blockElement {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
 }
+
+/*
+
+.uif-primaryActionButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #fee495;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #fee495;
+	box-shadow:inset 0px 1px 0px 0px #fee495;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
+	background:-moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
+	background-color:#fedb71;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
+	border-radius:15px;
+	border:1px solid #d6992f;
+	display:inline-block;
+	color:#39275b;
+	font-family:Trebuchet MS;
+	font-size:14px;
+	font-weight:bold;
+	padding:7px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #fcede3;
+}
+.uif-primaryActionButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #febc4a), color-stop(1, #fedb71) );
+	background:-moz-linear-gradient( center top, #febc4a 5%, #fedb71 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#febc4a', endColorstr='#fedb71');
+	background-color:#febc4a;
+}
+.uif-primaryActionButton:active {
+	position:relative;
+	top:1px;
+}
+
+*/
