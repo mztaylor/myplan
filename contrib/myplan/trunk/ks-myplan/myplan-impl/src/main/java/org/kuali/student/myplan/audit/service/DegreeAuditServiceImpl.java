@@ -273,7 +273,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     @Override
     public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         try {
-            /*studentId = hardcodedStudentID(studentId);*/
+
             if( studentId.startsWith( "1") && studentId.length() == 9 )
             {
                 studentId = studentId.substring( 1 );
@@ -343,7 +343,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public int timeout = 30 * 1000; // 30 seconds
     @Override
-    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+    public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context)
+        throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException
+   {
 
         long giveup = System.currentTimeMillis() + timeout;
         try {
@@ -956,17 +958,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         throw new RuntimeException("cell result '" + key + "' not found");
     }
 
+    public String convertSDBSyskeyToMyPlanStuno( String syskey )
+    {
+        // Convert systemKey to myplan stuno
+        if( syskey.length() < 9 || !syskey.startsWith( "1" ))
+        {
+            while( syskey.startsWith( "0" ))
+            {
+                syskey = syskey.substring( 1 );
+            }
+            String myplan = "100000000";
+            syskey = myplan.substring( 0, 9 - syskey.length() ) + syskey;
+        }
 
-    public String hardcodedStudentID( String studentId ) {
-        // Used by devs when logged in as admin
-//        if( "admin".equals( studentId )) return   "100190981";
-        // Used by Jill for demos
-        if( "jjulius".equals( studentId )) return "101360188";
-
-        if (true) return "101360188";
-
-        // do nothing
-        return studentId;
+        return syskey;
     }
 
     @Override
@@ -977,8 +982,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
+        studentId = convertSDBSyskeyToMyPlanStuno( studentId );
 
-        /*studentId = hardcodedStudentID( studentId );*/
 
         // TODO: configurable constant for UW
         String instid = "4854";
