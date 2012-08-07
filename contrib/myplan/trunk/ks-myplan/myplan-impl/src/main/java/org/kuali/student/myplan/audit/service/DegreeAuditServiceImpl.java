@@ -982,7 +982,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
-        studentId = convertSDBSyskeyToMyPlanStuno( studentId );
+        String stuno = convertSDBSyskeyToMyPlanStuno( studentId );
+        logger.info( "getAuditsForStudentInDateRange studentid " + studentId + "  stuno " + stuno );
 
 
         // TODO: configurable constant for UW
@@ -995,13 +996,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         try
         {
             JobQueueRunDao runrun = getJobQueueRunDao();
-            List<JobQueueRun> load = runrun.load(instid, instidq, instcd, studentId);
+            List<JobQueueRun> load = runrun.load(instid, instidq, instcd, stuno);
 
             for (JobQueueRun jqr : load) {
                 AuditReportInfo audit = new AuditReportInfo();
                 audit.setAuditId(jqr.getJobid());
                 audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
-                audit.setStudentId(studentId);
+                audit.setStudentId(stuno);
                 audit.setProgramId(jqr.getWebtitle());
                 audit.setRunDate(jqr.getRundate());
                 audit.setRequirementsSatisfied("Unknown");
