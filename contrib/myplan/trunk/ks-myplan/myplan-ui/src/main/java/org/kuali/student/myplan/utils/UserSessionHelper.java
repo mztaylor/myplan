@@ -16,6 +16,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides an initialized Context which can be used for service requests.
@@ -167,9 +168,15 @@ public class UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
+            Map<String,String> idmap = person.getExternalIdentifiers();
+            for( String key : idmap.keySet() )
+            {
+                String value = idmap.get( key );
+                logger.info( "identifier : " + key + " = " + value );
+
+            }
             logger.info(person.getExternalIdentifiers().values());
             systemKey = person.getExternalIdentifiers().get("systemKey");
-            logger.info("systemKey: " + systemKey);
         }
         if (!StringUtils.hasText(systemKey)) {
             throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");

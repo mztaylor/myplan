@@ -15,7 +15,7 @@
  */
 package org.kuali.student.myplan.audit.controller;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -57,7 +57,7 @@ import java.util.*;
 @RequestMapping(value = "/audit/**")
 public class DegreeAuditController extends UifControllerBase {
 
-    private final Logger logger = Logger.getLogger(DegreeAuditController.class);
+//    private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
     private transient DegreeAuditService degreeAuditService;
 
@@ -111,7 +111,7 @@ public class DegreeAuditController extends UifControllerBase {
             Date endDate = new Date();
             String programParam = null;
             form.setCampusParam(campusMap.get("0"));
-            logger.info( "audit systemkey " + systemKey );
+//            logger.info( "audit systemkey " + systemKey );
             List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
             if (auditId == null) {
                 auditId = auditReportInfoList.get(0).getAuditId();
@@ -147,7 +147,7 @@ public class DegreeAuditController extends UifControllerBase {
             try {
                 auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error("could not retrieve AuditPrograms", e);
+//                logger.error("could not retrieve AuditPrograms", e);
             }
             for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
                 if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
@@ -230,7 +230,7 @@ public class DegreeAuditController extends UifControllerBase {
             form.setAuditHtml(html);
 
         } catch (Exception e) {
-            logger.error("Could not complete audit run");
+//            logger.error("Could not complete audit run");
         }
 
         return getUIFModelAndView(form);
@@ -244,7 +244,7 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             searchResult = getOrganizationService().search(searchRequest);
         } catch (MissingParameterException e) {
-            logger.error("Search Failed to get the Organization Data ", e);
+//            logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
 
