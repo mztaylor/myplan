@@ -169,6 +169,7 @@ public class UserSessionHelper {
         if (person != null) {
             logger.info(person.getExternalIdentifiers().values());
             systemKey = person.getExternalIdentifiers().get("systemKey");
+            logger.info("systemKey: " + systemKey);
         }
         if (!StringUtils.hasText(systemKey)) {
             throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
