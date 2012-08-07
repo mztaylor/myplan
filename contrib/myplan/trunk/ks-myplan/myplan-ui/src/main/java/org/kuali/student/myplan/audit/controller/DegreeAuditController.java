@@ -101,7 +101,7 @@ public class DegreeAuditController extends UifControllerBase {
             Map<String, String> campusMap = populateCampusMap();
 
             Person user = GlobalVariables.getUserSession().getPerson();
-            String studentID = user.getPrincipalId();
+//            String studentID = user.getPrincipalId();
             String systemKey = UserSessionHelper.getAuditSystemKey();
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
@@ -111,6 +111,7 @@ public class DegreeAuditController extends UifControllerBase {
             Date endDate = new Date();
             String programParam = null;
             form.setCampusParam(campusMap.get("0"));
+            logger.info( "audit systemkey " + systemKey );
             List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
             if (auditId == null) {
                 auditId = auditReportInfoList.get(0).getAuditId();
@@ -189,7 +190,7 @@ public class DegreeAuditController extends UifControllerBase {
         }
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
-            String studentId = user.getPrincipalId();
+//            String studentId = user.getPrincipalId();
             String systemKey = UserSessionHelper.getAuditSystemKey();
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             String programId = null;
