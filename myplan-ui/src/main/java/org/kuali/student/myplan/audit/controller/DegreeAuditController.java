@@ -15,7 +15,7 @@
  */
 package org.kuali.student.myplan.audit.controller;
 
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -57,7 +57,7 @@ import java.util.*;
 @RequestMapping(value = "/audit/**")
 public class DegreeAuditController extends UifControllerBase {
 
-//    private final Logger logger = Logger.getLogger(DegreeAuditController.class);
+    private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
     private transient DegreeAuditService degreeAuditService;
 
@@ -111,7 +111,7 @@ public class DegreeAuditController extends UifControllerBase {
             Date endDate = new Date();
             String programParam = null;
             form.setCampusParam(campusMap.get("0"));
-//            logger.info( "audit systemkey " + systemKey );
+            logger.info( "audit systemkey " + systemKey );
             List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
             if (auditId == null) {
                 auditId = auditReportInfoList.get(0).getAuditId();
@@ -147,7 +147,7 @@ public class DegreeAuditController extends UifControllerBase {
             try {
                 auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
             } catch (Exception e) {
-//                logger.error("could not retrieve AuditPrograms", e);
+                logger.error("could not retrieve AuditPrograms", e);
             }
             for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
                 if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
@@ -188,6 +188,7 @@ public class DegreeAuditController extends UifControllerBase {
             GlobalVariables.getMessageMap().putError("audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
             return getUIFModelAndView(form);
         }
+        String auditID = null;
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
 //            String studentId = user.getPrincipalId();
@@ -213,7 +214,7 @@ public class DegreeAuditController extends UifControllerBase {
             ContextInfo context = new ContextInfo();
 
             AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
-            String auditID = report.getAuditId();
+            auditID = report.getAuditId();
             // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
             AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
             InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
@@ -230,7 +231,14 @@ public class DegreeAuditController extends UifControllerBase {
             form.setAuditHtml(html);
 
         } catch (Exception e) {
-//            logger.error("Could not complete audit run");
+            logger.error("Could not complete audit run");
+        }
+
+        /*
+        form.setPageId("degree_audit");
+*/
+        if(form.getPageId().equalsIgnoreCase(DegreeAuditConstants.AUDIT_EMPTY_PAGE) && auditID!=null){
+            form.setPageId(DegreeAuditConstants.AUDIT_PAGE);
         }
 
         return getUIFModelAndView(form);
@@ -244,7 +252,7 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             searchResult = getOrganizationService().search(searchRequest);
         } catch (MissingParameterException e) {
-//            logger.error("Search Failed to get the Organization Data ", e);
+            logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
 
