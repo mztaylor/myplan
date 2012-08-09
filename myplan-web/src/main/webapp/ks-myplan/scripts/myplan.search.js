@@ -147,7 +147,7 @@ function searchForCourses(id, parentId) {
             {'sTitle':'Credit', 'bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
             {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'88px'},
             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'76px'},
-            {'sTitle':'Bookmark', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center myplan-course-search-results-status', 'sWidth':'72px'},
+            {'sTitle':'Action', 'bSortable':false, 'bSearchable':false, 'sClass':'fl-text-align-center myplan-course-search-results-status', 'sWidth':'72px'},
             {'bVisible':false},
             {'bVisible':false},
             {'bVisible':false},

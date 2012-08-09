@@ -1664,7 +1664,20 @@
                         <list>
                             <bean parent="Uif-MessageField">
                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-
+                            </bean>
+                           <!-- <bean parent="Uif-MessageField">
+                                <property name="hidden" value="true"/>
+                                <property name="messageText" value="@{#line.courseDetails.scheduledTerms}"/>
+                            </bean>-->
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms"
+                                  p:escapeHtmlInPropertyValue="false">
+                                <property name="hidden" value="true"/>
+                                <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-data-list</value>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>

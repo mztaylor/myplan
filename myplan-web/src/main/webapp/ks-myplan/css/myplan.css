@@ -5,7 +5,7 @@
 }
 body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
-    background: url(../images/myplanBodyBackground.png) repeat;
+    background: #A4A4A4;
     padding: 0 !important;
 }
 strong {
@@ -47,7 +47,6 @@ a:focus {
     border-top:solid 5px #39275b;
     background: url(../images/myplan_header_bkgrd.png) repeat-x;
     color: #615f5f;
-    height: 127px;
     position: relative;
     margin: 0 0 10px 0;
 }
@@ -107,6 +106,8 @@ a:focus {
 }
 #applicationNavigation ul li.active {
     border-bottom-color: #fea931;
+}
+#applicationNavigation ul li.active a {
     font-weight: bold;
 }
 #applicationFooter {
@@ -117,7 +118,6 @@ a:focus {
     background-image: -webkit-linear-gradient(top, #878787 0%, #A4A4A4 100%);
     background-image: linear-gradient(to bottom, #878787 0%, #A4A4A4 100%);
     border-top: solid 1px #e1d8be;
-    border-bottom: solid 1px #c8c8c8;
     color: #000;
     font-size: 13px;
 }
@@ -150,6 +150,18 @@ a:focus {
 }
 .myplan-view #Uif-ViewContentWrapper {
 	/*min-height: 450px;*/
+}
+.backdoor,
+.adviser-banner {
+    width: 930px;
+    margin: 10px auto 0;
+    border: solid 1px #ccc;
+    padding: 10px;
+    background: #eaeaea;
+}
+.backdoor a,
+.adviser-banner a {
+    text-decoration: underline;
 }
 /* Overwrite KRAD Styles ########################################################################### */
 .myplan-view #Uif-PageContentWrapper,
@@ -280,7 +292,15 @@ button.myplan-button-transparent[disabled="disabled"]:hover {
     filter: none;
     opacity: 0.5;
 }
-
+input.myplan-add {
+    width: 16px;
+    height: 16px;
+    background: url(../images/myplan_icon_add.png) no-repeat 0px 0px;
+    vertical-align: middle;
+}
+input.myplan-add:hover {
+    background-position: -16px 0px;
+}
 .myplan-stacked-list,
 .myplan-stacked-list ul,
 .myplan-stacked-list li,
@@ -403,6 +423,10 @@ button.myplan-button-transparent[disabled="disabled"]:hover {
     line-height: 25px;
     padding: 0 4px 0 24px;
 }
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.not-scheduled,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
+    background: url(../images/iconWarning.png) no-repeat 4px;
+}
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
     background: #a9a9a9;
     cursor:pointer;
@@ -445,6 +469,9 @@ button.myplan-button-transparent[disabled="disabled"]:hover {
     padding: 0 4px;
 }
 /* Layout styles ########################################################################### */
+.myplan-container-75 {
+    width: 75px;
+}
 .myplan-course-search-panel {
 	background: #d6d6d6;
 	border: solid 2px #a9a9a9;
@@ -717,12 +744,15 @@ table.myplan-course-search-results-datatable .even,
 table.myplan-course-search-results-datatable .even td[class^='sorting_'] {
     background-color: #eee;
 }
+/*
 table.myplan-course-search-results-datatable .odd:hover,
 table.myplan-course-search-results-datatable .even:hover {
+*/
+table.myplan-course-search-results-datatable tbody tr:hover {
     background-color: #ddd;
 }
-table.myplan-course-search-results-datatable .odd:hover .dataTables_empty {
-    background-color: transparent;
+table.myplan-course-search-results-datatable tbody tr:hover td.dataTables_empty {
+    background-color: #fff;
 }
 table.myplan-course-search-results-datatable .blockUI {
     display: none !important;
@@ -1105,5 +1135,28 @@ body div.blockElement {
 	position:relative;
 	top:1px;
 }
+
+
+
+
+
+button.uif-primaryActionButton {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #39275b;
+	padding: 7px 24px;
+	background: -moz-linear-gradient(top, #fedb71 0%, #febc4a);
+	background: -webkit-gradient(linear, left top, left bottom, from(#fedb71), to(#febc4a));
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	border: 1px solid #e3a740;
+	-moz-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
+	-webkit-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
+	box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
+	text-shadow: 0px -1px 0px rgba(252,237,227,0.4), 0px 1px 0px rgba(252,237,227,0.3);
+}
+
 
 */
