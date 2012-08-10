@@ -154,18 +154,19 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}">
+                    <property name="onClickScript"
+                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}';"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-LinkField" p:linkText="@{#line.programTitle}" p:style="width: 220px;"
-                                p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>
-
+                            <!--<bean parent="Uif-LinkField" p:linkText="@{#line.programTitle}" p:style="width: 220px;"
+                                p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>-->
+                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:style="width: 220px;" p:fieldLabel.render="false"/>
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
                                   p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"  p:fieldLabel.render="true">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>myplan-text-italic</value>
+                                        <value>myplan-text-gray</value>
                                     </list>
                                 </property>
                             </bean>

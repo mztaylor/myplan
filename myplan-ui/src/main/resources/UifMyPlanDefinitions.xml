@@ -248,7 +248,7 @@
 
     <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)" p:style="margin-bottom:10px;">
         <property name="header">
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+            <bean parent="Uif-HeaderFive"/>
         </property>
         <property name="cssClasses">
             <list merge="true">

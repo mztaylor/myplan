@@ -85,30 +85,34 @@
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
             </list>
         </property>
+        <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary');"/>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">
-                    <property name="onDocumentReadyScript" value="truncateField('@{#line.planItemDataObject.id}');"/>
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="@{#line.courseDetails.code}">
-                                <property name="style" value="margin-right:0.4em;"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                    </list>
-                                </property>
+                                <property name="style" value="margin-right:5px;"/>
                             </bean>
                             <bean p:id="@{#line.planItemDataObject.id}_saved" parent="Uif-Message" p:messageText="@{#line.courseDetails.courseTitle}">
+                                <property name="style" value="margin-right:5px;"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-ellipsis</value>
+                                        <value>myplan-text-gray</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="(@{#line.courseDetails.credit})"/>
+                            <bean parent="Uif-Message" p:messageText="(@{#line.courseDetails.credit})">
+                                <property name="style" value="margin-right:0px;"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -120,7 +124,7 @@
     </bean>
 
     <bean id="saved_courses_summary_footer" parent="Uif-VerticalBoxSection"
-          p:header.render="false" p:style="padding: 6px 4px;">
+          p:header.render="false" p:style="padding: 7px 10px;">
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:style="display: block;">

@@ -7,6 +7,7 @@ body {
     font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
     background: #A4A4A4;
     padding: 0 !important;
+    color: #333;
 }
 strong {
     font-weight: bold;
@@ -26,7 +27,7 @@ a:visited,
 a:focus {
     outline: 0;
     border: none;
-    color: #1d8fd9;
+    color: #0066cc;
 }
 .uif-pageContentWrapper,
 .uif-viewHeader,
@@ -203,6 +204,39 @@ a:focus {
     padding: 0;
     margin: 0;
 }
+/* BUTTONS #################################################################### */
+button.uif-primaryActionButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #fee495;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #fee495;
+	box-shadow:0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
+    -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
+	background:-moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
+	background-color:#fedb71;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
+	border-radius:15px;
+	border:1px solid #e6ac48;
+	display:inline-block;
+	color:#39275b;
+	font-size:14px;
+	font-weight:bold;
+	padding:6px 23px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #fcede3;
+}
+button.uif-primaryActionButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #febc4a), color-stop(1, #fedb71) );
+	background:-moz-linear-gradient( center top, #febc4a 5%, #fedb71 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#febc4a', endColorstr='#fedb71');
+	background-color:#febc4a;
+	color:#39275b;
+	border:1px solid #d6992f;
+}
+
+
+/*
 button.myplan-button,
 button.myplan-button:hover  {
     line-height: 22px;
@@ -218,26 +252,26 @@ button.myplan-button-blue:hover {
 	color: #FFF;
     text-shadow: 0px 1px 0px #333;
     background: #007DD6;
-    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* IE10+ */
-    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
+    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6));
+    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%);
+    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);
 }
 button.myplan-button-gray,
 button.myplan-button-gray:hover {
     color: #333;
     text-shadow: 0px 1px 0px #FFF;
     background: #EBEBEB;
-    background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #FDFDFD 0%,#EBEBEB 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* IE10+ */
-    background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);  /* IE6-9 */
+    background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB));
+    background: -webkit-linear-gradient(top,  #FDFDFD 0%,#EBEBEB 100%);
+    background: -o-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+    background: -ms-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+    background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);
 }
 button.myplan-button-transparent,
 button.myplan-button-transparent:hover {
@@ -255,13 +289,13 @@ button.myplan-button-blue[disabled="disabled"]:hover {
     text-shadow: 0px 1px 0px #333;
     border: solid 1px #969696;
     background: #007DD6;
-    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* IE10+ */
-    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);  /* IE6-9 */
+    background: -moz-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #8BCEFD), color-stop(100%, #007DD6));
+    background: -webkit-linear-gradient(top,  #8BCEFD 0%,#007DD6 100%);
+    background: -o-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+    background: -ms-linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+    background: linear-gradient(top, #8BCEFD 0%, #007DD6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8BCEFD', endColorstr='#007DD6', GradientType=0);
     opacity: 0.5;
 }
 button.myplan-button-gray[disabled="true"],
@@ -272,13 +306,13 @@ button.myplan-button-gray[disabled="disabled"]:hover {
     text-shadow: 0px 1px 0px #FFF;
     border: solid 1px #969696;
     background: #EBEBEB;
-    background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #FDFDFD 0%,#EBEBEB 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* IE10+ */
-    background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);  /* IE6-9 */
+    background: -moz-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FDFDFD), color-stop(100%, #EBEBEB));
+    background: -webkit-linear-gradient(top,  #FDFDFD 0%,#EBEBEB 100%);
+    background: -o-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+    background: -ms-linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+    background: linear-gradient(top, #FDFDFD 0%, #EBEBEB 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FDFDFD', endColorstr='#EBEBEB', GradientType=0);
     opacity: 0.5;
 }
 button.myplan-button-transparent[disabled="true"],
@@ -292,10 +326,11 @@ button.myplan-button-transparent[disabled="disabled"]:hover {
     filter: none;
     opacity: 0.5;
 }
+*/
 input.myplan-add {
     width: 16px;
     height: 16px;
-    background: url(../images/myplan_icon_add.png) no-repeat 0px 0px;
+    background: url(../images/myplan_icon_sprites.png) no-repeat 0px 0px;
     vertical-align: middle;
 }
 input.myplan-add:hover {
@@ -473,12 +508,12 @@ input.myplan-add:hover {
     width: 75px;
 }
 .myplan-course-search-panel {
-	background: #d6d6d6;
-	border: solid 2px #a9a9a9;
-	padding: 10px 0 0 10px;
-	border-radius: 8px;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
+	background: #fcf9f0;
+	border: solid 1px #e1e1e0;
+	padding: 20px 10px 10px 20px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
     overflow: hidden;
 }
 .myplan-audit-info-panel {
@@ -525,6 +560,9 @@ input.myplan-add:hover {
     padding-left: 26px !important;
 }
 /* Text styles ########################################################################### */
+.myplan-text-gray {
+    color: #777;
+}
 .myplan-text-italic {
     font-style: italic !important;
 }
@@ -551,19 +589,57 @@ input.myplan-add:hover {
     -ms-text-overflow: ellipsis;
 }
 /* Styles for Course Search Panel ################################################################################## */
+.myplan-course-search-panel .uif-label {
+    margin: 0 10px 0 0;
+}
+.myplan-course-search-panel input[type='text'],
+.myplan-course-search-panel select {
+    font-size: 13px;
+    border: solid 1px #dddddd;
+    padding: 0 10px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
 .myplan-course-search-panel input[type='text'] {
-    border: solid 1px #969696;
-    padding: 4px;
+    width: 220px;
+    height: 28px;
+    background: #fff;
+}
+.myplan-course-search-panel select {
+    background: url(../images/myplan_button_select_arrow.png) no-repeat right #fff;
+    overflow: hidden;
     width: 200px;
+    height: 30px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    vertical-align: middle;
+    padding: 5px 10px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+.myplan-course-search-panel input[type='text']:focus {
+    -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    border-color: #fc9e5d;
+}
+.myplan-course-search-params span input[type='checkbox'] {
+    margin: 0 5px 0 0;
+}
+.myplan-course-search-params span label {
+    margin: 0 35px 0 0;
 }
 /* Styles for Facet Panel ################################################################################## */
 .myplan-facets-panel {
-	border: solid 1px #a9a9a9;
-    border-top: none;
-    font-size: 90%;
+	border: solid 1px #ddd;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
 }
 .myplan-facets-panel a, .myplan-facets-panel a:hover{
-    color: #000;
+    color: #333;
 }
 .myplan-facets-panel .uif-boxLayoutVerticalItem,
 .myplan-facets-panel .myplan-facets-group ul,
@@ -575,39 +651,49 @@ input.myplan-add:hover {
 .myplan-facets-group a[id$='_toggle'] {
     text-decoration: none;
 }
-.myplan-facets-panel .uif-header {
+.myplan-facets-panel h5.uif-headerText {
 	display: block;
-	background: #cccccc;
-	border-top: solid 1px #a9a9a9;
-	padding: 4px 0px 4px 4px;
-    white-space: nowrap;
+	background: #efe8d3;
+    color: #000;
+	border-bottom: solid 1px #ddd;
+	padding: 10px;
+    font-size: 13px;
+    font-weight: normal;
+    text-transform: uppercase;
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
 }
-.myplan-facets-panel .uif-header .uif-headerText {
+.myplan-facets-panel h6.uif-headerText {
+    display: block;
     text-transform: none;
 	font-weight: normal;
-	color: #000;
-	font-size: 1em;
-}
-.myplan-facets-panel .myplan-facets-group .uif-header {
-    background: #e9e9e9;
-}
-.myplan-facets-panel .myplan-facets-group .uif-header .uif-headerText {
-	font-size: 1em !important;
-	font-weight: bold;
+	color: #323232;
+	font-size: 13px;
+    background: #f5f2e8;
+    padding: 7px 10px;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image {
     float: right;
-    background: url('../images/facetExpandCollapse.png') no-repeat 0px 0px;
+    background: url(../images/myplan_icon_sprites.png) no-repeat 0px -16px;
     margin: 0;
+    padding: 0;
+    width: 16px;
+    height: 16px;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="expand"] {
-    background-position: 0px 0px;
+    background-position: 0px -16px;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="expand"]:hover {
+    background-position: -16px -16px;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="collapse"] {
-    background-position: 0px -14px;
+    background-position: 0px -32px;
+}
+.myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image[alt="collapse"]:hover {
+    background-position: -16px -32px;
 }
 .myplan-facets-panel .myplan-facets-group div.facets {
-	max-height: 76px;
+	max-height: 63px;
 	overflow-y: auto;
 }
 .myplan-facets-panel .myplan-facets-group div.facets ul {
@@ -615,12 +701,14 @@ input.myplan-add:hover {
 }
 .myplan-facets-panel .myplan-facets-group div.all,
 .myplan-facets-panel .myplan-facets-group div.facets {
-    padding: 3px 0 0 3px;
-    border-top: solid 1px #a9a9a9;
+    padding: 5px 0 0 10px;
+}
+.myplan-facets-panel .myplan-facets-group div.all {
+    border-bottom: dotted 1px #cfcfcf;
 }
 .myplan-facets-panel .myplan-facets-group ul li {
     padding: 0 0 0 21px;
-    margin:  0 0 3px 0;
+    margin:  0 0 5px 0;
     background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
     min-height: 16px;
     line-height: 16px;
@@ -633,8 +721,9 @@ input.myplan-add:hover {
     background-position: 0px -32px;
 }
 .myplan-facets-panel .myplan-facets-group ul li span {
-    color: #999;
+    color: #777;
     margin-left: 0.33em;
+    font-size: 11px;
 }
 .myplan-facets-panel .myplan-facets-group ul li:hover a {
     text-decoration: underline;
@@ -670,50 +759,59 @@ input.myplan-add:hover {
     margin: 0 0 0.5em 0;
 }
 .dataTables_wrapper .myplan-course-search-results-datatable {
-    border: solid 1px #a9a9a9;
-    border-bottom: none;
-    line-height: 1.8em;
+    border: solid 1px #ddd;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
     margin: 0;
     width: 538px;
     clear: both;
 }
-.dataTables_wrapper .myplan-course-search-results-datatable .fl-text-align-center {
-	text-align: center;
-}
 table.myplan-course-search-results-datatable thead tr {
-	background: #d6d6d6;
+    background-image: -ms-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
+    background-image: -moz-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
+    background-image: -o-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #E9E9E9));
+    background-image: -webkit-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
+    background-image: linear-gradient(to bottom, #F7F7F7 0%, #E9E9E9 100%);
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 	border: none;
+    border-bottom: solid 1px #e4e4e4;
 }
 table.myplan-course-search-results-datatable thead tr th {
     border: none;
-    padding: 2px;
-    font-weight: bold;
-    color: #5f5e5f;
-    font-size: 88%;
+    padding: 8px 0 8px 10px;
+    font-weight: normal;
+    color: #333;
+    font-size: 10px;
     text-transform: none;
-    line-height: 19px;
-    height: 19px;
-    background: #d6d6d6;
+    background: transparent;
+}
+table.myplan-course-search-results-datatable thead tr th.sorting_desc,
+table.myplan-course-search-results-datatable thead tr th.sorting_asc {
+    color: #06c;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper {
     display: inline;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon {
     float: right;
-    width: 19px;
-    height: 19px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center right;
+    width: 16px;
+    height: 16px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px -48px transparent;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-carat-2-n-s {
-    background-image: url('../images/sortBoth.png');
+    background-position: 0px -48px;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-n {
-    background-image: url('../images/sortAsc.png');
+    background-position: -16px -48px;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-s {
-    background-image: url('../images/sortDesc.png');
+    background-position: -32px -48px;
 }
 table.myplan-course-search-results-datatable tbody tr {
 	border: none;
@@ -724,9 +822,8 @@ table.myplan-course-search-results-datatable tbody tr td {
     border: none;
 }
 table.myplan-course-search-results-datatable tbody tr td {
-	line-height: 1.8em;
-    height: 1.8em;
-    padding: 2px;
+    padding: 8px 0 8px 10px;
+    font-size: 11px;
 }
 table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
     display: block;
@@ -735,6 +832,19 @@ table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis 
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
+    width: 170px;
+}
+table.myplan-course-search-results-datatable tbody tr td.myplan-status-column {
+	text-align: right;
+    padding: 0 10px 0 0;
+    font-size: 10px;
+    font-style: italic;
+}
+table.myplan-course-search-results-datatable tbody tr td.myplan-status-column .planned {
+    color: #06c;
+}
+table.myplan-course-search-results-datatable tbody tr td.myplan-status-column .bookmarked {
+    color: #060;
 }
 table.myplan-course-search-results-datatable .odd,
 table.myplan-course-search-results-datatable .odd td[class^='sorting_'] {
@@ -742,14 +852,10 @@ table.myplan-course-search-results-datatable .odd td[class^='sorting_'] {
 }
 table.myplan-course-search-results-datatable .even,
 table.myplan-course-search-results-datatable .even td[class^='sorting_'] {
-    background-color: #eee;
+    background-color: #f7f7f7;
 }
-/*
-table.myplan-course-search-results-datatable .odd:hover,
-table.myplan-course-search-results-datatable .even:hover {
-*/
 table.myplan-course-search-results-datatable tbody tr:hover {
-    background-color: #ddd;
+    background-color: #f1f1f1;
 }
 table.myplan-course-search-results-datatable tbody tr:hover td.dataTables_empty {
     background-color: #fff;
@@ -761,7 +867,13 @@ table.myplan-course-search-results-datatable .blockUI {
     width: auto;
     clear: both;
     background: #d6d6d6;
-    border: solid 1px #a9a9a9;
+    border: solid 1px #ddd;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    -moz-border-radius-bottomright: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     border-top: none;
     text-align: right;
     margin: 0;
@@ -774,6 +886,13 @@ table.myplan-course-search-results-datatable .blockUI {
     background: none;
     border: none;
     display: inline;
+    font-size: 12px;
+}
+.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-default {
+	color: #06c;
+}
+.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled {
+	color: #999;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
@@ -811,24 +930,42 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
-    border: solid 1px #ccc;
+    border: solid 1px #dddddd;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
 }
 .myplan-section .uif-boxLayoutVerticalItem,
 .myplan-section .uif-boxLayoutHorizontalItem {
     margin: 0;
     padding: 0;
 }
-.myplan-section .uif-header {
+.myplan-section h5.uif-headerText {
+    font-size: 15px;
     font-weight: normal;
     display: block;
-    line-height: 1.5em;
-    padding: 5px;
-    background: #e4e4e4;
+    padding: 10px;
+    background: #efe8d3;
     margin: 0;
+    text-transform: uppercase;
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
 }
-.myplan-section .uif-header .uif-headerText {
+.myplan-section h6.uif-headerText {
+    font-size: 13px;
     font-weight: normal;
     text-transform: none;
+    display: block;
+    padding: 6px 10px;
+    background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -moz-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -o-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F5F5F5), color-stop(1, #EBEBEB));
+    background-image: -webkit-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: linear-gradient(to bottom, #F5F5F5 0%, #EBEBEB 100%);
+    margin: 0;
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
 }
 .myplan-section div.blockElement {
     left: 92px !important;
@@ -837,19 +974,18 @@ table.myplan-course-search-results-datatable .blockUI {
     width: 16px;
 }
 .myplan-section .uif-listCollectionGroup ul li {
-    border-bottom:dotted 1px #ccc;
-    padding: 6px 4px;
+    border-bottom:dotted 1px #cfcfcf;
+    padding: 10px 7px;
     display: block;
-    clear:both;
+    clear: both;
     cursor: pointer;
-    font-size: 95%;
 }
 .myplan-section .uif-listCollectionGroup.myplan-recent-audit ul li {
     border-bottom: none;
-    border-top:dotted 1px #ccc;
+    border-top: dotted 1px #ccc;
 }
 .myplan-section .uif-listCollectionGroup ul li:hover {
-    background: #a9a9a9;
+    background: #F5F5F5;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 
@@ -1101,62 +1237,3 @@ body div.blockElement {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
 }
-
-/*
-
-.uif-primaryActionButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #fee495;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #fee495;
-	box-shadow:inset 0px 1px 0px 0px #fee495;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
-	background:-moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
-	background-color:#fedb71;
-	-moz-border-radius:15px;
-	-webkit-border-radius:15px;
-	border-radius:15px;
-	border:1px solid #d6992f;
-	display:inline-block;
-	color:#39275b;
-	font-family:Trebuchet MS;
-	font-size:14px;
-	font-weight:bold;
-	padding:7px 24px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #fcede3;
-}
-.uif-primaryActionButton:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #febc4a), color-stop(1, #fedb71) );
-	background:-moz-linear-gradient( center top, #febc4a 5%, #fedb71 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#febc4a', endColorstr='#fedb71');
-	background-color:#febc4a;
-}
-.uif-primaryActionButton:active {
-	position:relative;
-	top:1px;
-}
-
-
-
-
-
-button.uif-primaryActionButton {
-	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
-	font-size: 14px;
-	font-weight: bold;
-	color: #39275b;
-	padding: 7px 24px;
-	background: -moz-linear-gradient(top, #fedb71 0%, #febc4a);
-	background: -webkit-gradient(linear, left top, left bottom, from(#fedb71), to(#febc4a));
-	-moz-border-radius: 15px;
-	-webkit-border-radius: 15px;
-	border-radius: 15px;
-	border: 1px solid #e3a740;
-	-moz-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
-	-webkit-box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
-	box-shadow: 0px 1px 3px rgba(000,000,000,0.5), inset 0px 0px 1px rgba(254,228,149,0.7);
-	text-shadow: 0px -1px 0px rgba(252,237,227,0.4), 0px 1px 0px rgba(252,237,227,0.3);
-}
-
-
-*/
