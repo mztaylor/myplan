@@ -345,7 +345,7 @@ public class CourseSearchController extends UifControllerBase {
                 throw new RuntimeException("Could not write the value using mapper", e);
             }
             if (item.getStatus().getLabel().length() > 0) {
-                status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + item.getStatus().getLabel() + "</span>";
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\" class=\\\"" + item.getStatus().getLabel().toLowerCase() + "\\\">" + item.getStatus().getLabel() + "</span>";
             } else if (UserSessionHelper.isAdviser()) {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
@@ -362,8 +362,8 @@ public class CourseSearchController extends UifControllerBase {
                     append("\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
                     append(item.getCourseId()).append("\\").append("\" target=\\").append("\"_self\\").
                     append("\" title=\\").append("\"").append(courseName).append("\\").append("\"").
-                    append(" style=\\").append("\"width: 180px;\\").append("\" class=\\").
-                    append("\"myplan-text-ellipsis\\").append("\"  >").append(courseName).append("</a>\"").append(",\"").
+                    append(" class=\\").append("\"myplan-text-ellipsis\\").append("\">").
+                    append(courseName).append("</a>\"").append(",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
                     append("\",\"").append(item.getTermsFacetKeys()).

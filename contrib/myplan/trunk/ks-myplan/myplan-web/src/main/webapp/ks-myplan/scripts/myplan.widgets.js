@@ -556,7 +556,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
     var elementToBlock = jQuery("#" + id);
 
 	var updateRefreshableComponentCallback = function(htmlContent){
-		var component = jQuery("#" + getId , htmlContent);
+		var component = jQuery("#" + getId, htmlContent);
 		elementToBlock.unblock({onUnblock: function(){
 				// replace component
 				if(jQuery("#" + id).length){
@@ -564,6 +564,10 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 				}
 
 				runHiddenScripts(getId);
+
+                if(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
+                    eval( jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val() );
+                }
 
                 if(highlightId) {
                 	jQuery("[id^='" + highlightId + "']").parents('li').animate( {backgroundColor:"#ffffcc"}, 1 ).animate( {backgroundColor:"#ffffff"}, 3000 );
@@ -585,42 +589,6 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 ######################################################################################
  */
 function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, elementBlockingSettings) {
-	/*
-	var data;
-
-    // methodToCall checks
-	if(methodToCall != null){
-        data = {methodToCall: methodToCall, renderFullView: false};
-	}
-	else{
-        var methodToCallInput = jQuery("input[name='methodToCall']");
-        if(methodToCallInput.length > 0){
-            methodToCall = jQuery("input[name='methodToCall']").val();
-        }
-        //check to see if methodToCall is still null
-        if(methodToCall == null || methodToCall === ""){
-            data = {renderFullView: false};
-        }
-        else{
-            data = {methodToCall: methodToCall, renderFullView: false};
-        }
-	}
-    // remove this since the methodToCall was passed in or extracted from the page, to avoid issues
-    jQuery("input[name='methodToCall']").remove();
-
-	if(additionalData != null){
-		jQuery.extend(data, additionalData);
-	}
-
-    var viewState = jQuery(document).data("ViewState");
-    if (!jQuery.isEmptyObject(viewState)) {
-        var jsonViewState = jQuery.toJSON(viewState);
-
-        // change double quotes to single because escaping causes problems on URL
-        jsonViewState = jsonViewState.replace(/"/g, "'");
-        jQuery.extend(data, {clientViewState: jsonViewState});
-    }
-    */
     var data = {};
 
     // methodToCall checks
@@ -725,15 +693,14 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 ######################################################################################
  */
 function truncateField(id) {
-    jQuery("#" + id).each(function() {
+    jQuery("#" + id + " .uif-horizontalFieldGroup").each(function() {
         jQuery(this).css("display","block");
-        var fixed = margin = 0;
+        var fixed = 0;
+        var margin = 10;
         jQuery(this).find(".uif-boxLayoutHorizontalItem:not(.myplan-text-ellipsis)").each(function() {
         	fixed = fixed + jQuery(this).width();
-            margin = margin + Math.ceil(parseFloat(jQuery(this).css("margin-right")));
         });
         var ellipsis = jQuery(this).width() - ( ( fixed + 1 ) + margin );
-        jQuery(this).find(".uif-boxLayoutHorizontalItem").last().css("margin-right", 0);
         jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
     });
 }
