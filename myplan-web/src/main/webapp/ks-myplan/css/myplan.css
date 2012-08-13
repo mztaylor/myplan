@@ -118,6 +118,7 @@ a:focus {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #878787), color-stop(1, #A4A4A4));
     background-image: -webkit-linear-gradient(top, #878787 0%, #A4A4A4 100%);
     background-image: linear-gradient(to bottom, #878787 0%, #A4A4A4 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#878787', endColorstr='#A4A4A4')"; /* IE8 */
     border-top: solid 1px #e1d8be;
     color: #000;
     font-size: 13px;
@@ -411,9 +412,9 @@ input.myplan-add:hover {
     border:solid 1px #ccc;
     width: 145px;
     margin: 0 5px;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
     background: url(../images/bkgrdDotted.gif);
     min-height: 520px;
 }
@@ -426,9 +427,9 @@ input.myplan-add:hover {
     font-weight:bold;
     height: 26px;
     line-height: 26px;
-    border-radius: 4px 4px 0px 0px;
-    -webkit-border-radius: 4px 4px 0px 0px;
-	-moz-border-radius: 4px 4px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+	-moz-border-radius: 5px 5px 0px 0px;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader.myplan-term-past {
     color: #aaa;
@@ -511,9 +512,9 @@ input.myplan-add:hover {
 	background: #fcf9f0;
 	border: solid 1px #e1e1e0;
 	padding: 20px 10px 10px 20px;
-	border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
     overflow: hidden;
 }
 .myplan-audit-info-panel {
@@ -634,9 +635,9 @@ input.myplan-add:hover {
 /* Styles for Facet Panel ################################################################################## */
 .myplan-facets-panel {
 	border: solid 1px #ddd;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 .myplan-facets-panel a, .myplan-facets-panel a:hover{
     color: #333;
@@ -760,12 +761,9 @@ input.myplan-add:hover {
 }
 .dataTables_wrapper .myplan-course-search-results-datatable {
     border: solid 1px #ddd;
-    -webkit-border-top-left-radius: 4px;
-    -webkit-border-top-right-radius: 4px;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-topright: 4px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
     margin: 0;
     width: 538px;
     clear: both;
@@ -777,6 +775,7 @@ table.myplan-course-search-results-datatable thead tr {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #E9E9E9));
     background-image: -webkit-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
     background-image: linear-gradient(to bottom, #F7F7F7 0%, #E9E9E9 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F7F7F7', endColorstr='#E9E9E9')"; /* IE8 */
     -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 	border: none;
@@ -866,49 +865,66 @@ table.myplan-course-search-results-datatable .blockUI {
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     width: auto;
     clear: both;
-    background: #d6d6d6;
+    background-image: -ms-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -moz-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -o-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F6F6F6), color-stop(1, #EBEBEB));
+    background-image: -webkit-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: linear-gradient(to bottom, #F6F6F6 0%, #EBEBEB 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F6F6F6', endColorstr='#E8E8E8')"; /* IE8 */
     border: solid 1px #ddd;
-    -webkit-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    -moz-border-radius-bottomright: 4px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    -webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
     border-top: none;
     text-align: right;
     margin: 0;
-    line-height: 2em;
-    height: 2em;
+    padding: 8px 10px;
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 }
 .dataTables_wrapper .dataTables_paginate .ui-button {
-	padding: 2px 7px;
-	margin: 5px 3px;
+	/*padding: 2px 7px;
+	margin: 5px 3px;*/
     background: none;
     border: none;
-    display: inline;
+    display: inline-block !important;
     font-size: 12px;
+    margin: 0;
+    padding: 0 6px;
 }
 .dataTables_wrapper .dataTables_paginate .ui-button.ui-state-default {
-	color: #06c;
+    color: #999;
 }
-.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled {
-	color: #999;
+.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled.previous,
+.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled.next {
+    opacity: 0.24;
+}
+.dataTables_wrapper .dataTables_paginate.paging_full_numbers > span > .ui-button.ui-state-disabled {
+    font-weight: bold;
+    color: #000;
+    font-size: 14px;
+    opacity: 1;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
-	display:none;
+	display: none !important;
 }
-.dataTables_wrapper .dataTables_paginate .previous{
-	border-right: solid 1px #000;
-	padding-top: 0px;
-	padding-bottom: 0px;
+.dataTables_wrapper .dataTables_paginate .previous,
+.dataTables_wrapper .dataTables_paginate .next {
+    padding-top: 0px;
+    padding-bottom: 0px;
     display: inline;
+}
+.dataTables_wrapper .dataTables_paginate .previous {
+	border-right: solid 1px #c7c7c7;
+    margin-right: 6px;
+    padding: 0 12px 0 0;
 }
 .dataTables_wrapper .dataTables_paginate .next {
-	border-left: solid 1px #000;
-	padding-top: 0px;
-	padding-bottom: 0px;
-    display: inline;
+	border-left: solid 1px #c7c7c7;
+    margin-left: 6px;
+    padding: 0 0 0 12px;
 }
 /* Styles for empty result set page ########################################################################### */
 .myplan-course-search-empty {
@@ -931,9 +947,9 @@ table.myplan-course-search-results-datatable .blockUI {
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 .myplan-section .uif-boxLayoutVerticalItem,
 .myplan-section .uif-boxLayoutHorizontalItem {
@@ -963,6 +979,7 @@ table.myplan-course-search-results-datatable .blockUI {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F5F5F5), color-stop(1, #EBEBEB));
     background-image: -webkit-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: linear-gradient(to bottom, #F5F5F5 0%, #EBEBEB 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F5F5F5', endColorstr='#EBEBEB')"; /* IE8 */
     margin: 0;
     border-top: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
@@ -1175,9 +1192,9 @@ label.scheduled {
 
 .myplan-full-plan-detail {
     border: solid 1px #a9a9a9;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
 }
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,
