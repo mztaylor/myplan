@@ -51,7 +51,7 @@
         </property>
     </bean>
 
-    <bean id="saved_courses_summary_list" parent="Uif-ListCollectionSection" p:headerText="Bookmarked Courses List">
+    <bean id="saved_courses_summary_list" parent="Uif-ListCollectionSection" p:headerText="Bookmarked Courses">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -185,7 +185,7 @@
 
         <property name="items">
             <list>
-                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:headerText="Bookmarked Courses List">
+                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:headerText="Bookmarked Courses">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -480,7 +480,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="With Your Bookmarked Courses List, you can">
+                                  p:messageText="With Your Bookmarked Courses, you can">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-font-size-150</value>
