@@ -330,7 +330,7 @@ button.myplan-button-transparent[disabled="disabled"]:hover {
 input.myplan-add {
     width: 16px;
     height: 16px;
-    background: url(../images/myplan_icon_sprites.png) no-repeat 0px 0px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px 0px;
     vertical-align: middle;
 }
 input.myplan-add:hover {
@@ -642,6 +642,7 @@ input.myplan-add:hover {
 }
 .myplan-facets-panel a, .myplan-facets-panel a:hover{
     color: #333;
+    vertical-align: bottom;
 }
 .myplan-facets-panel .uif-boxLayoutVerticalItem,
 .myplan-facets-panel .myplan-facets-group ul,
@@ -692,7 +693,7 @@ input.myplan-add:hover {
     position: absolute;
     top: 7px;
     right: 10px;
-    background: url(../images/myplan_icon_sprites.png) no-repeat 0px -16px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px -16px;
     margin: 0;
     padding: 0;
     width: 16px;
@@ -711,7 +712,7 @@ input.myplan-add:hover {
     background-position: -16px -32px;
 }
 .myplan-facets-panel .myplan-facets-group div.facets {
-	max-height: 63px;
+	max-height: 72px;
 	overflow-y: auto;
 }
 .myplan-facets-panel .myplan-facets-group div.facets ul {
@@ -719,28 +720,27 @@ input.myplan-add:hover {
 }
 .myplan-facets-panel .myplan-facets-group div.all,
 .myplan-facets-panel .myplan-facets-group div.facets {
-    padding: 5px 0 0 10px;
+    padding: 0 0 0 10px;
 }
 .myplan-facets-panel .myplan-facets-group div.all {
     border-bottom: dotted 1px #cfcfcf;
 }
 .myplan-facets-panel .myplan-facets-group ul li {
-    padding: 0 0 0 21px;
-    margin:  0 0 5px 0;
-    background: url('../images/facetCheckbox.png') no-repeat 0px 0px;
-    min-height: 16px;
-    line-height: 16px;
+    padding: 0 0 0 19px;
+    margin:  4px 0 4px 0;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px -64px transparent;
+    min-height: 18px;
+    line-height: 18px;
     display: block;
     cursor: pointer;
     opacity: 1;
 }
-
 .myplan-facets-panel .myplan-facets-group ul li.checked {
-    background-position: 0px -32px;
+    background-position: 0px -82px;
 }
 .myplan-facets-panel .myplan-facets-group ul li span {
     color: #777;
-    margin-left: 0.33em;
+    margin-left: 4px;
     font-size: 11px;
 }
 .myplan-facets-panel .myplan-facets-group ul li:hover a {
@@ -756,7 +756,7 @@ input.myplan-add:hover {
 .myplan-facets-panel .myplan-facets-group ul li.static:hover,
 .myplan-facets-panel .myplan-facets-group ul li.static a,
 .myplan-facets-panel .myplan-facets-group ul li.static a:hover {
-    background-position: 0px -32px;
+    background-position: 0px -82px;
 	cursor: default;
     text-decoration: none;
 }
