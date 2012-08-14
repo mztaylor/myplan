@@ -248,7 +248,13 @@
 
     <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)" p:style="margin-bottom:10px;">
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="Uif-HeaderFive">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>primary</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="cssClasses">
             <list merge="true">
@@ -300,7 +306,7 @@
     </bean>
 
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses List">
+    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>

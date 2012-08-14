@@ -248,7 +248,13 @@
     <!-- Group for Search Facets -->
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results" p:style="width:148px; margin-right: 10px;">
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="Uif-HeaderFive">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>primary</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="cssClasses">
             <list merge="true">

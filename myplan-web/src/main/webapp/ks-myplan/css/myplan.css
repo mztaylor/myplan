@@ -207,13 +207,12 @@ a:focus {
 }
 /* BUTTONS #################################################################### */
 button.uif-primaryActionButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #fee495;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #fee495;
-	box-shadow:0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
+	-moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2),inset 0px 1px 0px 0px #fee495;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
-	background:-moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
+	box-shadow:0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
+	background: -moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
 	background-color:#fedb71;
 	-moz-border-radius:15px;
 	-webkit-border-radius:15px;
@@ -597,15 +596,17 @@ input.myplan-add:hover {
 .myplan-course-search-panel select {
     font-size: 13px;
     border: solid 1px #dddddd;
-    padding: 0 10px;
+    padding: 5px 10px;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    vertical-align: middle;
 }
 .myplan-course-search-panel input[type='text'] {
     width: 220px;
-    height: 28px;
+    height: 18px;
     background: #fff;
+
 }
 .myplan-course-search-panel select {
     background: url(../images/myplan_button_select_arrow.png) no-repeat right #fff;
@@ -614,17 +615,17 @@ input.myplan-add:hover {
     height: 30px;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-    vertical-align: middle;
     padding: 5px 10px;
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
 }
 .myplan-course-search-panel input[type='text']:focus {
-    -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
-    box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
     border-color: #fc9e5d;
+    -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    -moz-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+/*    filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1);*/
 }
 .myplan-course-search-params span input[type='checkbox'] {
     margin: 0 5px 0 0;
@@ -652,29 +653,45 @@ input.myplan-add:hover {
 .myplan-facets-group a[id$='_toggle'] {
     text-decoration: none;
 }
-.myplan-facets-panel h5.uif-headerText {
-	display: block;
-	background: #efe8d3;
-    color: #000;
-	border-bottom: solid 1px #ddd;
-	padding: 10px;
-    font-size: 13px;
-    font-weight: normal;
-    text-transform: uppercase;
-    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-}
-.myplan-facets-panel h6.uif-headerText {
-    display: block;
-    text-transform: none;
-	font-weight: normal;
-	color: #323232;
-	font-size: 13px;
+.myplan-facets-panel .uif-header {
     background: #f5f2e8;
     padding: 7px 10px;
+    border: none;
+}
+.myplan-facets-panel .uif-header.primary {
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    -moz-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    border-bottom: solid 1px #ddd;
+    background: #efe8d3;
+    padding: 10px;
+}
+.myplan-facets-panel .uif-header .uif-header-rightGroup {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+}
+.myplan-facets-panel .uif-headerText {
+    font-size: 13px;
+    font-weight: normal;
+    vertical-align: middle;
+    display: inline-block;
+}
+.myplan-facets-panel h5.uif-headerText {
+    color: #000;
+    text-transform: uppercase;
+}
+.myplan-facets-panel h6.uif-headerText {
+    color: #323232;
+    text-transform: none;
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image {
-    float: right;
+    position: absolute;
+    top: 7px;
+    right: 10px;
     background: url(../images/myplan_icon_sprites.png) no-repeat 0px -16px;
     margin: 0;
     padding: 0;
@@ -777,6 +794,7 @@ table.myplan-course-search-results-datatable thead tr {
     background-image: linear-gradient(to bottom, #F7F7F7 0%, #E9E9E9 100%);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F7F7F7', endColorstr='#E9E9E9')"; /* IE8 */
     -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
+    -moz-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 	border: none;
     border-bottom: solid 1px #e4e4e4;
@@ -796,9 +814,12 @@ table.myplan-course-search-results-datatable thead tr th.sorting_asc {
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper {
     display: inline;
+    cursor: pointer;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon {
-    float: right;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
     width: 16px;
     height: 16px;
     background: url('../images/myplan_icon_sprites.png') no-repeat 0px -48px transparent;
@@ -881,6 +902,7 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
     padding: 8px 10px;
     -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
+    -moz-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 }
 .dataTables_wrapper .dataTables_paginate .ui-button {
@@ -956,22 +978,11 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
     padding: 0;
 }
-.myplan-section h5.uif-headerText {
-    font-size: 15px;
+.myplan-section .uif-header {
     font-weight: normal;
-    display: block;
-    padding: 10px;
-    background: #efe8d3;
     margin: 0;
-    text-transform: uppercase;
-    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-}
-.myplan-section h6.uif-headerText {
-    font-size: 13px;
-    font-weight: normal;
-    text-transform: none;
-    display: block;
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
     padding: 6px 10px;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: -moz-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
@@ -980,9 +991,34 @@ table.myplan-course-search-results-datatable .blockUI {
     background-image: -webkit-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: linear-gradient(to bottom, #F5F5F5 0%, #EBEBEB 100%);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F5F5F5', endColorstr='#EBEBEB')"; /* IE8 */
-    margin: 0;
-    border-top: solid 1px #ddd;
-    border-bottom: solid 1px #ddd;
+}
+.myplan-section .uif-header.primary {
+    border: none;
+    padding: 10px;
+    background: #efe8d3;
+    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    -moz-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+}
+.myplan-section .uif-header .uif-header-rightGroup {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+}
+.myplan-section .uif-headerText {
+    display: inline-block;
+    vertical-align: middle;
+}
+.myplan-section h5.uif-headerText {
+    font-size: 15px;
+    text-transform: uppercase;
+}
+.myplan-section h6.uif-headerText {
+    font-size: 13px;
+    text-transform: none;
 }
 .myplan-section div.blockElement {
     left: 92px !important;
