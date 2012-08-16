@@ -46,7 +46,7 @@ a:focus {
 }
 #applicationHeader {
     border-top:solid 5px #39275b;
-    background: url(../images/myplan_header_bkgrd.png) repeat-x;
+    background: url('../images/myplan_header_bkgrd.png') repeat-x;
     color: #615f5f;
     position: relative;
     margin: 0 0 10px 0;
@@ -55,7 +55,7 @@ a:focus {
     color: #39275b;
 }
 .myplan-view {
-    min-height: 425px;
+    min-height: 600px;
 }
 #applicationHeader #applicationHeading {
     position: relative;
@@ -78,7 +78,7 @@ a:focus {
 #applicationHeading #applicationUser a.name {
     display: inline-block;
     padding: 0 12px 0 0;
-    background: url(../images/myplan_icon_id_arrow.png) no-repeat bottom right;
+    background: url('../images/myplan_icon_id_arrow.png') no-repeat bottom right;
 }
 #myplanUwPatch {
     position: absolute;
@@ -101,8 +101,15 @@ a:focus {
     border-bottom: solid 4px transparent;/*#fea931;*/
     font-size: 18px;
 }
+#applicationNavigation ul li:hover {
+    border-bottom-color: #fdd704;
+}
+#applicationNavigation ul li:hover a,
+#applicationNavigation ul li:hover a:hover {
+    text-decoration: none;
+}
 #applicationNavigation ul li.home {
-    background: url(../images/myplan_icon_home.png) no-repeat 5px 3px;
+    background: url('../images/myplan_icon_home.png') no-repeat 5px 3px;
     padding-left: 25px;
 }
 #applicationNavigation ul li.active {
@@ -414,7 +421,7 @@ input.myplan-add:hover {
     border-radius: 5px;
     -webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
-    background: url(../images/bkgrdDotted.gif);
+    background: url('../images/bkgrdDotted.gif');
     min-height: 520px;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader {
@@ -460,7 +467,7 @@ input.myplan-add:hover {
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.not-scheduled,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
-    background: url(../images/iconWarning.png) no-repeat 4px;
+    background: url('../images/iconWarning.png') no-repeat 4px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
     background: #a9a9a9;
@@ -546,17 +553,17 @@ input.myplan-add:hover {
     margin: 0 !important;
 }
 .myplan-message-success {
-    background: #e4e4e4 url(../images/iconSuccess16.png) no-repeat 5px center;
+    background: #e4e4e4 url('../images/iconSuccess16.png') no-repeat 5px center;
     padding-left: 26px !important;
 }
 .myplan-message-error {
-    background: #ffd4d4 url(../images/iconError16.png) no-repeat 5px center;
+    background: #ffd4d4 url('../images/iconError16.png') no-repeat 5px center;
     border-color: #e3b8b8;
     padding-left: 26px !important;
 
 }
 .myplan-message-info {
-    background: #e4e4e4 url(../images/iconInfo16.png) no-repeat 5px center;
+    background: #e4e4e4 url('../images/iconInfo16.png') no-repeat 5px center;
     padding-left: 26px !important;
 }
 /* Text styles ########################################################################### */
@@ -609,7 +616,7 @@ input.myplan-add:hover {
 
 }
 .myplan-course-search-panel select {
-    background: url(../images/myplan_button_select_arrow.png) no-repeat right #fff;
+    background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
     overflow: hidden;
     width: 200px;
     height: 30px;
@@ -842,7 +849,7 @@ table.myplan-course-search-results-datatable tbody tr td {
     border: none;
 }
 table.myplan-course-search-results-datatable tbody tr td {
-    padding: 8px 0 8px 10px;
+    padding: 6px 0 6px 10px;
     font-size: 11px;
 }
 table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis {
@@ -853,6 +860,9 @@ table.myplan-course-search-results-datatable tbody tr td a.myplan-text-ellipsis 
     -o-text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
     width: 170px;
+}
+table.myplan-course-search-results-datatable tbody tr td.myplan-data-list dd.projected {
+    margin-top: 3px;
 }
 table.myplan-course-search-results-datatable tbody tr td.myplan-status-column {
 	text-align: right;
@@ -875,7 +885,7 @@ table.myplan-course-search-results-datatable .even td[class^='sorting_'] {
     background-color: #f7f7f7;
 }
 table.myplan-course-search-results-datatable tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #e3f0fe;
 }
 table.myplan-course-search-results-datatable tbody tr:hover td.dataTables_empty {
     background-color: #fff;
@@ -906,8 +916,6 @@ table.myplan-course-search-results-datatable .blockUI {
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
 }
 .dataTables_wrapper .dataTables_paginate .ui-button {
-	/*padding: 2px 7px;
-	margin: 5px 3px;*/
     background: none;
     border: none;
     display: inline-block !important;
@@ -1132,21 +1140,21 @@ table.myplan-course-search-results-datatable .blockUI {
     display: inline;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon {
-    float: right;
-    width: 19px;
-    height: 19px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center right;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+    width: 16px;
+    height: 16px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px -48px transparent;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-carat-2-n-s {
-    background-image: url('../images/sortBoth.png');
+    background-position: 0px -48px;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-n {
-    background-image: url('../images/sortAsc.png');
+    background-position: -16px -48px;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon.ui-icon-triangle-1-s {
-    background-image: url('../images/sortDesc.png');
+    background-position: -32px -48px;
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr {
     border: none;
