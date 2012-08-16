@@ -1,15 +1,18 @@
 package org.kuali.student.myplan.audit.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 
 import org.apache.log4j.Logger;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -31,14 +34,17 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             throw new RuntimeException("Degree audit service handle was null.");
         }
 
-        List <AuditReportInfo> audits;
+        List <AuditReportInfo> audits=new ArrayList<AuditReportInfo>();
         //  TODO: Calculate dates that make sense.
         Date begin = new Date();
         Date end = new Date();
         try {
             audits = degreeAuditService.getAuditsForStudentInDateRange(studentId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
         } catch (Exception e) {
-            throw new RuntimeException("Request for audit ids failed.", e);
+            e.printStackTrace();
+            String[] params = {};
+            GlobalVariables.getMessageMap().putError(DegreeAuditConstants.AUDIT_SUMMARY_VIEW, DegreeAuditConstants.AUDIT_RETRIEVAL_FAILED, params);
+            /*throw new RuntimeException("Request for audit ids failed.", e);*/
         }
 
         /**
@@ -63,4 +69,6 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         }
         return degreeAuditService;
     }
+
+
 }

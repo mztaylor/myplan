@@ -18,13 +18,65 @@
      See the License for the specific language governing permissions and
      limitations under the License.
     -->
+<!--
+
+    <bean id="Test-FormView" parent="Uif-FormView">
+        <property name="id" value="Test-FormView"/>
+        <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
+
+         <property name="header">
+            <bean id="test_header" parent="Uif-ViewHeader" p:style="padding:0;">
+                <property name="items">
+                    <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES" p:style="float:none;">
+                        <property name="header">
+                            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+                        </property>
+                        <property name="items">
+                            <list>
+                                <bean parent="Uif-Message" p:messageText="Test header"/>
+                            </list>
+                        </property>
+                        <property name="propertyReplacers">
+                            <list>
+                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                      p:condition="@{#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }}">
+                                    <property name="replacement">
+                                        <list>
+                                            <bean parent="Uif-Message" p:style="margin:0; display:none;" p:messageText="Testing" > </bean>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:style="margin:0; display:none;" p:messageText="Testing" > </bean>
+            </list>
+        </property>
+
+       <property name="propertyReplacers">
+              <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="header"
+                      p:condition="#view.id eq 'someId'" p:replacement="Subs Test Group"/>
+              </list>
+            </property>
+
+
+    </bean>
+-->
+
     <bean id="Message-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="Message-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="header">
+       <!-- <property name="header">
             <bean parent="Uif-HeaderTwo"/>
-        </property>
+        </property>-->
         <property name="cssClasses">
             <list merge="true">
                 <value>base-view</value>
@@ -56,9 +108,9 @@
                             <value>fl-container-650</value>
                         </list>
                     </property>
-                    <property name="header">
+                   <!-- <property name="header">
                         <bean parent="Uif-HeaderSix" p:style="border-bottom:solid 1px #a9a9a9; margin-bottom:20px; padding-bottom:10px;"/>
-                    </property>
+                    </property>-->
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
@@ -96,9 +148,9 @@
                             <value>fl-container-650</value>
                         </list>
                     </property>
-                    <property name="header">
+                   <!-- <property name="header">
                         <bean parent="Uif-HeaderSix"/>
-                    </property>
+                    </property>-->
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
@@ -156,7 +208,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="createdDate" p:label="on" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false">
+                            <bean parent="Uif-DataField" p:propertyName="createdDate" p:label="on" p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray" p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -218,7 +270,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="margin:0;">
+                            <bean parent="Uif-HorizontalBoxSubSection" p:style="margin:0;">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-container-100</value>
@@ -235,7 +287,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-DataField" p:propertyName="createDate" p:style="margin:0;">
+                                        <bean parent="Uif-DataField" p:propertyName="createDate" p:style="margin:0;" p:escapeHtmlInPropertyValue="false">
                                             <property name="propertyEditor" ref="timestamp_formatter"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -327,7 +379,6 @@
         </property>
     </bean>
 
-
     <bean id="message_dialog_subject" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
@@ -400,7 +451,7 @@
                     </property>
                 </bean>
                 <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{feedBackMode eq false ? true : false}">
-                    <property name="clientSideJs"
+                    <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                     <property name="cssClasses">
                         <list merge="true">
@@ -415,7 +466,6 @@
                       p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
                     <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT');"/>
                 </bean>
-
             </list>
         </property>
     </bean>
@@ -455,11 +505,15 @@
     <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
            p:style="margin-bottom: 10px;">
         <property name="header">
+<!--
+            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+-->
+
             <bean id="messsage_header" parent="Uif-ViewHeader" p:style="padding:0;">
-                <property name="items">
+                <property name="upperGroup">
                     <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES" p:style="float:none;">
                         <property name="header">
-                            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+                            <bean parent="Uif-HeaderFive" />
                         </property>
                         <property name="items">
                             <list>
@@ -469,13 +523,13 @@
                         <property name="propertyReplacers">
                             <list>
                                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                     <property name="replacement">
                                         <list>
                                             <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
-                                                <property name="clientSideJs" value=""/>
+                                                <property name="actionScript" value=""/>
                                                 <property name="onDocumentReadyScript" value="
-                                                    myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
+                                                    myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
                                                 "/>
                                                 <property name="cssClasses">
                                                     <list merge="true">
@@ -491,8 +545,11 @@
                         </property>
                     </bean>
                 </property>
+
+
             </bean>
         </property>
+
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-widget</value>
@@ -502,7 +559,7 @@
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
-        <property name="propertyName" value="searchResults"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
@@ -561,61 +618,65 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="width:100px; margin:0;">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-DataField" p:propertyName="createDate" p:label="Posted"
-                                              p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false"
-                                              p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                              p:fieldLabel.style="visibility: hidden;"
-                                              p:render="@{#line.comments.size() eq 0}">
-                                            <property name="propertyEditor" ref="timestamp_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-text-gray</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
-                                              p:label="Last Comment" p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false"
-                                              p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                              p:render="@{#line.comments.size() gt 0}">
-                                            <property name="propertyEditor" ref="timestamp_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-text-gray</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
-                                        </bean>
+                            <bean parent="Uif-DataField" p:propertyName="createDate"
+                                  p:label="Posted" p:labelPlacement="TOP"
+                                  p:fieldLabel.renderColon="false"
+                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
+                                  p:render="@{#line.comments.size() eq 0}" p:escapeHtmlInPropertyValue="false">
+                                <property name="propertyEditor" ref="timestamp_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>fl-font-size-90</value>
                                     </list>
                                 </property>
-                                <!--
-                                <property name="propertyReplacers">
-                                    <list>
-                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="#line.comments.size() gt 0">
-                                            <property name="replacement">
-                                                <list>
-                                                    <bean parent="Uif-DataField" p:propertyName="createDate" p:label="Last Comment"
-                                                          p:labelPlacement="TOP" p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal">
-                                                        <property name="propertyEditor" ref="timestamp_formatter"/>
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>fl-text-gray</value>
-                                                            </list>
-                                                        </property>
-                                                    </bean>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                                -->
                             </bean>
+                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
+                                  p:label="Last Comment" p:labelPlacement="TOP"
+                                  p:fieldLabel.renderColon="false"
+                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
+                                  p:render="@{#line.comments.size() gt 0}" p:escapeHtmlInPropertyValue="false">
+                                <property name="propertyEditor" ref="timestamp_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
+                                <!--<bean parent="Uif-VerticalBoxSubSection" p:style="width:100px; margin:0;">
+                                    <property name="header.render" value="false"/>
+                                    <property name="items">
+                                        <list>
+                                            <bean parent="Uif-DataField" p:propertyName="createDate"
+                                                  p:label="Posted" p:labelPlacement="TOP"
+                                                  p:fieldLabel.renderColon="false"
+                                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
+                                                  p:render="@{#line.comments.size() eq 0}" p:escapeHtmlInPropertyValue="false">
+                                                <property name="propertyEditor" ref="timestamp_formatter"/>
+                                                <property name="cssClasses">
+                                                    <list merge="true">
+                                                        <value>fl-text-gray</value>
+                                                        <value>fl-font-size-90</value>
+                                                    </list>
+                                                </property>
+                                            </bean>
+                                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
+                                                  p:label="Last Comment" p:labelPlacement="TOP"
+                                                  p:fieldLabel.renderColon="false"
+                                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
+                                                  p:render="@{#line.comments.size() gt 0}" p:escapeHtmlInPropertyValue="false">
+                                                <property name="propertyEditor" ref="timestamp_formatter"/>
+                                                <property name="cssClasses">
+                                                    <list merge="true">
+                                                        <value>fl-text-gray</value>
+                                                        <value>fl-font-size-90</value>
+                                                    </list>
+                                                </property>
+                                            </bean>
+                                        </list>
+                                    </property>
+                                </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -637,18 +698,18 @@
                         </list>
                     </property>
                     <property name="linkText"
-                              value="View @{(searchResults eq null or searchResults.size() lt 2) ? 'message' : 'all '+searchResults.size()+' messages'}"/>
+                              value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
                     <property name="title"
-                              value="View @{(searchResults eq null or searchResults.size() lt 2) ? 'message' : 'all '+searchResults.size()+' messages'}"/>
+                              value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
                     <property name="href"
                               value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
                     <property name="render"
-                              value="@{searchResults ne null and searchResults.size() gt 0 ? true : false}"/>
+                              value="@{lookupResults ne null and lookupResults.size() gt 0 ? true : false}"/>
                     <property name="target" value=""/>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
                     <property name="render"
-                              value="@{searchResults ne null and searchResults.size() gt 0 ? false : true}"/>
+                              value="@{lookupResults ne null and lookupResults.size() gt 0 ? false : true}"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-align-center</value>
@@ -697,7 +758,19 @@
                                         <bean parent="your_stuff_widget">
                                             <property name="items">
                                                 <list>
-                                                    <ref bean="degree_audits_list"/>
+                                                    <ref bean="non_student_degree_audits_list"/>
+                                                </list>
+                                            </property>
+                                            <property name="propertyReplacers">
+                                                <list>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                          p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
+                                                        <property name="replacement">
+                                                            <list>
+                                                                <ref bean="degree_audits_list"/>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
                                                 </list>
                                             </property>
                                         </bean>
@@ -732,9 +805,9 @@
     </bean>
 
     <bean id="messages_detail_list" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="4">
-        <property name="headerText" value="You have @{searchResults.size()} messages"/>
+        <property name="headerText" value="You have @{lookupResults.size()} messages"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
-        <property name="propertyName" value="searchResults"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
@@ -807,7 +880,7 @@
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_received', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="createDate" p:fieldLabel.render="false">
+                            <bean parent="Uif-DataField" p:propertyName="createDate" p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -835,7 +908,7 @@
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_lastcomment', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:fieldLabel.render="false">
+                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="last_comment_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">

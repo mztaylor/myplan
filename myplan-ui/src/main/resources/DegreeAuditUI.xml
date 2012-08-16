@@ -133,7 +133,7 @@
         </property>
     </bean>
 
-    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
+    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports no Audits">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -145,7 +145,7 @@
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="propertyName" value="searchResults"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
@@ -162,7 +162,7 @@
                                 p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>-->
                             <bean parent="Uif-DataField" p:propertyName="programTitle" p:style="width: 220px;" p:fieldLabel.render="false"/>
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
-                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"  p:fieldLabel.render="true">
+                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"  p:fieldLabel.render="true" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -173,7 +173,35 @@
                         </list>
                     </property>
                 </bean>
+
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="degree_audit_summary_footer"/>
+        </property>
+    </bean>
+
+    <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection"
+          p:header.render="false" p:style="padding: 6px 4px;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
+                    <property name="render"
+                              value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="No recent Audits Found."/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
+
 </beans>

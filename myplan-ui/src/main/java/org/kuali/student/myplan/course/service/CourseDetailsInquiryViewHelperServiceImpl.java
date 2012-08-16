@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
@@ -67,8 +68,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient LuService luService;
 
 
-
-
     private transient AcademicPlanService academicPlanService;
 
     private transient AcademicRecordService academicRecordService;
@@ -78,16 +77,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, List<OrgInfo>> campusLocationCache;
     private Map<String, String> atpCache;
-    private HashMap<String,Map<String,String>>  hashMap;
+    private HashMap<String, Map<String, String>> hashMap;
 
-    public HashMap<String, Map<String,String>> getHashMap() {
+    public HashMap<String, Map<String, String>> getHashMap() {
         if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, Map<String,String>>();
+            this.hashMap = new HashMap<String, Map<String, String>>();
         }
         return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, Map<String,String>> hashMap) {
+    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
         this.hashMap = hashMap;
     }
 
@@ -347,9 +346,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 courseOfferingInfo = getCourseOfferingService()
                         .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
+                String[] params = {};
+                GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
                 logger.error("Could not load courseOfferingInfo list.", e);
             }
-            if (courseOfferingInfo.size() > 0) {
+            if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
                 String lastOffered = courseOfferingInfo.get(0).getTermId();
                 lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                 courseDetails.setLastOffered(lastOffered);
@@ -393,7 +394,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
 
-
     /**
      * To get the title for the respective display name
      *
@@ -402,17 +402,17 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      */
     protected String getTitle(String display) {
         String titleValue = null;
-        Map<String,String> subjects=new HashMap<String, String>();
+        Map<String, String> subjects = new HashMap<String, String>();
         if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
             subjects = OrgHelper.getSubjectAreas();
-            getHashMap().put(CourseSearchConstants.SUBJECT_AREA,subjects);
+            getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
 
         } else {
             subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
         }
 
-        if(subjects!=null && subjects.size()>0){
-            titleValue=subjects.get(display.trim());
+        if (subjects != null && subjects.size() > 0) {
+            titleValue = subjects.get(display.trim());
         }
 
         return titleValue;
@@ -460,7 +460,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     public synchronized void setCourseService(CourseService courseService) {
         this.courseService = courseService;
     }
-
 
 
     /**

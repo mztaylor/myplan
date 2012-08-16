@@ -35,25 +35,29 @@ public class CourseSearchForm extends UifFormBase {
 
     private String searchQuery;
     private String searchTerm = SEARCH_TERM_ANY_ITEM;
-    private String campusSelect;
+    private List<String> campusSelect;
 
 /*    *//** Search results list. *//*
     private List<CourseSearchItem> courseSearchResults = new ArrayList<CourseSearchItem>();
 
-    *//** Facet data lists *//*
+    */
+
+    public List<String> getCampusSelect() {
+        return campusSelect;
+    }
+
+    public void setCampusSelect(List<String> campusSelect) {
+        this.campusSelect = campusSelect;
+    }
+
+    /** Facet data lists *//*
     private List<FacetItem> curriculumFacetItems;
     private List<FacetItem> courseLevelFacetItems;
     private List<FacetItem> termsFacetItems;
     private List<FacetItem> genEduReqFacetItems;
     private List<FacetItem> creditsFacetItems;*/
 
-    public String getCampusSelect() {
-        return campusSelect;
-    }
 
-    public void setCampusSelect(String campusSelect) {
-        this.campusSelect = campusSelect;
-    }
 
     public CourseSearchForm() {
         super();

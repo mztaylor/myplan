@@ -23,10 +23,12 @@ import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
@@ -91,14 +93,14 @@ public class CourseSearchController extends UifControllerBase {
 
     private CampusSearch campusSearch = new CampusSearch();
 
+    //  Java to JSON outputter.
+    private transient ObjectMapper mapper = new ObjectMapper();
+
+
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
         return new CourseSearchForm();
     }
-
-
-    //  Java to JSON outputter.
-    private transient ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(value = "/course/{courseCd}", method = RequestMethod.GET)
     public String get(@PathVariable("courseCd") String courseCd, @ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
@@ -122,7 +124,7 @@ public class CourseSearchController extends UifControllerBase {
             for (int i = 0; i < splitStr.length; i++) {
                 splitBuff.append(splitStr[i]);
             }
-            return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus;
+            return "redirect:/myplan/course?searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus;
 
         }
         HashMap<String, String> divisionMap = fetchCourseDivisions();
@@ -132,11 +134,13 @@ public class CourseSearchController extends UifControllerBase {
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
+
         SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
         SearchResult searchResult = null;
         try {
             searchRequest.addParam("number", number);
             searchRequest.addParam("subject", subject.trim());
+            searchRequest.addParam("currentTerm", AtpHelper.getCurrentAtpId());
 
             searchResult = getLuService().search(searchRequest);
         } catch (Exception e) {
@@ -146,14 +150,13 @@ public class CourseSearchController extends UifControllerBase {
             courseId = getCellValue(row, "lu.resultColumn.cluId");
         }
         if (courseId.equalsIgnoreCase("")) {
-            return "redirect:/myplan/course?methodToCall=searchForCourses&viewId=CourseSearch-FormView&searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus;
+            return "redirect:/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus;
 
         }
 
 
-        return "redirect:/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
-
-
+        form.setRequestRedirect(true);
+        return "redirect:/myplan/inquiry?requestRedirect=true&methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -319,12 +322,13 @@ public class CourseSearchController extends UifControllerBase {
             queryText = queryText.replace("%20", " ");
         }
 
-        String campusParam = request.getParameter("campusParam");
+        String campusParamStr = request.getParameter("campusParam");
+        List<String> campusParams = Arrays.asList(campusParamStr.split("\\s*,\\s*"));
         String termParam = request.getParameter("termParam");
         /*populating the form with the params*/
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery(queryText);
-        form.setCampusSelect(campusParam);
+        form.setCampusSelect(campusParams);
         form.setSearchTerm(termParam);
 
         /*populating the CourseSearchItem list*/

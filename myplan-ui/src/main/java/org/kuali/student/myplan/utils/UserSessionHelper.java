@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.kim.api.common.template.Template;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.util.StringUtils;
 import org.kuali.rice.kim.api.identity.IdentityService;
@@ -14,6 +15,8 @@ import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
+
+
 
 import java.util.List;
 import java.util.Map;
@@ -159,7 +162,7 @@ public class UserSessionHelper {
     }
 
     public synchronized static String getAuditSystemKey() {
-        String systemKey =null;
+        String systemKey = null;
         String studentId = getStudentId();
         Person person = null;
         try {
@@ -178,7 +181,7 @@ public class UserSessionHelper {
             logger.info(person.getExternalIdentifiers().values());
             systemKey = person.getExternalIdentifiers().get("systemKey");
         }
-        if (!StringUtils.hasText(systemKey)) {
+        if ( ! StringUtils.hasText(systemKey)) {
             throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
         }
         return systemKey;
@@ -193,12 +196,9 @@ public class UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-
-        if(person.getExternalIdentifiers().containsKey("systemKey"))
-        {
-            isStudent=true;
-        }
-
+            if (person.getExternalIdentifiers().containsKey("systemKey")) {
+                isStudent = true;
+            }
         }
          return isStudent;
     }

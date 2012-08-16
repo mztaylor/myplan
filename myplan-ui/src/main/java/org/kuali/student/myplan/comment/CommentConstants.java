@@ -19,13 +19,17 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String ERROR_KEY_NOTIFICATION_FAILED="myplan.text.error.comment.notificationFailed";
 
     public static final String MESSAGE_RESPONSE_PAGE="message_dialog_response_page";
+    public static final String MESSAGE_SUBJECT_BOX="message_dialog_subject";
+    public static final String MESSAGE_MESSAGE_BOX="message_textbox";
+    
+    public static final String COMMENT_MESSAGE_BOX="commenting_textbox";
     public static final String COMMENT_RESPONSE_PAGE="comment_dialog_response_page";
-    public static final String ADVISER_ACCESS_ERROR="Only Adviser's can access!!";
+    public static final String ADVISER_ACCESS_ERROR="myplan.text.error.message.adviserAccessError";
 
-    public static final String EMPTY_MESSAGE="Subject or Message Missing";
-    public static final String EMPTY_COMMENT="Comment is Required";
-    public static final String EMPTY_TO_ADDRESS="Cannot Process the Mail.";
-    public static final String SPECIAL_CHARACTERS_ERROR="Special Characters are not allowed";
+    public static final String EMPTY_MESSAGE="myplan.text.error.message.emptyMessage";
+    public static final String EMPTY_COMMENT="myplan.text.error.message.emptyComment";
+    public static final String EMPTY_TO_ADDRESS="myplan.text.error.message.emptyToAddress";
+    public static final String SPECIAL_CHARACTERS_ERROR="myplan.text.error.message.specialCharacterError";
 
 
 
