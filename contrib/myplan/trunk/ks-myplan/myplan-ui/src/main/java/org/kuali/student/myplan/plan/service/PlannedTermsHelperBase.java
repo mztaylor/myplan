@@ -146,11 +146,11 @@ public class PlannedTermsHelperBase {
                         academicRecordDataObject.setAtpId(studentInfo.getTermName());
                         academicRecordDataObject.setPersonId(studentInfo.getPersonId());
                         academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-                        /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
+                        /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
                         academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
+                        if ( ! "X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
                             academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                         }
                         else if("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {

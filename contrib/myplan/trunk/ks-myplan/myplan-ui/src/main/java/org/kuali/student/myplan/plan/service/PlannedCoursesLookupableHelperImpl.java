@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.service;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 //import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
@@ -65,6 +66,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         try {
             studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
+            String[] params = {};
+            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
         }
 

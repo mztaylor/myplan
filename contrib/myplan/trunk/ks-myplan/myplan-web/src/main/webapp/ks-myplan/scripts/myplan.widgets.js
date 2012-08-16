@@ -485,7 +485,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
         switch (status) {
             case 'success':
                 var oMessage = { 'message' : jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
-                var json = jQuery.parseJSON( jQuery.trim( jQuery("span#json_events_item_key", htmlContent).text().replace(/\\/g,"") ) );
+                var json = jQuery.parseJSON( jQuery.trim( jQuery("span#json_events_item_key", htmlContent).text()) );
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify( jQuery.extend(json[key], oMessage) ) + ']);');
@@ -788,7 +788,7 @@ function myplanCreateLightBoxLink(controlId, options) {
 
             options['onComplete'] = function() {
                 jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
-                    jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+20 );
+                    jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+30 );
                 });
             };
 

@@ -216,7 +216,9 @@ public class CourseSearchControllerTest {
         CourseSearchForm form = new CourseSearchForm();
         CourseSearchController controller = getSearchController();
         form.setSearchQuery("AS 101");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy=getCourseSearchStrategy();
         List<SearchRequest> requests=null;
@@ -241,7 +243,9 @@ public class CourseSearchControllerTest {
         CourseSearchForm form = new CourseSearchForm();
         CourseSearchController controller = getSearchController();
         form.setSearchQuery("ASTR");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy=getCourseSearchStrategy();
         List<SearchRequest> requests=null;
@@ -278,7 +282,9 @@ public class CourseSearchControllerTest {
         CourseSearchController controller = getSearchController();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("CHEM 110");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
         List<CourseSearchItem> courses=new ArrayList<CourseSearchItem>();
@@ -321,7 +327,9 @@ public class CourseSearchControllerTest {
         CourseSearchController controller = getSearchController();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
         List<CourseSearchItem> courses=new ArrayList<CourseSearchItem>();

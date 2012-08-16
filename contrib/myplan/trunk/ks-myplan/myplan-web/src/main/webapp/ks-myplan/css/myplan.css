@@ -771,6 +771,8 @@ input.myplan-add:hover {
 .dataTables_wrapper {
 	width: 550px;
 	float: left;
+    clear: none;
+    margin: 0;
 }
 .dataTables_wrapper .dataTables_info {
     float: none;

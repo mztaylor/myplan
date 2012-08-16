@@ -74,10 +74,10 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-        String str = form.getCampusSelect();
+        List<String> str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
-            results = str.split(",");
+            results = str.toArray(new String[str.size()]);
         }
 
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
@@ -115,10 +115,10 @@ public class CourseSearchStrategy {
 
 
     public void addCampusParam(SearchRequest request, CourseSearchForm form) {
-        String str = form.getCampusSelect();
+        List<String> str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
-            results = str.split(",");
+            results = str.toArray(new String[str.size()]);
         }
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
         if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {

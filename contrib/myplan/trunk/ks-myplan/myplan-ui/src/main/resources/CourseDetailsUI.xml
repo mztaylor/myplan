@@ -51,12 +51,18 @@
             </list>
         </property>
     </bean>
-
     <bean id="course_details_back_link" parent="Uif-ViewHeader">
-        <property name="items">
-            <bean parent="Uif-Link" p:linkText="Back to Previous Page" p:href="javascript:history.go(-1)"
-                  p:style="display:block; margin:1em 0;"/>
+        <property name="upperGroup">
+            <bean parent="Uif-VerticalBoxSubSection" p:style="float:none;">
+              <property name="items">
+                  <list>
+                     <bean parent="Uif-Link" p:linkText="Back to Previous Page" p:href="javascript:history.go(-1)"
+                     p:style="display:block; margin:1em 0;"/>
+                  </list>
+               </property>
+            </bean>
         </property>
+
     </bean>
 
     <bean id="course_details_section" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
@@ -77,14 +83,14 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
-                                            <property name="items">
+                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" >
+                                            <property name="items" >
                                                 <list>
 
                                                     <bean parent="Uif-DataField"
                                                           p:propertyName="details"
                                                           p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
-                                                          p:labelPlacement="LEFT">
+                                                          p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
                                                         <property name="propertyEditor"
                                                                   ref="crud_message_matrix_formatter"/>
                                                         <property name="cssClasses">
@@ -127,7 +133,7 @@
             <list>
                 <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
                       p:id="@{dataObject.courseId}_addPlannedCourse">
-                    <property name="clientSideJs"
+                    <property name="actionScript"
                               value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -152,7 +158,7 @@
                                           fnRestoreDetailsAddButton(data.courseDetails.courseId);
                                       }
                                   });"/>-->
-                    <property name="clientSideJs"
+                    <property name="actionScript"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -186,7 +192,7 @@
                 </bean>
             </list>
         </property>
-        <property name="propertyReplacers">
+       <!-- <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
                       p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
@@ -197,7 +203,7 @@
                     </property>
                 </bean>
             </list>
-        </property>
+        </property>-->
     </bean>
 
 
@@ -330,7 +336,7 @@
                                               p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"
                                               p:style="margin: 0 0.33em 0 0;"/>
                                         <bean parent="Uif-DataField" p:propertyName="termsOffered"
-                                              p:fieldLabel.render="false" p:style="margin: 0 0.33em 0 0;">
+                                              p:fieldLabel.render="false" p:style="margin: 0 0.33em 0 0;" p:escapeHtmlInPropertyValue="false">
                                             <property name="propertyEditor" ref="terms_formatter"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -367,7 +373,7 @@
 
                 <!-- Gen Ed Requirements -->
                 <bean parent="Uif-DataField" p:propertyName="genEdRequirements" p:label="General Edu. Req."
-                      p:fieldLabel.renderColon="false">
+                      p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -395,7 +401,7 @@
 
                 <!-- Campus Locations -->
                 <bean parent="Uif-DataField" p:propertyName="campusLocations" p:label="Campus"
-                      p:fieldLabel.renderColon="false">
+                      p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
                             <value>myplan-text-align-left</value>
@@ -419,7 +425,7 @@
                 <!-- The propertyEditor renders the time schedule info as a list of links. -->
 
                 <!-- Lightbox Link -->
-                <bean parent="Uif-DataField" p:propertyName="this" p:fieldLabel.render="false">
+                <bean parent="Uif-DataField" p:propertyName="this" p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false">
                     <!--
                     <property name="onDocumentReadyScript" value="
                         jQuery('#course_details_links_div ul li a').each(function(){
@@ -455,7 +461,7 @@
         <property name="baseUrl" value="https://www.washington.edu/students/timeschd/"/>
     </bean>
 
-    <bean id="Advisor-FormView" parent="MyPlanBaseFormView">
+    <!--<bean id="Advisor-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="Advisor-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -502,7 +508,7 @@
 
             </list>
         </property>
-    </bean>
+    </bean>-->
 
 
 </beans>

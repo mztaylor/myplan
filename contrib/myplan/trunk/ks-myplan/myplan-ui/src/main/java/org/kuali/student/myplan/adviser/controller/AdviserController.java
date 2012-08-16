@@ -180,7 +180,7 @@ public class AdviserController extends UifControllerBase {
 
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
-            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase());
+            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
             return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
 
         } else {

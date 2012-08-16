@@ -87,7 +87,7 @@
                                 <property name="propertyReplacers">
                                     <list>
                                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
                                                     <ref bean="adviser_actions_message"/>
@@ -117,7 +117,7 @@
                                                         <property name="propertyReplacers">
                                                             <list>
                                                                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent() }">
+                                                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
                                                                     <property name="replacement">
                                                                         <list>
                                                                             <ref bean="degree_audits_list"/>
@@ -166,7 +166,7 @@
                                 <property name="propertyReplacers">
                                     <list>
                                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }">
+                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
                                                     <ref bean="adviser_actions_message"/>
@@ -196,7 +196,7 @@
                                                         <property name="propertyReplacers">
                                                             <list>
                                                                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                                                      p:condition="#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent() }">
+                                                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
                                                                     <property name="replacement">
                                                                         <list>
                                                                             <ref bean="degree_audits_list"/>
@@ -252,7 +252,7 @@
         </property>
     </bean>
 
-    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:style="width: 696px;">
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:style="width: 686px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-panel</value>

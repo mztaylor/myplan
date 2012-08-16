@@ -110,7 +110,7 @@ public class CommentController extends UifControllerBase {
         }
         if (StringUtils.isEmpty(form.getCommentBody())) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_MESSAGE_BOX,CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         /*If not a Adviser or if the user accessing is not the owner of the message*/
         /*if (!UserSessionHelper.isAdviser() || !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
@@ -138,7 +138,7 @@ public class CommentController extends UifControllerBase {
             form.setComments(new ArrayList<CommentDataObject>());
             logger.error("Could not add comment ", e);
             String[] params = {};
-            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.COMMENT_RESPONSE_PAGE,CommentConstants.COMMENT_MESSAGE_BOX);
         }
         form.setCommentBody(null);
         form.setFeedBackMode(true);
@@ -167,7 +167,7 @@ public class CommentController extends UifControllerBase {
         toAddress = UserSessionHelper.getMailAddress(toId);
         if (toAddress == null) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a comment", fromName);
@@ -177,6 +177,7 @@ public class CommentController extends UifControllerBase {
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
+               logger.info("Sent email message to:" + toAddress);
             } catch (Exception e) {
                 logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
                 GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
@@ -186,6 +187,7 @@ public class CommentController extends UifControllerBase {
             GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
         }
         GlobalVariables.getMessageMap().clearErrorMessages();
+        form.setPageId(CommentConstants.COMMENT_RESPONSE_PAGE);
 
         return start(form, result, httprequest, httpresponse);
     }
@@ -198,11 +200,21 @@ public class CommentController extends UifControllerBase {
          !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())*/
         if (!UserSessionHelper.isAdviser()) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params,CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
         if (StringUtils.isEmpty(form.getBody()) || StringUtils.isEmpty(form.getSubject())) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
+            String section=null;
+            if(StringUtils.isEmpty(form.getBody())){
+                section=CommentConstants.MESSAGE_MESSAGE_BOX;
+            }
+            else if(StringUtils.isEmpty(form.getSubject())){
+                section=CommentConstants.MESSAGE_SUBJECT_BOX;
+            }
+            else if(StringUtils.isEmpty(form.getBody()) && StringUtils.isEmpty(form.getSubject())){
+                section=CommentConstants.MESSAGE_RESPONSE_PAGE;
+            }
+            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE,section);
         }
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
@@ -228,7 +240,7 @@ public class CommentController extends UifControllerBase {
             logger.error("Could not add Message ", e);
             form.setStudentName(UserSessionHelper.getStudentName());
             String[] params = {};
-            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE,CommentConstants.MESSAGE_MESSAGE_BOX);
         }
         form.setFeedBackMode(true);
 
@@ -241,7 +253,7 @@ public class CommentController extends UifControllerBase {
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
         if (toAddress == null) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE,CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a message for you", adviserName);
@@ -265,9 +277,9 @@ public class CommentController extends UifControllerBase {
     /**
      * Initializes the error page.
      */
-    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params, String page) {
+    private ModelAndView doErrorPage(CommentForm form, String errorKey, String[] params, String page, String section) {
         GlobalVariables.getMessageMap().clearErrorMessages();
-        GlobalVariables.getMessageMap().putErrorForSectionId(page, errorKey, params);
+        GlobalVariables.getMessageMap().putErrorForSectionId(section, errorKey, params);
         return getUIFModelAndView(form, page);
     }
 

@@ -33,6 +33,7 @@ import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -173,6 +174,11 @@ public class DegreeAuditController extends UifControllerBase {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            String[] params = {};
+
+            return doErrorPage(form, DegreeAuditConstants.AUDIT_RETRIEVAL_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE,DegreeAuditConstants.AUDIT_EMPTY_PAGE);
+
+
         }
         if (!StringUtils.hasText(form.getAuditHtml())) {
             form.setPageId(DegreeAuditConstants.AUDIT_EMPTY_PAGE);
@@ -232,12 +238,14 @@ public class DegreeAuditController extends UifControllerBase {
 
         } catch (Exception e) {
             logger.error("Could not complete audit run");
+            String[] params = {};
+            if(DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId())){
+                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE,DegreeAuditConstants.AUDIT_EMPTY_PAGE_SECTION);
+            }else {
+            return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_PAGE,DegreeAuditConstants.AUDIT_REPORT_SECTION);
+            }
         }
-
-        /*
-        form.setPageId("degree_audit");
-*/
-        if(form.getPageId().equalsIgnoreCase(DegreeAuditConstants.AUDIT_EMPTY_PAGE) && auditID!=null){
+        if(DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId()) && auditID!=null){
             form.setPageId(DegreeAuditConstants.AUDIT_PAGE);
         }
 
@@ -278,6 +286,23 @@ public class DegreeAuditController extends UifControllerBase {
             }
         }
         throw new RuntimeException("cell result '" + key + "' not found");
+    }
+
+    /**
+     * Initializes the error page.
+     */
+    private ModelAndView doErrorPage(DegreeAuditForm form, String errorKey, String[] params, String page,String section) {
+        GlobalVariables.getMessageMap().putErrorForSectionId(section, errorKey, params);
+        return getUIFModelAndView(form, page);
+    }
+
+    /**
+     * Initializes the warning page.
+     */
+    private ModelAndView doWarningPage(DegreeAuditForm form, String errorKey, String[] params, String page,String section) {
+        GlobalVariables.getMessageMap().clearErrorMessages();
+        GlobalVariables.getMessageMap().putWarningForSectionId(section, errorKey, params);
+        return getUIFModelAndView(form, page);
     }
 }
 

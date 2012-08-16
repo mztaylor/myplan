@@ -1120,14 +1120,14 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
-        String[] t = {"?", "?"};
+        /*String[] t = {"?", "?"};
         try {
             t = AtpHelper.atpIdToTermNameAndYear(atpId);
         } catch (RuntimeException e) {
             logger.error("Could not convert ATP ID to a term and year.", e);
         }
-        String term = t[0] + " " + t[1];
-        String[] params = {courseDetails.getCode(), term};
+        String term = t[0] + " " + t[1];*/
+        String[] params = {courseDetails.getCode()};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 

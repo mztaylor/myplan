@@ -44,7 +44,11 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddCampusParams() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
-        form.setCampusSelect("0,1,2");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        campusParams.add("310");
+        campusParams.add("323");
+        form.setCampusSelect(campusParams);
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         requests.add(new SearchRequest("test"));
@@ -92,7 +96,11 @@ public class CourseSearchStrategyTest {
     @Test
     public void testAddCampusParam() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
-        form.setCampusSelect("0,1,2");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        campusParams.add("310");
+        campusParams.add("323");
+        form.setCampusSelect(campusParams);
 
         SearchRequest requests = new SearchRequest("test");
 
@@ -230,7 +238,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsExactCourseCodeAndNumberMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("AS 101");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -262,7 +272,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsCourseCodeMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTR");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = null;
@@ -327,7 +339,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsSingleStringMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("Astro");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -377,7 +391,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsCodeAndLevelMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTR 1xx");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -412,7 +428,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsSingleStringAndCourseCodeMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("Astronomy");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -480,7 +498,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsCourseCodeAndAdditionalCourseCodeMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("HIST");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -568,7 +588,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsTwoStringsMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("Astronomy biology");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -686,7 +708,9 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsTwoCourseCodesMatch() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTR BIOL");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -803,7 +827,8 @@ public class CourseSearchStrategyTest {
     public void testQueryToRequestsEmpty() throws Exception {
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("");
-        form.setCampusSelect("");
+        List<String> campusParams=new ArrayList<String>();
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<SearchRequest> requests = strategy.queryToRequests(form);
@@ -851,7 +876,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTR");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.division");
@@ -923,7 +950,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("HIST");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.division");
@@ -1016,7 +1045,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTRONOMY");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.fulltext");
@@ -1089,7 +1120,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTRONOMY BIOLOGY");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.fulltext");
@@ -1219,7 +1252,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("ASTR BIOL");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.division");
@@ -1349,7 +1384,9 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("AS");
-        form.setCampusSelect("0");
+        List<String> campusParams=new ArrayList<String>();
+        campusParams.add("306");
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = new SearchRequest("myplan.lu.search.division");
@@ -1386,7 +1423,8 @@ public class CourseSearchStrategyTest {
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("");
-        form.setCampusSelect("");
+        List<String> campusParams=new ArrayList<String>();
+        form.setCampusSelect(campusParams);
         form.setSearchTerm("");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         strategy.processRequests(requests, form);
