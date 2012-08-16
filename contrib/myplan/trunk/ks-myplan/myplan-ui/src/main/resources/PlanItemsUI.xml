@@ -509,7 +509,7 @@
 
     <!-- ####################### The Right panel for Saved Courses Full View #################### -->
     <!-- For saved courses view, we do not want to show the saved course summary list -->
-    <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)"
+    <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF"
             >
         <property name="cssClasses">
             <list merge="true">
@@ -680,6 +680,7 @@
                     </property>
                     <property name="items">
                         <list>
+                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
@@ -690,8 +691,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+
                             <ref bean="planned_course_quarter_selection"/>
 
                             <!--  Backup checkbox -->
@@ -707,7 +707,6 @@
                                                 jQuery('#addPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
-                                                        setTimeout('fnCloseAllPopups()', 5500);
                                                     })
                                                     .subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
@@ -755,8 +754,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -782,7 +781,6 @@
                                                 jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
-                                                        setTimeout('fnCloseAllPopups()', 5500);
                                                     }).subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                                     });"/>
@@ -829,8 +827,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -858,7 +856,6 @@
                                                 jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
-                                                        setTimeout('fnCloseAllPopups()', 5500);
                                                     }).subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                     });"/>
@@ -879,7 +876,6 @@
                                                 jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
-                                                        setTimeout('fnCloseAllPopups()', 5500);
                                                     });"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
@@ -935,7 +931,6 @@
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
-                                        setTimeout('fnCloseAllPopups()', 2000);
                                     }).subscribe('ERROR', function(data) {
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                                     });"/>
@@ -2231,7 +2226,6 @@
                   value="jQuery('#addSavedCourseButton').subscribe('PLAN_ITEM_ADDED', function(data){
                       if (data.planItemType === 'wishlist') {
                           fnDisplayMessage(data.message, data.cssClass, 'addSavedCourseButton', true);
-                          setTimeout('fnCloseAllPopups()', 5500);
                       }
                   });"/>
         <property name="clientSideJs"
@@ -2409,6 +2403,7 @@
         </property>
         <property name="items">
             <list>
+                <bean parent="Uif-Message" p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
                 <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
                       p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT">
@@ -2419,8 +2414,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Message"
-                      p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+
                 <ref bean="planned_course_quarter_selection"/>
 
                 <!--  Backup checkbox -->
@@ -2438,7 +2432,6 @@
                                     jQuery('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
-                                            setTimeout('fnCloseAllPopups()', 5500);
                                         })
                                         .subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
@@ -2459,7 +2452,6 @@
                                     jQuery('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
-                                            setTimeout('fnCloseAllPopups()', 5500);
                                         }).subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                         });"/>

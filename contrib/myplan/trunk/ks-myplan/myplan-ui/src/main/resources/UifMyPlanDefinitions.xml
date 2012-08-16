@@ -246,7 +246,7 @@
     </bean>
 
 
-    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF (TBD)" p:style="margin-bottom:10px;">
+    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF" p:style="margin-bottom:10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
@@ -318,7 +318,7 @@
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-            jQuery('#watch_list_div')
+            jQuery('#watch_list')
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     if (data.planItemType === 'wishlist') {
                         deleteIntervalId = setInterval(function(){
