@@ -1341,7 +1341,7 @@
                             </bean>
                             <bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm ? true : false}">
                                 <property name="toolTip">
-                                  <bean parent="Uif-Tooltip" p:tooltipContent="A completed quarter you registered for. &lt;a href=http://www.uw.edu target=_blank&gt;Learn more&lt;/a&gt;">
+                                  <bean parent="Uif-Tooltip" p:tooltipContent="A completed quarter you registered for.">
                                   </bean>
                                 </property>
                             </bean>
