@@ -787,8 +787,8 @@ function myplanCreateLightBoxLink(controlId, options) {
             options['onCleanup'] = cleanupClosedLightboxForms;
 
             options['onComplete'] = function() {
-                jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
-                    jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+30 );
+                jQuery('.fancybox-iframe').load(function() { // wait for frame to load and then gets it's height
+                    jQuery('.fancybox-inner').height( jQuery(this).contents().find('body').height()+20 );
                 });
             };
 
@@ -821,8 +821,8 @@ function myplanLightBoxLink(href, options, e) {
     options['href'] = href;
     options['onCleanup'] = cleanupClosedLightboxForms;
     options['onComplete'] = function() {
-        jQuery('#fancybox-frame').load(function() { // wait for frame to load and then gets it's height
-            jQuery('#fancybox-content').height( jQuery(this).contents().find('body').height()+20 );
+        jQuery('.fancybox-iframe').load(function() { // wait for frame to load and then gets it's height
+            jQuery('.fancybox-inner').height( jQuery(this).contents().find('body').height()+20 );
         });
     };
     top.jQuery.fancybox(options);

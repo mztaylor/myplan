@@ -95,12 +95,7 @@
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
         </property>
-        <!--
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:cssClasses="fl-container-flex ks-page-bottom"/>
-        </property>
-        -->
+
 
     </bean>
 
@@ -128,12 +123,8 @@
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
         </property>
-        <!--
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:cssClasses="fl-container-flex ks-page-bottom"/>
-        </property>
-        -->
+
+
     </bean>
 
     <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
@@ -159,12 +150,7 @@
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
         </property>
-         <!--
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:cssClasses="fl-container-flex ks-page-bottom"/>
-        </property>
-        -->
+
 
     </bean>
 
@@ -192,12 +178,7 @@
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_header"/>
         </property>
-        <!--
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:template="/ks-myplan/WEB-INF/jsp/templates/MyPlanApplicationFooter.jsp"
-                  p:cssClasses="fl-container-flex ks-page-bottom"/>
-        </property>
-        -->
+
 
     </bean>
 
