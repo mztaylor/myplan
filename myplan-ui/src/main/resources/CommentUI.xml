@@ -177,9 +177,9 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:style="margin:0; display:none;"
+                            <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-message-noborder myplan-success-message"
                                   p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
-                                <property name="onDocumentReadyScript" value="parent.jQuery.publish('COMMENT_SENT');"/>
+                                <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT');"/>
                             </bean>
                         </list>
                     </property>
@@ -451,7 +451,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:render="@{feedBackMode eq false ? true : false}">
+                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:style="margin: 0 0 0 20px;" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                     <property name="cssClasses">
@@ -462,8 +462,7 @@
                         </list>
                     </property>
                 </bean>
-
-                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green"
+                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-message-noborder myplan-success-message"
                       p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
                     <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT');"/>
                 </bean>
@@ -576,7 +575,7 @@
                     <!--
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     -->
-                    <property name="onClickScript" value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
+                    <property name="onClickScript" value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {autoScale:true,width:660,height:420,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-VerticalFieldGroup" p:style="width:190px;">

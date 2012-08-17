@@ -242,6 +242,23 @@ button.uif-primaryActionButton:hover {
 	border:1px solid #d6992f;
 }
 
+button.uif-primaryActionButton[disabled="true"], button.uif-primaryActionButton[disabled="disabled"],
+button.uif-primaryActionButton[disabled="true"]:hover, button.uif-primaryActionButton[disabled="disabled"]:hover {
+    background-color: #ffeebd;
+    border: 1px solid #FDD35A;
+    color: #ADADAD;
+    background: #ffeebd; /* Old browsers */
+    background: -moz-linear-gradient(top, #abdea5 0%, #ffeebd 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffeebd), color-stop(100%, #ffeebd)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffeebd 0%, #ffeebd 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffeebd 0%, #ffeebd 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffeebd 0%, #ffeebd 100%); /* IE10+ */
+    background: linear-gradient(top, #ffeebd 0%, #ffeebd 100%); /* W3C */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffeebd', endColorstr = '#ffeebd', GradientType = 0); /* IE6-9 */
+    cursor: default;
+}
+
 
 /*
 button.myplan-button,
@@ -554,6 +571,10 @@ input.myplan-add:hover {
 }
 .myplan-message-success {
     background: #e4e4e4 url('../images/iconSuccess16.png') no-repeat 5px center;
+    padding-left: 26px !important;
+}
+.myplan-success-message {
+    background: url('../images/iconSuccess16.png') no-repeat 5px center;
     padding-left: 26px !important;
 }
 .myplan-message-error {
