@@ -70,10 +70,11 @@
     </bean>
 -->
 
-    <bean id="Message-FormView" parent="MyPlanBaseFormView">
+    <bean id="Message-FormView" parent="MyPlanBaseView">
         <property name="id" value="Message-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
+        <property name="header.render" value="false"/>
        <!-- <property name="header">
             <bean parent="Uif-HeaderTwo"/>
         </property>-->
