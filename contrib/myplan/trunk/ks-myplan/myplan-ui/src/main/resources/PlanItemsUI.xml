@@ -263,7 +263,7 @@
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="headerText"
-                  value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; courses bookmarked"/>
+                  value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="lookupResults"/>

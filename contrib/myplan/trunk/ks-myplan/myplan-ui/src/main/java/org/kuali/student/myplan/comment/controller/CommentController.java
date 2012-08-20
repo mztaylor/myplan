@@ -100,6 +100,10 @@ public class CommentController extends UifControllerBase {
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo messageInfo = null;
+        String messageText=form.getCommentBody();
+        if(messageText.length()>100){
+            messageText=messageText.substring(0,100);
+        }
 
         //  Look up the message
         try {
@@ -169,10 +173,23 @@ public class CommentController extends UifControllerBase {
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
+        String messageLink=ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a comment", fromName);
-        String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a comment to message [%s].",
-                toName, fromName, messageInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
+        String body = String.format("Hello %s," +
+                "\n\nYou've received a new message from %s. Here's a preview of your message:\n\n\"%s....\" " +
+                "\n\n To read the full message, log into MyPlan at: \n %s " +
+                "\n\n Remember, this is a notification only. Please do not reply to this email. " +
+                "\n\n Questions about MyPlan? View our help page at: " +
+                "\n\n https://depts.washington.edu/myplan/help-site" +
+                "\n\n Sincerely, \nThe MyPlan Team " +
+                "\n\n ------------------------------------------------------ " +
+                "\n\n MyPlan" +
+                "\n\n Student Information Systems, UW Information Technology" +
+                "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
+                "\n\n © 2012 University of Washington " +
+                "\n\n ------------------------------------------------------",
+                toName, fromName, messageText,messageLink);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
@@ -216,6 +233,11 @@ public class CommentController extends UifControllerBase {
             }
             return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE,section);
         }
+
+        String messageText=form.getBody();
+        if(messageText.length()>100){
+            messageText=messageText.substring(0,100);
+        }
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
 
@@ -255,10 +277,23 @@ public class CommentController extends UifControllerBase {
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE,CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
+        String messageLink=ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
         String subject = String.format("[MyPlan] %s left a message for you", adviserName);
-        String body = String.format("Hello %s,\nMyPlan is letting you know that %s left a message for you.", studentName, adviserName);
-
+        String body = String.format("Hello %s," +
+                "\n\nYou've received a new message from %s. Here's a preview of your message:\n\n\"%s....\"" +
+                "\n\n To read the full message, log into MyPlan at: \n %s " +
+                "\n\n Remember, this is a notification only. Please do not reply to this email. " +
+                "\n\n Questions about MyPlan? View our help page at: " +
+                "\n\n https://depts.washington.edu/myplan/help-site " +
+                "\n\n Sincerely, \nThe MyPlan Team " +
+                "\n\n ------------------------------------------------------ " +
+                "\n\n MyPlan" +
+                "\n\n Student Information Systems, UW Information Technology" +
+                "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
+                "\n\n © 2012 University of Washington " +
+                "\n\n ------------------------------------------------------",
+                studentName, adviserName, messageText,messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
