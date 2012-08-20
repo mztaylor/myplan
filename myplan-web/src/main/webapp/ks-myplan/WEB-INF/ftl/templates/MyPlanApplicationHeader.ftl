@@ -6,13 +6,13 @@
             <#if UserSession.objectMap["kuali.uw.authz.adviser"]??>
                 <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
                     <div class="identity">
-                        Welcome, <span class="name">${UserSession.person.firstName}</span>
+                        Welcome, <span class="name">${UserSession.person.firstName?cap_first}</span>
                     </div>
                 </#if>
             <#else>
                 <div class="identity">
                     Welcome, <a class="name" onclick="openPopUpForm('student_academic_planner_page','student_academic_planner_page','startAcademicPlannerForm','plan',
-                        {viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">${UserSession.person.firstName}</a>
+                        {viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">${UserSession.person.firstName?cap_first}</a>
                 </div>
             </#if>
         </div>
@@ -64,8 +64,8 @@
     <#if UserSession.objectMap["kuali.uw.authz.adviser"]??>
         <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
             <div class="adviser-banner">
-                You're Viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]}</strong>'s MyPlan.
-                Some features are restricted to advisers.<a href="https://depts.washington.edu/myplan/help-site/">Learn more
+                You're viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]}</strong>'s MyPlan.
+                Some features are restricted to advisers. <a href="https://depts.washington.edu/myplan/help-site/">Learn more
                 about Adviser View.</a>
             </div>
         </#if>

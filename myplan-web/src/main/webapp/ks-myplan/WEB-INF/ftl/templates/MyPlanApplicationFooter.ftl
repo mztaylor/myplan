@@ -2,8 +2,8 @@
 <div id="applicationFooter">
     <div id="applicationFooterSection">
         <ul>
-            <li><a href="#">Feedback</a></li>
-            <li><a href="#">Help</a></li>
+            <li><a href="https://depts.washington.edu/myplan/help-site/">Help</a></li>
+            <li><a href="https://depts.washington.edu/myplan/feedback/">Feedback</a></li>
             <li><a href="http://myuw.washington.edu/" target="_blank">MyUW</a></li>
             <li><a href="http://www.washington.edu/" target="_blank">UW Home</a></li>
         </ul>
