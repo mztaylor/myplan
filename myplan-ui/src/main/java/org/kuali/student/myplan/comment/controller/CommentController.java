@@ -183,12 +183,12 @@ public class CommentController extends UifControllerBase {
                 "\n\n Questions about MyPlan? View our help page at: " +
                 "\n\n https://depts.washington.edu/myplan/help-site" +
                 "\n\n Sincerely, \nThe MyPlan Team " +
-                "\n\n ------------------------------------------------------ " +
+                "\n\n -------------------------------------------------------------------" +
                 "\n\n MyPlan" +
                 "\n\n Student Information Systems, UW Information Technology" +
                 "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
                 "\n\n © 2012 University of Washington " +
-                "\n\n ------------------------------------------------------",
+                "\n\n -------------------------------------------------------------------",
                 toName, fromName, messageText,messageLink);
 
         if (StringUtils.isNotEmpty(toAddress)) {
@@ -287,12 +287,12 @@ public class CommentController extends UifControllerBase {
                 "\n\n Questions about MyPlan? View our help page at: " +
                 "\n\n https://depts.washington.edu/myplan/help-site " +
                 "\n\n Sincerely, \nThe MyPlan Team " +
-                "\n\n ------------------------------------------------------ " +
+                "\n\n -------------------------------------------------------------------" +
                 "\n\n MyPlan" +
                 "\n\n Student Information Systems, UW Information Technology" +
                 "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
                 "\n\n © 2012 University of Washington " +
-                "\n\n ------------------------------------------------------",
+                "\n\n -------------------------------------------------------------------",
                 studentName, adviserName, messageText,messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
