@@ -478,7 +478,7 @@
                                   p:messageText="Features are disabled for advisers."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href" value="#"/>
+                                <property name="href" value="https://depts.washington.edu/myplan/help-site"/>
                             </bean>
                         </list>
                     </property>
