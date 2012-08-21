@@ -824,6 +824,7 @@
                 <entry key="bJQueryUI" value="true"/>
                 <entry key="sDom" value="irtp"/>
                 <entry key="aaSorting" value="[]"/>
+                <entry key="bSortClasses" value="false"/>
                 <entry key="oLanguage"
                        value="{
                             'sEmptyTable':'You do not have any messages',
