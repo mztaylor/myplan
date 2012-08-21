@@ -389,6 +389,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         List<JobQueueOut> outList = (List<JobQueueOut>) run.getJobQueueOuts();
         for (JobQueueOut out : outList) {
             String darout = out.getDarout();
+            if(out.getUserSeqNo()==0){
+                darout=darout.substring(0,darout.trim().length()-9).trim();
+            }
             char lasera = out.getLasera().charAt( 0 );
             switch (lasera) {
                 // Linkify these rows
