@@ -150,10 +150,9 @@ public class PlannedTermsHelperBase {
                         academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if ( ! "X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
+                        if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
                             academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        }
-                        else if("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                        } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
                             academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                         }
                         academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
@@ -202,7 +201,7 @@ public class PlannedTermsHelperBase {
 
             }
 
-
+            populate(perfectPlannedTerms);
             return perfectPlannedTerms;
         }
 
@@ -225,6 +224,7 @@ public class PlannedTermsHelperBase {
                 }
 
             }
+            populate(plannedTermList);
             return plannedTermList;
 
 
@@ -319,6 +319,75 @@ public class PlannedTermsHelperBase {
             plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
             plannedTermList.add(plannedTerm4);
         }
+    }
+
+    private static void populate(List<PlannedTerm> plannedTerms) {
+
+        int index = plannedTerms.size() - 1;
+        while (index >= 0) {
+            for (int i = 4; i > 0; i--) {
+                if (plannedTerms.get(index).isCurrentTermForView() || i == 1) {
+                    plannedTerms.get(index).setDisplayBackupHelp(true);
+                    plannedTerms.get(index).setDisplayPlannedHelp(true);
+                    plannedTerms.get(index).setDisplayCreditsHelp(true);
+                    index = index - i;
+                    break;
+                }
+                index--;
+            }
+        }
+        index = 0;
+        while (index < plannedTerms.size()) {
+            for (int i = 1; i < 4; i++) {
+                if (index < plannedTerms.size() && plannedTerms.get(index).isCompletedTerm() && i == 1) {
+                    plannedTerms.get(index).setDisplayCompletedHelp(true);
+                    index = index + (5 - i);
+                    break;
+                }
+                index++;
+
+            }
+        }
+        index = plannedTerms.size() - 1;
+        while (index >= 0) {
+            for (int i = 4; i > 0; i--) {
+                if (plannedTerms.get(index).isCurrentTermForView() || !plannedTerms.get(index).isCompletedTerm() && (plannedTerms.get(index).getAcademicRecord().size() > 0 || !plannedTerms.get(index).isOpenForPlanning())) {
+                    plannedTerms.get(index).setDisplayRegisteredHelp(true);
+                    index = index - i;
+                    break;
+                }
+                index--;
+            }
+        }
+
+
+    }
+
+    private static void populateHelpFlags(List<PlannedTerm> plannedTermList) {
+        int count = 0;
+        for (PlannedTerm plannedTerm : plannedTermList) {
+            if (count == 0) {
+                if (plannedTerm.getAcademicRecord().size() > 0) {
+                    plannedTerm.setDisplayCompletedHelp(true);
+                }
+                if (plannedTerm.getPlannedList().size() > 0) {
+                    plannedTerm.setDisplayPlannedHelp(true);
+                }
+                if (plannedTerm.getBackupList().size() > 0) {
+                    plannedTerm.setDisplayBackupHelp(true);
+                }
+                plannedTerm.setDisplayCreditsHelp(true);
+
+            }
+            if (count == 3) {
+                count = 0;
+            } else {
+                count++;
+            }
+
+
+        }
+
     }
 
 
