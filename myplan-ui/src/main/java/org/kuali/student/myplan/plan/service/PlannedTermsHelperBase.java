@@ -363,32 +363,4 @@ public class PlannedTermsHelperBase {
 
     }
 
-    private static void populateHelpFlags(List<PlannedTerm> plannedTermList) {
-        int count = 0;
-        for (PlannedTerm plannedTerm : plannedTermList) {
-            if (count == 0) {
-                if (plannedTerm.getAcademicRecord().size() > 0) {
-                    plannedTerm.setDisplayCompletedHelp(true);
-                }
-                if (plannedTerm.getPlannedList().size() > 0) {
-                    plannedTerm.setDisplayPlannedHelp(true);
-                }
-                if (plannedTerm.getBackupList().size() > 0) {
-                    plannedTerm.setDisplayBackupHelp(true);
-                }
-                plannedTerm.setDisplayCreditsHelp(true);
-
-            }
-            if (count == 3) {
-                count = 0;
-            } else {
-                count++;
-            }
-
-
-        }
-
-    }
-
-
 }
