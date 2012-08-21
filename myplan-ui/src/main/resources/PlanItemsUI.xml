@@ -1994,7 +1994,7 @@
     <bean id="term_total_credits" parent="Uif-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <bean id="term_total_credits_text" parent="Uif-MessageField" p:label="Total Credits" p:cssClasses="myplan-carousel-term-credits">
+                <bean id="term_total_credits_text" parent="Uif-MessageField" p:label="Credits" p:cssClasses="myplan-carousel-term-credits">
                     <property name="messageText" value="@{#line.credits ne null ? #line.credits : '0'}"/>
                 </bean>
                 <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
