@@ -37,6 +37,11 @@ a:focus {
 .uif-application {
     background: #fff;
 }
+
+.uif-progressiveDisclosure-highlight {
+    background: transparent !important;
+}
+
 #applicationHeading,
 #applicationNavigation,
 .myplan-view,
@@ -1277,12 +1282,7 @@ label.scheduled {
 .myplan-audit-report pre a {
     text-decoration: underline;
 }
-#select_programParam_seattle,
-#select_programParam_bothell,
-#select_programParam_tacoma {
-    width: auto !important;
-    background: transparent !important;
-}
+
 /* Fix overlay ########################################################################### */
 body div.blockElement {
     z-index: 1001 !important;

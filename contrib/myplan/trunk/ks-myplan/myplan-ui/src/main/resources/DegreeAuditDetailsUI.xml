@@ -356,36 +356,60 @@
             </list>
         </property>
     </bean>
-    <bean id="program_params" parent="Uif-HorizontalFieldGroup">
+    <bean id="program_params" parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
+        <property name="disclosure.render" value="false" />
         <property name="items">
             <list>
-                <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '306'">
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
-                    </property>
-                </bean>
-                <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParamBothell"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '310'">
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '306'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
-                <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParamTacoma"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '323'">
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '310'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParamBothell"
+                                  p:width="auto">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '323'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParamTacoma"
+                                  p:width="auto">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+
+
                 <ref bean="degree_audit_run"/>
             </list>
         </property>
