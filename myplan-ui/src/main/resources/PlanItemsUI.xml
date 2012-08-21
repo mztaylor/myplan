@@ -1339,13 +1339,13 @@
                                 <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
                                 <property name="messageText" value="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}"/>
                             </bean>
-                            <bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm ? true : false}">
+                            <bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm and #line.displayCompletedHelp ? true : false}">
                                 <property name="toolTip">
                                   <bean parent="Uif-Tooltip" p:tooltipContent="A completed quarter you registered for.">
                                   </bean>
                                 </property>
                             </bean>
-                            <bean parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) ? true : false}">
+                            <bean parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) and #line.displayRegisteredHelp ? true : false}">
                                 <property name="toolTip">
                                   <bean parent="Uif-Tooltip" p:tooltipContent="A course you have enrolled in for current or future academic quarter(s)."></bean>
                                 </property>
@@ -1489,7 +1489,7 @@
                 <property name="items">
                     <list>
                         <ref bean="term_total_credits_text" />
-                        <bean parent="MyPlanHelpImage">
+                        <bean parent="MyPlanHelpImage"  p:render="@{#line.displayCreditsHelp ? true : false}">
                             <property name="toolTip">
                               <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
                               </bean>
@@ -1588,7 +1588,7 @@
                 <property name="items">
                     <list>
                         <ref bean="term_total_credits_text" />
-                        <bean parent="MyPlanHelpImage">
+                        <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                             <property name="toolTip">
                               <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
                               </bean>
@@ -1608,7 +1608,7 @@
         <bean parent="Uif-HorizontalBoxGroup">
             <property name="items">
                 <list>
-                    <bean parent="MyPlanHelpImage">
+                    <bean parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
                         <property name="toolTip">
                             <bean parent="Uif-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
                         </property>
@@ -1681,7 +1681,7 @@
                         <property name="items">
                             <list>
                                 <ref bean="term_total_credits_text" />
-                                <bean parent="MyPlanHelpImage">
+                                <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                     <property name="toolTip">
                                         <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
                                     </property>
@@ -1693,7 +1693,7 @@
                         <property name="items">
                             <list>
                                 <ref bean="term_total_credits_text" />
-                                <bean parent="MyPlanHelpImage">
+                                <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                     <property name="toolTip">
                                         <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
                                     </property>
@@ -1716,7 +1716,7 @@
             <bean parent="Uif-HorizontalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="MyPlanHelpImage">
+                        <bean parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
                             <property name="toolTip">
                               <bean parent="Uif-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
                             </property>
@@ -1776,7 +1776,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="term_total_credits_text" />
-                                    <bean parent="MyPlanHelpImage">
+                                    <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                         <property name="toolTip">
                                           <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
                                         </property>
@@ -1788,7 +1788,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="term_total_credits_text" />
-                                    <bean parent="MyPlanHelpImage">
+                                    <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                         <property name="toolTip">
                                           <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
                                         </property>
@@ -1841,7 +1841,7 @@
             <bean parent="Uif-HorizontalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="MyPlanHelpImage">
+                        <bean parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
                             <property name="toolTip">
                               <bean parent="Uif-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
                             </property>
@@ -1918,7 +1918,7 @@
             <bean parent="Uif-HorizontalBoxGroup">
                 <property name="items">
                     <list>
-                        <bean parent="MyPlanHelpImage">
+                        <bean parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
                             <property name="toolTip">
                               <bean parent="Uif-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
                             </property>
@@ -1997,7 +1997,7 @@
                 <bean id="term_total_credits_text" parent="Uif-MessageField" p:label="Total Credits" p:cssClasses="myplan-carousel-term-credits">
                     <property name="messageText" value="@{#line.credits ne null ? #line.credits : '0'}"/>
                 </bean>
-                <bean parent="MyPlanHelpImage">
+                <bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                     <property name="toolTip">
                       <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter.">
                       </bean>

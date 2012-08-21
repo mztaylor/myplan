@@ -23,6 +23,14 @@ public class PlannedTerm {
     private List<AcademicRecordDataObject> academicRecord = new ArrayList<AcademicRecordDataObject>();
     private String credits = null;
 
+    /*These flags are used for help icons to display*/
+
+    private boolean displayCompletedHelp;
+    private boolean displayPlannedHelp;
+    private boolean displayCreditsHelp;
+    private boolean displayBackupHelp;
+    private boolean displayRegisteredHelp;
+
 
     /*These flags are used for styling, highlighting, naming  of terms in the quarter view */
     private boolean currentTermForView;
@@ -199,6 +207,46 @@ public class PlannedTerm {
 
     public void setOpenForPlanning(boolean openForPlanning) {
         this.openForPlanning = openForPlanning;
+    }
+
+    public boolean isDisplayCompletedHelp() {
+        return displayCompletedHelp;
+    }
+
+    public void setDisplayCompletedHelp(boolean displayCompletedHelp) {
+        this.displayCompletedHelp = displayCompletedHelp;
+    }
+
+    public boolean isDisplayPlannedHelp() {
+        return displayPlannedHelp;
+    }
+
+    public void setDisplayPlannedHelp(boolean displayPlannedHelp) {
+        this.displayPlannedHelp = displayPlannedHelp;
+    }
+
+    public boolean isDisplayCreditsHelp() {
+        return displayCreditsHelp;
+    }
+
+    public void setDisplayCreditsHelp(boolean displayCreditsHelp) {
+        this.displayCreditsHelp = displayCreditsHelp;
+    }
+
+    public boolean isDisplayBackupHelp() {
+        return displayBackupHelp;
+    }
+
+    public void setDisplayBackupHelp(boolean displayBackupHelp) {
+        this.displayBackupHelp = displayBackupHelp;
+    }
+
+    public boolean isDisplayRegisteredHelp() {
+        return displayRegisteredHelp;
+    }
+
+    public void setDisplayRegisteredHelp(boolean displayRegisteredHelp) {
+        this.displayRegisteredHelp = displayRegisteredHelp;
     }
 }
 
