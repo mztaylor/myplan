@@ -100,9 +100,9 @@ public class CommentController extends UifControllerBase {
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo messageInfo = null;
-        String messageText=form.getCommentBody();
-        if(messageText.length()>100){
-            messageText=messageText.substring(0,100);
+        String messageText = form.getCommentBody();
+        if (messageText.length() > 100) {
+            messageText = messageText.substring(0, 100);
         }
 
         //  Look up the message
@@ -114,7 +114,7 @@ public class CommentController extends UifControllerBase {
         }
         if (StringUtils.isEmpty(form.getCommentBody())) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_MESSAGE_BOX,CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_MESSAGE_BOX, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
         /*If not a Adviser or if the user accessing is not the owner of the message*/
         /*if (!UserSessionHelper.isAdviser() || !principleId.equalsIgnoreCase(commentInfo.getReferenceId())) {
@@ -142,7 +142,7 @@ public class CommentController extends UifControllerBase {
             form.setComments(new ArrayList<CommentDataObject>());
             logger.error("Could not add comment ", e);
             String[] params = {};
-            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.COMMENT_RESPONSE_PAGE,CommentConstants.COMMENT_MESSAGE_BOX);
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_MESSAGE_BOX);
         }
         form.setCommentBody(null);
         form.setFeedBackMode(true);
@@ -161,40 +161,31 @@ public class CommentController extends UifControllerBase {
         if (UserSessionHelper.isAdviser()) {
             toId = UserSessionHelper.getStudentId();
             toName = UserSessionHelper.getStudentName();
+            toName=toName.substring(0,toName.indexOf(" ")).trim();
         } else {
             //  Get the created by user Id from the message.
             toId = messageInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
             toName = UserSessionHelper.getName(toId);
+            toName=toName.substring(0,toName.indexOf(" ")).trim();
         }
 
         fromName = UserSessionHelper.getName(fromId);
         toAddress = UserSessionHelper.getMailAddress(toId);
         if (toAddress == null) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params,CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
-        String messageLink=ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
+        String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
-        String subject = String.format("[MyPlan] %s left a comment", fromName);
-        String body = String.format("Hello %s," +
-                "\n\nYou've received a new message from %s. Here's a preview of your message:\n\n\"%s....\" " +
-                "\n\n To read the full message, log into MyPlan at: \n %s " +
-                "\n\n Remember, this is a notification only. Please do not reply to this email. " +
-                "\n\n Questions about MyPlan? View our help page at: " +
-                "\n\n https://depts.washington.edu/myplan/help-site" +
-                "\n\n Sincerely, \nThe MyPlan Team " +
-                "\n\n -------------------------------------------------------------------" +
-                "\n\n MyPlan" +
-                "\n\n Student Information Systems, UW Information Technology" +
-                "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
-                "\n\n © 2012 University of Washington " +
-                "\n\n -------------------------------------------------------------------",
-                toName, fromName, messageText,messageLink);
+        String subjectProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.commment.subject");
+        String emailBody = ConfigContext.getCurrentContextConfig().getProperty("myplan.email.body");
+        String subject = String.format(subjectProp, fromName);
+        String body = String.format(emailBody, toName, fromName, messageText, messageLink);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
-               logger.info("Sent email message to:" + toAddress);
+                logger.info("Sent email message to:" + toAddress);
             } catch (Exception e) {
                 logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
                 GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
@@ -217,26 +208,24 @@ public class CommentController extends UifControllerBase {
          !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())*/
         if (!UserSessionHelper.isAdviser()) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params,CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
         if (StringUtils.isEmpty(form.getBody()) || StringUtils.isEmpty(form.getSubject())) {
             String[] params = {};
-            String section=null;
-            if(StringUtils.isEmpty(form.getBody())){
-                section=CommentConstants.MESSAGE_MESSAGE_BOX;
+            String section = null;
+            if (StringUtils.isEmpty(form.getBody())) {
+                section = CommentConstants.MESSAGE_MESSAGE_BOX;
+            } else if (StringUtils.isEmpty(form.getSubject())) {
+                section = CommentConstants.MESSAGE_SUBJECT_BOX;
+            } else if (StringUtils.isEmpty(form.getBody()) && StringUtils.isEmpty(form.getSubject())) {
+                section = CommentConstants.MESSAGE_RESPONSE_PAGE;
             }
-            else if(StringUtils.isEmpty(form.getSubject())){
-                section=CommentConstants.MESSAGE_SUBJECT_BOX;
-            }
-            else if(StringUtils.isEmpty(form.getBody()) && StringUtils.isEmpty(form.getSubject())){
-                section=CommentConstants.MESSAGE_RESPONSE_PAGE;
-            }
-            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE,section);
+            return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE, section);
         }
 
-        String messageText=form.getBody();
-        if(messageText.length()>100){
-            messageText=messageText.substring(0,100);
+        String messageText = form.getBody();
+        if (messageText.length() > 100) {
+            messageText = messageText.substring(0, 100);
         }
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
@@ -262,7 +251,7 @@ public class CommentController extends UifControllerBase {
             logger.error("Could not add Message ", e);
             form.setStudentName(UserSessionHelper.getStudentName());
             String[] params = {};
-            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE,CommentConstants.MESSAGE_MESSAGE_BOX);
+            return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_MESSAGE_BOX);
         }
         form.setFeedBackMode(true);
 
@@ -275,25 +264,14 @@ public class CommentController extends UifControllerBase {
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
         if (toAddress == null) {
             String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE,CommentConstants.MESSAGE_RESPONSE_PAGE);
+            return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
-        String messageLink=ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
+        String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
-        String subject = String.format("[MyPlan] %s left a message for you", adviserName);
-        String body = String.format("Hello %s," +
-                "\n\nYou've received a new message from %s. Here's a preview of your message:\n\n\"%s....\"" +
-                "\n\n To read the full message, log into MyPlan at: \n %s " +
-                "\n\n Remember, this is a notification only. Please do not reply to this email. " +
-                "\n\n Questions about MyPlan? View our help page at: " +
-                "\n\n https://depts.washington.edu/myplan/help-site " +
-                "\n\n Sincerely, \nThe MyPlan Team " +
-                "\n\n -------------------------------------------------------------------" +
-                "\n\n MyPlan" +
-                "\n\n Student Information Systems, UW Information Technology" +
-                "\n\n 4333 Brooklyn Ave NE, Seattle, WA 98105" +
-                "\n\n © 2012 University of Washington " +
-                "\n\n -------------------------------------------------------------------",
-                studentName, adviserName, messageText,messageLink);
+        String subjectProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.commment.subject");
+        String emailBody = ConfigContext.getCurrentContextConfig().getProperty("myplan.email.body");
+        String subject = String.format(subjectProp, adviserName);
+        String body = String.format(emailBody, studentName, adviserName, messageText, messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
