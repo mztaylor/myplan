@@ -11,9 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.kuali</groupId>
+        <groupId>org.kuali.pom</groupId>
         <artifactId>kuali-common</artifactId>
-        <version>15</version>
+        <version>1.5.4</version>
     </parent>
 
     <groupId>org.kuali.student.myplan</groupId>
@@ -97,8 +97,8 @@
         <kuali.javadoc.link.9>http://ws.apache.org/wss4j/apidocs/</kuali.javadoc.link.9>
 
 
-        <kuali.student.version>ks-1.3-myplan-SNAPSHOT</kuali.student.version>
-        <kuali.student.enroll.version>ks-1.3-myplan-SNAPSHOT</kuali.student.enroll.version>
+        <kuali.student.version>1.3.0-myplan-SNAPSHOT</kuali.student.version>
+        <kuali.student.enroll.version>1.3.0-myplan-SNAPSHOT</kuali.student.enroll.version>
 
         <!-- artifact versions -->
         <asm.version>3.3.1</asm.version>
@@ -143,7 +143,7 @@
         <tomcat.plugin.version>1.1</tomcat.plugin.version>
         <!--  <jetty.plugin.version>8.0.0.M2</jetty.plugin.version> -->
 
-		<jaxb-api.version>2.1</jaxb-api.version>
+        <jaxb-api.version>2.1</jaxb-api.version>
         <jetty.plugin.version>7.3.1.v20110307</jetty.plugin.version>
         <jotm.version>2.1.10</jotm.version>
         <jsp-2.1-glassfish.version>2.1.v20100127</jsp-2.1-glassfish.version>
@@ -1122,35 +1122,35 @@
             </dependency>
 
             <!-- Restlet stuff -->
-             <dependency>
-                     <groupId>org.restlet.jee</groupId>
-                     <artifactId>org.restlet</artifactId>
-                     <version>${restlet.version}</version>
-             </dependency>
-             <dependency>
-                     <groupId>org.restlet.jee</groupId>
-                     <artifactId>org.restlet.ext.servlet</artifactId>
-                    <version>${restlet.version}</version>
-             </dependency>
-             <dependency>
-                     <groupId>org.restlet.jee</groupId>
-                     <artifactId>org.restlet.ext.spring</artifactId>
-                     <version>${restlet.version}</version>
-             </dependency>
-             <!-- End restlet stuff -->
-             
-		    <!-- Fixes for strange JAXB behavior with empty lists using SOAP -->
-			<dependency>
-				<groupId>asm</groupId>
-				<artifactId>asm</artifactId>
-				<version>${asm.version}</version>
-			</dependency>
-		
-			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-				<version>${jaxb-api.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.restlet.jee</groupId>
+                <artifactId>org.restlet</artifactId>
+                <version>${restlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.restlet.jee</groupId>
+                <artifactId>org.restlet.ext.servlet</artifactId>
+                <version>${restlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.restlet.jee</groupId>
+                <artifactId>org.restlet.ext.spring</artifactId>
+                <version>${restlet.version}</version>
+            </dependency>
+            <!-- End restlet stuff -->
+
+            <!-- Fixes for strange JAXB behavior with empty lists using SOAP -->
+            <dependency>
+                <groupId>asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${asm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
             <!-- End fixes for strange JAXB behavior with empty lists using SOAP -->
 
         </dependencies>

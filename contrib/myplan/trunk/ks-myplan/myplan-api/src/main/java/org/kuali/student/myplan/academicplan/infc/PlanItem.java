@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.academicplan.infc;
 
-import org.kuali.student.core.atp.dto.AtpInfo;
 import org.kuali.student.r2.common.infc.HasId;
 import org.kuali.student.r2.common.infc.RichText;
 import org.kuali.student.r2.common.infc.TypeStateEntity;
