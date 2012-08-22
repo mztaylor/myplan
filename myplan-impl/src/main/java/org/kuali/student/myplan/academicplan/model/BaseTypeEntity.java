@@ -1,17 +1,10 @@
 package org.kuali.student.myplan.academicplan.model;
 
-import java.util.Date;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.kuali.student.common.entity.KSEntityConstants;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 @MappedSuperclass
@@ -21,7 +14,7 @@ public class BaseTypeEntity extends BaseVersionEntity {
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "TYPE_DESC",length=KSEntityConstants.LONG_TEXT_LENGTH)
+	@Column(name = "TYPE_DESC",length= KSEntityConstants.LONG_TEXT_LENGTH)
 	private String descr;
 
 	@Temporal(TemporalType.TIMESTAMP)

@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.academicplan.dto;
 
-import org.kuali.student.core.atp.dto.AtpInfo;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.TypeStateEntityInfo;

@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.audit.dto;
 
-import org.kuali.student.core.atp.dto.AtpInfo;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.r2.common.dto.RichTextInfo;

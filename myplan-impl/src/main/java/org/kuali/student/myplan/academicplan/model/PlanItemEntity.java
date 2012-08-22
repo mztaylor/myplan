@@ -1,7 +1,5 @@
 package org.kuali.student.myplan.academicplan.model;
 
-import java.util.*;
-
 import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
@@ -9,12 +7,10 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
 
-import java.util.List;
-
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
