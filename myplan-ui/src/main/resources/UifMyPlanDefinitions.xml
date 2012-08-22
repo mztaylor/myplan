@@ -254,6 +254,17 @@
         </property>
     </bean>
 
+    <bean id="MyPlan-Tooltip" parent="Uif-Tooltip">
+                  <property name="templateOptions">
+                    <map merge = "true">
+                      <entry key="position" value="top"/>
+                      <entry key="align" value="center"/>
+                      <entry key="width" value="200px"/>
+                      <entry key="tail" value="{ align:'center', hidden: false }"/>
+                    </map>
+                  </property>
+                </bean>
+
 
     <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
           parent="Uif-StackedSubCollection-WithinSection-parentBean">
