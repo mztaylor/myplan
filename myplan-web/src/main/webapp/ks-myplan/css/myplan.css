@@ -495,16 +495,27 @@ input.myplan-add:hover {
     background: #a9a9a9;
     cursor:pointer;
 }
+.myplan-carousel-list ul li .myplan-carousel-term .uif-header {
+    padding: 0 4px;
+    height: 26px;
+    line-height: 26px;
+    background: #f5f5f5;
+}
 .myplan-carousel-list ul li .myplan-carousel-term h6.uif-headerText {
     color: #aaa;
     font-weight: normal;
     text-transform: uppercase;
     font-size:85%;
-    background: #f5f5f5;
-    height: 26px;
-    line-height: 26px;
-    padding: 0 4px;
-    display: block;
+    vertical-align: middle;
+    display: inline-block;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-header .uif-header-rightGroup {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
 }
 .myplan-carousel-prev,
 .myplan-carousel-next {
