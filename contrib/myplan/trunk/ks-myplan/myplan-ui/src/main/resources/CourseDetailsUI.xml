@@ -242,7 +242,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="Course Requisites" p:fieldLabel.renderColon="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
@@ -288,7 +288,7 @@
                 <bean parent="Uif-VerticalFieldGroup" p:label="Quarters" p:fieldLabel.renderColon="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
@@ -365,7 +365,7 @@
                 <bean parent="Uif-DataField" p:propertyName="credit" p:label="Credits" p:fieldLabel.renderColon="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
@@ -376,7 +376,7 @@
                       p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
@@ -393,7 +393,7 @@
                       p:fieldLabel.renderColon="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
@@ -404,7 +404,7 @@
                       p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
-                            <value>myplan-text-align-left</value>
+                            <value>myplan-text-align-right</value>
                             <value>myplan-text-nowrap</value>
                         </list>
                     </property>
