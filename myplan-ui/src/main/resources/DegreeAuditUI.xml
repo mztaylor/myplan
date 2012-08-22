@@ -133,7 +133,7 @@
         </property>
     </bean>
 
-    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports no Audits">
+    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
