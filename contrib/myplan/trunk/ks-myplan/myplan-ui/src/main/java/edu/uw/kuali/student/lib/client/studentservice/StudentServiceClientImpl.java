@@ -39,11 +39,9 @@ public class StudentServiceClientImpl
     private static final String SERVICE_VERSION = "v4";
 
     private String baseUrl;
-    private SAXReader reader;
     private Client client;
 
     public StudentServiceClientImpl() {
-        reader = new SAXReader();
     }
 
     /**
@@ -132,6 +130,7 @@ public class StudentServiceClientImpl
         Document document = null;
 
         try {
+            SAXReader reader = new SAXReader();
             document = reader.read(output.getStream());
         } catch (Exception e) {
             throw new ServiceException("Could not read the reply.", e);

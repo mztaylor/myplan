@@ -41,12 +41,9 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
     private static int CRITERIA_LENGTH = 23;
 
-    private SAXReader reader;
-
     private StudentServiceClient studentServiceClient;
 
     public UwAcademicCalendarServiceImpl() {
-        this.reader = new SAXReader();
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
@@ -334,6 +331,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
         Document termDocument = null;
         try {
+            SAXReader reader = new SAXReader();
             termDocument = reader.read(new StringReader(responseText));
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
@@ -383,6 +381,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
                 Document sectionDocument = null;
                 try {
+                    SAXReader reader = new SAXReader();
                     termDocument = reader.read(new StringReader(responseText));
                 } catch (Exception e) {
                     logger.error("Could not parse reply from the Student Term Service.", e);

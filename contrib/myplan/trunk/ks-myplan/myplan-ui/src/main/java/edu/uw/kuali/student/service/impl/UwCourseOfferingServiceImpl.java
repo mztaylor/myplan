@@ -44,16 +44,12 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private static int CRITERIA_LENGTH = 24;
 
-    private SAXReader reader;
-
     private StudentServiceClient studentServiceClient;
 
     public UwCourseOfferingServiceImpl() {
         //  Compile regexs for parsing term and year from termKey.
         patternTerm = Pattern.compile(REGEX_TERM, Pattern.CASE_INSENSITIVE);
         patternYear = Pattern.compile(REGEX_YEAR);
-
-        this.reader = new SAXReader();
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
@@ -169,6 +165,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         Document document = null;
         try {
+            SAXReader reader = new SAXReader();
             document = reader.read(new StringReader(responseText));
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
@@ -383,6 +380,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
         Document document = null;
         try {
+            SAXReader reader = new SAXReader();
             document = reader.read(new StringReader(responseText));
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
@@ -418,6 +416,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 }
                 Document document2 = null;
                 try {
+                    SAXReader reader = new SAXReader();
                     document2 = reader.read(new StringReader(responseText));
                 } catch (Exception e) {
                     throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
@@ -680,6 +679,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
         Document document = null;
         try {
+            SAXReader reader = new SAXReader();
             document = reader.read(new StringReader(responseText));
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
