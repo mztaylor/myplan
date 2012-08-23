@@ -64,7 +64,7 @@ public class DegreeAuditSeattlePrograms extends KeyValuesBase {
         Collections.sort(keyValues, new Comparator<KeyValue>() {
             @Override
             public int compare(KeyValue keyValue1, KeyValue keyValue2) {
-                return keyValue1.getKey().compareTo(keyValue2.getKey());
+                return keyValue1.getValue().compareTo(keyValue2.getValue());
             }
         });
         return keyValues;
