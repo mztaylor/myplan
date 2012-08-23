@@ -47,8 +47,6 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
     private static transient AcademicCalendarService academicCalendarService;
 
-    private SAXReader reader = new SAXReader();
-
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
@@ -131,6 +129,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         /***************************Enrollment Section ********************************************/
         Document document = null;
         try {
+            SAXReader reader = new SAXReader();
             document = reader.read(new StringReader(enrollmentResponseText));
         } catch (Exception e) {
             throw new OperationFailedException("Could not parse reply from the Student Term Service.", e);
@@ -233,6 +232,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
             for (String registrationResponseText : registrationResponseTexts) {
                 Document registrationDocument = null;
                 try {
+                    SAXReader reader = new SAXReader();
                     registrationDocument = reader.read(new StringReader(registrationResponseText));
                 } catch (DocumentException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -270,6 +270,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
                     Document document1 = null;
                     try {
+                        SAXReader reader = new SAXReader();
                         document1 = reader.read(new StringReader(registration));
                     } catch (DocumentException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
