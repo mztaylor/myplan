@@ -62,7 +62,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String FOCUS_ATP_ID_KEY = "focusAtpId";
 
     //  {atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
-    public static final String QUARTER_LINK = "<a href=\"/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView&criteriaFields['focusAtpId']={atpId}\">{label}</a>";
+    public static final String QUARTER_LINK = "<a href=\"/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']={atpId}\">{label}</a>";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
     public static final String TERM_1="Winter";
