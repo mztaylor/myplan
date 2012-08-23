@@ -290,6 +290,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             int lineNo = 0;
             String origin = "M";
+            programId = programId.replace( '$', ' ' );
             MPAuditResponse response = port.mpRequestAudit(0, programId, lineNo, systemKey, origin);
             logger.info("error code: " + response.getErrorCode());
             logger.info("error msg: " + response.getErrorMsg());
@@ -1079,7 +1080,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Object[] objs = null;
             AuditProgramInfo auditProgramInfo = new AuditProgramInfo();
             objs = (Object[]) programs.get(i);
-            auditProgramInfo.setProgramId((String) objs[0]);
+            String programId = (String) objs[0];
+            programId = programId.replace( ' ', '$' );
+            auditProgramInfo.setProgramId( programId );
             auditProgramInfo.setProgramTitle((String) objs[1]);
             auditProgramInfoList.add(auditProgramInfo);
         }
