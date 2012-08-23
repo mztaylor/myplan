@@ -279,8 +279,8 @@
         </property>
         <property name="items">
             <list>
-                <ref bean="degree_audit_info_1"/>
                 <ref bean="degree_audit_info_2"/>
+                <ref bean="degree_audit_info_1"/>
             </list>
         </property>
     </bean>
@@ -300,18 +300,18 @@
                     <property name="messageText" value="Track your Progress"/>
                 </bean>
                 <bean id="audit_info_text_1" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="Be on top of your required credits and courses. Audit will tell you exactly how what you need to do to meet all requirements."/>
+                    <property name="messageText" value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what’s needed to complete your degree. "/>
                 </bean>
                 <!--<bean id="audit_info_img_1" parent="Uif-ImageField" p:altText="audit" p:style="padding: 5px;"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}auditSample.jpg"/>-->
                 <bean id="audit_info_footer_1" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="Select your degree above &amp; run audit to see your academic status now."/>
+                    <property name="messageText" value="Select your program from the menu above &amp; run DARS to see your academic progress now."/>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="degree_audit_info_2" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;" >
+    <bean id="degree_audit_info_2" parent="Uif-VerticalFieldGroup" p:style="padding: 10px; height: 176px;" >
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -325,12 +325,12 @@
                     <property name="messageText" value="Explore programs &amp; minors"/>
                 </bean>
                 <bean id="audit_info_text_2" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="Still deciding which degree program apply to? Audit can help you to see your academic progress for any degree."/>
+                    <property name="messageText" value="Still deciding on a degree program? DARS can help you determine your academic progress towards any degree."/>
                 </bean>
                 <!--<bean id="audit_info_img_2" parent="Uif-ImageField" p:altText="audit" p:style="padding: 5px;"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}auditSample2.jpg"/>-->
                 <bean id="audit_info_footer_2" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="Select your degree above &amp; run audit to explore a major or more."/>
+                    <property name="messageText" value="Select a program from the menu above and run DARS to explore listed majors and more."/>
                 </bean>
             </list>
         </property>
