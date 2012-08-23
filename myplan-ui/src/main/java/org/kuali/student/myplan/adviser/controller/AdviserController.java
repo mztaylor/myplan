@@ -31,16 +31,14 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -55,7 +53,7 @@ public class AdviserController extends UifControllerBase {
 
     private transient String ADVISE_NM_CODE;
 
-    private transient String ADVISE_PERM_NAME;
+    private transient List<String> advisePermNames;
 
     private transient AcademicPlanService academicPlanService;
 
@@ -76,7 +74,7 @@ public class AdviserController extends UifControllerBase {
         if (permissionService == null) {
 
             ADVISE_NM_CODE = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.namespacecode");
-            ADVISE_PERM_NAME = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname");
+            advisePermNames =   Arrays.asList(ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname").split(","));
 
             permissionService = KimApiServiceLocator.getPermissionService();
         }
@@ -153,8 +151,17 @@ public class AdviserController extends UifControllerBase {
         }
         UserSession session = GlobalVariables.getUserSession();
 
-        if (!getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, ADVISE_PERM_NAME)) {
-            //  FIXME!!! ... Do stuff to verify that the user has an Grad advisor role adviser role.
+        //Initialize the permission service and name space codes
+        getPermissionService();
+        boolean authorized = false;
+        for(String adviseNm : advisePermNames) {
+            if (getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, adviseNm.trim())) {
+                authorized = true;
+                break;
+            }
+        }
+
+        if (!authorized) {
             GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_ILLEGAL_ADVISER_ACCESS);
             return "redirect:/myplan/unauthorized";
         }

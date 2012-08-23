@@ -42,7 +42,7 @@ plus any of its dependencies -->
     <bean id="AuditProgramInfo-generated" abstract="true" parent="DataObjectEntry">
         <property name="name" value="AuditProgramInfo"/>
         <property name="dataObjectClass" value="org.kuali.student.myplan.audit.dto.AuditProgramInfo"/>
-        <property name="objectLabel" value="Degree Audit"/>
+        <property name="objectLabel" value="Audit Degree"/>
         <property name="objectDescription">
             <value>
                 AuditReport message structure

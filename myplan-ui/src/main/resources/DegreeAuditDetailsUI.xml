@@ -68,7 +68,7 @@
         </property>-->
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:headerText="Degree Audit" p:id="degree_audit">
+                <bean parent="Uif-Page" p:headerText="Audit Degree" p:id="degree_audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -147,7 +147,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:headerText="Degree Audit" p:id="degree_audit_empty_page">
+                <bean parent="Uif-Page" p:headerText="Audit Degree" p:id="degree_audit_empty_page">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>

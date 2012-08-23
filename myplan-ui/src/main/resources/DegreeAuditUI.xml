@@ -50,7 +50,7 @@
             <list>
                 <!-- <bean parent="Uif-Page" p:id="degree_audit_details_page"
                       p:headerText="@{dataObject.report.auditId} (@{dataObject.report.runDate})"> -->
-                <bean parent="Uif-Page" p:id="degree_audit_details_page" p:headerText="Degree Audit">
+                <bean parent="Uif-Page" p:id="degree_audit_details_page" p:headerText="Audit Degree">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
