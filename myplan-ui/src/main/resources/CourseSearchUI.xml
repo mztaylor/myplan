@@ -203,6 +203,11 @@
                     if (data.planItemType === 'planned') {
                         fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
                     }
+                })
+                .subscribe('PLAN_ITEM_ADDED', function(data){
+                    if (data.planItemType === 'backup') {
+                        fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
+                    }
                 });
         "/>
         <property name="richTable.templateOptions">
