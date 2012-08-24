@@ -115,7 +115,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecords(@WebParam(name = "personId") String personId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String enrollmentResponseText = null;
-        Map<String,String> courseIds = new HashMap<String, String>();
+        Map<String, String> courseIds = new HashMap<String, String>();
         List<StudentCourseRecordInfo> studentCourseRecordInfoList = new ArrayList<StudentCourseRecordInfo>();
         List<TermInfo> planningTermInfo = null;
         try {
@@ -168,50 +168,51 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                         dataList = dataSection.elements("Section");
                         String auditor = dataSection.elementText("Auditor");
                         if (auditor.equalsIgnoreCase("false")) {
-                            String calculatedGradeVal = dataSection.elementText("Grade");
-                            String creditsEarned = dataSection.elementText("Credits");
-                            if (creditsEarned.contains(".")) {
-                                creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf(".") - 1);
-                            }
-                            String isRepeated = dataSection.elementText("RepeatCourse");
-                            if (isRepeated.equalsIgnoreCase("true")) {
-                                studentCourseRecordInfo.setIsRepeated(true);
-                            } else {
-                                studentCourseRecordInfo.setIsRepeated(false);
-                            }
-                            studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
-                            studentCourseRecordInfo.setCreditsEarned(creditsEarned.trim());
-                            for (Object Section : dataList) {
-                                Element section = (Element) Section;
-                                String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
-                                String courseNumber = section.elementText("CourseNumber");
-                                String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
-                                /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
-                                if (results.length > 0 && results[0] != null) {
-                                    studentCourseRecordInfo.setId(results[0]);
+                            Boolean isActive = Boolean.valueOf(dataSection.elementText("IsActive"));
+                            if (isActive) {
+                                String calculatedGradeVal = dataSection.elementText("Grade");
+                                String creditsEarned = dataSection.elementText("Credits");
+                                if (creditsEarned.contains(".")) {
+                                    creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf(".") - 1);
                                 }
-                                if (results.length > 0 && results[1] != null) {
-                                    studentCourseRecordInfo.setCourseTitle(results[1]);
+                                String isRepeated = dataSection.elementText("RepeatCourse");
+                                if (isRepeated.equalsIgnoreCase("true")) {
+                                    studentCourseRecordInfo.setIsRepeated(true);
+                                } else {
+                                    studentCourseRecordInfo.setIsRepeated(false);
                                 }
-                                StringBuffer courseCode = new StringBuffer();
-                                courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
-                                //  termName is really an ATP Id.
-                                String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
-                                studentCourseRecordInfo.setCourseCode(courseCode.toString());
-                                studentCourseRecordInfo.setTermName(termName);
-                                studentCourseRecordInfo.setPersonId(personId);
-                                if(!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
-                                }
-                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode())&&!courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
+                                studentCourseRecordInfo.setCreditsEarned(creditsEarned.trim());
+                                for (Object Section : dataList) {
+                                    Element section = (Element) Section;
+                                    String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
+                                    String courseNumber = section.elementText("CourseNumber");
+                                    String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
+                                    /*TODO: StudentCourseRecordInfo doesnot have a courseId property so using Id to set the course Id*/
+                                    if (results.length > 0 && results[0] != null) {
+                                        studentCourseRecordInfo.setId(results[0]);
+                                    }
+                                    if (results.length > 0 && results[1] != null) {
+                                        studentCourseRecordInfo.setCourseTitle(results[1]);
+                                    }
+                                    StringBuffer courseCode = new StringBuffer();
+                                    courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
+                                    //  termName is really an ATP Id.
+                                    String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
+                                    studentCourseRecordInfo.setCourseCode(courseCode.toString());
+                                    studentCourseRecordInfo.setTermName(termName);
+                                    studentCourseRecordInfo.setPersonId(personId);
+                                    if (!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
+                                    } else if (courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && !courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
 
-                                }
-                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)&&!studentCourseRecordInfo.getCreditsEarned().equals("0")){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                    } else if (courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName) && !studentCourseRecordInfo.getCreditsEarned().equals("0")) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
+                                    }
                                 }
                             }
                         }
@@ -289,52 +290,53 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                         dataList = dataSection.elements("Section");
                         String auditor = dataSection.elementText("Auditor");
                         if (auditor.equalsIgnoreCase("false")) {
-                            String calculatedGradeVal = dataSection.elementText("Grade");
-                            String creditsEarned = dataSection.elementText("Credits");
-                            if (creditsEarned.contains(".")) {
-                                creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf(".") - 1);
-                            }
-                            String isRepeated = dataSection.elementText("RepeatCourse");
-                            if (isRepeated.equalsIgnoreCase("true")) {
-                                studentCourseRecordInfo.setIsRepeated(true);
-                            } else {
-                                studentCourseRecordInfo.setIsRepeated(false);
-                            }
-                            studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
-                            studentCourseRecordInfo.setCreditsEarned(creditsEarned.trim());
-                            for (Object Section : dataList) {
-                                Element section = (Element) Section;
-                                String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
-                                String courseNumber = section.elementText("CourseNumber");
-                                String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
-                                /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
-                                if (results.length > 0 && results[0] != null) {
-                                    studentCourseRecordInfo.setId(results[0]);
+                            Boolean isActive = Boolean.valueOf(dataSection.elementText("IsActive"));
+                            if (isActive) {
+                                String calculatedGradeVal = dataSection.elementText("Grade");
+                                String creditsEarned = dataSection.elementText("Credits");
+                                if (creditsEarned.contains(".")) {
+                                    creditsEarned = creditsEarned.trim().substring(0, creditsEarned.lastIndexOf(".") - 1);
                                 }
-                                if (results.length > 0 && results[1] != null) {
-                                    studentCourseRecordInfo.setCourseTitle(results[1]);
+                                String isRepeated = dataSection.elementText("RepeatCourse");
+                                if (isRepeated.equalsIgnoreCase("true")) {
+                                    studentCourseRecordInfo.setIsRepeated(true);
+                                } else {
+                                    studentCourseRecordInfo.setIsRepeated(false);
                                 }
-                                StringBuffer courseCode = new StringBuffer();
-                                courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
-                                //  termName is really an ATP Id.
-                                String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
-                                studentCourseRecordInfo.setCourseCode(courseCode.toString());
-                                studentCourseRecordInfo.setTermName(termName);
-                                studentCourseRecordInfo.setPersonId(personId);
+                                studentCourseRecordInfo.setCalculatedGradeValue(calculatedGradeVal);
+                                studentCourseRecordInfo.setCreditsEarned(creditsEarned.trim());
+                                for (Object Section : dataList) {
+                                    Element section = (Element) Section;
+                                    String curriculumAbbreviation = section.elementText("CurriculumAbbreviation");
+                                    String courseNumber = section.elementText("CourseNumber");
+                                    String[] results = this.getCourseTitleAndId(curriculumAbbreviation, courseNumber);
+                                    /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
+                                    if (results.length > 0 && results[0] != null) {
+                                        studentCourseRecordInfo.setId(results[0]);
+                                    }
+                                    if (results.length > 0 && results[1] != null) {
+                                        studentCourseRecordInfo.setCourseTitle(results[1]);
+                                    }
+                                    StringBuffer courseCode = new StringBuffer();
+                                    courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
+                                    //  termName is really an ATP Id.
+                                    String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
+                                    studentCourseRecordInfo.setCourseCode(courseCode.toString());
+                                    studentCourseRecordInfo.setTermName(termName);
+                                    studentCourseRecordInfo.setPersonId(personId);
 
 
-                                if(!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
-                                }
-                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode())&&!courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                    if (!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
+                                    } else if (courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && !courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
 
-                                }
-                                else if(courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName)&&!studentCourseRecordInfo.getCreditsEarned().equals("0")){
-                                    studentCourseRecordInfoList.add(studentCourseRecordInfo);
-                                    courseIds.put(studentCourseRecordInfo.getCourseCode(),studentCourseRecordInfo.getTermName());
+                                    } else if (courseIds.containsKey(studentCourseRecordInfo.getCourseCode()) && courseIds.get(studentCourseRecordInfo.getCourseCode()).equalsIgnoreCase(termName) && !studentCourseRecordInfo.getCreditsEarned().equals("0")) {
+                                        studentCourseRecordInfoList.add(studentCourseRecordInfo);
+                                        courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
+                                    }
                                 }
                             }
                         }
