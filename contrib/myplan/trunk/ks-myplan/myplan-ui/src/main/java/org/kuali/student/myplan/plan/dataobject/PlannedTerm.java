@@ -27,7 +27,7 @@ public class PlannedTerm {
 
     private boolean displayCompletedHelp;
     private boolean displayPlannedHelp;
-    private boolean displayCreditsHelp;
+    private boolean displayCreditsHelp=true;
     private boolean displayBackupHelp;
     private boolean displayRegisteredHelp;
 
