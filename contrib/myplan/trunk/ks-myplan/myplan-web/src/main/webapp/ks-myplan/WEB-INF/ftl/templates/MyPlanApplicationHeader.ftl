@@ -65,8 +65,7 @@
         <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
             <div class="adviser-banner">
                 You're viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]}</strong>'s MyPlan.
-                Some features are restricted to advisers. <a href="https://depts.washington.edu/myplan/help-site/">Learn more
-                about Adviser View.</a>
+                Some features are restricted in Adviser View. <a href="https://depts.washington.edu/myplan/help-site/">Learn more.</a>
             </div>
         </#if>
     </#if>
