@@ -329,7 +329,6 @@ public class PlannedTermsHelperBase {
                 if (plannedTerms.get(index).isCurrentTermForView() || i == 1) {
                     plannedTerms.get(index).setDisplayBackupHelp(true);
                     plannedTerms.get(index).setDisplayPlannedHelp(true);
-                    plannedTerms.get(index).setDisplayCreditsHelp(true);
                     index = index - i;
                     break;
                 }
