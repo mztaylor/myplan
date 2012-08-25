@@ -247,7 +247,7 @@
                     <map merge = "true">
                       <entry key="position" value="top"/>
                       <entry key="align" value="center"/>
-                      <entry key="width" value="200px"/>
+                      <entry key="width" value="250px"/>
                       <entry key="tail" value="{ align:'center', hidden: false }"/>
                     </map>
                   </property>
@@ -481,7 +481,7 @@
                                   p:messageText="Features are disabled for advisers."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href" value="https://depts.washington.edu/myplan/help-site"/>
+                                <property name="href" value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
                             </bean>
                         </list>
                     </property>

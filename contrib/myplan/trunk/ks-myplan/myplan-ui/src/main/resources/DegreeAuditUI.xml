@@ -4,7 +4,7 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-<!--
+    <!--
      Copyright 2007-2009 The Kuali Foundation
 
      Licensed under the Educational Community License, Version 2.0 (the "License");
@@ -22,8 +22,10 @@
 
     <!-- Inquiry View -->
     <bean id="DegreeAuditDetails-InquiryView" parent="MyPlanInquiryView">
+        <property name="headerText" value="Audit Degree"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="viewHelperServiceClass" value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -56,7 +58,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="degree_audit_details_section" />
+                            <ref bean="degree_audit_details_section"/>
                             <bean parent="myplan_section" p:headerText="AUDIT (TBD)">
                                 <property name="items">
                                     <list>
@@ -72,13 +74,15 @@
         </property>
     </bean>
 
-    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
-         <property name="items">
+    <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection"
+          p:style="width: 710px; margin-right: 10px;">
+        <property name="items">
             <list>
-                 <bean parent="Uif-VerticalBoxGroup">
+                <bean parent="Uif-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit2" parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                            <bean id="txtaudit2" parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}"
+                                  p:style="display:block;"/>
                         </list>
                     </property>
                 </bean>
@@ -97,7 +101,7 @@
         <property name="items">
             <list>
                 <!-- Report Body -->
-                <bean parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;" />
+                <bean parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}" p:style="display:block;"/>
             </list>
         </property>
     </bean>
@@ -110,7 +114,8 @@
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="viewHelperServiceClass" value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
@@ -137,6 +142,15 @@
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                <property name="items">
+                    <list>
+                        <ref bean="recent_audits_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-recent-audit</value>
@@ -160,9 +174,11 @@
                         <list>
                             <!--<bean parent="Uif-LinkField" p:linkText="@{#line.programTitle}" p:style="width: 220px;"
                                 p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>-->
-                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:style="width: 220px;" p:fieldLabel.render="false"/>
+                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:style="width: 220px;"
+                                  p:fieldLabel.render="false"/>
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
-                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"  p:fieldLabel.render="true" p:escapeHtmlInPropertyValue="false">
+                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"
+                                  p:fieldLabel.render="true" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">

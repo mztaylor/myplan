@@ -19,40 +19,31 @@
      limitations under the License.
     -->
 
-    <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
-        <property name="dataAttributes">
-            <map>
-                <entry key="help" value="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=&apos;https://depts.washington.edu/myplan/bookmark-courses/&apos; target=&apos;_blank&apos;&gt;Learn more&lt;/a&gt;"/>
-            </map>
+    <bean id="quarter_facet_help_icon"  parent="MyPlanHelpImage">
+        <property name="toolTip">
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#820');&gt;Learn more&lt;/a&gt;"/>
         </property>
-        <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('bookmarks_help_icon', {
-                position: 'top',
-                align: 'center',
-                alwaysVisible: false,
-                tail: {
-                    align: 'center',
-                    hidden: false
-                },
-                themeName: 'black',
-                selectable: true,
-                width: '200px'
-            }, true, false);
-        "/>
-        <!--<property name="toolTip">
-          <bean parent="Uif-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=&apos;https://depts.washington.edu/myplan/bookmark-courses/&apos; target=&apos;_blank&apos;&gt;Learn more&lt;/a&gt;"/>
-        </property>-->
     </bean>
 
 
-    <bean id="completed_help_icon" parent="MyPlanHelpImage" p:render="@{#line.completedTerm and #line.displayCompletedHelp ? true : false}">
-        <property name="dataAttributes">
-            <map>
-                <entry key="help" value="A completed quarter you registered for."/>
-            </map>
+    <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+          <bean parent="Uif-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site#821&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
+    </bean>
+
+
+    <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
+         <property name="toolTip">
+          <bean parent="Uif-Tooltip" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#822');&gt;Learn more&lt;/a&gt;"/>
+        </property>
+    </bean>
+
+
+    <bean id="completed_help_icon" parent="MyPlanHelpImage"
+          p:render="@{#line.completedTerm and #line.displayCompletedHelp ? true : false}">
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('completed_help_icon_line@{#index}', {
+            myplanCreateTooltip('completed_help_icon_line@{#index}', 'A quarter that you registered for that is now complete.',{
                 position: 'top',
                 align: 'center',
                 alwaysVisible: false,
@@ -62,7 +53,7 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '200px'
+                width: '250px'
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -70,14 +61,10 @@
         </property>-->
     </bean>
 
-    <bean id="registered_help_icon" parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) and #line.displayRegisteredHelp ? true : false}">
-        <property name="dataAttributes">
-            <map>
-                <entry key="help" value="A course you have enrolled in for current or future academic quarter(s)."/>
-            </map>
-        </property>
+    <bean id="registered_help_icon" parent="MyPlanHelpImage"
+          p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) and #line.displayRegisteredHelp ? true : false}">
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('registered_help_icon_line@{#index}', {
+            myplanCreateTooltip('registered_help_icon_line@{#index}', 'A course you are enrolled in for the current or future academic quarter(s). Click &lt;a href=https://sdb.admin.washington.edu/students/uwnetid/register.asp&gt;here&lt;/a&gt; to change your registration.',{
                 position: 'top',
                 align: 'center',
                 alwaysVisible: false,
@@ -87,7 +74,7 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '200px'
+                width: '250px'
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -96,13 +83,8 @@
     </bean>
 
     <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
-        <property name="dataAttributes">
-            <map>
-                <entry key="help" value="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
-            </map>
-        </property>
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('planned_help_icon_line@{#index}', {
+            myplanCreateTooltip('planned_help_icon_line@{#index}', 'MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site#825&quot;);&gt;Learn more&lt;/a&gt;',{
                 position: 'top',
                 align: 'center',
                 alwaysVisible: false,
@@ -112,7 +94,7 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '200px'
+                width: '250px'
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -121,13 +103,8 @@
     </bean>
 
     <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
-        <property name="dataAttributes">
-            <map>
-                <entry key="help" value="A course you&apos;re considering in case a planned course is not available or is full."/>
-            </map>
-        </property>
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('backup_help_icon_line@{#index}', {
+            myplanCreateTooltip('backup_help_icon_line@{#index}', 'Courses you are considering in case a planned course is full or unavailable.',{
                 position: 'top',
                 align: 'center',
                 alwaysVisible: false,
@@ -137,7 +114,7 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '200px'
+                width: '250px'
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -145,14 +122,15 @@
         </property>-->
     </bean>
 
-    <bean id="total_credits_help_icon" parent="MyPlanHelpImage"  p:render="@{#line.displayCreditsHelp ? true : false}">
-            <property name="dataAttributes">
-                <map>
-                    <entry key="help" value="@{!#line.openForPlanning ? 'The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.' : (#line.academicRecord.size() gt 0 ? 'The total number of credits for the registered and planned courses in a quarter.' : 'The total number of credits for planned courses in a quarter.')}"/>
-                </map>
-            </property>
-            <property name="onDocumentReadyScript" value="
-                myplanCreateTooltip('total_credits_help_icon_line@{#index}', {
+    <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
+        <property name="dataAttributes">
+            <map>
+                <entry key="help"
+                       value="@{!#line.openForPlanning ? 'The number of credits attempted for a completed quarter.  Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
+            </map>
+        </property>
+        <property name="onDocumentReadyScript" value="
+                myplanCreateTooltip('total_credits_help_icon_line@{#index}', '',{
                     position: 'top',
                     align: 'center',
                     alwaysVisible: false,
@@ -162,13 +140,13 @@
                     },
                     themeName: 'black',
                     selectable: true,
-                    width: '200px'
+                    width: '250px'
                 }, true, false);
             "/>
-            <!--<property name="toolTip">
-              <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
-              </bean>
-            </property>-->
-        </bean>
+        <!--<property name="toolTip">
+          <bean parent="Uif-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
+          </bean>
+        </property>-->
+    </bean>
 
 </beans>
