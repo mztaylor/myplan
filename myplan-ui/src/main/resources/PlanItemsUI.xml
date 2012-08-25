@@ -62,7 +62,7 @@
                         <ref bean="bookmarks_help_icon"/>
                         <!--<bean id="bookmark_help_icon" parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=https://depts.washington.edu/myplan/bookmark-courses/ target=_blank&gt;Learn more&lt;/a&gt;"/>
+                              <bean parent="MyPlan-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=http://depts.washington.edu/myplan/bookmark-courses/ target=_blank&gt;Learn more&lt;/a&gt;"/>
                             </property>
                         </bean>-->
                     </list>
@@ -171,6 +171,7 @@
         This lookup view provides the list of saved courses which make up the full saved courses page.
       -->
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
+    <property name="headerText" value="Bookmarked Courses"/>
     <property name="viewName" value="SavedCoursesDetail-LookupView"/>
     <property name="breadcrumbs.render" value="false"/>
     <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
@@ -536,6 +537,7 @@
      This is the Actions menu on the term view page.
     -->
     <bean id="PlannedCourseMenuItem-FormView" parent="MyPlanBaseFormView">
+        <property name="headerText" value="Plan"/>
         <property name="id" value="PlannedCourseMenuItem-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -1164,6 +1166,7 @@
             This lookup provides the term by term view of Planned Courses.
           -->
         <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
+            <property name="headerText" value="Plan"/>
             <property name="viewName" value="PlannedCourses-LookupView"/>
             <property name="breadcrumbs.render" value="false"/>
             <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
@@ -1280,7 +1283,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="Create your plan by finding and adding courses to any quarter."/>
-                            <bean parent="Uif-LinkField" p:linkText="Learn more" p:href="#"/>
+                            <bean parent="Uif-LinkField" p:linkText="Learn more" p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#824');"/>
                         </list>
                     </property>
                 </bean>
@@ -1656,7 +1659,7 @@
                 <!--
                 p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                 -->
-                <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_planned','@{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                 <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
                 <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
                 <property name="dataAttributes">
@@ -1897,7 +1900,7 @@
                       <!--
                       p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                     -->
-                    <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_backup','@{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
                     <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">

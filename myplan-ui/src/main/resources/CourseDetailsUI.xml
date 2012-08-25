@@ -19,6 +19,7 @@
      limitations under the License.
     -->
     <bean id="CourseDetails-InquiryView" parent="MyPlanInquiryView">
+        <property name="headerText" value="Course Details"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl"/>

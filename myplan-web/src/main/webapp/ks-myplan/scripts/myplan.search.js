@@ -231,7 +231,9 @@ function fnCreateFacetList(oData, i, obj, sorter) {
     }
     jFacets.append( jQuery('<div class="facets"><ul /></div>') );
     jQuery(oData).iterateSorted(sorter, function(key) {
-        var jItem = jQuery('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
+//      Without title
+//      var jItem = jQuery('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
+        var jItem = jQuery('<li />').html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
             fnFacetFilter(key, i, e);
         });
         if(Object.size(oData) == 1) jItem.addClass("static");
