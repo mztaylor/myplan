@@ -362,7 +362,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             if (jQuery("#" + id + "_popup").length) {
                 popupBox.SetBubblePopupInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
-                if (status != 'error') jQuery(".jquerybubblepopup-innerHtml").wrapInner(planForm);
+                if ( status != 'error' ) jQuery(".jquerybubblepopup-myplan .jquerybubblepopup-innerHtml").wrapInner(planForm);
                 if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
                     popupBox.RemoveBubblePopup();
@@ -861,7 +861,7 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
             }
         });
     }
-}
+    }
 
 (function ($) {
 
