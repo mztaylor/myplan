@@ -43,7 +43,6 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         } catch (Exception e) {
             e.printStackTrace();
             String[] params = {};
-            GlobalVariables.getMessageMap().putError(DegreeAuditConstants.AUDIT_SUMMARY_VIEW, DegreeAuditConstants.AUDIT_RETRIEVAL_FAILED, params);
             /*throw new RuntimeException("Request for audit ids failed.", e);*/
         }
 
