@@ -20,6 +20,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String AUDIT_RUN_FAILED="myplan.text.error.message.auditIncomplete";
     public static final String AUDIT_RETRIEVAL_FAILED="myplan.text.error.message.auditRetrievalFailed";
     public static final String AUDIT_SUMMARY_VIEW="degree_audits_list";
+    public static final String TECHNICAL_PROBLEM="myplan.text.error.technicalProblems";
 
 
 
