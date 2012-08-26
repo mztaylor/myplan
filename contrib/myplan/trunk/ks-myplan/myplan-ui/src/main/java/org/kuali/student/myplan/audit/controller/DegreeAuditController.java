@@ -176,10 +176,7 @@ public class DegreeAuditController extends UifControllerBase {
         } catch (Exception e) {
             e.printStackTrace();
             String[] params = {};
-
-            return doErrorPage(form, DegreeAuditConstants.AUDIT_RETRIEVAL_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE, DegreeAuditConstants.AUDIT_EMPTY_PAGE);
-
-
+            GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
         if (!StringUtils.hasText(form.getAuditHtml())) {
             form.setPageId(DegreeAuditConstants.AUDIT_EMPTY_PAGE);
@@ -236,9 +233,9 @@ public class DegreeAuditController extends UifControllerBase {
             logger.error("Could not complete audit run");
             String[] params = {};
             if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId())) {
-                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE, DegreeAuditConstants.AUDIT_EMPTY_PAGE_SECTION);
+                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE, "auditHtml");
             } else {
-                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_PAGE, DegreeAuditConstants.AUDIT_REPORT_SECTION);
+                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_PAGE, "auditHtml");
             }
         }
         if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId()) && auditID != null) {
