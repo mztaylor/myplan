@@ -104,7 +104,7 @@ public class CourseSearchController extends UifControllerBase {
 
     @RequestMapping(value = "/course/{courseCd}", method = RequestMethod.GET)
     public String get(@PathVariable("courseCd") String courseCd, @ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
-                      HttpServletRequest request, HttpServletResponse response) {
+                      HttpServletRequest request, HttpServletResponse response) throws IOException {
         String number = "";
         String subject = "";
         String courseId = "";
@@ -124,7 +124,8 @@ public class CourseSearchController extends UifControllerBase {
             for (int i = 0; i < splitStr.length; i++) {
                 splitBuff.append(splitStr[i]);
             }
-            return "redirect:/myplan/course?searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus;
+            response.sendRedirect("/student/myplan/course?searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus);
+            return null;
 
         }
         HashMap<String, String> divisionMap = fetchCourseDivisions();
@@ -150,13 +151,12 @@ public class CourseSearchController extends UifControllerBase {
             courseId = getCellValue(row, "lu.resultColumn.cluId");
         }
         if (courseId.equalsIgnoreCase("")) {
-            return "redirect:/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus;
+            response.sendRedirect("/student/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus);
+            return null;
 
         }
-
-
-        form.setRequestRedirect(true);
-        return "redirect:/myplan/inquiry?requestRedirect=true&methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
+        response.sendRedirect("/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId);
+        return null;
     }
 
     @RequestMapping(method = RequestMethod.GET)
