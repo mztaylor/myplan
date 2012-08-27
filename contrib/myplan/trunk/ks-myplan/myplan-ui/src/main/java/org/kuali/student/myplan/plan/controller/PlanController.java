@@ -372,8 +372,8 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Plan Item ID was missing.", null);
         }
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isBlank(form.getTerm())) {
-            return doOperationFailedError(form, "Year and/or Term missing", null);
+        if (StringUtils.isEmpty(form.getTermYear())) {
+            return doOperationFailedError(form, "Term Year value missing", null);
         }
 
         /*
@@ -519,8 +519,8 @@ public class PlanController extends UifControllerBase {
         }
 
         // validation of Year and Term will happen in the service validation methods.
-        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isEmpty(form.getTerm())) {
-            return doOperationFailedError(form, "Year and Term are missing.", null);
+        if (StringUtils.isEmpty(form.getTermYear())) {
+            return doOperationFailedError(form, "Term Year value missing", null);
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
@@ -650,8 +650,8 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(form.getYear()) || StringUtils.isEmpty(form.getTerm())) {
-            return doOperationFailedError(form, "Year and/or Term missing.", null);
+        if (StringUtils.isEmpty(form.getTermYear())) {
+            return doOperationFailedError(form, "Term Year value missing", null);
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
@@ -842,17 +842,11 @@ public class PlanController extends UifControllerBase {
     private List<String> getNewTermIds(PlanForm form) {
         List<String> newTermIds = new LinkedList<String>();
         //  Create an ATP id from the values in the year and term fields.
-        String year = form.getYear();
-        if (StringUtils.isBlank(year)) {
-            throw new RuntimeException("Could not construct ATP id for Given Year option because year was blank.");
+        if (StringUtils.isEmpty(form.getTermYear())) {
+            throw new RuntimeException("Could not construct ATP id for Given TermYear option because year was blank.");
         }
 
-        String term = form.getTerm();
-        if (StringUtils.isBlank(term)) {
-            throw new RuntimeException("Could not construct ATP id for 'other' option because term was blank.");
-        }
-
-        newTermIds.add(getAtpHelper().getAtpIdFromTermAndYear(term, year));
+        newTermIds.add(form.getTermYear());
         return newTermIds;
     }
 

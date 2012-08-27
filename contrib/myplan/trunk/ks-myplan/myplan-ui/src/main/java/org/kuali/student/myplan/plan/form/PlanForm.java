@@ -66,8 +66,7 @@ public class PlanForm extends UifFormBase {
     private boolean other = false;
 
     //  Additional fields needed for the Other option.
-    private String term;
-    private String year;
+    private String termYear;
 
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup = false;
@@ -110,9 +109,11 @@ public class PlanForm extends UifFormBase {
 
     public void setSetToPlanning(boolean setToPlanning) {
         this.setToPlanning = setToPlanning;
-    }                  
-    
-    
+    }
+
+
+
+
 
 
     /**
@@ -181,20 +182,12 @@ public class PlanForm extends UifFormBase {
         this.backup = backup;
     }
 
-    public String getTerm() {
-        return term;
+    public String getTermYear() {
+        return termYear;
     }
 
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
+    public void setTermYear(String termYear) {
+        this.termYear = termYear;
     }
 
     public CourseDetails getCourseDetails() {
