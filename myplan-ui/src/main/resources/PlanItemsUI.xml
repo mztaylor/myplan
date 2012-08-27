@@ -2508,7 +2508,7 @@
           p:group.validationMessages.render="false">
         <property name="items">
             <list>
-                <bean id="select_quarter" parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
+                <bean id="select_quarter" parent="Uif-InputField" p:propertyName="termYear" p:label="Quarter"
                       p:cssClasses="myplan-select-other"
                       p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
                       p:labelPlacement="TOP">
@@ -2517,17 +2517,6 @@
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
-                    </property>
-                </bean>
-                <bean id="select_year" parent="Uif-InputField" p:propertyName="year" p:label="Year"
-                      p:cssClasses="myplan-select-other"
-                      p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
-                      p:labelPlacement="TOP">
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.plan.util.YearListBuilder"/>
                     </property>
                 </bean>
                 <bean parent="Uif-Message"
