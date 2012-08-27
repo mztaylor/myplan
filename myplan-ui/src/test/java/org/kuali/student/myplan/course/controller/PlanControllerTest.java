@@ -63,8 +63,9 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setCourseId("10421b71-a740-4018-8d60-915ea639b88e");
         planForm.setAtpId("kuali.uw.atp.summer2012");
-        planForm.setTerm("autumn");
-        planForm.setYear("2012");
+       /* planForm.setTerm("autumn");
+        planForm.setYear("2012");*/
+        planForm.setTermYear("kuali.uw.atp.2012.1");
 //        person = getPersonImpl();
 
         planForm.setViewId("PlannedCourse-FormView");
