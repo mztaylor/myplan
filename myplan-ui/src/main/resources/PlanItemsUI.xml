@@ -2531,7 +2531,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-Message"
-                      p:messageText="Note: This course MAY NOT be offered in your selected quarter. Check back when Time Schedule is release.">
+                      p:messageText="Note: This course MAY NOT be offered in your selected quarter. Check back after the Time Schedule is released.">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-font-size-80</value>
@@ -2871,7 +2871,7 @@
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Log out">
                                             <property name="href"
-                                                      value="#"/>
+                                                      value="/@{#ConfigProperties['app.code']}/logout.do"/>
                                         </bean>
                                     </list>
                                 </property>

@@ -389,6 +389,7 @@ public class CourseSearchController extends UifControllerBase {
         jsonStr = jsonStr + "]" + "}";
         try {
             response.setHeader("content-type", "application/json");
+            response.setHeader("Cache-Control", "no-cache");
             response.getWriter().println(jsonStr);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

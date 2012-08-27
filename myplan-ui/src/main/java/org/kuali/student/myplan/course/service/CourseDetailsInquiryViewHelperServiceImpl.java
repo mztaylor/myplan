@@ -422,6 +422,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<String> campusLocations = new ArrayList<String>();
         SearchRequest searchRequest = new SearchRequest("myplan.course.getCampusLocations");
         searchRequest.addParam("cluId", courseId);
+        searchRequest.addParam("currentTerm", AtpHelper.getCurrentAtpId());
         SearchResult searchResult = null;
         try {
             searchResult = getLuService().search(searchRequest);

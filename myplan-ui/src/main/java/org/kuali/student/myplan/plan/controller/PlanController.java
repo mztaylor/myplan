@@ -743,6 +743,10 @@ public class PlanController extends UifControllerBase {
             wishlistEvents = makeRemoveEvent(planItem, courseDetails);
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
+
+            // This will close the createtime for Wishlist typeand set new create time for Planned course
+            planItem.getMeta().setCreateTime(new Date());
+
             try {
                 planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
             } catch (Exception e) {
