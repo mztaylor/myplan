@@ -69,7 +69,7 @@
         </property>-->
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:headerText="Audit Degree" p:id="degree_audit">
+                <bean parent="Uif-Page" p:id="degree_audit">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -148,7 +148,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-Page" p:headerText="Audit Degree" p:id="degree_audit_empty_page">
+                <bean parent="Uif-Page" p:id="degree_audit_empty_page">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -253,10 +253,10 @@
         </property>
     </bean>
 
-    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup" p:style="width: 686px;">
+    <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup">
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-course-search-panel</value>
+                <value>myplan-run-audit-panel</value>
             </list>
         </property>
         <property name="header">

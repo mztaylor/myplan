@@ -638,9 +638,17 @@ input.myplan-add:hover {
     font-weight: normal !important;
 }
 .myplan-text-ellipsis,
-.myplan-text-ellipsis > span{
+.myplan-text-ellipsis > span {
     display: block;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+}
+.myplan-block-ellipsis,
+.myplan-block-ellipsis > span {
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
@@ -669,11 +677,11 @@ input.myplan-add:hover {
 .myplan-course-search-panel select {
     background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
     overflow: hidden;
-    width: 200px;
+    width: 215px;
     height: 30px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 5px 10px;
+    padding: 5px 44px 5px 10px;
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -1319,6 +1327,37 @@ label.scheduled {
     padding: 0;
     margin: 0;
 }
+/* Styles for Run Audit Panel ################################################################################## */
+.myplan-run-audit-panel {
+	background: #fcf9f0;
+	border: solid 1px #e1e1e0;
+	padding: 20px 10px 10px 20px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+    overflow: hidden;
+}
+.myplan-run-audit-panel .uif-label {
+    margin: 0 10px 0 0;
+}
+.myplan-run-audit-panel select {
+    font-size: 13px;
+    border: solid 1px #dddddd;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    vertical-align: middle;
+    background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
+    overflow: hidden;
+    width: 450px;
+    height: 30px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 5px 44px 5px 10px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
 .myplan-audit-report div.blockElement {
     left: 0px !important;
     top: 0px !important;
@@ -1326,7 +1365,9 @@ label.scheduled {
 .myplan-audit-report pre a {
     text-decoration: underline;
 }
-
+.fancybox-skin {
+    background: #fff !important;
+}
 /* Fix overlay ########################################################################### */
 body div.blockElement {
     z-index: 1001 !important;

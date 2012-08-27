@@ -16,7 +16,7 @@
 
     <bean id="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="id" value="CourseSearch-FormView"/>
-        <property name="headerText" value="Find Course"/>
+        <property name="headerText" value="Find Courses"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
         <property name="applyDirtyCheck" value="false"/>
@@ -25,9 +25,9 @@
                 <value>myplan-view</value>
             </list>
         </property>
-       <!-- <property name="header">
+        <property name="header">
             <bean parent="Uif-HeaderTwo"/>
-        </property>-->
+        </property>
         <property name="additionalScriptFiles">
             <list>
                 <value>ks-myplan/scripts/myplan.search.js</value>
@@ -35,7 +35,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search" p:headerText="Find Courses">
+                <bean parent="Uif-Page" p:id="course_search">
                     <property name="instructionalText"
                               value="Enter a course code, title, or a keyword to search in Course Catalog and Time Schedule if applicable."/>
                     <property name="layoutManager">
