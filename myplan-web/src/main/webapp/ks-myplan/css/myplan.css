@@ -1270,8 +1270,11 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0 0 20px 0;
 }
 .myplan-messages-lightbox .myplan-comments-list ul {
-    max-height: 200px;
+    max-height: 125px;
     overflow: auto;
+}
+.myplan-messages-lightbox .myplan-comments-list ul li {
+    overflow: hidden;
 }
 .myplan-messages-comments {
     margin: 0 0 20px 0;

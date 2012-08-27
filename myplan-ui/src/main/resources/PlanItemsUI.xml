@@ -62,7 +62,7 @@
                         <ref bean="bookmarks_help_icon"/>
                         <!--<bean id="bookmark_help_icon" parent="MyPlanHelpImage">
                             <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=http://depts.washington.edu/myplan/bookmark-courses/ target=_blank&gt;Learn more&lt;/a&gt;"/>
+                              <bean parent="MyPlan-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a href=http://depts.washington.edu/myplan/bookmark-courses/ target=_blank&gt;Learn more&lt;/a&gt;"/>
                             </property>
                         </bean>-->
                     </list>

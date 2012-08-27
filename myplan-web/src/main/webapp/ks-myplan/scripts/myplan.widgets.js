@@ -714,6 +714,7 @@ function fnPopoverSlider(showId, parentId, direction) {
  ######################################################################################
  */
 function fnCloseAllPopups() {
+    if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
     jQuery("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
     jQuery(document).off();
 }
@@ -767,13 +768,7 @@ function myplanCreateLightBoxLink(controlId, options) {
         if (!jQuery(".fancybox-wrap", parent.document).length) {
 
             // Perform cleanup when lightbox is closed
-            options['onCleanup'] = cleanupClosedLightboxForms;
-
-            options['onComplete'] = function() {
-                jQuery('.fancybox-iframe').load(function() { // wait for frame to load and then gets it's height
-                    jQuery('.fancybox-inner').height(jQuery(this).contents().find('body').height() + 20);
-                });
-            };
+            options['beforeClose'] = cleanupClosedLightboxForms;
 
             // If this is not the top frame, then create the lightbox
             // on the top frame to put overlay over whole window
@@ -802,13 +797,9 @@ function myplanCreateLightBoxLink(controlId, options) {
 function myplanLightBoxLink(href, options, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    options['autoHeight'] = true;
     options['href'] = href;
-    options['onCleanup'] = cleanupClosedLightboxForms;
-    options['onComplete'] = function() {
-        jQuery('.fancybox-iframe').load(function() { // wait for frame to load and then gets it's height
-            jQuery('.fancybox-inner').height(jQuery(this).contents().find('body').height() + 20);
-        });
-    };
+    options['beforeClose'] = cleanupClosedLightboxForms;
     top.jQuery.fancybox(options);
 }
 
