@@ -36,6 +36,7 @@ a:focus {
 }
 .uif-application {
     background: #fff;
+    width: 960px;
 }
 
 .uif-progressiveDisclosure-highlight {
@@ -677,7 +678,7 @@ input.myplan-add:hover {
 .myplan-course-search-panel select {
     background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
     overflow: hidden;
-    width: 215px;
+    width: 205px;
     height: 30px;
     text-overflow: ellipsis;
     white-space: nowrap;
