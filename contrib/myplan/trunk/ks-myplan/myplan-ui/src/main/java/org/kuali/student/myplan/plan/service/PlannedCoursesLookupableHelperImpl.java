@@ -58,7 +58,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         /*Setting the Warning message if isServiceStatusOK is false*/
         String[] params = {};
+        if(!isServiceStatusOK){
         GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
+        }
 
 
         /*************PlannedCourseList**************/
