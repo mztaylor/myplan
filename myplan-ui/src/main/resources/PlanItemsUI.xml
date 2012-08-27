@@ -2505,13 +2505,12 @@
     </bean>
 
     <bean id="planned_course_quarter_selection" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;"
-          p:group.validationMessages.render="false">
+          p:group.validationMessages.render="false" p:label="Quarter &amp; Year" p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
+          p:labelPlacement="TOP">
         <property name="items">
             <list>
-                <bean id="select_quarter" parent="Uif-InputField" p:propertyName="termYear" p:label="Quarter"
-                      p:cssClasses="myplan-select-other"
-                      p:fieldLabel.cssClasses="myplan-text-normal" p:fieldLabel.renderColon="false"
-                      p:labelPlacement="TOP">
+                <bean id="select_quarter" parent="Uif-InputField" p:propertyName="termYear"
+                      p:cssClasses="myplan-select-other" p:style="width:120px;">
                     <property name="control">
                         <bean parent="Uif-DropdownControl"/>
                     </property>
@@ -2519,7 +2518,7 @@
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
                     </property>
                 </bean>
-                <bean parent="Uif-Message"
+                <bean parent="Uif-Message" p:style="width:160px;"
                       p:messageText="Note: This course MAY NOT be offered in your selected quarter. Check back after the Time Schedule is released.">
                     <property name="cssClasses">
                         <list merge="true">
