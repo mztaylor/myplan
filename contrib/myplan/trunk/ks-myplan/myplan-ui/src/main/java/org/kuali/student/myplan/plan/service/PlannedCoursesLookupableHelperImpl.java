@@ -10,6 +10,7 @@ import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import javax.xml.namespace.QName;
@@ -53,34 +54,46 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         String studentId = UserSessionHelper.getStudentId();
         String focusAtpId = fieldValues.get(PlanConstants.FOCUS_ATP_ID_KEY);
+        boolean isServiceStatusOK= AtpHelper.isAcademicCalendarAvailable();
+
+        /*Setting the Warning message if isServiceStatusOK is false*/
+        String[] params = {};
+        GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
+
+
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
+        if(isServiceStatusOK){
         try {
             plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true, studentId);
         } catch (Exception e) {
             logger.error("Could not load plannedCourseslist", e);
 
         }
+        }
         /****academic record SWS call to get the studentCourseRecordInfo list *****/
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+        if(isServiceStatusOK){
         try {
             studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
-            String[] params = {};
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
+        }
         }
 
         /*************BackupCourseList**************/
         List<PlannedCourseDataObject> backupCoursesList = new ArrayList<PlannedCourseDataObject>();
+        if(isServiceStatusOK){
         try {
             backupCoursesList=getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, true, studentId);
         } catch (Exception e) {
             logger.error("Could not load backupCourseList", e);
 
         }
+        }
 
-        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, focusAtpId);
+        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, focusAtpId,isServiceStatusOK);
         return perfectPlannedTerms;
     }
 }
