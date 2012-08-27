@@ -274,7 +274,7 @@
         </property>
     </bean>
 
-    <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup"  p:style="padding: 10px;" p:headerText="How to Use Audit for Academic Planning [TBD]">
+    <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup"  p:style="padding: 10px;" p:headerText="How to Use Audit for Academic Planning">
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
         </property>
@@ -301,7 +301,7 @@
                     <property name="messageText" value="Track your Progress"/>
                 </bean>
                 <bean id="audit_info_text_1" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what’s needed to complete your degree. "/>
+                    <property name="messageText" value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree. "/>
                 </bean>
                 <!--<bean id="audit_info_img_1" parent="Uif-ImageField" p:altText="audit" p:style="padding: 5px;"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}auditSample.jpg"/>-->

@@ -45,7 +45,7 @@
             }, true, false);
         "/>
         <!--<property name="toolTip">
-          <bean parent="Uif-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&apos;ve added it to your Plan or deleted it. &lt;a href=&apos;https://depts.washington.edu/myplan/bookmark-courses/&apos; target=&apos;_blank&apos;&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="Uif-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a href=&#39;https://depts.washington.edu/myplan/bookmark-courses/&#39; target=&#39;_blank&#39;&gt;Learn more&lt;/a&gt;"/>
         </property>-->
     </bean>
 
@@ -135,7 +135,7 @@
             }, true, false);
         "/>
         <!--<property name="toolTip">
-          <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
+          <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you&#39;re considering in case a planned course is not available or is full."/>
         </property>-->
     </bean>
 
