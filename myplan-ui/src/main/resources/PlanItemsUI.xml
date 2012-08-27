@@ -89,7 +89,8 @@
         <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary');"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:fieldLabel.render="false" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">
+                <bean parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false"
+                      p:fieldLabel.render="false" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>
                     <property name="items">
@@ -97,7 +98,8 @@
                             <bean parent="Uif-Message" p:messageText="@{#line.courseDetails.code}">
                                 <property name="style" value="margin-right:5px;"/>
                             </bean>
-                            <bean p:id="@{#line.planItemDataObject.id}_saved" parent="Uif-Message" p:messageText="@{#line.courseDetails.courseTitle}">
+                            <bean p:id="@{#line.planItemDataObject.id}_saved" parent="Uif-Message"
+                                  p:messageText="@{#line.courseDetails.courseTitle}">
                                 <property name="style" value="margin-right:5px;"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -171,19 +173,19 @@
         This lookup view provides the list of saved courses which make up the full saved courses page.
       -->
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
-    <property name="headerText" value="Bookmarked Courses"/>
-    <property name="viewName" value="SavedCoursesDetail-LookupView"/>
-    <property name="breadcrumbs.render" value="false"/>
-    <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
-    <property name="viewHelperServiceClass"
-              value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
-    <property name="singlePageView" value="true"/>
-    <property name="page.header.render" value="false"/>
-    <property name="cssClasses">
-        <list merge="true">
-            <value>myplan-view</value>
-        </list>
-    </property>
+        <property name="headerText" value="Bookmarked Courses"/>
+        <property name="viewName" value="SavedCoursesDetail-LookupView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="page.header.render" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
 
         <property name="items">
             <list>
@@ -205,7 +207,8 @@
                                             </property>
                                             <property name="propertyReplacers">
                                                 <list>
-                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="items"
                                                           p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
                                                         <property name="replacement">
                                                             <list>
@@ -253,7 +256,7 @@
                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                     <property name="replacement">
                         <list>
-                            <ref bean="adviser_actions_message" />
+                            <ref bean="adviser_actions_message"/>
                             <ref bean="saved_courses_detail_list"/>
                             <ref bean="saved_courses_detail_list_empty"/>
                         </list>
@@ -285,7 +288,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false"
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false"
                       p:id="@{#line.planItemDataObject.id}"
                       p:style="display:block;">
                     <property name="cssClasses">
@@ -296,7 +300,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-LinkField" p:target="" p:style="width:62%; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
+                            <bean parent="Uif-LinkField" p:target=""
+                                  p:style="width:62%; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
                                 <property name="linkText"
                                           value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
                                 <property name="fieldLabel.render"
@@ -304,7 +309,8 @@
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements" p:style="width:19%;" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements"
+                                  p:style="width:19%;" p:escapeHtmlInPropertyValue="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -317,7 +323,8 @@
                                 </property>
                                 <!--<property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"  p:style="width:19%;"
+                            <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"
+                                  p:style="width:19%;"
                                   p:label="Added on"
                                   p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"
                                   p:fieldLabel.render="true">
@@ -331,12 +338,14 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Scheduled For"
                                   p:propertyName="courseDetails.scheduledTerms"
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                                  p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -358,7 +367,8 @@
 
                             <bean parent="Uif-DataField" p:label="Projected For"
                                   p:propertyName="courseDetails.termsOffered"
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                                  p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor">
                                     <bean parent="terms_formatter" p:emptyListMessage="No projected quarter"/>
                                 </property>
@@ -372,12 +382,14 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Requisites"
                                   p:propertyName="courseDetails.requisites"
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                                  p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="data_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -388,7 +400,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Description"
@@ -415,7 +428,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
@@ -440,7 +454,7 @@
                             </bean>
                         </list>
                     </property>
-                     <!--  Alternate rendering for advisors -->
+                    <!--  Alternate rendering for advisors -->
                     <property name="propertyReplacers">
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
@@ -571,7 +585,7 @@
                                   p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                 <property name="replacement">
                                     <list>
-                                        <ref bean="plan_item_course_summary_dialog" />
+                                        <ref bean="plan_item_course_summary_dialog"/>
                                     </list>
                                 </property>
                             </bean>
@@ -683,10 +697,13 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
-                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms"
+                                  p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -700,10 +717,12 @@
                             <!--  Backup checkbox -->
                             <ref bean="planned_course_backup"/>
 
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Add To Plan">
+                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:actionLabel="Add To Plan">
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
@@ -722,7 +741,8 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
                                             <property name="cssClasses">
@@ -757,10 +777,13 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
-                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms"
+                                  p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -774,10 +797,12 @@
                             <!--  Backup checkbox -->
                             <!--<ref bean="planned_course_backup"/>-->
 
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Move">
+                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:actionLabel="Move">
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
@@ -795,7 +820,8 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean p:id="cancelMovePlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                        <bean p:id="cancelMovePlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
                                             <property name="cssClasses">
@@ -830,10 +856,13 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
-                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms"
+                                  p:label="Scheduled For"
+                                  p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -847,7 +876,8 @@
                             <!--  Backup checkbox -->
                             <!--<ref bean="planned_course_backup"/>-->
 
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
@@ -888,7 +918,8 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                                        <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton"
+                                              p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
                                             <property name="cssClasses">
@@ -909,7 +940,8 @@
         </property>
     </bean>
     <!--Delete confirmation Dialog Box content -->
-    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection" p:headerText="Delete @{atpId eq null ? 'Bookmark' : 'from the Plan'}">
+    <bean id="plan_item_delete_dialog" parent="Uif-VerticalBoxSection"
+          p:headerText="Delete @{atpId eq null ? 'Bookmark' : 'from the Plan'}">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -939,7 +971,8 @@
                                     });"/>
                             </bean>
 
-                            <bean parent="Uif-Message" p:messageText="or" p:style="height:24px; line-height:24px; margin:0px;"/>
+                            <bean parent="Uif-Message" p:messageText="or"
+                                  p:style="height:24px; line-height:24px; margin:0px;"/>
 
                             <bean p:id="cancelPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
                                 <property name="actionScript"
@@ -958,8 +991,6 @@
             </list>
         </property>
     </bean>
-
-
 
 
     <!--Planned Menu Items-->
@@ -1009,7 +1040,7 @@
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
-                      p:cssClasses="fl-text-gray fl-font-size-90" />
+                      p:cssClasses="fl-text-gray fl-font-size-90"/>
 
             </list>
         </property>
@@ -1070,7 +1101,8 @@
 
 
     <!--Completed backup Menu Items-->
-    <bean id="completed_backup_menu_items" parent="Uif-VerticalBoxSubSection" p:style="" p:cssClasses="fl-container-150">
+    <bean id="completed_backup_menu_items" parent="Uif-VerticalBoxSubSection" p:style=""
+          p:cssClasses="fl-container-150">
         <property name="hidden" value="true"/>
         <property name="items">
             <list>
@@ -1127,11 +1159,6 @@
         </property>
     </bean>
 
-
-
-
-
-
     <!-- Page displaying all plan action response
          This page is returned in response to any action on a plan item. It passes data base to javascripts on the UI-->
     <bean id="plan_action_response_page" parent="Uif-Page" p:id="plan_item_action_response_page">
@@ -1162,19 +1189,19 @@
 
     <!-- #################################### Planned Courses Term View ########################### -->
 
-        <!--
-            This lookup provides the term by term view of Planned Courses.
-          -->
-        <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
-            <property name="headerText" value="Plan"/>
-            <property name="viewName" value="PlannedCourses-LookupView"/>
-            <property name="breadcrumbs.render" value="false"/>
-            <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
-            <property name="viewHelperServiceClass"
-                      value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
-            <property name="singlePageView" value="true"/>
-            <property name="page.header.render" value="false"/>
-            <property name="onDocumentReadyScript" value="
+    <!--
+      This lookup provides the term by term view of Planned Courses.
+    -->
+    <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
+        <property name="headerText" value="Plan"/>
+        <property name="viewName" value="PlannedCourses-LookupView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="page.header.render" value="false"/>
+        <property name="onDocumentReadyScript" value="
                 if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
                     var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
                         return jQuery(this).height();
@@ -1202,52 +1229,51 @@
                     });
                 }
             "/>
-            <property name="cssClasses">
-                <list merge="true">
-                    <value>myplan-view</value>
-                </list>
-            </property>
-            <property name="additionalScriptFiles">
-                <list>
-                    <value>ks-myplan/plugins/jcarousellite.js</value>
-                </list>
-            </property>
-            <property name="items">
-                <list>
-                    <bean parent="Uif-LookupPage" p:id="planned_courses_detail_page">
-                        <property name="layoutManager">
-                            <bean parent="Uif-HorizontalBoxLayout"/>
-                        </property>
-                        <property name="items">
-                            <list>
-                                <ref bean="planned_courses_detail"/>
-                                <bean parent="myplan_section" p:style="width: 310px; margin: 0;">
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="messages_widget"/>
-                                            <ref bean="your_stuff_widget"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                                <ref bean="planned_menu_items"/>
-                                <ref bean="backup_menu_items"/>
-                                <ref bean="completed_menu_items"/>
-                                <ref bean="completed_backup_menu_items"/>
-                            </list>
-                        </property>
-                    </bean>
-                </list>
-            </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>ks-myplan/plugins/jcarousellite.js</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" p:id="planned_courses_detail_page">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="planned_courses_detail"/>
+                            <bean parent="myplan_section" p:style="width: 310px; margin: 0;">
+                                <property name="items">
+                                    <list>
+                                        <ref bean="messages_widget"/>
+                                        <ref bean="your_stuff_widget"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="planned_menu_items"/>
+                            <ref bean="backup_menu_items"/>
+                            <ref bean="completed_menu_items"/>
+                            <ref bean="completed_backup_menu_items"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
 
-            <property name="criteriaFields">
-                <list/>
-            </property>
-            <property name="resultFields">
-                <list/>
-            </property>
-            <property name="footer.render" value="false"/>
-        </bean>
-
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+        <property name="footer.render" value="false"/>
+    </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
     <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; margin-right: 10px;">
@@ -1282,8 +1308,10 @@
                 <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="Create your plan by finding and adding courses to any quarter."/>
-                            <bean parent="Uif-LinkField" p:linkText="Learn more" p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#824');"/>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="Create your plan by finding and adding courses to any quarter."/>
+                            <bean parent="Uif-LinkField" p:linkText="Learn more"
+                                  p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#824');"/>
                         </list>
                     </property>
                 </bean>
@@ -1297,7 +1325,8 @@
                 <bean parent="Uif-Link" p:target="">
                     <property name="linkText" value="View Overall Academic Plan"/>
                     <property name="title" value="View Overall Academic Plan"/>
-                    <property name="href" value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
+                    <property name="href"
+                              value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
                 </bean>
             </list>
         </property>
@@ -1318,22 +1347,21 @@
                 <!-- This hidden field is only rendered for the ATP that should have focus in the UI. The value of "index" will
                      be used to initialize the javascript "carousellite" component. It should only be displayed for the PlanTerm
                      that should get focus -->
-                <bean id="atp_start_index" parent="Uif-DataField" p:propertyName="index" p:render="@{#line.index ge 0 ? true : false}" p:style="display:none;">
-                    <!--<property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>-->
-                </bean>
-                <bean id="atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false" p:style="display: none;">
-                    <!--<property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>-->
-                </bean>
-                <bean parent="Uif-DataField" p:propertyName="qtrYear" p:cssClasses="uif-groupHeader @{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}"
+                <bean id="atp_start_index" parent="Uif-DataField" p:propertyName="index"
+                      p:render="@{#line.index ge 0 ? true : false}" p:style="display:none;"/>
+
+                <bean id="atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false"
+                      p:style="display: none;"/>
+
+                <bean parent="Uif-DataField" p:propertyName="qtrYear"
+                      p:cssClasses="uif-groupHeader @{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}"
                       p:fieldLabel.render="false"/>
                 <bean parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>@{#line.completedTerm ? 'uif-header': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'uif-header' : ''}</value>
+                            <value>@{#line.completedTerm ? 'uif-header': (#line.academicRecord.size() gt 0 or
+                                !#line.openForPlanning)? 'uif-header' : ''}
+                            </value>
                         </list>
                     </property>
                     <property name="items">
@@ -1344,21 +1372,13 @@
                                         <value>uif-headerText</value>
                                     </list>
                                 </property>
-                                <property name="render" value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
-                                <property name="messageText" value="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}"/>
+                                <property name="render"
+                                          value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning ? true : false}"/>
+                                <property name="messageText"
+                                          value="@{#line.completedTerm ? 'Completed': (#line.academicRecord.size() gt 0 or !#line.openForPlanning)? 'Registered' : ''}"/>
                             </bean>
                             <ref bean="completed_help_icon"/>
                             <ref bean="registered_help_icon"/>
-                            <!--<bean parent="MyPlanHelpImage" p:render="@{#line.completedTerm and #line.displayCompletedHelp ? true : false}">
-                                <property name="toolTip">
-                                  <bean parent="MyPlan-Tooltip" p:tooltipContent="A completed quarter you registered for."/>
-                                </property>
-                            </bean>
-                            <bean parent="MyPlanHelpImage" p:render="@{!#line.completedTerm and (#line.academicRecord.size() gt 0 or !#line.openForPlanning) and #line.displayRegisteredHelp ? true : false}">
-                                <property name="toolTip">
-                                  <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you have enrolled in for current or future academic quarter(s)."/>
-                                </property>
-                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -1427,11 +1447,11 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}">
-                    <!--
-                      p:onClickScript="openPopUp('@{#line.uuid}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseId}',acadRecAtpId:'@{#line.atpId}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
-                    -->
-                    <property name="onClickScript" value="openMenu('@{#line.uuid}_completed','completed_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}">
+                    <property name="onClickScript"
+                              value="openMenu('@{#line.uuid}_completed','completed_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <property name="dataAttributes">
                         <map>
                             <entry key="courseid" value="@{#line.courseId}"/>
@@ -1461,7 +1481,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-invalid</value>
@@ -1493,18 +1515,13 @@
         </property>
         <property name="collectionLookup.render" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
-         <property name="footer">
-            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning ? false : true}">
+        <property name="footer">
+            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                  p:render="@{#line.openForPlanning ? false : true}">
                 <property name="items">
                     <list>
-                        <ref bean="term_total_credits_text" />
-                        <ref bean="total_credits_help_icon" />
-                        <!--<bean parent="MyPlanHelpImage"  p:render="@{#line.displayCreditsHelp ? true : false}">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
-                              </bean>
-                            </property>
-                        </bean>-->
+                        <ref bean="term_total_credits_text"/>
+                        <ref bean="total_credits_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -1536,7 +1553,9 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
                       p:onClickScript="
                       openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
                     <property name="cssClasses">
@@ -1562,7 +1581,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
+                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseCode ne null and #line.courseId eq null ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-invalid</value>
@@ -1595,136 +1616,20 @@
         <property name="collectionLookup.render" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="footer">
-            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.openForPlanning eq false ? true : false}">
+            <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                  p:render="@{#line.openForPlanning eq false ? true : false}">
                 <property name="items">
                     <list>
-                        <ref bean="term_total_credits_text" />
-                        <ref bean="total_credits_help_icon" />
-                        <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits attempted for a completed quarter. Check your transcript to verify earned credits.">
-                              </bean>
-                            </property>
-                        </bean>-->
+                        <ref bean="term_total_credits_text"/>
+                        <ref bean="total_credits_help_icon"/>
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
 
-    <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned" p:validationMessages.render="false">
-    <property name="header">
-        <bean parent="Uif-HeaderSix"/>
-    </property>
-    <property name="header.rightGroup">
-        <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
-            <property name="items">
-                <list>
-                    <ref bean="planned_help_icon" />
-                    <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
-                        <property name="toolTip">
-                            <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
-                        </property>
-                    </bean>-->
-                </list>
-            </property>
-        </bean>
-    </property>
-    <property name="layoutManager">
-        <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-            <property name="lineGroupPrototype">
-                <bean parent="Uif-CollectionVerticalBoxItem"/>
-            </property>
-        </bean>
-    </property>
-    <property name="cssClasses">
-        <list merge="false">
-            <value>myplan-carousel-term</value>
-            <value>@{#line.atpId.replaceAll("\.","-")}</value>
-            <value>myplan-term-planned</value>
-            <value>@{#line.openForPlanning ? 'myplan-term-fixed-height' : ''}</value>
-        </list>
-    </property>
-    <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-    <property name="collectionObjectClass"
-              value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
-    <property name="propertyName" value="plannedList"/>
-    <property name="renderAddLine" value="false"/>
-    <property name="renderLineActions" value="false"/>
-    <property name="bindingInfo.bindToForm" value="true"/>
-    <property name="disclosure.render" value="false"/>
-    <property name="items">
-        <list>
-            <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}">
-                <!--
-                p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
-                -->
-                <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
-                <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
-                <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
-                <property name="dataAttributes">
-                    <map>
-                        <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
-                        <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
-                        <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
-                    </map>
-                </property>
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>myplan-course-valid</value>
-                    </list>
-                </property>
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-MessageField">
-                            <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
-
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </list>
-    </property>
-    <property name="collectionLookup.render" value="false"/>
-    <property name="collectionLookup.quickfinderAction.render" value="false"/>
-    <property name="footer">
-        <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
-            <property name="items">
-                <list>
-                    <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
-                        <property name="items">
-                            <list>
-                                <ref bean="term_total_credits_text" />
-                                <ref bean="total_credits_help_icon" />
-                                <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
-                                    <property name="toolTip">
-                                        <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
-                                    </property>
-                                </bean>-->
-                            </list>
-                        </property>
-                    </bean>
-                    <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
-                        <property name="items">
-                            <list>
-                                <ref bean="term_total_credits_text" />
-                                <ref bean="total_credits_help_icon" />
-                                <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
-                                    <property name="toolTip">
-                                        <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
-                                    </property>
-                                </bean>-->
-                            </list>
-                        </property>
-                    </bean>
-                    <bean parent="term_no_courses" p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
-                </list>
-            </property>
-        </bean>
-    </property>
-</bean>
-
-    <bean id="advisorPlannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned" p:validationMessages.render="false">
+    <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned"
+          p:validationMessages.render="false">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1732,10 +1637,10 @@
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <ref bean="planned_help_icon" />
+                        <ref bean="planned_help_icon"/>
                         <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
                             <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
+                                <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
                             </property>
                         </bean>-->
                     </list>
@@ -1767,8 +1672,23 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseDetails.code ne null ? true : false}">
+                    <!--
+                    p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.courseDetails.courseId}',dateAdded:'@{#line.planItemDataObject.dateAdded}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
+                    -->
+                    <property name="onClickScript"
+                              value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
+                    <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
+                            <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
+                            <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
+                        </map>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1777,7 +1697,9 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="messageText"
+                                          value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+
                             </bean>
                         </list>
                     </property>
@@ -1790,54 +1712,52 @@
             <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                              p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
                             <property name="items">
                                 <list>
-                                    <ref bean="term_total_credits_text" />
-                                    <ref bean="total_credits_help_icon" />
+                                    <ref bean="term_total_credits_text"/>
+                                    <ref bean="total_credits_help_icon"/>
                                     <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                         <property name="toolTip">
-                                          <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
+                                            <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for the registered and planned courses in a quarter."></bean>
                                         </property>
                                     </bean>-->
                                 </list>
                             </property>
                         </bean>
-                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total" p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                              p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
                             <property name="items">
                                 <list>
-                                    <ref bean="term_total_credits_text" />
-                                    <ref bean="total_credits_help_icon" />
+                                    <ref bean="term_total_credits_text"/>
+                                    <ref bean="total_credits_help_icon"/>
                                     <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
                                         <property name="toolTip">
-                                          <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
+                                            <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter."></bean>
                                         </property>
                                     </bean>-->
                                 </list>
                             </property>
                         </bean>
-                        <bean parent="term_no_courses" p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
+                        <bean parent="term_no_courses"
+                              p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
                     </list>
                 </property>
             </bean>
         </property>
     </bean>
 
-
-    <!--
-    <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
+    <bean id="advisorPlannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned"
+          p:validationMessages.render="false">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
+            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <bean parent="MyPlanHelpImage">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you added to your plan for a specific quarter, but have not or cannot yet register for. MyPlan allows you to create an academic plan, but does not register you.  Check the Time Schedule to verify that your planned courses will be offered that quarter."/>
-                            </property>
-                        </bean>
+                        <ref bean="planned_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -1849,11 +1769,78 @@
                 </property>
             </bean>
         </property>
-    -->
+        <property name="cssClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>@{#line.atpId.replaceAll("\.","-")}</value>
+                <value>myplan-term-planned</value>
+                <value>@{#line.openForPlanning ? 'myplan-term-fixed-height' : ''}</value>
+            </list>
+        </property>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
+        <property name="propertyName" value="plannedList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseDetails.code ne null ? true : false}"
+                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-course-valid</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField">
+                                <property name="messageText"
+                                          value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+        <property name="footer">
+            <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
+                <property name="items">
+                    <list>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                              p:render="@{#line.academicRecord.size() gt 0 and #line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text"/>
+                                    <ref bean="total_credits_help_icon"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
+                              p:render="@{#line.academicRecord.size() eq 0 and #line.openForPlanning ? true : false}">
+                            <property name="items">
+                                <list>
+                                    <ref bean="term_total_credits_text"/>
+                                    <ref bean="total_credits_help_icon"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="term_no_courses"
+                              p:render="@{!#line.openForPlanning and #line.plannedList.size() eq 0 ? true : false}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
 
-
-
-    <bean id="backupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup" p:validationMessages.render="false">
+    <bean id="backupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup"
+          p:validationMessages.render="false">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1861,12 +1848,7 @@
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <ref bean="backup_help_icon" />
-                        <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
-                            </property>
-                        </bean>-->
+                        <ref bean="backup_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -1895,12 +1877,14 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null ? true : false}"
+                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
+                      p:render="@{#line.courseDetails.code ne null ? true : false}"
                       p:group.validationMessages.render="false">
-                      <!--
+                    <!--
                       p:onClickScript="openPopUp('@{#line.planItemDataObject.id}','add_planned_course','startAddPlannedCourseForm','plan',{viewId:'PlannedCourseMenuItem-FormView',courseId:'@{#line.CourseDetails.courseId}',planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}'},e,'.uif-collectionItem',{width:'150px'},{tail:{align:'top'},align:'top',position:'right'},false);">
                     -->
-                    <property name="onClickScript" value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                    <property name="onClickScript"
+                              value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
                     <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">
@@ -1918,7 +1902,8 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">
-                               <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="messageText"
+                                          value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
                             </bean>
                         </list>
                     </property>
@@ -1933,7 +1918,8 @@
         </property>
     </bean>
 
-    <bean id="advisorBackupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup" p:validationMessages.render="false">
+    <bean id="advisorBackupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup"
+          p:validationMessages.render="false">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1941,12 +1927,7 @@
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <ref bean="backup_help_icon" />
-                        <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="A course you&apos;re considering in case a planned course is not available or is full."/>
-                            </property>
-                        </bean>-->
+                        <ref bean="backup_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -1975,7 +1956,9 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false" p:render="@{#line.courseDetails.code ne null ? true : false}"
+                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
+                      p:group.validationMessages.render="false"
+                      p:render="@{#line.courseDetails.code ne null ? true : false}"
                       p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.CourseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1985,7 +1968,8 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
+                                <property name="messageText"
+                                          value="@{#line.courseDetails.code} (@{#line.courseDetails.credit})"/>
                             </bean>
                         </list>
                     </property>
@@ -2004,7 +1988,8 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message" p:messageText="No courses planned.">
-                    <property name="style" value="margin-top:1px; font-size:90%; height:25px; line-height:25px; padding:0 5px; display:block;"/>
+                    <property name="style"
+                              value="margin-top:1px; font-size:90%; height:25px; line-height:25px; padding:0 5px; display:block;"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
@@ -2027,13 +2012,7 @@
                     </property>
                     <property name="messageText" value="@{#line.credits ne null ? #line.credits : '0'}"/>
                 </bean>
-                <ref bean="total_credits_help_icon" />
-                <!--<bean parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
-                    <property name="toolTip">
-                      <bean parent="MyPlan-Tooltip" p:tooltipContent="The total number of credits for planned courses in a quarter.">
-                      </bean>
-                    </property>
-                </bean>-->
+                <ref bean="total_credits_help_icon"/>
             </list>
         </property>
     </bean>
@@ -2061,7 +2040,8 @@
             <list>
                 <!-- Scheduled Terms -->
                 <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.scheduledTerms"
-                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                      p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -2090,7 +2070,8 @@
                 </bean>
                 <!-- Projected Terms -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseDetails.termsOffered"
-                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                      p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="terms_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -2102,7 +2083,8 @@
                 <!-- Requisites -->
                 <bean id="course_details_popup_requisites_testing" parent="Uif-DataField" p:label="Course Requisites"
                       p:propertyName="courseDetails.requisites"
-                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                      p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="data_list_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -2140,11 +2122,13 @@
     <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
         <property name="items">
             <list>
-                <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup"
+                      p:validationMessages.render="false">
                     <property name="items">
                         <list>
                             <!-- If not in plan and not in saved courses and not in academic record list -->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false"
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false"
                                   p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="items">
                                     <list>
@@ -2168,7 +2152,8 @@
 
 
                             <!-- If not in plan and in saved courses and not in academic list-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false"
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false"
                                   p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="items">
                                     <list>
@@ -2202,7 +2187,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-DataField"
@@ -2415,7 +2401,8 @@
     </bean>
 
     <!-- Group for "Add Plan Item" inputs -->
-    <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup" p:style="display:none;" p:validationMessages.render="false">
+    <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup" p:style="display:none;"
+          p:validationMessages.render="false">
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -2423,10 +2410,12 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
+                <bean parent="Uif-Message"
+                      p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
                 <bean parent="Uif-DataField" p:propertyName="courseDetails.scheduledTerms" p:label="Scheduled For"
-                      p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                      p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT"
+                      p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -2441,7 +2430,8 @@
                 <ref bean="planned_course_backup"/>
 
 
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:group.validationMessages.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
@@ -2514,7 +2504,8 @@
         </property>
     </bean>
 
-    <bean id="planned_course_quarter_selection" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;" p:group.validationMessages.render="false">
+    <bean id="planned_course_quarter_selection" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 0.5em;"
+          p:group.validationMessages.render="false">
         <property name="items">
             <list>
                 <bean id="select_quarter" parent="Uif-InputField" p:propertyName="term" p:label="Quarter"
@@ -2541,23 +2532,27 @@
                 </bean>
                 <bean parent="Uif-Message"
                       p:messageText="Note: This course MAY NOT be offered in your selected quarter. Check back when Time Schedule is release.">
-                 <property name="cssClasses">
-                <list merge="true">
-                    <value>fl-font-size-80</value>
-                    <value>fl-text-gray</value>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-font-size-80</value>
+                            <value>fl-text-gray</value>
 
-                </list>
-            </property></bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!--  Backup checkbox -->
-    <bean id="planned_course_backup" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:style="padding-top: 1em;" p:group.validationMessages.render="false">
+    <bean id="planned_course_backup" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+          p:style="padding-top: 1em;" p:group.validationMessages.render="false">
         <property name="items">
             <list>
-                <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false" p:label="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course. (Optional)"
-                      p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT" p:render="@{moveCourse eq false ? true : false}"
+                <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
+                      p:label="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course. (Optional)"
+                      p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT"
+                      p:render="@{moveCourse eq false ? true : false}"
                       p:fieldLabel.cssClasses="myplan-text-normal">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
@@ -2581,7 +2576,8 @@
                 <bean parent="Uif-Message"
                       p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;?"/>
 
-                <bean id="hidden_planItemId" parent="Uif-InputField" p:propertyName="planItemId" p:defaultValue="@{planItemId}">
+                <bean id="hidden_planItemId" parent="Uif-InputField" p:propertyName="planItemId"
+                      p:defaultValue="@{planItemId}">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -2678,7 +2674,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:cssClasses="myplan-remove-margin" p:validationMessages.render="false">
+                <bean parent="Uif-HorizontalBoxGroup" p:cssClasses="myplan-remove-margin"
+                      p:validationMessages.render="false">
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="Year" p:cssClasses=""
@@ -2800,7 +2797,7 @@
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
     </bean>
 
-                    <!--****************************Academic Planned Form View**********************-->
+    <!--****************************Academic Planned Form View**********************-->
     <bean id="StudentAcademicPlanner-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="StudentAcademicPlanner-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
@@ -2815,7 +2812,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="student_academic_planner_page" >
+                <bean parent="Uif-Page" p:id="student_academic_planner_page">
                     <property name="validationMessages">
                         <bean parent="Uif-GroupValidationMessages">
                             <property name="displayMessages" value="true"/>
@@ -2829,7 +2826,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxGroup" p:style="padding: 1em 0px;" p:validationMessages.render="false">
+                            <bean parent="Uif-VerticalBoxGroup" p:style="padding: 1em 0px;"
+                                  p:validationMessages.render="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-align-center</value>
@@ -2851,7 +2849,8 @@
                                                 <bean parent="Uif-Message" p:messageText="MyPlan Settings"/>
                                             </property>
                                         </bean>
-                                        <bean id="academic_planner_share" parent="Uif-InputField" p:propertyName="enableAdviserView" p:width="auto">
+                                        <bean id="academic_planner_share" parent="Uif-InputField"
+                                              p:propertyName="enableAdviserView" p:width="auto">
                                             <property name="onDocumentReadyScript" value="jQuery('#' + 'academic_planner_share').change(function(e) {
                                                 e.preventDefault();
                                                 myplanWriteHiddenToForm('methodToCall', 'academicPlanner', 'student_academic_planner_page_form');
@@ -2861,8 +2860,10 @@
                                                 <bean parent="Uif-VerticalRadioControl">
                                                     <property name="options">
                                                         <list>
-                                                            <bean parent="Uif-KeyLabelPair" p:key="true" p:value="Shared"/>
-                                                            <bean parent="Uif-KeyLabelPair" p:key="false" p:value="Private"/>
+                                                            <bean parent="Uif-KeyLabelPair" p:key="true"
+                                                                  p:value="Shared"/>
+                                                            <bean parent="Uif-KeyLabelPair" p:key="false"
+                                                                  p:value="Private"/>
                                                         </list>
                                                     </property>
                                                 </bean>
@@ -2880,7 +2881,8 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <bean parent="Uif-Message" p:messageText="Adviser Access Restricted"/>
+                                                    <bean parent="Uif-Message"
+                                                          p:messageText="Adviser Access Restricted"/>
                                                 </list>
                                             </property>
                                         </bean>

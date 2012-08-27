@@ -232,7 +232,7 @@
                 <bean parent="Uif-DataField" p:propertyName="body" p:style="width:610px; margin:0;">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-text-ellipsis</value>
+                            <value>myplan-block-ellipsis</value>
                         </list>
                     </property>
                 </bean>

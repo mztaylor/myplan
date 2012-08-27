@@ -428,8 +428,10 @@ function openDialog(sText, e, close) {
 
 function fnPositionPopUp(popupBoxId) {
     if (parseFloat(jQuery("#" + popupBoxId).css("top")) < 0 || parseFloat(jQuery("#" + popupBoxId).css("left")) < 0) {
-        var iTop = ( document.body.scrollTop + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
-        var iLeft = ( document.body.scrollLeft + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
+        var top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+        var left = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
+        var iTop = ( top + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
+        var iLeft = ( left + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
         jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
     }
 }

@@ -49,7 +49,7 @@ jQuery(document).ready(function(){
     });
 });
 */
-
+/*
 jQuery(document).ready(function(){
     jQuery(".myplan-audit-report .requirement > .reqText").each(function() {
         jQuery(this).find("br").remove();
@@ -86,3 +86,4 @@ jQuery(document).ready(function(){
         }
     });
 });
+    */
