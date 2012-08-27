@@ -258,4 +258,15 @@ public class AtpHelper {
     public static boolean isAtpIdFormatValid(String atpId) {
         return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
     }
+
+    public static boolean isAcademicCalendarAvailable(){
+        boolean isWebServiceUp=true;
+        try {
+            List<TermInfo>  scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.INPROGRESS)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+             isWebServiceUp=false;
+        }
+        return isWebServiceUp;
+    }
+
 }

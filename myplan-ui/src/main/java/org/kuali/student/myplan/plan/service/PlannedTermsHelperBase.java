@@ -30,14 +30,19 @@ public class PlannedTermsHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId) {
+    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId,boolean isServiceUp) {
 
 
         String[] focusQuarterYear = new String[2];
-
+        String globalCurrentAtpId=null;
+        if(isServiceUp){
+            globalCurrentAtpId=AtpHelper.getCurrentAtpId();
+        }else {
+            globalCurrentAtpId=AtpHelper.populateAtpIdFromCalender().get(0).getId();
+        }
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
-                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(AtpHelper.getCurrentAtpId()));
+                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(globalCurrentAtpId));
             } else {
                 focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
             }
@@ -125,9 +130,9 @@ public class PlannedTermsHelperBase {
             if (studentCourseRecordInfos.size() > 0) {
                 minTerm = studentCourseRecordInfos.get(0).getTermName();
             } else {
-                minTerm = AtpHelper.getCurrentAtpId();
+                minTerm = globalCurrentAtpId;
             }
-            String maxTerm = AtpHelper.getCurrentAtpId();
+            String maxTerm = globalCurrentAtpId;
             populateMockList(minTerm, maxTerm, termsList);
             if (plannedTerms.size() > 0) {
                 for (PlannedTerm plannedTerm : plannedTerms) {
@@ -195,22 +200,22 @@ public class PlannedTermsHelperBase {
                 if (AtpHelper.isAtpCompletedTerm(pl.getAtpId())) {
                     pl.setCompletedTerm(true);
                 }
-                if (AtpHelper.getCurrentAtpId().equalsIgnoreCase(pl.getAtpId())) {
+                if (globalCurrentAtpId.equalsIgnoreCase(pl.getAtpId())) {
                     pl.setCurrentTermForView(true);
                 }
 
             }
 
-            populate(perfectPlannedTerms);
+            populateHelpIconFlags(perfectPlannedTerms);
             return perfectPlannedTerms;
         }
 
         /*Implementation to populate the future terms till 6 years from current term if academic record data and planned term data are NOT present*/
         else {
             List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
-            String currentAtpId = AtpHelper.getCurrentAtpId();
-            populateFutureData(currentAtpId, plannedTermList);
+            populateFutureData(globalCurrentAtpId, plannedTermList);
             /*Implementation to set the conditional flags based on each plannedTerm atpId*/
+            if(isServiceUp){
             for (PlannedTerm pl : plannedTermList) {
 
                 if (AtpHelper.isAtpSetToPlanning(pl.getAtpId())) {
@@ -219,12 +224,13 @@ public class PlannedTermsHelperBase {
                 if (AtpHelper.isAtpCompletedTerm(pl.getAtpId())) {
                     pl.setCompletedTerm(true);
                 }
-                if (AtpHelper.getCurrentAtpId().equalsIgnoreCase(pl.getAtpId())) {
+                if (globalCurrentAtpId.equalsIgnoreCase(pl.getAtpId())) {
                     pl.setCurrentTermForView(true);
                 }
 
             }
-            populate(plannedTermList);
+            }
+            populateHelpIconFlags(plannedTermList);
             return plannedTermList;
 
 
@@ -321,7 +327,7 @@ public class PlannedTermsHelperBase {
         }
     }
 
-    private static void populate(List<PlannedTerm> plannedTerms) {
+    private static void populateHelpIconFlags(List<PlannedTerm> plannedTerms) {
 
         int index = plannedTerms.size() - 1;
         while (index >= 0) {
