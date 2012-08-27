@@ -34,11 +34,15 @@ a:focus {
 .uif-header {
     margin: 0;
 }
-.uif-application {
+.uif-application,
+#applicationFooter {
     background: #fff;
-    width: 960px;
+    width: 100%;
+    min-width: 960px;
 }
-
+#applicationFooter {
+    background: transparent;
+}
 .uif-progressiveDisclosure-highlight {
     background: transparent !important;
 }
