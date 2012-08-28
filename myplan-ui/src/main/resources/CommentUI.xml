@@ -731,7 +731,7 @@
 
     <bean id="MessagesDetail-LookupView" parent="MyPlanLookupView">
         <property name="viewName" value="MessagesDetail-LookupView"/>
-        <property name="headerText" value="Messages Summary"/>
+        <property name="headerText" value="Messages &amp; Comments"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>

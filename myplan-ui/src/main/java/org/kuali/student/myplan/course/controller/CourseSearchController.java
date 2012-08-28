@@ -181,10 +181,7 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=start")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-        if(!AtpHelper.isAcademicCalendarAvailable()){
-            String[] params={};
-            GlobalVariables.getMessageMap().putWarning("searchTerm", PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-        }
+
         super.start(form, result, request, response);
         return getUIFModelAndView(form);
     }

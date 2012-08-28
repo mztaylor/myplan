@@ -128,7 +128,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
                     }
                     if (counter3 > 0) {
-                        sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                        sb = sb.append(", ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
                     }

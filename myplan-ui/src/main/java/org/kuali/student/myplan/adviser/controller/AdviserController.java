@@ -159,6 +159,8 @@ public class AdviserController extends UifControllerBase {
                 authorized = true;
                 break;
             }
+
+            logger.info("Adviser authz failed for " + session.getPrincipalName() + " on " + adviseNm );
         }
 
         if (!authorized) {
