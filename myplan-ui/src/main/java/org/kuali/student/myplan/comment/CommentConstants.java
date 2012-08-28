@@ -30,6 +30,11 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String EMPTY_COMMENT="myplan.text.error.message.emptyComment";
     public static final String EMPTY_TO_ADDRESS="myplan.text.error.message.emptyToAddress";
     public static final String SPECIAL_CHARACTERS_ERROR="myplan.text.error.message.specialCharacterError";
+    
+    public static final String EMAIL_COMMENT_SUBJECT="myplan.commment.subject";
+    public static final String EMAIL_MESSAGE_SUBJECT="myplan.message.subject";
+    public static final String EMAIL_BODY="myplan.email.body";
+
 
 
 

@@ -45,6 +45,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -58,6 +60,8 @@ public class CommentController extends UifControllerBase {
     private transient CommentQueryHelper commentQueryHelper;
 
     private transient MyPlanMailService mailService;
+
+    private transient String propertiesFilePath= "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties" ;
 
     @Override
     protected CommentForm createInitialForm(HttpServletRequest request) {
@@ -154,6 +158,14 @@ public class CommentController extends UifControllerBase {
          * should be the e-mail address of the adviser who initiated the message.
          * (TODO: What if the student is commenting on a comment left by an adviser who didn't originate the thread)
          */
+        Properties pro = new Properties();
+        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        try{
+            pro.load(file);
+        }catch (Exception e){
+            logger.error("Could not find the properties file"+e);
+        }
+
         String toId, toAddress, toName, fromId, fromAddress, fromName;
 
         fromId = principleId;
@@ -177,8 +189,8 @@ public class CommentController extends UifControllerBase {
         }
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
-        String subjectProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.commment.subject");
-        String emailBody = ConfigContext.getCurrentContextConfig().getProperty("myplan.email.body");
+        String subjectProp = pro.getProperty(CommentConstants.EMAIL_COMMENT_SUBJECT);
+        String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, fromName);
         String body = String.format(emailBody, toName, fromName, messageText, messageLink);
 
@@ -259,6 +271,15 @@ public class CommentController extends UifControllerBase {
          * Create an email notification. Messages are only initiated by an adviser.
          * The from address should always be the system default.
          */
+
+         Properties pro = new Properties();
+        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        try{
+            pro.load(file);
+        }catch (Exception e){
+            logger.error("Could not find the properties file"+e);
+
+        }
         String studentName = UserSessionHelper.getStudentName();
         String adviserName = UserSessionHelper.getName(principleId);
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
@@ -268,8 +289,8 @@ public class CommentController extends UifControllerBase {
         }
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
-        String subjectProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.commment.subject");
-        String emailBody = ConfigContext.getCurrentContextConfig().getProperty("myplan.email.body");
+        String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
+        String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, adviserName);
         String body = String.format(emailBody, studentName, adviserName, messageText, messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
