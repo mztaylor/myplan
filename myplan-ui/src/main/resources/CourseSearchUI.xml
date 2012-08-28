@@ -259,7 +259,7 @@
     </bean>
 
     <!-- Group for Search Facets -->
-    <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results" p:style="width:148px; margin-right: 10px;">
+    <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results" p:style="width:146px; margin-right: 10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
