@@ -10,9 +10,9 @@
 <div id="container">
     <h1>UH-OH...</h1>
     <div id="content">
-        <h2>Error 500 - Internal Server Error</h2>
-        <p>It's looking like you may have taken a wrong turn.</p>
-        <p>Check the URL and try again.</p>
+        <h2>500 Internal Server Error</h2>
+        <p>It looks like our server is playing dead.</p>
+        <p>Don&#39;t worry-- we&#39;re working on the problem and will have it up and running again soon.</p>
     </div>
     <h3>Try MyPlan site that might help you:</h3>
     <ul id="links">
