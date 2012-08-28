@@ -75,7 +75,9 @@
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>
+<!--
         <property name="enumService" ref="emServiceImpl"/>
+-->
     </bean>
 
     <bean id="coursePreReqSearch" class="org.kuali.student.myplan.course.service.CoursePreReqSearch">
