@@ -448,8 +448,21 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <bean id="audit_instruction" parent="Uif-Message" p:cssClasses="fl-text-gray fl-font-size-90">
-        <property name="messageText" value="&lt;u&gt;Some programs are not included&lt;/u&gt; in the degree program list for audit."/>
+    <bean id="audit_instruction" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:cssClasses="fl-text-gray fl-font-size-90" p:style="margin-right: 4px; text-decoration: underline;">
+                    <property name="linkText"
+                              value="Some programs are not included"/>
+                    <property name="href"
+                              value="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#855');"/>
+                </bean>
+                <bean parent="Uif-Message" p:cssClasses="fl-text-gray fl-font-size-90">
+                    <property name="messageText" value=" in the degree program list for audit."/>
+                </bean>
+            </list>
+        </property>
+
     </bean>
 
 
