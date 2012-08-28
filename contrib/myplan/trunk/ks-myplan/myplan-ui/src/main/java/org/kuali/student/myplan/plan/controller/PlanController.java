@@ -744,13 +744,10 @@ public class PlanController extends UifControllerBase {
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
 
-            // This will close the createtime for Wishlist typeand set new create time for Planned course
-            planItem.getMeta().setCreateTime(new Date());
-
             try {
                 planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to update wishlist plan item.", e);
+                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", e);
             }
         }
 
@@ -777,7 +774,6 @@ public class PlanController extends UifControllerBase {
         String[] params = {AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
-
 
     /*Academic Planner*/
 

@@ -181,6 +181,7 @@
                   value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -1194,6 +1195,7 @@
     -->
     <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
         <property name="headerText" value="Plan"/>
+        <property name="header.render" value="false"/>
         <property name="viewName" value="PlannedCourses-LookupView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>

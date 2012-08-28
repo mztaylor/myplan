@@ -197,7 +197,7 @@ public class CommentController extends UifControllerBase {
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
-                logger.info("Sent comment email ("+messageText+") to:" + toName +"from:"+fromName);
+                logger.info("Sent comment email ("+messageText+") to: " + toAddress +" From: "+fromAddress);
             } catch (Exception e) {
                 logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
                 GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);

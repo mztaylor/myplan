@@ -255,7 +255,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setStudentId(learningPlan.getStudentId());
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
 
-        //  Update meta
+        //  Item meta
         lpe.setCreateId(context.getPrincipalId());
         lpe.setCreateTime(new Date());
         lpe.setUpdateId(context.getPrincipalId());
@@ -389,6 +389,10 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  See if the plan item exists before trying to update it.
         PlanItemEntity planItemEntity = planItemDao.find(planItemId);
+
+        // If Plan type changes, create a new one and update the old one's state to DELETED
+        String updatePlanTypeId = null;
+
         if (planItemEntity == null) {
             throw new DoesNotExistException(planItemId);
         }
@@ -402,7 +406,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             if (planItemTypeEntity == null) {
                 throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
             }
+
+            // Reset the plan Item
             planItemEntity.setLearningPlanItemType(planItemTypeEntity);
+            planItemEntity.setCreateTime(null);
+            planItemEntity.setUpdateTime(null);
+
+            updatePlanTypeId =  planItemEntity.getId();
+            planItemEntity.setId(null);
         }
 
         //  Update plan periods.
@@ -446,7 +457,20 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             planItemEntity.setLearningPlan(newPlan);
         }
 
-        planItemDao.merge(planItemEntity);
+        // If plan type changes create a new one and delete
+        String updatePlanItemId = null;
+        if(null != updatePlanTypeId) {
+            try {
+                PlanItemInfo newpiInfo = createPlanItem(planItemEntity.toDto(), context);
+                updatePlanItemId =  newpiInfo.getId();
+            } catch (AlreadyExistsException e) {
+                throw new OperationFailedException(e.getMessage());
+            }
+            deletePlanItem(updatePlanTypeId, context);
+        } else {
+            updatePlanItemId = planItemEntity.getId();
+            planItemDao.merge(planItemEntity);
+        }
 
          //  Update meta data on the original plan.
         originalPlan.setUpdateId(context.getPrincipalId());
@@ -460,7 +484,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             learningPlanDao.update(newPlan);
         }
 
-        return planItemDao.find(planItemEntity.getId()).toDto();
+        return planItemDao.find(updatePlanItemId).toDto();
     }
 
     @Override
