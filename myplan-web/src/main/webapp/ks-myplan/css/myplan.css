@@ -224,17 +224,29 @@ a:focus {
 }
 /* BUTTONS #################################################################### */
 button.uif-primaryActionButton {
-	-moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2),inset 0px 1px 0px 0px #fee495;
+    -moz-border-radius:15px;
+    -webkit-border-radius:15px;
+    border-radius:15px;
+    border:1px solid #e6ac48;
+
+    -moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2),inset 0px 1px 0px 0px #fee495;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
 	box-shadow:0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
-	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fedb71), color-stop(1, #febc4a) );
-	background: -moz-linear-gradient( center top, #fedb71 5%, #febc4a 100% );
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
-	background-color:#fedb71;
-	-moz-border-radius:15px;
-	-webkit-border-radius:15px;
-	border-radius:15px;
-	border:1px solid #e6ac48;
+
+    background-image: url('../images/buttonGradient.svg');
+    background-size: 100% 100%;
+    background-repeat: repeat-x;
+    background-position: 0 0;
+    background-color:#fedb71;
+    background-image: -ms-linear-gradient(top, #fedb71 0%, #febc4a 100%);
+    background-image: -moz-linear-gradient(center top, #fedb71 0%, #febc4a 100%);
+    background-image: -o-linear-gradient(top, #fedb71 0%, #febc4a 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fedb71), color-stop(1, #febc4a));
+    background-image: -webkit-linear-gradient(top, #fedb71 0%, #febc4a 100%);
+    background-image: linear-gradient(to bottom, #fedb71 0%, #febc4a 100%);
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');  */
+    filter: none;
+
 	display:inline-block;
 	color:#39275b;
 	font-size:14px;
@@ -244,8 +256,12 @@ button.uif-primaryActionButton {
 	text-shadow:0px 1px 0px #fcede3;
 }
 button.uif-primaryActionButton:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #febc4a), color-stop(1, #fedb71) );
-	background:-moz-linear-gradient( center top, #febc4a 5%, #fedb71 100% );
+    background-image: -ms-linear-gradient(top, #febc4a 0%, #fedb71 100%);
+    background-image: -moz-linear-gradient(center top, #febc4a 0%, #fedb71 100%);
+    background-image: -o-linear-gradient(top, #febc4a 0%, #fedb71 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #febc4a), color-stop(1, #fedb71));
+    background-image: -webkit-linear-gradient(top, #febc4a 0%, #fedb71 100%);
+    background-image: linear-gradient(to bottom, #febc4a 0%, #fedb71 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#febc4a', endColorstr='#fedb71');
 	background-color:#febc4a;
 	color:#39275b;
@@ -960,7 +976,7 @@ table.myplan-course-search-results-datatable .blockUI {
     display: none !important;
 }
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
-    width: auto;
+    width: 528px;
     clear: both;
     background-image: -ms-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
     background-image: -moz-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);

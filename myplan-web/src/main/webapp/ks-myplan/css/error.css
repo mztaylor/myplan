@@ -24,7 +24,8 @@ h3 {
     color: #777;
 }
 #content {
-    min-height: 275px;
+    min-height: 300px;
+    background: url('../images/HuskyDog.png') no-repeat top right;
 }
 #links, #more {
     float: left;
@@ -33,9 +34,9 @@ h3 {
 }
 #links li {
     display: inline-block;
+    margin: 0 1em 0 0;
 }
 #links li a {
-    margin: 0 1em 0 0;
     color: #39275b;
     text-decoration: none;
     font-size: 110%;

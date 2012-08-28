@@ -16,11 +16,11 @@
     </div>
     <h3>Try MyPlan site that might help you:</h3>
     <ul id="links">
-        <li><a href="#">Plan</a></li>
-        <li><a href="#">Find Courses</a></li>
-        <li><a href="#">Audit Degree</a></li>
+        <li><a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a></li>
+        <li><a href="/student/myplan/course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
+        <li><a href="/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
     </ul>
-    <div id="more">Completely Lost? Go to <a href="#">Help</a> section or <a href="#">let us know</a>.</div>
+    <div id="more">Completely Lost? Go to <a href="http://depts.washington.edu/myplan/help-site/">Help</a> section or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.</div>
 </div>
 </body>
 
