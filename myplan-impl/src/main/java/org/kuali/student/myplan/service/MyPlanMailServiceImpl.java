@@ -41,11 +41,8 @@ public class MyPlanMailServiceImpl implements MyPlanMailService {
     @Override
     public void sendMessage(MailMessage message) throws InvalidAddressException, MessagingException {
         if (isTestMode()) {
-            Person user = GlobalVariables.getUserSession().getPerson();
-            String emailAddress = user.getEmailAddress();
-            logger.warn(String.format("Substituting 'to', 'cc', and 'bcc' fields to [%s] in message [%s] from [%s].", emailAddress, message.getSubject(), message.getFromAddress()));
-            Set<String> to = new HashSet<String>();
-            to.add(emailAddress);
+            Set<String>  to=new HashSet<String>();
+            to.add(ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.toAddress"));
             message.setToAddresses(to);
             if (message.getBccAddresses().size() > 0) {
                 message.setBccAddresses(to);
