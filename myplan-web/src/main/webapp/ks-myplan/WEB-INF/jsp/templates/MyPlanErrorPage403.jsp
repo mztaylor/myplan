@@ -10,9 +10,8 @@
 <div id="container">
     <h1>UH-OH...</h1>
     <div id="content">
-        <h2>Error 403 - Page Forbidden</h2>
-        <p>It's looking like you may have taken a wrong turn.</p>
-        <p>Check the URL and try again.</p>
+        <h2>403 Forbidden</h2>
+        <p>You do not have permission to perform that trick.</p>
     </div>
     <h3>Try MyPlan site that might help you:</h3>
     <ul id="links">

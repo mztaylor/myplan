@@ -10,9 +10,9 @@
 <div id="container">
     <h1>UH-OH...</h1>
     <div id="content">
-        <h2>Error 404 - Page Not Found</h2>
-        <p>It's looking like you may have taken a wrong turn.</p>
-        <p>Check the URL and try again.</p>
+        <h2>404 Page not found</h2>
+        <p>We are unable to fetch what you&#39;re looking for.</p>
+        <p>Please check the URL and try again.</p>
     </div>
     <h3>Try MyPlan site that might help you:</h3>
     <ul id="links">
