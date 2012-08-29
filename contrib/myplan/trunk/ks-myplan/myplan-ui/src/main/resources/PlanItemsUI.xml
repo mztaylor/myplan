@@ -2816,11 +2816,11 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalBoxGroup" p:style="padding: 1em 0px;"
+                            <bean parent="Uif-VerticalBoxGroup" p:style="margin:0;"
                                   p:validationMessages.render="false">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>fl-text-align-center</value>
+                                        <value>fl-text-align-left</value>
                                     </list>
                                 </property>
                                 <property name="items">
@@ -2834,9 +2834,21 @@
                                                       value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                                         </bean>
                                         <bean parent="Uif-MessageField"
-                                              p:cssClasses="fl-font-size-90 fl-text-bold">
+                                              p:style="border-bottom: dotted 1px #cfcfcf;">
+                                            <property name="message">
+                                                <bean parent="Uif-Message" p:messageText=""/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-MessageField"
+                                              p:cssClasses="fl-font-size-100 fl-text-bold">
                                             <property name="message">
                                                 <bean parent="Uif-Message" p:messageText="MyPlan Settings"/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-MessageField"
+                                              p:cssClasses="myplan-text-gray" p:style="font-size:x-small;">
+                                            <property name="message">
+                                                <bean parent="Uif-Message" p:messageText=" &quot;Shared&quot; plans are viewable by all UW advisers. &quot;Private&quot; plans are only viewable by you."/>
                                             </property>
                                         </bean>
                                         <bean id="academic_planner_share" parent="Uif-InputField"
@@ -2858,6 +2870,16 @@
                                                     </property>
                                                 </bean>
                                             </property>
+                                        </bean>
+                                        <bean parent="Uif-MessageField"
+                                              p:style="border-bottom: dotted 1px #cfcfcf;">
+                                            <property name="message">
+                                                <bean parent="Uif-Message" p:messageText=""/>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-Link" p:linkText="Help">
+                                            <property name="href"
+                                                      value="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/');"/>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Log out">
                                             <property name="href"
