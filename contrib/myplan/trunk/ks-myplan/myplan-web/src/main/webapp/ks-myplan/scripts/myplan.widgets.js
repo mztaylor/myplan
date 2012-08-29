@@ -473,9 +473,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
                     }
                 }
-                if (jQuery("#myplanDirty").length === 0) {
-                    jQuery("body").append('<form id="myplanDirty"><input type="hidden" id="dirtyView" name="dirtyView" value="' + jQuery("input#viewId").val() + '" </form>');
-                }
+                myplanDirtyFlag();
                 /*
                  if (window.location.hash == '') {
 
@@ -854,7 +852,13 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
             }
         });
     }
+}
+
+function myplanDirtyFlag() {
+    if (jQuery("#myplanDirty").length === 0) {
+        jQuery("body").append('<form id="myplanDirty"><input type="hidden" id="dirtyView" name="dirtyView" value="' + jQuery("input#viewId").val() + '" /></form>');
     }
+}
 
 (function ($) {
 

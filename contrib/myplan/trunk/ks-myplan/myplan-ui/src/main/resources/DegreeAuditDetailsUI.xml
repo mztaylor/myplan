@@ -347,6 +347,7 @@
         <property name="items">
             <list>
                 <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="campusParam">
+                    <property name="onChangeScript" value="myplanDirtyFlag();"/>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
                     </property>
@@ -420,6 +421,7 @@
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit"
           p:refreshId="audit_report_section"
           p:actionLabel="Run Degree Audit">
+        <property name="onClickScript" value="myplanDirtyFlag();"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-button</value>
