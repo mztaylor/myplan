@@ -362,10 +362,10 @@
                         UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY  ident.code
                     </value>
                 </entry>
@@ -385,10 +385,10 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.code
                     </value>
                 </entry>
@@ -411,10 +411,10 @@
                         UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
                         )
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                     </value>
                 </entry>
 
@@ -433,10 +433,10 @@
                         AND
                         ident.suffixCode = :code
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.suffixCode
                     </value>
                 </entry>
@@ -456,10 +456,10 @@
                         AND
                         ident.level = :level
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.suffixCode
                     </value>
                 </entry>
@@ -476,10 +476,10 @@
                         AND
                         ident.division IN (:divisions)
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.suffixCode
                     </value>
                 </entry>
@@ -496,10 +496,10 @@
                         AND
                         ident.division = :division
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
                         attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.suffixCode
                     </value>
                 </entry>
@@ -554,7 +554,7 @@
                         AND
                         ATTR_VALUE = 'Y'
                         AND
-                        ATTR_NAME like 'course.genedrequirement.%'
+                        ATTR_NAME like 'course.genEdRequirement.%'
                     </value>
                 </entry>
 
@@ -675,9 +675,9 @@
                         AND
                         clu.id = :cluId
                         AND
-                        attr.name = 'courseCampus'
+                        attr.name = 'course.campus'
                         AND
-                        clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.value='omit')
+                        clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.suffixCode
                     </value>
                 </entry>
