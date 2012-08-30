@@ -16,6 +16,7 @@
 package org.kuali.student.myplan.audit.controller;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -236,7 +237,7 @@ public class DegreeAuditController extends UifControllerBase {
                 GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             } else {
                 GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                String html="Aduit Run Failed due to some Technical Issues, Please Try again later";
+                String html=String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
                 form.setAuditHtml(html);
             }
         }
