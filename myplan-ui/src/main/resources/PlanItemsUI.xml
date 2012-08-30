@@ -468,44 +468,41 @@
         <property name="render" value="@{lookupResults.size() gt 0 ? false : true}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Message"
-                      p:messageText="Your List Is Empty. Find Courses and bookmark them.">
+                <bean parent="Uif-Message" p:style="padding-bottom: 10px;"
+                      p:messageText="Your List Is Empty. &lt;a href=&quot;@{#ConfigProperties['application.url']}/myplan/course?methodToCall=start&amp;viewId=CourseSearch-FormView&quot;&gt;Find Courses&lt;/a&gt; and bookmark them.">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-font-size-150</value>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-course-search-empty</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="With Your Bookmarked Courses, you can">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-150</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
-                                <property name="items">
-                                    <list>
-                                        <!--<bean parent="Uif-Message"
-                                              p:messageText="Track courses via email notification when they become available to register"/>-->
-                                        <bean parent="Uif-Message"
-                                              p:messageText="Save courses before moving to Plan to sleep on"/>
-                                        <bean parent="Uif-Message"
-                                              p:messageText="Share your list with friends &amp; advisers"/>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
+                <ref bean="empty_bookmarked_section"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="empty_bookmarked_section" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;" >
+        <property name="cssClasses">
+            <list merge="true">
+                <value>fl-container-650</value>
+                <value>myplan-audit-info-panel</value>
+                <value>myplan-carousel-list</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-130 fl-text-bold ">
+                    <property name="messageText" value="With Your Courses List, you can"/>
+                </bean>
+                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
+                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Track courses via email notification when they become available to register&lt;/li&gt;"/>
+                </bean>
+                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
+                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Save courses before moving to plan to sleep on&lt;/li&gt;"/>
+                </bean>
+                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
+                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Share your list with friends &amp; advisers&lt;/li&gt;"/>
                 </bean>
             </list>
         </property>
