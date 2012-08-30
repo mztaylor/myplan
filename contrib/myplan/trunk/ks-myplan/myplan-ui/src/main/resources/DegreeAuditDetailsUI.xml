@@ -59,7 +59,7 @@
         </property>
         <!--<property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/audit.js</value>
+                <value>ks-myplan/scripts/myplan.audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -363,7 +363,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '306'" p:disclosure.render="false">
+                      p:progressiveRender="campusParam eq '306'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle">
@@ -378,7 +378,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '310'" p:disclosure.render="false">
+                      p:progressiveRender="campusParam eq '310'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParamBothell"
@@ -394,7 +394,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRenderViaAJAX="true" p:progressiveRender="campusParam eq '323'" p:disclosure.render="false">
+                      p:progressiveRender="campusParam eq '323'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParamTacoma"
@@ -453,7 +453,7 @@
     <bean id="audit_instruction" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:cssClasses="fl-text-gray fl-font-size-90" p:style="margin-right: 4px; text-decoration: underline;">
+                <bean parent="Uif-Link" p:cssClasses="fl-font-size-90" p:style="margin-right: 4px; text-decoration: underline;">
                     <property name="linkText"
                               value="Some programs are not included"/>
                     <property name="href"
