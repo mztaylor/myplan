@@ -21,14 +21,14 @@
 
     <bean id="quarter_facet_help_icon"  parent="MyPlanHelpImage">
         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#820');&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#820');&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
 
     <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site#821&quot;);&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
         <!--<property name="onDocumentReadyScript" value="
             myplanCreateTooltip('bookmarks_help_icon', {
@@ -52,7 +52,7 @@
 
     <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
          <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#822');&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#822');&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -101,7 +101,7 @@
 
     <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('planned_help_icon_line@{#index}', 'MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site#825&quot;);&gt;Learn more&lt;/a&gt;',{
+            myplanCreateTooltip('planned_help_icon_line@{#index}', 'MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;',{
                 position: 'top',
                 align: 'center',
                 alwaysVisible: false,

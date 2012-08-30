@@ -1235,7 +1235,7 @@
                             <bean parent="Uif-MessageField"
                                   p:messageText="Create your plan by finding and adding courses to any quarter."/>
                             <bean parent="Uif-LinkField" p:linkText="Learn more"
-                                  p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#824');"/>
+                                  p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824');"/>
                         </list>
                     </property>
                 </bean>
