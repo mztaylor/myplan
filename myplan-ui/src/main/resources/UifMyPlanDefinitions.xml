@@ -33,6 +33,7 @@
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
                 <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
+                <value>ks-myplan/scripts/myplan.google.js</value>
             </list>
         </property>
     </bean>
@@ -63,13 +64,13 @@
     <!-- View without the header and footer and just the theme -->
     <bean id="MyPlanBaseFormView" abstract="true" parent="Uif-FormView">
 
-    <property name="preloadPoolSize" value="5"/>
+        <property name="preloadPoolSize" value="5"/>
 
-    <property name="theme">
-        <bean parent="MyPlanTheme"/>
-    </property>
-    <property name="persistFormToSession" value="false"/>
-</bean>
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+    </bean>
 
     <!--View without header, footer, background color..-->
     <bean id="MyPlanBaseView" abstract="true" parent="Uif-FormView">
@@ -92,7 +93,7 @@
                   p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase"  p:id="ks-footer"
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
         </property>
@@ -102,7 +103,7 @@
 
     <bean id="MyPlanBaseLookupView" abstract="true" parent="Uif-LookupView">
 
-<property name="preloadPoolSize" value="5"/>
+        <property name="preloadPoolSize" value="5"/>
 
         <property name="theme">
             <bean parent="MyPlanTheme"/>
@@ -130,7 +131,7 @@
 
     <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
 
-<property name="preloadPoolSize" value="5"/>
+        <property name="preloadPoolSize" value="5"/>
 
         <property name="theme">
             <bean parent="MyPlanTheme"/>
@@ -147,7 +148,7 @@
                   p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase"  p:id="ks-footer"
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
                   p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
                   p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
         </property>
@@ -157,7 +158,7 @@
 
     <bean id="MyPlanBaseMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
 
-<property name="preloadPoolSize" value="5"/>
+        <property name="preloadPoolSize" value="5"/>
 
         <property name="theme">
             <bean parent="MyPlanTheme"/>
@@ -245,7 +246,7 @@
 
     <bean id="MyPlan-Tooltip" parent="Uif-Tooltip">
         <property name="templateOptions">
-            <map merge = "true">
+            <map merge="true">
                 <entry key="position" value="top"/>
                 <entry key="align" value="center"/>
                 <entry key="width" value="250px"/>
@@ -256,7 +257,7 @@
 
     <bean id="MyPlan-Tooltip-Right" parent="Uif-Tooltip">
         <property name="templateOptions">
-            <map merge = "true">
+            <map merge="true">
                 <entry key="position" value="top"/>
                 <entry key="align" value="right"/>
                 <entry key="width" value="250px"/>
@@ -268,7 +269,7 @@
 
     <bean id="MyPlan-Tooltip-Left" parent="Uif-Tooltip">
         <property name="templateOptions">
-            <map merge = "true">
+            <map merge="true">
                 <entry key="position" value="top"/>
                 <entry key="align" value="left"/>
                 <entry key="width" value="250px"/>
@@ -277,7 +278,6 @@
             </map>
         </property>
     </bean>
-
 
 
     <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
@@ -330,7 +330,8 @@
     </bean>
 
 
-    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF" p:style="margin-bottom:10px;">
+    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF"
+          p:style="margin-bottom:10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
@@ -479,7 +480,8 @@
     </bean>
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="Projected quarter information is not available for this course. Check with your adviser or the time schedule."/>
+        <property name="emptyListMessage"
+                  value="Projected quarter information is not available for this course. Check with your adviser or the time schedule."/>
         <property name="emptyListStyleClasses">
             <list merge="true">
                 <value>empty</value>
@@ -507,7 +509,8 @@
                                   p:messageText="Features are disabled for advisers."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href" value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                                <property name="href"
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
                             </bean>
                         </list>
                     </property>

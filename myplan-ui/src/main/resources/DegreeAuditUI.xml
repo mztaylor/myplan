@@ -40,7 +40,7 @@
         </property>
         <!--<property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/audit.js</value>
+                <value>ks-myplan/scripts/myplan.audit.js</value>
             </list>
         </property>
         <property name="additionalCssFiles">

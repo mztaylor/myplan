@@ -436,22 +436,10 @@
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
                                 <property name="actionScript"
                                           value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                    </list>
-                                </property>
                             </bean>
                             <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
                                 <property name="actionScript"
                                           value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                    </list>
-                                </property>
                             </bean>
                         </list>
                     </property>
@@ -722,7 +710,7 @@
                                   p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Add To Plan">
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
@@ -734,25 +722,11 @@
                                                     .subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                                     });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-font-size-90</value>
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-blue</value>
-                                                </list>
-                                            </property>
                                         </bean>
-                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
                                               p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-transparent</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -802,7 +776,7 @@
                                   p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Move">
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
@@ -813,15 +787,8 @@
                                                     }).subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                                     });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-font-size-90</value>
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-gray</value>
-                                                </list>
-                                            </property>
                                         </bean>
-                                        <bean p:id="cancelMovePlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="cancelMovePlannedCourse" parent="Uif-SecondaryActionButton-Small"
                                               p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
@@ -881,7 +848,7 @@
                                   p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="copyPlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:render="@{setToPlanning eq true ? true : false}"
                                               p:actionLabel="Copy">
                                             <property name="actionScript"
@@ -893,15 +860,8 @@
                                                     }).subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                     });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-font-size-90</value>
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-gray</value>
-                                                </list>
-                                            </property>
                                         </bean>
-                                        <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:render="@{setToPlanning eq false ? true : false}"
                                               p:actionLabel="Copy">
                                             <property name="actionScript"
@@ -911,25 +871,11 @@
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
                                                     });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-font-size-90</value>
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-gray</value>
-                                                </list>
-                                            </property>
                                         </bean>
-                                        <bean p:id="cancelCopyPlannedCourse" parent="Uif-PrimaryActionButton"
+                                        <bean p:id="cancelCopyPlannedCourse" parent="Uif-SecondaryActionButton-Small"
                                               p:actionLabel="Cancel">
                                             <property name="actionScript"
                                                       value="fnCloseAllPopups();"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-button</value>
-                                                    <value>myplan-button-transparent</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -953,17 +899,10 @@
                 <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton"
+                            <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                   p:actionLabel="Delete">
                                 <property name="actionScript"
                                           value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem', e);"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-blue</value>
-                                    </list>
-                                </property>
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#deletePlannedCourse').subscribe('PLAN_ITEM_DELETED', function(data){
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
@@ -972,19 +911,9 @@
                                     });"/>
                             </bean>
 
-                            <bean parent="Uif-Message" p:messageText="or"
-                                  p:style="height:24px; line-height:24px; margin:0px;"/>
-
-                            <bean p:id="cancelPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel">
+                            <bean p:id="cancelPlannedCourse" parent="Uif-SecondaryActionButton-Small" p:actionLabel="Cancel">
                                 <property name="actionScript"
                                           value="fnCloseAllPopups();"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1227,7 +1156,7 @@
                             fnBuildTitle(a);
                             window.location.replace( '#'+jQuery(a[0]).index() );
                         },
-                        initCallback: function(a) { fnBuildTitle(a); }
+                        initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }
                     });
                 }
             "/>
@@ -2215,20 +2144,13 @@
     </bean>
 
     <!--  Add to plan button. Used contextually in course details popup actions -->
-    <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
+    <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
         <property name="actionScript"
                   value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-button</value>
-                <value>myplan-button-blue</value>
-                <value>fl-font-size-90</value>
-            </list>
-        </property>
     </bean>
 
     <!--  Add to saved courses. Used contextually in course details popup actions -->
-    <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-PrimaryActionButton"
+    <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-SecondaryActionButton-Small"
           p:actionLabel="Bookmark Course">
         <property name="onDocumentReadyScript"
                   value="jQuery('#addSavedCourseButton').subscribe('PLAN_ITEM_ADDED', function(data){
@@ -2238,17 +2160,10 @@
                   });"/>
         <property name="actionScript"
                   value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-button</value>
-                <value>myplan-button-gray</value>
-                <value>fl-font-size-90</value>
-            </list>
-        </property>
     </bean>
 
     <!-- Remove from saved courses list button. -->
-    <bean id="removeSavedCourseButton" p:id="removeSavedCourseButton" parent="Uif-PrimaryActionButton"
+    <bean id="removeSavedCourseButton" p:id="removeSavedCourseButton" parent="Uif-SecondaryActionButton-Small"
           p:actionLabel="Delete">
         <property name="actionScript"
                   value="fnPopoverSlider('delete_from_list_confirmation','course_popover_group','left');"/>
@@ -2436,7 +2351,7 @@
                       p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton"
+                            <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                   p:actionLabel="Add To Plan" p:render="@{moveCourse eq false ? true : false}">
                                 <property name="actionScript"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
@@ -2448,15 +2363,8 @@
                                         .subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                         });"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                    </list>
-                                </property>
                             </bean>
-                            <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton"
+                            <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                   p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}">
                                 <property name="actionScript"
                                           value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
@@ -2467,37 +2375,16 @@
                                         }).subscribe('ERROR', function(data){
                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                         });"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                    </list>
-                                </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
+                            <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small" p:actionLabel="Cancel"
                                   p:render="@{moveCourse ? false : true}">
                                 <property name="actionScript"
                                           value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
+                            <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small" p:actionLabel="Cancel"
                                   p:render="@{moveCourse ? true : false}">
                                 <property name="actionScript"
                                           value="fnCloseAllPopups();"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                             </bean>
                         </list>
                     </property>
@@ -2577,16 +2464,9 @@
                 <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton" p:actionLabel="Yes">
+                            <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Yes">
                                 <property name="actionScript"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'removeItem', e);"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#deleteCourseYesButton').subscribe('PLAN_ITEM_DELETED', function(data) {
                                         if (jQuery(this).is(':visible')){
@@ -2596,16 +2476,9 @@
                                             fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true, true);
                                     });"/>
                             </bean>
-                            <bean p:id="deleteCourseNoButton" parent="Uif-PrimaryActionButton" p:actionLabel="No">
+                            <bean p:id="deleteCourseNoButton" parent="Uif-SecondaryActionButton-Small" p:actionLabel="No">
                                 <property name="actionScript"
                                           value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-transparent</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                             </bean>
                         </list>
                     </property>
