@@ -116,7 +116,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     counter2++;
                 } else {
                     if (counter3 == 0) {
-                        String message="You took this course on ";
+                        String message="You took this course ";
                         if(UserSessionHelper.isAdviser()){
                             String user=UserSessionHelper.getStudentName();
                             message= user+". took this course on ";

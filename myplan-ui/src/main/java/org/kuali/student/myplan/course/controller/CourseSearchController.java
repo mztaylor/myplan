@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -57,6 +58,7 @@ import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -281,6 +283,9 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId) {
+
+        String maxCountProp =  ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
+        int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
         try {
             List<SearchRequest> requests = searcher.queryToRequests(form);
             List<Hit> hits = processSearchRequests(requests);
@@ -297,7 +302,7 @@ public class CourseSearchController extends UifControllerBase {
                         course.setStatus(courseStatusMap.get(courseId));
                     }
                     courseList.add(course);
-                    if (courseList.size() >= MAX_HITS) {
+                    if (courseList.size() >= maxCount) {
                         break;
                     }
                 }
