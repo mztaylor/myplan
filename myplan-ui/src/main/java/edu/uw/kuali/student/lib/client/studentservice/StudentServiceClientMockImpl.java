@@ -139,4 +139,9 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
         return curriculum;
     }
+
+    @Override
+    public boolean connectionStatus(String url) {
+        return false;
+    }
 }

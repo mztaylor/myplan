@@ -2,6 +2,7 @@ package org.kuali.student.myplan.course.service;
 
 import java.lang.String;
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
@@ -49,6 +50,8 @@ import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
 
@@ -73,6 +76,37 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private transient AcademicRecordService academicRecordService;
 
     private transient CourseInfo courseInfo;
+
+    private transient boolean isAcademicCalendarServiceUp = true;
+
+    private transient boolean isAcademicRecordServiceUp = true;
+
+    private transient boolean isCourseOfferingServiceUp = true;
+
+
+    public boolean isAcademicCalendarServiceUp() {
+        return isAcademicCalendarServiceUp;
+    }
+
+    public void setAcademicCalendarServiceUp(boolean academicCalendarServiceUp) {
+        isAcademicCalendarServiceUp = academicCalendarServiceUp;
+    }
+
+    public boolean isAcademicRecordServiceUp() {
+        return isAcademicRecordServiceUp;
+    }
+
+    public void setAcademicRecordServiceUp(boolean academicRecordServiceUp) {
+        isAcademicRecordServiceUp = academicRecordServiceUp;
+    }
+
+    public boolean isCourseOfferingServiceUp() {
+        return isCourseOfferingServiceUp;
+    }
+
+    public void setCourseOfferingServiceUp(boolean courseOfferingServiceUp) {
+        isCourseOfferingServiceUp = courseOfferingServiceUp;
+    }
 
     //TODO: These should be changed to an ehCache spring bean
     private Map<String, List<OrgInfo>> campusLocationCache;
@@ -146,6 +180,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * @return
      */
     public CourseDetails retrieveCourseSummary(String courseId, String studentId) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString())
+                || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
+                || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
+            AtpHelper.addServiceError("curriculumTitle");
+            this.setAcademicCalendarServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString()));
+            this.setAcademicRecordServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString()));
+            this.setCourseOfferingServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString()));
+        }
         CourseDetails courseDetails = new CourseDetails();
         courseDetails.setSummaryOnly(true);
 
@@ -194,7 +237,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
 
     public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
-
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         courseDetails.setSummaryOnly(false);
 
@@ -253,29 +295,34 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         */
         try {
             //  Fetch the available terms from the Academic Calendar Service.
-            List<TermInfo> termInfos = null;
-            try {
-                termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Web service call failed.", e);
-                //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
-                termInfos = new ArrayList<TermInfo>();
-            }
-
-            List<String> scheduledTerms = new ArrayList<String>();
-            for (TermInfo term : termInfos) {
-                String key = term.getId();
-                String subject = course.getSubjectArea();
-
-                List<String> offerings = getCourseOfferingService()
-                        .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
-
-                if (offerings.contains(course.getCode())) {
-                    scheduledTerms.add(term.getName());
+            if (isAcademicCalendarServiceUp && isCourseOfferingServiceUp()) {
+                List<TermInfo> termInfos = null;
+                try {
+                    termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Web service call failed.", e);
+                    //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
+                    termInfos = new ArrayList<TermInfo>();
                 }
-            }
 
-            courseDetails.setScheduledTerms(scheduledTerms);
+                List<String> scheduledTerms = new ArrayList<String>();
+                for (TermInfo term : termInfos) {
+                    String key = term.getId();
+                    String subject = course.getSubjectArea();
+
+                    List<String> offerings = getCourseOfferingService()
+                            .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
+
+                    if (offerings.contains(course.getCode())) {
+                        scheduledTerms.add(term.getName());
+                    }
+                }
+
+                courseDetails.setScheduledTerms(scheduledTerms);
+            }else
+            {
+                courseDetails.setScheduledTerms(new ArrayList<String>());
+            }
 
             AcademicPlanService academicPlanService = getAcademicPlanService();
 
@@ -337,56 +384,59 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             courseDetails.setCurriculumTitle(value.toString());
         }
         //  If course not scheduled for future terms, Check for the last term when course was offered
-        if (courseDetails.getScheduledTerms().size() == 0) {
-            int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
-            List<CourseOfferingInfo> courseOfferingInfo = null;
-            try {
-                // The right strategy would be using the multiple equal predicates joined using an and
-                String values = String.format("%s, %s, %s", year, subject, number);
-                courseOfferingInfo = getCourseOfferingService()
-                        .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                String[] params = {};
-                GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-                logger.error("Could not load courseOfferingInfo list.", e);
-            }
-            if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
-                String lastOffered = courseOfferingInfo.get(0).getTermId();
-                lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
-                courseDetails.setLastOffered(lastOffered);
+        if (isCourseOfferingServiceUp()) {
+            if (courseDetails.getScheduledTerms().size() == 0) {
+                int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+                List<CourseOfferingInfo> courseOfferingInfo = null;
+                try {
+                    // The right strategy would be using the multiple equal predicates joined using an and
+                    String values = String.format("%s, %s, %s", year, subject, number);
+                    courseOfferingInfo = getCourseOfferingService()
+                            .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    String[] params = {};
+                    GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
+                    logger.error("Could not load courseOfferingInfo list.", e);
+                }
+                if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
+                    String lastOffered = courseOfferingInfo.get(0).getTermId();
+                    lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
+                    courseDetails.setLastOffered(lastOffered);
+                }
             }
         }
         /********* Implementation to get the Academic Record Data from the SWS and set that to CourseDetails acedRecordList ***************/
-
-        List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-        try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
-        }
-
-        if (studentCourseRecordInfos.size() > 0) {
-
-            for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-                academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                academicRecordDataObject.setCourseId(studentInfo.getId());
-                academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                academicRecordDataObjectList.add(academicRecordDataObject);
-                if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
-                    String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
-                    courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
-                }
+        if (isAcademicRecordServiceUp) {
+            List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+            List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+            try {
+                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
             }
-            if (academicRecordDataObjectList.size() > 0) {
-                courseDetails.setAcadRecList(academicRecordDataObjectList);
 
+            if (studentCourseRecordInfos.size() > 0) {
+
+                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                    academicRecordDataObject.setCourseId(studentInfo.getId());
+                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                    academicRecordDataObjectList.add(academicRecordDataObject);
+                    if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
+                        String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
+                        courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+                    }
+                }
+                if (academicRecordDataObjectList.size() > 0) {
+                    courseDetails.setAcadRecList(academicRecordDataObjectList);
+
+                }
             }
         }
 

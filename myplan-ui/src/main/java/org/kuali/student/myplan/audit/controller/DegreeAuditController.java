@@ -233,9 +233,11 @@ public class DegreeAuditController extends UifControllerBase {
             logger.error("Could not complete audit run");
             String[] params = {};
             if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId())) {
-                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_EMPTY_PAGE, "auditHtml");
+                GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             } else {
-                return doErrorPage(form, DegreeAuditConstants.AUDIT_RUN_FAILED, params, DegreeAuditConstants.AUDIT_PAGE, "auditHtml");
+                GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                String html="Aduit Run Failed due to some Technical Issues, Please Try again later";
+                form.setAuditHtml(html);
             }
         }
         if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId()) && auditID != null) {

@@ -88,4 +88,11 @@ public interface StudentServiceClient {
      */
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException;
 
+    /**
+     *
+     * @param url
+     * @return
+     */
+    public boolean connectionStatus(String url);
+
 }

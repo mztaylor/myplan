@@ -253,6 +253,21 @@ public class StudentServiceClientImpl
 
     }
 
+    @Override
+    public boolean connectionStatus(String url) {
+       boolean connectionEstablished=true;
+        Request request = new Request(Method.GET, url);
+
+        //  Send the request and parse the result.
+        Response response = client.handle(request);
+        Status status = response.getStatus();
+
+        if (!(status.equals(Status.SUCCESS_OK))) {
+            connectionEstablished=false;
+        }
+       return connectionEstablished;
+    }
+
     private String sendQuery(String url) throws ServiceException {
         Request request = new Request(Method.GET, url);
 

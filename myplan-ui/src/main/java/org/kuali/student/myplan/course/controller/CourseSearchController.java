@@ -183,7 +183,9 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=start")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-
+        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())) {
+            AtpHelper.addServiceError("searchTerm");
+        }
         super.start(form, result, request, response);
         return getUIFModelAndView(form);
     }
@@ -282,7 +284,7 @@ public class CourseSearchController extends UifControllerBase {
         return credit;
     }
 
-    public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId) {
+    public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId, boolean isAcademicCalenderServiceUp) {
 
         String maxCountProp =  ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
         int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
@@ -294,7 +296,9 @@ public class CourseSearchController extends UifControllerBase {
             for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo(hit.courseID);
                 if (isCourseOffered(form, course)) {
-                    loadScheduledTerms(course);
+                    if (isAcademicCalenderServiceUp) {
+                        loadScheduledTerms(course);
+                    }
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
                     String courseId = course.getCourseId();
@@ -318,9 +322,11 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(value = "/course/search")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
         List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
-
+        boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
         String user = UserSessionHelper.getStudentId();
-
+        if(!isAcademicCalenderServiceUp){
+            AtpHelper.addServiceError("searchTerm");
+        }
         /*Params from the Url*/
         String queryText = request.getParameter("queryText");
         if (queryText.contains("%20")) {
@@ -339,7 +345,7 @@ public class CourseSearchController extends UifControllerBase {
         /*populating the CourseSearchItem list*/
 
 
-        courses = courseSearch(form, user);
+        courses = courseSearch(form, user, isAcademicCalenderServiceUp);
 
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
@@ -737,8 +743,8 @@ public class CourseSearchController extends UifControllerBase {
             }
             req = EnumerationHelper.getEnumAbbrValForCode(req);
             /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
-            if(req.contains("&")){
-                req=req.replace("&","&amp;");
+            if (req.contains("&")) {
+                req = req.replace("&", "&amp;");
             }
             genEdsOut.append(req);
         }
