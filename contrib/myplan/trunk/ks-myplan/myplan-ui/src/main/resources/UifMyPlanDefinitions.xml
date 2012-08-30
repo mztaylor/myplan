@@ -451,7 +451,7 @@
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="instructionalText"
-                  value="Sorry No Audit For you !! You are not a Student!!"/>
+                  value="No recent audits found."/>
     </bean>
     <bean id="text1">
         <property name="instructionalText"

@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.util;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -259,14 +260,9 @@ public class AtpHelper {
         return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
     }
 
-    public static boolean isAcademicCalendarAvailable(){
-        boolean isWebServiceUp=true;
-        try {
-            List<TermInfo>  scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.INPROGRESS)), CourseSearchConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-             isWebServiceUp=false;
-        }
-        return isWebServiceUp;
+    public static void addServiceError(String propertyName) {
+        String[] params = {};
+        GlobalVariables.getMessageMap().putWarning(propertyName, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
     }
 
 }
