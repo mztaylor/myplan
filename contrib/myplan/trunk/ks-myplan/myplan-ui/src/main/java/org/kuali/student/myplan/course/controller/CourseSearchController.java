@@ -312,6 +312,7 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
             populateFacets(form, courseList);
+            logger.error("SearchQuery:"+form.getSearchQuery()+" "+"SearchTerm:"+form.getSearchTerm()+" "+"Campus:"+form.getCampusSelect()+" "+"Total No Of Results:"+hits.size());
             return courseList;
         } catch (Exception e) {
             throw new RuntimeException(e);
