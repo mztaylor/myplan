@@ -422,12 +422,6 @@
           p:refreshId="audit_report_section"
           p:actionLabel="Run Degree Audit">
         <property name="onClickScript" value="myplanDirtyFlag();"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-button</value>
-                <value>myplan-button-blue</value>
-            </list>
-        </property>
     </bean>
 
 
