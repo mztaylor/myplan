@@ -163,13 +163,6 @@
                             <ref bean="comment_dialog_message_count"/>
                             <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
                                   p:actionLabel="Post a Comment" p:methodToCall="addComment" p:style="margin:0 0 0 100px;" p:focusOnIdAfterSubmit="commenting_textbox_control">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-button</value>
-                                        <value>myplan-button-gray</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
                             </bean>
                             <bean id="hidden_messageId" parent="Uif-InputField" p:propertyName="messageId"
                                   p:defaultValue="@{messageId}" p:style="display:none;">
@@ -451,24 +444,10 @@
             <list>
                 <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton" p:style="margin:0 0 0 100px;"
                       p:actionLabel="Leave a Message" p:methodToCall="addMessage" p:render="@{feedBackMode eq false ? true : false}">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-button</value>
-                            <value>myplan-button-gray</value>
-                            <value>fl-font-size-90</value>
-                        </list>
-                    </property>
                 </bean>
                 <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:style="margin: 0 0 0 20px;" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-button</value>
-                            <value>myplan-button-transparent</value>
-                            <value>fl-font-size-90</value>
-                        </list>
-                    </property>
                 </bean>
                 <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-message-noborder myplan-success-message"
                       p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
@@ -539,12 +518,6 @@
                                                 <property name="onDocumentReadyScript" value="
                                                     myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
                                                 "/>
-                                                <property name="cssClasses">
-                                                    <list merge="true">
-                                                        <value>myplan-button</value>
-                                                        <value>myplan-button-blue</value>
-                                                    </list>
-                                                </property>
                                             </bean>
                                         </list>
                                     </property>

@@ -136,14 +136,8 @@
                       p:id="@{dataObject.courseId}_addPlannedCourse">
                     <property name="actionScript"
                               value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-button</value>
-                            <value>myplan-button-blue</value>
-                        </list>
-                    </property>
                 </bean>
-                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Bookmark Course"
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseId}_addSavedCourse"
                       p:render="@{dataObject.inSavedCourseList ? false : true}">
                     <!--<property name="onDocumentReadyScript"
@@ -161,12 +155,6 @@
                                   });"/>-->
                     <property name="actionScript"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-button</value>
-                            <value>myplan-button-gray</value>
-                        </list>
-                    </property>
                 </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
                       p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
