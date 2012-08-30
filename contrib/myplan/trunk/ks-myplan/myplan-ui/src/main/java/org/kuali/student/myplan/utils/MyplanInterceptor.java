@@ -24,17 +24,17 @@ public class MyplanInterceptor implements HandlerInterceptor {
         this.studentServiceClient = studentServiceClient;
     }
 
-    private String USER_AGENT = "User-Agent";
+    private final String USER_AGENT = "User-Agent";
 
-    private String ACADEMIC_CALENDER_SERVICE_URL = "https://ucswseval1.cac.washington.edu/student/v4/public/term/current";
+    private final String ACADEMIC_CALENDER_SERVICE_URL = "https://ucswseval1.cac.washington.edu/student/v4/public/term/current";
 
-    private String COURSE_OFFERING_SERVICE_URL = "https://ucswseval1.cac.washington.edu/student/v4/public/section";
+    private final String COURSE_OFFERING_SERVICE_URL = "https://ucswseval1.cac.washington.edu/student/v4/public/section";
 
-    private String ACADEMIC_RECORD_SERVICE_URL_1 = "https://ucswseval1.cac.washington.edu/student/v4/enrollment";
+    private final String ACADEMIC_RECORD_SERVICE_URL_1 = "https://ucswseval1.cac.washington.edu/student/v4/enrollment";
 
-    private String ACADEMIC_RECORD_SERVICE_URL_2 = "https://ucswseval1.cac.washington.edu/student/v4/registration/";
+    private final String ACADEMIC_RECORD_SERVICE_URL_2 = "https://ucswseval1.cac.washington.edu/student/v4/registration/";
     
-    private String BROWSER_INCOMPATIBLE= "/student/myplan/browserIncompatible";
+    private final String BROWSER_INCOMPATIBLE= "/student/myplan/browserIncompatible";
 
 
     @Override

@@ -169,16 +169,19 @@ public class CommentController extends UifControllerBase {
         String toId, toAddress, toName, fromId, fromAddress, fromName;
 
         fromId = principleId;
-
+        String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
         if (UserSessionHelper.isAdviser()) {
             toId = UserSessionHelper.getStudentId();
             toName = UserSessionHelper.getStudentName();
             toName=toName.substring(0,toName.indexOf(" ")).trim();
+
         } else {
             //  Get the created by user Id from the message.
             toId = messageInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
             toName = UserSessionHelper.getName(toId);
             toName=toName.substring(0,toName.indexOf(" ")).trim();
+            messageLink=ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK)+toId;
+
         }
 
         fromName = UserSessionHelper.getName(fromId);
@@ -187,8 +190,8 @@ public class CommentController extends UifControllerBase {
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.COMMENT_RESPONSE_PAGE, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
-        String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
-        fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
+
+        fromAddress = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.EMAIL_FROM);
         String subjectProp = pro.getProperty(CommentConstants.EMAIL_COMMENT_SUBJECT);
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, fromName);
@@ -281,14 +284,15 @@ public class CommentController extends UifControllerBase {
 
         }
         String studentName = UserSessionHelper.getStudentName();
+        studentName=studentName.substring(0,studentName.indexOf(" ")).trim();
         String adviserName = UserSessionHelper.getName(principleId);
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
         if (toAddress == null) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_TO_ADDRESS, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
-        String messageLink = ConfigContext.getCurrentContextConfig().getProperty("myplan.message.env.link");
-        String fromAddress = ConfigContext.getCurrentContextConfig().getProperty("myplan.comment.fromAddress");
+        String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
+        String fromAddress = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.EMAIL_FROM);
         String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, adviserName);
