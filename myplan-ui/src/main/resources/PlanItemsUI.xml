@@ -493,16 +493,13 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-130 fl-text-bold ">
-                    <property name="messageText" value="With Your Courses List, you can"/>
+                    <property name="messageText" value="With Bookmarked Courses, you can: "/>
                 </bean>
                 <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
-                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Track courses via email notification when they become available to register&lt;/li&gt;"/>
+                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt; Save courses before adding to your Plan &lt;/li&gt;"/>
                 </bean>
                 <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
-                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Save courses before moving to plan to sleep on&lt;/li&gt;"/>
-                </bean>
-                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
-                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Share your list with friends &amp; advisers&lt;/li&gt;"/>
+                    <property name="messageText" value="&lt;li style=&quot;list-style: disc;&quot;&gt;Share your list with advisers&lt;/li&gt;"/>
                 </bean>
             </list>
         </property>
