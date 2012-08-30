@@ -274,13 +274,7 @@
                                                 <list>
                                                     <bean parent="Uif-Label" p:labelText="Course Requisites"
                                                           p:renderColon="false"/>
-                                                    <bean parent="MyPlanHelpImage">
-                                                        <property name="toolTip">
-                                                            <bean parent="MyPlan-Tooltip"
-                                                                  p:tooltipContent="Course Requisites for this course.">
-                                                            </bean>
-                                                        </property>
-                                                    </bean>
+                                                    <ref bean="course_requisite_help_icon"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -348,13 +342,7 @@
                                                 <list>
                                                     <bean parent="Uif-Label" p:labelText="Quarters"
                                                           p:renderColon="false"/>
-                                                    <bean parent="MyPlanHelpImage">
-                                                        <property name="toolTip">
-                                                            <bean parent="MyPlan-Tooltip"
-                                                                  p:tooltipContent="Quarters Information">
-                                                            </bean>
-                                                        </property>
-                                                    </bean>
+                                                    <ref bean="course_quarter_help_icon"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -463,13 +451,7 @@
                                                 <list>
                                                     <bean parent="Uif-Label" p:labelText="Credits"
                                                           p:renderColon="false"/>
-                                                    <bean parent="MyPlanHelpImage">
-                                                        <property name="toolTip">
-                                                            <bean parent="MyPlan-Tooltip"
-                                                                  p:tooltipContent="Credits you would get">
-                                                            </bean>
-                                                        </property>
-                                                    </bean>
+                                                    <ref bean="course_credits_help_icon"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -508,13 +490,7 @@
                                                 <list>
                                                     <bean parent="Uif-Label" p:labelText="General Edu. Req."
                                                           p:renderColon="false"/>
-                                                    <bean parent="MyPlanHelpImage">
-                                                        <property name="toolTip">
-                                                            <bean parent="MyPlan-Tooltip"
-                                                                  p:tooltipContent="General Educational Requirments">
-                                                            </bean>
-                                                        </property>
-                                                    </bean>
+                                                    <ref bean="course_gened_help_icon"/>
                                                 </list>
                                             </property>
                                         </bean>
