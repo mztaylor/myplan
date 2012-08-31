@@ -158,7 +158,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                         /*
                        <input type="hidden" value=" createLightBoxLink('u86', {autoScale:true,centerOnScroll:true,transitionIn:"fade",transitionOut:"fade",speedIn:200,speedOut:200,hideOnOverlayClick:false,type:"iframe",width:"75%",height:"95%"}); " script="first_run">
                         */
-                        .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
+                        .append("<input name=\"script\" type=\"hidden\" value=\"createLightBoxLink('" + urlId + "',{href:'" + lightboxUrl + "',autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});\" script=\"first_run\">")
                         .append("<a id=\"" + urlId + "\" href=\"" + lightboxUrl + "\" target=\"_self\">")
                         .append(l1)
                         .append("<b>" + l2 + "</b>")
@@ -254,8 +254,8 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder = urlBuilder.append(url);
                 urlBuilder.append(timeScheduleLinkAbbreviation.getValue())
-                        //.append(".html#")
-                        .append(".html?external=true&dialogMode=true#");
+                        .append(".html#");
+                        //.append(".html?external=true&dialogMode=true#");
 
                 if (campusLocationString.equals("Seattle")) { //Seattle
                     urlBuilder.append(curriculumCode.toLowerCase());
