@@ -340,7 +340,7 @@
 
     <bean id="select_instruction" parent="Uif-Message" p:cssClasses="myplan-text-normal">
         <property name="messageText"
-                  value="Select the campus and enter degree program or minor to run audit. It may take 1-5 minutes."/>
+                  value="Select your campus and choose a degree program or minor from the menu below. Audits may take 1-5 minutes."/>
     </bean>
 
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup">
