@@ -6,6 +6,8 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
 
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
+    public static final String DEFAULT_KEY="default";
+    public static final String DEFAULT_VALUE="Select a degree program or minor";
     public static final String AUDIT_PARAM_ID = "auditId";
     public static final String AUDIT_PARAM_TYPE = "auditType";
     public static final String AUDIT_EMPTY_PAGE = "degree_audit_empty_page";
@@ -21,6 +23,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String AUDIT_RETRIEVAL_FAILED = "myplan.text.error.message.auditRetrievalFailed";
     public static final String AUDIT_SUMMARY_VIEW = "degree_audits_list";
     public static final String TECHNICAL_PROBLEM = "myplan.text.error.technicalProblems";
+    public static final String NO_SYSTEM_KEY="myplan.text.error.noSystemKey";
     
     public static final String APPLICATION_URL="application.url";
 
