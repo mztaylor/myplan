@@ -12,6 +12,7 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperSer
 import org.apache.log4j.Logger;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.xml.namespace.QName;
@@ -25,7 +26,14 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId = UserSessionHelper.getAuditSystemKey();
+        String studentId=null;
+        try{
+         studentId= UserSessionHelper.getAuditSystemKey();
+        }
+        catch (DataRetrievalFailureException e){
+            List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
+            return degreeAuditItems;
+        }
 
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
         DegreeAuditService degreeAuditService = getDegreeAuditService();

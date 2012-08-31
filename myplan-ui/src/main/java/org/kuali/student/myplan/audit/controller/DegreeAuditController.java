@@ -39,6 +39,10 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -49,6 +53,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.*;
@@ -175,6 +180,12 @@ public class DegreeAuditController extends UifControllerBase {
                     }
                 }
             }
+        } catch (DataRetrievalFailureException e) {
+            e.printStackTrace();
+            String[] params = {};
+            form.setCampusParam("306");
+            GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
+
         } catch (Exception e) {
             e.printStackTrace();
             String[] params = {};
@@ -200,39 +211,51 @@ public class DegreeAuditController extends UifControllerBase {
             Person user = GlobalVariables.getUserSession().getPerson();
 //            String studentId = user.getPrincipalId();
             String systemKey = UserSessionHelper.getAuditSystemKey();
-            DegreeAuditService degreeAuditService = getDegreeAuditService();
-            String programId = null;
-            if ("306".equals(form.getCampusParam())) {
-                programId = form.getProgramParamSeattle();
+            if (StringUtils.hasText(systemKey)) {
+                DegreeAuditService degreeAuditService = getDegreeAuditService();
+                String programId = null;
+                if ("306".equals(form.getCampusParam())) {
+                    programId = form.getProgramParamSeattle();
 
-            } else if ("310".equals(form.getCampusParam())) {
-                programId = form.getProgramParamBothell();
+                } else if ("310".equals(form.getCampusParam())) {
+                    programId = form.getProgramParamBothell();
 
-            } else if ("323".equals(form.getCampusParam())) {
-                programId = form.getProgramParamTacoma();
+                } else if ("323".equals(form.getCampusParam())) {
+                    programId = form.getProgramParamTacoma();
 
+                }
+                if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
+                    ContextInfo context = new ContextInfo();
+                    AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
+                    auditID = report.getAuditId();
+                    // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
+                    AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
+                    InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+                    StringWriter sw = new StringWriter();
+
+                    int c = 0;
+                    while ((c = in.read()) != -1) {
+                        sw.append((char) c);
+                    }
+
+                    String html = sw.toString();
+                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
+                    html = html.replace("$$PreparedFor$$", preparedFor);
+                    form.setAuditHtml(html);
+                } else {
+                    String[] params = {};
+                    GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
+                }
             }
 
-            ContextInfo context = new ContextInfo();
+        }
+        catch (DataRetrievalFailureException e) {
+            String[] params = {};
+            form.setCampusParam("306");
+            GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
 
-            AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
-            auditID = report.getAuditId();
-            // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
-            AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
-            InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-            StringWriter sw = new StringWriter();
-
-            int c = 0;
-            while ((c = in.read()) != -1) {
-                sw.append((char) c);
-            }
-
-            String html = sw.toString();
-            String preparedFor = user.getLastName() + ", " + user.getFirstName();
-            html = html.replace("$$PreparedFor$$", preparedFor);
-            form.setAuditHtml(html);
-
-        } catch (Exception e) {
+        }catch (Exception e) {
             logger.error("Could not complete audit run");
             String[] params = {};
             if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId())) {
