@@ -352,7 +352,7 @@ public class CourseSearchStrategy {
                             if (subjects != null && subjects.size()>0) {
                                 //  Add the individual term items.
                                 for (Map.Entry<String,String> entry : subjects.entrySet()) {
-                                    if (entry.getValue().trim().equalsIgnoreCase(key)) {
+                                    if (entry.getValue().trim().equalsIgnoreCase(key.trim())) {
                                         division = entry.getKey();
 
                                     }

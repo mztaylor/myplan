@@ -454,7 +454,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         String titleValue = null;
         Map<String, String> subjects = new HashMap<String, String>();
         if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
-            subjects = OrgHelper.getSubjectAreas();
+            subjects = OrgHelper.getTrimmedSubjectAreas();
             getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
 
         } else {
