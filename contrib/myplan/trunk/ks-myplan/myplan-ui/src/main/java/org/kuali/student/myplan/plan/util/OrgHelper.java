@@ -93,6 +93,23 @@ public class OrgHelper {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
+            subjects.put(getCellValue(row, "org.resultColumn.attrValue"), getCellValue(row, "org.resultColumn.name"));
+
+        }
+        return subjects;
+    }
+
+    /*Used for the subjects area's with trimmed key value */
+    public static Map<String, String> getTrimmedSubjectAreas() {
+        Map<String, String> subjects = new HashMap<String, String>();
+        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getOrganizationService().search(searchRequest);
+        } catch (MissingParameterException e) {
+            logger.error("Search Failed to get the Organization Data ", e);
+        }
+        for (SearchResultRow row : searchResult.getRows()) {
             subjects.put(getCellValue(row, "org.resultColumn.attrValue").trim(), getCellValue(row, "org.resultColumn.name"));
 
         }
