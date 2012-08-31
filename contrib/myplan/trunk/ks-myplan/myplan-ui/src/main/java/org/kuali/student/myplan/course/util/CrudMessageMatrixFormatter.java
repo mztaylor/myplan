@@ -116,7 +116,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     counter2++;
                 } else {
                     if (counter3 == 0) {
-                        String message="You took this course ";
+                        String message="You took this course in ";
                         if(UserSessionHelper.isAdviser()){
                             String user=UserSessionHelper.getStudentName();
                             message= user+". took this course on ";
@@ -182,8 +182,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             } else {
                 startsSub = startsSub.append("<dd>").append("This course was also added to ");
             }
-            StringBuffer sub = new StringBuffer();
-            sub = sub.append(" and ");
+
             for (String key : planItemsMap.keySet()) {
 
                 if (count == 0) {
@@ -215,7 +214,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
                             String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = sub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
+                            sb = sb.append(" and ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(",") - 1);
                         StringBuffer formattedSubBuf = new StringBuffer();
