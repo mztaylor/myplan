@@ -105,72 +105,73 @@ public class DegreeAuditController extends UifControllerBase {
             Person user = GlobalVariables.getUserSession().getPerson();
 //            String studentID = user.getPrincipalId();
             String systemKey = UserSessionHelper.getAuditSystemKey();
+            if (StringUtils.hasText(systemKey)) {
+                DegreeAuditService degreeAuditService = getDegreeAuditService();
+                String auditId = form.getAuditId();
+                ContextInfo contextInfo = new ContextInfo();
+                Date startDate = new Date();
+                Date endDate = new Date();
+                String programParam = null;
+                form.setCampusParam(campusMap.get("0"));
+                logger.info("audit systemkey " + systemKey);
+                List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                if (auditId == null && auditReportInfoList.size() > 0) {
+                    auditId = auditReportInfoList.get(0).getAuditId();
+                    programParam = auditReportInfoList.get(0).getProgramId();
+                }
 
-            DegreeAuditService degreeAuditService = getDegreeAuditService();
-            String auditId = form.getAuditId();
-            ContextInfo contextInfo = new ContextInfo();
-            Date startDate = new Date();
-            Date endDate = new Date();
-            String programParam = null;
-            form.setCampusParam(campusMap.get("0"));
-            logger.info("audit systemkey " + systemKey);
-            List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
-            if (auditId == null && auditReportInfoList.size() > 0) {
-                auditId = auditReportInfoList.get(0).getAuditId();
-                programParam = auditReportInfoList.get(0).getProgramId();
-            }
-
-            // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
-            if (auditId != null) {
-                AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
-                if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
-                    for (AuditReportInfo report : auditReportInfoList) {
-                        if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
-                            programParam = report.getProgramId();
+                // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
+                if (auditId != null) {
+                    AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
+                    if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
+                        for (AuditReportInfo report : auditReportInfoList) {
+                            if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
+                                programParam = report.getProgramId();
+                            }
                         }
                     }
-                }
-                InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                StringWriter sw = new StringWriter();
+                    InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+                    StringWriter sw = new StringWriter();
 
-                int c = 0;
-                while ((c = in.read()) != -1) {
-                    sw.append((char) c);
-                }
+                    int c = 0;
+                    while ((c = in.read()) != -1) {
+                        sw.append((char) c);
+                    }
 
-                String html = sw.toString();
+                    String html = sw.toString();
 
-                String preparedFor = user.getLastName() + ", " + user.getFirstName();
-                html = html.replace("$$PreparedFor$$", preparedFor);
-                form.setAuditHtml(html);
+                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
+                    html = html.replace("$$PreparedFor$$", preparedFor);
+                    form.setAuditHtml(html);
 
 
-                /*Impl to set the default values for campusParam and programParam properties*/
-                List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
-                try {
-                    auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
-                } catch (Exception e) {
-                    logger.error("could not retrieve AuditPrograms", e);
-                }
-                for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
-                    if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
-                        int campusPrefix = Integer.parseInt(auditProgramInfo.getProgramId().substring(0, 1));
-                        form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
-                        switch (campusPrefix) {
-                            case 0:
-                                form.setProgramParamSeattle(auditProgramInfo.getProgramId());
-                                break;
-                            case 1:
-                                form.setProgramParamBothell(auditProgramInfo.getProgramId());
-                                break;
-                            case 2:
-                                form.setProgramParamTacoma(auditProgramInfo.getProgramId());
-                                break;
-                            default:
-                                break;
+                    /*Impl to set the default values for campusParam and programParam properties*/
+                    List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+                    try {
+                        auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+                    } catch (Exception e) {
+                        logger.error("could not retrieve AuditPrograms", e);
+                    }
+                    for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
+                        if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
+                            int campusPrefix = Integer.parseInt(auditProgramInfo.getProgramId().substring(0, 1));
+                            form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
+                            switch (campusPrefix) {
+                                case 0:
+                                    form.setProgramParamSeattle(auditProgramInfo.getProgramId());
+                                    break;
+                                case 1:
+                                    form.setProgramParamBothell(auditProgramInfo.getProgramId());
+                                    break;
+                                case 2:
+                                    form.setProgramParamTacoma(auditProgramInfo.getProgramId());
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            break;
                         }
-
-                        break;
                     }
                 }
             }
@@ -179,6 +180,7 @@ public class DegreeAuditController extends UifControllerBase {
             String[] params = {};
             GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
+
         if (!StringUtils.hasText(form.getAuditHtml())) {
             form.setPageId(DegreeAuditConstants.AUDIT_EMPTY_PAGE);
         }
@@ -237,7 +239,7 @@ public class DegreeAuditController extends UifControllerBase {
                 GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             } else {
                 GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                String html=String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
+                String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
                 form.setAuditHtml(html);
             }
         }
