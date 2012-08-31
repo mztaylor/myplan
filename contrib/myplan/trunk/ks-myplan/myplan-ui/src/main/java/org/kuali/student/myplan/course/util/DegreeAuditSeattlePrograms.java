@@ -26,7 +26,7 @@ public class DegreeAuditSeattlePrograms extends KeyValuesBase {
     private final Logger logger = Logger.getLogger(DegreeAuditSeattlePrograms.class);
 
     private boolean blankOption;
-
+    
     private transient DegreeAuditService degreeAuditService;
 
     public DegreeAuditService getDegreeAuditService() {
@@ -67,6 +67,9 @@ public class DegreeAuditSeattlePrograms extends KeyValuesBase {
                 return keyValue1.getValue().compareTo(keyValue2.getValue());
             }
         });
+        Collections.reverse(keyValues);
+        keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_VALUE));
+        Collections.reverse(keyValues);
         return keyValues;
     }
 

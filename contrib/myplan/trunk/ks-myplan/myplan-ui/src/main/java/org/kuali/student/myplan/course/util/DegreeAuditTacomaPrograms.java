@@ -27,7 +27,6 @@ public class DegreeAuditTacomaPrograms extends KeyValuesBase {
 
     private boolean blankOption;
 
-
     private transient DegreeAuditService degreeAuditService;
 
 
@@ -52,6 +51,7 @@ public class DegreeAuditTacomaPrograms extends KeyValuesBase {
 
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
 
+
         for (AuditProgramInfo programInfo : auditProgramInfoList) {
             /*Tacoma campus programs starts with 2*/
             if (programInfo.getProgramId().startsWith("2")) {
@@ -69,6 +69,9 @@ public class DegreeAuditTacomaPrograms extends KeyValuesBase {
                 return keyValue1.getValue().compareTo(keyValue2.getValue());
             }
         });
+        Collections.reverse(keyValues);
+        keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_VALUE));
+        Collections.reverse(keyValues);
         return keyValues;
     }
 
