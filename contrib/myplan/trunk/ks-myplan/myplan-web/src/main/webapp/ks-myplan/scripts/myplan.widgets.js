@@ -4,6 +4,13 @@ if (jQuery("#dirtyView").length > 0 && jQuery("#dirtyView").val() !== "CourseSea
     window.location.href = url;
 }
 
+jQuery(document).ready(function(){
+    jQuery("head").append('<!--[if ie 9]><style type="text/css" media="screen"> \
+        button.uif-primaryActionButton,button.uif-secondaryActionButton, \
+        button.uif-primaryActionButton:hover,button.uif-secondaryActionButton:hover { \
+            filter:none;}</style><![endif]-->');
+});
+
 function stopEvent(e) {
     if (!e) {
         var e = window.event
