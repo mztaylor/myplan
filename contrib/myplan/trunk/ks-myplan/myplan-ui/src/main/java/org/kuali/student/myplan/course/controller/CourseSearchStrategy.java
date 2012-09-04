@@ -10,7 +10,10 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.util.*;
 
@@ -20,7 +23,7 @@ public class CourseSearchStrategy {
     private transient LuService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<OrgInfo>> orgTypeCache;
-    private HashMap<String, Map<String,String>> hashMap;
+    private HashMap<String, Map<String, String>> hashMap;
 
     public HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (this.orgTypeCache == null) {
@@ -33,14 +36,14 @@ public class CourseSearchStrategy {
         this.orgTypeCache = orgTypeCache;
     }
 
-    public HashMap<String, Map<String,String>> getHashMap() {
+    public HashMap<String, Map<String, String>> getHashMap() {
         if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, Map<String,String>>();
+            this.hashMap = new HashMap<String, Map<String, String>>();
         }
         return this.hashMap;
     }
 
-    public void setHashMap(HashMap<String, Map<String,String>> hashMap) {
+    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
         this.hashMap = hashMap;
     }
 
@@ -238,7 +241,7 @@ public class CourseSearchStrategy {
         }
     }
 
-    public List<SearchRequest> queryToRequests(CourseSearchForm form)
+    public List<SearchRequest> queryToRequests(CourseSearchForm form, boolean isAcademicCalenderServiceUp)
             throws Exception {
         logger.info("Start Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
@@ -273,7 +276,7 @@ public class CourseSearchStrategy {
         processRequests(requests, form);
         logger.info("No of Requests after processRequest method:" + requests.size());
         logger.info("End Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
-        addVersionDateParam(requests);
+        addVersionDateParam(requests, isAcademicCalenderServiceUp);
         return requests;
     }
 
@@ -284,7 +287,7 @@ public class CourseSearchStrategy {
     //To process the Request with search key as division or full Text
     public void processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
         logger.info("Start of method processRequests in CourseSearchStrategy:" + System.currentTimeMillis());
-        Map<String,String> subjects = null;
+        Map<String, String> subjects = null;
         int size = requests.size();
         for (int i = 0; i < size; i++) {
             if (requests.get(i).getSearchKey() != null) {
@@ -300,15 +303,15 @@ public class CourseSearchStrategy {
                         requests.add(request0);
                         if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
                             subjects = OrgHelper.getSubjectAreas();
-                             getHashMap().put(CourseSearchConstants.SUBJECT_AREA,subjects);
+                            getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
 
                         } else {
                             subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                         }
                         StringBuffer additionalDivisions = new StringBuffer();
-                        if (subjects != null && subjects.size()>0) {
+                        if (subjects != null && subjects.size() > 0) {
                             //  Add the individual term items.
-                            for (Map.Entry<String,String> entry : subjects.entrySet()) {
+                            for (Map.Entry<String, String> entry : subjects.entrySet()) {
                                 if (entry.getKey().trim().contains(key.trim())) {
                                     if (!entry.getKey().equalsIgnoreCase(queryText)) {
                                         additionalDivisions.append(entry.getKey() + ",");
@@ -343,15 +346,15 @@ public class CourseSearchStrategy {
 
                             if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
                                 subjects = OrgHelper.getSubjectAreas();
-                                getHashMap().put(CourseSearchConstants.SUBJECT_AREA,subjects);
+                                getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
 
                             } else {
                                 subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
                             }
-                            
-                            if (subjects != null && subjects.size()>0) {
+
+                            if (subjects != null && subjects.size() > 0) {
                                 //  Add the individual term items.
-                                for (Map.Entry<String,String> entry : subjects.entrySet()) {
+                                for (Map.Entry<String, String> entry : subjects.entrySet()) {
                                     if (entry.getValue().trim().equalsIgnoreCase(key.trim())) {
                                         division = entry.getKey();
 
@@ -390,10 +393,16 @@ public class CourseSearchStrategy {
         logger.info("End of processRequests method in CourseSearchStrategy:" + System.currentTimeMillis());
     }
 
-    private void addVersionDateParam(List<SearchRequest> searchRequests){
-        String currentTerm= AtpHelper.getCurrentAtpId();
-        for(SearchRequest searchRequest:searchRequests){
-            searchRequest.addParam("currentTerm",currentTerm);
+    private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {
+        String currentTerm = null;
+
+        if (isAcademicCalenderServiceUp) {
+            currentTerm = AtpHelper.getCurrentAtpId();
+        } else {
+            currentTerm = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+        }
+        for (SearchRequest searchRequest : searchRequests) {
+            searchRequest.addParam("currentTerm", currentTerm);
         }
     }
 

@@ -289,7 +289,7 @@ public class CourseSearchController extends UifControllerBase {
         String maxCountProp =  ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
         int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
         try {
-            List<SearchRequest> requests = searcher.queryToRequests(form);
+            List<SearchRequest> requests = searcher.queryToRequests(form,isAcademicCalenderServiceUp);
             List<Hit> hits = processSearchRequests(requests);
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
             Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentId);
