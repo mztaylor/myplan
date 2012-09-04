@@ -58,11 +58,7 @@ public class CourseSummaryDetails {
     }
 
     public String getCourseDescription() {
-        //  Double quotes are very problematic in the serialization to JSON so change to single quotes.
-        if (StringUtils.isEmpty(courseDescription)) {
             return courseDescription;
-        }
-        return courseDescription.replaceAll("\"", "'");
     }
 
     public void setCourseDescription(String courseDescription) {
