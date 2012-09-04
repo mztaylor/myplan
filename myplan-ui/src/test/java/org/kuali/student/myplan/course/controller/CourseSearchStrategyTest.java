@@ -243,7 +243,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         assertEquals(1, requests.size());
         assertEquals("myplan.lu.search.divisionAndCode", requests.get(0).getSearchKey());
         assertEquals(5, requests.get(0).getParams().size());
@@ -279,7 +279,7 @@ public class CourseSearchStrategyTest {
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         SearchRequest request = null;
         SearchParam param = null;
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         assertEquals(3, requests.size());
 
@@ -344,7 +344,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         SearchRequest request = null;
         SearchParam param = null;
@@ -396,7 +396,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         SearchParam param = null;
         SearchRequest request = null;
         List<SearchParam> params = null;
@@ -433,7 +433,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         SearchParam param = null;
         SearchRequest request = null;
@@ -503,7 +503,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         SearchParam param = null;
         SearchRequest request = null;
@@ -593,7 +593,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         SearchParam param = null;
         SearchRequest request = null;
@@ -713,7 +713,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         List<SearchParam> params = null;
         SearchParam param = null;
         SearchRequest request = null;
@@ -831,7 +831,7 @@ public class CourseSearchStrategyTest {
         form.setCampusSelect(campusParams);
         form.setSearchTerm("");
         CourseSearchStrategy strategy = getCourseSearchStrategy();
-        List<SearchRequest> requests = strategy.queryToRequests(form);
+        List<SearchRequest> requests = strategy.queryToRequests(form,true);
         assertEquals(0, requests.size());
     }
 
