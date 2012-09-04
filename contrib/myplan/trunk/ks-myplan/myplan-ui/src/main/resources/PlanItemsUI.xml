@@ -420,7 +420,7 @@
                             <bean parent="Uif-MessageField" p:label="Course Description"
                                   p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="TOP">
                                 <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="No description is available"/>
+                                    <bean parent="Uif-Message" p:messageText="This course has no description."/>
                                 </property>
                                 <property name="render"
                                           value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
