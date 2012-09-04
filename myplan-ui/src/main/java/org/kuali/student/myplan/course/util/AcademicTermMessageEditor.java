@@ -37,12 +37,12 @@ public class AcademicTermMessageEditor extends CollectionListPropertyEditor {
             String currentTerm = AtpHelper.getCurrentAtpId();
             if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                 sb = sb.append("<dd>").append("You're currently enrolled in this course for ")
-                        .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                        .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                         .append(atpId).append(">")
                         .append(term).append("</a>");
             } else {
                 sb = sb.append("<dd>").append("You took this course in ")
-                        .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                        .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                         .append(atpId).append(">")
                         .append(term).append("</a>");
             }

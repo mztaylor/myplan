@@ -1105,11 +1105,84 @@
     </bean>
 
     <!-- #################################### Planned Courses Term View ########################### -->
+    <!--Mock Plan View-->
+    <bean id="PlannedCourses-FormView" parent="MyPlanFormView">
+        <property name="id" value="PlannedCourses-FormView"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>ks-myplan/plugins/jcarousellite.js</value>
+            </list>
+        </property>
+        <!-- <property name="header">
+            <bean parent="Uif-HeaderTwo"/>
+        </property>       -->
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="plan-page">
+
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="planned_mock_detail"/>
+                            <bean parent="myplan_section" p:style="width: 310px; margin: 0;">
+                                <property name="items">
+                                    <list>
+                                        <ref bean="messages_widget"/>
+                                        <ref bean="your_stuff_widget"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <ref bean="planned_menu_items"/>
+                            <ref bean="backup_menu_items"/>
+                            <ref bean="completed_menu_items"/>
+                            <ref bean="completed_backup_menu_items"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
+    </bean>
+    <bean id="planned_mock_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; min-height:400px; margin-right: 10px;">
+        <property name="validationMessages.displayMessages" value="false"/>
+        <property name="onDocumentReadyScript" value="
+            var retrieveOptions = {};
+            var sFocusAtpId = '';
+            var aParams = window.location.search.replace('?','').split('&amp;');
+
+            jQuery.each(aParams, function(index, value) {
+
+                if (value.split('=')[0].indexOf('focusAtpId') >= 0) {
+                    sFocusAtpId = decodeURIComponent(value.split('=')[1]);
+                }
+            });
+            if(sFocusAtpId != ''){
+                retrieveOptions = {viewId:'PlannedCourses-LookupView', focusAtpId:sFocusAtpId};
+            } else {
+                retrieveOptions = {viewId:'PlannedCourses-LookupView'};
+            }
+
+            myplanRetrieveComponent('planned_mock_detail','planned_courses_detail','search','lookup', retrieveOptions, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxLoader.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching your plan...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0}, css:{border:'solid 1px #dddddd', borderRadius:'15px', width:'230px', textAlign:'center', padding:'20px'}});"/>
+        <property name="items">
+            <list>
+            </list>
+        </property>
+    </bean>
 
     <!--
       This lookup provides the term by term view of Planned Courses.
     -->
-    <bean id="PlannedCourses-LookupView" parent="MyPlanLookupView">
+    <bean id="PlannedCourses-LookupView" parent="MyPlanBaseLookupView">
         <property name="headerText" value="Plan"/>
         <property name="header.render" value="false"/>
         <property name="viewName" value="PlannedCourses-LookupView"/>
@@ -1119,34 +1192,6 @@
                   value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
-        <property name="onDocumentReadyScript" value="
-                if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
-                    var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
-                        return jQuery(this).height();
-                    }).get());
-                    jQuery('#planned_courses_detail_list ul:not(.errorLines) li').height(iMaxHeight);
-                    var iStart = 0;
-                    if (window.location.hash == '') {
-                        if ( jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).length > 0 ) {
-                            iStart = parseFloat(jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).text());
-                        }
-                    } else {
-                        iStart = parseFloat(window.location.hash.replace('#',''));
-                    }
-
-                    jQuery('#planned_courses_detail_list').jCarouselLite({
-                        btnNext: '.myplan-carousel-next',
-                        btnPrev: '.myplan-carousel-prev',
-                        scroll: 4,
-                        start: iStart,
-                        afterEnd: function(a) {
-                            fnBuildTitle(a);
-                            window.location.replace( '#'+jQuery(a[0]).index() );
-                        },
-                        initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }
-                    });
-                }
-            "/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
@@ -1166,7 +1211,7 @@
                     <property name="items">
                         <list>
                             <ref bean="planned_courses_detail"/>
-                            <bean parent="myplan_section" p:style="width: 310px; margin: 0;">
+                            <!--<bean parent="myplan_section" p:style="width: 310px; margin: 0;">
                                 <property name="items">
                                     <list>
                                         <ref bean="messages_widget"/>
@@ -1177,7 +1222,7 @@
                             <ref bean="planned_menu_items"/>
                             <ref bean="backup_menu_items"/>
                             <ref bean="completed_menu_items"/>
-                            <ref bean="completed_backup_menu_items"/>
+                            <ref bean="completed_backup_menu_items"/>-->
                         </list>
                     </property>
                 </bean>
@@ -1195,6 +1240,34 @@
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
     <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; margin-right: 10px;">
+        <property name="onDocumentReadyScript" value="
+            if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
+                var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
+                    return jQuery(this).height();
+                }).get());
+                jQuery('#planned_courses_detail_list ul:not(.errorLines) li').height(iMaxHeight);
+                var iStart = 0;
+                if (window.location.hash == '') {
+                    if ( jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).length > 0 ) {
+                        iStart = parseFloat(jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).text());
+                    }
+                } else {
+                    iStart = parseFloat(window.location.hash.replace('#',''));
+                }
+
+                jQuery('#planned_courses_detail_list').jCarouselLite({
+                    btnNext: '.myplan-carousel-next',
+                    btnPrev: '.myplan-carousel-prev',
+                    scroll: 4,
+                    start: iStart,
+                    afterEnd: function(a) {
+                        fnBuildTitle(a);
+                        window.location.replace( '#'+jQuery(a[0]).index() );
+                    },
+                    initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }
+                });
+            }
+        "/>
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="items">
             <list>

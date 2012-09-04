@@ -532,7 +532,7 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
  Function: Retrieve component content through ajax
  ######################################################################################
  */
-function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId) {
+function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId, elementBlockingSettings) {
     var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">'; //jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
     jQuery.each(retrieveOptions, function (name, value) {
         tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
@@ -566,7 +566,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         methodToCall = "search";
     }
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id, elementBlockingSettings);
     jQuery("form#" + id + "_form").remove();
 }
 /*

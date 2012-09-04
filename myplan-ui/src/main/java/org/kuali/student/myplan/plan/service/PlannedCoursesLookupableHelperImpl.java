@@ -56,11 +56,11 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
     @Override
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId = UserSessionHelper.getStudentId();
-        String focusAtpId = fieldValues.get(PlanConstants.FOCUS_ATP_ID_KEY);
-                                                                    boolean isServiceStatusOK=true;
-        /*Setting the Warning message if isServiceStatusOK is false*/
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String focusAtpId =request.getParameter(PlanConstants.FOCUS_ATP_ID_KEY);
+        String studentId = UserSessionHelper.getStudentId();
+        boolean isServiceStatusOK=true;
+        /*Setting the Warning message if isServiceStatusOK is false*/
         if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
                 || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
             isServiceStatusOK=false;

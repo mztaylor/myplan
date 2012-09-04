@@ -142,6 +142,15 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(planForm);
     }
 
+    @RequestMapping(params = "methodToCall=start")
+    public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                            HttpServletRequest request, HttpServletResponse response) {
+        super.start(form, result, request, response);
+
+        PlanForm planForm = (PlanForm) form;
+        return getUIFModelAndView(planForm);
+    }
+
     @RequestMapping(params = "methodToCall=startAddPlannedCourseForm")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
@@ -780,7 +789,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=academicPlanner")
     public ModelAndView academicPlanner(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if(UserSessionHelper.isAdviser()){
+        if (UserSessionHelper.isAdviser()) {
             String[] params = {};
             return doErrorPage(form, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params);
         }
@@ -1064,7 +1073,7 @@ public class PlanController extends UifControllerBase {
      * Blow-up response for all plan item actions.
      */
     private ModelAndView doPageRefreshError(PlanForm form, String errorMessage, Exception e) {
-        // <a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Reset your academic plan</a>
+        // <a href="/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView">Reset your academic plan</a>
         // Removed link because html string is being encoded in the view
         String[] params = {"Refresh your page."};
         if (e != null) {
@@ -1417,7 +1426,7 @@ public class PlanController extends UifControllerBase {
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
         } catch (Exception e) {
-            logger.error("Could not convert javascript events to JSON.",e);
+            logger.error("Could not convert javascript events to JSON.", e);
             throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
         params.put("courseDetails", courseDetailsAsJson);

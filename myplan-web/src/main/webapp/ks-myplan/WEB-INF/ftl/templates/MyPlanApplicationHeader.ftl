@@ -26,13 +26,13 @@
             <ul>
                 <#if RequestParameters.viewId??>
                 <#--Plan Page Link-->
-                    <#if RequestParameters.viewId=="PlannedCourses-LookupView">
+                    <#if RequestParameters.viewId=="PlannedCourses-FormView">
                         <li class="active home"><a
-                                href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a>
+                                href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a>
                         </li>
                     <#else>
                         <li class="home"><a
-                                href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a>
+                                href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a>
                         </li>
                     </#if>
 
@@ -56,7 +56,7 @@
                             Degree</a></li>
                     </#if>
                     <#else >
-                        <li class="home"><a href="lookup?methodToCall=search&viewId=PlannedCourses-LookupView&currentPage=planPage">Plan</a></li>
+                        <li class="home"><a href="plan?methodToCall=start&viewId=PlannedCourses-FormView&currentPage=planPage">Plan</a></li>
                         <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView&currentPage=coursePage">Find Courses</a></li>
                         <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView&currentPage=auditPage">Audit Degree</a></li>
                 </#if>

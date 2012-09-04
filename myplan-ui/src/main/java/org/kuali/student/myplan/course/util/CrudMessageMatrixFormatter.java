@@ -73,12 +73,12 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
                 if (counter == 0) {
                     sb = sb.append("<dd>").append("This course was withdrawn in ")
-                            .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                            .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                             .append(atpId).append(">")
                             .append(term).append("</a>");
                 }
                 if (counter > 0) {
-                    sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                    sb = sb.append(",").append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                             .append(atpId).append(">")
                             .append(term).append("</a>");
                 }
@@ -102,13 +102,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                             message= user+". currently enrolled in this course for ";
                         }
                         sb = sb.append("<dd>").append(message)
-                                .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                                .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
                         currentTermRegistered = true;
                     }
                     if (counter3 > 0) {
-                        sb = sb.append(",").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                        sb = sb.append(",").append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
                         currentTermRegistered = true;
@@ -122,13 +122,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                             message= user+". took this course on ";
                         }
                         sb = sb.append("<dd>").append(message)
-                                .append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                                .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
 
                     }
                     if (counter3 > 0) {
-                        sb = sb.append(", ").append("<a href=lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=")
+                        sb = sb.append(", ").append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
                     }
@@ -190,7 +190,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
                             String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = startsSub.append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a>").append(", ");
+                            sb = startsSub.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a>").append(", ");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(","));
                         StringBuffer formattedSubBuf = new StringBuffer();
@@ -200,10 +200,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] str = planItemsMap.get(key).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                         String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
                         if (!currentTermRegistered) {
-                            sb = sb.append("<dd>").append("Added to ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
+                            sb = sb.append("<dd>").append("Added to ").append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                     .append(" on ").append(key).append(" ");
                         } else {
-                            sb = sb.append("<dd>").append("This course was also added to ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
+                            sb = sb.append("<dd>").append("This course was also added to ").append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                     .append(" on ").append(key).append(" ");
                         }
                     }
@@ -214,7 +214,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
                             String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = sb.append(" and ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
+                            sb = sb.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(",") - 1);
                         StringBuffer formattedSubBuf = new StringBuffer();
@@ -223,7 +223,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     } else {
                         String[] str = planItemsMap.get(key).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                         String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
-                        sb = sb.append(" and ").append("<a href=\"lookup?methodToCall=search&viewId=PlannedCourses-LookupView&lookupCriteria['focusAtpId']=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
+                        sb = sb.append(" and ").append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                 .append(" on ").append(key);
                     }
 

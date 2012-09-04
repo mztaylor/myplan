@@ -16,7 +16,7 @@
     </div>
     <h3>Try these links to the MyPlan site:</h3>
     <ul id="links">
-        <li><a href="/student/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView">Plan</a></li>
+        <li><a href="/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a></li>
         <li><a href="/student/myplan/course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
         <li><a href="/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
     </ul>

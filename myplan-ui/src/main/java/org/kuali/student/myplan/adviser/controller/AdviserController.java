@@ -107,7 +107,7 @@ public class AdviserController extends UifControllerBase {
     public String doGet(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
-        form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
+        form.setView(getViewService().getViewById("PlannedCourses-FormView"));
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
@@ -118,7 +118,7 @@ public class AdviserController extends UifControllerBase {
     public String get(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
-        form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
+        form.setView(getViewService().getViewById("PlannedCourses-FormView"));
         form.setRequestRedirect(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
@@ -135,7 +135,7 @@ public class AdviserController extends UifControllerBase {
      */
     @RequestMapping(value = "/advise/{studentId}", method = RequestMethod.GET)
     public String get(@PathVariable("studentId") String studentId, @ModelAttribute("KualiForm") UifFormBase form) {
-        form.setView(getViewService().getViewById("PlannedCourses-LookupView"));
+        form.setView(getViewService().getViewById("PlannedCourses-FormView"));
         form.setRequestRedirect(true);
         List<LearningPlanInfo> plan = null;
         try {
@@ -190,7 +190,7 @@ public class AdviserController extends UifControllerBase {
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
             session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
-            return "redirect:/myplan/lookup?methodToCall=search&viewId=PlannedCourses-LookupView";
+            return "redirect:/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView";
 
         } else {
             clearSession(session);
