@@ -242,7 +242,7 @@
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-DataField" p:fieldLabel.render="false"
-                                                          p:propertyName="courseDescription">
+                                                          p:propertyName="courseDescription" p:escapeHtmlInPropertyValue="false">
                                                         <property name="render"
                                                                   value="@{dataObject.courseDescription ne null and dataObject.courseDescription.length() gt 0 ? true : false}"/>
                                                     </bean>

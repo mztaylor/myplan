@@ -220,7 +220,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
         courseDetails.setRequisites(prerequisites);
-        courseDetails.setCourseDescription(str);
+        courseDetails.setCourseDescription(getCourseLinkBuilder().makeLinks(str));
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
 
