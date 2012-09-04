@@ -248,7 +248,7 @@
                                                     </bean>
                                                     <!-- If Course Description is empty-->
                                                     <bean parent="Uif-Message"
-                                                          p:messageText="No description is available">
+                                                          p:messageText="This course has no description.">
                                                         <property name="render"
                                                                   value="@{dataObject.courseDescription ne null and dataObject.courseDescription.length() gt 0 ? false : true}"/>
                                                     </bean>
@@ -578,7 +578,7 @@
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-Label" p:labelText="Curriculum"
+                                                    <bean parent="Uif-Label" p:labelText="Campus"
                                                           p:renderColon="false"/>
 
                                                 </list>
