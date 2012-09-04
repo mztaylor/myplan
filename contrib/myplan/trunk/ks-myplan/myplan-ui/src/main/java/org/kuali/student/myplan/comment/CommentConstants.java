@@ -38,6 +38,8 @@ public class CommentConstants extends CommentServiceConstants {
 
     public static final String MESSAGE_LINK = "myplan.message.env.link";
     public static final String ADVISER_MESSAGE_LINK = "myplan.adviser.message.env.link";
+    
+    public static final String SWS_URL_PARAM="uw.studentservice.url";
 
 
 }

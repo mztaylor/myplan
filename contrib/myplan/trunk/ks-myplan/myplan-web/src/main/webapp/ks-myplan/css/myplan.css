@@ -1304,6 +1304,10 @@ table.myplan-course-search-results-datatable .blockUI {
     font-size: 90%;
 }
 /* Planned Courses ################################################################################### */
+#plan-page div.blockElement {
+    left: 180px !important;
+    top: 20px !important;
+}
 .myplan-plan-heading > .uif-boxLayout {
     margin: auto;
     width: 275px;
