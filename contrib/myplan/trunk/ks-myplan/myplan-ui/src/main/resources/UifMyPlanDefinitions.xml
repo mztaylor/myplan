@@ -506,7 +506,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="Features are disabled for advisers."/>
+                                  p:messageText="This feature is disabled in adviser view."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
