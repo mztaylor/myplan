@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.utils;
+package edu.uw.kuali.student.myplan.util;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.kuali.rice.core.api.config.property.ConfigContext;
@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  * To change this template use File | Settings | File Templates.
  */
 public class MyplanInterceptor implements HandlerInterceptor {
+    
+    private static final String  SWS_URL_PARAM  = "uw.studentservice.url";
 
     private StudentServiceClient studentServiceClient;
 
@@ -28,13 +30,13 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private final String USER_AGENT = "User-Agent";
 
-    private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.SWS_URL_PARAM)+"/v4/public/term/current";
+    private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/public/term/current";
 
-    private final String COURSE_OFFERING_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.SWS_URL_PARAM)+"/v4/public/section";
+    private final String COURSE_OFFERING_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/public/section";
 
-    private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.SWS_URL_PARAM)+"/v4/enrollment";
+    private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/enrollment";
 
-    private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.SWS_URL_PARAM)+"/v4/registration/";
+    private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/registration/";
     
     private final String BROWSER_INCOMPATIBLE= "/student/myplan/browserIncompatible";
 
