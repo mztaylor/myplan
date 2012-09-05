@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AuditProgramInfo", propOrder = {"programId", "programTitle"})
-public class AuditProgramInfo  implements AuditProgram {
+public class AuditProgramInfo  implements AuditProgram, Serializable {
 
     @XmlAttribute
     private String programId;
