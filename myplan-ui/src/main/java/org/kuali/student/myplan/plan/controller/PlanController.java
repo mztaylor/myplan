@@ -146,7 +146,17 @@ public class PlanController extends UifControllerBase {
     public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                             HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
-
+        boolean isServiceStatusOK=true;
+        /*Setting the Warning message if isServiceStatusOK is false*/
+        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
+                || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
+            isServiceStatusOK=false;
+            AtpHelper.addServiceError("planItemId");
+        }
+        String[] params = {};
+        if(!isServiceStatusOK){
+            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
+        }
         PlanForm planForm = (PlanForm) form;
         return getUIFModelAndView(planForm);
     }
