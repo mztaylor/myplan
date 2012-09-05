@@ -1,8 +1,9 @@
 package org.kuali.student.myplan.audit.service;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Node;
+import org.dom4j.*;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -30,11 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.Document;
-//import org.dom4j.Element;
-//import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
-//import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -47,17 +44,24 @@ import org.restlet.util.Series;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class SWSDegreeAuditServiceImpl implements DegreeAuditService
+public class
+    SWSDegreeAuditServiceImpl
+implements
+    DegreeAuditService
 {
 
     public static void main( String[] args )
         throws Exception
     {
         SWSDegreeAuditServiceImpl impl = new SWSDegreeAuditServiceImpl();
-//        impl.getAuditPrograms( null );
+        List<AuditProgramInfo> list = impl.getAuditPrograms( null );
+        for( AuditProgramInfo program : list )
+        {
+            System.out.println( program );
+        }
 
-//        impl.getAuditsForStudentInDateRange( null, null, null, null );
-        AuditReportInfo garok = impl.runAudit( null, null, null, null );
+        impl.getAuditsForStudentInDateRange( null, null, null, null );
+//        AuditReportInfo garok = impl.runAudit( null, null, null, null );
 
 
 //        impl.getAuditReport("/student/v5/degreeaudit/SEATTLE,A%20A,00,1,6,9136CCB8F66711D5BE060004AC494FFE.xml", null, null);
@@ -86,7 +90,7 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
     @Override
     public AuditReportInfo runAudit(
         @WebParam(name = "studentId") String studentId,
-        @WebParam(name = "programId") String programId,
+        @WebParam(name = "programInfo") AuditProgramInfo programInfo,
         @WebParam(name = "auditTypeKey") String auditTypeKey,
         @WebParam(name = "context") ContextInfo useless
     )
@@ -101,11 +105,11 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
             String regid = "D8D636BEB4CC482884420724BF152709";
 
             String stinker = new String( requestTemplate );
-            stinker = stinker.replace( "$level", level );
-            stinker = stinker.replace( "$type", type );
-            stinker = stinker.replace( "$major", major );
-            stinker = stinker.replace( "$pathway", pathway );
-            stinker = stinker.replace( "$regid", regid );
+            stinker = stinker.replace("$level", level);
+            stinker = stinker.replace("$type", type);
+            stinker = stinker.replace("$major", major);
+            stinker = stinker.replace("$pathway", pathway);
+            stinker = stinker.replace("$regid", regid);
 
             Context context = new Context();
             Series<Parameter> parameters = context.getParameters();
@@ -130,6 +134,7 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
             {
                 SAXReader reader = new SAXReader();
                 Document document = reader.read(rep.getStream());
+
 
                 Map<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("x", "http://webservices.washington.edu/student/");
@@ -452,15 +457,21 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
                 DefaultXPath extraPath = new DefaultXPath( "x:DegreeAuditProgramURI" );
                 DefaultXPath campusPath = new DefaultXPath( "x:Campus" );
                 DefaultXPath abbrevPath = new DefaultXPath( "x:MajorAbbreviation" );
+                DefaultXPath degreeLevelPath = new DefaultXPath( "x:DegreeLevel" );
+                DefaultXPath degreeTypePath = new DefaultXPath( "x:DegreeType" );
+                DefaultXPath pathwayPath = new DefaultXPath( "x:Pathway" );
                 progPath.setNamespaceURIs(namespaces);
                 titlePath.setNamespaceURIs( namespaces );
                 extraPath.setNamespaceURIs( namespaces );
                 campusPath.setNamespaceURIs( namespaces );
                 abbrevPath.setNamespaceURIs( namespaces );
+                degreeLevelPath.setNamespaceURIs( namespaces );
+                degreeTypePath.setNamespaceURIs( namespaces );
+                pathwayPath.setNamespaceURIs( namespaces );
 
                 List<?> nodes = progPath.selectNodes( document );
 
-                List<AuditProgramInfo> list = new ArrayList<AuditProgramInfo>();
+                HashMap<String,AuditProgramInfo> map = new  HashMap<String,AuditProgramInfo>();
                 for( Object child : nodes )
                 {
 
@@ -468,16 +479,29 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
                     Node extraNode = extraPath.selectSingleNode( child );
                     Node campusNode = campusPath.selectSingleNode( extraNode );
                     Node abbrevNode = abbrevPath.selectSingleNode( extraNode );
+                    Node degreeLevelNode = degreeLevelPath.selectSingleNode( extraNode );
+                    Node degreeTypeNode = degreeTypePath.selectSingleNode( extraNode );
+                    Node pathwayNode = pathwayPath.selectSingleNode( extraNode );
                     String title = titleNode.getText();
                     String campus = campusNode.getText();
                     String abbrev = abbrevNode.getText();
+                    String degreeLevel = degreeLevelNode.getText();
+                    String degreeType = degreeTypeNode.getText();
+                    String pathway = pathwayNode.getText();
 
-                    System.out.printf( "\n%s %s %s", abbrev, campus, title );
+//                    System.out.printf( "\n%s %s %s", abbrev, campus, title );
                     AuditProgramInfo info = new AuditProgramInfo();
                     info.setProgramId( abbrev );
-                    info.setProgramTitle( title );
-                    list.add( info );
+                    info.setProgramTitle(title);
+                    info.setCampus( campus );
+                    info.setDegreeLevel(degreeLevel);
+                    info.setDegreeType(degreeType);
+                    info.setPathway( pathway );
+                    map.put(abbrev, info);
                 }
+                List<AuditProgramInfo> list = new ArrayList<AuditProgramInfo>( map.values() );
+                Collections.sort( list );
+
                 return list;
             }
             else
@@ -497,5 +521,4 @@ public class SWSDegreeAuditServiceImpl implements DegreeAuditService
             throw new OperationFailedException( "something bad happened", e );
         }
     }
-
 }

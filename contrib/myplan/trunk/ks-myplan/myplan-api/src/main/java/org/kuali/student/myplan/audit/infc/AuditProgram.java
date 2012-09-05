@@ -12,6 +12,19 @@ import java.util.Date;
  * @Author hemanthg
  */
 public interface AuditProgram {
+
+    // Weird field our SWS Degree Audit needs
+    public String getDegreeLevel();
+
+    // Weird field our SWS Degree Audit needs
+    public String getDegreeType();
+
+    // Weird field our SWS Degree Audit needs
+    public String getPathway();
+
+    // Weird field our SWS Degree Audit needs
+    public String getCampus();
+
     /**
      *
      * Audit program Id
