@@ -347,7 +347,10 @@
         <property name="items">
             <list>
                 <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="campusParam">
-                    <property name="onChangeScript" value="myplanDirtyFlag();"/>
+                    <property name="onChangeScript" value="
+                        jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
+                        myplanDirtyFlag();
+                    "/>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
                     </property>
@@ -368,7 +371,9 @@
                         <list>
                             <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle">
                                 <property name="control">
-                                    <bean parent="Uif-DropdownControl"/>
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                    </bean>
                                 </property>
                                 <property name="optionsFinder">
                                     <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
@@ -384,7 +389,9 @@
                             <bean id="select_programParam_bothell" parent="Uif-InputField" p:propertyName="programParamBothell"
                                   p:width="auto">
                                 <property name="control">
-                                    <bean parent="Uif-DropdownControl"/>
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                    </bean>
                                 </property>
                                 <property name="optionsFinder">
                                     <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
@@ -400,7 +407,9 @@
                             <bean id="select_programParam_tacoma" parent="Uif-InputField" p:propertyName="programParamTacoma"
                                   p:width="auto">
                                 <property name="control">
-                                    <bean parent="Uif-DropdownControl"/>
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                    </bean>
                                 </property>
                                 <property name="optionsFinder">
                                     <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
@@ -409,9 +418,6 @@
                         </list>
                     </property>
                 </bean>
-
-
-
                 <ref bean="degree_audit_run"/>
             </list>
         </property>
