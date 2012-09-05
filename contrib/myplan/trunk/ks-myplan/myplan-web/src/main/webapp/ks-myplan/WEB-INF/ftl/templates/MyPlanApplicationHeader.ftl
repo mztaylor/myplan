@@ -9,6 +9,8 @@
                         Welcome, <span class="name">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize} .</span>
                     </div>
                     <div class="logout">
+                        <a href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/');">Help</a>
+                        |
                         <a href="/${ConfigProperties['app.code']}/logout.do">Log out</a>
                     </div>
                 </#if>
