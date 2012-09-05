@@ -157,7 +157,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="You haven't bookmarked any courses. Bookmark a course by adding from the search results."/>
+                                  p:messageText="You have no bookmarked courses. Find courses and add them to your bookmarked list."/>
                         </list>
                     </property>
                 </bean>
@@ -407,7 +407,7 @@
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Description"
                                   p:propertyName="courseDetails.courseDescription"
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="TOP">
+                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="TOP" p:escapeHtmlInPropertyValue="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>courseDescription</value>
