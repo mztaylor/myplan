@@ -7,7 +7,15 @@ if (jQuery("#dirtyView").length > 0 && jQuery("#dirtyView").val() !== "CourseSea
 jQuery(document).ready(function(){
     jQuery("head").append('<!--[if ie 9]><style type="text/css" media="screen"> \
         button.uif-primaryActionButton,button.uif-secondaryActionButton, \
-        button.uif-primaryActionButton:hover,button.uif-secondaryActionButton:hover { \
+        button.uif-primaryActionButton:hover,button.uif-secondaryActionButton:hover,\
+        button.uif-primaryActionButton[disabled="true"],\
+        button.uif-primaryActionButton[disabled="disabled"],\
+        button.uif-primaryActionButton[disabled="true"]:hover,\
+        button.uif-primaryActionButton[disabled="disabled"]:hover,\
+        button.uif-secondaryActionButton[disabled="true"],\
+        button.uif-secondaryActionButton[disabled="disabled"],\
+        button.uif-secondaryActionButton[disabled="true"]:hover,\
+        button.uif-secondaryActionButton[disabled="disabled"]:hover{ \
             filter:none;}</style><![endif]-->');
 });
 
@@ -858,6 +866,30 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
                 }
             }
         });
+    }
+}
+
+function degreeAuditButton() {
+    switch (parseFloat(jQuery("input[name='campusParam']:checked").val())) {
+        case 306:
+            return (jQuery('select#select_programParam_seattle_control').val() === 'default');
+            break;
+        case 310:
+            return (jQuery('select#select_programParam_bothell_control').val() === 'default');
+            break;
+        case 323:
+            return (jQuery('select#select_programParam_tacoma_control').val() === 'default');
+            break;
+        default:
+            return true;
+    }
+}
+
+function buttonState(jqueryObj, buttonId) {
+    if (jqueryObj.val().length === 0) {
+        jQuery("button#" + buttonId).attr('disabled', true);
+    } else {
+        jQuery("button#" + buttonId).attr('disabled', false);
     }
 }
 
