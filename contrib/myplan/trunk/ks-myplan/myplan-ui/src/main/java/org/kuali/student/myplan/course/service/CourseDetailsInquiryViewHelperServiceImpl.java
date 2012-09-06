@@ -203,7 +203,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
-        String str = course.getDescr().getFormatted();
+        String str = null;
+        if (course.getDescr() != null) {
+            str = course.getDescr().getFormatted();
+        }
         if (str != null && str.contains("Offered:")) {
             str = str.substring(0, str.indexOf("Offered"));
         }
@@ -218,8 +221,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             str = str.substring(0, str.indexOf("Prerequisite"));
         }
-        if(str!=null){
-         str=getCourseLinkBuilder().makeLinks(str);
+        if (str != null) {
+            str = getCourseLinkBuilder().makeLinks(str);
         }
 
         courseDetails.setRequisites(prerequisites);
@@ -322,8 +325,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
 
                 courseDetails.setScheduledTerms(scheduledTerms);
-            }else
-            {
+            } else {
                 courseDetails.setScheduledTerms(new ArrayList<String>());
             }
 
