@@ -64,7 +64,7 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
 
         for (AuditProgramInfo programInfo : auditProgramInfoList) {
             /*Bothell campus programs starts with 1*/
-            if (programInfo.getProgramId().startsWith("1")) {
+            if (programInfo.getCampus().equalsIgnoreCase("Bothell")) {
                 keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
             }
         }
