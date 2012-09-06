@@ -55,9 +55,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     {
         DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
 
-//        String studentId = "D8D636BEB4CC482884420724BF152709";
-//        String programId = "0ACCTG 0012";
-//        AuditReportInfo info = impl.runAudit( studentId, programId, null, null );
+        String studentId = "D8D636BEB4CC482884420724BF152709";
+        String programId = "1BISMCS0011";
+        AuditReportInfo info = impl.runAudit( studentId, programId, null, null );
 
         System.out.println( impl.padfront( "  1 2 " ));
     }
@@ -115,7 +115,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public final static String requestTemplate =
         "<DegreeAudit>" +
-        "<Campus>SEATTLE</Campus>" +
+        "<Campus>$campus</Campus>" +
         "<PlanningAudit/>" +
         "<DegreeLevel>$level</DegreeLevel>" +
         "<DegreeType>$type</DegreeType>" +
@@ -139,13 +139,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             // padding, because sometimes degree program ids are not 12 chars long
             programId = programId + "              ";
 
-            String campus = programId.substring(0, 1);
+            String campus = "SEATTLE";
+            char oof = programId.charAt(0 );
+            switch( oof )
+            {
+                case '1': campus = "BOTHELL"; break;
+                case '2': campus = "TACOMA"; break;
+                default: break;
+            }
+
             String major = programId.substring( 1, 7 ).trim();
             String pathway = programId.substring(7, 9);
             String level = programId.substring(9, 10);
             String type = programId.substring(10, 11);
 
             String stinker = new String( requestTemplate );
+            stinker = stinker.replace("$campus", campus);
             stinker = stinker.replace("$level", level);
             stinker = stinker.replace("$type", type);
             stinker = stinker.replace("$major", major);
