@@ -401,6 +401,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         planItemEntity.setRefObjectTypeKey(planItem.getRefObjectType());
 
         //  Update the plan item type if it has changed.
+        boolean createNewPlanItem = false;
+        if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())
+                && planItemEntity.getLearningPlanItemType().getId().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+            createNewPlanItem = true;
+        }
+
         if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
             PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(planItem.getTypeKey());
             if (planItemTypeEntity == null) {
@@ -409,11 +415,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
             // Reset the plan Item
             planItemEntity.setLearningPlanItemType(planItemTypeEntity);
-            planItemEntity.setCreateTime(null);
-            planItemEntity.setUpdateTime(null);
-
             updatePlanTypeId =  planItemEntity.getId();
-            planItemEntity.setId(null);
         }
 
         //  Update plan periods.
@@ -459,7 +461,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         // If plan type changes create a new one and delete
         String updatePlanItemId = null;
-        if(null != updatePlanTypeId) {
+        if(createNewPlanItem) {
             try {
                 PlanItemInfo newpiInfo = createPlanItem(planItemEntity.toDto(), context);
                 updatePlanItemId =  newpiInfo.getId();
