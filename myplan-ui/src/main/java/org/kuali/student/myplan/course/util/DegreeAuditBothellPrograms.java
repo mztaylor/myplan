@@ -53,35 +53,28 @@ public class DegreeAuditBothellPrograms extends KeyValuesBase {
 
     @Override
     public List<KeyValue> getKeyValues() {
-        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
+        List<KeyValue> keyValues = new ArrayList<KeyValue>();
         try {
-            auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+            List<AuditProgramInfo> auditProgramInfoList = getDegreeAuditService().getAuditPrograms( DegreeAuditConstants.CONTEXT_INFO );
+
+            for (AuditProgramInfo programInfo : auditProgramInfoList)
+            {
+                if( programInfo.getCampus().equals( "BOTHELL" ))
+                {
+                    ConcreteKeyValue keyValue = new ConcreteKeyValue( programInfo.getProgramId(), programInfo.getProgramTitle() );
+                    keyValues.add(keyValue);
+                }
+            }
+            Collections.sort(keyValues, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue keyValue1, KeyValue keyValue2) {
+                    return keyValue1.getValue().compareTo(keyValue2.getValue());
+                }
+            });
         } catch (Exception e) {
             logger.error("could not retrieve AuditPrograms", e);
         }
-
-        List<KeyValue> keyValues = new ArrayList<KeyValue>();
-
-        for (AuditProgramInfo programInfo : auditProgramInfoList) {
-            /*Bothell campus programs starts with 1*/
-            if (programInfo.getCampus().equalsIgnoreCase("Bothell")) {
-                keyValues.add(new ConcreteKeyValue(programInfo.getProgramId(), programInfo.getProgramTitle()));
-            }
-        }
-        /*Removing Duplicate entries from Key values*/
-        HashSet hs = new HashSet();
-        hs.addAll(keyValues);
-        keyValues.clear();
-        keyValues.addAll(hs);
-        Collections.sort(keyValues, new Comparator<KeyValue>() {
-            @Override
-            public int compare(KeyValue keyValue1, KeyValue keyValue2) {
-                return keyValue1.getValue().compareTo(keyValue2.getValue());
-            }
-        });
-        Collections.reverse(keyValues);
-        keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_VALUE));
-        Collections.reverse(keyValues);
+        keyValues.add( 0, new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_VALUE));
         return keyValues;
     }
 
