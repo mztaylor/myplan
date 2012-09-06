@@ -685,16 +685,13 @@ input.myplan-add:hover {
 
 }
 .myplan-course-search-panel select {
-    background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
+    background: #fff;
     overflow: hidden;
     width: 205px;
     height: 30px;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 5px 44px 5px 10px;
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
 }
 .myplan-course-search-panel input[type='text']:focus {
     border-color: #fc9e5d;
@@ -1364,16 +1361,13 @@ label.scheduled {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     vertical-align: middle;
-    background: url('../images/myplan_button_select_arrow.png') no-repeat right #fff;
+    background: #fff;
     overflow: hidden;
     width: 450px;
     height: 30px;
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 5px 44px 5px 10px;
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
 }
 .myplan-audit-report div.blockElement {
     left: 0px !important;
