@@ -1247,12 +1247,13 @@
                 }).get());
                 jQuery('#planned_courses_detail_list ul:not(.errorLines) li').height(iMaxHeight);
                 var iStart = 0;
-                if (window.location.hash == '') {
+                if (readUrlHash('planView')) {
+                    iStart = parseFloat(readUrlHash('planView'));
+                } else {
                     if ( jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).length > 0 ) {
                         iStart = parseFloat(jQuery(&quot;div:hidden[id^='atp_start_index']&quot;).text());
                     }
-                } else {
-                    iStart = parseFloat(window.location.hash.replace('#',''));
+
                 }
 
                 jQuery('#planned_courses_detail_list').jCarouselLite({
@@ -1262,7 +1263,7 @@
                     start: iStart,
                     afterEnd: function(a) {
                         fnBuildTitle(a);
-                        window.location.replace( '#'+jQuery(a[0]).index() );
+                        setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }
                 });
