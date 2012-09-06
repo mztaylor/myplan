@@ -428,6 +428,7 @@
           p:refreshId="audit_report_section"
           p:actionLabel="Run Degree Audit">
         <property name="onClickScript" value="setUrlHash('modified', 'yes');"/>
+        <property name="onDocumentReadyScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
     </bean>
 
 
