@@ -349,7 +349,7 @@
                 <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="campusParam">
                     <property name="onChangeScript" value="
                         jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
-                        myplanDirtyFlag();
+                        setUrlHash('modified', 'yes');
                     "/>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
@@ -427,7 +427,7 @@
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit"
           p:refreshId="audit_report_section"
           p:actionLabel="Run Degree Audit">
-        <property name="onClickScript" value="myplanDirtyFlag();"/>
+        <property name="onClickScript" value="setUrlHash('modified', 'yes');"/>
     </bean>
 
 

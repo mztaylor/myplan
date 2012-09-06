@@ -1,7 +1,41 @@
+function readUrlHash(key) {
+    var aHash = window.location.hash.replace('#','').split('&');
+    var oHash = {};
+    jQuery.each(aHash, function(index, value) {
+        oHash[value.split('=')[0]] = value.split('=')[1];
+    });
+    if (oHash[key]) {
+        return oHash[key];
+    } else {
+        return false;
+    }
+}
+
+function readUrlParam(key) {
+    var aParams = window.location.search.replace('?','').split('&');
+    var oParams = {};
+    jQuery.each(aParams, function(index, value) {
+        oParams[value.split('=')[0]] = value.split('=')[1];
+    });
+    if (oParams[key]) {
+        return oParams[key];
+    } else {
+        return false;
+    }
+}
+
 /* This is for DOM changes to refresh the view on back to keep the view updated */
-if (jQuery("#dirtyView").length > 0 && jQuery("#dirtyView").val() !== "CourseSearch-FormView") {
-    var url = window.location.href;
-    window.location.href = url;
+if (readUrlHash("modified") == "yes") {
+    if (readUrlParam("viewId") != "CourseSearch-FormView") {
+        var url = window.location.href;
+        var hash = window.location.hash;
+        if (url.split("#")[1].replace("modified=yes","").length > 0) {
+            window.location.assign(url.split("#")[0] + hash.replace("modified=yes","modified=no"));
+        } else {
+            window.location.assign(url.split("#")[0]);
+        }
+
+    }
 }
 
 jQuery(document).ready(function(){
@@ -488,14 +522,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
                     }
                 }
-                myplanDirtyFlag();
-                /*
-                 if (window.location.hash == '') {
-
-                 var hash  = new Date().getTime() + '-' + jQuery("input#viewId").val();
-                 window.location.hash = hash;
-                 }
-                 */
+                setUrlHash('modified', 'yes');
                 break;
             case 'error':
                 var oMessage = { 'message' : jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
@@ -893,10 +920,29 @@ function buttonState(jqueryObj, buttonId) {
     }
 }
 
-function myplanDirtyFlag() {
-    if (jQuery("#myplanDirty").length === 0) {
-        jQuery("body").append('<form id="myplanDirty"><input type="hidden" id="dirtyView" name="dirtyView" value="' + jQuery("input#viewId").val() + '" /></form>');
+function setUrlHash(key, value) {
+    var aHash =[];
+    if (window.location.hash) {
+        aHash = window.location.hash.replace('#','').split('&');
     }
+    var oHash = {};
+    if (aHash.length > 0) {
+        jQuery.each(aHash, function(index, value) {
+            oHash[value.split('=')[0]] = value.split('=')[1];
+        });
+        var oTemp = {};
+        oTemp[key] = value;
+        jQuery.extend(oHash, oTemp);
+    } else {
+        oHash[key] = value;
+    }
+
+    aHash = [];
+    for (var key in oHash) {
+        aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
+    }
+
+    window.location.replace("#" + aHash.join("&"));
 }
 
 (function ($) {
