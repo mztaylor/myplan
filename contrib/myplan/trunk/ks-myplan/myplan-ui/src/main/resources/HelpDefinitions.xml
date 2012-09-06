@@ -143,7 +143,7 @@
         <property name="dataAttributes">
             <map>
                 <entry key="help"
-                       value="@{!#line.openForPlanning ? 'The number of credits attempted for a completed quarter.  Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
+                       value="@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
             </map>
         </property>
         <property name="onDocumentReadyScript" value="
