@@ -183,12 +183,23 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                 Map<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("x", "http://webservices.washington.edu/student/");
-                DefaultXPath jobidPath = new DefaultXPath("//x:DegreeAudit/x:JobId");
-                jobidPath.setNamespaceURIs(namespaces);
+                DefaultXPath jobid1Path = new DefaultXPath("//x:DegreeAudit/x:JobId");
+                DefaultXPath jobid2Path = new DefaultXPath("//x:DegreeAudit/x:JobID");
+                jobid1Path.setNamespaceURIs(namespaces);
+                jobid2Path.setNamespaceURIs(namespaces);
 
-                org.dom4j.Node jobidNode = jobidPath.selectSingleNode(document);
+                org.dom4j.Node jobid1Node = jobid1Path.selectSingleNode(document);
+                org.dom4j.Node jobid2Node = jobid2Path.selectSingleNode(document);
 
-                String jobid = jobidNode.getText();
+                String jobid = "missing jobid";
+                if( jobid1Node != null )
+                {
+                    jobid = jobid1Node.getText();
+                }
+                else if( jobid2Node != null )
+                {
+                    jobid = jobid2Node.getText();
+                }
                 AuditReportInfo auditReportInfo = new AuditReportInfo();
 
                 auditReportInfo.setAuditId(jobid);
