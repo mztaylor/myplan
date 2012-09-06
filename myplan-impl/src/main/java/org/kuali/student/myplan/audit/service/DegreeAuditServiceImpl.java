@@ -56,7 +56,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 //        String programId = "0ACCTG 0012";
 //        AuditReportInfo info = impl.runAudit( studentId, programId, null, null );
 
-        System.out.println( impl.padfront( " 1" ));
+        System.out.println( impl.padfront( "  1 2 " ));
     }
 
     private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
@@ -311,7 +311,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'A':
                 case 'B':
                     String victim = CourseLinkBuilder.makeLinks(darout, courseLinkTemplateStyle);
-//                    victim = padfront( victim );
+                    victim = padfront( victim );
                     pw.println(victim);
                     break;
 
@@ -328,6 +328,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'C':
                 case 'D':
                 case 'F':
+                    darout = padfront( darout );
                     pw.println(darout);
                     break;
 
@@ -342,6 +343,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'm':
                 case 'U':
                 default:
+                    darout = padfront( darout );
                     pw.println(darout);
                     break;
             }
