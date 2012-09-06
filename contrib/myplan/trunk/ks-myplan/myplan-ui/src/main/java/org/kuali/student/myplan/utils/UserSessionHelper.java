@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Provides an initialized Context which can be used for service requests.
  */
-public class UserSessionHelper {
+public class    UserSessionHelper {
 
     private static final Logger logger = Logger.getLogger(UserSessionHelper.class);
 

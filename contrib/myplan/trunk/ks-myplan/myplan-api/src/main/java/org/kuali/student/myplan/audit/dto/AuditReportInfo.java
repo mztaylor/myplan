@@ -19,7 +19,7 @@ import java.util.List;
  * Date: 2/13/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report", "_futureElements", "requirementsSatisfied", "studentId", "programId", "runDate"})
+@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "runDate"})
 public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport {
 
     @XmlAttribute

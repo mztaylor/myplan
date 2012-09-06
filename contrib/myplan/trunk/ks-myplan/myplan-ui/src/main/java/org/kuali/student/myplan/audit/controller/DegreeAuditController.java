@@ -224,9 +224,22 @@ public class DegreeAuditController extends UifControllerBase {
                     programId = form.getProgramParamTacoma();
 
                 }
+
+                List<AuditProgramInfo> auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
+
+                AuditProgramInfo programInfo = null;
+                for( AuditProgramInfo meow : auditProgramInfoList )
+                {
+                    if( meow.getProgramId().equals( programId ))
+                    {
+                        programInfo = meow;
+                        break;
+                    }
+                }
+
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
                     ContextInfo context = new ContextInfo();
-                    AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
+                    AuditReportInfo report = degreeAuditService.runAudit(systemKey, programInfo, form.getAuditType(), context);
                     auditID = report.getAuditId();
                     // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
                     AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
