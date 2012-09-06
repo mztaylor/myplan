@@ -26,34 +26,45 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+        String studentId=null;
+        try{
+         studentId= UserSessionHelper.getAuditSystemKey();
+        }
+        catch (DataRetrievalFailureException e){
+            List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
+            return degreeAuditItems;
+        }
 
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
+        DegreeAuditService degreeAuditService = getDegreeAuditService();
 
-        try
-        {
-            DegreeAuditService service = getDegreeAuditService();
-            //  TODO: Calculate dates that make sense.
-            Date begin = new Date();
-            Date end = new Date();
-            String regid = UserSessionHelper.getStudentId();
-            List <AuditReportInfo> audits = service.getAuditsForStudentInDateRange(regid, begin, end, DegreeAuditConstants.CONTEXT_INFO);
-            for (AuditReportInfo audit : audits) {
+        if (degreeAuditService == null) {
+            throw new RuntimeException("Degree audit service handle was null.");
+        }
+
+        List <AuditReportInfo> audits=new ArrayList<AuditReportInfo>();
+        //  TODO: Calculate dates that make sense.
+        Date begin = new Date();
+        Date end = new Date();
+        try {
+            audits = degreeAuditService.getAuditsForStudentInDateRange(studentId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            String[] params = {};
+            /*throw new RuntimeException("Request for audit ids failed.", e);*/
+        }
+
+        /**
+         *  Make a list of DegreeAuditItem, but only include the most recent audit for a particular program.
+         */
+        Set<String> programSet = new HashSet<String>();
+        for (AuditReportInfo audit : audits) {
+            String programId = audit.getProgramId();
+            if ( ! programSet.contains(programId)) {
+                programSet.add(programId);
                 degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
             }
-//            Set<String> programSet = new HashSet<String>();
-//            for (AuditReportInfo audit : audits) {
-//                String programId = audit.getProgramId();
-//                if ( ! programSet.contains(programId)) {
-//                    programSet.add(programId);
-//                    degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
-//                }
-//            }
         }
-        catch( Exception e )
-        {
-            logger.error( e );
-        }
-
         return degreeAuditItems;
     }
 

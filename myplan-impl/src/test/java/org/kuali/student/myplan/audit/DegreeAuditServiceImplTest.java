@@ -66,8 +66,7 @@ public class DegreeAuditServiceImplTest {
 
             long start = System.currentTimeMillis();
             System.out.println("ugh");
-            AuditReportInfo report = degreeAuditService.runAudit( studentId, null, auditTypeKey, context );
-//            AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
+            AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
             String auditID = report.getAuditId();
 
             // TODO: service only returns audittext field for new requests, pending requests don't have this field

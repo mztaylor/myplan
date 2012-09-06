@@ -271,7 +271,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     private static final QName AUDIT_SERVICE_NAME = AuditRequestSvc.SERVICE;
 
     @Override
-    public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programInfo") AuditProgramInfo programInfo, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         try {
 
             if( studentId.startsWith( "1") && studentId.length() == 9 )
@@ -290,8 +290,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             int lineNo = 0;
             String origin = "M";
-            String programId = programInfo.getProgramId();
-            programId = programId.replace( '$', ' ' );
             MPAuditResponse response = port.mpRequestAudit(0, programId, lineNo, systemKey, origin);
             logger.info("error code: " + response.getErrorCode());
             logger.info("error msg: " + response.getErrorMsg());
@@ -1081,9 +1079,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Object[] objs = null;
             AuditProgramInfo auditProgramInfo = new AuditProgramInfo();
             objs = (Object[]) programs.get(i);
-            String programId = (String) objs[0];
-            programId = programId.replace( ' ', '$' );
-            auditProgramInfo.setProgramId( programId );
+            auditProgramInfo.setProgramId((String) objs[0]);
             auditProgramInfo.setProgramTitle((String) objs[1]);
             auditProgramInfoList.add(auditProgramInfo);
         }
