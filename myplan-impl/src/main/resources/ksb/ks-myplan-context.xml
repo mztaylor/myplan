@@ -78,6 +78,7 @@
     <!--</bean>-->
 
     <bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">
+        <property name="studentServiceClient" ref="studentServiceClient"/>
     </bean>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">

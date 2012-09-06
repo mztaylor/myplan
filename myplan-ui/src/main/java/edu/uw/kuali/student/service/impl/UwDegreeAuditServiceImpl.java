@@ -1,14 +1,13 @@
-package org.kuali.student.myplan.audit.service;
+package edu.uw.kuali.student.service.impl;
 
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
-import org.dom4j.tree.DefaultElement;
-import org.kuali.rice.core.api.util.ConcreteKeyValue;
-import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -48,15 +47,20 @@ import org.restlet.util.Series;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class
-    SWSDegreeAuditServiceImpl
+        UwDegreeAuditServiceImpl
 implements
-    DegreeAuditService
+        DegreeAuditService
 {
+    private StudentServiceClient studentServiceClient;
+
+    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
+        this.studentServiceClient = studentServiceClient;
+    }
 
     public static void main( String[] args )
         throws Exception
     {
-        SWSDegreeAuditServiceImpl impl = new SWSDegreeAuditServiceImpl();
+        UwDegreeAuditServiceImpl impl = new UwDegreeAuditServiceImpl();
 
 //        impl.getAuditsForStudentInDateRange( null, null, null, null );
 //        AuditReportInfo garok = impl.runAudit( null, null, null, null );
@@ -67,10 +71,10 @@ implements
     }
 
 
-    private final Logger logger = Logger.getLogger(SWSDegreeAuditServiceImpl.class);
+    private final Logger logger = Logger.getLogger(UwDegreeAuditServiceImpl.class);
     private static final String SERVICE_VERSION = "v4";
 
-    public SWSDegreeAuditServiceImpl() {
+    public UwDegreeAuditServiceImpl() {
     }
 
     String postAuditRequestURL = "https://ucswseval1.cac.washington.edu/student/v5/degreeaudit.xml";
@@ -115,17 +119,19 @@ implements
             stinker = stinker.replace("$pathway", pathway);
             stinker = stinker.replace("$regid", studentId);
 
-            Context context = new Context();
-            Series<Parameter> parameters = context.getParameters();
-            parameters.add("followRedirects", "false");
-            parameters.add("truststorePath", trustStoreFilename);
-            parameters.add("truststorePassword", trustStorePasswd);
-            parameters.add("keystorePath", keyStoreFilename);
-            parameters.add("keystorePassword", keyStorePasswd);
+//            Context context = new Context();
+//            Series<Parameter> parameters = context.getParameters();
+//            parameters.add("followRedirects", "false");
+//            parameters.add("truststorePath", trustStoreFilename);
+//            parameters.add("truststorePassword", trustStorePasswd);
+//            parameters.add("keystorePath", keyStoreFilename);
+//            parameters.add("keystorePassword", keyStorePasswd);
+//
+//            Client  client = new Client( Protocol.HTTPS );
+//            client.setContext( context );
 
-            Client  client = new Client( Protocol.HTTPS );
+            Client client = studentServiceClient.getClient();
 
-            client.setContext( context );
             Request request = new Request( Method.POST, postAuditRequestURL );
             StringRepresentation lame = new StringRepresentation( stinker );
             request.setEntity( lame );
@@ -231,19 +237,19 @@ implements
                 }
             }
 
-            Context context = new Context();
-            Series<Parameter> parameters = context.getParameters();
-            parameters.add("followRedirects", "false");
-            parameters.add("truststorePath", trustStoreFilename);
-            parameters.add("truststorePassword", trustStorePasswd);
-            parameters.add("keystorePath", keyStoreFilename);
-            parameters.add("keystorePassword", keyStorePasswd);
-            Map<String, String> namespaces = new HashMap<String, String>();
-            namespaces.put("x", "http://webservices.washington.edu/student/");
+//            Context context = new Context();
+//            Series<Parameter> parameters = context.getParameters();
+//            parameters.add("followRedirects", "false");
+//            parameters.add("truststorePath", trustStoreFilename);
+//            parameters.add("truststorePassword", trustStorePasswd);
+//            parameters.add("keystorePath", keyStoreFilename);
+//            parameters.add("keystorePassword", keyStorePasswd);
+//
+//            Client  client = new Client(Protocol.HTTPS);
+//            client.setContext( context );
 
-            Client  client = new Client(Protocol.HTTPS);
+            Client client = studentServiceClient.getClient();
 
-            client.setContext( context );
 
             String twiggy = swsURL + auditId;
             Request request = new Request( Method.GET, twiggy );
@@ -256,6 +262,8 @@ implements
                 SAXReader reader = new SAXReader();
                 Document document = reader.read(rep.getStream());
 
+                Map<String, String> namespaces = new HashMap<String, String>();
+                namespaces.put("x", "http://webservices.washington.edu/student/");
                 DefaultXPath ridiculousLinePath = new DefaultXPath( "/x:DegreeAudit/x:DegreeAuditReport/x:DegreeAuditLine/x:Line" );
                 DefaultXPath campusPath = new DefaultXPath( "/x:DegreeAudit/x:Campus" );
                 DefaultXPath majorPath = new DefaultXPath( "/x:DegreeAudit/x:MajorAbbreviation" );
@@ -338,19 +346,19 @@ implements
             SAXReader reader = new SAXReader();
             
             
-            Context context = new Context();
-            Series<Parameter> parameters = context.getParameters();
-            parameters.add("followRedirects", "false");
-            parameters.add("truststorePath", trustStoreFilename);
-            parameters.add("truststorePassword", trustStorePasswd);
-            parameters.add("keystorePath", keyStoreFilename);
-            parameters.add("keystorePassword", keyStorePasswd);
-            Map<String, String> namespaces = new HashMap<String, String>();
-            namespaces.put("x", "http://webservices.washington.edu/student/");
+//            Context context = new Context();
+//            Series<Parameter> parameters = context.getParameters();
+//            parameters.add("followRedirects", "false");
+//            parameters.add("truststorePath", trustStoreFilename);
+//            parameters.add("truststorePassword", trustStorePasswd);
+//            parameters.add("keystorePath", keyStoreFilename);
+//            parameters.add("keystorePassword", keyStorePasswd);
+//
+//            Client  client = new Client(Protocol.HTTPS);
+//
+//            client.setContext( context );
+            Client client = studentServiceClient.getClient();
 
-            Client  client = new Client(Protocol.HTTPS);
-
-            client.setContext( context );
 
             List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
@@ -364,6 +372,8 @@ implements
                 Representation rep2 = response2.getEntity();
                 Document document2 = reader.read(rep2.getStream());
 
+                Map<String, String> namespaces = new HashMap<String, String>();
+                namespaces.put("x", "http://webservices.washington.edu/student/");
                 DefaultXPath degreeAuditPath = new DefaultXPath( "//x:SearchResults/x:DegreeAudits/x:DegreeAudit" );
                 DefaultXPath datePreparedPath = new DefaultXPath( "x:DatePrepared" );
                 DefaultXPath majorPath = new DefaultXPath( "x:DegreeAuditURI/x:MajorAbbreviation" );
@@ -392,7 +402,7 @@ implements
 
                     AuditReportInfo info = new AuditReportInfo();
                     info.setAuditId( meaninglessDrivel );
-                    info.setProgramId( title );
+                    info.setProgramId(title);
                     info.setRunDate( bongo );
                     list.add( info );
 
@@ -453,6 +463,8 @@ implements
             Client  client = new Client(Protocol.HTTPS);
 
             client.setContext( context );
+//            Client client = studentServiceClient.getClient();
+
             Request request = new Request( Method.GET, listProgramsURL );
 
             //  Send the request and parse the result.
