@@ -135,6 +135,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     {
         try
         {
+            programId = programId.replace( '$', ' ' );
             // padding, because sometimes degree program ids are not 12 chars long
             programId = programId + "              ";
 
@@ -472,7 +473,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int i = 0; i < programs.size(); i++) {
             AuditProgramInfo auditProgramInfo = new AuditProgramInfo();
             Object[] objs = (Object[]) programs.get(i);
-            auditProgramInfo.setProgramId((String) objs[0]);
+            String programId = (String) objs[0];
+            programId = programId.replace( ' ', '$' );
+            auditProgramInfo.setProgramId( programId );
             auditProgramInfo.setProgramTitle((String) objs[1]);
             auditProgramInfoList.add(auditProgramInfo);
         }
