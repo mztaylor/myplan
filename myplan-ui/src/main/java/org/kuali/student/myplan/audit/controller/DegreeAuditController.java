@@ -210,8 +210,9 @@ public class DegreeAuditController extends UifControllerBase {
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
 //            String studentId = user.getPrincipalId();
-            String systemKey = UserSessionHelper.getAuditSystemKey();
-            if (StringUtils.hasText(systemKey)) {
+//            String systemKey = UserSessionHelper.getAuditSystemKey();
+            String regid = UserSessionHelper.getStudentId();
+            if (StringUtils.hasText(regid)) {
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
                 String programId = null;
                 if ("306".equals(form.getCampusParam())) {
@@ -226,7 +227,7 @@ public class DegreeAuditController extends UifControllerBase {
                 }
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
                     ContextInfo context = new ContextInfo();
-                    AuditReportInfo report = degreeAuditService.runAudit(systemKey, programId, form.getAuditType(), context);
+                    AuditReportInfo report = degreeAuditService.runAudit(regid, programId, form.getAuditType(), context);
                     auditID = report.getAuditId();
                     // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
                     AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
