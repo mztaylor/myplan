@@ -1,13 +1,13 @@
-package org.kuali.student.myplan.audit;
+package edu.uw.kuali.student.myplan.tests.unit;
 
+import edu.uw.kuali.student.service.impl.DegreeAuditServiceImpl;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
-import org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl;
-import org.kuali.student.myplan.util.CourseLinkBuilder;
+
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -16,16 +16,13 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import uachieve.apis.audit.Audit;
 
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
 
-import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT;
 import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants.AUDIT_TYPE_KEY_HTML;
 
 @RunWith(SpringJUnit4ClassRunner.class)
