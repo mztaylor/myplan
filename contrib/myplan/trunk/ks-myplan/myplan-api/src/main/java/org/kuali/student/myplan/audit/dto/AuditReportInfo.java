@@ -19,7 +19,7 @@ import java.util.List;
  * Date: 2/13/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "runDate"})
+@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "campus", "runDate"})
 public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport {
 
     @XmlAttribute
@@ -45,6 +45,9 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
 
     @XmlElement
     private String programId;
+
+    @XmlElement
+    private String campus;
 
     @XmlElement
     private Date runDate;
@@ -115,6 +118,16 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     public void setProgramId(String programId) {
         this.programId = programId;
     }
+
+    @Override
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus( String campus ) {
+        this.campus = campus;
+    }
+
 
     @Override
     public Date getRunDate() {

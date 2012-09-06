@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
+import org.kuali.rice.core.api.util.ConcreteKeyValue;
+import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
@@ -54,17 +57,13 @@ implements
         throws Exception
     {
         SWSDegreeAuditServiceImpl impl = new SWSDegreeAuditServiceImpl();
-        List<AuditProgramInfo> list = impl.getAuditPrograms( null );
-        for( AuditProgramInfo program : list )
-        {
-            System.out.println( program );
-        }
 
-        impl.getAuditsForStudentInDateRange( null, null, null, null );
+//        impl.getAuditsForStudentInDateRange( null, null, null, null );
 //        AuditReportInfo garok = impl.runAudit( null, null, null, null );
 
-
-//        impl.getAuditReport("/student/v5/degreeaudit/SEATTLE,A%20A,00,1,6,9136CCB8F66711D5BE060004AC494FFE.xml", null, null);
+        List<AuditProgramInfo> list = impl.getAuditPrograms( null );
+        AuditReportInfo info = impl.getAuditReport("/student/v5/degreeaudit/SEATTLE,A%20A,00,1,6,9136CCB8F66711D5BE060004AC494FFE.xml", null, null);
+        System.out.println( info.getCampus() );
     }
 
 
@@ -98,18 +97,23 @@ implements
     {
         try {
 
-            String level = "1";
-            String type = "2";
-            String major = "ACCTG";
-            String pathway = "00";
-            String regid = "D8D636BEB4CC482884420724BF152709";
+//            String level = "1";
+//            String type = "2";
+//            String major = "ACCTG";
+//            String pathway = "00";
+//            String regid = "D8D636BEB4CC482884420724BF152709";
+
+            String level = programInfo.getDegreeLevel();
+            String type = programInfo.getDegreeType();
+            String major = programInfo.getProgramId();
+            String pathway = programInfo.getPathway();
 
             String stinker = new String( requestTemplate );
             stinker = stinker.replace("$level", level);
             stinker = stinker.replace("$type", type);
             stinker = stinker.replace("$major", major);
             stinker = stinker.replace("$pathway", pathway);
-            stinker = stinker.replace("$regid", regid);
+            stinker = stinker.replace("$regid", studentId);
 
             Context context = new Context();
             Series<Parameter> parameters = context.getParameters();
@@ -252,9 +256,17 @@ implements
                 SAXReader reader = new SAXReader();
                 Document document = reader.read(rep.getStream());
 
-                DefaultXPath ridiculousLinePath = new DefaultXPath( "//x:DegreeAudit/x:DegreeAuditReport/x:DegreeAuditLine/x:Line" );
+                DefaultXPath ridiculousLinePath = new DefaultXPath( "/x:DegreeAudit/x:DegreeAuditReport/x:DegreeAuditLine/x:Line" );
+                DefaultXPath campusPath = new DefaultXPath( "/x:DegreeAudit/x:Campus" );
+                DefaultXPath majorPath = new DefaultXPath( "/x:DegreeAudit/x:MajorAbbreviation" );
                 ridiculousLinePath.setNamespaceURIs(namespaces);
+                campusPath.setNamespaceURIs(namespaces);
+                majorPath.setNamespaceURIs(namespaces);
 
+                Node campusNode = campusPath.selectSingleNode( document );
+                String campus = campusNode.getText();
+                Node majorNode = majorPath.selectSingleNode( document );
+                String major = majorNode.getText();
                 List<?> children = ridiculousLinePath.selectNodes( document );
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
@@ -270,9 +282,11 @@ implements
                 String html = sw.toString();
                 System.out.println( html );
                 AuditReportInfo info = new AuditReportInfo();
+                info.setAuditId( auditId );
+                info.setCampus( campus );
+                info.setProgramId( major );
                 AuditDataSource source = new AuditDataSource( html, auditId );
                 DataHandler handler = new DataHandler( source );
-                info.setAuditId( auditId );
                 info.setReport( handler );
                 return info;
             }
@@ -294,7 +308,7 @@ implements
     }
 
     String getStudentAuditListURL = "https://ucswseval1.cac.washington.edu/student/v5/degreeaudit.xml?reg_id=";
-    String personSearchURL = "https://ucswseval1.cac.washington.edu/student/v4/person.xml?student_system_key=";
+//    String personSearchURL = "https://ucswseval1.cac.washington.edu/student/v4/person.xml?student_system_key=";
 
     @Override
     public List<AuditReportInfo> getAuditsForStudentInDateRange(
@@ -307,11 +321,20 @@ implements
     {
         // https://ucswseval1.cac.washington.edu/student/v4/person?reg_id=&net_id=&student_number=&employee_id=&student_system_key=000083856
 //        String personSearchURL = "https://ucswseval1.cac.washington.edu/student/v4/person?student_system_key=000083856";
-        studentId = "000083856";
-        String ugh = personSearchURL + studentId;
+//        studentId = "000083856";
+//        String ugh = personSearchURL + studentId;
+
 
         try
         {
+            HashMap<String,String> genius = new HashMap<String,String>();
+            List<AuditProgramInfo> fantastic = getAuditPrograms( null );
+            for( AuditProgramInfo brilliant : fantastic )
+            {
+                genius.put( brilliant.getProgramId(), brilliant.getProgramTitle() );
+            }
+
+
             SAXReader reader = new SAXReader();
             
             
@@ -328,66 +351,58 @@ implements
             Client  client = new Client(Protocol.HTTPS);
 
             client.setContext( context );
-            Request request = new Request(Method.GET, ugh);
-
-            Response response = client.handle( request );
 
             List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
 
+            String lame = getStudentAuditListURL + studentId;
 
-            if( Status.isSuccess( response.getStatus().getCode() ))
+            Request request2 = new Request( Method.GET, lame );
+            Response response2 = client.handle( request2 );
+
+            if( Status.isSuccess( response2.getStatus().getCode() ))
             {
-                Representation rep = response.getEntity();
-                Document document = reader.read(rep.getStream());
+                Representation rep2 = response2.getEntity();
+                Document document2 = reader.read(rep2.getStream());
 
-                DefaultXPath regidPath = new DefaultXPath("//x:SearchResults/x:Persons/x:Person/x:RegID");
-                regidPath.setNamespaceURIs(namespaces);
+                DefaultXPath degreeAuditPath = new DefaultXPath( "//x:SearchResults/x:DegreeAudits/x:DegreeAudit" );
+                DefaultXPath datePreparedPath = new DefaultXPath( "x:DatePrepared" );
+                DefaultXPath majorPath = new DefaultXPath( "x:DegreeAuditURI/x:MajorAbbreviation" );
+                DefaultXPath meaninglessDrivelPath = new DefaultXPath( "x:DegreeAuditURI/x:Href" );
 
-                Node regidNode = regidPath.selectSingleNode( document );
-                String regid = regidNode.getText();
-                System.out.printf( "\n%s", regid );
+                degreeAuditPath.setNamespaceURIs(namespaces);
+                datePreparedPath.setNamespaceURIs(namespaces);
+                majorPath.setNamespaceURIs(namespaces);
+                meaninglessDrivelPath.setNamespaceURIs(namespaces);
 
-                String lame = getStudentAuditListURL + regid;
-                Request request2 = new Request( Method.GET, lame );
-                Response response2 = client.handle( request2 );
-
-                if( Status.isSuccess( response2.getStatus().getCode() ))
+                List<?> children = degreeAuditPath.selectNodes( document2 );
+                for( Object child : children )
                 {
-                    Representation rep2 = response2.getEntity();
-                    Document document2 = reader.read(rep2.getStream());
+                    Node datePreparedNode = datePreparedPath.selectSingleNode( child );
+                    Node majorNode = majorPath.selectSingleNode( child );
+                    Node meaninglessDrivelNode = meaninglessDrivelPath.selectSingleNode( child );
 
-                    DefaultXPath degreeAuditPath = new DefaultXPath( "//x:SearchResults/x:DegreeAudits/x:DegreeAudit" );
-                    DefaultXPath datePreparedPath = new DefaultXPath( "x:DatePrepared" );
-                    DefaultXPath majorPath = new DefaultXPath( "x:DegreeAuditURI/x:MajorAbbreviation" );
-                    DefaultXPath meaninglessDrivelPath = new DefaultXPath( "x:DegreeAuditURI/x:Href" );
+                    String datePrepared = datePreparedNode.getText();
+                    datePrepared = datePrepared.replace( "a.m.", "AM" );
+                    datePrepared = datePrepared.replace( "p.m.", "PM" );
+                    Date bongo = new SimpleDateFormat( "hh:mm a MM/DD/yy" ).parse( datePrepared );
+                    String major = majorNode.getText();
+                    String meaninglessDrivel = meaninglessDrivelNode.getText();
 
-                    degreeAuditPath.setNamespaceURIs(namespaces);
-                    datePreparedPath.setNamespaceURIs(namespaces);
-                    majorPath.setNamespaceURIs(namespaces);
-                    meaninglessDrivelPath.setNamespaceURIs(namespaces);
+                    String title = genius.get( major );
 
-                    List<?> children = degreeAuditPath.selectNodes( document2 );
-                    for( Object child : children )
-                    {
-                        Node datePreparedNode = datePreparedPath.selectSingleNode( child );
-                        Node majorNode = majorPath.selectSingleNode( child );
-                        Node meaninglessDrivelNode = meaninglessDrivelPath.selectSingleNode( child );
+                    AuditReportInfo info = new AuditReportInfo();
+                    info.setAuditId( meaninglessDrivel );
+                    info.setProgramId( title );
+                    info.setRunDate( bongo );
+                    list.add( info );
 
-                        String datePrepared = datePreparedNode.getText();
-                        String major = majorNode.getText();
-                        String meaninglessDrivel = meaninglessDrivelNode.getText();
-
-                        System.out.printf( "\n%s %s %s", datePrepared, major, meaninglessDrivel );
-                        AuditReportInfo info = new AuditReportInfo();
-                        list.add( info );
-
-                    }
                 }
             }
             return list;
         }
         catch( Exception e )
         {
+            logger.error( e );
             throw new OperationFailedException( "something bad happened", e );
         }
     }
@@ -483,6 +498,18 @@ implements
                     Node degreeTypeNode = degreeTypePath.selectSingleNode( extraNode );
                     Node pathwayNode = pathwayPath.selectSingleNode( extraNode );
                     String title = titleNode.getText();
+                    if( title.endsWith( " - Seattle" ))
+                    {
+                        title = title.substring( 0, title.length() - " - Seattle".length() );
+                    }
+                    else if( title.endsWith( " - Tacoma" ))
+                    {
+                        title = title.substring( 0, title.length() - " - Seattle".length() );
+                    }
+                    else if( title.endsWith( " - Bothell" ))
+                    {
+                        title = title.substring( 0, title.length() - " - Seattle".length() );
+                    }
                     String campus = campusNode.getText();
                     String abbrev = abbrevNode.getText();
                     String degreeLevel = degreeLevelNode.getText();
@@ -500,7 +527,7 @@ implements
                     map.put(abbrev, info);
                 }
                 List<AuditProgramInfo> list = new ArrayList<AuditProgramInfo>( map.values() );
-                Collections.sort( list );
+//                Collections.sort( list );
 
                 return list;
             }
@@ -518,6 +545,7 @@ implements
         }
         catch( Exception e )
         {
+            logger.error( e );
             throw new OperationFailedException( "something bad happened", e );
         }
     }
