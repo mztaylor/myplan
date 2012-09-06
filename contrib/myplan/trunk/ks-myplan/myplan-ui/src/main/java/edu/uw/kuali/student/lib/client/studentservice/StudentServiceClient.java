@@ -1,5 +1,6 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
+import org.restlet.Client;
 import org.restlet.representation.Representation;
 
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Set;
 public interface StudentServiceClient {
 
     public static final String SERVICE_NAME = "{MyPlan}StudentServiceClient";
+
+    public Client getClient();
 
     /**
      * Set the base URL for the service.

@@ -41,27 +41,33 @@ public class StudentServiceClientImpl
     private String baseUrl;
     private Client client;
 
-    public StudentServiceClientImpl() {
+    @Override
+    public Client getClient() {
+        return client;
     }
+
+//    public StudentServiceClientImpl() {
+//    }
 
     /**
      * Initialize for non-SSL connections.
      */
-    public StudentServiceClientImpl(String baseUrl) {
-        this();
-
-        logger.info("Initializing for [" + baseUrl + "] version [" + SERVICE_VERSION + "].");
-
-        setBaseUrl(baseUrl);
-
-        client = new Client(Protocol.HTTP);
-    }
+//    public StudentServiceClientImpl(String baseUrl) {
+//        this();
+//
+//        logger.info("Initializing for [" + baseUrl + "] version [" + SERVICE_VERSION + "].");
+//
+//        setBaseUrl(baseUrl);
+//
+//        client = new Client(Protocol.HTTP);
+//    }
 
     /**
      * Initialize for SSL connections.
      */
     public StudentServiceClientImpl(String baseUrl, String keyStoreFilename, String keyStorePasswd, String trustStoreFilename, String trustStorePasswd) {
-        this(baseUrl);
+//        this(baseUrl);
+        setBaseUrl(baseUrl);
 
         logger.info("Initializing SSL with truststore [" + trustStoreFilename + "] and keystore [" + keyStoreFilename + "].");
 
@@ -271,7 +277,7 @@ public class StudentServiceClientImpl
        return connectionEstablished;
     }
 
-    private String sendQuery(String url) throws ServiceException {
+    public String sendQuery(String url) throws ServiceException {
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
@@ -285,12 +291,11 @@ public class StudentServiceClientImpl
 
         //  !!! getEntity() can only be called once.
         Representation representation = response.getEntity();
-        String responseText = null;
         try {
-            responseText = representation.getText();
+            String responseText = representation.getText();
+            return responseText;
         } catch (IOException e) {
             throw new ServiceException("Could not read response.", e);
         }
-        return responseText;
     }
 }
