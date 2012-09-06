@@ -46,6 +46,19 @@ import uachieve.apis.requirement.dao.DprogDao;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceImpl implements DegreeAuditService {
+
+    public static void main( String[] args )
+        throws Exception
+    {
+        DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
+
+//        String studentId = "D8D636BEB4CC482884420724BF152709";
+//        String programId = "0ACCTG 0012";
+//        AuditReportInfo info = impl.runAudit( studentId, programId, null, null );
+
+        System.out.println( impl.padfront( " 1" ));
+    }
+
     private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
 
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
@@ -169,11 +182,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             {
                 SAXReader reader = new SAXReader();
                 org.dom4j.Document document = reader.read(rep.getStream());
+                String xml = document.asXML();
 
 
                 Map<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("x", "http://webservices.washington.edu/student/");
-                DefaultXPath jobidPath = new DefaultXPath("//x:DegreeAudit/x:DegreeAuditURI/x:JobId");
+                DefaultXPath jobidPath = new DefaultXPath("//x:DegreeAudit/x:JobId");
                 jobidPath.setNamespaceURIs(namespaces);
 
                 org.dom4j.Node jobidNode = jobidPath.selectSingleNode(document);
@@ -297,7 +311,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'A':
                 case 'B':
                     String victim = CourseLinkBuilder.makeLinks(darout, courseLinkTemplateStyle);
-                    victim.replace( " ", "&nbsp;" );
+//                    victim = padfront( victim );
                     pw.println(victim);
                     break;
 
@@ -314,7 +328,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'C':
                 case 'D':
                 case 'F':
-                    darout.replace( " ", "&nbsp;" );
                     pw.println(darout);
                     break;
 
@@ -329,7 +342,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 case 'm':
                 case 'U':
                 default:
-                    darout.replace( " ", "&nbsp;" );
                     pw.println(darout);
                     break;
             }
@@ -345,6 +357,25 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     }
 
+    String padfront( String source )
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean front = true;
+        for( int nth = 0; nth < source.length(); nth++ )
+        {
+            char c = source.charAt( nth );
+            if( front && c == ' ' )
+            {
+                sb.append( "&nbsp;" );
+            }
+            else
+            {
+                front = false;
+                sb.append( c );
+            }
+        }
+        return sb.toString();
+    }
 
 
     public boolean equals( Object victim, Object... list ) {
