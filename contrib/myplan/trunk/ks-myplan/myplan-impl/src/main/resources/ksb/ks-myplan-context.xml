@@ -70,15 +70,12 @@
 
     <tx:annotation-driven transaction-manager="uachieve.txManager"/>
 
-    <!--<bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">-->
-        <!--<property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>-->
-        <!--<property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>-->
-        <!--<property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>-->
-        <!--<property name="dprogDao" ref="uachieveapi.dprogDao"/>-->
-    <!--</bean>-->
-
     <bean id="degreeAuditService" class="${ks.myplan.degreeAudit.impl}">
-        <property name="studentServiceClient" ref="studentServiceClient"/>
+        <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
+        <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
+        <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
+        <property name="dprogDao" ref="uachieveapi.dprogDao"/>
+        <!--<property name="studentServiceClient" ref="studentServiceClient"/>        -->
     </bean>
 
     <bean id="ks.exp.degreeAuditService" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
