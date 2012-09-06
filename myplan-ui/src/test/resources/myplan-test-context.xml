@@ -137,19 +137,4 @@
         </property>
     </bean>
 
-
-    <!--
-
-//    private transient CourseOfferingService courseOfferingService;
-
-//    private transient AcademicCalendarService academicCalendarService;
-
-//    private transient AtpService atpService;
-
-    private transient CourseService courseService;
-
-    private transient StatementService statementService;
-    private transient EnumerationManagementService enumService;
-        -->
-
 </beans>
