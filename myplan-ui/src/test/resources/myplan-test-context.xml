@@ -94,7 +94,7 @@
     <tx:annotation-driven transaction-manager="uachieve.txManager"/>
     <bean id="velocity" class="org.apache.velocity.app.Velocity" />
 
-    <bean id="degreeAuditService" class="org.kuali.student.myplan.audit.service.DegreeAuditServiceImpl">
+    <bean id="degreeAuditService" class="edu.uw.kuali.student.service.impl.DegreeAuditServiceImpl">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
         <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>

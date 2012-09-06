@@ -1,11 +1,14 @@
-package org.kuali.student.myplan.audit.service;
+package edu.uw.kuali.student.service.impl;
 
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
@@ -72,6 +75,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private DprogDao dprogDao;
 
+    private StudentServiceClient studentServiceClient;
 
 
     public DprogDao getDprogDao() {
@@ -147,29 +151,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             stinker = stinker.replace("$pathway", pathway);
             stinker = stinker.replace("$regid", studentId);
 
-            String postAuditRequestURL = "https://ucswseval1.cac.washington.edu/student/v5/degreeaudit.xml";
+            String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
 
-
-            String trustStoreFilename = "/Users/jasonosgood/kuali/main/certs/uw.jts";
-            String trustStorePasswd = "secret";
-            String keyStoreFilename = "/Users/jasonosgood/kuali/main/certs/uwkstest.jks";
-            String keyStorePasswd = "changeit";
-
-            Context context = new Context();
-            Series<Parameter> parameters = context.getParameters();
-            parameters.add("followRedirects", "false");
-            parameters.add("truststorePath", trustStoreFilename);
-            parameters.add("truststorePassword", trustStorePasswd);
-            parameters.add("keystorePath", keyStoreFilename);
-            parameters.add("keystorePassword", keyStorePasswd);
-
-            Client client = new Client( Protocol.HTTPS );
-            client.setContext( context );
-
-//            Client client = studentServiceClient.getClient();
+            Client client = studentServiceClient.getClient();
 
             Request request = new Request( Method.POST, postAuditRequestURL );
-
 
             StringRepresentation lame = new StringRepresentation( stinker );
             request.setEntity( lame );
@@ -499,5 +485,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return new String[]{termYear[0].trim(), termYear[1].trim()};
     }
 
+    public StudentServiceClient getStudentServiceClient() {
+        return studentServiceClient;
+    }
 
+    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
+        this.studentServiceClient = studentServiceClient;
+    }
 }
