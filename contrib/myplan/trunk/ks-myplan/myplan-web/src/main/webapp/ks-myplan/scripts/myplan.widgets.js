@@ -94,7 +94,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     }
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.prop('outerHTML'),
+        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
         themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
         manageMouseEvents: true,
         selectable: true,
@@ -178,7 +178,7 @@ function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.prop('outerHTML'),
+        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
         themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
         manageMouseEvents: true,
         selectable: true,
@@ -251,7 +251,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
     }
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.prop('outerHTML'),
+        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
         themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
         manageMouseEvents: true,
         selectable: true,
@@ -345,7 +345,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     });
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.prop('outerHTML'),
+        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
         themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
         manageMouseEvents: true,
         selectable: true,
@@ -433,7 +433,7 @@ function openDialog(sText, e, close) {
     });
 
     var popupOptionsDefault = {
-        innerHtml: dialogHtml.prop('outerHTML'),
+        innerHtml: dialogHtml.wrap("<div>").parent().clone().html(),
         themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
         manageMouseEvents: true,
         selectable: true,
