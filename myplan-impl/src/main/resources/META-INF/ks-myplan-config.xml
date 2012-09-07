@@ -79,7 +79,7 @@
 
     <!--# jTDS-->
     <param name="uachieveapi.jdbc.driver">net.sourceforge.jtds.jdbc.Driver</param>
-    <param name="uachieveapi.jdbc.url">jdbc:jtds:sqlserver://dasql2.admin.washington.edu/MyPlanTest;ssl=require</param>
+    <param name="uachieveapi.jdbc.url">jdbc:jtds:sqlserver://uachievesqlserver</param>
 
     <!--# Microsoft JDBC-->
     <!--
