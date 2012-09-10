@@ -502,7 +502,7 @@ input.myplan-add:hover {
     background: url('../images/iconWarning.png') no-repeat 4px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
-    background: #a9a9a9;
+    background: #e3f0fe;
     cursor:pointer;
 }
 .myplan-carousel-list ul li .uif-header {
@@ -881,14 +881,24 @@ table.myplan-course-search-results-datatable thead tr th {
     font-size: 10px;
     text-transform: none;
     background: transparent;
+    cursor: default;
 }
-table.myplan-course-search-results-datatable thead tr th.sorting_desc,
-table.myplan-course-search-results-datatable thead tr th.sorting_asc {
+table.myplan-course-search-results-datatable thead tr th[aria-sort='ascending'],
+table.myplan-course-search-results-datatable thead tr th[aria-sort='descending'] {
     color: #06c;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper {
     display: inline;
+    cursor: default;
+}
+table.myplan-course-search-results-datatable thead tr th.sortable,
+table.myplan-course-search-results-datatable thead tr th.sortable .DataTables_sort_wrapper {
     cursor: pointer;
+}
+table.myplan-course-search-results-datatable thead tr th.sortable:hover,
+table.myplan-course-search-results-datatable thead tr th.sortable .DataTables_sort_wrapper:hover {
+    color: #06c;
+    text-decoration: underline;
 }
 table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrapper .ui-icon {
     display: inline-block;
@@ -1132,7 +1142,7 @@ table.myplan-course-search-results-datatable .blockUI {
     border-top: dotted 1px #ccc;
 }
 .myplan-section .uif-listCollectionGroup ul li:hover {
-    background: #F5F5F5;
+    background: #e3f0fe;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 
@@ -1252,7 +1262,7 @@ table.myplan-course-search-results-datatable .blockUI {
     border: none;
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr:hover {
-    background-color: #ddd;
+    background-color: #e3f0fe;
 }
 .myplan-messages-detail .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     line-height: normal;
@@ -1306,7 +1316,14 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-plan-heading > .uif-boxLayout {
     margin: auto;
-    width: 275px;
+    width: 298px;
+}
+.myplan-plan-loader div.blockElement {
+    color: #39275b !important;
+    font-weight: bold !important;
+    left: 200px !important;
+    top: 20px !important;
+    z-index: inherit !important;
 }
 .myplan-audit-widget select {
     width: 180px;

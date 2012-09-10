@@ -433,11 +433,11 @@
                       p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan">
+                            <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
                                 <property name="actionScript"
                                           value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
                             </bean>
-                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="Delete">
+                            <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Delete">
                                 <property name="actionScript"
                                           value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
                             </bean>
@@ -841,20 +841,33 @@
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jQuery('#movePlannedCourse')
+                                                jQuery('#copyPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                     }).subscribe('ERROR', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                     });"/>
                                         </bean>
+                                        <bean p:id="copyPastPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                              p:render="@{setToPlanning eq false and planItemId ne null ? true : false}"
+                                              p:actionLabel="Copy">
+                                            <property name="actionScript"
+                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jQuery('#copyPastPlannedCourse')
+                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'copyPastPlannedCourse', true, true);
+                                                    }).subscribe('ERROR', function(data){
+                                                        fnDisplayMessage(data.message, data.cssClass, 'copyPastPlannedCourse', true, true);
+                                                    });"/>
+                                        </bean>
                                         <bean p:id="copyAcademicCourse" parent="Uif-PrimaryActionButton-Small"
-                                              p:render="@{setToPlanning eq false ? true : false}"
+                                              p:render="@{setToPlanning eq false and planItemId eq null ? true : false}"
                                               p:actionLabel="Copy">
                                             <property name="actionScript"
                                                       value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e);"/>
                                             <property name="onDocumentReadyScript" value="
-                                                jQuery('#movePlannedCourse')
+                                                jQuery('#copyAcademicCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
                                                         fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
                                                     });"/>
@@ -1286,7 +1299,7 @@
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>
                             <bean parent="Uif-MessageField"
                                   p:cssClasses="myplan-plan-header fl-text-bold fl-font-size-140"
-                                  p:style="line-height:24px !important; height:24px; margin:0; text-align:center; width:227px;">
+                                  p:style="line-height:24px !important; height:24px; margin:0; text-align:center; width:250px;">
                                 <property name="message">
                                     <bean parent="Uif-Message" p:messageText="Academic Year"/>
                                 </property>

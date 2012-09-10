@@ -142,8 +142,8 @@ function searchForCourses(id, parentId) {
         aLengthMenu: [20,50,100],
         aaSorting : [],
         aoColumns: [
-            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'myplan-text-nowrap', 'sWidth':'73px', 'sType': 'string'},
-            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sWidth':'170px'},
+            {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'myplan-text-nowrap sortable', 'sWidth':'73px', 'sType': 'string'},
+            {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sClass':'sortable', 'sWidth':'170px'},
             {'sTitle':'Credits', 'bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
             {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'76px'},
             {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'66px'},
@@ -192,7 +192,7 @@ function searchForCourses(id, parentId) {
                 data: aoData,
                 success: fnCallback,
                 statusCode: {
-                    404: function() {
+                    500: function() {
                         window.location = '/student/';
                     }
                 }

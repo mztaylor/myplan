@@ -88,7 +88,6 @@
                 <bean parent="Uif-Page" p:id="message_dialog_response_page"
                       p:headerText="Leave a Message for @{studentName}.">
                     <property name="onDocumentReadyScript" value="
-                        jQuery('button#leaveMessageButton').attr('disabled', true);
                         jQuery('form input, form textarea').keyup(function() {
                             var empty = false;
                             jQuery('form .myplan-required').each(function() {
@@ -128,7 +127,6 @@
                 <bean parent="Uif-Page" p:id="comment_dialog_response_page"
                       p:headerText="View Message">
                     <property name="onDocumentReadyScript" value="
-                        jQuery('button#postCommentButton').attr('disabled', true);
                         jQuery('form input, form textarea').keyup(function() {
                             var empty = false;
                             jQuery('form .myplan-required').each(function() {
@@ -162,7 +160,7 @@
                             <ref bean="comment_dialog_message"/>
                             <ref bean="comment_dialog_message_count"/>
                             <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Post a Comment" p:methodToCall="addComment" p:style="margin:0 0 0 100px;" p:focusOnIdAfterSubmit="commenting_textbox_control">
+                                  p:actionLabel="Post a Comment" p:methodToCall="addComment" p:style="margin:0 0 0 100px;" p:disabled="true" p:focusOnIdAfterSubmit="commenting_textbox_control">
                             </bean>
                             <bean id="hidden_messageId" parent="Uif-InputField" p:propertyName="messageId"
                                   p:defaultValue="@{messageId}" p:style="display:none;">
@@ -442,7 +440,7 @@
     <bean id="message_actions" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton" p:style="margin:0 0 0 100px;"
+                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton" p:disabled="true" p:style="margin:0 0 0 100px;"
                       p:actionLabel="Leave a Message" p:methodToCall="addMessage" p:render="@{feedBackMode eq false ? true : false}">
                 </bean>
                 <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:style="margin: 0 0 0 20px;" p:render="@{feedBackMode eq false ? true : false}">
@@ -513,7 +511,7 @@
                                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                     <property name="replacement">
                                         <list>
-                                            <bean id="leave_message_button" parent="Uif-PrimaryActionButton" p:actionLabel="Leave a Message" p:style="padding:0px 10px; margin:5px;">
+                                            <bean id="leave_message_button" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Leave a Message" p:style="margin:5px;">
                                                 <property name="actionScript" value=""/>
                                                 <property name="onDocumentReadyScript" value="
                                                     myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
@@ -669,7 +667,7 @@
     </bean>
 
     <bean id="messages_summary_footer" parent="Uif-VerticalBoxSection" p:header.render="false"
-          p:style="padding: 6px 4px;">
+          p:style="padding: 6px 10px;">
         <property name="items">
             <list>
                 <bean parent="Uif-Link">
