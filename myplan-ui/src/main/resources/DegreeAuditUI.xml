@@ -198,12 +198,13 @@
     </bean>
 
     <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection"
-          p:header.render="false" p:style="padding: 6px 4px;">
+          p:header.render="false" p:style="padding: 6px 10px">
+        <property name="render"
+                  value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
-                    <property name="render"
-                              value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
+
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-align-center</value>

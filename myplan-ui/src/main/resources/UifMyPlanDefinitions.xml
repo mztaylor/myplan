@@ -251,6 +251,7 @@
                 <entry key="align" value="center"/>
                 <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'center', hidden: false }"/>
+                <entry key="closingDelay" value="250"/>
             </map>
         </property>
     </bean>
@@ -263,6 +264,7 @@
                 <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'right', hidden: false }"/>
                 <entry key="themeMargins" value="{total:'22px', difference:'10px'}"/>
+                <entry key="closingDelay" value="250"/>
             </map>
         </property>
     </bean>
@@ -275,6 +277,7 @@
                 <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'left', hidden: false }"/>
                 <entry key="themeMargins" value="{total:'22px', difference:'10px'}"/>
+                <entry key="closingDelay" value="250"/>
             </map>
         </property>
     </bean>

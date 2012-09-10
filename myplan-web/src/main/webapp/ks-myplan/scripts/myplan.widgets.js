@@ -315,7 +315,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
         elementToBlock.unblock({onUnblock: function () {
             if (jQuery("#" + id + "_popup").length) {
                 popupBox.SetBubblePopupInnerHtml(component);
-                jQuery("#" + popupBoxId + ".jquerybubblepopup-innerHtml").wrapInner(planForm);
+                jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
                 if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
                     popupBox.RemoveBubblePopup();
@@ -669,7 +669,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                 }
                 else {
                     var elementBlockingDefaults = {
-                        message: '<img src="../ks-myplan/images/ajaxLoader.gif" alt="loading..." />',
+                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
                         fadeIn:  0,
                         fadeOut:  0,
                         overlayCSS:  {

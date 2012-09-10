@@ -70,7 +70,8 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '250px'
+                width: '250px',
+                closingDelay: 250
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -91,7 +92,8 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '250px'
+                width: '250px',
+                closingDelay: 250
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -111,7 +113,8 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '250px'
+                width: '250px',
+                closingDelay: 250
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -131,7 +134,8 @@
                 },
                 themeName: 'black',
                 selectable: true,
-                width: '250px'
+                width: '250px',
+                closingDelay: 250
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -157,7 +161,8 @@
                     },
                     themeName: 'black',
                     selectable: true,
-                    width: '250px'
+                    width: '250px',
+                    closingDelay: 250
                 }, true, false);
             "/>
         <!--<property name="toolTip">
