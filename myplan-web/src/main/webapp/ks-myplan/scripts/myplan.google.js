@@ -1,22 +1,18 @@
-var account;
+var profile;
+var subdomain = document.location.hostname.split('.')[0];
 
-switch(document.location.hostname.split('.')[0]) {
-    case 'uwksdev01':
-        account = '1';
-        break;
-    case 'uwkseval':
-        account = '2';
-        break;
-    case 'uwkstrn01':
-        account = '3';
-        break;
-    case 'uwstudent':
-        account = '4';
-        break;
+if (subdomain.indexOf("uwksdev") != -1) {
+    profile = "1";
+} else if (subdomain.indexOf("uwkseval") != -1) {
+    profile = "2";
+} else if (subdomain.indexOf("uwkstrn") != -1) {
+    profile = "3";
+} else if (subdomain.indexOf("uwksprod") != -1 || subdomain.indexOf("uwstudent") != -1) {
+    profile = "4";
 }
 
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-33432259-' + account]);
+_gaq.push(['_setAccount', 'UA-33432259-' + profile]);
 _gaq.push(['_trackPageview']);
 
 (function () {
