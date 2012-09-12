@@ -31,6 +31,7 @@ public class CourseLinkBuilder {
         TEST("[{params}::{title}::{label}]");
 
         private final String templateText;
+
         LINK_TEMPLATE(String tt) {
             templateText = tt;
         }
@@ -40,6 +41,7 @@ public class CourseLinkBuilder {
         }
 
     }
+
     //  This expression defines a curriculum code up to 8 characters long: "CHEM", "A A", "A&E", "A &E", "FRENCH"
 //    private static final String curriculumAbbreviationRegex = "[A-Z]{1}[A-Z &]{1,6}[A-Z]{1}";
     private static final String curriculumAbbreviationRegex = "[A-Z]{1}[A-Z &]{2,7}";
@@ -93,10 +95,10 @@ public class CourseLinkBuilder {
 
     /**
      * Parses requirements lines of degree audit reports and replaces course code text into course code links.
-     *
+     * <p/>
      * This method allow a link template to be specified. This is to make testing easier.
      *
-     * @param rawText A line of text to transform.
+     * @param rawText  A line of text to transform.
      * @param template The link template to use.
      * @return
      */
@@ -122,6 +124,7 @@ public class CourseLinkBuilder {
 
     /**
      * Parses requirements lines of degree audit reports and replaces course code text into course code links.
+     *
      * @param rawText
      * @return
      */
@@ -130,15 +133,15 @@ public class CourseLinkBuilder {
     }
 
     /**
-     *  Matches regular expression against a line of text saving the matched text and the
-     *  calculated link text into a hash map as a key/value pair. Once all regular expressions have
-     *  been evaluated link substitutions are are made in the original text. The original text is never
-     *  altered (except when it contains " OR ").
-     *
-     *  A fundamental assumption wihin this method is that the line of raw text only contains a single
-     *  curriculum abbreviation or no curriculum abbreviation at all and therefore any 3 digit are
-     *  assumed to belong to that curriculum abbreviation. If that constraint isn't followed the generated
-     *  links might be inaccurate.
+     * Matches regular expression against a line of text saving the matched text and the
+     * calculated link text into a hash map as a key/value pair. Once all regular expressions have
+     * been evaluated link substitutions are are made in the original text. The original text is never
+     * altered (except when it contains " OR ").
+     * <p/>
+     * A fundamental assumption wihin this method is that the line of raw text only contains a single
+     * curriculum abbreviation or no curriculum abbreviation at all and therefore any 3 digit are
+     * assumed to belong to that curriculum abbreviation. If that constraint isn't followed the generated
+     * links might be inaccurate.
      */
     private static String parseSublines(String rawText, LINK_TEMPLATE template) {
 
@@ -171,37 +174,52 @@ public class CourseLinkBuilder {
         boolean isUndoOrAnd = false;
         if (matcher.find()) {
             rawText = rawText.replace(" OR ", " or ");
+            rawText = rawText.replace(" TO ", " to ");
             isUndoOrAnd = true;
         }
 
         //  Look for simple course codes.
-		matcher = simpleCourseCodePattern.matcher(rawText);
-		while (matcher.find()) {
-			String courseCode = matcher.group(1);
+        matcher = simpleCourseCodePattern.matcher(rawText);
+        while (matcher.find()) {
+            String courseCode = matcher.group(1);
             placeHolders.put(courseCode, makeLink(courseCode, courseCode, template));
-		}
+        }
 
         //  Look for 3 digit numbers
         matcher = courseNumberPattern.matcher(rawText);
-		while (matcher.find()) {
+        boolean isCourseNumberPattern = false;
+        while (matcher.find()) {
+            isCourseNumberPattern = true;
             String number = matcher.group(1);
             String courseCode = String.format("%s %s", curriculumAbbreviation, number);
             placeHolders.put(number, makeLink(courseCode, number, template));
-		}
+        }
 
         //  Substitute plain text with links.
-        for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
-            rawText = rawText.replace(entry.getKey(), entry.getValue());
+        if (isCourseNumberPattern) {
+            for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
+                rawText =  rawText.replace(entry.getKey(), ";"+entry.getKey()+";");
+            }
+
+            for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
+                rawText =  rawText.replace(";"+entry.getKey()+";", entry.getValue());
+            }
+        } else {
+            for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
+                rawText = rawText.replace(entry.getKey(), entry.getValue());
+            }
         }
 
         if (isUndoOrAnd) {
             rawText = rawText.replace(" or ", " OR ");
+            rawText = rawText.replace(" to ", " TO ");
         }
         return rawText;
     }
 
     /**
      * Break up a line of text into sub-lines which begin with a course abbreviation.
+     *
      * @param rawText
      * @return
      */
@@ -212,7 +230,7 @@ public class CourseLinkBuilder {
         //  Select the text that comes before any course codes.
         if (matcher.find()) {
             String pfx = matcher.group(1);
-            if ( ! StringUtils.isEmpty(pfx)) {
+            if (!StringUtils.isEmpty(pfx)) {
                 tokens.add(pfx);
             }
         }
@@ -239,7 +257,7 @@ public class CourseLinkBuilder {
      * @param template
      * @return
      */
-    private static String makeLink (String courseCode, String label, LINK_TEMPLATE template) {
+    private static String makeLink(String courseCode, String label, LINK_TEMPLATE template) {
         String courseTitle = "Unknown";
         String courseId = "unknown";
 
@@ -249,13 +267,12 @@ public class CourseLinkBuilder {
 
         String link = null;
 
-        if ( ! template.equals(LINK_TEMPLATE.TEST)) {
+        if (!template.equals(LINK_TEMPLATE.TEST)) {
             try {
                 Map<String, String> results = getCourseInfo(code, number);
                 if (results.size() > 0) {
                     courseId = results.get("courseId");
-                    if( courseId.contains( "\""))
-                    {
+                    if (courseId.contains("\"")) {
                         courseId = courseId.replace("\"", "\\\"");
                     }
                     courseTitle = results.get("courseTitle");
