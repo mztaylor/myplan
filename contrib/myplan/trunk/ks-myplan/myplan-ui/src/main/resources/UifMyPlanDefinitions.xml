@@ -437,7 +437,7 @@
         <property name="onDocumentReadyScript"
                   value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
                          jQuery('#degree_audits_list').subscribe('NEW_AUDIT', function(data){
-                            myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                            myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
                          });
                   "/>
     </bean>
