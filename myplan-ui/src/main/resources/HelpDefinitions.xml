@@ -62,12 +62,13 @@
         <property name="onDocumentReadyScript" value="
             myplanCreateTooltip('completed_help_icon_line@{#index}', 'Courses that you registered for in a quarter that is now complete.',{
                 position: 'top',
-                align: 'center',
+                align: 'left',
                 alwaysVisible: false,
                 tail: {
-                    align: 'center',
+                    align: 'left',
                     hidden: false
                 },
+                themeMargins: {total:'22px', difference:'10px'},
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
@@ -84,12 +85,13 @@
         <property name="onDocumentReadyScript" value="
             myplanCreateTooltip('registered_help_icon_line@{#index}', 'Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration &lt;/a&gt;page.',{
                 position: 'top',
-                align: 'center',
+                align: 'left',
                 alwaysVisible: false,
                 tail: {
-                    align: 'center',
+                    align: 'left',
                     hidden: false
                 },
+                themeMargins: {total:'22px', difference:'10px'},
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
@@ -105,12 +107,13 @@
         <property name="onDocumentReadyScript" value="
             myplanCreateTooltip('planned_help_icon_line@{#index}', 'MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;',{
                 position: 'top',
-                align: 'center',
+                align: 'left',
                 alwaysVisible: false,
                 tail: {
-                    align: 'center',
+                    align: 'left',
                     hidden: false
                 },
+                themeMargins: {total:'22px', difference:'10px'},
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
@@ -126,12 +129,13 @@
         <property name="onDocumentReadyScript" value="
             myplanCreateTooltip('backup_help_icon_line@{#index}', 'Courses you are considering in case a planned course is full or unavailable.',{
                 position: 'top',
-                align: 'center',
+                align: 'left',
                 alwaysVisible: false,
                 tail: {
-                    align: 'center',
+                    align: 'left',
                     hidden: false
                 },
+                themeMargins: {total:'22px', difference:'10px'},
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
@@ -153,12 +157,13 @@
         <property name="onDocumentReadyScript" value="
                 myplanCreateTooltip('total_credits_help_icon_line@{#index}', '',{
                     position: 'top',
-                    align: 'center',
+                    align: 'left',
                     alwaysVisible: false,
                     tail: {
-                        align: 'center',
+                        align: 'left',
                         hidden: false
                     },
+                    themeMargins: {total:'22px', difference:'10px'},
                     themeName: 'black',
                     selectable: true,
                     width: '250px',
