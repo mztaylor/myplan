@@ -1142,7 +1142,7 @@ table.myplan-course-search-results-datatable .blockUI {
     border-top: dotted 1px #ccc;
 }
 .myplan-section .uif-listCollectionGroup ul li:hover {
-    background: #e3f0fe;
+    background-color: #e3f0fe;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 
@@ -1394,10 +1394,6 @@ label.scheduled {
 }
 .fancybox-skin {
     background: #fff !important;
-}
-/* Fix overlay ########################################################################### */
-body div.blockElement {
-    z-index: 1001 !important;
 }
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
