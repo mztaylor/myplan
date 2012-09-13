@@ -119,7 +119,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String message="You took this course in ";
                         if(UserSessionHelper.isAdviser()){
                             String user=UserSessionHelper.getStudentName();
-                            message= user+". took this course on ";
+                            message= user+" took this course in ";
                         }
                         sb = sb.append("<dd>").append(message)
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")

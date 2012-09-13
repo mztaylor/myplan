@@ -258,7 +258,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                         //.append(".html?external=true&dialogMode=true#");
 
                 if (campusLocationString.equals("Seattle")) { //Seattle
-                    urlBuilder.append(curriculumCode.toLowerCase());
+                    urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
                 } else if (campusLocationString.equals("Bothell")) { //Bothell
                     urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));
                 } else if (campusLocationString.equals("Tacoma")) { //Tacoma
