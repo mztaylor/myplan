@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Error 403 - Page Forbidden</title>
+    <title>Incompatible Browser</title>
     <link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
     <link href="/student/ks-myplan/css/error.css" rel="stylesheet" type="text/css">
 </head>
