@@ -592,7 +592,9 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
             }
 
             if (highlightId) {
-                jQuery("[id^='" + highlightId + "']").parents('li').animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 3000);
+                jQuery("[id^='" + highlightId + "']").parents('li').animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function() {
+                    jQuery(this).removeAttr("style");
+                });
             }
         }});
     };
