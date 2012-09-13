@@ -238,13 +238,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
             /*When planned List or backup list are equal to null then show message "Saved to Your Bookmark List on 8/15/2012"*/
             if (courseDetails.getPlannedList() == null && courseDetails.getBackupList() == null) {
-                String message="Saved to your ";
+                String message="";
                 if(UserSessionHelper.isAdviser()){
                     String user=UserSessionHelper.getStudentName();
                     message= "Saved to "+user+"'s. ";
                 }
                 sb = sb.append("<dd>").append(message)
-                        .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked Courses").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
+                        .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
             }
             /*When planned List or backup list are not null then show message "Had saved to Your Courses List on 8/15/2012"*/
             if (courseDetails.getPlannedList() != null || courseDetails.getBackupList() != null) {

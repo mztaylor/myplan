@@ -159,7 +159,7 @@
                 </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
                       p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
-                      p:groupBeginDelimiter="This course is in your" p:groupEndDelimiter="" p:linkSeparator="">
+                      p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
                     <!--<property name="onDocumentReadyScript"
                               value="jQuery('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){
                                   if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
@@ -174,9 +174,13 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="Bookmarked Courses List"
+                            <bean parent="Uif-Link" p:linkText="Bookmarked"
                                   p:href="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"
-                                  p:title="Bookmarked Courses List" p:target=""/>
+                                  p:title="Bookmarked" p:target="" p:style="margin: 0px;"/>
+                            <bean parent="Uif-Message"
+                                  p:messageText="on @{dataObject.savedItemDateCreated}">
+                            </bean>
+
                         </list>
                     </property>
                 </bean>
