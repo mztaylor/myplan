@@ -1000,18 +1000,23 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
     padding: 0 6px;
 }
-.dataTables_wrapper .dataTables_paginate .ui-button.ui-state-default {
-    color: #999;
+.dataTables_wrapper .dataTables_paginate a.ui-button.ui-state-default {
+    color: #0066cc;
+}
+.dataTables_wrapper .dataTables_paginate a.ui-button.ui-state-default:hover {
+    text-decoration: underline !important;
 }
 .dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled.previous,
 .dataTables_wrapper .dataTables_paginate .ui-button.ui-state-disabled.next {
     opacity: 0.24;
+    color: #999;
 }
 .dataTables_wrapper .dataTables_paginate.paging_full_numbers > span > .ui-button.ui-state-disabled {
     font-weight: bold;
     color: #000;
     font-size: 14px;
     opacity: 1;
+    text-decoration: none !important;
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
