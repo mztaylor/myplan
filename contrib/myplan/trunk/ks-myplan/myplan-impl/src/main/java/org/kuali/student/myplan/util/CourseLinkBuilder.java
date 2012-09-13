@@ -72,6 +72,10 @@ public class CourseLinkBuilder {
     private static final String uppercaseOrAndRegex = "\\d{3} OR \\d{3}";
     private static final Pattern uppercaseOrAndPattern;
 
+    //  Matches " OR " or " AND " preceded and followed by 3 digits.
+    private static final String uppercaseToRegex = "\\d{3} TO \\d{3}";
+    private static final Pattern uppercaseToPattern;
+
     //  Groups curriculum abbreviation with a three digit number not followed by a dash: "E&C N 123", "CH M 101 and CHEM 102", but not "CHEM 101-102"
     private static final String simpleCourseCodeRegex = String.format("(?<=^|[ (])(%s\\d{3})", curriculumAbbreviationRegex);
     private static final Pattern simpleCourseCodePattern;
@@ -91,6 +95,7 @@ public class CourseLinkBuilder {
         courseNumberPattern = Pattern.compile(courseNumberRegex);
         courseNumberRangePattern = Pattern.compile(courseNumberRangeRegex);
         uppercaseOrAndPattern = Pattern.compile(uppercaseOrAndRegex);
+        uppercaseToPattern = Pattern.compile(uppercaseToRegex);
     }
 
     /**
@@ -174,8 +179,13 @@ public class CourseLinkBuilder {
         boolean isUndoOrAnd = false;
         if (matcher.find()) {
             rawText = rawText.replace(" OR ", " or ");
-            rawText = rawText.replace(" TO ", " to ");
             isUndoOrAnd = true;
+        }
+        matcher = uppercaseToPattern.matcher(rawText);
+        boolean isUndoTo = false;
+        if (matcher.find()) {
+            rawText = rawText.replace(" TO ", " to ");
+            isUndoTo=true;
         }
 
         //  Look for simple course codes.
@@ -198,11 +208,11 @@ public class CourseLinkBuilder {
         //  Substitute plain text with links.
         if (isCourseNumberPattern) {
             for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
-                rawText =  rawText.replace(entry.getKey(), ";"+entry.getKey()+";");
+                rawText = rawText.replace(entry.getKey(), ";" + entry.getKey() + ";");
             }
 
             for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
-                rawText =  rawText.replace(";"+entry.getKey()+";", entry.getValue());
+                rawText = rawText.replace(";" + entry.getKey() + ";", entry.getValue());
             }
         } else {
             for (Map.Entry<String, String> entry : placeHolders.entrySet()) {
@@ -212,6 +222,8 @@ public class CourseLinkBuilder {
 
         if (isUndoOrAnd) {
             rawText = rawText.replace(" or ", " OR ");
+        }
+        if(isUndoTo){
             rawText = rawText.replace(" to ", " TO ");
         }
         return rawText;

@@ -2202,6 +2202,7 @@
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
+                                                    <value>myplan-message-info</value>
                                                 </list>
                                             </property>
                                         </bean>
