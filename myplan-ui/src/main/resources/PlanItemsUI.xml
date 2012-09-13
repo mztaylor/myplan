@@ -2765,6 +2765,10 @@
                                         <bean parent="Uif-Link" p:linkText="Messages (@{messagesCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
+                                            <property name="render" value="@{messagesCount ne 0 ? true : false}"/>
+                                        </bean>
+                                        <bean parent="Uif-MessageField" p:messageText="Messages (0)" p:cssClasses="myplan-text-gray">
+                                            <property name="render" value="@{messagesCount eq 0 ? true : false}"/>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Bookmarked Courses (@{bookmarkedCount})">
                                             <property name="href"
