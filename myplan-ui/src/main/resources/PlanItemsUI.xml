@@ -302,7 +302,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-LinkField" p:target=""
-                                  p:style="width:62%; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
+                                  p:style="width:428px; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
                                 <property name="linkText"
                                           value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
                                 <property name="fieldLabel.render"
@@ -311,7 +311,7 @@
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements"
-                                  p:style="width:19%;" p:escapeHtmlInPropertyValue="false">
+                                  p:style="width:131px;" p:escapeHtmlInPropertyValue="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -325,7 +325,7 @@
                                 <!--<property name="render" value="@{#line.courseDetails.genEdRequirements.size() gt 0 ? 'true' : 'false'}"/>-->
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"
-                                  p:style="width:19%;"
+                                  p:style="width:131px;"
                                   p:label="Added on"
                                   p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"
                                   p:fieldLabel.render="true">
