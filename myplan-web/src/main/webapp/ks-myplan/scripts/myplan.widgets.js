@@ -671,6 +671,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                 }
                 else {
                     var elementBlockingDefaults = {
+                        baseZ: 500,
                         message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
                         fadeIn:  0,
                         fadeOut:  0,
