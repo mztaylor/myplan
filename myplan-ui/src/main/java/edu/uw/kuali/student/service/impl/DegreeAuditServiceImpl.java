@@ -356,6 +356,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
        }
         pw.println("</pre>");
+        pw.println("<input name=\"script\" type=\"hidden\" value=\"jQuery.publish('NEW_AUDIT');\" />" );
         String html = sw.toString();
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         AuditDataSource dataSource = new AuditDataSource(html, auditId);
