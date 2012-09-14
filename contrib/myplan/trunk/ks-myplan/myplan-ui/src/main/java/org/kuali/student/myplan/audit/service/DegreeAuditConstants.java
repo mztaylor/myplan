@@ -11,6 +11,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String AUDIT_PARAM_ID = "auditId";
     public static final String AUDIT_PARAM_TYPE = "auditType";
     public static final String AUDIT_EMPTY_PAGE = "degree_audit_empty_page";
+    public static final String AUDIT_NON_STUDENT_PAGE = "degree_audit_non_student_page";
     public static final String AUDIT_PAGE = "degree_audit";
     public static final String AUDIT_REPORT_SECTION = "audit_report_section";
     public static final String AUDIT_EMPTY_PAGE_SECTION = "empty_degree_audits";
@@ -38,6 +39,9 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
                                                     "</li>" +
                                                     "</ul>" +
                                                     "</div>";
+    public static final String IS_AUDIT_SERVICE_UP = "isAuditServiceRunning";
+
+
 
 
 }
