@@ -627,6 +627,10 @@ input.myplan-add:hover {
     background: #e4e4e4 url('../images/Iconinfo16x.png') no-repeat 5px top;
     padding-left: 26px !important;
 }
+.myplan-audit-message-info {
+    background: #F4F8FD url('../images/Iconinfo16x.png') no-repeat 5px center;
+    padding-left: 26px !important;
+}
 /* Text styles ########################################################################### */
 .myplan-text-gray {
     color: #777;
