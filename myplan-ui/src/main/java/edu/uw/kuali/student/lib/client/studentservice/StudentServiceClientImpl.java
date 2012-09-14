@@ -267,13 +267,12 @@ public class StudentServiceClientImpl
         //  Send the request and parse the result.
         Response response = client.handle(request);
         Status status = response.getStatus();
+            if(status.getCode()!=200){
+                connectionEstablished=false;
+                logger.info(String.format("Query failed to URL [%s] - %s (%s): %s",
+                        url, status.getName(), status.getCode(), status.getDescription()));
 
-        if (!(status.equals(Status.SUCCESS_OK))) {
-            connectionEstablished=false;
-            logger.info(String.format("Query failed to URL [%s] - %s (%s): %s",
-                    url, status.getName(), status.getCode(), status.getDescription()));
-
-        }
+            }
        return connectionEstablished;
     }
 

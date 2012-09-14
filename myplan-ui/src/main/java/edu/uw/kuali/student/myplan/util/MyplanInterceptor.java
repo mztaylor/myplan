@@ -3,6 +3,7 @@ package edu.uw.kuali.student.myplan.util;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -37,6 +38,8 @@ public class MyplanInterceptor implements HandlerInterceptor {
     private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/enrollment";
 
     private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/registration/";
+
+    private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v5/degreeaudit";
     
     private final String BROWSER_INCOMPATIBLE= "/student/myplan/browserIncompatible";
 
@@ -49,10 +52,12 @@ public class MyplanInterceptor implements HandlerInterceptor {
         if (studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_1) && studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_2)) {
             isAcademicRecordServiceRunning = true;
         }
+        boolean isAuditServiceRunning = studentServiceClient.connectionStatus(AUDIT_SERVICE_URL);
 
         request.setAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP, isAcademicCalenderServiceRunning);
         request.setAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP, isCourseOfferingServiceRunning);
         request.setAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP, isAcademicRecordServiceRunning);
+        request.setAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP,isAuditServiceRunning);
         String userAgent = request.getHeader(USER_AGENT);
         if (userAgent.contains("MSIE 7.0;") || userAgent.contains("MSIE 6.0;")) {
             response.sendRedirect(BROWSER_INCOMPATIBLE);

@@ -227,6 +227,86 @@
                         </list>
                     </property>
                 </bean>
+
+                <bean parent="Uif-Page" p:id="degree_audit_non_student_page">
+                    <property name="layoutManager">
+                        <bean parent="Uif-HorizontalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-VerticalBoxSection" p:style="width: 710px; margin-right: 10px;">
+                                <property name="layoutManager">
+                                    <bean parent="Uif-VerticalBoxLayout"/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="non_student_degree_audits"/>
+                                    </list>
+                                </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                                            <property name="replacement">
+                                                <list>
+                                                    <ref bean="adviser_actions_message"/>
+                                                    <ref bean="non_student_degree_audits"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-VerticalBoxSection" p:style="width: 230px; margin: 0;">
+                                <property name="layoutManager">
+                                    <bean parent="Uif-VerticalBoxLayout"/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="myplan_section" p:style="">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="your_stuff_widget" p:headerText="">
+                                                        <property name="header.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <ref bean="non_student_degree_audits_list"/>
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list>
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
+                                                                    <property name="replacement">
+                                                                        <list>
+                                                                            <ref bean="degree_audits_list"/>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="your_stuff_widget" p:headerText="">
+                                                        <property name="header.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <ref bean="watch_list"/>
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list/>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
             </list>
         </property>
         <property name="footer.render" value="false"/>
@@ -286,6 +366,32 @@
         </property>
     </bean>
 
+    <bean id="non_student_degree_audits" parent="Uif-HorizontalBoxGroup"  p:style="padding: 10px;" p:headerText="Run Audits feature is disabled for  Non Students">
+        <property name="header">
+            <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="degree_audit_non_student_info"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="degree_audit_non_student_info" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>fl-container-600</value>
+                <value>myplan-audit-info-panel</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean id="audit_inf_text_1" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
+                    <property name="messageText" value="We cant run Audits for you as you are not a &lt;Strong&gt;&quot;student&quot;&lt;/Strong&gt; registered to University of Washington"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
 
     <bean id="degree_audit_info_1" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
