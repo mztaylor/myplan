@@ -347,7 +347,7 @@
         </property>
     </bean>
 
-    <bean id="non_student_degree_audits" parent="Uif-HorizontalBoxGroup"  p:style="padding: 10px;" p:headerText="Run Audits feature is disabled for  Non Students">
+    <bean id="non_student_degree_audits" parent="Uif-HorizontalBoxGroup"  p:style="padding: 10px;" >
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
         </property>
@@ -369,7 +369,7 @@
         <property name="items">
             <list>
                 <bean id="audit_inf_text_1" parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-100 ">
-                    <property name="messageText" value="We cant run Audits for you as you are not a &lt;Strong&gt;&quot;student&quot;&lt;/Strong&gt; registered to University of Washington"/>
+                    <property name="messageText" value="The Audit feature is disabled for non-students. We are unable to run a degree audit for you at this time."/>
                 </bean>
             </list>
         </property>
