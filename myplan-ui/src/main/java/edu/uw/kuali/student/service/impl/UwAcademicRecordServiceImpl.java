@@ -21,6 +21,7 @@ import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
@@ -45,7 +46,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
     private transient LuService luService;
 
-    private static transient AcademicCalendarService academicCalendarService;
+    private static transient AcademicCalendarService academicCalendarService;    
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
@@ -115,6 +116,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecords(@WebParam(name = "personId") String personId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String enrollmentResponseText = null;
+        List<String> termsEnrolled=new ArrayList<String>();
         Map<String, String> courseIds = new HashMap<String, String>();
         List<StudentCourseRecordInfo> studentCourseRecordInfoList = new ArrayList<StudentCourseRecordInfo>();
         List<TermInfo> planningTermInfo = null;
@@ -199,6 +201,9 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                     courseCode = courseCode.append(curriculumAbbreviation).append(" ").append(courseNumber);
                                     //  termName is really an ATP Id.
                                     String termName = AtpHelper.getAtpIdFromTermAndYear(section.elementText("Quarter"), section.elementText("Year"));
+                                    /*Added this getTermsEnrolled() for checking in the registration section to see
+                                    if the current and the future registered terms are covered up in this section.*/
+                                    termsEnrolled.add(termName);
                                     studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                     studentCourseRecordInfo.setTermName(termName);
                                     studentCourseRecordInfo.setPersonId(personId);
@@ -226,7 +231,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         {
             List<String> registrationResponseTexts = null;
             try {
-                registrationResponseTexts = getRegistrationResponseText(personId);
+                registrationResponseTexts = getRegistrationResponseText(personId,termsEnrolled);
             } catch (OperationFailedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -355,30 +360,41 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         throw new RuntimeException("Not implemented");
     }
 
-    private List<String> getRegistrationResponseText(String personId) throws OperationFailedException {
+    private List<String> getRegistrationResponseText(String personId,List<String> termsEnrolled) throws OperationFailedException {
         List<String> responseTexts = new ArrayList<String>();
         String[] currentTerm = AtpHelper.atpIdToTermAndYear(AtpHelper.getCurrentAtpId());
+
         for (int i = 0; i < 2; i++) {
             String registrationResponseText = null;
             if (currentTerm[0].equalsIgnoreCase("4")) {
                 currentTerm[0] = "1";
                 currentTerm[1] = String.valueOf(Integer.parseInt(currentTerm[1]) + 1);
-                try {
-                    registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
-                } catch (ServiceException e) {
-                    throw new OperationFailedException("SWS query failed.", e);
+                /*If the terms already are covered up in enrollment section then we skip this part */
+                if (!termsEnrolled.contains(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]))) {
+                    try {
+                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
+                    } catch (ServiceException e) {
+                        throw new OperationFailedException("SWS query failed.", e);
+                    }
+                    termsEnrolled.add(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]));
                 }
-
             } else {
                 currentTerm[0] = String.valueOf(Integer.parseInt(currentTerm[0]) + 1);
-                try {
-                    registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
-                } catch (ServiceException e) {
-                    throw new OperationFailedException("SWS query failed.", e);
+                /*If the terms already are covered up in enrollment section then we skip this part */
+                if (!termsEnrolled.contains(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]))) {
+                    try {
+                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
+                    } catch (ServiceException e) {
+                        throw new OperationFailedException("SWS query failed.", e);
+                    }
+                    termsEnrolled.add(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]));
                 }
             }
-            responseTexts.add(registrationResponseText);
+            if (StringUtils.hasText(registrationResponseText)) {
+                responseTexts.add(registrationResponseText);
+            }
         }
+
         return responseTexts;
     }
 
