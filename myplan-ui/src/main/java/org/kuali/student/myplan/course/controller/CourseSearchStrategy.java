@@ -165,7 +165,9 @@ public class CourseSearchStrategy {
             match = false;
             // Retokenize after each division found is removed
             // Remove extra spaces to normalize input
-            query = query.trim().replaceAll("\\s+", " ");
+            /*Replacing all the special characters in query with empty space except for Ampersand(&)character
+              cause it might be in course codes*/
+            query = query.trim().replaceAll("[\\s\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
             List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
             List<String> list = QueryTokenizer.toStringList(tokens);
             List<String> pairs = TokenPairs.toPairs(list);
