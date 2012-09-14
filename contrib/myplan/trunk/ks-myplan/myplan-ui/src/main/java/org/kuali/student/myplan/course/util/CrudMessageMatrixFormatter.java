@@ -11,10 +11,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,16 +51,19 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                        if(!withDrawnCourseTerms.contains(term)){
                         withDrawnCourseTerms.add(term);
+                        }
                     }
                     if (academicRecordDataObject.getCourseId() != null
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && !academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                        if(!nonWithDrawnCourseTerms.contains(term)){
                         nonWithDrawnCourseTerms.add(term);
+                        }
                     }
                 }
-
             }
             int counter = 0;
             for (String withdrawnTerm : withDrawnCourseTerms) {
@@ -72,10 +72,18 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
 
                 if (counter == 0) {
-                    sb = sb.append("<dd>").append("This course was withdrawn in ")
-                            .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
-                            .append(atpId).append(">")
-                            .append(term).append("</a>");
+                    if (UserSessionHelper.isAdviser()) {
+                        String user = UserSessionHelper.getStudentName();
+                        sb = sb.append("<dd>").append(user+" withdrew from this course in ")
+                                .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
+                                .append(atpId).append(">")
+                                .append(term).append("</a>");
+                    } else {
+                        sb = sb.append("<dd>").append("You withdrew from this course in ")
+                                .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
+                                .append(atpId).append(">")
+                                .append(term).append("</a>");
+                    }
                 }
                 if (counter > 0) {
                     sb = sb.append(",").append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
@@ -96,10 +104,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String currentTerm = AtpHelper.getCurrentAtpId();
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                     if (counter2 == 0) {
-                        String message="You're currently enrolled in this course for ";
-                        if(UserSessionHelper.isAdviser()){
-                            String user=UserSessionHelper.getStudentName();
-                            message= user+". currently enrolled in this course for ";
+                        String message = "You're currently enrolled in this course for ";
+                        if (UserSessionHelper.isAdviser()) {
+                            String user = UserSessionHelper.getStudentName();
+                            message = user + ". currently enrolled in this course for ";
                         }
                         sb = sb.append("<dd>").append(message)
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
@@ -174,8 +182,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
             int count = 0;
             StringBuffer startsSub = new StringBuffer();
-            if(sb.toString().length()>0){
-                startsSub=startsSub.append(sb);
+            if (sb.toString().length() > 0) {
+                startsSub = startsSub.append(sb);
             }
             if (!currentTermRegistered) {
                 startsSub = startsSub.append("<dd>").append("Added to ");
@@ -238,10 +246,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
             /*When planned List or backup list are equal to null then show message "Saved to Your Bookmark List on 8/15/2012"*/
             if (courseDetails.getPlannedList() == null && courseDetails.getBackupList() == null) {
-                String message="";
-                if(UserSessionHelper.isAdviser()){
-                    String user=UserSessionHelper.getStudentName();
-                    message= "Saved to "+user+"'s. ";
+                String message = "";
+                if (UserSessionHelper.isAdviser()) {
+                    String user = UserSessionHelper.getStudentName();
+                    message = "Saved to " + user + "'s. ";
                 }
                 sb = sb.append("<dd>").append(message)
                         .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());

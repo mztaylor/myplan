@@ -208,7 +208,7 @@ public class PlanController extends UifControllerBase {
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
-            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId(), getUserId()));
+            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId(), UserSessionHelper.getStudentId()));
         } catch (RuntimeException e) {
             CourseDetails courseDetails = new CourseDetails();
             planForm.setCourseDetails(courseDetails);
