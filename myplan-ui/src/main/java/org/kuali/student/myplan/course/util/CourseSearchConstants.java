@@ -48,7 +48,7 @@ public class CourseSearchConstants {
     
     public static final String IS_ACADEMIC_CALENDER_SERVICE_UP = "isAcademicCalenderServiceRunning";
 
-    public static final String IS_COURSE_OFFERING_SERVICE_UP = "isAcademicCalenderServiceRunning";
+    public static final String IS_COURSE_OFFERING_SERVICE_UP = "isCourseOfferingServiceRunning";
 
-    public static final String IS_ACADEMIC_RECORD_SERVICE_UP = "isAcademicCalenderServiceRunning";
+    public static final String IS_ACADEMIC_RECORD_SERVICE_UP = "isAcademicRecordServiceRunning";
 }
