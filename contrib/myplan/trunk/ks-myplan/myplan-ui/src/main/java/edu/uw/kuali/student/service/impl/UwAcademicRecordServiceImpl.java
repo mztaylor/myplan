@@ -26,10 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -116,7 +113,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecords(@WebParam(name = "personId") String personId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String enrollmentResponseText = null;
-        List<String> termsEnrolled=new ArrayList<String>();
+        Set<String> termsEnrolled=new HashSet<String>();
         Map<String, String> courseIds = new HashMap<String, String>();
         List<StudentCourseRecordInfo> studentCourseRecordInfoList = new ArrayList<StudentCourseRecordInfo>();
         List<TermInfo> planningTermInfo = null;
@@ -360,7 +357,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         throw new RuntimeException("Not implemented");
     }
 
-    private List<String> getRegistrationResponseText(String personId,List<String> termsEnrolled) throws OperationFailedException {
+    private List<String> getRegistrationResponseText(String personId,Set<String> termsEnrolled) throws OperationFailedException {
         List<String> responseTexts = new ArrayList<String>();
         String[] currentTerm = AtpHelper.atpIdToTermAndYear(AtpHelper.getCurrentAtpId());
 
