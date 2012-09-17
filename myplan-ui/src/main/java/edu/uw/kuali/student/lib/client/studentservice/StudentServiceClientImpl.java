@@ -269,7 +269,7 @@ public class StudentServiceClientImpl
         Status status = response.getStatus();
             if(status.getCode()!=200){
                 connectionEstablished=false;
-                logger.info(String.format("Query failed to URL [%s] - %s (%s): %s",
+                logger.error(String.format("Query failed to URL [%s] - %s (%s): %s",
                         url, status.getName(), status.getCode(), status.getDescription()));
 
             }
