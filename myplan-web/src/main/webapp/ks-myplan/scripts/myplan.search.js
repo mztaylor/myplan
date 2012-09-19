@@ -193,7 +193,7 @@ function searchForCourses(id, parentId) {
                 success: fnCallback,
                 statusCode: {
                     500: function() {
-                        window.location = '/student/';
+                        window.location = '/student/myplan/sessionExpired';
                     }
                 }
             });

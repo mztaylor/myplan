@@ -3,9 +3,11 @@ package edu.uw.kuali.student.myplan.util;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  * To change this template use File | Settings | File Templates.
  */
 public class MyplanInterceptor implements HandlerInterceptor {
-    
-    private static final String  SWS_URL_PARAM  = "uw.studentservice.url";
+
+    private static final String SWS_URL_PARAM = "uw.studentservice.url";
 
     private StudentServiceClient studentServiceClient;
 
@@ -31,17 +33,21 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private final String USER_AGENT = "User-Agent";
 
-    private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/public/term/current";
+    private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/public/term/current";
 
-    private final String COURSE_OFFERING_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/public/section";
+    private final String COURSE_OFFERING_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/public/section";
 
-    private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/enrollment";
+    private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/enrollment";
 
-    private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v4/registration/";
+    private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/registration/";
 
-    private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM)+"/v5/degreeaudit";
+    private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v5/degreeaudit";
+
+    private final String BROWSER_INCOMPATIBLE = "/student/myplan/browserIncompatible";
+
+    private final String USER_UNAUTHORIZED = "/student/myplan/unauthorized";
     
-    private final String BROWSER_INCOMPATIBLE= "/student/myplan/browserIncompatible";
+    private final String STUDENT="STDNT";
 
 
     @Override
@@ -57,7 +63,7 @@ public class MyplanInterceptor implements HandlerInterceptor {
         request.setAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP, isAcademicCalenderServiceRunning);
         request.setAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP, isCourseOfferingServiceRunning);
         request.setAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP, isAcademicRecordServiceRunning);
-        request.setAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP,isAuditServiceRunning);
+        request.setAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP, isAuditServiceRunning);
         String userAgent = request.getHeader(USER_AGENT);
         if (userAgent.contains("MSIE 7.0;") || userAgent.contains("MSIE 6.0;")) {
             response.sendRedirect(BROWSER_INCOMPATIBLE);
@@ -67,7 +73,10 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+        /*If you not an adviser and  if you are not a  student then you dont have access to myplan*/
+        if (!UserSessionHelper.isAdviser() && !GlobalVariables.getUserSession().getPerson().hasAffiliationOfType(STUDENT)) {
+            response.sendRedirect(USER_UNAUTHORIZED);
+        }
     }
 
     @Override
