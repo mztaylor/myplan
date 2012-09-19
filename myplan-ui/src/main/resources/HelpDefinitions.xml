@@ -21,7 +21,7 @@
 
     <bean id="quarter_facet_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#820');&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#820&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -30,29 +30,12 @@
         <property name="toolTip">
           <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
-        <!--<property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('bookmarks_help_icon', {
-                position: 'top',
-                align: 'center',
-                alwaysVisible: false,
-                tail: {
-                    align: 'center',
-                    hidden: false
-                },
-                themeName: 'black',
-                selectable: true,
-                width: '200px'
-            }, true, false);
-        "/>-->
-        <!--<property name="toolTip">
-          <bean parent="Uif-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a href=&#39;https://depts.washington.edu/myplan/bookmark-courses/&#39; target=&#39;_blank&#39;&gt;Learn more&lt;/a&gt;"/>
-        </property>-->
     </bean>
 
 
     <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
          <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#822');&gt;Learn more&lt;/a&gt;"/>
+          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -72,7 +55,7 @@
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
-                closingDelay: 250
+                closingDelay: 500
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -95,7 +78,7 @@
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
-                closingDelay: 250
+                closingDelay: 500
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -117,7 +100,7 @@
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
-                closingDelay: 250
+                closingDelay: 500
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -139,7 +122,7 @@
                 themeName: 'black',
                 selectable: true,
                 width: '250px',
-                closingDelay: 250
+                closingDelay: 500
             }, true, false);
         "/>
         <!--<property name="toolTip">
@@ -167,7 +150,7 @@
                     themeName: 'black',
                     selectable: true,
                     width: '250px',
-                    closingDelay: 250
+                    closingDelay: 500
                 }, true, false);
             "/>
         <!--<property name="toolTip">
