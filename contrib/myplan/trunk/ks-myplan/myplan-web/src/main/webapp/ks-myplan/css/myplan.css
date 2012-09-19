@@ -146,6 +146,22 @@ a:focus {
 #applicationFooter a {
     color: #fff;
 }
+#applicationFooterSection {
+    position: relative;
+}
+#applicationFooterSection .links {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+#applicationFooterSection .version {
+    position: absolute;
+    white-space: nowrap;
+    top: 20px;
+    right: 0px;
+    color: #555;
+}
 #applicationFooterSection ul {
     list-style: none;
     margin: 20px auto;
