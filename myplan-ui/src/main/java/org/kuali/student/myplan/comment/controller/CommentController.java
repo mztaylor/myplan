@@ -180,7 +180,7 @@ public class CommentController extends UifControllerBase {
             toId = messageInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
             toName = UserSessionHelper.getName(toId);
             toName=toName.substring(0,toName.indexOf(" ")).trim();
-            messageLink=ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK)+toId;
+            messageLink=ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK)+fromId;
 
         }
 
