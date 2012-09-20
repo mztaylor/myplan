@@ -245,6 +245,8 @@
     </bean>
 
     <bean id="MyPlan-Tooltip" parent="Uif-Tooltip">
+        <property name="onFocus" value="false"/>
+        <property name="onMouseHover" value="true"/>
         <property name="templateOptions">
             <map merge="true">
                 <entry key="position" value="top"/>
@@ -256,28 +258,20 @@
         </property>
     </bean>
 
-    <bean id="MyPlan-Tooltip-Right" parent="Uif-Tooltip">
+    <bean id="MyPlan-Tooltip-Right" parent="MyPlan-Tooltip">
         <property name="templateOptions">
             <map merge="true">
-                <entry key="position" value="top"/>
                 <entry key="align" value="right"/>
-                <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'right', hidden: false }"/>
-                <entry key="themeMargins" value="{total:'22px', difference:'10px'}"/>
-                <entry key="closingDelay" value="500"/>
             </map>
         </property>
     </bean>
 
-    <bean id="MyPlan-Tooltip-Left" parent="Uif-Tooltip">
+    <bean id="MyPlan-Tooltip-Left" parent="MyPlan-Tooltip">
         <property name="templateOptions">
             <map merge="true">
-                <entry key="position" value="top"/>
                 <entry key="align" value="left"/>
-                <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'left', hidden: false }"/>
-                <entry key="themeMargins" value="{total:'22px', difference:'10px'}"/>
-                <entry key="closingDelay" value="500"/>
             </map>
         </property>
     </bean>
@@ -511,7 +505,7 @@
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/?page_id=985#view');"/>
                             </bean>
                         </list>
                     </property>

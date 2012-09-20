@@ -1306,19 +1306,37 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-ImageField" p:altText="Previous Academic Year"
+                            <!--<bean parent="Uif-ImageField" p:altText="Previous Academic Year"
                                   p:cssClasses="myplan-carousel-prev" p:style="margin:0;"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>
-                            <bean parent="Uif-MessageField"
-                                  p:cssClasses="myplan-plan-header fl-text-bold fl-font-size-140"
-                                  p:style="line-height:24px !important; height:24px; margin:0; text-align:center; width:250px;">
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnPrev.png"/>-->
+
+
+                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="&lt;" p:actionScript=""
+                                  p:style="margin:0;" p:title="Previous Academic Year">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-carousel-prev</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField" p:style="margin:0;" p:cssClasses="myplan-plan-header">
                                 <property name="message">
                                     <bean parent="Uif-Message" p:messageText="Academic Year"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-ImageField" p:altText="Next Academic Year"
+                            <bean parent="Uif-PrimaryActionButton" p:actionLabel="&gt;" p:actionScript=""
+                                  p:style="margin:0;" p:title="Next Academic Year">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-carousel-next</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+
+                            <!--<bean parent="Uif-ImageField" p:altText="Next Academic Year"
                                   p:cssClasses="myplan-carousel-next" p:style="margin:0;"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnNext.png"/>
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnNext.png"/>-->
                         </list>
                     </property>
                 </bean>
@@ -1348,7 +1366,10 @@
     </bean>
     <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection" p:validationMessages.render="false">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.headerText" value="@{#line.qtrYear}"/>
+        <property name="layoutManager.lineGroupPrototype.header">
+                    <bean parent="Uif-HeaderFour"/>
+                </property>
         <property name="propertyName" value="lookupResults"/>
         <property name="cssClasses">
             <list merge="true">
@@ -1368,9 +1389,10 @@
                 <bean id="atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false"
                       p:style="display: none;"/>
 
-                <bean parent="Uif-DataField" p:propertyName="qtrYear"
+
+                <!--<bean parent="Uif-DataField" p:propertyName="qtrYear"
                       p:cssClasses="uif-groupHeader @{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}"
-                      p:fieldLabel.render="false"/>
+                      p:fieldLabel.render="false"/>-->
                 <bean parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">
@@ -2811,11 +2833,10 @@
                                         </bean>
                                         <bean id="academic_planner_share" parent="Uif-InputField"
                                               p:propertyName="enableAdviserView" p:width="auto">
-                                            <property name="onDocumentReadyScript" value="jQuery('#' + 'academic_planner_share').change(function(e) {
-                                                e.preventDefault();
+                                            <property name="onChangeScript" value="
                                                 myplanWriteHiddenToForm('methodToCall', 'academicPlanner', 'student_academic_planner_page_form');
                                                 jQuery('#student_academic_planner_page_form').ajaxSubmit();
-                                            });"/>
+                                            "/>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
                                                     <property name="options">
