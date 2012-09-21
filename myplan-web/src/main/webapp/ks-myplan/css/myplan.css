@@ -248,10 +248,6 @@ button.uif-secondaryActionButton {
 
     padding: 6px 21px;
 
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    border-radius: 15px;
-
     border: 1px solid #d5d5d5;
     background-size: 100% 100%;
     background-repeat: repeat-x;
@@ -273,6 +269,10 @@ button.uif-primaryActionButton {
     background-image: -webkit-linear-gradient(top, #fedb71 0%, #febc4a 100%);
     background-image: linear-gradient(to bottom, #fedb71 0%, #febc4a 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
+
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
 
     -moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
@@ -314,6 +314,10 @@ button.uif-secondaryActionButton {
     background-image: linear-gradient(to bottom, #f4ebd6 0%, #ebdbb4 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f4ebd6', endColorstr='#ebdbb4');
 
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+
     -moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, 0.2), inset 0px 1px 0px 0px #f7f0e0;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, 0.2), inset 0px 1px 0px 0px #f7f0e0;
     box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, 0.2), inset 0px 1px 0px 0px #f7f0e0;
@@ -351,14 +355,10 @@ button.uif-primaryActionButton[disabled="true"],
 button.uif-primaryActionButton[disabled="disabled"],
 button.uif-primaryActionButton[disabled="true"]:hover,
 button.uif-primaryActionButton[disabled="disabled"]:hover,
-button.uif-primaryActionButton.disabled,
-button.uif-primaryActionButton.disabled:hover,
 button.uif-secondaryActionButton[disabled="true"],
 button.uif-secondaryActionButton[disabled="disabled"],
 button.uif-secondaryActionButton[disabled="true"]:hover,
-button.uif-secondaryActionButton[disabled="disabled"]:hover,
-button.uif-secondaryActionButton.disabled,
-button.uif-secondaryActionButton.disabled:hover {
+button.uif-secondaryActionButton[disabled="disabled"]:hover {
     color: #ADADAD;
 
     text-shadow: 0px 1px 0px #f2f2f2;
@@ -444,43 +444,6 @@ input.myplan-add:hover {
 .myplan-data-list dl.scheduled dd:before {
     content: "";
 }
-/* Plan View #################################################################### */
-#plan-page div.blockElement {
-    left: 180px !important;
-    top: 20px !important;
-}
-.myplan-plan-loader div.blockElement {
-    color: #39275b !important;
-    font-weight: bold !important;
-    left: 200px !important;
-    top: 20px !important;
-    z-index: inherit !important;
-}
-.myplan-plan-heading > .uif-boxLayout {
-    margin: auto;
-    width: 526px;
-}
-button.uif-primaryActionButton.myplan-carousel-prev,
-button.uif-primaryActionButton.myplan-carousel-next {
-    font-weight: bold;
-    padding: 6px 14px;
-}
-button.uif-primaryActionButton.myplan-carousel-prev {
-    -moz-border-radius: 15px 0px 0px 15px;
-    -webkit-border-radius: 15px 0px 0px 15px;
-    border-radius: 15px 0px 0px 15px;
-}
-button.uif-primaryActionButton.myplan-carousel-next {
-    -moz-border-radius: 0px 15px 15px 0px;
-    -webkit-border-radius: 0px 15px 15px 0px;
-    border-radius: 0px 15px 15px 0px;
-}
-.myplan-plan-header {
-    text-align: center;
-    width: 450px;
-    font-size: 30px;
-    line-height: 30px;
-}
 .myplan-carousel-list > .uif-headerField .uif-header {
     text-align: center;
 }
@@ -506,8 +469,8 @@ button.uif-primaryActionButton.myplan-carousel-next {
     border-radius: 5px;
     -webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
-    min-height: 520px;
     background: url('../images/bkgrdDotted.gif');
+    min-height: 520px;
 }
 .myplan-carousel-list ul li .uif-group .uif-groupHeader {
     display:block;
@@ -534,6 +497,29 @@ button.uif-primaryActionButton.myplan-carousel-next {
     overflow: hidden;
     background: none;
     padding: 0px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
+    height: 208px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
+    margin: 1px 0 0 0;
+    font-size: 90%;
+    padding: 0px;
+    background: none;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
+    height: 25px;
+    line-height: 25px;
+    padding: 0 4px 0 24px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.not-scheduled,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
+    background: url('../images/iconWarning.png') no-repeat 4px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
+    background: #e3f0fe;
+    cursor:pointer;
 }
 .myplan-carousel-list ul li .uif-header {
     padding: 0 4px;
@@ -570,33 +556,25 @@ button.uif-primaryActionButton.myplan-carousel-next {
 .myplan-carousel-list ul li .myplan-carousel-term .uif-header .uif-header-rightGroup img {
     margin: 0;
 }
-.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
-    height: 208px;
+.myplan-carousel-prev,
+.myplan-carousel-next {
+    cursor: pointer;
+    line-height:24px;
+    height:24px;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
-    margin: 1px 0 0 0;
-    font-size: 11px;
-    padding: 0px;
-    background: none;
+.myplan-carousel-prev img,
+.myplan-carousel-next img {
+    margin: 4px;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
-    height: 25px;
-    line-height: 25px;
-    padding: 0 4px 0 24px;
+.myplan-carousel-prev.disabled,
+.myplan-carousel-next.disabled {
+    visibility: hidden;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.not-scheduled,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
-    background: url('../images/iconWarning.png') no-repeat 4px;
-}
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
-    background: #e3f0fe;
-    cursor:pointer;
-}
-.myplan-carousel-list .myplan-carousel-term-total {
-    background: #f6ebcd;
-    color: #39275b;
-    font-size: 12px;
+.myplan-carousel-term-total {
+    background:#ccc;
+    font-weight:bold;
+    color:#666;
+    font-size:90%;
     height: 26px;
     line-height: 26px;
     display: block;
@@ -1356,7 +1334,22 @@ table.myplan-course-search-results-datatable .blockUI {
     font-weight: bold;
     font-size: 90%;
 }
-
+/* Planned Courses ################################################################################### */
+#plan-page div.blockElement {
+    left: 180px !important;
+    top: 20px !important;
+}
+.myplan-plan-heading > .uif-boxLayout {
+    margin: auto;
+    width: 298px;
+}
+.myplan-plan-loader div.blockElement {
+    color: #39275b !important;
+    font-weight: bold !important;
+    left: 200px !important;
+    top: 20px !important;
+    z-index: inherit !important;
+}
 .myplan-audit-widget select {
     width: 180px;
     margin: 10px 0px 0px;
