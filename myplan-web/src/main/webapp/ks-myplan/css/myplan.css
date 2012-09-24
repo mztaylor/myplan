@@ -148,6 +148,7 @@ a:focus {
 }
 #applicationFooterSection {
     position: relative;
+    min-height: 90px;
 }
 #applicationFooterSection .links {
     position: absolute;
