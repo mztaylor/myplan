@@ -36,7 +36,7 @@ public class TermsListBuilder extends KeyValuesBase {
         int maximumYear = Integer.parseInt(minTerms[1]) + futureTermsCount;
         int maximumQuarter = Integer.parseInt(minTerms[0]);
         if (maximumQuarter == 4) {
-            maximumQuarter = 1;
+            maximumQuarter = 3;
         } else {
             maximumQuarter = maximumQuarter++;
         }
