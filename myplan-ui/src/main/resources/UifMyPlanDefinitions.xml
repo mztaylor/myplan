@@ -489,7 +489,7 @@
     </bean>
 
     <!--  Message to use when an adviser can't perform a particular action. -->
-    <bean id="adviser_actions_message" parent="Uif-VerticalBoxGroup">
+    <bean id="course_adviser_actions_message" parent="Uif-VerticalBoxGroup">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-message-border</value>
@@ -501,7 +501,57 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="This feature is disabled in adviser view."/>
+                                  p:messageText="Advisers are unable to add or bookmark courses."/>
+                            <bean parent="Uif-Link" p:target="">
+                                <property name="linkText" value="Learn more about Adviser View."/>
+                                <property name="href"
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="audit_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-message-border</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Advisers are unable to run degree audits."/>
+                            <bean parent="Uif-Link" p:target="">
+                                <property name="linkText" value="Learn more about Adviser View."/>
+                                <property name="href"
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bookmark_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-message-border</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Advisers are unable to edit bookmarked courses."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
