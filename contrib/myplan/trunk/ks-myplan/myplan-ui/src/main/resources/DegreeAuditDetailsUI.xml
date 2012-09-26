@@ -91,7 +91,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <ref bean="adviser_actions_message"/>
+                                                    <ref bean="audit_adviser_actions_message"/>
                                                     <ref bean="audit_report_section"/>
                                                 </list>
                                             </property>
@@ -170,7 +170,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <ref bean="adviser_actions_message"/>
+                                                    <ref bean="audit_adviser_actions_message"/>
                                                     <ref bean="empty_degree_audits"/>
                                                 </list>
                                             </property>
@@ -249,7 +249,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <ref bean="adviser_actions_message"/>
+                                                    <ref bean="audit_adviser_actions_message"/>
                                                     <ref bean="non_student_degree_audits"/>
                                                 </list>
                                             </property>

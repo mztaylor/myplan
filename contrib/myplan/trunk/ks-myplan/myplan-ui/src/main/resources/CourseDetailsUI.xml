@@ -192,7 +192,7 @@
                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                     <property name="replacement">
                         <list>
-                            <ref bean="adviser_actions_message"/>
+                            <ref bean="course_adviser_actions_message"/>
                         </list>
                     </property>
                 </bean>
