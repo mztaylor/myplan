@@ -4,22 +4,25 @@
 #################################################################
  */
 function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
-    var item = '<div id="' + planItemId + '_div" title="' + courseTitle + '" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
-                    '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
-                        '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace("-",".") + '">' +
-                            '<fieldset>' +
-                                '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
-                                    '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
-                                        '<div class="uif-field uif-messageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
-                                            '<span class="uif-message">' + courseCode + ' (' + courseCredits + ')</span>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</fieldset>' +
+    var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
+        '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
+            '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace("-",".") + '">' +
+                '<fieldset>' +
+                    '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
+                        '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
+                            '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
+                                '<span class="uif-message">' + courseCode + '</span>' +
+                            '</div>' +
+                            '<div class="uif-field uif-messageField credit uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
+                                '<span class="uif-message">(' + courseCredits + ')</span>' +
+                            '</div>' +
                         '</div>' +
-                        '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
                     '</div>' +
-                '</div>';
+                '</fieldset>' +
+            '</div>' +
+            '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
+        '</div>' +
+    '</div>';
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
         runHiddenScripts(planItemId + "_div");
@@ -62,7 +65,7 @@ function fnUpdateSavedCount (savedItemCount) {
 #################################################################
  */
 function fnUpdateCredits (atpId, termCredits) {
-    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .myplan-carousel-term-credits span.uif-message").not(".uif-requiredMessage").fadeOut(250, function() {
+    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .credits span.uif-message").fadeOut(250, function() {
         jQuery(this).html(termCredits).fadeIn(250);
     });
 }
