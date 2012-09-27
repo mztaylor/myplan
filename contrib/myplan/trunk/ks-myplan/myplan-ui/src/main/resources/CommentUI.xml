@@ -487,18 +487,19 @@
         </property>
     </bean>
 
-    <bean id="messages_summary_list" parent="Uif-ListCollectionSection"
-           p:style="margin-bottom: 10px;">
+    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:style="margin-bottom:10px;">
         <property name="header">
-<!--
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
--->
-
-            <bean id="messsage_header" parent="Uif-ViewHeader" p:style="padding:0;">
+            <bean id="messsage_header" parent="Uif-HeaderBase" p:style="padding:0;" p:cssClasses="">
                 <property name="upperGroup">
-                    <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES" p:style="float:none;">
+                    <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES" p:style="float:none; border-bottom:solid 1px #ddd;">
                         <property name="header">
-                            <bean parent="Uif-HeaderFive" />
+                            <bean parent="Uif-HeaderFive">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>primary</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </property>
                         <property name="items">
                             <list>
@@ -524,8 +525,6 @@
                         </property>
                     </bean>
                 </property>
-
-
             </bean>
         </property>
 

@@ -277,6 +277,27 @@
     </bean>
 
 
+    <bean id="MyPlanLockedImage" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconLocked.png" p:altText="" p:title="">
+        <property name="render" value="@{#parentLine.completedTerm ? 'true': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'false' : 'false'}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>locked</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MyPlanUnlockedImage" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconUnlocked.png" p:altText="" p:title="">
+        <property name="render" value="@{#parentLine.completedTerm ? 'false': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'true' : 'false'}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>unlocked</value>
+            </list>
+        </property>
+    </bean>
+
+
     <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
           parent="Uif-StackedSubCollection-WithinSection-parentBean">
         <property name="layoutManager">
@@ -373,7 +394,13 @@
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderFive" p:style="background: #ccc;"/>
+            <bean parent="Uif-HeaderFive">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>primary</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('messages_widget','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
