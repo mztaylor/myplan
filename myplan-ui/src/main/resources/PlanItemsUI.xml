@@ -267,7 +267,7 @@
         </property>
     </bean>
 
-    <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection">
+    <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection" p:style="clear:both;">
         <property name="headerText"
                   value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"/>
         <property name="collectionObjectClass"
@@ -714,10 +714,7 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#addPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned') {
-                                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
-                                                        }
-                                                        if (data.planItemType === 'backup') {
+                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                             fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                                         }
                                                     })
@@ -785,10 +782,7 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#movePlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned') {
-                                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
-                                                        }
-                                                        if (data.planItemType === 'backup') {
+                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                             fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                                         }
                                                     }).subscribe('ERROR', function(data){
@@ -856,10 +850,7 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#copyPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned') {
-                                                            fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
-                                                        }
-                                                        if (data.planItemType === 'backup') {
+                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                             fnDisplayMessage(data.message, data.cssClass, 'copyPlannedCourse', true, true);
                                                         }
                                                     }).subscribe('ERROR', function(data){
@@ -874,7 +865,7 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#copyPastPlannedCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned') {
+                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                             fnDisplayMessage(data.message, data.cssClass, 'copyPastPlannedCourse', true, true);
                                                         }
                                                     }).subscribe('ERROR', function(data){
@@ -889,7 +880,7 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#copyAcademicCourse')
                                                     .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned') {
+                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                             fnDisplayMessage(data.message, data.cssClass, 'copyAcademicCourse', true, true);
                                                         }
                                                     }).subscribe('ERROR', function(data){
@@ -2588,10 +2579,7 @@
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            if (data.planItemType === 'planned') {
-                                                fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
-                                            }
-                                            if (data.planItemType === 'backup') {
+                                            if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                 fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
                                             }
                                         })
@@ -2606,10 +2594,7 @@
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                            if (data.planItemType === 'planned') {
-                                                fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
-                                            }
-                                            if (data.planItemType === 'backup') {
+                                            if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                 fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
                                             }
                                         }).subscribe('ERROR', function(data){
