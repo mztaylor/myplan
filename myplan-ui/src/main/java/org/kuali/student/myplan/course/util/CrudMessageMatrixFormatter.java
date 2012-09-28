@@ -51,16 +51,16 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
-                        if(!withDrawnCourseTerms.contains(term)){
-                        withDrawnCourseTerms.add(term);
+                        if (!withDrawnCourseTerms.contains(term)) {
+                            withDrawnCourseTerms.add(term);
                         }
                     }
                     if (academicRecordDataObject.getCourseId() != null
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && !academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
-                        if(!nonWithDrawnCourseTerms.contains(term)){
-                        nonWithDrawnCourseTerms.add(term);
+                        if (!nonWithDrawnCourseTerms.contains(term)) {
+                            nonWithDrawnCourseTerms.add(term);
                         }
                     }
                 }
@@ -74,7 +74,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 if (counter == 0) {
                     if (UserSessionHelper.isAdviser()) {
                         String user = UserSessionHelper.getStudentName();
-                        sb = sb.append("<dd>").append(user+" withdrew from this course in ")
+                        sb = sb.append("<dd>").append(user + " withdrew from this course in ")
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
@@ -124,10 +124,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     counter2++;
                 } else {
                     if (counter3 == 0) {
-                        String message="You took this course in ";
-                        if(UserSessionHelper.isAdviser()){
-                            String user=UserSessionHelper.getStudentName();
-                            message= user+" took this course in ";
+                        String message = "You took this course in ";
+                        if (UserSessionHelper.isAdviser()) {
+                            String user = UserSessionHelper.getStudentName();
+                            message = user + " took this course in ";
                         }
                         sb = sb.append("<dd>").append(message)
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
@@ -241,24 +241,10 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
         }
         /*When savedItemId and savedItemDateCreated are not null then populating message
-            *"Saved to Your Bookmark List on 8/15/2012" or
-            *"Had saved to Your Bookmark List on 8/15/2012"*/
+            *"Bookmarked on 8/15/2012"*/
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
-            /*When planned List or backup list are equal to null then show message "Saved to Your Bookmark List on 8/15/2012"*/
-            if (courseDetails.getPlannedList() == null && courseDetails.getBackupList() == null) {
-                String message = "";
-                if (UserSessionHelper.isAdviser()) {
-                    String user = UserSessionHelper.getStudentName();
-                    message = "Saved to " + user + "'s. ";
-                }
-                sb = sb.append("<dd>").append(message)
-                        .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
-            }
-            /*When planned List or backup list are not null then show message "Had saved to Your Courses List on 8/15/2012"*/
-            if (courseDetails.getPlannedList() != null || courseDetails.getBackupList() != null) {
-                sb = sb.append("<dd>")
-                        .append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
-            }
+            sb = sb.append("<dd>").append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
+
         }
 
 
