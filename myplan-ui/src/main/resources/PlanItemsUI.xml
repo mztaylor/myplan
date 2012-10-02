@@ -910,7 +910,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="Are you sure that you want to delete @{courseDetails.code}? Once deleted, you cannot undo."/>
+                      p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;? Once deleted, you cannot undo."/>
                 <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                     <property name="items">
                         <list>
@@ -2679,7 +2679,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;?"/>
+                      p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;? Once deleted, you cannot undo."/>
 
                 <bean id="hidden_planItemId" parent="Uif-InputField" p:propertyName="planItemId"
                       p:defaultValue="@{planItemId}">
@@ -2693,7 +2693,7 @@
                     <property name="items">
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton-Small"
-                                  p:actionLabel="Yes">
+                                  p:actionLabel="Delete">
                                 <property name="actionScript"
                                           value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'removeItem', e);"/>
                                 <property name="onDocumentReadyScript" value="
@@ -2706,7 +2706,7 @@
                                     });"/>
                             </bean>
                             <bean p:id="deleteCourseNoButton" parent="Uif-SecondaryActionButton-Small"
-                                  p:actionLabel="No">
+                                  p:actionLabel="Cancel">
                                 <property name="actionScript"
                                           value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
                             </bean>
