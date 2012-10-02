@@ -600,8 +600,8 @@
                               value="openPlanItemPopUp('@{courseId}','course_summary_dialog_page',{courseId:'@{courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkText="Mark it as Backup course"
-                      p:title="Mark it as Backup course"
+                <bean p:id="@{planItemId}_backup" parent="Uif-Link" p:target="" p:linkText="Mark as Backup Course"
+                      p:title="Mark as Backup Course"
                       p:render="@{setToPlanning eq true and backup eq false and acadRecAtpId eq null  ? true : false}"
                       p:style="margin:0;">
                     <property name="onClickScript"
@@ -642,8 +642,8 @@
                               value="openPlanItemPopUp('@{courseId}','copy_dialog_page',{courseId:'@{courseId}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
-                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan" p:href="#"
+                <bean p:id="@{planItemId}_delete" parent="Uif-Link" p:target="" p:linkText="Delete from Plan"
+                      p:title="Delete from Plan" p:href="#"
                       p:render="@{acadRecAtpId eq null ? true : false}"
                       p:style="margin:0;">
                     <property name="onClickScript"
@@ -953,8 +953,8 @@
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Mark it as Backup course"
-                      p:title="Mark it as Backup course"
+                      p:linkText="Mark as Backup Course"
+                      p:title="Mark as Backup Course"
                       p:style="margin:0;">
                     <property name="onClickScript"
                               value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','plannedToBackup',e);"/>
@@ -978,8 +978,8 @@
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan"
+                      p:linkText="Delete from Plan"
+                      p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
                               value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
@@ -1032,8 +1032,8 @@
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan"
+                      p:linkText="Delete from Plan"
+                      p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
                               value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
@@ -1068,8 +1068,8 @@
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Delete from the Plan"
-                      p:title="Delete from the Plan"
+                      p:linkText="Delete from Plan"
+                      p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
                               value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
