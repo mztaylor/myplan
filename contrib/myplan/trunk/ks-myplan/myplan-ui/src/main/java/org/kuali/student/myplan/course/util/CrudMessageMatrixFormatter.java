@@ -50,7 +50,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     if (academicRecordDataObject.getCourseId() != null
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
-                            && academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                            && academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
                         if (!withDrawnCourseTerms.contains(term)) {
                             withDrawnCourseTerms.add(term);
                         }
@@ -58,7 +58,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     if (academicRecordDataObject.getCourseId() != null
                             && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
                             && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
-                            && !academicRecordDataObject.getGrade().startsWith(PlanConstants.WITHDRAWN_GRADE)) {
+                            && !academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
                         if (!nonWithDrawnCourseTerms.contains(term)) {
                             nonWithDrawnCourseTerms.add(term);
                         }
