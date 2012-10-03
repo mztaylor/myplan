@@ -1,7 +1,7 @@
 function readUrlHash(key) {
-    var aHash = window.location.hash.replace('#','').split('&');
+    var aHash = window.location.hash.replace('#', '').split('&');
     var oHash = {};
-    jQuery.each(aHash, function(index, value) {
+    jQuery.each(aHash, function (index, value) {
         oHash[value.split('=')[0]] = value.split('=')[1];
     });
     if (oHash[key]) {
@@ -12,9 +12,9 @@ function readUrlHash(key) {
 }
 
 function readUrlParam(key) {
-    var aParams = window.location.search.replace('?','').split('&');
+    var aParams = window.location.search.replace('?', '').split('&');
     var oParams = {};
-    jQuery.each(aParams, function(index, value) {
+    jQuery.each(aParams, function (index, value) {
         oParams[value.split('=')[0]] = value.split('=')[1];
     });
     if (oParams[key]) {
@@ -29,8 +29,8 @@ if (readUrlHash("modified") == "yes") {
     if (readUrlParam("viewId") != "CourseSearch-FormView") {
         var url = window.location.href;
         var hash = window.location.hash;
-        if (url.split("#")[1].replace("modified=yes","").length > 0) {
-            window.location.assign(url.split("#")[0] + hash.replace("modified=yes","modified=no"));
+        if (url.split("#")[1].replace("modified=yes", "").length > 0) {
+            window.location.assign(url.split("#")[0] + hash.replace("modified=yes", "modified=no"));
         } else {
             window.location.assign(url.split("#")[0]);
         }
@@ -38,7 +38,7 @@ if (readUrlHash("modified") == "yes") {
     }
 }
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function () {
     jQuery("head").append('<!--[if ie 9]><style type="text/css" media="screen"> \
         button.uif-primaryActionButton,button.uif-secondaryActionButton, \
         button.uif-primaryActionButton:hover,button.uif-secondaryActionButton:hover,\
@@ -74,7 +74,7 @@ function openCourse(courseId, e) {
     if (jQuery(target).parents(".jquerybubblepopup.jquerybubblepopup-myplan").length > 0) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
     } else {
-        openPlanItemPopUp(courseId, 'add_remove_course_popover_page', {courseId:courseId}, e, null, {tail:{align:'left'},align:'left',position:'bottom',alwaysVisible:'false'}, true);
+        openPlanItemPopUp(courseId, 'add_remove_course_popover_page', {courseId:courseId}, e, null, {tail:{align:'left'}, align:'left', position:'bottom', alwaysVisible:'false'}, true);
     }
 }
 /*
@@ -94,19 +94,19 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     }
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
-        themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents: true,
-        selectable: true,
-        tail: {align:'middle', hidden: false},
-        position: 'left',
-        align: 'center',
-        alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'},
+        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{align:'middle', hidden:false},
+        position:'left',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance: '0px',
-        openingSpeed: 0,
-        closingSpeed: 0
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
     };
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -121,7 +121,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
     popupBox.FreezeBubblePopup();
@@ -154,7 +154,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
             var sError = jQuery('body').data('validationMessages').serverErrors[0];
             component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
         }
-        elementToBlock.unblock({onUnblock: function () {
+        elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
                 popupBox.SetBubblePopupInnerHtml(component);
                 if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
@@ -167,7 +167,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         }});
     };
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
     jQuery("form#" + id + "_form").remove();
 }
 
@@ -178,19 +178,19 @@ function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
-        themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents: true,
-        selectable: true,
-        tail: {align:'middle', hidden: false},
-        position: 'left',
-        align: 'center',
-        alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'},
+        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{align:'middle', hidden:false},
+        position:'left',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance: '0px',
-        openingSpeed: 0,
-        closingSpeed: 0
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
     };
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -205,7 +205,7 @@ function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
     popupBox.FreezeBubblePopup();
@@ -251,19 +251,19 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
     }
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
-        themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents: true,
-        selectable: true,
-        tail: {align:'middle', hidden: false},
-        position: 'left',
-        align: 'center',
-        alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'},
+        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{align:'middle', hidden:false},
+        position:'left',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance: '0px',
-        openingSpeed: 0,
-        closingSpeed: 0
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
     };
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -278,7 +278,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
     popupBox.FreezeBubblePopup();
@@ -312,7 +312,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
             var sError = jQuery('body').data('validationMessages').serverErrors[0];
             component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
         }
-        elementToBlock.unblock({onUnblock: function () {
+        elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
                 popupBox.SetBubblePopupInnerHtml(component);
                 jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
@@ -326,7 +326,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
         }});
     };
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
     jQuery("form#" + id + "_form").remove();
 }
 
@@ -340,24 +340,24 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     stopEvent(e);
 
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
-        width: "300px",
-        height: "16px"
+        width:"300px",
+        height:"16px"
     });
 
     var popupOptionsDefault = {
-        innerHtml: popupHtml.wrap("<div>").parent().clone().html(),
-        themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents: true,
-        selectable: true,
-        tail: {align:'middle', hidden: false},
-        position: 'left',
-        align: 'center',
-        alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'},
+        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{align:'middle', hidden:false},
+        position:'left',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance: '0px',
-        openingSpeed: 0,
-        closingSpeed: 0
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
     };
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
@@ -372,7 +372,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
     fnPositionPopUp(popupBoxId);
@@ -407,11 +407,11 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var sError = jQuery('body').data('validationMessages').serverErrors[0];
             component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
         }
-        elementToBlock.unblock({onUnblock: function () {
+        elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
                 popupBox.SetBubblePopupInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
-                if ( status != 'error' ) jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
+                if (status != 'error') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
                 if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
                     popupBox.RemoveBubblePopup();
@@ -422,37 +422,37 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         }});
     };
 
-    myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id);
+    myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
     jQuery("form#" + id + "_form").remove();
 }
 function openDialog(sText, e, close) {
     stopEvent(e);
 
     var dialogHtml = jQuery('<div />').html(sText).css({
-        width: "300px"
+        width:"300px"
     });
 
     var popupOptionsDefault = {
-        innerHtml: dialogHtml.wrap("<div>").parent().clone().html(),
-        themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents: true,
-        selectable: true,
-        tail: {hidden: true},
-        position: 'top',
-        align: 'center',
-        alwaysVisible: false,
-        themeMargins: {total:'20px', difference:'5px'},
+        innerHtml:dialogHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{hidden:true},
+        position:'top',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance: '0px',
-        openingSpeed: 0,
-        closingSpeed: 0
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
     };
 
     var popupBox = jQuery("body");
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents: false});
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupOptionsDefault, false);
     var popupBoxId = popupBox.GetBubblePopupID();
     popupBox.FreezeBubblePopup();
@@ -481,7 +481,7 @@ function fnPositionPopUp(popupBoxId) {
         var left = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
         var iTop = ( top + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
         var iLeft = ( left + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
-        jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
+        jQuery("#" + popupBoxId).css({top:iTop + 'px', left:iLeft + 'px'});
     }
 }
 
@@ -515,7 +515,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
         elementToBlock.unblock();
         switch (status) {
             case 'success':
-                var oMessage = { 'message' : jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
+                var oMessage = { 'message':jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
@@ -525,9 +525,9 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 setUrlHash('modified', 'yes');
                 break;
             case 'error':
-                var oMessage = { 'message' : jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
+                var oMessage = { 'message':jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
                 if (!bDialog) {
-                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff","color":"#ff0606","border":"none"});
+                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff", "color":"#ff0606", "border":"none"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
                     openDialog(sHtml.html(), e);
@@ -540,19 +540,20 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     var blockOptions = {
         message:'<img src="../ks-myplan/images/btnLoader.gif"/>',
         css:{
-            width: '100%',
-            border: 'none',
-            backgroundColor: 'transparent'
+            width:'100%',
+            border:'none',
+            backgroundColor:'transparent'
         },
-        overlayCSS:  {
-            backgroundColor: '#fff',
-            opacity: 0.6,
-            padding: '0px 1px',
-            margin: '0px -1px'
+        overlayCSS:{
+            backgroundColor:'#fff',
+            opacity:0.6,
+            padding:'0px 1px',
+            margin:'0px -1px'
         }
     };
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: 'false'}, elementToBlock, id, blockOptions);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:'false'}, elementToBlock, id, blockOptions);
 }
+
 /*Function used for moving the plan Item from planned to backup*/
 function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     stopEvent(e);
@@ -579,7 +580,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component = jQuery("#" + getId, htmlContent);
-        elementToBlock.unblock({onUnblock: function () {
+        elementToBlock.unblock({onUnblock:function () {
             // replace component
             if (jQuery("#" + id).length) {
                 jQuery("#" + id).replaceWith(component);
@@ -592,7 +593,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
             }
 
             if (highlightId) {
-                jQuery("[id^='" + highlightId + "']").parents('li').animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function() {
+                jQuery("[id^='" + highlightId + "']").parents('li').animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
                     jQuery(this).removeAttr("style");
                 });
             }
@@ -603,7 +604,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         methodToCall = "search";
     }
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id, elementBlockingSettings);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id, elementBlockingSettings);
     jQuery("form#" + id + "_form").remove();
 }
 /*
@@ -643,12 +644,12 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 
         // change double quotes to single because escaping causes problems on URL
         jsonViewState = jsonViewState.replace(/"/g, "'");
-        jQuery.extend(data, {clientViewState: jsonViewState});
+        jQuery.extend(data, {clientViewState:jsonViewState});
     }
 
     var submitOptions = {
-        data: data,
-        success: function (response) {
+        data:data,
+        success:function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
             var hasError = handleIncidentReport(response);
@@ -657,42 +658,42 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
             }
             jQuery("#formComplete").empty();
         },
-        error: function (jqXHR, textStatus) {
+        error:function (jqXHR, textStatus) {
             alert("Request failed: " + textStatus);
         }
     };
 
     if (elementToBlock != null && elementToBlock.length) {
         var elementBlockingOptions = {
-            beforeSend: function () {
+            beforeSend:function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
                     elementToBlock.show();
                 }
                 else {
                     var elementBlockingDefaults = {
-                        baseZ: 500,
-                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
-                        fadeIn:  0,
-                        fadeOut:  0,
-                        overlayCSS:  {
-                            backgroundColor: '#fff',
-                            opacity: 0
+                        baseZ:500,
+                        message:'<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
+                        fadeIn:0,
+                        fadeOut:0,
+                        overlayCSS:{
+                            backgroundColor:'#fff',
+                            opacity:0
                         },
-                        css: {
-                            border: 'none',
-                            width: '16px',
-                            top: '0px',
-                            left: '0px'
+                        css:{
+                            border:'none',
+                            width:'16px',
+                            top:'0px',
+                            left:'0px'
                         }
                     };
                     elementToBlock.block(jQuery.extend(elementBlockingDefaults, elementBlockingSettings));
                 }
             },
-            complete: function () {
+            complete:function () {
                 elementToBlock.unblock();
             },
-            error: function () {
+            error:function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.hide();
                 }
@@ -743,10 +744,10 @@ function fnPopoverSlider(showId, parentId, direction) {
         newDirection = 'left';
     }
     jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem:visible").hide("slide", {
-        direction: direction
+        direction:direction
     }, 100, function () {
         jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem").filter("#" + showId).show("slide", {
-            direction: newDirection
+            direction:newDirection
         }, 100, function () {
         });
     });
@@ -794,8 +795,8 @@ function fnToggleBackup(e) {
             jQuery(target).addClass("expanded");
             jQuery(target).find("span").html("Hide");
         }
-        oBackup.animate({"height": oBackup.height() + iAdjust}, {duration: iSpeed});
-        oQuarter.animate({"height": oQuarter.height() + iAdjust}, {duration: iSpeed});
+        oBackup.animate({"height":oBackup.height() + iAdjust}, {duration:iSpeed});
+        oQuarter.animate({"height":oQuarter.height() + iAdjust}, {duration:iSpeed});
     }
 }
 /*
@@ -924,13 +925,13 @@ function buttonState(jqueryObj, buttonId) {
 }
 
 function setUrlHash(key, value) {
-    var aHash =[];
+    var aHash = [];
     if (window.location.hash) {
-        aHash = window.location.hash.replace('#','').split('&');
+        aHash = window.location.hash.replace('#', '').split('&');
     }
     var oHash = {};
     if (aHash.length > 0) {
-        jQuery.each(aHash, function(index, value) {
+        jQuery.each(aHash, function (index, value) {
             oHash[value.split('=')[0]] = value.split('=')[1];
         });
         var oTemp = {};
@@ -953,10 +954,10 @@ function setUrlHash(key, value) {
     $.fn.characterCount = function (options) {
 
         var oDefaults = {
-            maxLength: 100,
-            warningLength: 20,
-            classCounter: 'counter',
-            classWarning: 'warning'
+            maxLength:100,
+            warningLength:20,
+            classCounter:'counter',
+            classWarning:'warning'
         };
 
         var options = $.extend(oDefaults, options);
@@ -1015,3 +1016,154 @@ jQuery.fn.dataTableExt.oSort['longdate-desc'] = function (x, y) {
 
     return ((x < y) ? 1 : ((x > y) ? -1 : 0));
 };
+
+
+/*Quick Add*/
+
+function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions, close) {
+    stopEvent(e);
+
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
+        width:"300px",
+        height:"16px"
+    });
+
+    var popupOptionsDefault = {
+        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
+        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
+        manageMouseEvents:true,
+        selectable:true,
+        tail:{align:'middle', hidden:false},
+        position:'left',
+        align:'center',
+        alwaysVisible:false,
+        themeMargins:{total:'20px', difference:'5px'},
+        themeName:'myplan',
+        distance:'0px',
+        openingSpeed:0,
+        closingSpeed:0
+    };
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+
+    var popupBox;
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    if (selector === null) {
+        popupBox = jQuery(target);
+    } else {
+        popupBox = jQuery(target).parents(selector);
+    }
+
+    fnCloseAllPopups();
+
+    popupBox.CreateBubblePopup({manageMouseEvents:false});
+    popupBox.ShowBubblePopup(popupSettings, false);
+    var popupBoxId = popupBox.GetBubblePopupID();
+    fnPositionPopUp(popupBoxId);
+    popupBox.FreezeBubblePopup();
+
+    jQuery(document).on('click', function (e) {
+        var tempTarget = (e.target) ? e.target : e.srcElement;
+        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
+            popupBox.RemoveBubblePopup();
+            fnCloseAllPopups();
+        }
+    });
+
+    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post").hide();
+    var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="QuickAdd-FormView" />';
+    jQuery.each(retrieveOptions, function (name, value) {
+        tempFormInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
+    });
+    tempFormInputs += '</div>';
+    jQuery(tempForm).append(tempFormInputs);
+    jQuery("body").append(tempForm);
+
+    var elementToBlock = jQuery("#" + id + "_popup");
+
+    var updateRefreshableComponentCallback = function (htmlContent) {
+        var component;
+        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+            component = jQuery("#" + getId, htmlContent);
+            var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post");
+        } else {
+            eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
+            var sError = jQuery('body').data('validationMessages').serverErrors[0];
+            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+        }
+        elementToBlock.unblock({onUnblock:function () {
+            if (jQuery("#" + id + "_popup").length) {
+                popupBox.SetBubblePopupInnerHtml(component);
+                fnPositionPopUp(popupBoxId);
+                if (status != 'error') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(quickAddForm);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
+                    popupBox.RemoveBubblePopup();
+                    fnCloseAllPopups();
+                });
+            }
+            runHiddenScripts(getId);
+        }});
+    };
+
+    myplanAjaxSubmitForm("start", updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
+    jQuery("form#" + id + "_form").remove();
+}
+
+function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var targetText = ( jQuery.trim(jQuery(target).text()) != '') ? jQuery.trim(jQuery(target).text()) : "Error";
+    var elementToBlock = (target.nodeName != 'INPUT') ? jQuery(target) : jQuery(target).parent();
+    jQuery('input[name="methodToCall"]').remove();
+    jQuery('#' + id + '_form input[name="viewId"]').remove();
+    var formInputs = '<div style="display:none;"><input type="hidden" name="methodToCall" value="' + methodToCall + '" /><input type="hidden" name="viewId" value="QuickAdd-FormView" />';
+    jQuery.each(submitOptions, function (name, value) {
+        formInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
+        jQuery('#' + id + '_form input[name="' + name + '"]').remove();
+    });
+    formInputs += '</div>';
+    jQuery("#" + id + "_form").append(formInputs);
+    var updateRefreshableComponentCallback = function (htmlContent) {
+        var status = jQuery.trim(jQuery("span#request_status_item_key", htmlContent).text().toLowerCase());
+        eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
+        elementToBlock.unblock();
+        switch (status) {
+            case 'success':
+                var oMessage = { 'message':jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
+                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
+                    }
+                }
+                setUrlHash('modified', 'yes');
+                break;
+            case 'error':
+                var oMessage = { 'message':jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
+                if (!bDialog) {
+                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff", "color":"#ff0606", "border":"none"});
+                    var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
+                    if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
+                    openDialog(sHtml.html(), e);
+                } else {
+                    eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
+                }
+                break;
+        }
+    };
+    var blockOptions = {
+        message:'<img src="../ks-myplan/images/btnLoader.gif"/>',
+        css:{
+            width:'100%',
+            border:'none',
+            backgroundColor:'transparent'
+        },
+        overlayCSS:{
+            backgroundColor:'#fff',
+            opacity:0.6,
+            padding:'0px 1px',
+            margin:'0px -1px'
+        }
+    };
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:'false'}, elementToBlock, id, blockOptions);
+}

@@ -1758,6 +1758,9 @@
                 <property name="items">
                     <list>
                         <ref bean="planned_help_icon"/>
+                        <!--<bean parent="Uif-ImageField" p:altText="Quick Add" p:render="@{#line.completedTerm eq false ? true : false}"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
+                              p:onClickScript="openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:'@{#line.atpId}',pageId:'quickAdd_dialog_page', planType:'planned'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>-->
                     </list>
                 </property>
             </bean>
@@ -1981,6 +1984,9 @@
                 <property name="items">
                     <list>
                         <ref bean="backup_help_icon"/>
+                        <!--<bean parent="Uif-ImageField" p:altText="Quick Add" p:render="@{#line.completedTerm eq false ? true : false}"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
+                              p:onClickScript="openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:'@{#line.atpId}',pageId:'quickAdd_dialog_page', planType:'backup'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>-->
                     </list>
                 </property>
             </bean>

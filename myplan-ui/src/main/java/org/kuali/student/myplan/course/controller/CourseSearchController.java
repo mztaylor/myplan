@@ -133,7 +133,7 @@ public class CourseSearchController extends UifControllerBase {
         HashMap<String, String> divisionMap = fetchCourseDivisions();
 
         ArrayList<String> divisions = new ArrayList<String>();
-        extractDivisions(divisionMap, subject, divisions);
+        extractDivisions(divisionMap, subject, divisions, false);
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
@@ -286,10 +286,10 @@ public class CourseSearchController extends UifControllerBase {
 
     public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId, boolean isAcademicCalenderServiceUp) {
 
-        String maxCountProp =  ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
+        String maxCountProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
         int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
         try {
-            List<SearchRequest> requests = searcher.queryToRequests(form,isAcademicCalenderServiceUp);
+            List<SearchRequest> requests = searcher.queryToRequests(form, isAcademicCalenderServiceUp);
             List<Hit> hits = processSearchRequests(requests);
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
             Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentId);
@@ -312,7 +312,7 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
             populateFacets(form, courseList);
-            logger.error(String.format("SEARCH: %s  : %s CAMPUS : %s : %s",form.getSearchQuery(),form.getSearchTerm(),form.getCampusSelect(),String.valueOf(hits.size())));
+            logger.error(String.format("SEARCH: %s  : %s CAMPUS : %s : %s", form.getSearchQuery(), form.getSearchTerm(), form.getCampusSelect(), String.valueOf(hits.size())));
             return courseList;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -325,7 +325,7 @@ public class CourseSearchController extends UifControllerBase {
         List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
         boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
         String user = UserSessionHelper.getStudentId();
-        if(!isAcademicCalenderServiceUp){
+        if (!isAcademicCalenderServiceUp) {
             AtpHelper.addServiceError("searchTerm");
         }
         /*Params from the Url*/
@@ -706,13 +706,17 @@ public class CourseSearchController extends UifControllerBase {
         return map;
     }
 
-    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions) {
+    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions, boolean isSpaceAllowed) {
         boolean match = true;
         while (match) {
             match = false;
             // Retokenize after each division found is removed
             // Remove extra spaces to normalize input
-            query = query.trim().replaceAll("\\s+", " ");
+            if (!isSpaceAllowed) {
+                query = query.trim().replaceAll("[\\s\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
+            } else {
+                query = query.replaceAll("[\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
+            }
             List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
             List<String> list = QueryTokenizer.toStringList(tokens);
             List<String> pairs = TokenPairs.toPairs(list);
