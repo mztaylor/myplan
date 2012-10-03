@@ -222,7 +222,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="body" p:style="width:610px; margin:0;">
+                <bean parent="Uif-DataField" p:propertyName="body" p:style="width:610px; margin:0;" p:escapeHtmlInPropertyValue="false">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-block-ellipsis</value>
@@ -293,7 +293,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="body">
+                            <bean parent="Uif-DataField" p:propertyName="body" p:escapeHtmlInPropertyValue="false">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-messages-comments-body</value>
