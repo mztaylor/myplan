@@ -50,7 +50,7 @@ public class CourseSearchControllerTest {
         return courseSearchStrategy;
     }
 
-    public void setCourseSearchStrategy( CourseSearchStrategy strategy ) {
+    public void setCourseSearchStrategy(CourseSearchStrategy strategy) {
         this.courseSearchStrategy = strategy;
     }
     @Autowired
@@ -78,16 +78,16 @@ public class CourseSearchControllerTest {
     public void testHitComparator() {
         CourseSearchController.HitComparator comparator = new CourseSearchController.HitComparator();
 
-        CourseSearchController.Hit hit1 = new CourseSearchController.Hit( "a" );
+        CourseSearchController.Hit hit1 = new CourseSearchController.Hit("a");
         hit1.count++;
 
-        CourseSearchController.Hit hit2 = new CourseSearchController.Hit( "b" );
+        CourseSearchController.Hit hit2 = new CourseSearchController.Hit("b");
         hit2.count++;
         hit2.count++;
         hit2.count++;
 
-        assertTrue( comparator.compare( hit1, hit2 ) > 0 );
-        assertTrue( comparator.compare( hit2, hit1 ) < 0 );
+        assertTrue(comparator.compare(hit1, hit2) > 0);
+        assertTrue(comparator.compare(hit2, hit1) < 0);
         assertTrue(comparator.compare(hit1, hit1) == 0);
         assertTrue(comparator.compare(hit1, null) > 0);
         assertTrue(comparator.compare(null, hit2) < 0);
@@ -97,13 +97,13 @@ public class CourseSearchControllerTest {
     public void testGetCellValue() {
         CourseSearchController controller = getSearchController();
         SearchResultRow row = new SearchResultRow();
-        row.addCell( "key", "value" );
+        row.addCell("key", "value");
 
-        assertEquals( "value", controller.getCellValue( row, "key" ));
+        assertEquals("value", controller.getCellValue(row, "key"));
 
         try {
-            controller.getCellValue( row, "fail" );
-            fail( "should have throw exception");
+            controller.getCellValue(row, "fail");
+            fail("should have throw exception");
         }
         catch( Exception e ) {}
     }
@@ -112,7 +112,7 @@ public class CourseSearchControllerTest {
     public void testGetCreditMap() {
         CourseSearchController controller = getSearchController();
         HashMap<String, CourseSearchController.Credit> map = controller.getCreditMap();
-        assertFalse( map.isEmpty() );
+        assertFalse(map.isEmpty());
     }
 
     @Test
@@ -122,7 +122,7 @@ public class CourseSearchControllerTest {
         CourseSearchController.Credit nothing = controller.getCreditByID("nothing");
         assertNull(nothing);
 
-        CourseSearchController.Credit something = controller.getCreditByID( "kuali.creditType.credit.degree.1-4" );
+        CourseSearchController.Credit something = controller.getCreditByID("kuali.creditType.credit.degree.1-4");
         assertNotNull(something);
     }
 
@@ -152,20 +152,20 @@ public class CourseSearchControllerTest {
     @Test
     public void testSearchForCoursesSubjectArea() {
 
-   /*     CourseSearchForm form = new CourseSearchForm();
-        form.setSearchQuery("HDCE");
-        form.setCampusSelect("0");
-        form.setSearchTerm("any");
-        form.setViewId("CourseSearch-FormView");
-        academicPlanService = getAcademicPlanService();
+        /*     CourseSearchForm form = new CourseSearchForm();
+    form.setSearchQuery("HDCE");
+    form.setCampusSelect("0");
+    form.setSearchTerm("any");
+    form.setViewId("CourseSearch-FormView");
+    academicPlanService = getAcademicPlanService();
 //        person=getPersonImpl();
-        searchController.setAcademicPlanService(academicPlanService);
+    searchController.setAcademicPlanService(academicPlanService);
 //        searchController.setPerson(person);
 
-        searchController.searchForCourses(form, null, null, null);
+    searchController.searchForCourses(form, null, null, null);
 
-        List<CourseSearchItem> results = form.getCourseSearchResults();
-        assertTrue( results.size() > 0 );*/
+    List<CourseSearchItem> results = form.getCourseSearchResults();
+    assertTrue( results.size() > 0 );*/
     }
 
     @Test
@@ -200,13 +200,13 @@ public class CourseSearchControllerTest {
             assertTrue(controller.isCourseOffered(form, course));
 
             form.setSearchTerm("fake");
-            course.setCode( "CHEM" );
+            course.setCode("CHEM");
             assertTrue(controller.isCourseOffered(form, course));
 
-            course.setCode( "FAKE" );
+            course.setCode("FAKE");
             assertFalse(controller.isCourseOffered(form, course));
         } catch (Exception e) {
-            fail( "failed!" );
+            fail("failed!");
         }
     }
 
@@ -216,15 +216,15 @@ public class CourseSearchControllerTest {
         CourseSearchForm form = new CourseSearchForm();
         CourseSearchController controller = getSearchController();
         form.setSearchQuery("AS 101");
-        List<String> campusParams=new ArrayList<String>();
+        List<String> campusParams = new ArrayList<String>();
         campusParams.add("306");
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
-        CourseSearchStrategy strategy=getCourseSearchStrategy();
-        List<SearchRequest> requests=null;
-        ArrayList<CourseSearchController.Hit> hits=null;
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
+        List<SearchRequest> requests = null;
+        ArrayList<CourseSearchController.Hit> hits = null;
         try {
-           requests =strategy.queryToRequests(form,true);
+            requests = strategy.queryToRequests(form, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -233,25 +233,25 @@ public class CourseSearchControllerTest {
         } catch (MissingParameterException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        assertEquals(1,hits.size());
-        assertEquals("dd003c5a-d0e4-4cfe-a81c-cbb756383685",hits.get(0).courseID);
+        assertEquals(1, hits.size());
+        assertEquals("dd003c5a-d0e4-4cfe-a81c-cbb756383685", hits.get(0).courseID);
 
     }
     @Test
-     public void testProcessSearchRequests2() {
+    public void testProcessSearchRequests2() {
 
         CourseSearchForm form = new CourseSearchForm();
         CourseSearchController controller = getSearchController();
         form.setSearchQuery("ASTR");
-        List<String> campusParams=new ArrayList<String>();
+        List<String> campusParams = new ArrayList<String>();
         campusParams.add("306");
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
-        CourseSearchStrategy strategy=getCourseSearchStrategy();
-        List<SearchRequest> requests=null;
-        ArrayList<CourseSearchController.Hit> hits=null;
+        CourseSearchStrategy strategy = getCourseSearchStrategy();
+        List<SearchRequest> requests = null;
+        ArrayList<CourseSearchController.Hit> hits = null;
         try {
-            requests =strategy.queryToRequests(form,true);
+            requests = strategy.queryToRequests(form, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -266,14 +266,14 @@ public class CourseSearchControllerTest {
     public void testProcessSearchRequests3() {
 
         CourseSearchController controller = getSearchController();
-        List<SearchRequest> requests=new ArrayList<SearchRequest>();
-        ArrayList<CourseSearchController.Hit> hits=null;
+        List<SearchRequest> requests = new ArrayList<SearchRequest>();
+        ArrayList<CourseSearchController.Hit> hits = null;
         try {
             hits = controller.processSearchRequests(requests);
         } catch (MissingParameterException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        assertEquals(0,hits.size());
+        assertEquals(0, hits.size());
     }
 
     @Test
@@ -282,14 +282,14 @@ public class CourseSearchControllerTest {
         CourseSearchController controller = getSearchController();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("CHEM 110");
-        List<String> campusParams=new ArrayList<String>();
+        List<String> campusParams = new ArrayList<String>();
         campusParams.add("306");
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
-        List<CourseSearchItem> courses=new ArrayList<CourseSearchItem>();
-        List<AtpTypeInfo> termInfos=new ArrayList<AtpTypeInfo>();
-        AtpTypeInfo termInfo=new AtpTypeInfo();
+        List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
+        List<AtpTypeInfo> termInfos = new ArrayList<AtpTypeInfo>();
+        AtpTypeInfo termInfo = new AtpTypeInfo();
         termInfo.setDurationType("kuali.uw.atp.duration.quarter");
         termInfo.setSeasonalType("kuali.uw.atp.season.autumn");
         termInfo.setId("kuali.uw.atp.type.autumn");
@@ -299,7 +299,7 @@ public class CourseSearchControllerTest {
         termInfo.setExpirationDate(null);
         termInfos.add(termInfo);
 
-        CourseSearchItem courseSearchItem=new CourseSearchItem();
+        CourseSearchItem courseSearchItem = new CourseSearchItem();
         courseSearchItem.setCourseId("74995ac1-8d2a-45f2-a408-056cb929f8a7");
         courseSearchItem.setCode("CHEM   110");
         courseSearchItem.setNumber("110");
@@ -314,7 +314,7 @@ public class CourseSearchControllerTest {
         courseSearchItem.setStatus(CourseSearchItem.PlanState.SAVED);
         courseSearchItem.setTermInfoList(termInfos);
         courses.add(courseSearchItem);
-        controller.populateFacets(form,courses);
+        controller.populateFacets(form, courses);
 /*        assertTrue(form.getCurriculumFacetItems().size()>0);
         assertTrue(form.getCreditsFacetItems().size()>0);
         assertTrue(form.getCourseLevelFacetItems().size()>0);
@@ -327,13 +327,13 @@ public class CourseSearchControllerTest {
         CourseSearchController controller = getSearchController();
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery("");
-        List<String> campusParams=new ArrayList<String>();
+        List<String> campusParams = new ArrayList<String>();
         campusParams.add("306");
         form.setCampusSelect(campusParams);
         form.setSearchTerm("any");
         form.setViewId("CourseSearch-FormView");
-        List<CourseSearchItem> courses=new ArrayList<CourseSearchItem>();
-        controller.populateFacets(form,courses);
+        List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
+        controller.populateFacets(form, courses);
 /*        assertTrue(form.getCurriculumFacetItems().size()==0);
         assertTrue(form.getCreditsFacetItems().size()==0);
         assertTrue(form.getCourseLevelFacetItems().size()==0);
@@ -343,26 +343,26 @@ public class CourseSearchControllerTest {
 
     @Test
     public void testExtractDivisions() throws Exception {
-        HashMap<String,String> map = new HashMap<String,String>();
-        map.put( "A",   "A   " );
-        map.put( "AB", "A B " );
-        map.put( "B",   "B   " );
-        map.put( "C",   "C   " );
-        CourseSearchController controller=getSearchController();
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("A", "A   ");
+        map.put("AB", "A B ");
+        map.put("B", "B   ");
+        map.put("C", "C   ");
+        CourseSearchController controller = getSearchController();
         ArrayList<String> divisions = new ArrayList<String>();
         String query = "A B C";
-        query = controller.extractDivisions( map, query, divisions );
-        assertEquals( "", query );
-        assertEquals( 2, divisions.size() );
-        assertEquals( "A B ", divisions.get( 0 ) );
-        assertEquals( "C   ", divisions.get( 1 ) );
+        query = controller.extractDivisions(map, query, divisions, false);
+        assertEquals("", query);
+        assertEquals(2, divisions.size());
+        assertEquals("A B ", divisions.get(0));
+        assertEquals("C   ", divisions.get(1));
     }
 
     @Test
     public void testFetchCourseDivisions() throws Exception {
-        CourseSearchController controller=getSearchController();
-        HashMap<String,String> divisionsMap = controller.fetchCourseDivisions();
-        assertFalse( divisionsMap.isEmpty() );
+        CourseSearchController controller = getSearchController();
+        HashMap<String, String> divisionsMap = controller.fetchCourseDivisions();
+        assertFalse(divisionsMap.isEmpty());
     }
 
 
