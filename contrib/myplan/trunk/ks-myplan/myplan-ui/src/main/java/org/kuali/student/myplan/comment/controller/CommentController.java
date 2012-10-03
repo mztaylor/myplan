@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.comment.controller;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.config.property.ConfigContext;
@@ -61,7 +62,7 @@ public class CommentController extends UifControllerBase {
 
     private transient MyPlanMailService mailService;
 
-    private transient String propertiesFilePath= "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties" ;
+    private transient String propertiesFilePath = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
 
     @Override
     protected CommentForm createInitialForm(HttpServletRequest request) {
@@ -104,6 +105,8 @@ public class CommentController extends UifControllerBase {
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo messageInfo = null;
+        String commentBodyText = WordUtils.wrap(form.getCommentBody(), 80, "<br />", true);
+        commentBodyText = commentBodyText.replace("\n", "<br />");
         String messageText = form.getCommentBody();
         if (messageText.length() > 100) {
             messageText = messageText.substring(0, 100);
@@ -116,7 +119,7 @@ public class CommentController extends UifControllerBase {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
-        if (StringUtils.isEmpty(form.getCommentBody())) {
+        if (StringUtils.isEmpty(commentBodyText)) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_MESSAGE_BOX, CommentConstants.COMMENT_RESPONSE_PAGE);
         }
@@ -132,8 +135,8 @@ public class CommentController extends UifControllerBase {
         ci.setType(CommentConstants.COMMENT_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
-        rtiBody.setPlain(form.getCommentBody());
-        /*rtiBody.setFormatted(form.getCommentBody());*/
+        rtiBody.setPlain(commentBodyText);
+        /*rtiBody.setFormatted(commentBodyText);*/
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
@@ -160,10 +163,10 @@ public class CommentController extends UifControllerBase {
          */
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(propertiesFilePath);
-        try{
+        try {
             pro.load(file);
-        }catch (Exception e){
-            logger.error("Could not find the properties file"+e);
+        } catch (Exception e) {
+            logger.error("Could not find the properties file" + e);
         }
 
         String toId, toAddress, toName, fromId, fromAddress, fromName;
@@ -173,14 +176,14 @@ public class CommentController extends UifControllerBase {
         if (UserSessionHelper.isAdviser()) {
             toId = UserSessionHelper.getStudentId();
             toName = UserSessionHelper.getStudentName();
-            toName=toName.substring(0,toName.indexOf(" ")).trim();
+            toName = toName.substring(0, toName.indexOf(" ")).trim();
 
         } else {
             //  Get the created by user Id from the message.
             toId = messageInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
             toName = UserSessionHelper.getName(toId);
-            toName=toName.substring(0,toName.indexOf(" ")).trim();
-            messageLink=ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK)+fromId;
+            toName = toName.substring(0, toName.indexOf(" ")).trim();
+            messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK) + fromId;
 
         }
 
@@ -200,7 +203,7 @@ public class CommentController extends UifControllerBase {
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
-                logger.info("Sent comment email ("+messageText+") to: " + toAddress +" From: "+fromAddress);
+                logger.info("Sent comment email (" + messageText + ") to: " + toAddress + " From: " + fromAddress);
             } catch (Exception e) {
                 logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
                 GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
@@ -237,7 +240,8 @@ public class CommentController extends UifControllerBase {
             }
             return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE, section);
         }
-
+        String bodyText = WordUtils.wrap(form.getBody(), 80, "<br />", true);
+        bodyText = bodyText.replace("\n", "<br />");
         String messageText = form.getBody();
         if (messageText.length() > 100) {
             messageText = messageText.substring(0, 100);
@@ -253,7 +257,7 @@ public class CommentController extends UifControllerBase {
         ci.setType(CommentConstants.MESSAGE_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
-        rtiBody.setPlain(form.getBody());
+        rtiBody.setPlain(bodyText);
         /*rtiBody.setFormatted(form.getBody());*/
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
@@ -275,16 +279,16 @@ public class CommentController extends UifControllerBase {
          * The from address should always be the system default.
          */
 
-         Properties pro = new Properties();
+        Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(propertiesFilePath);
-        try{
+        try {
             pro.load(file);
-        }catch (Exception e){
-            logger.error("Could not find the properties file"+e);
+        } catch (Exception e) {
+            logger.error("Could not find the properties file" + e);
 
         }
         String studentName = UserSessionHelper.getStudentName();
-        studentName=studentName.substring(0,studentName.indexOf(" ")).trim();
+        studentName = studentName.substring(0, studentName.indexOf(" ")).trim();
         String adviserName = UserSessionHelper.getName(principleId);
         String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
         if (toAddress == null) {
@@ -300,7 +304,7 @@ public class CommentController extends UifControllerBase {
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
-                logger.info("Sent message email ("+messageText+") to student:" + studentName +"from adviser :"+adviserName);
+                logger.info("Sent message email (" + messageText + ") to student:" + studentName + "from adviser :" + adviserName);
 
             } catch (Exception e) {
                 logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
