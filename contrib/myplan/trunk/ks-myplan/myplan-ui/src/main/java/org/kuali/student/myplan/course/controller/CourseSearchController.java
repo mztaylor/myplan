@@ -413,6 +413,38 @@ public class CourseSearchController extends UifControllerBase {
         return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
+    public List<String> getResults(SearchRequest request, String division, String code) {
+        List<String> results = new ArrayList<String>();
+        SearchResult searchResult = null;
+        try {
+            if (division != null && code != null) {
+                request.addParam("division", division);
+                request.addParam("code", code);
+
+            } else if (division != null && code == null) {
+                request.addParam("division", division);
+            } else {
+                return results;
+            }
+            request.addParam("currentTerm", AtpHelper.getCurrentAtpId());
+
+            searchResult = getLuService().search(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (searchResult != null) {
+            for (SearchResultRow row : searchResult.getRows()) {
+                results.add(getCellValue(row, "courseCode"));
+
+            }
+
+        }
+        return results;
+    }
+
+
     public void hitCourseID(Map<String, Hit> courseMap, String id) {
         Hit hit = null;
         if (courseMap.containsKey(id)) {
