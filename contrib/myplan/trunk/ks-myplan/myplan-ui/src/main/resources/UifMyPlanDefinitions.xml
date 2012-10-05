@@ -18,6 +18,130 @@
     See the License for the specific language governing permissions and
     limitations under the License.
     -->
+    <!-- VIEWS ######################################################################################## -->
+
+    <bean id="MyPlanView" abstract="true" parent="Uif-View">
+        <property name="preloadPoolSize" value="5"/>
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+    </bean>
+
+    <!-- View without the header and footer and just the theme -->
+    <bean id="MyPlanBaseFormView" abstract="true" parent="Uif-FormView">
+        <property name="preloadPoolSize" value="5"/>
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+    </bean>
+
+    <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
+                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
+                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseLookupView" abstract="true" parent="Uif-LookupView">
+        <property name="preloadPoolSize" value="5"/>
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+    </bean>
+
+    <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
+                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
+                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
+        <property name="preloadPoolSize" value="5"/>
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="persistFormToSession" value="false"/>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+    </bean>
+
+    <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
+                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
+                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+        </property>
+    </bean>
+
+    <bean id="MyPlanBaseMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
+        <property name="preloadPoolSize" value="5"/>
+        <property name="theme">
+            <bean parent="MyPlanBaseTheme"/>
+        </property>
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="applyDirtyCheck" value="false"/>
+        <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+    </bean>
+
+    <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
+        <property name="theme">
+            <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="footer" ref="MyPlanFooterDocument"/>
+        <property name="applicationHeader">
+            <bean parent="Uif-HeaderOne" p:id="ks-banner"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
+                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+        </property>
+        <property name="applicationFooter">
+            <bean parent="Uif-FooterBase" p:id="ks-footer"
+                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
+                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_header"/>
+        </property>
+    </bean>
+
+    <!-- THEMES ######################################################################################## -->
+
     <bean id="MyPlanTheme" abstract="true" parent="MyPlanTheme-parentBean"/>
     <bean id="MyPlanTheme-parentBean" parent="Uif-KradTheme">
         <property name="cssFiles">
@@ -29,6 +153,7 @@
         </property>
         <property name="scriptFiles">
             <list merge="true">
+                <value>https://use.typekit.net/jpx3dug.js</value>
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
@@ -52,136 +177,13 @@
         </property>
         <property name="scriptFiles">
             <list merge="true">
+                <value>https://use.typekit.net/jpx3dug.js</value>
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
                 <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
             </list>
         </property>
-    </bean>
-
-
-    <!-- View without the header and footer and just the theme -->
-    <bean id="MyPlanBaseFormView" abstract="true" parent="Uif-FormView">
-
-        <property name="preloadPoolSize" value="5"/>
-
-        <property name="theme">
-            <bean parent="MyPlanTheme"/>
-        </property>
-        <property name="persistFormToSession" value="false"/>
-    </bean>
-
-    <!--View without header, footer, background color..-->
-    <bean id="MyPlanBaseView" abstract="true" parent="Uif-FormView">
-
-        <property name="preloadPoolSize" value="5"/>
-
-        <property name="theme">
-            <bean parent="MyPlanBaseTheme"/>
-        </property>
-        <property name="persistFormToSession" value="false"/>
-    </bean>
-
-
-    <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
-
-
-        <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
-        </property>
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
-        </property>
-
-
-    </bean>
-
-    <bean id="MyPlanBaseLookupView" abstract="true" parent="Uif-LookupView">
-
-        <property name="preloadPoolSize" value="5"/>
-
-        <property name="theme">
-            <bean parent="MyPlanTheme"/>
-        </property>
-        <property name="persistFormToSession" value="false"/>
-    </bean>
-
-
-    <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
-
-
-        <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
-        </property>
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
-        </property>
-
-
-    </bean>
-
-    <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
-
-        <property name="preloadPoolSize" value="5"/>
-
-        <property name="theme">
-            <bean parent="MyPlanTheme"/>
-        </property>
-        <property name="persistFormToSession" value="false"/>
-    </bean>
-
-    <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
-
-
-        <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
-        </property>
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
-        </property>
-
-
-    </bean>
-
-    <bean id="MyPlanBaseMaintenanceView" abstract="true" parent="Uif-MaintenanceView">
-
-        <property name="preloadPoolSize" value="5"/>
-
-        <property name="theme">
-            <bean parent="MyPlanTheme"/>
-        </property>
-    </bean>
-
-    <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
-
-        <property name="footer" ref="MyPlanFooterDocument"/>
-
-
-        <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
-        </property>
-        <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_header"/>
-        </property>
-
-
     </bean>
 
     <bean id="MyPlanFooterDocument" parent="Uif-FooterBase">
@@ -532,7 +534,7 @@
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
                             </bean>
                         </list>
                     </property>
@@ -557,7 +559,7 @@
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/mcm_faq/adviser-view/');"/>
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
                             </bean>
                         </list>
                     </property>
@@ -582,7 +584,7 @@
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/?page_id=985#view');"/>
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
                             </bean>
                         </list>
                     </property>

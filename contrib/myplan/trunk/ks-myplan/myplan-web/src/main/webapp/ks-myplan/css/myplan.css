@@ -4,13 +4,49 @@
 	outline: 0;
 }
 body {
-    font: 12px/1.2em Helvetica, Arial, clean, sans-serif;
+    color: #333;
+    font: normal 500 13px/20px "museo-sans", Helvetica, Arial, Verdana, sans-serif;
     background: #A4A4A4;
     padding: 0 !important;
-    color: #333;
 }
 strong {
-    font-weight: bold;
+    font-weight: 700;
+}
+.myplan-view h1,
+.myplan-view h2,
+.myplan-view h3,
+.myplan-view h4,
+.myplan-view h5,
+.myplan-view h6 {
+    font: 500 1em "museo-sans", Helvetica, Arial, Verdana, sans-serif;
+    text-transform: none;
+}
+.myplan-view h1.uif-headerText {
+    font-size: 2.3077em;
+    line-height: 1.3333em;
+}
+.myplan-view h2.uif-headerText {
+    font-size: 1.8462em;
+    line-height: 1.6667em;
+}
+.myplan-view h3.uif-headerText {
+    font-size: 1.3846em;
+    line-height: 1.1111em;
+}
+.myplan-view h4.uif-headerText {
+    font-size: 1.1538em;
+    line-height: 1.3333em;
+}
+.myplan-view h5.uif-headerText {
+    font-size: 1em;
+    line-height: 1.5385em;
+}
+.myplan-view h6.uif-headerText {
+    font-size: 0.9231em;
+    line-height: 1.6667em;
+}
+.smtext {
+    font: 500 0.8462/1.8182 Helvetica, Arial, Verdana, sans-serif;
 }
 pre {
     overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
@@ -72,8 +108,8 @@ a:focus {
     height: 127px;
 }
 #applicationHeading #applicationLogo {
-    font-size: 38px;
-    line-height: normal;
+    font: normal 38px/normal Helvetica, Arial, Verdana, sans-serif;
+    text-shadow: 0px 1px 2px #cfcabf;
     color: #39275b;
     position: absolute;
     top: 40px;
@@ -88,7 +124,7 @@ a:focus {
 #applicationHeading #applicationUser a.name {
     display: inline-block;
     padding: 0 12px 0 0;
-    background: url('../images/myplan_icon_id_arrow.png') no-repeat bottom right;
+    background: url('../images/myplan_icon_id_arrow.png') no-repeat center right;
 }
 #myplanUwPatch {
     position: absolute;
@@ -106,27 +142,29 @@ a:focus {
 }
 #applicationNavigation ul li {
     display: inline-block;
-    margin: 0 60px 0 0;
-    padding: 5px;
-    border-bottom: solid 4px transparent;/*#fea931;*/
-    font-size: 18px;
+    margin: 0 0 0 60px;
 }
-#applicationNavigation ul li:hover {
+#applicationNavigation ul li:first-child{
+    margin: 0;
+}
+#applicationNavigation ul li a {
+    font-size: 1.3846em;
+    border-bottom: solid 4px transparent;/*#fea931;*/
+    padding: 5px;
+    text-decoration: none;
+    display: block;
+}
+#applicationNavigation ul li a:hover {
+    text-decoration: none;
     border-bottom-color: #fdd704;
 }
-#applicationNavigation ul li:hover a,
-#applicationNavigation ul li:hover a:hover {
-    text-decoration: none;
+#applicationNavigation ul li.home a {
+    background: url('../images/myplan_icon_home.png') no-repeat 5px 5px;
+    padding-left: 27px;
 }
-#applicationNavigation ul li.home {
-    background: url('../images/myplan_icon_home.png') no-repeat 5px 3px;
-    padding-left: 25px;
-}
-#applicationNavigation ul li.active {
+#applicationNavigation ul li a.active {
     border-bottom-color: #fea931;
-}
-#applicationNavigation ul li.active a {
-    font-weight: bold;
+    font-weight: 700;
 }
 #applicationFooter {
     background-image: -ms-linear-gradient(top, #878787 0%, #A4A4A4 100%);
@@ -212,7 +250,7 @@ a:focus {
 }
 .myplan-view .uif-pageHeaderField .uif-header {
     border: none;
-    font: bold 1.72em/1.5em Georgia, "Times New Roman", Serif !important;
+    font-size: 1.8462em/1.6667em;
     padding: 0;
 }
 .myplan-view .kr-breadcrumbs {
@@ -653,9 +691,10 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
     margin: 1px 0 0 0;
-    font-size: 11px;
+    font-size: 0.8462em;
     padding: 0px;
     background: none;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .code {
     color: #000;
@@ -946,6 +985,8 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     display: block;
     cursor: pointer;
     opacity: 1;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+
 }
 .myplan-facets-panel .myplan-facets-group ul li.checked {
     background-position: 0px -82px;
@@ -954,6 +995,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     color: #777;
     margin-left: 4px;
     font-size: 11px;
+    line-height: 11px;
 }
 .myplan-facets-panel .myplan-facets-group ul li:hover a {
     text-decoration: underline;
@@ -998,6 +1040,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     margin: 0;
     width: 538px;
     clear: both;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 table.myplan-course-search-results-datatable thead tr {
     background-image: -ms-linear-gradient(top, #F7F7F7 0%, #E9E9E9 100%);
@@ -1212,8 +1255,9 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-detail-label > .uif-boxLayout.uif-horizontalBoxLayout img {
     margin: 0 0 0 10px;
 }
-.myplan-course-detail-field {
+.myplan-view .myplan-course-detail-field {
     width: 515px;
+    margin: 0;
 }
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
@@ -1315,7 +1359,6 @@ table.myplan-course-search-results-datatable .blockUI {
     font-weight: normal;
     margin: 1em 0;
     border: none;
-    font-family: Helvetica, Arial, clean, sans-serif;
 }
 .myplan-saved-courses-detail .uif-sectionHeader .uif-headerText strong {
     font-weight:bold;

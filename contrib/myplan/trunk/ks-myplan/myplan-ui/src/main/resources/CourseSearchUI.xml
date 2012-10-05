@@ -17,9 +17,7 @@
     <bean id="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="id" value="CourseSearch-FormView"/>
         <property name="headerText" value="Find Courses"/>
-        <property name="breadcrumbs.render" value="false"/>
         <property name="entryPageId" value="course_search"/>
-        <property name="applyDirtyCheck" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>

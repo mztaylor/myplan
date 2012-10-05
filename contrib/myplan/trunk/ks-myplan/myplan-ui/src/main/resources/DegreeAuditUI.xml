@@ -26,7 +26,6 @@
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.audit.service.DegreeAuditInquiryViewHelperServiceImpl"/>
-        <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
@@ -109,7 +108,6 @@
     <!-- Lookup View -->
     <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="headerText" value="Recent Audit Reports"/>
-        <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
