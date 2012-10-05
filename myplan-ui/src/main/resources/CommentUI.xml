@@ -70,10 +70,8 @@
     </bean>
 -->
 
-    <bean id="Message-FormView" parent="MyPlanBaseView">
+    <bean id="Message-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="Message-FormView"/>
-        <property name="breadcrumbs.render" value="false"/>
-        <property name="applyDirtyCheck" value="false"/>
         <property name="header.render" value="false"/>
        <!-- <property name="header">
             <bean parent="Uif-HeaderTwo"/>
@@ -458,7 +456,6 @@
     <!--  Messages Summary (Gutter) Lookup -->
     <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="headerText" value="Messages Summary"/>
-        <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -707,7 +704,6 @@
     <bean id="MessagesDetail-LookupView" parent="MyPlanLookupView">
         <property name="viewName" value="MessagesDetail-LookupView"/>
         <property name="headerText" value="Messages &amp; Comments"/>
-        <property name="breadcrumbs.render" value="false"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>

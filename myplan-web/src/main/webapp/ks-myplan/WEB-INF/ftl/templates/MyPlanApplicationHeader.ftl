@@ -29,33 +29,25 @@
                 <#if RequestParameters.viewId??>
                 <#--Plan Page Link-->
                     <#if RequestParameters.viewId=="PlannedCourses-FormView">
-                        <li class="active home"><a
-                                href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a>
+                        <li class="home"><a href="plan?methodToCall=start&viewId=PlannedCourses-FormView" class="active">Plan</a>
                         </li>
                     <#else>
-                        <li class="home"><a
-                                href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a>
+                        <li class="home"><a href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a>
                         </li>
                     </#if>
 
                 <#--Find a Course Page Link-->
                     <#if RequestParameters.viewId=="CourseSearch-FormView">
-                        <li class="active"><a
-                                href="course?methodToCall=start&viewId=CourseSearch-FormView">Find
-                            Courses</a></li>
+                        <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView" class="active">Find Courses</a></li>
                     <#else>
-                        <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find
-                            Courses</a></li>
+                        <li><a href="course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
                     </#if>
 
                 <#--DegreeAudit Page Link-->
                     <#if RequestParameters.viewId=="DegreeAudit-FormView">
-                        <li class="active"><a
-                                href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit
-                            Degree</a></li>
+                        <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView" class="active">Audit Degree</a></li>
                     <#else>
-                        <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit
-                            Degree</a></li>
+                        <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
                     </#if>
                     <#else >
                         <li class="home"><a href="plan?methodToCall=start&viewId=PlannedCourses-FormView&currentPage=planPage">Plan</a></li>
