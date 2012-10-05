@@ -271,8 +271,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-//    public int timeout = 30 * 1000; // 30 seconds
-    public int timeout = 1000; // 30 seconds
+    public int timeout = 30 * 1000; // 30 seconds
+//    public int timeout = 1000; // 30 seconds
 
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context)
