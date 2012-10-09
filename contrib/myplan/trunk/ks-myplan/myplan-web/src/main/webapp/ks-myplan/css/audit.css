@@ -10,7 +10,7 @@
 }
 
 .myplan-audit-report .section {
-	background: yellow;
+	background: pink;
 	margin: 20px;
 	padding: 20px;
 }
@@ -31,9 +31,47 @@
 	padding: 20px;
 }
 
-.myplan-audit-report .requirement .title {
+.myplan-audit-report .requirement .header .title {
 	background-color: #f5f5f5;
 }
+
+.myplan-audit-report .requirement .header .Status_NO {
+	background-color: red;
+	color: white;
+    font-weight: bold;
+	padding: 10px;
+	valign: center;
+	float:left;
+}
+
+.myplan-audit-report .requirement .header .Status_IP {
+	background-color: yellow;
+	color: black;
+    font-weight: bold;
+	padding: 10px;
+	valign: center;
+	float:left;
+}
+
+.myplan-audit-report .requirement .header .Status_OK {
+	background-color: green;
+	color: white;
+    font-weight: bold;
+	padding: 10px;
+	valign: center;
+	float:left;
+}
+
+.myplan-audit-report .requirement .header .Status_NONE {
+	background-color: blue;
+	color: white;
+    font-weight: bold;
+	padding: 10px;
+	valign: center;
+	float:left;
+}
+
+
 
 .myplan-audit-report .requirement li {
 	display: inline;
