@@ -1,3 +1,75 @@
+function collapseReq(obj, onload) {
+    if (onload) {
+        obj.removeClass("expanded").addClass("collapsed").css({
+            height: "1.75em",
+            overflow: "hidden"
+        }).find(".header .title").css({
+            whiteSpace: "nowrap",
+            overflow: "hidden"
+        });
+    } else {
+        obj.removeClass("expanded").addClass("collapsed").animate({
+            height: "1.75em"
+        }, 500).find(".header .title").css({
+            whiteSpace: "nowrap",
+            overflow: "hidden"
+        });
+        obj.css("overflow", "hidden");
+    }
+}
+
+function expandReq(obj, onload) {
+    var height = obj[0].scrollHeight;
+
+    if (onload) {
+        obj.removeClass("collapsed").addClass("expanded").css({
+            height: "auto",
+            overflow: "auto"
+        }).find(".header .title").css({
+            whiteSpace: "normal",
+            overflow: "auto"
+        });
+    } else {
+        obj.removeClass("collapsed").addClass("expanded").animate({
+            height: height
+        }, 500).find(".header .title").css({
+            whiteSpace: "normal",
+            overflow: "auto"
+        });
+        obj.css("overflow", "hidden");
+    }
+}
+
+jQuery(document).ready(function() {
+
+    jQuery(".requirement").each(function() {
+        if (jQuery(this).is(".Status_NO, .Status_NONE")) {
+            expandReq(jQuery(this), true);
+        } else {
+            collapseReq(jQuery(this), true);
+        }
+    });
+    jQuery(".requirement .toggle, .requirement .title").click(function(e) {
+        var jRequirement = jQuery(this).parents(".requirement");
+        if (jRequirement.hasClass("expanded")) {
+            collapseReq(jRequirement, false);
+        } else if (jRequirement.hasClass("collapsed")) {
+            expandReq(jRequirement, false);
+        }
+    });
+    jQuery(".control-toolbar #requirement-status").change(function() {
+        var sClass = jQuery(this).val();
+        jQuery(".requirement").each(function() {
+            if (jQuery(this).hasClass(sClass) || sClass == 'all' || jQuery(this).hasClass("Status_NONE")) {
+                jQuery(this).show();
+            } else {
+                jQuery(this).hide();
+            }
+        });
+    });
+});​
+
+
 /*
 jQuery(document).ready(function(){
     //var count = 0;
