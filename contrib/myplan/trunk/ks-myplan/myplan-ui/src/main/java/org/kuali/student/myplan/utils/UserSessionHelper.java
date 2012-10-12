@@ -131,6 +131,26 @@ public class    UserSessionHelper {
         }
     }
 
+    /**
+     * Queries the person service to get the name (first last) of a person given a principle ID.
+     *
+     * @param principleId
+     * @return The name in first last format.
+     */
+    public synchronized static String getNameCamelCased(String principleId) {
+        Person person = null;
+        try {
+            person = getPersonService().getPerson(principleId);
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+        }
+        if (person != null) {
+            return String.format("%s %s", person.getFirstName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()), person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
+        } else {
+            return null;
+        }
+    }
+
     public synchronized static String getMailAddress(String principleId) {
         try{
         Person user = GlobalVariables.getUserSession().getPerson();
