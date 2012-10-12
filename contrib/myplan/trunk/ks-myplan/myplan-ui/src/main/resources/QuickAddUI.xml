@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="QuickAdd-FormView" parent="MyPlanBaseView">
+    <bean id="QuickAdd-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="QuickAdd-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
