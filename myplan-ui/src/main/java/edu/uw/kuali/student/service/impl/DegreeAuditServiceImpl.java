@@ -14,6 +14,7 @@ import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -428,10 +429,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             System.out.println("found: " + nodeList.getLength());
             Node root = nodeList.item(0);
 
-            String path = "//div[contains(@class,'requirement')]/div[contains(@class,'heading')]/div[contains(@class,'title')]/text()";
+            String path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
-            path = "//div[contains(@class,'subrequirement')]/div[contains(@class,'body')]/div[contains(@class,'title')]/text()";
+            path = "//div[contains(@class,'subrequirement')]/table[contains(@class,'taken')]/tbody/tr/td[contains(@class,'course')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
 
@@ -445,6 +446,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             transformer.transform(source, result);
             answer = sw.toString();
+            /*Adding the prepared for : studentName */
+            if(answer.contains("<td class=\"graduation-date\">")){
+            answer=answer.replace("<td class=\"graduation-date\">","<td class=\"prepared-for\">\n" +
+                    "\t\t\t\t\t\t\t<label>Prepared for:</label> "+ UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
+                    "\t\t\t\t\t\t</td>\n" +
+                    "\t\t\t\t\t</tr>\n" +
+                    "\t\t\t\t\t<tr>");
+            }else{
+                answer=answer.replace("<td class=\"program-entry-qtr\">","<td class=\"prepared-for\">\n" +
+                        "\t\t\t\t\t\t\t<label>Prepared for:</label> "+ UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
+                        "\t\t\t\t\t\t</td>\n" +
+                        "\t\t\t\t\t</tr>\n" +
+                        "\t\t\t\t\t<tr>");
+            }
 
         } catch (Exception e) {
             logger.error("getHTMLReport failed", e);
