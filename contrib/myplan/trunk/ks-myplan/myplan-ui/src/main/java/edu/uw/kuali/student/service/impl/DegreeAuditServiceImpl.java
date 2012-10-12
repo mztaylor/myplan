@@ -449,16 +449,18 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             /*Adding the prepared for : studentName */
             if(answer.contains("<td class=\"graduation-date\">")){
             answer=answer.replace("<td class=\"graduation-date\">","<td class=\"prepared-for\">\n" +
-                    "\t\t\t\t\t\t\t<label>Prepared for:</label> "+ UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
-                    "\t\t\t\t\t\t</td>\n" +
-                    "\t\t\t\t\t</tr>\n" +
-                    "\t\t\t\t\t<tr>");
+                    "\t\t\t\t\t\t<label>Prepared for:</label> "+UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
+                    "\t\t\t\t\t</td>\n" +
+                    "\t\t\t\t</tr>\n" +
+                    "\t\t\t\t<tr>\n" +
+                    "\t\t\t\t\t<td class=\"graduation-date\">");
             }else{
                 answer=answer.replace("<td class=\"program-entry-qtr\">","<td class=\"prepared-for\">\n" +
-                        "\t\t\t\t\t\t\t<label>Prepared for:</label> "+ UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
-                        "\t\t\t\t\t\t</td>\n" +
-                        "\t\t\t\t\t</tr>\n" +
-                        "\t\t\t\t\t<tr>");
+                        "\t\t\t\t\t\t<label>Prepared for:</label> "+UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
+                        "\t\t\t\t\t</td>\n" +
+                        "\t\t\t\t</tr>\n" +
+                        "\t\t\t\t<tr>\n" +
+                        "\t\t\t\t\t<td class=\"program-entry-qtr\">");
             }
 
         } catch (Exception e) {

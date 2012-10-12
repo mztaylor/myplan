@@ -145,7 +145,7 @@ public class    UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-            return String.format("%s %s", person.getFirstName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()), person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
+            return person.getFirstName().substring(0,1).toUpperCase()+person.getFirstName().substring(1,person.getFirstName().length())+" "+ person.getLastName().substring(0,1).toUpperCase()+person.getLastName().substring(1,person.getLastName().length());
         } else {
             return null;
         }
