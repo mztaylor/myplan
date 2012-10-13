@@ -163,4 +163,13 @@
     height: 20px;
 }
 
+.myplan-audit-report .section.rname_LINE1 .heading {
+    border: none;
+    margin: 0;
+    padding: 0px;
+    background: transparent !important;
+    font-size: 1em !important;
+    height: 20px;
+}
+
 
