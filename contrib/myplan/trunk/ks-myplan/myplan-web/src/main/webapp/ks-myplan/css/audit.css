@@ -154,4 +154,13 @@
 
 }
 
+.myplan-audit-report .section.rname_WHAT-IF .heading{
+    border: none;
+    margin: 0;
+    padding: 0px;
+    background: transparent;
+    font-size: 1em !important;
+    height: 20px;
+}
+
 
