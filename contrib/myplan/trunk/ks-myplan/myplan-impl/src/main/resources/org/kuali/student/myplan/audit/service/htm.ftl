@@ -198,10 +198,18 @@
 				<!-- <option value="Status_PL">Plan Only</option> -->
 			</select>
 		</div>
+        <div class="myplan-status alert uif-boxLayoutVerticalItem audit-filtered" style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon">
+            <div class="message">You are viewing a partial degree audit report. See &#39;All Requirements&#39; for the full audit report.</div>
+        </div>
 	</#if>
 
 		<#list req.headerLines as headerLine> 
 			<div class="heading">${headerLine?replace("*", "")?replace("_", "")?replace(". NOTE:", ".<br/>NOTE:")?trim}</div>
+            <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered" style="margin-bottom:20px; float:none; display:none;">
+                <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon">
+                <div class="message">All requirements in this section have been hidden. See &#39;All Requirements&#39; for the full audit report.</div>
+            </div>
 		</#list>
 
 <#else>

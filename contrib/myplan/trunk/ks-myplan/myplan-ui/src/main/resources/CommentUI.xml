@@ -445,7 +445,7 @@
                     <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                 </bean>
-                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-message-noborder myplan-success-message"
+                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-feedback success"
                       p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
                     <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
                 </bean>

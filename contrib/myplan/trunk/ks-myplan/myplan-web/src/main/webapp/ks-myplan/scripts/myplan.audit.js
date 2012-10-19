@@ -66,6 +66,11 @@ jQuery(document).ready(function() {
                 jQuery(this).hide();
             }
         });
+        if (jQuery(this).val() == "all") {
+            jQuery(".myplan-status.audit-filtered").hide();
+        } else {
+            jQuery(".myplan-status.audit-filtered").show();
+        }
     });
 });
 

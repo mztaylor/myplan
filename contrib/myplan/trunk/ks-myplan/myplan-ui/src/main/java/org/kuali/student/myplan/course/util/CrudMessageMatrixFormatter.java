@@ -243,7 +243,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         /*When savedItemId and savedItemDateCreated are not null then populating message
             *"Bookmarked on 8/15/2012"*/
         if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
-            sb = sb.append("<dd>").append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked ").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
+            sb = sb.append("<dd>").append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
 
         }
 

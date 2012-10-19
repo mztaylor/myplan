@@ -78,8 +78,8 @@
                                   p:render="@{(dataObject.backupList ne null or dataObject.plannedList ne null or dataObject.academicTerms.size() gt 0) ? true : false}">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>myplan-message-border</value>
-                                        <value>myplan-message-info</value>
+                                        <value>myplan-status</value>
+                                        <value>info</value>
                                     </list>
                                 </property>
                                 <property name="items">
@@ -87,7 +87,7 @@
                                         <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:style="margin:0;" p:group.validationMessages.render="false">
                                             <property name="items">
                                                 <list>
-
+                                                    <bean parent="MyPlanMessagingIcon"/>
                                                     <bean parent="Uif-DataField"
                                                           p:propertyName="details"
                                                           p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
@@ -97,6 +97,7 @@
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>myplan-data-list</value>
+                                                                <value>message</value>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -167,8 +168,8 @@
                               });"/>-->
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-message-border</value>
-                            <value>myplan-message-info</value>
+                            <value>myplan-status</value>
+                            <value>info</value>
                         </list>
                     </property>
                     <property name="items">

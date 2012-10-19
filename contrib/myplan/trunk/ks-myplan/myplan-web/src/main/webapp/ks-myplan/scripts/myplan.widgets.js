@@ -152,8 +152,8 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
             component = jQuery("#" + getId, htmlContent);
         } else {
             eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
-            var sError = jQuery('body').data('validationMessages').serverErrors[0];
-            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+            var sError = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
@@ -310,8 +310,8 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
             var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
-            var sError = jQuery('body').data('validationMessages').serverErrors[0];
-            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+            var sError = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
@@ -405,8 +405,8 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
-            var sError = jQuery('body').data('validationMessages').serverErrors[0];
-            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+            var sError = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
@@ -516,7 +516,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
         elementToBlock.unblock();
         switch (status) {
             case 'success':
-                var oMessage = { 'message':jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
@@ -526,9 +526,9 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 setUrlHash('modified', 'yes');
                 break;
             case 'error':
-                var oMessage = { 'message':jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
                 if (!bDialog) {
-                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff", "color":"#ff0606", "border":"none"});
+                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
                     openDialog(sHtml.html(), e);
@@ -1089,8 +1089,8 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
-            var sError = jQuery('body').data('validationMessages').serverErrors[0];
-            component = jQuery("<div />").html(sError).addClass("myplan-message-border myplan-message-error").width(175);
+            var sError = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
@@ -1130,7 +1130,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
         elementToBlock.unblock();
         switch (status) {
             case 'success':
-                var oMessage = { 'message':jQuery('body').data('validationMessages').serverInfo[0], 'cssClass':'myplan-message-border myplan-message-success' };
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
@@ -1140,9 +1140,9 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                 setUrlHash('modified', 'yes');
                 break;
             case 'error':
-                var oMessage = { 'message':jQuery('body').data('validationMessages').serverErrors[0], 'cssClass':'myplan-message-border myplan-message-error' };
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
                 if (!bDialog) {
-                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-message-noborder myplan-message-error").css({"background-color":"#fff", "color":"#ff0606", "border":"none"});
+                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
                     openDialog(sHtml.html(), e);

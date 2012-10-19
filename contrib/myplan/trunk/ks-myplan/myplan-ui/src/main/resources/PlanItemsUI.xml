@@ -2178,7 +2178,7 @@
     <!-- ################# Course Details Summary Bean ############################# -->
 
     <!-- Course details summary component used in both the popover and dialog box -->
-    <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
+    <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
         <property name="items">
             <list>
                 <ref bean="course_details_summary_data"/>
@@ -2277,7 +2277,7 @@
     </bean>
 
 
-    <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
+    <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
         <property name="items">
             <list>
                 <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup"
@@ -2335,20 +2335,22 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup"
+                <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:style="margin:0px"
                       p:render="@{(courseDetails.backupList ne null or courseDetails.plannedList ne null or courseDetails.savedItemId ne null or courseDetails.academicTerms.size() gt 0) ? true : false}"
                       p:validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-message-border</value>
+                            <value>myplan-status</value>
+                            <value>info</value>
                         </list>
                     </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                  p:group.validationMessages.render="false">
+                                  p:group.validationMessages.render="false" p:style="margin:0px;">
                                 <property name="items">
                                     <list>
+                                        <bean parent="MyPlanMessagingIcon"/>
                                         <bean parent="Uif-DataField"
                                               p:propertyName="courseDetails"
                                               p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
@@ -2357,7 +2359,7 @@
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-data-list</value>
-                                                    <value>myplan-message-info</value>
+                                                    <value>message</value>
                                                 </list>
                                             </property>
                                         </bean>
@@ -2506,7 +2508,7 @@
     </bean>
 
     <!-- Course details 3 box group  -->
-    <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+    <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
