@@ -5,7 +5,7 @@
 }
 body {
     color: #333;
-    font: normal 500 13px/20px "museo-sans", Helvetica, Arial, Verdana, sans-serif;
+    font: normal 13px/20px Arial, Helvetica, Verdana, sans-serif;
     background: #A4A4A4;
     padding: 0 !important;
 }
@@ -18,7 +18,8 @@ strong {
 .myplan-view h4,
 .myplan-view h5,
 .myplan-view h6 {
-    font: 500 1em "museo-sans", Helvetica, Arial, Verdana, sans-serif;
+    font-weight: 500;
+    font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     text-transform: none;
 }
 .myplan-view h1.uif-headerText {
@@ -46,7 +47,7 @@ strong {
     line-height: 1.6667em;
 }
 .smtext {
-    font: 500 0.8462/1.8182 Helvetica, Arial, Verdana, sans-serif;
+    font: normal 0.8462/1.8182 Arial, Helvetica, Verdana, sans-serif;
 }
 pre {
     overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
@@ -768,39 +769,84 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     margin: 0;
     padding: 0;
 }
-.myplan-message-border {
-    padding: 5px;
+.myplan-feedback,
+.myplan-status {
+    padding: 4px 0px;
     display: block;
     float: left;
-    margin: 0 !important;
-    border: solid 1px #d7d7d7;
-    background: #e4e4e4;
+    border: solid 1px transparent;
+    background: none;
+    line-height: 18px;
+    position: relative;
 }
-.myplan-message-noborder {
-    padding: 5px;
-    display: block;
-    float: left;
-    border: none;
-    margin: 0 !important;
+.myplan-status {
+    padding: 8px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 }
-.myplan-message-success {
-    background: #e4e4e4 url('../images/iconSuccess16.png') no-repeat 5px center;
-    padding-left: 26px !important;
+.myplan-feedback.success {
+    color: #006600;
 }
-.myplan-success-message {
-    background: url('../images/iconSuccess16.png') no-repeat 5px center;
-    padding-left: 26px !important;
+.myplan-feedback.info {
+    color: #333;
 }
-
-.myplan-message-error {
-    background: #ffd4d4 url('../images/iconError16.png') no-repeat 5px center;
-    border-color: #e3b8b8;
-    padding-left: 26px !important;
-
+.myplan-feedback.error {
+    color: #cc0000;
 }
-.myplan-message-info {
-    background: #e4e4e4 url('../images/Iconinfo16x.png') no-repeat 5px top;
-    padding-left: 26px !important;
+.myplan-feedback.alert {
+    color: #333;
+}
+.myplan-status.success {
+    border-color: #d9ffde;
+    background-color: #f4fdf5;
+}
+.myplan-status.info {
+    border-color: #daeaff;
+    background-color: #f4f8fd;
+}
+.myplan-status.error {
+    border-color: #fcd5e4;
+    background-color: #fce9f1;
+}
+.myplan-status.alert {
+    border-color: #feea49;
+    background-color: #faf5ca;
+}
+.myplan-feedback img.icon,
+.myplan-status img.icon {
+    background: url('../images/myplan_icon_sprites.png') no-repeat -72px -133px;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+.myplan-feedback img.icon {
+    top: 4px;
+    left: 0px;
+}
+.myplan-feedback .message {
+    margin-left: 23px;
+}
+.myplan-status .message {
+    margin-left: 26px;
+}
+.myplan-feedback.success img.icon,
+.myplan-status.success img.icon {
+    background-position: 0px -115px;
+}
+.myplan-feedback.info img.icon,
+.myplan-status.info img.icon {
+    background-position: -18px -115px;
+}
+.myplan-feedback.error img.icon,
+.myplan-status.error img.icon {
+    background-position: -36px -115px;
+}
+.myplan-feedback.alert img.icon,
+.myplan-status.alert img.icon {
+    background-position: -54px -115px;
 }
 .myplan-audit-message-info {
     background: #F4F8FD url('../images/Iconinfo16x.png') no-repeat 5px center;
