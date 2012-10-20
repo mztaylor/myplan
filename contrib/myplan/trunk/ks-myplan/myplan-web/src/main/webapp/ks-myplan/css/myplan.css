@@ -784,6 +784,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 .myplan-feedback.success {
     color: #006600;

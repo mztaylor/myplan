@@ -66,11 +66,22 @@ jQuery(document).ready(function() {
                 jQuery(this).hide();
             }
         });
-        if (jQuery(this).val() == "all") {
-            jQuery(".myplan-status.audit-filtered").hide();
+
+        var jAuditMessage = jQuery(".myplan-status.audit-filtered");
+        if (sClass == "all") {
+            jAuditMessage.hide();
         } else {
-            jQuery(".myplan-status.audit-filtered").show();
+            jAuditMessage.show();
         }
+
+        jQuery(".section").each(function(){
+            var jSectionMessage = jQuery(this).find(".myplan-status.all-reqs-filtered");
+            if (jQuery(this).find(".requirement:visible").length > 0) {
+                jSectionMessage.hide();
+            } else {
+                jSectionMessage.show();
+            }
+        });
     });
 });
 
