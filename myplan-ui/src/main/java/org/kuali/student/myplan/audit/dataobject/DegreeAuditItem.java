@@ -14,6 +14,7 @@ public class DegreeAuditItem implements Comparable {
     private String programType;
     private String programParam;
     private String campusParam;
+    private boolean recentAudit=false;
 
     public String getProgramParam() {
         return programParam;
@@ -53,6 +54,14 @@ public class DegreeAuditItem implements Comparable {
 
     public void setReport(AuditReport report) {
         this.auditReport = report;
+    }
+
+    public boolean isRecentAudit() {
+        return recentAudit;
+    }
+
+    public void setRecentAudit(boolean recentAudit) {
+        this.recentAudit = recentAudit;
     }
 
     /**
