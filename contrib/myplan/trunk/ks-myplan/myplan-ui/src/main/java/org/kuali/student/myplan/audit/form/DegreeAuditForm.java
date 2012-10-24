@@ -12,7 +12,6 @@ public class DegreeAuditForm extends UifFormBase {
     private String campusParam;
     private String auditId;
     private String auditType = DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT;
-    private String recentAuditId;
 
     public String getAuditId() {
         return auditId;
@@ -70,11 +69,4 @@ public class DegreeAuditForm extends UifFormBase {
         this.auditType = auditType;
     }
 
-    public String getRecentAuditId() {
-        return recentAuditId;
-    }
-
-    public void setRecentAuditId(String recentAuditId) {
-        this.recentAuditId = recentAuditId;
-    }
 }
