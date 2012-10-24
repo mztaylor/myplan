@@ -126,6 +126,11 @@ public class DegreeAuditController extends UifControllerBase {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
                     List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                    if (auditReportInfoList.size() > 0) {
+                        form.setRecentAuditId(auditReportInfoList.get(0).getAuditId());
+                    } else {
+                        form.setRecentAuditId("");
+                    }
                     if (auditId == null && auditReportInfoList.size() > 0) {
                         auditId = auditReportInfoList.get(0).getAuditId();
                         programParam = auditReportInfoList.get(0).getProgramId();
@@ -197,9 +202,9 @@ public class DegreeAuditController extends UifControllerBase {
             GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
 
-        if (systemKeyExists && !StringUtils.hasText(form.getAuditHtml())) {
+        /*if (systemKeyExists && !StringUtils.hasText(form.getAuditHtml())) {
             form.setPageId(DegreeAuditConstants.AUDIT_EMPTY_PAGE);
-        }
+        }*/
         return getUIFModelAndView(form);
     }
 
@@ -263,20 +268,39 @@ public class DegreeAuditController extends UifControllerBase {
         } catch (Exception e) {
             logger.error("Could not complete audit run");
             String[] params = {};
-            if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId())) {
-                GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-            } else {
-                GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
-                form.setAuditHtml(html);
-            }
+            GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+            String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
+            form.setAuditHtml(html);
         }
-        if (DegreeAuditConstants.AUDIT_EMPTY_PAGE.equalsIgnoreCase(form.getPageId()) && auditID != null) {
-            form.setPageId(DegreeAuditConstants.AUDIT_PAGE);
-        }
-
+        form.setRecentAuditId(auditID);
         return getUIFModelAndView(form);
     }
+
+    @RequestMapping(value = "/status")
+    public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
+        String programId = request.getParameter("programId");
+        String auditId = request.getParameter("auditId");
+        String systemKey = UserSessionHelper.getAuditSystemKey();
+        String status = null;
+        ContextInfo contextInfo = new ContextInfo();
+        Date startDate = new Date();
+        Date endDate = new Date();
+
+        try {
+            status = getDegreeAuditService().getAuditStatus(systemKey, programId, auditId);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        /*Building the Json String*/
+        StringBuilder jsonString = new StringBuilder();
+        jsonString = jsonString.append("{status:").append("\""+status+"\"}");
+        try {
+            response.getWriter().println(jsonString);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
 
     public Map<String, String> populateCampusMap() {
         Map<String, String> orgCampusTypes = new HashMap<String, String>();
