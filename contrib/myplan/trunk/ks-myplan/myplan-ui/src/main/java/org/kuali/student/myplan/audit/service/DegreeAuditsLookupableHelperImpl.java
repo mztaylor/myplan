@@ -26,11 +26,10 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId=null;
-        try{
-         studentId= UserSessionHelper.getAuditSystemKey();
-        }
-        catch (DataRetrievalFailureException e){
+        String studentId = null;
+        try {
+            studentId = UserSessionHelper.getAuditSystemKey();
+        } catch (DataRetrievalFailureException e) {
             List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
             return degreeAuditItems;
         }
@@ -42,7 +41,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             throw new RuntimeException("Degree audit service handle was null.");
         }
 
-        List <AuditReportInfo> audits=new ArrayList<AuditReportInfo>();
+        List<AuditReportInfo> audits = new ArrayList<AuditReportInfo>();
         //  TODO: Calculate dates that make sense.
         Date begin = new Date();
         Date end = new Date();
@@ -60,10 +59,13 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         Set<String> programSet = new HashSet<String>();
         for (AuditReportInfo audit : audits) {
             String programId = audit.getProgramId();
-            if ( ! programSet.contains(programId)) {
+            if (!programSet.contains(programId)) {
                 programSet.add(programId);
                 degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
             }
+        }
+        if(degreeAuditItems.size()>0){
+            degreeAuditItems.get(0).setRecentAudit(true);
         }
         return degreeAuditItems;
     }
@@ -71,8 +73,8 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
     public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
             degreeAuditService = (DegreeAuditService)
-                GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
-                    DegreeAuditServiceConstants.SERVICE_NAME));
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
         }
         return degreeAuditService;
     }
