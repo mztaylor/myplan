@@ -613,8 +613,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String auditStatus = "PENDING";
         String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
         DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+        List list = null;
         String hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and run.rundate > (SELECT DISTINCT jqrun.rundate FROM JobQueueRun jqrun where jqrun.jobid= ?)  and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
-        List list = dao.find(hql, new Object[]{recentAuditId, programId, stuno});
+        if (!StringUtils.hasText(recentAuditId)) {
+            hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
+            list = dao.find(hql, new Object[]{programId, stuno});
+        } else {
+            list = dao.find(hql, new Object[]{recentAuditId, programId, stuno});
+        }
+
 
         if (list != null && list.size() > 0) {
             if (list.get(0).toString().length() > 0 && !list.get(0).toString().equalsIgnoreCase("X")) {
