@@ -126,11 +126,6 @@ public class DegreeAuditController extends UifControllerBase {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
                     List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
-                    if (auditReportInfoList.size() > 0) {
-                        form.setRecentAuditId(auditReportInfoList.get(0).getAuditId());
-                    } else {
-                        form.setRecentAuditId("");
-                    }
                     if (auditId == null && auditReportInfoList.size() > 0) {
                         auditId = auditReportInfoList.get(0).getAuditId();
                         programParam = auditReportInfoList.get(0).getProgramId();
@@ -272,7 +267,6 @@ public class DegreeAuditController extends UifControllerBase {
             String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
             form.setAuditHtml(html);
         }
-        form.setRecentAuditId(auditID);
         return getUIFModelAndView(form);
     }
 
