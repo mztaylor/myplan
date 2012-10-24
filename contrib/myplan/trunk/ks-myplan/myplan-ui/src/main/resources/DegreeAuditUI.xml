@@ -184,6 +184,14 @@
                                     </list>
                                 </property>
                             </bean>
+<!--                            <bean parent="Uif-DataField" p:propertyName="report.auditId" p:style="width: 220px;"
+                                  p:fieldLabel.render="false"/>-->
+                            <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId" p:fieldLabel.render="false" p:render="@{#line.recentAudit eq true ? true : false}"
+                                  p:defaultValue="@{#line.report.auditId}">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
