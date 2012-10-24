@@ -35,6 +35,7 @@ import org.restlet.util.Series;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uachieve.apis.audit.*;
@@ -146,12 +147,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo runAudit(
-        @WebParam(name = "studentId") String studentId,
-        @WebParam(name = "programId") String programId,
-        @WebParam(name = "auditTypeKey") String auditTypeKey,
-        @WebParam(name = "context") ContextInfo useless
+            @WebParam(name = "studentId") String studentId,
+            @WebParam(name = "programId") String programId,
+            @WebParam(name = "auditTypeKey") String auditTypeKey,
+            @WebParam(name = "context") ContextInfo useless
     )
-        throws InvalidParameterException, MissingParameterException, OperationFailedException
+            throws InvalidParameterException, MissingParameterException, OperationFailedException
 
     {
         try {
@@ -447,16 +448,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             transformer.transform(source, result);
             answer = sw.toString();
             /*Adding the prepared for : studentName */
-            if(answer.contains("<td class=\"graduation-date\">")){
-            answer=answer.replace("<td class=\"graduation-date\">","<td class=\"prepared-for\">\n" +
-                    "\t\t\t\t\t\t<label>Prepared for:</label> "+UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
-                    "\t\t\t\t\t</td>\n" +
-                    "\t\t\t\t</tr>\n" +
-                    "\t\t\t\t<tr>\n" +
-                    "\t\t\t\t\t<td class=\"graduation-date\">");
-            }else{
-                answer=answer.replace("<td class=\"program-entry-qtr\">","<td class=\"prepared-for\">\n" +
-                        "\t\t\t\t\t\t<label>Prepared for:</label> "+UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId())+"\n" +
+            if (answer.contains("<td class=\"graduation-date\">")) {
+                answer = answer.replace("<td class=\"graduation-date\">", "<td class=\"prepared-for\">\n" +
+                        "\t\t\t\t\t\t<label>Prepared for:</label> " + UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId()) + "\n" +
+                        "\t\t\t\t\t</td>\n" +
+                        "\t\t\t\t</tr>\n" +
+                        "\t\t\t\t<tr>\n" +
+                        "\t\t\t\t\t<td class=\"graduation-date\">");
+            } else {
+                answer = answer.replace("<td class=\"program-entry-qtr\">", "<td class=\"prepared-for\">\n" +
+                        "\t\t\t\t\t\t<label>Prepared for:</label> " + UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId()) + "\n" +
                         "\t\t\t\t\t</td>\n" +
                         "\t\t\t\t</tr>\n" +
                         "\t\t\t\t<tr>\n" +
@@ -606,6 +607,26 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             auditProgramInfoList.add(auditProgramInfo);
         }
         return auditProgramInfoList;
+    }
+
+    public String getAuditStatus(String studentId, String programId, String recentAuditId) {
+        String auditStatus = "PENDING";
+        String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
+        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+        String hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and run.rundate > (SELECT DISTINCT jqrun.rundate FROM JobQueueRun jqrun where jqrun.jobid= ?)  and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
+        List list = dao.find(hql, new Object[]{recentAuditId, programId, stuno});
+
+        if (list != null && list.size() > 0) {
+            if (list.get(0).toString().length() > 0 && !list.get(0).toString().equalsIgnoreCase("X")) {
+                auditStatus = list.get(0).toString();
+            }
+        }
+        if (auditStatus.equalsIgnoreCase("D")) {
+            auditStatus = "DONE";
+        } else if (auditStatus.equalsIgnoreCase("E")) {
+            auditStatus = "FAILED";
+        }
+        return auditStatus;
     }
 
     /*Implemented to get the current year and the term value from the academic calender service.*/
