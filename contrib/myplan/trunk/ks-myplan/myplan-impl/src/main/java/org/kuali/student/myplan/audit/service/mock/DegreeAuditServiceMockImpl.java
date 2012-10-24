@@ -159,5 +159,9 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         return auditProgramInfoList;
     }
 
+    public String getAuditStatus(String studentId, String programId, String recentAuditId) throws InvalidParameterException, MissingParameterException, OperationFailedException{
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
 }
