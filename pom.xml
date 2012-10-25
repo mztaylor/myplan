@@ -46,6 +46,13 @@
             <url>http://maven.restlet.org</url>
         </repository>
 
+        <!-- Repository for uw common security -->
+        <repository>
+            <id>uw-kuali</id>
+            <name>UW Kuali Repository</name>
+            <url>http://kualibuild1.cac.washington.edu/maven</url>
+        </repository>
+
     </repositories>
     <ciManagement>
         <system>hudson</system>
