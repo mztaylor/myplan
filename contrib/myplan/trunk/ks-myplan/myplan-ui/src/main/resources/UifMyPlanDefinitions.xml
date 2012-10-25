@@ -157,6 +157,7 @@
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
+                <value>ks-myplan/plugins/polling.js</value>
                 <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.js</value>
                 <value>ks-myplan/scripts/myplan.google.js</value>
             </list>
@@ -466,7 +467,7 @@
 
         <property name="onDocumentReadyScript"
                   value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                         jQuery('#degree_audits_summary').subscribe('NEW_AUDIT', function(data){
+                         jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
                             myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
                          });
                   "/>

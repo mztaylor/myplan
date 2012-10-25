@@ -902,19 +902,96 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
 }
 
 function degreeAuditButton() {
+    var id = getAuditProgram("id");
+
+    if (id) {
+        return (id == 'default');
+    } else {
+        return true;
+    }
+
+}
+
+function getAuditProgram(param) {
+    var id;
     switch (parseFloat(jQuery("input[name='campusParam']:checked").val())) {
         case 306:
-            return (jQuery('select#select_programParam_seattle_control').val() === 'default');
+            id = 'select_programParam_seattle_control';
             break;
         case 310:
-            return (jQuery('select#select_programParam_bothell_control').val() === 'default');
+            id = 'select_programParam_bothell_control';
             break;
         case 323:
-            return (jQuery('select#select_programParam_tacoma_control').val() === 'default');
+            id = 'select_programParam_tacoma_control';
             break;
         default:
-            return true;
+            id = null;
     }
+    if (param == 'id') {
+    	return jQuery('select#' + id).val();
+    } else {
+    	return jQuery('select#' + id + ' option:selected').text();
+    }
+}
+
+function setPendingAudit(minutes) {
+    var date = new Date();
+    date.setTime(date.getTime() + (minutes * 60 * 1000));
+
+    var data = {};
+    data.programId = getAuditProgram('id');
+    data.programName = getAuditProgram('name');
+    data.cookieId = date.getTime();
+    if (data.programId != 'default') {
+        jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
+        jQuery.publish('REFRESH_AUDITS');
+    }
+}
+
+function getPendingAudit(id) {
+    var component = jQuery("#" + id + " ul");
+    jQuery.each(document.cookie.split(/; */), function()  {
+        var splitCookie = this.split('=');
+        var re = new RegExp("(^myplan_audit)", "i");
+        if (splitCookie[0].match(re)) {
+            var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
+            if (data) {
+                var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+                component.prepend(item);
+            }
+        }
+    });
+    if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
+        component.next("div.uif-boxGroup").remove();
+    }
+}
+
+function pollPendingAudit(programId, cookieId, seconds) {
+    jQuery.ajaxPollSettings.pollingType = "interval";
+    jQuery.ajaxPollSettings.interval = (seconds * 1000);
+
+    jQuery.ajaxPoll({
+        url: "/student/myplan/audit/status",
+        data: {"programId": programId,"cookieId":cookieId},
+        dataType: "json",
+        beforeSend: null,
+        successCondition: function(result) {
+        	return (result.status == 'DONE' || result.status == 'FAILED');
+        },
+        success: function(data) {
+            var status = data.status;
+            switch (status) {
+            	case "DONE":
+            		showGrowl("Your audit for *Program Name* is complete.", "Degree Audit Completed", "infoGrowl");
+            		break;
+            	case "FAILED":
+            		showGrowl("Your audit for *Program Name*", "Degree Audit Error", "errorGrowl");
+            		break;
+            }
+            jQuery.cookie("myplan_audit_" + data.cookieId, "", new Date().setTime(0));
+        }
+    });
+
 }
 
 function buttonState(jqueryObj, buttonId) {
@@ -1089,7 +1166,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
-            var sError = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            var sError = '<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
             component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {
@@ -1130,7 +1207,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
         elementToBlock.unblock();
         switch (status) {
             case 'success':
-                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
+                var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
@@ -1140,7 +1217,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                 setUrlHash('modified', 'yes');
                 break;
             case 'error':
-                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
+                var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
                 if (!bDialog) {
                     var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);

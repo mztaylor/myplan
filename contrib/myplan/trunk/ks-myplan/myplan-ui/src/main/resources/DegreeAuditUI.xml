@@ -154,6 +154,7 @@
                 <value>myplan-recent-audit</value>
             </list>
         </property>
+        <property name="onDocumentReadyScript" value="getPendingAudit('degree_audits_summary');"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
@@ -184,8 +185,6 @@
                                     </list>
                                 </property>
                             </bean>
-<!--                            <bean parent="Uif-DataField" p:propertyName="report.auditId" p:style="width: 220px;"
-                                  p:fieldLabel.render="false"/>-->
                             <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId" p:fieldLabel.render="false" p:render="@{#line.recentAudit eq true ? true : false}"
                                   p:defaultValue="@{#line.report.auditId}">
                                 <property name="control">

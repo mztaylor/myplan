@@ -55,7 +55,7 @@
             <bean parent="Uif-HeaderTwo"/>
         </property>
 
-        <property name="navigationBlockUI">
+        <!--<property name="navigationBlockUI">
             <bean parent="Uif-BlockUI"  p:blockingImageSource="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnLoader.gif"
                   p:style="background-color:yellow; display:inline; float:left; margin:5px 15px 5px 0">
                 <property name="templateOptions">
@@ -82,7 +82,7 @@
                     </map>
                 </property>
             </bean>
-        </property>
+        </property>-->
         
         <property name="additionalScriptFiles">
             <list>
@@ -488,7 +488,7 @@
                             <bean id="select_programParam_seattle" parent="Uif-InputField" p:propertyName="programParamSeattle">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
-                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton()); if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');} else {jQuery('button#degree_audit_run').removeClass('disabled');}"/>
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -506,7 +506,7 @@
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
-                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton()); if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');} else {jQuery('button#degree_audit_run').removeClass('disabled');} "/>
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -524,7 +524,7 @@
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
-                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton()); if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');} else {jQuery('button#degree_audit_run').removeClass('disabled');}"/>
+                                        <property name="onChangeScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -535,24 +535,17 @@
                     </property>
                 </bean>
                 <ref bean="degree_audit_run"/>
-                <ref bean="hidden_recentAuditId"/>
             </list>
         </property>
     </bean>
 
 
-    <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit" p:disabled="true"
-          p:refreshId="degree_audit_block" p:focusOnIdAfterSubmit="radio_campusParam" p:actionLabel="Run Degree Audit" p:loadingMessageText="">
-        <property name="preSubmitCall" value="setUrlHash('modified', 'yes');return true;"/>
-        <property name="onLoadScript" value="fnAddToRecentAuditList();"/>
+    <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
+          p:refreshId="audit_report_section" p:focusOnIdAfterSubmit="radio_campusParam" p:actionLabel="Run Degree Audit">
+        <property name="onClickScript" value="setUrlHash('modified','yes');"/>
         <property name="onDocumentReadyScript" value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');} else {jQuery('button#degree_audit_run').removeClass('disabled');}"/>
     </bean>
-    <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="recentAuditId"
-          p:defaultValue="@{recentAuditId}">
-        <property name="control">
-            <bean parent="Uif-HiddenControl"/>
-        </property>
-    </bean>
+
 
 
     <!--<bean id="audit_type" parent="Uif-HorizontalFieldGroup" p:style="margin:0px 7px; display:block;">-->

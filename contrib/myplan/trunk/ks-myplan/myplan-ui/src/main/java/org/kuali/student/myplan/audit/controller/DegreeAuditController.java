@@ -274,6 +274,7 @@ public class DegreeAuditController extends UifControllerBase {
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
         String programId = request.getParameter("programId");
         String auditId = request.getParameter("auditId");
+        String cookieId = request.getParameter("cookieId");
         String systemKey = UserSessionHelper.getAuditSystemKey();
         String status = null;
         ContextInfo contextInfo = new ContextInfo();
@@ -287,7 +288,7 @@ public class DegreeAuditController extends UifControllerBase {
         }
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
-        jsonString = jsonString.append("{status:").append("\""+status+"\"}");
+        jsonString = jsonString.append("{\"status\":").append("\""+status+"\",\"cookieId\":").append("\""+cookieId+"\"}");
         try {
             response.getWriter().println(jsonString);
         } catch (IOException e) {
