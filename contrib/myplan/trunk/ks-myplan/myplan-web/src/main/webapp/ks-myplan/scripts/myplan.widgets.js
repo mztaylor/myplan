@@ -958,6 +958,7 @@ function getPendingAudit(id) {
             if (data) {
                 var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
                 component.prepend(item);
+                pollPendingAudit(data.programId, data.cookieId);
             }
         }
     });
@@ -966,9 +967,12 @@ function getPendingAudit(id) {
     }
 }
 
-function pollPendingAudit(programId, cookieId, seconds) {
+function pollPendingAudit(programId, cookieId) {
+    var interval = 10; // polling interval in seconds
+    var maxDuration = 3; // max duration to poll in minutes
+    jQuery.ajaxPollSettings.maxInterval = (maxDuration * 60) / interval;
     jQuery.ajaxPollSettings.pollingType = "interval";
-    jQuery.ajaxPollSettings.interval = (seconds * 1000);
+    jQuery.ajaxPollSettings.interval = (interval * 1000);
 
     var recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
     if (typeof recentAuditId === 'undefined') recentAuditId = '';
@@ -979,7 +983,7 @@ function pollPendingAudit(programId, cookieId, seconds) {
         dataType: "json",
         beforeSend: null,
         successCondition: function(result) {
-        	return (result.status == 'DONE' || result.status == 'FAILED');
+        	return (result.status == 'DONE' || result.status == 'FAILED' || jQuery.cookie("myplan_audit_" + result.cookieId) == null);
         },
         success: function(data) {
             var status = data.status;
@@ -988,10 +992,12 @@ function pollPendingAudit(programId, cookieId, seconds) {
             		showGrowl("Your audit for *Program Name* is complete.", "Degree Audit Completed", "infoGrowl");
             		break;
             	case "FAILED":
+                case "PENDING":
             		showGrowl("Your audit for *Program Name*", "Degree Audit Error", "errorGrowl");
             		break;
             }
-            jQuery.cookie("myplan_audit_" + data.cookieId, "", new Date().setTime(0));
+            jQuery.cookie("myplan_audit_" + data.cookieId, null, {expires: new Date().setTime(0)});
+            jQuery.publish('REFRESH_AUDITS');
         }
     });
 
