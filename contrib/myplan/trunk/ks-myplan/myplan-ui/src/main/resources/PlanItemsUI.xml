@@ -273,6 +273,7 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="render" value="@{lookupResults.size() gt 0 ? true : false}"/>
         <property name="onDocumentReadyScript" value="
+            jQuery('#saved_courses_detail_list ul').css('minHeight',jQuery('#saved_courses_detail_list ul').height());
             jQuery('.myplan-saved-courses-detail').subscribe('PLAN_ITEM_DELETED', function(data){
                 if (data.planItemType === 'wishlist') {
                     fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
@@ -434,11 +435,11 @@
                         <list>
                             <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
                                 <property name="actionScript"
-                                          value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
+                                          value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
                             </bean>
                             <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Delete">
                                 <property name="actionScript"
-                                          value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>
+                                          value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
                             </bean>
                         </list>
                     </property>
