@@ -1362,8 +1362,9 @@ table.myplan-course-search-results-datatable .blockUI {
     text-transform: none;
 }
 .myplan-section div.blockElement {
-    left: 92px !important;
-    top: 4px !important;
+    left: auto !important;
+    top: 1px !important;
+    right: 0px !important;
     border: none;
     width: 16px;
 }
@@ -1380,6 +1381,19 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-section .uif-listCollectionGroup ul li:hover {
     background-color: #e3f0fe;
+}
+.myplan-section .myplan-recent-audit .pending:hover {
+    background-color: transparent;
+    cursor: default;
+}
+.myplan-section .myplan-recent-audit .pending .icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.myplan-section .myplan-recent-audit .pending .title {
+    vertical-align: middle;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 
@@ -1616,6 +1630,23 @@ label.scheduled {
 .fancybox-skin {
     background: #fff !important;
 }
+/* jGrowl ########################################################################### */
+div.jGrowl div.jGrowl-notification {
+    font-family: inherit;
+}
+div.jGrowl div.jGrowl-notification div.jGrowl-header {
+    margin: 0 0 5px 21px;
+    font-size: 1.1em;
+}
+div.jGrowl div.jGrowl-notification div.jGrowl-close {
+    font-size: 1.25em;
+}
+.infoGrowl,
+.warningGrowl,
+.errorGrowl {
+    background-position: 10px 11px;
+}
+
 /* beginning of scrollbar ########################################################################### */
 ::-webkit-scrollbar {
     width: 8px;
