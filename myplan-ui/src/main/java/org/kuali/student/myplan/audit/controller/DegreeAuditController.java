@@ -272,7 +272,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     @RequestMapping(value = "/status")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-        String programId = request.getParameter("programId");
+        String programId = request.getParameter("programId").replace("$"," ");
         String auditId = request.getParameter("auditId");
         String cookieId = request.getParameter("cookieId");
         String systemKey = UserSessionHelper.getAuditSystemKey();

@@ -8,7 +8,7 @@
         var attempts = 0;
 
         options.successCallback = options.success;
-        options.complateCallback = options.complete;
+        options.completeCallback = options.complete;
         options.errorCallback = options.error;
 
         var expire = function() {
@@ -66,8 +66,8 @@
         };
 
         options.complete = function(XMLHttpRequest, textStatus) {
-            if (complete && options.complateCallback)
-                options.complateCallback(XMLHttpRequest, textStatus);
+            if (complete && options.completeCallback)
+                options.completeCallback(XMLHttpRequest, textStatus);
         };
 
         jQuery.ajax(options);
