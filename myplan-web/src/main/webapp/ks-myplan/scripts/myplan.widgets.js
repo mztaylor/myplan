@@ -970,9 +970,12 @@ function pollPendingAudit(programId, cookieId, seconds) {
     jQuery.ajaxPollSettings.pollingType = "interval";
     jQuery.ajaxPollSettings.interval = (seconds * 1000);
 
+    var recentAuditId = jQuery("input[id^='hidden_recentAuditId'").val();
+    if (typeof recentAuditId === 'undefined') recentAuditId = '';
+
     jQuery.ajaxPoll({
         url: "/student/myplan/audit/status",
-        data: {"programId": programId,"cookieId":cookieId},
+        data: {"programId": programId,"cookieId":cookieId,"auditId":recentAuditId},
         dataType: "json",
         beforeSend: null,
         successCondition: function(result) {
