@@ -512,7 +512,7 @@
                                             <bean id="leave_message_button" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Leave a Message" p:style="margin:5px;">
                                                 <property name="actionScript" value=""/>
                                                 <property name="onDocumentReadyScript" value="
-                                                    myplanCreateLightBoxLink('leave_message_button', {autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
+                                                    myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
                                                 "/>
                                             </bean>
                                         </list>
