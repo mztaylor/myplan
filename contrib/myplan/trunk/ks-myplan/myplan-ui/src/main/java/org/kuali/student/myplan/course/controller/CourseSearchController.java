@@ -365,7 +365,7 @@ public class CourseSearchController extends UifControllerBase {
             } else if (UserSessionHelper.isAdviser()) {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
-                status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + item.getCourseId() + "\\\"onclick=\\\"openMenu('" + item.getCourseId() + "_add','add_course_items',event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
+                status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + item.getCourseId() + "\\\"onclick=\\\"openMenu('" + item.getCourseId() + "_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
 
             }
             String courseName = "";

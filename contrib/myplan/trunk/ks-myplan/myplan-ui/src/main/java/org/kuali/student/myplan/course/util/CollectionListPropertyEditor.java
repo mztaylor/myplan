@@ -109,7 +109,7 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
 
     protected String wrapListItem(String value) {
         StringBuilder elementText = new StringBuilder();
-        elementText.append("<" + listType.getListItemElementName() + ">");
+        elementText.append("<" + listType.getListItemElementName() +" class=\""+value.substring(0,2)+"\">");
         elementText.append(value);
         elementText.append("</" + listType.getListItemElementName() + ">");
         return elementText.toString();
