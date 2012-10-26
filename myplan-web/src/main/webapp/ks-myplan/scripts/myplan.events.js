@@ -20,7 +20,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
                     '</div>' +
                 '</fieldset>' +
             '</div>' +
-            '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
+            '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',null,e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
         '</div>' +
     '</div>';
 
@@ -95,7 +95,7 @@ function fnRestoreSearchAddButton (courseId) {
     var oTable = jQuery('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
     var oNodes = oTable.fnGetNodes();
     jQuery(oNodes).find("#" + courseId + "_status").fadeOut(250, function() {
-        jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="/student/ks-myplan/images/pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="'+ courseId +'" onclick="openMenu(\''+ courseId +'_add\',\'add_course_items\',event,null,\'myplan-container-75\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
+        jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="/student/ks-myplan/images/pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="'+ courseId +'" onclick="openMenu(\''+ courseId +'_add\',\'add_course_items\',null,event,null,\'myplan-container-75\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
         jQuery(this).fadeIn(250);
     });
 }

@@ -177,8 +177,16 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 }
 
 
-function openMenu(id, getId, e, selector, popupClasses, popupOptions, close) {
+function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, close) {
     stopEvent(e);
+    if (atpId != null) {
+        var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val()
+
+        if (openForPlanning == "false" && getId != "completed_menu_items") {
+            getId = "completed_backup_menu_items"
+        }
+    }
+
 
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
 
@@ -1178,7 +1186,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         }
     });
 
-    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post").hide();
+    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="QuickAdd-FormView" />';
     jQuery.each(retrieveOptions, function (name, value) {
         tempFormInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
@@ -1193,7 +1201,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         var component;
         if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
-            var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickadd").attr("method", "post");
+            var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
             var sError = '<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
@@ -1275,3 +1283,32 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
     };
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:'false'}, elementToBlock, id, blockOptions);
 }
+function autoCompleteText(atpId) {
+    var sQuery = jQuery("input[id='search_text_box_control']").val();
+    var emptySuggestions = ["No courses Found"];
+    jQuery("#search_text_box_control").autocomplete({source:function (request, response) {
+        jQuery.ajax({
+            url:"/student/myplan/quickAdd/autoSuggestions?courseCd=" + sQuery + "&atpId=" + atpId,
+            type:"GET",
+            data:"list=" + '',
+            dataType:"json",
+            error:function () {
+                jQuery("#search_text_box_control").autocomplete({source:emptySuggestions});
+            },
+            success:function (data) {
+                if (data.aaData.length > 0) {
+                    response(data.aaData);
+                }
+                else {
+                    response(emptySuggestions)
+                }
+            }
+        });
+    }
+    });
+    jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
+
+}
+
+
+

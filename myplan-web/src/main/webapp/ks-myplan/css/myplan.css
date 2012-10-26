@@ -474,6 +474,18 @@ input.myplan-add:hover {
     line-height: 1.8em;
     display: inline-block;
 }
+.AU{
+  background: #FFCCCC !important;
+}
+.WI{
+   background:  #CCDDFF !important;
+}
+.SP{
+    background: #CCFFCC !important;
+}
+.SU{
+   background:  #FCF990 !important;
+}
 .myplan-data-list dl dd:before {
     content: ", ";
 }

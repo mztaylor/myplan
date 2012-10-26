@@ -85,6 +85,7 @@
                       p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:maxLength="10" p:watermarkText="e.g. COM 210, Math 124">
+                            <property name="onKeyUpScript" value="autoCompleteText('@{atpId}');" />
                         </bean>
                     </property>
                 </bean>

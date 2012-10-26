@@ -59,11 +59,6 @@
                 <property name="items">
                     <list>
                         <ref bean="bookmarks_help_icon"/>
-                        <!--<bean id="bookmark_help_icon" parent="MyPlanHelpImage">
-                            <property name="toolTip">
-                              <bean parent="MyPlan-Tooltip" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a href=http://depts.washington.edu/myplan/bookmark-courses/ target=_blank&gt;Learn more&lt;/a&gt;"/>
-                            </property>
-                        </bean>-->
                     </list>
                 </property>
             </bean>
@@ -1405,6 +1400,12 @@
 
                 <bean id="atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false"
                       p:style="display: none;"/>
+
+                <bean p:id="@{#line.atpId}_plan_status" parent="Uif-InputField" p:propertyName="openForPlanning" p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="subCollections">
@@ -1501,7 +1502,7 @@
                       p:group.validationMessages.render="false"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}">
                     <property name="onClickScript"
-                              value="openMenu('@{#line.uuid}_completed','completed_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                              value="openMenu('@{#line.uuid}_completed','completed_menu_items','@{#line.atpId}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <property name="dataAttributes">
                         <map>
                             <entry key="courseid" value="@{#line.courseId}"/>
@@ -1790,7 +1791,7 @@
                       p:render="@{#line.courseDetails.code ne null ? true : false}"
                       p:title="@{#line.courseDetails.courseTitle}" p:group.validationMessages.render="false">
                     <property name="onClickScript"
-                              value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                              value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items','@{#line.planItemDataObject.atp}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
                     <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">
@@ -2016,7 +2017,7 @@
                       p:render="@{#line.courseDetails.code ne null ? true : false}"
                       p:group.validationMessages.render="false">
                     <property name="onClickScript"
-                              value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                              value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items','@{#line.planItemDataObject.atp}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
                     <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
                     <property name="dataAttributes">
@@ -2681,7 +2682,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message"
-                      p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt;? Once deleted, you cannot undo."/>
+                      p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; from the Bookmarked Courses list? Once deleted, you cannot undo."/>
 
                 <bean id="hidden_planItemId" parent="Uif-InputField" p:propertyName="planItemId"
                       p:defaultValue="@{planItemId}">

@@ -6,6 +6,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
+import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -55,6 +56,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.util.*;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
@@ -67,7 +69,7 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping(value = "/quickadd")
+@RequestMapping(value = "/quickAdd/**")
 public class QuickAddController extends UifControllerBase {
     public final Logger logger = Logger.getLogger(QuickAddController.class);
 
@@ -241,6 +243,125 @@ public class QuickAddController extends UifControllerBase {
         }
         return getUIFModelAndView(searchForm);
     }
+
+    @RequestMapping(value = "autoSuggestions")
+    public void autoSuggestions(HttpServletResponse response, HttpServletRequest request) {
+        String queryText = request.getParameter("courseCd");
+        String atpId = request.getParameter("atpId");
+        List<String> results = new ArrayList<String>();
+        if (queryText.length() >= 2) {
+            if (StringUtils.hasText(queryText)) {
+                SearchRequest searchRequest = null;
+                SearchResult searchResult = null;
+                HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
+                /*Params from the Url*/
+                String searchText = org.apache.commons.lang.StringUtils.upperCase(queryText);
+                String number = null;
+                String subject = null;
+                String[] splitStr = searchText.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                if (splitStr.length == 2) {
+                    number = splitStr[1];
+                    ArrayList<String> divisions = new ArrayList<String>();
+                    subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                    if (divisions.size() > 0) {
+                        subject = divisions.get(0);
+                        searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
+                        results = searchController.getResults(searchRequest, subject, number);
+                    }
+                } else if (splitStr.length == 1 && !org.apache.commons.lang.StringUtils.isNumeric(splitStr[0])) {
+                    ArrayList<String> divisions = new ArrayList<String>();
+                    subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                    if (divisions.size() > 0) {
+                        subject = divisions.get(0);
+                        searchRequest = new SearchRequest("myplan.clu.division");
+                        results = searchController.getResults(searchRequest, subject, number);
+                    } else {
+                        searchRequest = new SearchRequest("myplan.clu.division");
+                        results = searchController.getResults(searchRequest, subject, number);
+                    }
+                }
+
+                if (results.size() > 0) {
+                    results = additionalFiltering(results, atpId);
+                }
+
+            } else {
+                results.add("No courses found");
+            }
+        }else{
+            results.add("Search Term Should be at least 2 characters");
+        }
+        StringBuilder jsonString = new StringBuilder();
+        jsonString = jsonString.append("{ \"aaData\":[");
+        for (String result : results) {
+            jsonString.append("\"").append(result).append("\",");
+        }
+        String jsonStr = null;
+        if (!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")) {
+            jsonStr = jsonString.substring(0, jsonString.lastIndexOf(","));
+        } else {
+            jsonStr = jsonString.toString();
+        }
+        jsonStr = jsonStr + "]" + "}";
+        try {
+            response.setHeader("content-type", "application/json");
+            response.setHeader("Cache-Control", "No-cache");
+            response.setHeader("Cache-Control", "No-store");
+            response.setHeader("Cache-Control", "max-age=0");
+            response.getWriter().println(jsonStr);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+
+    /* @RequestMapping(value="/quickAdd/autoSuggestions")
+public List<String> autoSuggestions(HttpServletResponse response, HttpServletRequest request) {
+if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString())
+        || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
+        || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
+    AtpHelper.addServiceError("courseCd");
+    this.setAcademicCalendarServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString()));
+    this.setAcademicRecordServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString()));
+    this.setCourseOfferingServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString()));
+}
+String queryText = request.getParameter("courseCd");
+List<String> results = new ArrayList<String>();
+if (StringUtils.hasText(queryText)) {
+    SearchRequest searchRequest = null;
+    SearchResult searchResult = null;
+    HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
+    *//*Params from the Url*//*
+            String searchText = org.apache.commons.lang.StringUtils.upperCase(queryText);
+            String number = null;
+            String subject = null;
+            String[] splitStr = searchText.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            if (splitStr.length == 2) {
+                number = splitStr[1];
+                ArrayList<String> divisions = new ArrayList<String>();
+                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                if (divisions.size() > 0) {
+                    subject = divisions.get(0);
+                    searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
+                    results = searchController.getResults(searchRequest, subject, number);
+                }
+            } else if (splitStr.length == 1 && !org.apache.commons.lang.StringUtils.isNumeric(splitStr[0])) {
+                ArrayList<String> divisions = new ArrayList<String>();
+                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                if (divisions.size() > 0) {
+                    subject = divisions.get(0);
+                    searchRequest = new SearchRequest("myplan.clu.division");
+                    results = searchController.getResults(searchRequest, subject, number);
+                } else {
+                    searchRequest = new SearchRequest("myplan.clu.division");
+                    results = searchController.getResults(searchRequest, subject, number);
+                }
+            }
+
+        }
+        return results;
+    }*/
+
 
     @RequestMapping(params = "methodToCall=quickAddCourse")
     public ModelAndView quickAddCourse(@ModelAttribute("KualiForm") QuickAddForm form, BindingResult result,
@@ -1071,9 +1192,10 @@ public class QuickAddController extends UifControllerBase {
 
     public List<String> additionalFiltering(List<String> results, String atpId) {
         int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+        int resultsSize = results.size();
         if (isCourseOfferingServiceUp()) {
-            for (String result : results) {
-                String[] splitStr = result.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            for (int i = 0; i < resultsSize; i++) {
+                String[] splitStr = results.get(i).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 List<CourseOfferingInfo> courseOfferingInfo = null;
                 boolean removed = false;
 
@@ -1081,18 +1203,20 @@ public class QuickAddController extends UifControllerBase {
 
                     /*Filtering courses that are not offered in the given term*/
                     List<String> offerings = getCourseOfferingService()
-                            .getCourseOfferingIdsByTermAndSubjectArea(atpId, splitStr[0], CourseSearchConstants.CONTEXT_INFO);
-                    if (!offerings.contains(result)) {
-                        results.remove(result);
+                            .getCourseOfferingIdsByTermAndSubjectArea(atpId, splitStr[0].trim(), CourseSearchConstants.CONTEXT_INFO);
+                    if (!offerings.contains(results.get(i))) {
+                        results.remove(results.get(i));
+                        resultsSize--;
                         removed = true;
                     }
                     /*Filtering courses that are not offered for more than 10 years*/
                     if (!removed) {
-                        String values = String.format("%s, %s, %s", year, splitStr[0], splitStr[1]);
+                        String values = String.format("%s, %s, %s", year, splitStr[0].trim(), splitStr[1].trim());
                         courseOfferingInfo = getCourseOfferingService()
                                 .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
                         if (courseOfferingInfo == null) {
-                            results.remove(result);
+                            results.remove(results.get(i));
+                            resultsSize--;
                         }
                     }
 
