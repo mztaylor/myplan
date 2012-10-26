@@ -54,6 +54,10 @@ jQuery(document).ready(function () {
     ');
 });
 
+function sessionExpired() {
+    window.location = '/student/myplan/sessionExpired';
+}
+
 function stopEvent(e) {
     if (!e) {
         var e = window.event
@@ -942,9 +946,26 @@ function setPendingAudit(minutes) {
     data.programId = getAuditProgram('id');
     data.programName = getAuditProgram('name');
     data.cookieId = date.getTime();
+
+    data.recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
+    if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
+
     if (data.programId != 'default') {
-        jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
-        jQuery.publish('REFRESH_AUDITS');
+        jQuery.ajax({
+            url: "/student/myplan/audit/status",
+            data: data,
+            dataType: "json",
+            beforeSend:null,
+            success: function(response) {
+                if (response.status == "PENDING") {
+                    jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
+                    jQuery.publish('REFRESH_AUDITS');
+                }
+            },
+            statusCode: {
+                500: sessionExpired()
+            }
+        });
     }
 }
 
@@ -968,8 +989,8 @@ function getPendingAudit(id) {
 }
 
 function pollPendingAudit(programId, cookieId) {
-    var interval = 10; // polling interval in seconds
-    var maxDuration = 3; // max duration to poll in minutes
+    var interval = 2; // polling interval in seconds
+    var maxDuration = 5; // max duration to poll in minutes
     jQuery.ajaxPollSettings.maxInterval = (maxDuration * 60) / interval;
     jQuery.ajaxPollSettings.pollingType = "interval";
     jQuery.ajaxPollSettings.interval = (interval * 1000);
