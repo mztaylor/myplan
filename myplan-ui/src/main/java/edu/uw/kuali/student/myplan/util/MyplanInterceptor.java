@@ -1,6 +1,7 @@
 package edu.uw.kuali.student.myplan.util;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -8,6 +9,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 public class MyplanInterceptor implements HandlerInterceptor {
 
     private static final String SWS_URL_PARAM = "uw.studentservice.url";
+
+    private final Logger logger = Logger.getLogger(HandlerInterceptor.class);
 
     private StudentServiceClient studentServiceClient;
 
@@ -74,8 +78,13 @@ public class MyplanInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         /*If you not an adviser and  if you are not a  student then you dont have access to myplan*/
-        if (!UserSessionHelper.isAdviser() && !GlobalVariables.getUserSession().getPerson().hasAffiliationOfType(STUDENT)) {
-            response.sendRedirect(USER_UNAUTHORIZED);
+        if (!UserSessionHelper.isAdviser())  {
+            try {
+                String systemKey = UserSessionHelper.getAuditSystemKey();
+            } catch (DataRetrievalFailureException drfe) {
+                logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
+                response.sendRedirect(USER_UNAUTHORIZED);
+            }
         }
     }
 
