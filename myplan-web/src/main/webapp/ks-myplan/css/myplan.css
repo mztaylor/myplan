@@ -283,6 +283,7 @@ button.uif-primaryActionButton,
 button.uif-secondaryActionButton {
     font-size: 14px;
     font-weight: bold;
+    font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     color: #39275b;
     text-decoration: none;
 
@@ -380,6 +381,7 @@ button.uif-secondaryActionButton:hover {
 button.uif-primaryActionButton.uif-smallActionButton,
 button.uif-secondaryActionButton.uif-smallActionButton {
     font-size:12px;
+    font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     padding:3px 14px;
 
     -moz-border-radius:10px;
@@ -828,7 +830,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 }
 .myplan-feedback img.icon,
 .myplan-status img.icon {
-    background: url('../images/myplan_icon_sprites.png') no-repeat -72px -133px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
     width: 18px;
     height: 18px;
     position: absolute;
