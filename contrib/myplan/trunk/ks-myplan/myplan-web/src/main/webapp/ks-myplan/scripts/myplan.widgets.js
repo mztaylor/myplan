@@ -971,7 +971,7 @@ function setPendingAudit(minutes) {
                 }
             },
             statusCode: {
-                500: sessionExpired()
+                500: function() { sessionExpired(); }
             }
         });
     }
