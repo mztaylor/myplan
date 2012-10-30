@@ -553,7 +553,7 @@
                     <property name="onClickScript" value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="width:190px;">
+                            <bean parent="Uif-VerticalFieldGroup" p:style="width:180px;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="@{#line.subject}"
