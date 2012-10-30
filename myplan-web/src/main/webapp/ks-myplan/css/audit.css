@@ -189,6 +189,9 @@
 .myplan-audit-report .requirement .subrequirement .taken thead tr {
 
 }
+.myplan-audit-report .taken .ccode {
+    cursor: help;
+}
 
 .myplan-audit-report .section.rname_WHAT-IF .heading{
     border: none;

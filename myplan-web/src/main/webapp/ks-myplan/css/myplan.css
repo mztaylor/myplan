@@ -1486,23 +1486,38 @@ table.myplan-course-search-results-datatable .blockUI {
 	width: 710px;
 	float: none;
 }
+.myplan-messages-detail .dataTables_wrapper .dataTables_info {
+    margin: 0 0 10px 0;
+}
 .myplan-messages-detail .dataTables_wrapper table {
-    border: solid 1px #a9a9a9;
+    border: solid 1px #ddd;
     border-bottom: none;
     margin: 0;
     clear: both;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr {
-	background: #d6d6d6;
+	background: #F6F6F6;
 	border: none;
-    border-bottom: solid 1px #a9a9a9;
+    border-bottom: solid 1px #ddd;
+
+    background-image: -ms-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -moz-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -o-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F6F6F6), color-stop(1, #EBEBEB));
+    background-image: -webkit-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
+    background-image: linear-gradient(to bottom, #F6F6F6 0%, #EBEBEB 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F6F6F6', endColorstr='#E8E8E8')";
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th {
     border: none;
+    background: transparent;
     background-image: none;
     font-size: 0.9em;
-    height: 18px;
-    line-height: 18px;
+    height: 26px;
+    line-height: 26px;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper {
     display: inline;
@@ -1526,7 +1541,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr {
     border: none;
-    border-top: dotted 1px #a9a9a9;
+    border-top: dotted 1px #cfcfcf;
     cursor: pointer;
 }
 .myplan-messages-detail .dataTables_wrapper table tbody tr:first-child,
@@ -1539,6 +1554,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-messages-detail .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
     line-height: normal;
     height: auto;
+    width: 688px;
 }
 .myplan-messages-lightbox h6 {
     font-weight: bold;
