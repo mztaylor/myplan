@@ -452,7 +452,7 @@
 
 
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
-          p:refreshId="degree_audit_block" p:focusOnIdAfterSubmit="degree_audits_summary"
+          p:refreshId="audit_report_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
         <property name="onClickScript" value="setUrlHash('modified','yes'); setPendingAudit(2);"/>
         <property name="onDocumentReadyScript"
