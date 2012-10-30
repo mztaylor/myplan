@@ -15,6 +15,7 @@
     -webkit-border-radius: 0px 0px 5px 5px;
     padding: 10px 15px;
     overflow: auto;
+    margin: 0 0 20px 0;
 }
 .myplan-audit-report .audit-summary .date-prepared,
 .myplan-audit-report .audit-summary .prepared-for,

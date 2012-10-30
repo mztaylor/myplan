@@ -218,6 +218,7 @@
     </bean>
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection">
+        <property name="onDocumentReadyScript" value="blockPendingAudit('audit_report_section')"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-audit-report</value>
