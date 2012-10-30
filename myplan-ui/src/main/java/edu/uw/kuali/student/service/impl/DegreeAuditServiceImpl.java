@@ -49,6 +49,8 @@ import javax.jws.WebParam;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
@@ -436,6 +438,23 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             path = "//div[contains(@class,'subrequirement')]/table[contains(@class,'taken')]/tbody/tr/td[contains(@class,'course')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
+            path = "//div[contains(@class,'advisory')]/text()";
+            ineptURLLinkifier( doc, xpath, path, builder );
+            path = "//div[contains(@class,'bigsection')]/text()";
+            ineptURLLinkifier(doc, xpath, path, builder);
+
+            {
+                String preparedFor = UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId());
+                path = "//span[contains(@class,'prepared-for-name')]/text()";
+                XPathExpression godot = xpath.compile(path);
+                Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
+                NodeList godotList = (NodeList) godotSet;
+                for (int nth = 0; nth < godotList.getLength(); nth++) {
+                    Node child = godotList.item(nth);
+                    String scurge = child.getTextContent();
+                    child.setTextContent( preparedFor );
+                }
+            }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -447,22 +466,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             transformer.transform(source, result);
             answer = sw.toString();
-            /*Adding the prepared for : studentName */
-            if (answer.contains("<td class=\"graduation-date\">")) {
-                answer = answer.replace("<td class=\"graduation-date\">", "<td class=\"prepared-for\">\n" +
-                        "\t\t\t\t\t\t<label>Prepared for:</label> " + UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId()) + "\n" +
-                        "\t\t\t\t\t</td>\n" +
-                        "\t\t\t\t</tr>\n" +
-                        "\t\t\t\t<tr>\n" +
-                        "\t\t\t\t\t<td class=\"graduation-date\">");
-            } else {
-                answer = answer.replace("<td class=\"program-entry-qtr\">", "<td class=\"prepared-for\">\n" +
-                        "\t\t\t\t\t\t<label>Prepared for:</label> " + UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId()) + "\n" +
-                        "\t\t\t\t\t</td>\n" +
-                        "\t\t\t\t</tr>\n" +
-                        "\t\t\t\t<tr>\n" +
-                        "\t\t\t\t\t<td class=\"program-entry-qtr\">");
-            }
 
         } catch (Exception e) {
             logger.error("getHTMLReport failed", e);
@@ -499,6 +502,57 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 }
             }
         }
+    }
+
+    public void ineptURLLinkifier(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
+        XPathExpression godot = xpath.compile(path);
+        Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
+        NodeList godotList = (NodeList) godotSet;
+        for (int nth = 0; nth < godotList.getLength(); nth++) {
+            Node child = godotList.item(nth);
+            String scurge = child.getTextContent();
+            String victim = tangerine( scurge );
+            if (!scurge.equals(victim)) {
+                victim = victim.replace("&", "&amp;");
+
+                victim = "<fake>" + victim + "</fake>";
+                builder.reset();
+                Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
+                Node fake = whoopie.getDocumentElement();
+
+                Node parent = child.getParentNode();
+                parent.removeChild(child);
+                NodeList lamesters = fake.getChildNodes();
+                for (int xing = 0; xing < lamesters.getLength(); xing++) {
+                    Node tank = lamesters.item(xing);
+                    Node crank = doc.importNode(tank, true);
+                    parent.appendChild(crank);
+                }
+            }
+        }
+    }
+
+
+    public static String tangerine(String initialText) {
+        StringBuffer result = new StringBuffer(initialText.length());
+        Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+\\%/\\.\\w]+)?");
+
+        Matcher m = p.matcher(initialText);
+        while (m.find()) {
+            String href = m.group();
+            if (!href.contains("@")) {
+                String period = "";
+                if (href.endsWith(".")) {
+                    href = href.substring(0, href.length() - 1);
+                    period = ".";
+                }
+                String trix = "<a href=\"" + href + "\">" + href + "</a>" + period;
+//                String trix = " ** " + href + " ** " + period;
+                m.appendReplacement(result, trix);
+            }
+        }
+        m.appendTail(result);
+        return result.toString();
     }
 
     public boolean equals(Object victim, Object... list) {

@@ -21,8 +21,11 @@ public class CourseLinkBuilderTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
+            {"CIV 201",
+                    "20 credits, including [unknown::Unknown::ECON 200] and [unknown::Unknown::ECON 201]:"}
+                /*
             { "20 credits, including ECON 200 and ECON 201:",
-                    "20 credits, including [unknown::Unknown::ECON 200] and [unknown::Unknown::ECON 201]:" },
+                "20 credits, including [unknown::Unknown::ECON 200] and [unknown::Unknown::ECON 201]:" },
             { "19 - 20 credits, including MATH 112 or 124.",
                     "19 - 20 credits, including [unknown::Unknown::MATH 112] or [unknown::Unknown::124]."},
             { "You must complete MUHST 211, 212, & 210:",
@@ -101,7 +104,7 @@ public class CourseLinkBuilderTest {
             //{"blah blah CEE 473 INTERMEDIATE",
            //     "SP09 [unknown::Unknown::SPAN  202]  5.0 3.6   INTERMEDIATE"},
             {"       MATH 134, 135, 136 and 324 or 334","       [unknown::Unknown::MATH 134], [unknown::Unknown::135], [unknown::Unknown::136] and [unknown::Unknown::324] or [unknown::Unknown::334]"},
-
+                */
         };
         return Arrays.asList(data);
     }
