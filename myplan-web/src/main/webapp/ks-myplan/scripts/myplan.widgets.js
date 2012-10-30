@@ -997,6 +997,31 @@ function getPendingAudit(id) {
     }
 }
 
+function blockPendingAudit(id) {
+    if (readUrlParam("auditId") == false && document.cookie.indexOf("myplan_audit") >= 0) {
+        var elementToBlock = jQuery("#" + id);
+        var cookies = [];
+        jQuery.each(document.cookie.split(/; */), function()  {
+            var splitCookie = this.split('=');
+            var re = new RegExp("(^myplan_audit)", "i");
+            if (splitCookie[0].match(re)) {
+                var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
+                if (data) {
+                    cookies.push(data.cookieId);
+                }
+            }
+        });
+        var max = Math.max.apply(null, cookies);
+        var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + max)));
+        elementToBlock.block({
+            message:'<img src="' + getConfigParam(kradVariables.IMAGE_LOCATION) + 'loader.gif" alt="working..." /> Running ' + details.programName,
+            fadeIn:400,
+            fadeOut:800
+        });
+        jQuery("#" + id).subscribe('AUDIT_COMPLETE', function() { window.location.assign(window.location.href.split("#")[0]); });
+    }
+}
+
 function pollPendingAudit(programId, cookieId) {
     var interval = 1; // polling interval in seconds
     var maxDuration = 5; // max duration to poll in minutes
@@ -1027,10 +1052,10 @@ function pollPendingAudit(programId, cookieId) {
             		break;
             }
             jQuery.cookie("myplan_audit_" + data.cookieId, null, {expires: new Date().setTime(0)});
+            jQuery.publish("AUDIT_COMPLETE");
             jQuery.publish('REFRESH_AUDITS');
         }
     });
-
 }
 
 function buttonState(jqueryObj, buttonId) {
@@ -1132,6 +1157,9 @@ jQuery.fn.dataTableExt.oSort['longdate-desc'] = function (x, y) {
     y = fnCreateDate(y);
 
     return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+};
+Array.max = function( array ){
+    return Math.max.apply( Math, array );
 };
 
 
