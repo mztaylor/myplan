@@ -1,20 +1,14 @@
 function collapseReq(obj, onload) {
     if (onload) {
-        obj.removeClass("expanded").addClass("collapsed").css({
-            height: "1.75em",
-            overflow: "hidden"
-        }).find(".header .title").css({
+        obj.removeClass("expanded").addClass("collapsed").find(".header .title").css({
             whiteSpace: "nowrap",
             overflow: "hidden"
-        });
+        }).parents(".requirement").find(".body").hide();
     } else {
-        obj.removeClass("expanded").addClass("collapsed").animate({
-            height: "1.75em"
-        }, 500).find(".header .title").css({
+        obj.removeClass("expanded").addClass("collapsed").find(".header .title").css({
             whiteSpace: "nowrap",
             overflow: "hidden"
-        });
-        obj.css("overflow", "hidden");
+        }).parents(".requirement").find(".body").slideUp();
     }
 }
 
@@ -22,21 +16,15 @@ function expandReq(obj, onload) {
     var height = obj[0].scrollHeight;
 
     if (onload) {
-        obj.removeClass("collapsed").addClass("expanded").css({
-            height: "auto",
-            overflow: "auto"
-        }).find(".header .title").css({
+        obj.removeClass("collapsed").addClass("expanded").find(".header .title").css({
             whiteSpace: "normal",
             overflow: "auto"
-        });
+        }).parents(".requirement").find(".body").show();
     } else {
-        obj.removeClass("collapsed").addClass("expanded").animate({
-            height: height
-        }, 500).find(".header .title").css({
+        obj.removeClass("collapsed").addClass("expanded").find(".header .title").css({
             whiteSpace: "normal",
             overflow: "auto"
-        });
-        obj.css("overflow", "hidden");
+        }).parents(".requirement").find(".body").slideDown();
     }
 }
 

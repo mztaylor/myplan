@@ -961,10 +961,11 @@ function setPendingAudit(minutes) {
     if (data.programId != 'default') {
         jQuery.ajax({
             url: "/student/myplan/audit/status",
-            data: data,
+            data: {"programId":data.programId, "cookieId":data.cookieId, "auditId":data.recentAuditId},
             dataType: "json",
             beforeSend:null,
             success: function(response) {
+
                 if (response.status == "PENDING") {
                     jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
                     jQuery.publish('REFRESH_AUDITS');
@@ -997,7 +998,7 @@ function getPendingAudit(id) {
 }
 
 function pollPendingAudit(programId, cookieId) {
-    var interval = 2; // polling interval in seconds
+    var interval = 1; // polling interval in seconds
     var maxDuration = 5; // max duration to poll in minutes
     jQuery.ajaxPollSettings.maxInterval = (maxDuration * 60) / interval;
     jQuery.ajaxPollSettings.pollingType = "interval";
@@ -1015,14 +1016,14 @@ function pollPendingAudit(programId, cookieId) {
         	return (result.status == 'DONE' || result.status == 'FAILED' || jQuery.cookie("myplan_audit_" + result.cookieId) == null);
         },
         success: function(data) {
-            var status = data.status;
-            switch (status) {
+            var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + data.cookieId)));
+            switch (data.status) {
             	case "DONE":
-            		showGrowl("Your audit for *Program Name* is complete.", "Degree Audit Completed", "infoGrowl");
+            		showGrowl("Your audit for " + details.programName + " is complete.", "Degree Audit Completed", "infoGrowl");
             		break;
             	case "FAILED":
                 case "PENDING":
-            		showGrowl("Your audit for *Program Name*", "Degree Audit Error", "errorGrowl");
+            		showGrowl("Your audit for " + details.programName + " was unable to complete.", "Degree Audit Error", "errorGrowl");
             		break;
             }
             jQuery.cookie("myplan_audit_" + data.cookieId, null, {expires: new Date().setTime(0)});

@@ -229,10 +229,18 @@ a:focus {
 .backdoor,
 .adviser-banner {
     width: 930px;
-    margin: 10px auto 0;
-    border: solid 1px #ccc;
-    padding: 10px;
-    background: #eaeaea;
+    margin: 20px auto;
+    color: #333;
+    background-color: #f4f8fd;
+    padding: 8px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    text-shadow: 1px 1px 1px #ffffff;
+    display: block;
+    border: solid 1px #daeaff;
+    line-height: 18px;
+    position: relative;
 }
 .backdoor a,
 .adviser-banner a {
