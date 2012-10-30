@@ -72,7 +72,7 @@ public class StudentServiceClientImpl
         logger.info("Initializing SSL with truststore [" + trustStoreFilename + "] and keystore [" + keyStoreFilename + "].");
 
         /*if (logger.isDebugEnabled()) {*/
-        System.setProperty("javax.net.debug", "ssl");
+//        System.setProperty("javax.net.debug", "ssl");
         /*}*/
         //  This is needed for the re-negotiation to succeed.
         System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
