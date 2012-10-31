@@ -1,40 +1,56 @@
 function collapseReq(obj, onload) {
+    var height = 23;
     if (onload) {
-        obj.removeClass("expanded").addClass("collapsed").find(".header .title").css({
+        obj.removeClass("expanded").addClass("collapsed").css({
+            height: height + "px"
+        }).find(".header .title").css({
             whiteSpace: "nowrap",
-            overflow: "hidden"
-        }).parents(".requirement").find(".body").hide();
+            overflow: "hidden",
+            height: height + "px"
+        });
     } else {
-        obj.removeClass("expanded").addClass("collapsed").find(".header .title").css({
-            whiteSpace: "nowrap",
-            overflow: "hidden"
-        }).parents(".requirement").find(".body").slideUp();
+        obj.removeClass("expanded").addClass("collapsed").animate({
+            height: height + "px"
+        }, 300, function() {
+            jQuery(this).find(".header .title").css({
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                height: height + "px"
+            });
+        });
     }
 }
 
 function expandReq(obj, onload) {
-    var height = obj[0].scrollHeight;
-
+    var height = obj.data("height");
     if (onload) {
-        obj.removeClass("collapsed").addClass("expanded").find(".header .title").css({
+        obj.removeClass("collapsed").addClass("expanded").css({
+            height: "auto"
+        }).find(".header .title").css({
             whiteSpace: "normal",
-            overflow: "auto"
-        }).parents(".requirement").find(".body").show();
+            overflow: "auto",
+            height: "auto"
+        });
     } else {
-        obj.removeClass("collapsed").addClass("expanded").find(".header .title").css({
+        obj.removeClass("collapsed").addClass("expanded").animate({
+            height: height
+        }, 300
+        ).find(".header .title").css({
             whiteSpace: "normal",
-            overflow: "auto"
-        }).parents(".requirement").find(".body").slideDown();
+            overflow: "auto",
+            height: "auto"
+        });
     }
 }
 
-jQuery(document).ready(function() {
+function initAuditActions() {
 
     jQuery(".requirement").each(function() {
-        if (jQuery(this).is(".Status_NO, .Status_NONE")) {
-            expandReq(jQuery(this), true);
-        } else {
+        jQuery(this).data("height", jQuery(this).height());
+        if (jQuery(this).is(".Status_OK")) {
             collapseReq(jQuery(this), true);
+        } else {
+            expandReq(jQuery(this), true);
         }
     });
     jQuery(".requirement .toggle, .requirement .title").click(function(e) {
@@ -71,7 +87,7 @@ jQuery(document).ready(function() {
             }
         });
     });
-});
+}
 
 
 /*
