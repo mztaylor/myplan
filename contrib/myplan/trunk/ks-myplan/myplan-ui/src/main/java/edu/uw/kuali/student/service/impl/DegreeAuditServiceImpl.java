@@ -440,7 +440,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             path = "//div[contains(@class,'advisory')]/text()";
             ineptURLLinkifier( doc, xpath, path, builder );
-            path = "//div[contains(@class,'bigsection')]/text()";
+            path = "//div[contains(@class,'bigsection')]/div[contains(@class,'heading')]/text()";
             ineptURLLinkifier(doc, xpath, path, builder);
 
             {
