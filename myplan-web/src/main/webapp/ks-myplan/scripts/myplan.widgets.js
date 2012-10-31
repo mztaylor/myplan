@@ -1319,6 +1319,7 @@ function autoCompleteText(atpId) {
         jQuery.ajax({
             url:"/student/myplan/quickAdd/autoSuggestions?courseCd=" + sQuery + "&atpId=" + atpId,
             type:"GET",
+            beforeSend: null,
             data:"list=" + '',
             dataType:"json",
             error:function () {
