@@ -918,6 +918,11 @@
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                                     });"/>
                             </bean>
+                            <bean p:id="@{atpId}" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
 
                             <bean p:id="cancelPlannedCourse" parent="Uif-SecondaryActionButton-Small"
                                   p:actionLabel="Cancel">
@@ -942,7 +947,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -960,14 +965,14 @@
                       p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -975,7 +980,7 @@
                       p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
@@ -996,7 +1001,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1014,14 +1019,14 @@
                       p:linkText="Move to Another Quarter"
                       p:title="Move to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1029,7 +1034,7 @@
                       p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
@@ -1050,14 +1055,14 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
                       p:linkText="Copy to Another Quarter"
                       p:title="Copy to Another Quarter">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1065,7 +1070,7 @@
                       p:title="Delete from Plan"
                       p:style="margin:0;">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
                 <bean parent="Uif-Message" p:messageText="Cannot Undo" p:style="margin:0;"
                       p:cssClasses="fl-text-gray fl-font-size-90"/>
