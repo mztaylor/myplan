@@ -965,7 +965,6 @@ function setPendingAudit(minutes) {
             dataType: "json",
             beforeSend:null,
             success: function(response) {
-
                 if (response.status == "PENDING") {
                     jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
                     jQuery.publish('REFRESH_AUDITS');
@@ -979,21 +978,23 @@ function setPendingAudit(minutes) {
 }
 
 function getPendingAudit(id) {
-    var component = jQuery("#" + id + " ul");
-    jQuery.each(document.cookie.split(/; */), function()  {
-        var splitCookie = this.split('=');
-        var re = new RegExp("(^myplan_audit)", "i");
-        if (splitCookie[0].match(re)) {
-            var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
-            if (data) {
-                var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
-                component.prepend(item);
-                pollPendingAudit(data.programId, data.cookieId);
+    if (document.cookie.indexOf("myplan_audit") >= 0) {
+        var component = jQuery("#" + id + " ul");
+        jQuery.each(document.cookie.split(/; */), function()  {
+            var splitCookie = this.split('=');
+            var re = new RegExp("(^myplan_audit)", "i");
+            if (splitCookie[0].match(re)) {
+                var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
+                if (data) {
+                    var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+                    component.prepend(item);
+                    pollPendingAudit(data.programId, data.cookieId);
+                }
             }
+        });
+        if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
+            component.next("div.uif-boxGroup").remove();
         }
-    });
-    if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
-        component.next("div.uif-boxGroup").remove();
     }
 }
 
@@ -1041,14 +1042,16 @@ function pollPendingAudit(programId, cookieId) {
         	return (result.status == 'DONE' || result.status == 'FAILED' || jQuery.cookie("myplan_audit_" + result.cookieId) == null);
         },
         success: function(data) {
-            var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + data.cookieId)));
+            if(jQuery.cookie("myplan_audit_" + data.cookieId)) {
+                var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + data.cookieId)));
+            }
             switch (data.status) {
             	case "DONE":
             		showGrowl("Your audit for " + details.programName + " is complete.", "Degree Audit Completed", "infoGrowl");
             		break;
             	case "FAILED":
                 case "PENDING":
-            		showGrowl("Your audit for " + details.programName + " was unable to complete.", "Degree Audit Error", "errorGrowl");
+            		showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
             		break;
             }
             jQuery.cookie("myplan_audit_" + data.cookieId, null, {expires: new Date().setTime(0)});
