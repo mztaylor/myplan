@@ -15,7 +15,7 @@
     -webkit-border-radius: 0px 0px 5px 5px;
     padding: 10px 15px;
     overflow: auto;
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
 }
 .myplan-audit-report .audit-summary .date-prepared,
 .myplan-audit-report .audit-summary .prepared-for,
@@ -23,6 +23,29 @@
 .myplan-audit-report .audit-summary .graduation-date {
     float: left;
     width: 50%;
+}
+.myplan-audit-report .toptext,
+.myplan-audit-report .audit-status-msg,
+.myplan-audit-report .advisory {
+    margin-top: 1em;
+}
+.myplan-audit-report .audit-status-msg {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background: #faf7ff;
+    padding: 10px 15px 10px 85px;
+    position: relative;
+}
+.myplan-audit-report .audit-status-msg label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #eee6fc;
+    padding: 10px 15px;
+    border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
 }
 .myplan-audit-report .control-toolbar {
 	padding: 10px;
@@ -52,7 +75,8 @@
 	-moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.myplan-audit-report .section .requirement {
+.myplan-audit-report .requirement,
+.myplan-audit-report .bigsection {
 	margin: 0 10px 5px 10px;
 	clear: both;
 	border-top: dotted 1px #e4e3e3;
@@ -60,6 +84,9 @@
 	background: -webkit-gradient(linear, left top, 0 55, from(#fbf6e6), to(#fff));
 	overflow: hidden;
 	height: auto;
+}
+.myplan-audit-report .bigsection .heading {
+    margin-left: 66px;
 }
 .myplan-audit-report .requirement .header {
 	line-height: 1.75em;
@@ -146,14 +173,23 @@
 .myplan-audit-report .requirement .body .totals .required {
     margin: 0 20px 0 0;
 }
-.myplan-audit-report .requirement .subrequirement {
-
+.myplan-audit-report .requirement .subrequirement-header {
+    border-top: dotted 1px #e6e6e6;
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    padding: 5px 0;
+    margin-top: 10px;
 }
 .myplan-audit-report .subrequirement .header .Status_NO,
 .myplan-audit-report .subrequirement .header .Status_IP,
 .myplan-audit-report .subrequirement .header .Status_OK {
 	background-color: #666;
     border-color: #aaa;
+}
+.myplan-audit-report .subrequirement .header .Status_IP {
+    color: #fff;
+    text-shadow: none;
 }
 .myplan-audit-report .subrequirement .header .Status_NONE {
 	background-color: transparent;
@@ -164,37 +200,51 @@
 	text-overflow: clip;
 	cursor: default;
 }
+.myplan-audit-report table,
+.myplan-audit-report table th,
+.myplan-audit-report table td {
+    padding: 0;
+    border-collapse:collapse;
+}
+.myplan-audit-report table caption {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    line-height: 2em;
+}
 .myplan-audit-report .subrequirement .totals,
-.myplan-audit-report .subrequirement .taken {
+.myplan-audit-report .subrequirement .taken,
+.myplan-audit-report .subrequirement .fromcourses {
     margin-left: 40px;
 }
 .myplan-audit-report .requirement table.taken {
 	border-top: solid 1px #ddd;
-	border-bottom: solid 1px #ddd;
-	border-collapse:collapse;
     margin-top: 1em;
     margin-bottom: 1em;
 }
-.myplan-audit-report .requirement .taken th,
-.myplan-audit-report .requirement .taken td {
+.myplan-audit-report .requirement table th,
+.myplan-audit-report .requirement table td {
 	font-size: 12px;
-	padding: 0 1.5em 0 0;
-	line-height: 1.75em;
+	padding: 0 0.4em 0 0;
 }
+.myplan-audit-report .requirement .taken td,
 .myplan-audit-report .requirement .taken th {
+    padding-right: 1.5em;
+    border-bottom: solid 1px #ddd;
+    line-height: 1.88em;
+}
+.myplan-audit-report .requirement .taken td:first-child,
+.myplan-audit-report .requirement .taken th:first-child {
+    padding-left: 1.5em;
+}
+.myplan-audit-report .requirement table th {
 	font-size: 10px;
 	color: #777;
 	text-align: left;
-	line-height: 1.5em;
-	border-bottom: solid 1px #ddd;
-}
-.myplan-audit-report .requirement .taken thead tr {
-
 }
 .myplan-audit-report .taken .ccode {
     cursor: help;
 }
-
 .myplan-audit-report .section.rname_WHAT-IF .heading{
     border: none;
     margin: 0;
