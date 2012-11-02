@@ -28,7 +28,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     
     public static final String APPLICATION_URL="application.url";
 
-    public static final String AUDIT_FAILED_HTML =  "<script language='jscript'>removeCookie()</script><div id=\"u14\" class=\"uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages " +
+    public static final String AUDIT_FAILED_HTML =  "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"removeCookie();\"/><div id=\"u14\" class=\"uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages " +
                                                     "uif-pageValidationMessages-error\" style=\"\" data-messagesfor=\"degree_audit\"><h3 tabindex=\"0\" " +
                                                     "class=\"uif-pageValidationHeader\" id=\"pageValidationHeader\">" +
                                                     "<img class=\"uif-validationImage\" src=\"%s/krad/images/validation/error.png\" alt=\"Error\"> " +

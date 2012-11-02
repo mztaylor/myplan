@@ -79,13 +79,12 @@
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
                                 <property name="onDocumentReadyScript" value="
-                                    blockPendingAudit('audit_report_section');
+                                    blockPendingAudit('audit_section');
                                 "/>
                                 <property name="items">
                                     <list>
                                         <ref bean="run_degree_audits"/>
-                                        <ref bean="empty_degree_audits"/>
-                                        <ref bean="audit_report_section"/>
+                                        <ref bean="audit_section"/>
                                     </list>
                                 </property>
                                 <property name="propertyReplacers">
@@ -95,8 +94,7 @@
                                             <property name="replacement">
                                                 <list>
                                                     <ref bean="audit_adviser_actions_message"/>
-                                                    <ref bean="empty_degree_audits"/>
-                                                    <ref bean="audit_report_section"/>
+                                                    <ref bean="audit_section"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -218,6 +216,15 @@
         </property>
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
+    </bean>
+
+    <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
+        <property name="items">
+            <list>
+                <ref bean="empty_degree_audits"/>
+                <ref bean="audit_report_section"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection">
@@ -458,7 +465,7 @@
 
 
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
-          p:refreshId="audit_report_section" p:focusOnIdAfterSubmit="degree_audits_summary"
+          p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
         <property name="onClickScript" value="setUrlHash('modified','yes'); setPendingAudit(2);"/>
         <property name="onDocumentReadyScript"
