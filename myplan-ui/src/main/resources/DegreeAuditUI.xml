@@ -182,6 +182,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-gray</value>
+                                        <value>fl-font-size-90</value>
                                     </list>
                                 </property>
                             </bean>

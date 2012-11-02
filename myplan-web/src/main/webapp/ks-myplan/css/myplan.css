@@ -1334,6 +1334,7 @@ table.myplan-course-search-results-datatable .blockUI {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
+    line-height: 16px;
 }
 .myplan-section .uif-boxLayoutVerticalItem,
 .myplan-section .uif-boxLayoutHorizontalItem {
@@ -1345,7 +1346,7 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
     border-top: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
-    padding: 6px 10px;
+    padding: 3px 10px;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: -moz-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: -o-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
@@ -1392,7 +1393,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-section .uif-listCollectionGroup ul li {
     border-bottom:dotted 1px #cfcfcf;
-    padding: 10px 7px;
+    padding: 7px 10px;
     display: block;
     clear: both;
     cursor: pointer;

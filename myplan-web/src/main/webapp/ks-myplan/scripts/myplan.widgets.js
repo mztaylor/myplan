@@ -947,51 +947,48 @@ function getAuditProgram(param) {
 }
 
 function setPendingAudit(minutes) {
-    var date = new Date();
-    date.setTime(date.getTime() + (minutes * 60 * 1000));
+    if (jQuery.cookie('myplan_audit_running') == null) {
+        var data = {};
 
-    var data = {};
-    data.programId = getAuditProgram('id');
-    data.programName = getAuditProgram('name');
-    data.cookieId = date.getTime();
+        data.expires = new Date();
+        data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
+        data.programId = getAuditProgram('id');
+        data.programName = getAuditProgram('name');
+        data.recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
 
-    data.recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
-    if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
+        if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
 
-    if (data.programId != 'default') {
-        jQuery.ajax({
-            url: "/student/myplan/audit/status",
-            data: {"programId":data.programId, "cookieId":data.cookieId, "auditId":data.recentAuditId},
-            dataType: "json",
-            beforeSend:null,
-            success: function(response) {
-                if (response.status == "PENDING") {
-                    jQuery.cookie('myplan_audit_' + data.cookieId, JSON.stringify(data), {expires: date});
-                    jQuery.publish('REFRESH_AUDITS');
+        if (data.programId != 'default') {
+            jQuery.ajax({
+                url: "/student/myplan/audit/status",
+                data: {"programId":data.programId, "auditId":data.recentAuditId},
+                dataType: "json",
+                beforeSend:null,
+                success: function(response) {
+                    if (response.status == "PENDING") {
+                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires: data.expires});
+                        jQuery.publish('REFRESH_AUDITS');
+                    }
+                },
+                statusCode: {
+                    500: function() { sessionExpired(); }
                 }
-            },
-            statusCode: {
-                500: function() { sessionExpired(); }
-            }
-        });
+            });
+        }
+    } else {
+        showGrowl("Another audit is currently pending.", "Degree Audit Error", "errorGrowl");
     }
 }
 
 function getPendingAudit(id) {
-    if (document.cookie.indexOf("myplan_audit") >= 0) {
+    if (jQuery.cookie('myplan_audit_running')) {
         var component = jQuery("#" + id + " ul");
-        jQuery.each(document.cookie.split(/; */), function()  {
-            var splitCookie = this.split('=');
-            var re = new RegExp("(^myplan_audit)", "i");
-            if (splitCookie[0].match(re)) {
-                var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
-                if (data) {
-                    var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
-                    component.prepend(item);
-                    pollPendingAudit(data.programId, data.cookieId);
-                }
-            }
-        });
+        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
+        if (data) {
+            var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+            component.prepend(item);
+            pollPendingAudit(data.programId, data.recentAuditId);
+        }
         if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
             component.next("div.uif-boxGroup").remove();
         }
@@ -999,23 +996,11 @@ function getPendingAudit(id) {
 }
 
 function blockPendingAudit(id) {
-    if (readUrlParam("auditId") == false && document.cookie.indexOf("myplan_audit") >= 0) {
+    if (readUrlParam("auditId") == false && jQuery.cookie('myplan_audit_running')) {
         var elementToBlock = jQuery("#" + id);
-        var cookies = [];
-        jQuery.each(document.cookie.split(/; */), function()  {
-            var splitCookie = this.split('=');
-            var re = new RegExp("(^myplan_audit)", "i");
-            if (splitCookie[0].match(re)) {
-                var data = jQuery.parseJSON(decodeURIComponent(splitCookie[1]));
-                if (data) {
-                    cookies.push(data.cookieId);
-                }
-            }
-        });
-        var max = Math.max.apply(null, cookies);
-        var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + max)));
+        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
         elementToBlock.block({
-            message:'<img src="' + getConfigParam(kradVariables.IMAGE_LOCATION) + 'loader.gif" alt="working..." /> Running ' + details.programName,
+            message:'<img src="' + getConfigParam(kradVariables.IMAGE_LOCATION) + 'loader.gif" alt="working..." /> Running ' + data.programName,
             fadeIn:400,
             fadeOut:800
         });
@@ -1023,40 +1008,37 @@ function blockPendingAudit(id) {
     }
 }
 
-function pollPendingAudit(programId, cookieId) {
+function pollPendingAudit(programId, recentAuditId) {
     var interval = 1; // polling interval in seconds
     var maxDuration = 5; // max duration to poll in minutes
     jQuery.ajaxPollSettings.maxInterval = (maxDuration * 60) / interval;
     jQuery.ajaxPollSettings.pollingType = "interval";
     jQuery.ajaxPollSettings.interval = (interval * 1000);
 
-    var recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
-    if (typeof recentAuditId === 'undefined') recentAuditId = '';
-
     jQuery.ajaxPoll({
         url: "/student/myplan/audit/status",
-        data: {"programId": programId,"cookieId":cookieId,"auditId":recentAuditId},
+        data: {"programId": programId,"auditId":recentAuditId},
         dataType: "json",
         beforeSend: null,
-        successCondition: function(result) {
-        	return (result.status == 'DONE' || result.status == 'FAILED' || jQuery.cookie("myplan_audit_" + result.cookieId) == null);
+        successCondition: function(response) {
+        	return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
-        success: function(data) {
-            if(jQuery.cookie("myplan_audit_" + data.cookieId)) {
-                var details = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_" + data.cookieId)));
+        success: function(response) {
+            var growl;
+            if (readUrlParam("auditId") == false && readUrlParam("viewId") == "DegreeAudit-FormView") {
+                growl = false;
+            } else {
+                growl = true;
             }
-            switch (data.status) {
-            	case "DONE":
-            		showGrowl("Your audit for " + details.programName + " is complete.", "Degree Audit Completed", "infoGrowl");
-            		break;
-            	case "FAILED":
-                case "PENDING":
-            		showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
-            		break;
+
+            if(jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
+                if (growl) showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
+            } else {
+                var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
+                if (growl) showGrowl("Your audit for " + data.programName + " is complete.", "Degree Audit Completed", "infoGrowl");
             }
-            jQuery.cookie("myplan_audit_" + data.cookieId, null, {expires: new Date().setTime(0)});
+            jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
             jQuery.publish("AUDIT_COMPLETE");
-            jQuery.publish('REFRESH_AUDITS');
         }
     });
 }
