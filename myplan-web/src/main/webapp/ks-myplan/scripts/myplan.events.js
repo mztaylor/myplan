@@ -6,7 +6,7 @@
 function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
     var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
-            '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace("-",".") + '">' +
+            '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g,".") + '">' +
                 '<fieldset>' +
                     '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
                         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
