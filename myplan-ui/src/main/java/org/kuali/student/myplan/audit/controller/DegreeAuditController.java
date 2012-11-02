@@ -50,12 +50,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.*;
 
@@ -197,9 +202,6 @@ public class DegreeAuditController extends UifControllerBase {
             GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
 
-        /*if (systemKeyExists && !StringUtils.hasText(form.getAuditHtml())) {
-            form.setPageId(DegreeAuditConstants.AUDIT_EMPTY_PAGE);
-        }*/
         return getUIFModelAndView(form);
     }
 
@@ -264,7 +266,8 @@ public class DegreeAuditController extends UifControllerBase {
             logger.error("Could not complete audit run");
             String[] params = {};
             GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-            String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL));
+            String errorMessage = getErrorMessageFromXml(e.getCause().getMessage());
+            String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
             form.setAuditHtml(html);
         }
         return getUIFModelAndView(form);
@@ -272,7 +275,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     @RequestMapping(value = "/status")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-        String programId = request.getParameter("programId").replace("$"," ");
+        String programId = request.getParameter("programId").replace("$", " ");
         String auditId = request.getParameter("auditId");
         String cookieId = request.getParameter("cookieId");
         String systemKey = UserSessionHelper.getAuditSystemKey();
@@ -288,7 +291,7 @@ public class DegreeAuditController extends UifControllerBase {
         }
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
-        jsonString = jsonString.append("{\"status\":").append("\""+status+"\",\"cookieId\":").append("\""+cookieId+"\"}");
+        jsonString = jsonString.append("{\"status\":").append("\"" + status + "\",\"cookieId\":").append("\"" + cookieId + "\"}");
         try {
             response.getWriter().println(jsonString);
         } catch (IOException e) {
@@ -331,6 +334,21 @@ public class DegreeAuditController extends UifControllerBase {
             }
         }
         throw new RuntimeException("cell result '" + key + "' not found");
+    }
+
+    public String getErrorMessageFromXml(String xmlString) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+            if (doc.getElementsByTagName("StatusDescription").getLength() != 0) {
+                return doc.getElementsByTagName("StatusDescription").item(0).getTextContent();
+            } else {
+                return "Audit processing Failed";
+            }
+        } catch (Exception e) {
+            return "Audit processing Failed";
+        }
     }
 
     /**
