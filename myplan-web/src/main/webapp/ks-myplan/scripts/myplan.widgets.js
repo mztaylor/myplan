@@ -940,9 +940,9 @@ function getAuditProgram(param) {
             id = null;
     }
     if (param == 'id') {
-    	return jQuery('select#' + id).val();
+        return jQuery('select#' + id).val();
     } else {
-    	return jQuery('select#' + id + ' option:selected').text();
+        return jQuery('select#' + id + ' option:selected').text();
     }
 }
 
@@ -1323,6 +1323,27 @@ function autoCompleteText(atpId) {
     });
     jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
 
+}
+function fnAddLoadingText() {
+    var radioVal = jQuery(':radio:checked').val();
+    var value;
+    switch (radioVal) {
+        case "306":
+            value = jQuery("#select_programParam_seattle_control option:selected").text();
+            break;
+        case "310":
+            value = jQuery("#select_programParam_bothell_control option:selected").text();
+            break
+        case "323":
+            value = jQuery("#select_programParam_tacoma_control option:selected").text();
+            break;
+
+    }
+    jQuery("#loadingMessage").html("<div style='text-align: left; display: inline; float: right; margin: 5px 0px 5px 0px;padding-right: 60px;'>Running Degree Audit '" + value + "'<li style='text-align: left; list-style-type: square;'> If you leave this page and come back, <b>'CLICK Recheck Audit<br />status' button upon your return</b> to view the new audit.</li><li style='text-align: left; list-style-type: square;'>If you stay on this page, the new report will be loaded automatically.</li><div class='myplan-course-search-panel' style='display: inline; float: right; padding-right: 60px; background: lightYellow;'><li class='myplan-text-gray' style='text-align: left;'><b>Did you know?</b></li><li style='text-align: left;'>Running the audit for the same degree program is easy.<br />Some relavant content will be displayed.</li></div></div>").prev("img").attr("alt", "");
+}
+
+function removeCookie() {
+    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
 }
 
 
