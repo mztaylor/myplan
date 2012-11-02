@@ -468,8 +468,16 @@
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
         <property name="onClickScript" value="setUrlHash('modified','yes'); setPendingAudit(2);"/>
-        <property name="onDocumentReadyScript"
-                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+        <property name="onDocumentReadyScript" value="
+            if (jQuery.cookie('myplan_audit_running')) {
+                jQuery('button#degree_audit_run').attr('disabled', true);
+            } else {
+                jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
+            }
+            jQuery('button#degree_audit_run').subscribe('AUDIT_COMPLETE', function () {
+                jQuery(this).attr('disabled', degreeAuditButton());
+            });
+        "/>
     </bean>
 
     <bean id="audit_instruction" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
