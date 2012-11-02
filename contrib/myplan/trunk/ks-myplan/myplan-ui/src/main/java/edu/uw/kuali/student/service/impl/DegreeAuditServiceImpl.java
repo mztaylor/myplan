@@ -540,7 +540,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         Matcher m = p.matcher(initialText);
         while (m.find()) {
             String href = m.group();
-            if (!href.contains("@")) {
+            if (!href.contains("@") && href.contains( "washington.edu" ))  {
                 String period = "";
                 if (href.endsWith(".")) {
                     href = href.substring(0, href.length() - 1);
