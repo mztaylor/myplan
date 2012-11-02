@@ -167,8 +167,8 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-Message" p:style="display:none;"
-                                  p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
+                            <bean parent="Uif-ImageField" p:render="@{feedBackMode eq true ? true : false}" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconSuccess16.png"/>
+                            <bean parent="Uif-Message" p:style="display:none;" p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
                                 <property name="hidden" value="true"/>
                                 <property name="onDocumentReadyScript" value="parent.jQuery.publish('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
                             </bean>
@@ -445,6 +445,7 @@
                     <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                 </bean>
+                <bean parent="Uif-ImageField" p:render="@{feedBackMode eq true ? true : false}" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconSuccess16.png"/>
                 <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-feedback success"
                       p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
                     <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
