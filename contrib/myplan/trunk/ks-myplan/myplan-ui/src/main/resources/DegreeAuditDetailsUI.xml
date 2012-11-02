@@ -219,6 +219,11 @@
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-audit-report</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <ref bean="empty_degree_audits"/>
@@ -231,11 +236,6 @@
         <property name="onDocumentReadyScript" value="
             initAuditActions();
         "/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-audit-report</value>
-            </list>
-        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
