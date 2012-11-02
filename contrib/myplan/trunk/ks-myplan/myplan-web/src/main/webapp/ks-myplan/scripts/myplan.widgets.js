@@ -914,14 +914,17 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
 }
 
 function degreeAuditButton() {
-    var id = getAuditProgram("id");
-
-    if (id) {
-        return (id == 'default');
-    } else {
+    if (jQuery.cookie('myplan_audit_running')) {
         return true;
-    }
+    } else {
+        var id = getAuditProgram("id");
 
+        if (id) {
+            return (id == 'default');
+        } else {
+            return true;
+        }
+    }
 }
 
 function getAuditProgram(param) {
@@ -967,6 +970,7 @@ function setPendingAudit(minutes) {
                 success: function(response) {
                     if (response.status == "PENDING") {
                         jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires: data.expires});
+                        jQuery("button#degree_audit_run").attr("disabled", true);
                         jQuery.publish('REFRESH_AUDITS');
                     }
                 },
