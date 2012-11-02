@@ -469,7 +469,9 @@
                   value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
                          jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
                             myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                         });
+                         }).subscribe('AUDIT_COMPLETE', function(data){
+                             myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                          });
                   "/>
     </bean>
 

@@ -176,13 +176,13 @@ Program ID
 
 	<bean id="AuditReportInfo.runDate-generated" abstract="true" parent="BaseKuali.dateTime">
 		<property name="name" value="runDate"/>
-		<property name="shortLabel" value="Run Date"/>
+		<property name="shortLabel" value="Prepared"/>
 		<property name="summary">
 			<value>
 Run Date
 			</value>
 		</property>
-		<property name="label" value="Run Date"/>
+		<property name="label" value="Prepared"/>
 		<property name="description">
 			<value>
 Run Date
