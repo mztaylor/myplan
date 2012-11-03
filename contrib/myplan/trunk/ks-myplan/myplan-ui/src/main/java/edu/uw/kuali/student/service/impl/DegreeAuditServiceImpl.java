@@ -487,47 +487,37 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if (!scurge.equals(victim)) {
                 victim = victim.replace("&", "&amp;");
 
-                victim = "<fake>" + victim + "</fake>";
+                victim = "<span>" + victim + "</span>";
                 builder.reset();
                 Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
                 Node fake = whoopie.getDocumentElement();
 
                 Node parent = child.getParentNode();
-                parent.removeChild(child);
-                NodeList lamesters = fake.getChildNodes();
-                for (int xing = 0; xing < lamesters.getLength(); xing++) {
-                    Node tank = lamesters.item(xing);
-                    Node crank = doc.importNode(tank, true);
-                    parent.appendChild(crank);
-                }
+                Node crank = doc.importNode(fake, true);
+                parent.replaceChild(crank, child);
             }
         }
     }
 
-    public void ineptURLLinkifier(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
+    public static void ineptURLLinkifier(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
         XPathExpression godot = xpath.compile(path);
         Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
         NodeList godotList = (NodeList) godotSet;
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
             String scurge = child.getTextContent();
-            String victim = tangerine( scurge );
+            String victim = tangerine(scurge);
             if (!scurge.equals(victim)) {
                 victim = victim.replace("&", "&amp;");
 
-                victim = "<fake>" + victim + "</fake>";
+                victim = "<span>" + victim + "</span>";
                 builder.reset();
                 Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
                 Node fake = whoopie.getDocumentElement();
 
                 Node parent = child.getParentNode();
-                parent.removeChild(child);
-                NodeList lamesters = fake.getChildNodes();
-                for (int xing = 0; xing < lamesters.getLength(); xing++) {
-                    Node tank = lamesters.item(xing);
-                    Node crank = doc.importNode(tank, true);
-                    parent.appendChild(crank);
-                }
+                Node crank = doc.importNode(fake, true);
+                parent.replaceChild(crank, child);
             }
         }
     }
