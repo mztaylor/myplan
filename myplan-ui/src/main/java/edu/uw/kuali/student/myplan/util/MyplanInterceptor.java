@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,9 +48,9 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v5/degreeaudit";
 
-    private final String BROWSER_INCOMPATIBLE = "/student/myplan/browserIncompatible";
+    private final String BROWSER_INCOMPATIBLE = "/myplan/browserIncompatible";
 
-    private final String USER_UNAUTHORIZED = "/student/myplan/unauthorized";
+    private final String USER_UNAUTHORIZED = "/myplan/unauthorized";
     
     private final String STUDENT="STDNT";
 
@@ -70,20 +71,21 @@ public class MyplanInterceptor implements HandlerInterceptor {
         request.setAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP, isAuditServiceRunning);
         String userAgent = request.getHeader(USER_AGENT);
         if (userAgent.contains("MSIE 7.0;") || userAgent.contains("MSIE 6.0;")) {
-            response.sendRedirect(BROWSER_INCOMPATIBLE);
+            request.getRequestDispatcher(BROWSER_INCOMPATIBLE).forward(request, response);
+            return false;
         }
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        /*If you not an adviser and  if you are not a  student then you dont have access to myplan*/
+       /* If you not an adviser and  if you are not a  student then you dont have access to myplan*/
         if (!UserSessionHelper.isAdviser())  {
             try {
                 String systemKey = UserSessionHelper.getAuditSystemKey();
             } catch (DataRetrievalFailureException drfe) {
                 logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
-                response.sendRedirect(USER_UNAUTHORIZED);
+                request.getRequestDispatcher(USER_UNAUTHORIZED).forward(request, response);
             }
         }
     }
