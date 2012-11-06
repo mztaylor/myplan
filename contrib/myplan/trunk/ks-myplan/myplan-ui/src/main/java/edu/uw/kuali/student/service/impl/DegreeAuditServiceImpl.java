@@ -483,18 +483,30 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
             String scurge = child.getTextContent();
+            scurge = scurge.replace("&", "&amp;");
+            scurge = scurge.replace("<", "&lt;");
+            scurge = scurge.replace(">", "&gt;");
             String victim = CourseLinkBuilder.makeLinks(scurge, courseLinkTemplateStyle);
             if (!scurge.equals(victim)) {
-                victim = victim.replace("&", "&amp;");
+//                victim = victim.replace("&", "&amp;");
 
                 victim = "<span>" + victim + "</span>";
-                builder.reset();
-                Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
-                Node fake = whoopie.getDocumentElement();
 
-                Node parent = child.getParentNode();
-                Node crank = doc.importNode(fake, true);
-                parent.replaceChild(crank, child);
+                System.out.println( victim );
+                builder.reset();
+                try
+                {
+                    Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
+                    Node fake = whoopie.getDocumentElement();
+
+                    Node parent = child.getParentNode();
+                    Node crank = doc.importNode(fake, true);
+                    parent.replaceChild(crank, child);
+                }
+                catch( Exception e )
+                {
+                    logger.error("crazyDOMLinkifier failed on '" + victim + "'", e);
+                }
             }
         }
     }
@@ -506,9 +518,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
             String scurge = child.getTextContent();
+            scurge = scurge.replace("&", "&amp;");
+            scurge = scurge.replace("<", "&lt;");
+            scurge = scurge.replace(">", "&gt;");
             String victim = tangerine(scurge);
             if (!scurge.equals(victim)) {
-                victim = victim.replace("&", "&amp;");
+//                victim = victim.replace("&", "&amp;");
 
                 victim = "<span>" + victim + "</span>";
                 builder.reset();
