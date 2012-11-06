@@ -53,7 +53,7 @@ function initAuditActions() {
             expandReq(jQuery(this), true);
         }
     });
-    jQuery(".requirement .toggle, .requirement .title").click(function(e) {
+    jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function(e) {
         var jRequirement = jQuery(this).parents(".requirement");
         if (jRequirement.hasClass("expanded")) {
             collapseReq(jRequirement, false);
@@ -62,17 +62,21 @@ function initAuditActions() {
         }
     });
     jQuery(".control-toolbar #requirement-status").change(function() {
-        var sClass = jQuery(this).val();
-        jQuery(".requirement").each(function() {
-            if (jQuery(this).hasClass(sClass) || sClass == 'all' || jQuery(this).hasClass("Status_NONE") || !jQuery(this).is("div[class*='Status']")) {
-                jQuery(this).show();
-            } else {
+        var data = jQuery(this).val();
+
+        //jQuery(".requirement").each(function() {
+        jQuery(".myplan-audit-report .requirement[class*='Status']").not(".Status_NONE").each(function() {
+
+            //if (jQuery(this).hasClass(data) || data == 'all' || jQuery(this).hasClass("Status_NONE") || !jQuery(this).is("div[class*='Status']")) {
+            if (data == 'unmet' && jQuery(this).hasClass("Status_OK")) {
                 jQuery(this).hide();
+            } else {
+                jQuery(this).show();
             }
         });
 
         var jAuditMessage = jQuery(".myplan-status.audit-filtered");
-        if (sClass == "all") {
+        if (data == "all") {
             jAuditMessage.hide();
         } else {
             jAuditMessage.show();

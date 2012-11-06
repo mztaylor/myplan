@@ -464,15 +464,14 @@
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
-
-        <property name="onDocumentReadyScript"
-                  value="myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                         jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
-                            myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                         }).subscribe('AUDIT_COMPLETE', function(data){
-                             myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                          });
-                  "/>
+        <property name="onDocumentReadyScript" value="
+            myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
+                myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            }).subscribe('AUDIT_COMPLETE', function(data){
+                myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            });
+        "/>
     </bean>
 
     <bean id="non_student_degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
@@ -485,9 +484,9 @@
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
-        <property name="instructionalText"
-                  value="No recent audits found."/>
+        <property name="instructionalText" value="No recent audits found."/>
     </bean>
+
     <bean id="text1">
         <property name="instructionalText"
                   value="Select the campus and enter degree program to run audit"/>

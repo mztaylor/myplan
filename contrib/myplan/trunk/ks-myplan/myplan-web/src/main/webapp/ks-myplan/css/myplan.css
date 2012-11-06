@@ -1357,12 +1357,20 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-section .uif-header.primary {
     border: none;
-    padding: 10px;
-    background: #efe8d3;
+    padding: 7px 10px;
+    background-image: -ms-linear-gradient(top, #f6ebcd 0%, #f2e3b8 100%);
+    background-image: -moz-linear-gradient(top, #f6ebcd 0%, #f2e3b8 100%);
+    background-image: -o-linear-gradient(top, #f6ebcd 0%, #f2e3b8 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f6ebcd), color-stop(1, #f2e3b8));
+    background-image: -webkit-linear-gradient(top, #f6ebcd 0%, #f2e3b8 100%);
+    background-image: linear-gradient(to bottom, #f6ebcd 0%, #f2e3b8 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#f6ebcd', endColorstr='#f2e3b8')"; /* IE8 */
     border-radius: 5px 5px 0 0;
-    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    -moz-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
+    text-shadow: 1px 1px 1px #ffffff;
+}
+.myplan-section.no-primary .uif-header {
+    border-top: none;
+    border-radius: 5px 5px 0 0;
 }
 .myplan-section .uif-header .uif-header-rightGroup {
     position: relative;
@@ -1417,6 +1425,19 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-section .myplan-recent-audit .pending .title {
     vertical-align: middle;
+    color: #777;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    width: 187px;
+}
+.myplan-section .myplan-recent-audit .pending .program {
+    color: #333;
+}
+.myplan-section .myplan-recent-audit label {
+    color: #777;
+    font-weight: normal;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 
@@ -1659,12 +1680,30 @@ label.scheduled {
     white-space: nowrap;
     padding: 5px 10px;
 }
-.myplan-audit-report div.blockElement {
+.myplan-audit-report .blockUI.blockOverlay {
+    opacity: 0.85;
+    background-color: #fff;
+}
+.myplan-audit-report .blockUI.blockMsg.blockElement {
     left: 0px !important;
     top: 0px !important;
 }
+.myplan-audit-report .blockUI.blockMsg.blockElement .icon {
+    position:absolute;
+    top: 30px;
+    left: 30px;
+    width: 32px;
+    height: 32px;
+}
+.myplan-audit-report .blockUI.blockMsg.blockElement .heading {
+    font-size: 1.25em;
+    margin-bottom: 20px;
+}
 .myplan-audit-report pre a {
     text-decoration: underline;
+}
+.myplan-audit-report .loading-message {
+
 }
 .fancybox-skin {
     background: #fff !important;
