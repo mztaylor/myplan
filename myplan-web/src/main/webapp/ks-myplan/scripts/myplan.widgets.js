@@ -743,6 +743,28 @@ function truncateField(id) {
         jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
     });
 }
+function truncateAuditTitle(id) {
+    jQuery("#" + id + " .myplan-audit-title").each(function () {
+        if (readUrlParam("viewId") == "DegreeAudit-FormView") {
+
+            if (
+                (readUrlParam("auditId") == false && jQuery(this).siblings("div[id^='hidden_recentAuditId']").length > 0) ||
+                (readUrlParam("auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
+            ) {
+                jQuery(this).find(".uif-label label").text("Viewing");
+            }
+        }
+
+        var width = jQuery(this).width();
+        var label = jQuery(this).find(".uif-label").width();
+        jQuery(this).find(".uif-label").next("span").width(width - label).css({
+            "text-overflow":"ellipsis",
+            "white-space":"nowrap",
+            "overflow":"hidden",
+            "display":"inline-block"
+        });
+    });
+}
 /*
  ######################################################################################
  Function:   Slide into view hidden horizontally aligned items specifying the id
@@ -927,6 +949,52 @@ function degreeAuditButton() {
     }
 }
 
+var blockPendingAuditStyle = { //' + jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running'))).programName + '
+    message: '<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
+    fadeIn:400,
+    fadeOut:800,
+    css: {
+        padding: '30px 30px 30px 82px',
+        margin: '30px',
+        width: 'auto',
+        textAlign: 'left',
+        border: 'solid 1px #ffd14c',
+        backgroundColor: '#fffdd7',
+        'border-radius': '15px',
+        '-webkit-border-radius': '15px',
+        '-moz-border-radius': '15px'
+    },
+    overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.85,
+        cursor: 'wait'
+    }
+};
+
+var blockPendingAudit;
+
+function changeLoadingMessage(selector) {
+    blockPendingAudit = setInterval(function(){setLoadingMessage(selector)},100);
+}
+
+function setLoadingMessage(selector) {
+	if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0){
+        fnAddLoadingText(selector);
+	}
+}
+
+function fnAddLoadingText(selector) {
+    clearInterval(blockPendingAudit);
+    //var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
+    jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
+    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css);
+    jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(getAuditProgram("name"));
+}
+
+function removeCookie() {
+    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+}
+
 function getAuditProgram(param) {
     var id;
     switch (parseFloat(jQuery("input[name='campusParam']:checked").val())) {
@@ -1002,12 +1070,9 @@ function getPendingAudit(id) {
 function blockPendingAudit(id) {
     if (readUrlParam("auditId") == false && jQuery.cookie('myplan_audit_running')) {
         var elementToBlock = jQuery("#" + id);
-        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
-        elementToBlock.block({
-            message:'<img src="' + getConfigParam(kradVariables.IMAGE_LOCATION) + 'loader.gif" alt="working..." /> Running ' + data.programName,
-            fadeIn:400,
-            fadeOut:800
-        });
+        var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
+        elementToBlock.block(blockPendingAuditStyle);
+        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(audit.programName);
         jQuery("#" + id).subscribe('AUDIT_COMPLETE', function() { window.location.assign(window.location.href.split("#")[0]); });
     }
 }
@@ -1021,11 +1086,11 @@ function pollPendingAudit(programId, recentAuditId) {
 
     jQuery.ajaxPoll({
         url: "/student/myplan/audit/status",
-        data: {"programId": programId,"auditId":recentAuditId},
+        data: {"programId":programId, "auditId":recentAuditId},
         dataType: "json",
         beforeSend: null,
         successCondition: function(response) {
-        	return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
+            return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
         success: function(response) {
             var growl;
@@ -1039,7 +1104,7 @@ function pollPendingAudit(programId, recentAuditId) {
                 if (growl) showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
             } else {
                 var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
-                if (growl) showGrowl("Your audit for " + data.programName + " is complete.", "Degree Audit Completed", "infoGrowl");
+                if (growl) showGrowl(data.programName + " audit is ready to view.", "Degree Audit Completed", "infoGrowl");
             }
             jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
             jQuery.publish("AUDIT_COMPLETE");
@@ -1328,27 +1393,8 @@ function autoCompleteText(atpId) {
     jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
 
 }
-function fnAddLoadingText() {
-    var radioVal = jQuery(':radio:checked').val();
-    var value;
-    switch (radioVal) {
-        case "306":
-            value = jQuery("#select_programParam_seattle_control option:selected").text();
-            break;
-        case "310":
-            value = jQuery("#select_programParam_bothell_control option:selected").text();
-            break
-        case "323":
-            value = jQuery("#select_programParam_tacoma_control option:selected").text();
-            break;
 
-    }
-    jQuery("#loadingMessage").html("<div style='text-align: left; display: inline; float: right; margin: 5px 0px 5px 0px;padding-right: 60px;'>Running Degree Audit '" + value + "'<li style='text-align: left; list-style-type: square;'> If you leave this page and come back, <b>'CLICK Recheck Audit<br />status' button upon your return</b> to view the new audit.</li><li style='text-align: left; list-style-type: square;'>If you stay on this page, the new report will be loaded automatically.</li><div class='myplan-course-search-panel' style='display: inline; float: right; padding-right: 60px; background: lightYellow;'><li class='myplan-text-gray' style='text-align: left;'><b>Did you know?</b></li><li style='text-align: left;'>Running the audit for the same degree program is easy.<br />Some relavant content will be displayed.</li></div></div>").prev("img").attr("alt", "");
-}
 
-function removeCookie() {
-    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
-}
 
 
 

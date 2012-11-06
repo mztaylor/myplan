@@ -107,7 +107,12 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="myplan_section" p:style="">
+                                        <bean parent="myplan_section">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>no-primary</value>
+                                                </list>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="your_stuff_widget" p:headerText="">
@@ -119,8 +124,7 @@
                                                         </property>
                                                         <property name="propertyReplacers">
                                                             <list>
-                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer"
-                                                                      p:propertyName="items"
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
                                                                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
                                                                     <property name="replacement">
                                                                         <list>
@@ -187,7 +191,7 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="myplan_section" p:style="">
+                                        <bean parent="myplan_section">
                                             <property name="items">
                                                 <list>
 
@@ -374,7 +378,7 @@
 
     <bean id="select_instruction" parent="Uif-Message" p:cssClasses="myplan-text-normal">
         <property name="messageText"
-                  value="Select your campus and choose a degree program or minor from the menu below. Audits may take 1-5 minutes."/>
+                  value="Select your campus and choose a degree program or minor from the dropdown menu below. Audits may take 1-5 minutes to load. You can leave this page to browse MyPlan further while you wait."/>
     </bean>
 
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup">
@@ -467,7 +471,7 @@
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
-        <property name="onClickScript" value="setUrlHash('modified','yes'); setPendingAudit(2);"/>
+        <property name="onClickScript" value="setPendingAudit(2); setUrlHash('modified','yes'); changeLoadingMessage('.myplan-audit-report');"/>
         <property name="onDocumentReadyScript" value="
             if (jQuery.cookie('myplan_audit_running')) {
                 jQuery('button#degree_audit_run').attr('disabled', true);

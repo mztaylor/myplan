@@ -154,7 +154,7 @@
                 <value>myplan-recent-audit</value>
             </list>
         </property>
-        <property name="onDocumentReadyScript" value="getPendingAudit('degree_audits_summary');"/>
+        <property name="onDocumentReadyScript" value="getPendingAudit('degree_audits_summary'); truncateAuditTitle('degree_audits_summary');"/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
@@ -171,10 +171,14 @@
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}';"/>
                     <property name="items">
                         <list>
-                            <!--<bean parent="Uif-LinkField" p:linkText="@{#line.programTitle}" p:style="width: 220px;"
-                                p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}"/>-->
-                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:style="width: 220px;"
-                                  p:fieldLabel.render="false"/>
+                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View" p:style="width:208px;"
+                                  p:fieldLabel.render="true" p:fieldLabel.renderColon="false">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-audit-title</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
                                   p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"
                                   p:fieldLabel.render="true" p:escapeHtmlInPropertyValue="false">

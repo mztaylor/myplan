@@ -55,7 +55,10 @@
                 wait = ((1 - ((options.durationUntilMaxInterval - sinceStart) / options.durationUntilMaxInterval)) * options.maxInterval) + options.interval;
             }
 
-            setTimeout(function() { jQuery.ajax(options) }, wait);
+            setTimeout(function() {
+                jQuery.extend(options.data,{"time":(new Date()).getTime()});
+                jQuery.ajax(options);
+            }, wait);
         };
 
         options.error = function(XMLHttpRequest, textStatus, errorThrown) {
