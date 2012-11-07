@@ -199,47 +199,8 @@ public class QuickAddController extends UifControllerBase {
             this.setCourseOfferingServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString()));
         }
         QuickAddForm searchForm = (QuickAddForm) form;
-        if (StringUtils.hasText(searchForm.getCourseCd())) {
-            SearchRequest searchRequest = null;
-            SearchResult searchResult = null;
-            List<String> results = new ArrayList<String>();
-            HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-            /*Params from the Url*/
-            String searchText = org.apache.commons.lang.StringUtils.upperCase(searchForm.getCourseCd());
-            String number = null;
-            String subject = null;
-            String[] splitStr = searchText.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            if (splitStr.length == 2) {
-                number = splitStr[1];
-                ArrayList<String> divisions = new ArrayList<String>();
-                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
-                if (divisions.size() > 0) {
-                    subject = divisions.get(0);
-                    searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
-                    results = searchController.getResults(searchRequest, subject, number);
-                }
-            } else if (splitStr.length == 1 && !org.apache.commons.lang.StringUtils.isNumeric(splitStr[0])) {
-                ArrayList<String> divisions = new ArrayList<String>();
-                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
-                if (divisions.size() > 0) {
-                    subject = divisions.get(0);
-                    searchRequest = new SearchRequest("myplan.clu.division");
-                    results = searchController.getResults(searchRequest, subject, number);
-                } else {
-                    searchRequest = new SearchRequest("myplan.clu.division");
-                    results = searchController.getResults(searchRequest, subject, number);
-                }
-            }
-
-            if (results.size() > 0) {
-                results = additionalFiltering(results, searchForm.getAtpId());
-                searchForm.setSuggestions(results);
-            }
-
-        } else {
-            List<String> emptyList = new ArrayList<String>();
-            emptyList.add("No courses found");
-            searchForm.setSuggestions(emptyList);
+        if (StringUtils.hasText(searchForm.getAtpId())) {
+            searchForm.setTermYear(AtpHelper.atpIdToTermName(searchForm.getAtpId()));
         }
         return getUIFModelAndView(searchForm);
     }
@@ -288,7 +249,7 @@ public class QuickAddController extends UifControllerBase {
             } else {
                 results.add("No courses found");
             }
-        }else{
+        } else {
             results.add("Search Term Should be at least 2 characters");
         }
         StringBuilder jsonString = new StringBuilder();
@@ -315,52 +276,7 @@ public class QuickAddController extends UifControllerBase {
     }
 
 
-    /* @RequestMapping(value="/quickAdd/autoSuggestions")
-public List<String> autoSuggestions(HttpServletResponse response, HttpServletRequest request) {
-if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString())
-        || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
-        || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
-    AtpHelper.addServiceError("courseCd");
-    this.setAcademicCalendarServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString()));
-    this.setAcademicRecordServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString()));
-    this.setCourseOfferingServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString()));
-}
-String queryText = request.getParameter("courseCd");
-List<String> results = new ArrayList<String>();
-if (StringUtils.hasText(queryText)) {
-    SearchRequest searchRequest = null;
-    SearchResult searchResult = null;
-    HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-    *//*Params from the Url*//*
-            String searchText = org.apache.commons.lang.StringUtils.upperCase(queryText);
-            String number = null;
-            String subject = null;
-            String[] splitStr = searchText.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            if (splitStr.length == 2) {
-                number = splitStr[1];
-                ArrayList<String> divisions = new ArrayList<String>();
-                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
-                if (divisions.size() > 0) {
-                    subject = divisions.get(0);
-                    searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
-                    results = searchController.getResults(searchRequest, subject, number);
-                }
-            } else if (splitStr.length == 1 && !org.apache.commons.lang.StringUtils.isNumeric(splitStr[0])) {
-                ArrayList<String> divisions = new ArrayList<String>();
-                subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
-                if (divisions.size() > 0) {
-                    subject = divisions.get(0);
-                    searchRequest = new SearchRequest("myplan.clu.division");
-                    results = searchController.getResults(searchRequest, subject, number);
-                } else {
-                    searchRequest = new SearchRequest("myplan.clu.division");
-                    results = searchController.getResults(searchRequest, subject, number);
-                }
-            }
 
-        }
-        return results;
-    }*/
 
 
     @RequestMapping(params = "methodToCall=quickAddCourse")
@@ -371,7 +287,7 @@ if (StringUtils.hasText(queryText)) {
         }
         if (!StringUtils.hasText(form.getCourseCd())) {
             return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null);
-        } else if (form.getCourseCd().length() <= 2) {
+        } else if (form.getCourseCd().length() < 2) {
             return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null);
         }
 
@@ -552,7 +468,7 @@ if (StringUtils.hasText(queryText)) {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo
-                                                                                          planItem, CourseDetails courseDetails) {
+                                                                                              planItem, CourseDetails courseDetails) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
