@@ -918,7 +918,8 @@
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                                     });"/>
                             </bean>
-                            <bean p:id="@{atpId}" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false">
+                            <bean p:id="@{atpId}" parent="Uif-InputField" p:propertyName="atpId"
+                                  p:fieldLabel.render="false">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
@@ -1254,6 +1255,16 @@
     <!-- Single term view that lists planned course, total credits and backup courses -->
     <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; margin-right: 10px;">
         <property name="onDocumentReadyScript" value="
+            jQuery('.myplan-carousel-list li .myplan-term-current, .myplan-carousel-list li .myplan-term-future').find('.myplan-carousel-term.myplan-term-planned, .myplan-carousel-term.myplan-term-backup').find(&quot;.uif-stackedCollectionLayout&quot;).each(function(){
+                var atpId = jQuery(this).parents(&quot;li&quot;).find(&quot;div[id^='plan_base_atpId'] span &quot;).text();
+                var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
+                var jQuickAdd = jQuery('&lt;div&gt;', {
+                        onclick:'openQuickAddPopUp(&quot;quick_Add&quot;,&quot;quickAdd_dialog_page&quot;,{atpId:&quot;'+jQuery.trim( atpId )+'&quot;,pageId:&quot;quickAdd_dialog_page&quot;, planType:&quot;'+planType+'&quot;},event,null,{tail:{hidden:true},align:&quot;top&quot;,position:&quot;right&quot;})',
+                        class:'uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem quick-add-cell myplan-course-valid'
+                    }).html('Quick Add Course');
+                jQuery(this).append(jQuickAdd);
+            });
+
             if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
                 var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
                     return jQuery(this).height();
@@ -1403,10 +1414,11 @@
                 <bean id="atp_start_index" parent="Uif-DataField" p:propertyName="index"
                       p:render="@{#line.index ge 0 ? true : false}" p:style="display:none;"/>
 
-                <bean id="atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false"
+                <bean id="plan_base_atpId" parent="Uif-DataField" p:propertyName="atpId" p:fieldLabel.render="false"
                       p:style="display: none;"/>
 
-                <bean p:id="@{#line.atpId}_plan_status" parent="Uif-InputField" p:propertyName="openForPlanning" p:fieldLabel.render="false">
+                <bean p:id="@{#line.atpId}_plan_status" parent="Uif-InputField" p:propertyName="openForPlanning"
+                      p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -1759,9 +1771,6 @@
                 <property name="items">
                     <list>
                         <ref bean="planned_help_icon"/>
-                        <!--<bean parent="Uif-ImageField" p:altText="Quick Add" p:render="@{#line.completedTerm eq false ? true : false}"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
-                              p:onClickScript="openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:'@{#line.atpId}',pageId:'quickAdd_dialog_page', planType:'planned'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>-->
                     </list>
                 </property>
             </bean>
@@ -1772,6 +1781,11 @@
                     <bean parent="Uif-CollectionVerticalBoxItem"/>
                 </property>
             </bean>
+        </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="plantype" value="planned"/>
+            </map>
         </property>
         <property name="cssClasses">
             <list merge="false">
@@ -1985,9 +1999,6 @@
                 <property name="items">
                     <list>
                         <ref bean="backup_help_icon"/>
-                        <!--<bean parent="Uif-ImageField" p:altText="Quick Add" p:render="@{#line.completedTerm eq false ? true : false}"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}btnAdd.png"
-                              p:onClickScript="openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:'@{#line.atpId}',pageId:'quickAdd_dialog_page', planType:'backup'},e,null,{tail:{hidden:true},align:'top',position:'right'});"/>-->
                     </list>
                 </property>
             </bean>
@@ -1998,6 +2009,11 @@
                     <bean parent="Uif-CollectionVerticalBoxItem"/>
                 </property>
             </bean>
+        </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="plantype" value="backup"/>
+            </map>
         </property>
         <property name="cssClasses">
             <list merge="false">
@@ -2185,7 +2201,8 @@
     <!-- ################# Course Details Summary Bean ############################# -->
 
     <!-- Course details summary component used in both the popover and dialog box -->
-    <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
+    <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false"
+          p:style="margin:0px;">
         <property name="items">
             <list>
                 <ref bean="course_details_summary_data"/>
@@ -2284,7 +2301,8 @@
     </bean>
 
 
-    <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
+    <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false"
+          p:style="margin:0px;">
         <property name="items">
             <list>
                 <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup"
@@ -2515,7 +2533,8 @@
     </bean>
 
     <!-- Course details 3 box group  -->
-    <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:style="margin:0px;">
+    <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false"
+          p:style="margin:0px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
