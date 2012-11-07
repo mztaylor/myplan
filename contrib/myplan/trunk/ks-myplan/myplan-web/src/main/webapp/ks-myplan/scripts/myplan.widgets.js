@@ -804,8 +804,8 @@ function fnCloseAllPopups() {
  */
 function fnBuildTitle(aView) {
     var sText = 'Academic Year';
-    var aFirst = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='atpId']").text()).split(".");
-    var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='atpId']").text()).split(".");
+    var aFirst = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
+    var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
 }
 /*
@@ -1031,20 +1031,20 @@ function setPendingAudit(minutes) {
 
         if (data.programId != 'default') {
             jQuery.ajax({
-                url: "/student/myplan/audit/status",
-                data: {"programId":data.programId, "auditId":data.recentAuditId},
-                dataType: "json",
+                url:"/student/myplan/audit/status",
+                data:{"programId":data.programId, "auditId":data.recentAuditId},
+                dataType:"json",
                 beforeSend:null,
-                success: function(response) {
+                success:function (response) {
                     if (response.status == "PENDING") {
-                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires: data.expires});
+                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
                         jQuery("button#degree_audit_run").attr("disabled", true);
                         jQuery.publish('REFRESH_AUDITS');
                     }
                 },
-                statusCode: {
+                statusCode:{
                     500: function() { sessionExpired(); }
-                }
+                    }
             });
         }
     } else {
@@ -1092,7 +1092,7 @@ function pollPendingAudit(programId, recentAuditId) {
         successCondition: function(response) {
             return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
-        success: function(response) {
+        success:function (response) {
             var growl;
             if (readUrlParam("auditId") == false && readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = false;
@@ -1100,13 +1100,13 @@ function pollPendingAudit(programId, recentAuditId) {
                 growl = true;
             }
 
-            if(jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
+            if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
                 if (growl) showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
             } else {
                 var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
                 if (growl) showGrowl(data.programName + " audit is ready to view.", "Degree Audit Completed", "infoGrowl");
             }
-            jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+            jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
             jQuery.publish("AUDIT_COMPLETE");
         }
     });
@@ -1212,8 +1212,8 @@ jQuery.fn.dataTableExt.oSort['longdate-desc'] = function (x, y) {
 
     return ((x < y) ? 1 : ((x > y) ? -1 : 0));
 };
-Array.max = function( array ){
-    return Math.max.apply( Math, array );
+Array.max = function (array) {
+    return Math.max.apply(Math, array);
 };
 
 
@@ -1336,17 +1336,11 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                     }
                 }
                 setUrlHash('modified', 'yes');
+                setTimeout('fnCloseAllPopups()',2000);
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
-                if (!bDialog) {
-                    var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
-                    var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
-                    if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
-                    openDialog(sHtml.html(), e);
-                } else {
-                    eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
-                }
+                eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
                 break;
         }
     };
@@ -1373,7 +1367,7 @@ function autoCompleteText(atpId) {
         jQuery.ajax({
             url:"/student/myplan/quickAdd/autoSuggestions?courseCd=" + sQuery + "&atpId=" + atpId,
             type:"GET",
-            beforeSend: null,
+            beforeSend:null,
             data:"list=" + '',
             dataType:"json",
             error:function () {
@@ -1393,7 +1387,6 @@ function autoCompleteText(atpId) {
     jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
 
 }
-
 
 
 
