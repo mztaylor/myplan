@@ -201,16 +201,13 @@
 	display: block;
     border-color: transparent;
 }
-.myplan-audit-report .requirement .subrequirement .header .required {
-    width: 15px;
-}
-.myplan-audit-report .requirement .subrequirement .header .subreqNumber {
-    width: 19px;
+.myplan-audit-report .requirement .subrequirement .header .required.subreqNumber {
+    width: 20px;
 }
 .myplan-audit-report .requirement .subrequirement .header .title {
 	text-overflow: clip;
 	cursor: default;
-    width: 500px;
+    width: 524px;
 }
 .myplan-audit-report table,
 .myplan-audit-report table th,
@@ -227,7 +224,7 @@
 .myplan-audit-report .subrequirement .totals,
 .myplan-audit-report .subrequirement .taken,
 .myplan-audit-report .subrequirement .fromcourses {
-    margin-left: 94px;
+    margin-left: 70px;
 }
 .myplan-audit-report .requirement table.taken {
 	border-top: solid 1px #ddd;
