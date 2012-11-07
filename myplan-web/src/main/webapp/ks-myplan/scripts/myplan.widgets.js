@@ -757,11 +757,12 @@ function truncateAuditTitle(id) {
 
         var width = jQuery(this).width();
         var label = jQuery(this).find(".uif-label").width();
-        jQuery(this).find(".uif-label").next("span").width(width - label).css({
+        jQuery(this).find(".uif-label").next("span").width(width - label - 1).css({
             "text-overflow":"ellipsis",
             "white-space":"nowrap",
             "overflow":"hidden",
-            "display":"inline-block"
+            "display":"block",
+            "float":"left"
         });
     });
 }
