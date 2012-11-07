@@ -20,7 +20,7 @@
                     <property name="cssClasses">
 
                         <list merge="true">
-                            <value>fl-container-300</value>
+                            <value>fl-container-360</value>
                         </list>
                     </property>
                     <property name="layoutManager">
@@ -29,22 +29,6 @@
                     <property name="items">
                         <list>
                             <ref bean="quick_add_dialog"/>
-                            <bean id="quickAdd_button" parent="Uif-HorizontalBoxGroup"
-                                  p:validationMessages.render="false">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                              p:group.validationMessages.render="false">
-                                            <property name="items">
-                                                <list>
-                                                    <ref bean="quickAddCourse"/>
-                                                    <ref bean="cancelQuickAddCourse"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -78,31 +62,107 @@
         </property>
     </bean>
 
-    <bean id="quick_add_dialog" parent="Uif-HorizontalBoxSubSection" p:headerText="Quick Add">
+    <bean id="quick_add_title" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd"
-                      p:fieldLabel.render="false">
-                    <property name="control">
-                        <bean parent="Uif-TextControl" p:maxLength="10" p:watermarkText="e.g. COM 210, Math 124">
-                            <property name="onKeyUpScript" value="autoCompleteText('@{atpId}');" />
-                        </bean>
+                <bean parent="Uif-Message"
+                      p:messageText="Enter the course code">
+                </bean>
+                <bean parent="Uif-Message"
+                      p:messageText="e.g. MATH 124, ENGL 220" p:style="font-size: .9em; font-style: italic;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                        </list>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
+
+    <bean id="quick_add_dialog" parent="Uif-VerticalBoxSubSection" p:headerText="Add a course to @{termYear} Plan">
+        <property name="items">
+            <list>
+                <ref bean="quick_add_title"/>
+                <ref bean="quick_add_items"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="quick_add_items" parent="Uif-HorizontalBoxSubSection">
+        <property name="items">
+            <list>
+                <ref bean="quick_add_text_box"/>
+                <ref bean="quick_add_note"/>
+
+            </list>
+        </property>
+    </bean>
+    <bean id="quick_add_note" parent="Uif-HorizontalBoxSubSection" p:style="margin: 0px;">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:style="width:160px;"
+                      p:messageText="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when Time Schedule is released.">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-font-size-80</value>
+                            <value>fl-text-gray</value>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="quick_add_text_box" parent="Uif-VerticalBoxSubSection" p:style="margin: 0px;">
+        <property name="items">
+            <list>
+                <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
+                    <property name="control">
+                        <bean parent="Uif-TextControl" p:size="22" p:maxLength="10">
+                        </bean>
+                    </property>
+                </bean>
+                <ref bean="quick_Add_actions"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="quick_Add_actions" parent="Uif-VerticalBoxGroup"
+          p:validationMessages.render="false">
+        <property name="items">
+            <list>
+                <bean id="quick_Add_buttons" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                      p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <ref bean="quickAddCourse"/>
+                            <ref bean="cancelQuickAddCourse"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+
     <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small"
-          p:actionLabel="Add">
+          p:actionLabel="Add to Plan">
         <property name="actionScript"
                   value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',planType:'@{planType}'},'quickAddCourse',e);"/>
         <property name="onDocumentReadyScript" value="
                                     jQuery('#quickAddCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                fnDisplayMessage(data.message, data.cssClass, 'quickAddCourse', true, true);
+                                                fnDisplayMessage(data.message, data.cssClass, 'quick_Add_buttons', true, true);
                                         })
                                         .subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'quickAddCourse', true, true);
+                                            jQuery('#hidden_temp').hide().addClass(data.cssClass).html(data.message).fadeIn(250);
+
                                         });"/>
     </bean>
     <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
