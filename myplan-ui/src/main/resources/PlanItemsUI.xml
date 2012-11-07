@@ -918,7 +918,7 @@
                                         fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
                                     });"/>
                             </bean>
-                            <bean p:id="@{atpId}" parent="Uif-InputField" p:propertyName="atpId"
+                            <bean parent="Uif-InputField" p:propertyName="atpId"
                                   p:fieldLabel.render="false">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
