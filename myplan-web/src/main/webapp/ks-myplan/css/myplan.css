@@ -956,6 +956,13 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
 /*    filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1);*/
 }
+.myplan-quick-add-text-box input[type='text']:focus{
+    border-color: #fc9e5d;
+    -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    -moz-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
+    background: transparent;
+}
 .myplan-course-search-params span input[type='checkbox'] {
     margin: 0 5px 0 0;
 }
