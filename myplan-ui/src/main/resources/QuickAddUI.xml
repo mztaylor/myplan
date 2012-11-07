@@ -114,6 +114,11 @@
         </property>
     </bean>
     <bean id="quick_add_text_box" parent="Uif-VerticalBoxSubSection" p:style="margin: 0px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-quick-add-text-box</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
