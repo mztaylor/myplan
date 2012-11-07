@@ -738,7 +738,8 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     float: right;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
     height: 25px;
     line-height: 25px;
     padding: 0 5px 0 22px;
@@ -747,7 +748,15 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
     background: url('../images/iconWarning.png') no-repeat 4px;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
+    font-size: .8em;
+    font-style: italic;
+    color: gray;
+    padding: 0px 5px;
+    text-align: center;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell:hover {
     background: #e3f0fe;
     cursor:pointer;
 }
