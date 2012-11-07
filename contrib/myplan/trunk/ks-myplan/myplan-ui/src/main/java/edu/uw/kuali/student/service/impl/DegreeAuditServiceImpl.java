@@ -435,6 +435,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
+            path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/span[contains(@class,'text')]/text()";
+            crazyDOMLinkifier(doc, xpath, path, builder);
+
             path = "//div[contains(@class,'subrequirement')]/table[contains(@class,'taken')]/tbody/tr/td[contains(@class,'course')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
