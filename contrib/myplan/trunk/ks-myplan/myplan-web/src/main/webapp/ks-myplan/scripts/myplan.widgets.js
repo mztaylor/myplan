@@ -1336,7 +1336,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                     }
                 }
                 setUrlHash('modified', 'yes');
-                setTimeout('fnCloseAllPopups()',2000);
+                setTimeout('fnCloseAllPopups()',500);
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
