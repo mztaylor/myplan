@@ -40,6 +40,7 @@ public class QuickAddForm extends UifFormBase {
     private String courseCd;
     private String courseId;
     private String planType;
+    private String termYear;
 
     /**
      * A list of javascript events as:
@@ -109,6 +110,14 @@ public class QuickAddForm extends UifFormBase {
 
     public void setPlanType(String planType) {
         this.planType = planType;
+    }
+
+    public String getTermYear() {
+        return termYear;
+    }
+
+    public void setTermYear(String termYear) {
+        this.termYear = termYear;
     }
 
     /**
