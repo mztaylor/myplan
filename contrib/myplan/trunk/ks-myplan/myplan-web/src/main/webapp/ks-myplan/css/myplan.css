@@ -1454,6 +1454,8 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-section .myplan-recent-audit label {
     color: #777;
     font-weight: normal;
+    float: left;
+    padding-right: 5px;
 }
 /* Saved Courses Summary Styles ########################################################################### */
 

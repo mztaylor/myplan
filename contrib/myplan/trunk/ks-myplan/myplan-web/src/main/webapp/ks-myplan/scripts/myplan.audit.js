@@ -3,7 +3,7 @@ function collapseReq(obj, onload) {
     if (onload) {
         obj.removeClass("expanded").addClass("collapsed").css({
             height: height + "px"
-        }).find(".header .title").css({
+        }).children(".header").find(".title").css({
             whiteSpace: "nowrap",
             overflow: "hidden",
             height: height + "px"
@@ -12,7 +12,7 @@ function collapseReq(obj, onload) {
         obj.removeClass("expanded").addClass("collapsed").animate({
             height: height + "px"
         }, 300, function() {
-            jQuery(this).find(".header .title").css({
+            jQuery(this).children(".header").find(".title").css({
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 height: height + "px"
@@ -26,7 +26,7 @@ function expandReq(obj, onload) {
     if (onload) {
         obj.removeClass("collapsed").addClass("expanded").css({
             height: "auto"
-        }).find(".header .title").css({
+        }).children(".header").find(".title").css({
             whiteSpace: "normal",
             overflow: "auto",
             height: "auto"
@@ -35,7 +35,7 @@ function expandReq(obj, onload) {
         obj.removeClass("collapsed").addClass("expanded").animate({
             height: height
         }, 300
-        ).find(".header .title").css({
+        ).children(".header").find(".title").css({
             whiteSpace: "normal",
             overflow: "auto",
             height: "auto"
