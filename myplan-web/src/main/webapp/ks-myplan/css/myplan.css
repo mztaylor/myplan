@@ -1717,6 +1717,9 @@ label.scheduled {
     font-size: 1.25em;
     margin-bottom: 20px;
 }
+.myplan-audit-report .blockUI.blockMsg.blockElement .heading .programName {
+    font-weight: bold;
+}
 .myplan-audit-report pre a {
     text-decoration: underline;
 }
