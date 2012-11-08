@@ -443,6 +443,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             path = "//div[contains(@class,'advisory')]/text()";
             ineptURLLinkifier( doc, xpath, path, builder );
+
+            path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
+            ineptURLLinkifier(doc, xpath, path, builder);
+
             path = "//div[contains(@class,'bigsection')]/div[contains(@class,'heading')]/text()";
             ineptURLLinkifier(doc, xpath, path, builder);
 
@@ -543,7 +547,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public static String tangerine(String initialText) {
         StringBuffer result = new StringBuffer(initialText.length());
-        Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+\\%/\\.\\w]+)?");
+        Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\-=?\\+\\%/\\.\\w]+)?");
 
         Matcher m = p.matcher(initialText);
         while (m.find()) {
@@ -554,8 +558,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     href = href.substring(0, href.length() - 1);
                     period = ".";
                 }
-                String trix = "<a href=\"" + href + "\">" + href + "</a>" + period;
-//                String trix = " ** " + href + " ** " + period;
+                String url = href;
+                if( !url.startsWith("http://") ) {
+                    url = "http://" + url;
+                }
+                String trix = "<a href=\"" + url + "\" target=\"_blank\">" + href + "</a>" + period;
                 m.appendReplacement(result, trix);
             }
         }
