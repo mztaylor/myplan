@@ -1261,7 +1261,7 @@
                 var jQuickAdd = jQuery('&lt;div&gt;', {
                         onclick:'openQuickAddPopUp(&quot;quick_Add&quot;,&quot;quickAdd_dialog_page&quot;,{atpId:&quot;'+jQuery.trim( atpId )+'&quot;,pageId:&quot;quickAdd_dialog_page&quot;, planType:&quot;'+planType+'&quot;},event,null,{tail:{hidden:true},align:&quot;top&quot;,position:&quot;right&quot;})',
                         class:'uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem quick-add-cell myplan-course-valid'
-                    }).html('Quick Add Course');
+                    }).html('&lt;font color=&quot;#117bdf&quot;&gt;Add a course&lt;/font&gt; to plan');
                 jQuery(this).append(jQuickAdd);
             });
 
