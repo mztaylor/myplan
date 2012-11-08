@@ -80,11 +80,16 @@
         </property>
     </bean>
 
-    <bean id="quick_add_dialog" parent="Uif-VerticalBoxSubSection" p:headerText="Add a course to @{termYear} Plan">
+    <bean id="quick_add_dialog" parent="Uif-VerticalBoxSubSection" p:headerText="Add a course to @{termYear}">
         <property name="items">
             <list>
                 <ref bean="quick_add_title"/>
                 <ref bean="quick_add_items"/>
+                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false" p:style="width: 300px;">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -145,11 +150,6 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
             </list>
         </property>
     </bean>
@@ -163,7 +163,7 @@
         <property name="onDocumentReadyScript" value="
                                     jQuery('#quickAddCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                fnDisplayMessage(data.message, data.cssClass, 'quick_Add_buttons', true, true);
+                                                fnCloseAllPopups();
                                         })
                                         .subscribe('ERROR', function(data){
                                             jQuery('#hidden_temp').hide().addClass(data.cssClass).html(data.message).fadeIn(250);
