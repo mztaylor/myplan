@@ -199,8 +199,14 @@ public class QuickAddController extends UifControllerBase {
             this.setCourseOfferingServiceUp(Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString()));
         }
         QuickAddForm searchForm = (QuickAddForm) form;
-        if (StringUtils.hasText(searchForm.getAtpId())) {
-            searchForm.setTermYear(AtpHelper.atpIdToTermName(searchForm.getAtpId()));
+        if (StringUtils.hasText(searchForm.getAtpId()) && StringUtils.hasText(searchForm.getPlanType())) {
+            String termYear = AtpHelper.atpIdToTermName(searchForm.getAtpId());
+            if (searchForm.getPlanType().equalsIgnoreCase(QuickAddConstants.PLANNED_TYPE)) {
+                termYear = termYear + QuickAddConstants.PLAN;
+            } else if (searchForm.getPlanType().equalsIgnoreCase(QuickAddConstants.BACKUP_TYPE)) {
+                termYear = termYear + QuickAddConstants.BACKUP;
+            }
+            searchForm.setTermYear(termYear);
         }
         return getUIFModelAndView(searchForm);
     }
@@ -282,13 +288,14 @@ public class QuickAddController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=quickAddCourse")
     public ModelAndView quickAddCourse(@ModelAttribute("KualiForm") QuickAddForm form, BindingResult result,
                                        HttpServletRequest request, HttpServletResponse response) {
+        String[] parameters = {};
         if (UserSessionHelper.isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", QuickAddConstants.ACCESS_DENIED, null);
         }
         if (!StringUtils.hasText(form.getCourseCd())) {
-            return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null);
+            return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
         } else if (form.getCourseCd().length() < 2) {
-            return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null);
+            return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
         }
 
         String courseId = null;
@@ -298,7 +305,7 @@ public class QuickAddController extends UifControllerBase {
             String subject = org.apache.commons.lang.StringUtils.upperCase(splitStr[0]);
             String number = splitStr[1];
             if (number.length() != 3) {
-                return doOperationFailedError(form, "Course number is wrong", QuickAddConstants.COURSE_NOT_FOUND, null);
+                return doOperationFailedError(form, "Course number is wrong", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
             }
             ArrayList<String> divisions = new ArrayList<String>();
             searchController.extractDivisions(divisionMap, subject, divisions, false);
@@ -321,20 +328,20 @@ public class QuickAddController extends UifControllerBase {
                     break;
                 }
             } else {
-                return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null);
+                return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
             }
         } else {
-            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null);
+            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
         //  Further validation of ATP IDs will happen in the service validation methods.
         if (org.apache.commons.lang.StringUtils.isEmpty(form.getAtpId())) {
-            return doOperationFailedError(form, "Term Year value missing", QuickAddConstants.COURSE_NOT_FOUND, null);
+            return doOperationFailedError(form, "Term Year value missing", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
         if (form.getPlanType() == null) {
-            return doOperationFailedError(form, "Plan Type is missing", PlanConstants.ERROR_KEY_OPERATION_FAILED, null);
+            return doOperationFailedError(form, "Plan Type is missing", PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
         boolean backup = form.getPlanType().equalsIgnoreCase("backup");
         String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
@@ -353,10 +360,10 @@ public class QuickAddController extends UifControllerBase {
 
             newAtpIds.add(form.getAtpId());
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Unable to process request.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+            return doOperationFailedError(form, "Unable to process request.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
         if (!AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
-            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), PlanConstants.ERROR_KEY_OPERATION_FAILED, null);
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
 
         String studentId = UserSessionHelper.getStudentId();
@@ -367,7 +374,7 @@ public class QuickAddController extends UifControllerBase {
             //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
             plan = getLearningPlan(studentId);
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for default learning plan failed.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+            return doOperationFailedError(form, "Query for default learning plan failed.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         /*
@@ -379,7 +386,7 @@ public class QuickAddController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to create learning plan.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+                return doOperationFailedError(form, "Unable to create learning plan.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         }
         //  Lookup course details as well need them in case there is an error below.
@@ -387,7 +394,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, UserSessionHelper.getStudentId());
         } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", PlanConstants.ERROR_KEY_OPERATION_FAILED, null);
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
 
         /*  Do validations. */
@@ -396,7 +403,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Could not validate capacity for new plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+            return doOperationFailedError(form, "Could not validate capacity for new plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         if (!hasCapacity) {
@@ -419,7 +426,7 @@ public class QuickAddController extends UifControllerBase {
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpIds.get(0), courseDetails);
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to add plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+                return doOperationFailedError(form, "Unable to add plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         } else {
             //  Check for duplicates since addPlanItem isn't being called.
@@ -434,7 +441,7 @@ public class QuickAddController extends UifControllerBase {
             try {
                 planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         }
 
@@ -449,7 +456,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             events.putAll(makeAddEvent(planItem, courseDetails));
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Unable to create add event.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e);
+            return doOperationFailedError(form, "Unable to create add event.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         events.putAll(makeUpdateTotalCreditsEvent(planItem.getPlanPeriods().get(0), PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
@@ -468,7 +475,7 @@ public class QuickAddController extends UifControllerBase {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo
-                                                                                              planItem, CourseDetails courseDetails) {
+                                                                                          planItem, CourseDetails courseDetails) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -1050,8 +1057,7 @@ public class QuickAddController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions.
      */
-    private ModelAndView doOperationFailedError(QuickAddForm form, String errorMessage, String errorKey, Exception e) {
-        String[] params = {};
+    private ModelAndView doOperationFailedError(QuickAddForm form, String errorMessage, String errorKey, Exception e, String[] params) {
         if (e != null) {
             logger.error(errorMessage, e);
         } else {
