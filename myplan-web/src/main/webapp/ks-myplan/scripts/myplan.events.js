@@ -74,12 +74,18 @@ function fnUpdateCredits (atpId, termCredits) {
     Function: swap action button with feedback message
 #################################################################
  */
-function fnDisplayMessage (message, cssClass, targetId, button, full, newId) {
+function fnDisplayMessage (message, cssClass, targetId, button, full, sameBlock, newId) {
     if (button) {
-        if (!full) jQuery("#" + targetId).wrap('<div id="' + newId + '" style="float:left;" />');
-        jQuery("#" + targetId).parent("div").fadeOut(250, function() {
-            jQuery(this).addClass(cssClass).html(message).fadeIn(250);
-        });
+        if(!sameBlock){
+            if (!full) jQuery("#" + targetId).wrap('<div id="' + newId + '" style="float:left;" />');
+            jQuery("#" + targetId).parent("div").fadeOut(250, function() {
+                jQuery(this).addClass(cssClass).html(message).fadeIn(250);
+            });
+        }else{
+            jQuery("#" + targetId).fadeOut(250, function() {
+                jQuery(this).addClass(cssClass).html('<div id="' + newId + '" style="float:left;" >'+message+'</div>').fadeIn(250);
+            });
+        }
     } else {
         jQuery("#" + targetId).fadeOut(250, function() {
             jQuery(this).addClass(cssClass).html(message).fadeIn(250);
@@ -108,7 +114,7 @@ function fnRestoreDetailsAddButton (courseId) {
     jQuery("#" + courseId + "_bookmarked").wrap("<div></div>");
     jQuery("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function() {
         jQuery(this).html('<button id="'+ courseId +'_addSavedCourse" class="uif-action uif-secondaryActionButton uif-boxLayoutHorizontalItem" onclick="myPlanAjaxPlanItemMove(\''+ courseId +'\', \'courseId\', \'addSavedCourse\', event);">Bookmark Course</button>');
-        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false);}});});");
+        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#"+ courseId +"_addSavedCourse').subscribe('PLAN_ITEM_ADDED', function (data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false,false);}});});");
         runHiddenScripts();
         jQuery(this).fadeIn(250);
     });
