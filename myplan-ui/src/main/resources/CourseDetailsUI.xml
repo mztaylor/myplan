@@ -123,7 +123,7 @@
                       jQuery('#course_details_actions')
                           .subscribe('PLAN_ITEM_ADDED', function(data){
                               if (data.planItemType === 'wishlist') {
-                                  fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, '@{dataObject.courseId}_bookmarked');
+                                  fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, false, '@{dataObject.courseId}_bookmarked');
                               }
                           })
                           .subscribe('PLAN_ITEM_DELETED', function(data){
@@ -141,19 +141,19 @@
                 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseId}_addSavedCourse"
                       p:render="@{dataObject.inSavedCourseList ? false : true}">
-                    <!--<property name="onDocumentReadyScript"
+                    <property name="onDocumentReadyScript"
                               value="
                               jQuery('#@{dataObject.courseId}_addSavedCourse')
                                   .subscribe('PLAN_ITEM_ADDED', function(data){
                                       if (data.planItemType === 'wishlist') {
-                                          fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, '@{dataObject.courseId}_bookmarked');
+                                          fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, false, '@{dataObject.courseId}_bookmarked');
                                       }
                                   })
                                   .subscribe('PLAN_ITEM_DELETED', function(data){
                                       if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseId}') {
                                           fnRestoreDetailsAddButton(data.courseDetails.courseId);
                                       }
-                                  });"/>-->
+                                  });"/>
                     <property name="actionScript"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                 </bean>
