@@ -950,10 +950,10 @@ function degreeAuditButton() {
     }
 }
 
-var blockPendingAuditStyle = { //' + jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running'))).programName + '
+var blockPendingAuditStyle = {
     message: '<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
-    fadeIn:400,
-    fadeOut:800,
+    fadeIn: 400,
+    fadeOut: 800,
     css: {
         padding: '30px 30px 30px 82px',
         margin: '30px',

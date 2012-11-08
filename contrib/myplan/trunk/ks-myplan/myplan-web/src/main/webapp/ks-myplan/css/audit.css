@@ -262,7 +262,6 @@
     font-size: 1em !important;
     height: 20px;
 }
-
 .myplan-audit-report .section.rname_LINE1 .heading {
     border: none;
     margin: 0;
@@ -271,5 +270,18 @@
     font-size: 1em !important;
     height: 20px;
 }
-
-
+.myplan-audit-report .footer {
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.75em;
+}
+.myplan-audit-report .footer .gray-line {
+    background: #dddddd;
+}
+.myplan-audit-report .footer .purple-line {
+    background: #39275b;
+    border-radius: 0px 0px 5px 5px;
+    -moz-border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+    color: #fff;
+}
