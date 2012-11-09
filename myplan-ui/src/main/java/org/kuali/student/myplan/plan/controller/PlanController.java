@@ -1140,7 +1140,7 @@ public class PlanController extends UifControllerBase {
             logger.error("Could not convert ATP ID to a term and year.", e);
         }
         String term = t[0] + " " + t[1];*/
-        String[] params = {courseDetails.getCode()};
+        String[] params = {courseDetails.getCode(),AtpHelper.atpIdToTermName(atpId)};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 
