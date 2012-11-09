@@ -232,7 +232,7 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
+    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 700px; margin-right: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-detail</value>
@@ -1250,7 +1250,7 @@
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
     </bean>
     <bean id="planned_mock_detail" parent="Uif-VerticalBoxSubSection"
-          p:style="width: 630px; min-height:400px; margin-right: 10px;">
+          p:style="width: 620px; min-height:400px; margin-right: 10px;">
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="onDocumentReadyScript" value="
             var retrieveOptions = {};
@@ -1323,14 +1323,14 @@
     </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
-    <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; margin-right: 10px;">
+    <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 620px; margin-right: 10px;">
         <property name="onDocumentReadyScript" value="
             jQuery('.myplan-carousel-list li .myplan-term-current, .myplan-carousel-list li .myplan-term-future').find('.myplan-carousel-term.myplan-term-planned, .myplan-carousel-term.myplan-term-backup').find(&quot;.uif-stackedCollectionLayout&quot;).each(function(){
                 var atpId = jQuery(this).parents(&quot;li&quot;).find(&quot;div[id^='plan_base_atpId'] span &quot;).text();
                 var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
                 var jQuickAdd = jQuery('&lt;div&gt;', {
-                        onclick:'openQuickAddPopUp(&quot;quick_Add&quot;,&quot;quickAdd_dialog_page&quot;,{atpId:&quot;'+jQuery.trim( atpId )+'&quot;,pageId:&quot;quickAdd_dialog_page&quot;, planType:&quot;'+planType+'&quot;},event,null,{tail:{hidden:true},align:&quot;top&quot;,position:&quot;right&quot;})',
-                        class:'uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem quick-add-cell myplan-course-valid'
+                        'onclick':'openQuickAddPopUp(&quot;quick_Add&quot;,&quot;quickAdd_dialog_page&quot;,{atpId:&quot;'+jQuery.trim( atpId )+'&quot;,pageId:&quot;quickAdd_dialog_page&quot;, planType:&quot;'+planType+'&quot;},event,null,{tail:{hidden:true},align:&quot;top&quot;,position:&quot;right&quot;})',
+                        'class':'uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem quick-add-cell myplan-course-valid'
                     }).html('&lt;font color=&quot;#117bdf&quot;&gt;Add a course&lt;/font&gt; to plan');
                 jQuery(this).append(jQuickAdd);
             });
@@ -1396,7 +1396,8 @@
                                 </property>
                             </bean>
 
-                            <bean parent="Uif-MessageField" p:style="margin:0;" p:cssClasses="myplan-plan-header">
+                            <bean parent="Uif-MessageField" p:style="margin:0;width: 440px;"
+                                  p:cssClasses="myplan-plan-header">
                                 <property name="message">
                                     <bean parent="Uif-Message" p:messageText="Academic Year"/>
                                 </property>
