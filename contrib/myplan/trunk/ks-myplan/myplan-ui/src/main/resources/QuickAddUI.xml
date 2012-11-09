@@ -129,6 +129,9 @@
                 <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="22" p:maxLength="10">
+                            <property name="onDocumentReadyScript" value="
+                                jQuery(&quot;input[id^='search_text_box']&quot;).focus();​
+                                "/>
                         </bean>
                     </property>
                 </bean>
