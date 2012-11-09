@@ -2664,55 +2664,80 @@
                 <!--  Backup checkbox -->
                 <ref bean="planned_course_backup"/>
 
-
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                <bean id="plan_add_action_items" parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false"
                       p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                  p:actionLabel="Add To Plan" p:render="@{moveCourse eq false ? true : false}">
-                                <property name="actionScript"
-                                          value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e);"/>
-                                <property name="onDocumentReadyScript" value="
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Add To Plan" p:render="@{moveCourse eq false ? true : false}">
+                                            <property name="actionScript"
+                                                      value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
+                                            <property name="onDocumentReadyScript" value="
                                     jQuery('#addPlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
+                                                fnDisplayMessage(data.message, data.cssClass, 'plan_add_action_items', true, false);
                                             }
                                         })
                                         .subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'addPlannedCourse', true, true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'hidden_add_error_block_item', true, false ,true,'hidden_add_error_block_item');
                                         });"/>
-                            </bean>
-                            <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                  p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}">
-                                <property name="actionScript"
-                                          value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e);"/>
-                                <property name="onDocumentReadyScript" value="
+                                        </bean>
+                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Move" p:render="@{moveCourse eq true ? true : false}">
+                                            <property name="actionScript"
+                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e, true);"/>
+                                            <property name="onDocumentReadyScript" value="
                                     jQuery('#movePlannedCourse')
                                         .subscribe('PLAN_ITEM_ADDED', function(data){
                                             if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
+                                                fnDisplayMessage(data.message, data.cssClass, 'plan_add_action_items', true, false);
                                             }
                                         }).subscribe('ERROR', function(data){
-                                            fnDisplayMessage(data.message, data.cssClass, 'movePlannedCourse', true, true);
+                                            fnDisplayMessage(data.message, data.cssClass, 'hidden_add_error_block_item', true, false,true,'hidden_add_error_block_item');
                                         });"/>
+                                        </bean>
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
+                                              p:actionLabel="Cancel"
+                                              p:render="@{moveCourse ? false : true}">
+                                            <property name="actionScript"
+                                                      value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                                        </bean>
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
+                                              p:actionLabel="Cancel"
+                                              p:render="@{moveCourse ? true : false}">
+                                            <property name="actionScript"
+                                                      value="fnCloseAllPopups();"/>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
-                                  p:actionLabel="Cancel"
-                                  p:render="@{moveCourse ? false : true}">
-                                <property name="actionScript"
-                                          value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
+                                  p:group.validationMessages.render="false">
+                                <property name="items">
+                                    <list>
+                                        <bean id="hidden_add_error_block_item" p:id="hidden_add_error_block_item"
+                                              parent="Uif-InputField"
+                                              p:propertyName="courseDetails.courseId"
+                                              p:fieldLabel.render="false"
+                                              p:style="width: 300px;">
+                                            <property name="control">
+                                                <bean parent="Uif-HiddenControl"/>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
-                                  p:actionLabel="Cancel"
-                                  p:render="@{moveCourse ? true : false}">
-                                <property name="actionScript"
-                                          value="fnCloseAllPopups();"/>
-                            </bean>
+
                         </list>
                     </property>
                 </bean>
+
+
             </list>
         </property>
     </bean>
