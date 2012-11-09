@@ -282,9 +282,6 @@ public class QuickAddController extends UifControllerBase {
     }
 
 
-
-
-
     @RequestMapping(params = "methodToCall=quickAddCourse")
     public ModelAndView quickAddCourse(@ModelAttribute("KualiForm") QuickAddForm form, BindingResult result,
                                        HttpServletRequest request, HttpServletResponse response) {
@@ -331,6 +328,10 @@ public class QuickAddController extends UifControllerBase {
                 return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
             }
         } else {
+            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
+        }
+
+        if (!StringUtils.hasText(courseId)) {
             return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
@@ -1099,7 +1100,7 @@ public class QuickAddController extends UifControllerBase {
             logger.error("Could not convert ATP ID to a term and year.", e);
         }
         String term = t[0] + " " + t[1];*/
-        String[] params = {courseDetails.getCode()};
+        String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(atpId)};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 
