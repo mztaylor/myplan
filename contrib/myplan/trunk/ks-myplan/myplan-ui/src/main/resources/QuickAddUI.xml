@@ -69,7 +69,7 @@
                       p:messageText="Enter the course code">
                 </bean>
                 <bean parent="Uif-Message"
-                      p:messageText="e.g. MATH 124, ENGL 220" p:style="font-size: .9em; font-style: italic;">
+                      p:messageText="e.g. ENGL 220" p:style="font-size: .9em; font-style: italic;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
