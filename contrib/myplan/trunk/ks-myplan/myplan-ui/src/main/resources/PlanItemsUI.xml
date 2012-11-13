@@ -1241,6 +1241,7 @@
                             <ref bean="backup_menu_items"/>
                             <ref bean="completed_menu_items"/>
                             <ref bean="completed_backup_menu_items"/>
+                            <bean id="hidden_new_user_flag" parent="Uif-DataField" p:propertyName="newUser" p:style="display:none;"/>
                         </list>
                     </property>
                 </bean>
@@ -1253,6 +1254,12 @@
           p:style="width: 620px; min-height:400px; margin-right: 10px;">
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="onDocumentReadyScript" value="
+            var user=jQuery('span[id=&quot;hidden_new_user_flag&quot;]').text();
+            user=jQuery.trim(user);
+            if(user==&quot;true&quot; &amp;&amp; jQuery.cookie('new_user_cookie')==null){
+                    jQuery.cookie('new_user_cookie', 'true');
+                    showLightboxUrl('@{#ConfigProperties['myplan.getting.started.page']}');
+            }
             var retrieveOptions = {};
             var sFocusAtpId = '';
             var aParams = window.location.search.replace('?','').split('&amp;');
