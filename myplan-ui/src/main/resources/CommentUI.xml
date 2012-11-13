@@ -167,11 +167,7 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-                            <bean parent="Uif-ImageField" p:render="@{feedBackMode eq true ? true : false}" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconSuccess16.png"/>
-                            <bean parent="Uif-Message" p:style="display:none;" p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
-                                <property name="hidden" value="true"/>
-                                <property name="onDocumentReadyScript" value="parent.jQuery.publish('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
-                            </bean>
+                            <ref bean="comment_sent"/>
                         </list>
                     </property>
                 </bean>
@@ -179,6 +175,36 @@
         </property>
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
+    </bean>
+
+    <bean id="comment_sent" parent="Uif-HorizontalBoxGroup" p:render="@{feedBackMode eq true ? true : false}" p:style="margin:0 0 0 100px;">
+        <property name="onDocumentReadyScript" value="parent.jQuery.publish('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-feedback</value>
+                <value>success</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>icon</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-Message" p:messageText="Sent Successfully" p:cssClasses="message"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="comment_close" parent="Uif-Link" p:render="@{feedBackMode eq true ? true : false}">
+        <property name="linkText" value="Back to Plan"/>
+        <property name="onClickScript" value="parent.jQuery.fancybox.close(true);"/>
+        <property name="href" value="#"/>
+        <property name="target" value=""/>
+        <property name="style" value="line-height:18px; margin:4px 0px 4px 10px;"/>
     </bean>
 
     <bean id="comment_dialog_subject" parent="Uif-VerticalBoxSubSection">
@@ -387,7 +413,7 @@
                 <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
                       p:fieldLabel.render="false">
                     <property name="control">
-                        <bean parent="Uif-TextControl" p:maxLength="70" p:watermarkText="Maximum characters are 70">
+                        <bean parent="Uif-TextControl" p:maxLength="70" p:watermarkText="Maximum characters are 70" p:disabled="@{feedBackMode ? true : false}">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-container-500</value>
@@ -418,7 +444,7 @@
                     "/>-->
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="10" p:textExpand="false" p:style="resize:none;"
-                              p:watermarkText="Maximum characters are 1000">
+                              p:watermarkText="Maximum characters are 1000" p:disabled="@{feedBackMode ? true : false}">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>myplan-textarea</value>
@@ -445,11 +471,8 @@
                     <property name="actionScript"
                               value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                 </bean>
-                <bean parent="Uif-ImageField" p:render="@{feedBackMode eq true ? true : false}" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconSuccess16.png"/>
-                <bean parent="Uif-Message" p:cssClasses="fl-font-size-90 fl-text-green padding-top: 2px; myplan-feedback success"
-                      p:messageText="Sent Successfully " p:render="@{feedBackMode eq true ? true : false}">
-                    <property name="onDocumentReadyScript" value="parent.jQuery.publish('MESSAGE_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
-                </bean>
+                <ref bean="comment_sent"/>
+                <ref bean="comment_close"/>
             </list>
         </property>
     </bean>
@@ -554,11 +577,11 @@
                     <property name="onClickScript" value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="width:180px;">
+                            <bean parent="Uif-VerticalFieldGroup" p:style="width:170px;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="@{#line.subject}"
-                                              p:style="width:190px;">
+                                              p:style="width:170px;">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>fl-text-bold</value>
