@@ -1,7 +1,7 @@
 *,
 *:active,
 *:focus {
-	outline: 0;
+    outline: 0;
 }
 body {
     color: #333;
@@ -11,6 +11,15 @@ body {
 }
 strong {
     font-weight: 700;
+}
+.blockUI.blockOverlay{
+    z-index: 100 !important;
+}
+.blockUI.blockMsg.blockElement{
+    z-index: 101 !important;
+}
+.jquerybubblepopup {
+    z-index: 200 !important;
 }
 .myplan-view h1,
 .myplan-view h2,
@@ -88,7 +97,7 @@ a:focus {
 #applicationNavigation,
 .myplan-view,
 #applicationFooterSection {
-	margin:0 auto;
+    margin:0 auto;
     width: 950px;
 }
 #applicationHeader {
@@ -224,7 +233,7 @@ a:focus {
     margin: 0 0 1em 0;
 }
 .myplan-view #Uif-ViewContentWrapper {
-	/*min-height: 450px;*/
+    /*min-height: 450px;*/
 }
 .backdoor,
 .adviser-banner {
@@ -249,13 +258,13 @@ a:focus {
 /* Overwrite KRAD Styles ########################################################################### */
 .myplan-view #Uif-PageContentWrapper,
 .myplan-view #viewfooter_div {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
     width: auto;
     clear: both;
 }
 .myplan-view #Uif-Navigation {
-	display: none;
+    display: none;
 }
 .myplan-view .uif-pageHeaderField .uif-header {
     border: none;
@@ -271,15 +280,15 @@ a:focus {
 .myplan-view .uif-boxLayoutVerticalItem,
 .base-view .uif-boxLayoutVerticalItem,
 .jquerybubblepopup .uif-boxLayoutVerticalItem {
-	margin: 0 0 10px 0;
+    margin: 0 0 10px 0;
 }
 .myplan-view .uif-boxLayoutHorizontalItem,
 .base-view .uif-boxLayoutHorizontalItem,
 .jquerybubblepopup .uif-boxLayoutHorizontalItem {
-	margin: 0 10px 0 0;
+    margin: 0 10px 0 0;
 }
 .myplan-view .uif-instructionalMessage {
-	max-width: none;
+    max-width: none;
     font-size: 1em;
 }
 .myplan-view .uif-collectionGroup > div:nth-child(2) {
@@ -321,7 +330,7 @@ button.uif-primaryActionButton {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fedb71), color-stop(1, #febc4a));
     background-image: -webkit-linear-gradient(top, #fedb71 0%, #febc4a 100%);
     background-image: linear-gradient(to bottom, #fedb71 0%, #febc4a 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fedb71', endColorstr='#febc4a');
 
     -moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
@@ -340,7 +349,7 @@ button.uif-primaryActionButton:hover {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fea831), color-stop(1, #febd4b));
     background-image: -webkit-linear-gradient(top, #fea831 0%, #febd4b 100%);
     background-image: linear-gradient(to bottom, #fea831 0%, #febd4b 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fea831', endColorstr='#febd4b');
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fea831', endColorstr='#febd4b');
 
     -moz-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px -1px 0px 0px #fece7a;
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px -1px 0px 0px #fece7a;
@@ -475,7 +484,7 @@ input.myplan-add:hover {
     color: #333;
     border-radius: 3px;
     -webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
+    -moz-border-radius: 3px;
     font-weight: bold;
     font-size: 80%;
     padding: 0 4px;
@@ -485,16 +494,16 @@ input.myplan-add:hover {
     display: inline-block;
 }
 .AU{
-  background: #FFCCCC !important;
+    background: #FFCCCC !important;
 }
 .WI{
-   background:  #CCDDFF !important;
+    background:  #CCDDFF !important;
 }
 .SP{
     background: #CCFFCC !important;
 }
 .SU{
-   background:  #FCF990 !important;
+    background:  #FCF990 !important;
 }
 .myplan-data-list dl dd:before {
     content: ", ";
@@ -601,7 +610,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     border: solid 1px #dcca9d;
     border-radius: 5px 5px 0px 0px;
     -webkit-border-radius: 5px 5px 0px 0px;
-	-moz-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
 
     background-color: #ede1c1;
     background-image: -ms-linear-gradient(top, #ede1c1 0%, #efd89e 100%);
@@ -778,12 +787,12 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     width: 75px;
 }
 .myplan-course-search-panel {
-	background: #fcf9f0;
-	border: solid 1px #e1e1e0;
-	padding: 20px 10px 10px 20px;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
+    background: #fcf9f0;
+    border: solid 1px #e1e1e0;
+    padding: 20px 10px 10px 20px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     overflow: hidden;
 }
 .myplan-audit-info-panel {
@@ -965,7 +974,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
     -moz-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
     box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
-/*    filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1);*/
+    /*    filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1);*/
 }
 .myplan-quick-add-text-box input[type='text']:focus{
     border-color: #fc9e5d;
@@ -982,7 +991,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 }
 /* Styles for Facet Panel ################################################################################## */
 .myplan-facets-panel {
-	border: solid 1px #ddd;
+    border: solid 1px #ddd;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -1059,8 +1068,8 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     background-position: -16px -32px;
 }
 .myplan-facets-panel .myplan-facets-group div.facets {
-	max-height: 72px;
-	overflow-y: auto;
+    max-height: 72px;
+    overflow-y: auto;
 }
 .myplan-facets-panel .myplan-facets-group div.facets ul {
     overflow:  hidden;
@@ -1107,13 +1116,13 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 .myplan-facets-panel .myplan-facets-group ul li.static a,
 .myplan-facets-panel .myplan-facets-group ul li.static a:hover {
     background-position: 0px -82px;
-	cursor: default;
+    cursor: default;
     text-decoration: none;
 }
 /* Styles for course search results ########################################################################### */
 .dataTables_wrapper {
-	width: 550px;
-	float: left;
+    width: 550px;
+    float: left;
     clear: none;
     margin: 0;
 }
@@ -1149,7 +1158,7 @@ table.myplan-course-search-results-datatable thead tr {
     -webkit-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     -moz-box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
-	border: none;
+    border: none;
     border-bottom: solid 1px #e4e4e4;
 }
 table.myplan-course-search-results-datatable thead tr th {
@@ -1197,7 +1206,7 @@ table.myplan-course-search-results-datatable thead tr th .DataTables_sort_wrappe
     background-position: -32px -48px;
 }
 table.myplan-course-search-results-datatable tbody tr {
-	border: none;
+    border: none;
 }
 table.myplan-course-search-results-datatable tbody tr th,
 table.myplan-course-search-results-datatable tbody tr td {
@@ -1221,7 +1230,7 @@ table.myplan-course-search-results-datatable tbody tr td.myplan-data-list dd.pro
     margin-top: 3px;
 }
 table.myplan-course-search-results-datatable tbody tr td.myplan-status-column {
-	text-align: right;
+    text-align: right;
     padding: 0 10px 0 0;
     font-size: 10px;
     font-style: italic;
@@ -1299,7 +1308,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .dataTables_wrapper .dataTables_paginate .first,
 .dataTables_wrapper .dataTables_paginate .last {
-	display: none !important;
+    display: none !important;
 }
 .dataTables_wrapper .dataTables_paginate .previous,
 .dataTables_wrapper .dataTables_paginate .next {
@@ -1308,12 +1317,12 @@ table.myplan-course-search-results-datatable .blockUI {
     display: inline;
 }
 .dataTables_wrapper .dataTables_paginate .previous {
-	border-right: solid 1px #c7c7c7;
+    border-right: solid 1px #c7c7c7;
     margin-right: 6px;
     padding: 0 12px 0 0;
 }
 .dataTables_wrapper .dataTables_paginate .next {
-	border-left: solid 1px #c7c7c7;
+    border-left: solid 1px #c7c7c7;
     margin-left: 6px;
     padding: 0 0 0 12px;
 }
@@ -1503,7 +1512,7 @@ table.myplan-course-search-results-datatable .blockUI {
     display:block;
 }
 .myplan-saved-courses-detail .myplan-saved-courses-detail-heading .uif-boxLayout {
-	float: none !important;
+    float: none !important;
 }
 /* Course Details Popup ########################################################################### */
 .myplan-popup-close {
@@ -1534,8 +1543,8 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 /* Messaging and Comments ################################################################################### */
 .myplan-messages-detail .dataTables_wrapper {
-	width: 710px;
-	float: none;
+    width: 710px;
+    float: none;
 }
 .myplan-messages-detail .dataTables_wrapper .dataTables_info {
     margin: 0 0 10px 0;
@@ -1550,8 +1559,8 @@ table.myplan-course-search-results-datatable .blockUI {
     border-radius: 5px 5px 0 0;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr {
-	background: #F6F6F6;
-	border: none;
+    background: #F6F6F6;
+    border: none;
     border-bottom: solid 1px #ddd;
 
     background-image: -ms-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
@@ -1658,7 +1667,7 @@ label.scheduled {
     color: #333;
     border-radius: 3px;
     -webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
+    -moz-border-radius: 3px;
     font-weight: bold;
     font-size: 80%;
     padding: 0 4px;
@@ -1672,7 +1681,7 @@ label.scheduled {
     border: solid 1px #a9a9a9;
     border-radius: 5px;
     -webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,
@@ -1683,12 +1692,12 @@ label.scheduled {
 }
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {
-	background: #fcf9f0;
-	border: solid 1px #e1e1e0;
-	padding: 20px 10px 10px 20px;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
+    background: #fcf9f0;
+    border: solid 1px #e1e1e0;
+    padding: 20px 10px 10px 20px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     overflow: hidden;
 }
 .myplan-run-audit-panel .uif-label {
