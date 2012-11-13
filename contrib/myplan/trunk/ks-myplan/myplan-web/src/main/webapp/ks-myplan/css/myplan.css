@@ -846,7 +846,9 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     background-color: #faf5ca;
 }
 .myplan-feedback img.icon,
-.myplan-status img.icon {
+.myplan-status img.icon,
+.myplan-feedback .icon .uif-image,
+.myplan-status .icon .uif-image {
     background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
     width: 18px;
     height: 18px;
@@ -854,7 +856,8 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     top: 8px;
     left: 8px;
 }
-.myplan-feedback img.icon {
+.myplan-feedback img.icon,
+.myplan-feedback .icon .uif-image {
     top: 4px;
     left: 0px;
 }
@@ -865,19 +868,27 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     margin-left: 26px;
 }
 .myplan-feedback.success img.icon,
-.myplan-status.success img.icon {
+.myplan-status.success img.icon,
+.myplan-feedback.success .icon .uif-image,
+.myplan-status.success .icon .uif-image {
     background-position: 0px -115px;
 }
 .myplan-feedback.info img.icon,
-.myplan-status.info img.icon {
+.myplan-status.info img.icon,
+.myplan-feedback.info .icon .uif-image,
+.myplan-status.info .icon .uif-image {
     background-position: -18px -115px;
 }
 .myplan-feedback.error img.icon,
-.myplan-status.error img.icon {
+.myplan-status.error img.icon,
+.myplan-feedback.error .icon .uif-image,
+.myplan-status.error .icon .uif-image {
     background-position: -36px -115px;
 }
 .myplan-feedback.alert img.icon,
-.myplan-status.alert img.icon {
+.myplan-status.alert img.icon,
+.myplan-feedback.alert .icon .uif-image,
+.myplan-status.alert .icon .uif-image {
     background-position: -54px -115px;
 }
 .myplan-audit-message-info {
