@@ -32,6 +32,10 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
+import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
@@ -71,6 +75,9 @@ public class PlanController extends UifControllerBase {
     private final Logger logger = Logger.getLogger(PlanController.class);
 
     private transient AcademicPlanService academicPlanService;
+
+    private transient DegreeAuditService degreeAuditService;
+
 
     private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
 
@@ -146,18 +153,25 @@ public class PlanController extends UifControllerBase {
     public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                             HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
-        boolean isServiceStatusOK=true;
+
+        PlanForm planForm = (PlanForm) form;
+
+        boolean isServiceStatusOK = true;
         /*Setting the Warning message if isServiceStatusOK is false*/
         if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
                 || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
-            isServiceStatusOK=false;
+            isServiceStatusOK = false;
             AtpHelper.addServiceError("planItemId");
         }
+        boolean isAuditServiceUp = Boolean.valueOf(request.getAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP).toString());
+
         String[] params = {};
-        if(!isServiceStatusOK){
+        if (!isServiceStatusOK) {
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
         }
-        PlanForm planForm = (PlanForm) form;
+        if (isAuditServiceUp) {
+            planForm.setNewUser(isNewUser());
+        }
         return getUIFModelAndView(planForm);
     }
 
@@ -1140,7 +1154,7 @@ public class PlanController extends UifControllerBase {
             logger.error("Could not convert ATP ID to a term and year.", e);
         }
         String term = t[0] + " " + t[1];*/
-        String[] params = {courseDetails.getCode(),AtpHelper.atpIdToTermName(atpId)};
+        String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(atpId)};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
 
@@ -1688,6 +1702,43 @@ public class PlanController extends UifControllerBase {
                 }
             }
         }
+    }
+
+    private boolean isNewUser() {
+        boolean isNewUser = false;
+        String studentId = UserSessionHelper.getStudentId();
+        List<LearningPlanInfo> learningPlanList = new ArrayList<LearningPlanInfo>();
+        List<AuditReportInfo> auditReportInfoList = new ArrayList<AuditReportInfo>();
+        try {
+            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not retrieve plan items.", e);
+        }
+        /*check if any audits are ran ! if no plans found*/
+        if (learningPlanList.size() == 0) {
+            String systemKey = UserSessionHelper.getAuditSystemKey();
+            Date startDate = new Date();
+            Date endDate = new Date();
+            ContextInfo contextInfo = new ContextInfo();
+            try {
+                auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not retrieve degreeaudit details", e);
+            }
+            if (auditReportInfoList.size() == 0) {
+                isNewUser = true;
+            }
+        }
+        return isNewUser;
+    }
+
+    public DegreeAuditService getDegreeAuditService() {
+        if (degreeAuditService == null) {
+            degreeAuditService = (DegreeAuditService)
+                    GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
+                            DegreeAuditServiceConstants.SERVICE_NAME));
+        }
+        return degreeAuditService;
     }
 
     public synchronized AtpHelper getAtpHelper() {
