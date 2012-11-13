@@ -106,7 +106,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message" p:style="width:160px;"
-                      p:messageText="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when Time Schedule is released.">
+                      p:messageText="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when the Time Schedule is released.">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-font-size-80</value>
