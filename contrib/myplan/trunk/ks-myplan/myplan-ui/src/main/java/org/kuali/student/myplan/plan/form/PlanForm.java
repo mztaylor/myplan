@@ -87,6 +87,8 @@ public class PlanForm extends UifFormBase {
 
     private int bookmarkedCount=0;
 
+    private boolean newUser;
+
     public int getBookmarkedCount() {
         return bookmarkedCount;
     }
@@ -236,6 +238,14 @@ public class PlanForm extends UifFormBase {
 
     public void setEnableAdviserView(String enableAdviserView) {
         this.enableAdviserView = enableAdviserView;
+    }
+
+    public boolean isNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
     }
 
     /**
