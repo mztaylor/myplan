@@ -50,7 +50,7 @@ jQuery(document).ready(function () {
         button.uif-secondaryActionButton[disabled="disabled"],\
         button.uif-secondaryActionButton[disabled="true"]:hover,\
         button.uif-secondaryActionButton[disabled="disabled"]:hover{ \
-            filter:none;}</style><![endif]-->\
+            filter:none !important;}</style><![endif]-->\
     ');
 });
 
