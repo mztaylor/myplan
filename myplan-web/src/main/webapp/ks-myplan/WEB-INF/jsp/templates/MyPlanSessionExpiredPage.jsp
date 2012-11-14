@@ -15,7 +15,7 @@
     <div id="content">
         <h2>YOUR SESSION EXPIRED.</h2>
 
-        <p>It appears that your session is expired Please Wait while we redirect to Login Page</p>
+        <p>It appears that your session is expired Please Wait while we <br/> redirect to Login Page</p>
     </div>
     <div id="more">Still can't find it? Visit our <a href="http://depts.washington.edu/myplan/help-site/">help page</a>
         or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.
