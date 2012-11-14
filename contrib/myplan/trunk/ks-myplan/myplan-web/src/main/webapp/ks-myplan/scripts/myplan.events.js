@@ -119,3 +119,22 @@ function fnRestoreDetailsAddButton (courseId) {
         jQuery(this).fadeIn(250);
     });
 }
+
+/*
+ #################################################################
+ Function: show or hide the quick add link in the backup collection
+ #################################################################
+ */
+function fnShowHideQuickAddLink(atpId,type){
+    if(type=="add"){
+        if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
+            jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").hide();
+        }
+    }
+    if(type=="delete"){
+        if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
+            jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").show();
+        }
+    }
+
+}
