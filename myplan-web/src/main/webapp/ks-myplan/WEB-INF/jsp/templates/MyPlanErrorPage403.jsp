@@ -5,6 +5,8 @@
     <title>Error 403 - Page Forbidden</title>
     <link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
     <link href="/student/ks-myplan/css/error.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="https://use.typekit.net/jpx3dug.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 <body>
 <div id="container">
@@ -15,7 +17,7 @@
     </div>
     <h3>Try these links to the MyPlan site:</h3>
     <ul id="links">
-        <li><a href="/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a></li>
+        <li class="home"><a href="/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a></li>
         <li><a href="/student/myplan/course?methodToCall=start&viewId=CourseSearch-FormView">Find Courses</a></li>
         <li><a href="/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit Degree</a></li>
     </ul>
