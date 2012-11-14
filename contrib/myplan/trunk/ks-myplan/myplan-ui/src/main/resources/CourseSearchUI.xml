@@ -88,7 +88,7 @@
     </bean>
 
     <!-- Group for Search Input Fields -->
-    <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup" p:style="margin:0 0 20px 0;">
+    <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup" p:style="margin:0 0 20px 0;" p:group.validationMessages.render="false">
         <property name="items">
             <list>
                 <bean id="text_searchQuery" parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
@@ -118,7 +118,7 @@
                     </property>
                 </bean>
                 <bean id="select_searchTerm" parent="Uif-InputField" p:propertyName="searchTerm" p:label="in"
-                      p:fieldLabel.renderColon="false">
+                      p:fieldLabel.renderColon="false" p:validationMessages.render="false">
                     <!--<property name="fieldLabel.cssClasses">
                         <list merge="true">
                             <value>myplan-text-normal</value>
