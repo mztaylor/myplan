@@ -276,7 +276,7 @@
     </bean>
 
     <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;"
-          p:render="@{getAuditHtml() eq null ? true : false}" p:headerText="How to Use DARS for Academic Planning">
+          p:render="@{getAuditHtml() eq null ? true : false}" p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
         </property>
