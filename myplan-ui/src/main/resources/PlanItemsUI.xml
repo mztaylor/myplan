@@ -1342,6 +1342,15 @@
                 jQuery(this).append(jQuickAdd);
             });
 
+            jQuery(&quot;div[id^='backupCollection']&quot;).
+                            each(
+                                function(){
+                                if(jQuery(this).children(&quot;div[class='uif-stackedCollectionLayout']&quot;).children(&quot;div&quot;).size()&gt;8){
+                                    jQuery(this).children(&quot;div[class='uif-stackedCollectionLayout']&quot;).children(&quot;.quick-add-cell&quot;).hide();
+                                             }
+                                        }
+                                );
+
             if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
                 var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
                     return jQuery(this).height();
@@ -1528,9 +1537,11 @@
             jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
                     fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit);
+                    fnShowHideQuickAddLink(data.atpId, 'add');
                 })
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
+                    fnShowHideQuickAddLink(data.atpId, 'delete');
                 })
                 .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){
                     fnUpdateCredits(data.atpId, data.totalCredits);
