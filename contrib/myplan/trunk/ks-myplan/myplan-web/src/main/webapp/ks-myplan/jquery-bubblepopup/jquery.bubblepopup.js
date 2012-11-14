@@ -1,12 +1,196 @@
 (function (a) {
-    a.fn.CreateBubblePopover = function (e) {
+    a.fn.IsBubblePopupOpen = function () {
+        var c = null;
+        a(this).each(function (d, e) {
+            var b = a(e).data("private_jquerybubblepopup_options");
+            if (b != null && typeof b == "object" && !a.isArray(b) && !a.isEmptyObject(b) && b.privateVars != null && typeof b.privateVars == "object" && !a.isArray(b.privateVars) && !a.isEmptyObject(b.privateVars) && typeof b.privateVars.is_open != "undefined") {
+                c = b.privateVars.is_open ? true : false
+            }
+            return false
+        });
+        return c
+    };
+    a.fn.GetBubblePopupLastDisplayDateTime = function () {
+        var b = null;
+        a(this).each(function (e, f) {
+            var d = a(f).data("private_jquerybubblepopup_options");
+            if (d != null && typeof d == "object" && !a.isArray(d) && !a.isEmptyObject(d) && d.privateVars != null && typeof d.privateVars == "object" && !a.isArray(d.privateVars) && !a.isEmptyObject(d.privateVars) && typeof d.privateVars.last_display_datetime != "undefined" && d.privateVars.last_display_datetime != null) {
+                b = c(d.privateVars.last_display_datetime)
+            }
+            return false
+        });
+
+        function c(d) {
+            return new Date(d * 1000)
+        }
+        return b
+    };
+    a.fn.GetBubblePopupLastModifiedDateTime = function () {
+        var b = null;
+        a(this).each(function (e, f) {
+            var d = a(f).data("private_jquerybubblepopup_options");
+            if (d != null && typeof d == "object" && !a.isArray(d) && !a.isEmptyObject(d) && d.privateVars != null && typeof d.privateVars == "object" && !a.isArray(d.privateVars) && !a.isEmptyObject(d.privateVars) && typeof d.privateVars.last_modified_datetime != "undefined" && d.privateVars.last_modified_datetime != null) {
+                b = c(d.privateVars.last_modified_datetime)
+            }
+            return false
+        });
+
+        function c(d) {
+            return new Date(d * 1000)
+        }
+        return b
+    };
+    a.fn.GetBubblePopupCreationDateTime = function () {
+        var b = null;
+        a(this).each(function (e, f) {
+            var d = a(f).data("private_jquerybubblepopup_options");
+            if (d != null && typeof d == "object" && !a.isArray(d) && !a.isEmptyObject(d) && d.privateVars != null && typeof d.privateVars == "object" && !a.isArray(d.privateVars) && !a.isEmptyObject(d.privateVars) && typeof d.privateVars.creation_datetime != "undefined" && d.privateVars.creation_datetime != null) {
+                b = c(d.privateVars.creation_datetime)
+            }
+            return false
+        });
+
+        function c(d) {
+            return new Date(d * 1000)
+        }
+        return b
+    };
+    a.fn.GetBubblePopupMarkup = function () {
+        var b = null;
+        a(this).each(function (d, e) {
+            var c = a(e).data("private_jquerybubblepopup_options");
+            if (c != null && typeof c == "object" && !a.isArray(c) && !a.isEmptyObject(c) && c.privateVars != null && typeof c.privateVars == "object" && !a.isArray(c.privateVars) && !a.isEmptyObject(c.privateVars) && typeof c.privateVars.id != "undefined") {
+                b = a("#" + c.privateVars.id).length > 0 ? a("#" + c.privateVars.id).html() : null
+            }
+            return false
+        });
+        return b
+    };
+    a.fn.GetBubblePopupID = function () {
+        var b = null;
+        a(this).each(function (d, e) {
+            var c = a(e).data("private_jquerybubblepopup_options");
+            if (c != null && typeof c == "object" && !a.isArray(c) && !a.isEmptyObject(c) && c.privateVars != null && typeof c.privateVars == "object" && !a.isArray(c.privateVars) && !a.isEmptyObject(c.privateVars) && typeof c.privateVars.id != "undefined") {
+                b = c.privateVars.id
+            }
+            return false
+        });
+        return b
+    };
+    a.fn.RemoveBubblePopup = function () {
+        var b = 0;
+        a(this).each(function (d, e) {
+            var c = a(e).data("private_jquerybubblepopup_options");
+            if (c != null && typeof c == "object" && !a.isArray(c) && !a.isEmptyObject(c) && c.privateVars != null && typeof c.privateVars == "object" && !a.isArray(c.privateVars) && !a.isEmptyObject(c.privateVars) && typeof c.privateVars.id != "undefined") {
+                a(e).unbind("managebubblepopup");
+                a(e).unbind("setbubblepopupinnerhtml");
+                a(e).unbind("setbubblepopupoptions");
+                a(e).unbind("positionbubblepopup");
+                a(e).unbind("freezebubblepopup");
+                a(e).unbind("unfreezebubblepopup");
+                a(e).unbind("showbubblepopup");
+                a(e).unbind("hidebubblepopup");
+                a(e).data("private_jquerybubblepopup_options", {});
+                if (a("#" + c.privateVars.id).length > 0) {
+                    a("#" + c.privateVars.id).remove()
+                }
+                b++
+            }
+        });
+        return b
+    };
+    a.fn.HasBubblePopup = function () {
+        var c = false;
+        a(this).each(function (d, e) {
+            var b = a(e).data("private_jquerybubblepopup_options");
+            if (b != null && typeof b == "object" && !a.isArray(b) && !a.isEmptyObject(b) && b.privateVars != null && typeof b.privateVars == "object" && !a.isArray(b.privateVars) && !a.isEmptyObject(b.privateVars) && typeof b.privateVars.id != "undefined") {
+                c = true
+            }
+            return false
+        });
+        return c
+    };
+    a.fn.GetBubblePopupOptions = function () {
+        var b = {};
+        a(this).each(function (c, d) {
+            b = a(d).data("private_jquerybubblepopup_options");
+            if (b != null && typeof b == "object" && !a.isArray(b) && !a.isEmptyObject(b) && b.privateVars != null && typeof b.privateVars == "object" && !a.isArray(b.privateVars) && !a.isEmptyObject(b.privateVars)) {
+                delete b.privateVars
+            } else {
+                b = null
+            }
+            return false
+        });
+        if (a.isEmptyObject(b)) {
+            b = null
+        }
+        return b
+    };
+    a.fn.SetBubblePopupInnerHtml = function (b, c) {
+        a(this).each(function (d, e) {
+            if (typeof c != "boolean") {
+                c = true
+            }
+            a(e).trigger("setbubblepopupinnerhtml", [b, c])
+        })
+    };
+    a.fn.SetBubblePopupOptions = function (b) {
+        a(this).each(function (c, d) {
+            a(d).trigger("setbubblepopupoptions", [b])
+        })
+    };
+    a.fn.ShowBubblePopup = function (b, c) {
+        a(this).each(function (d, e) {
+            a(e).trigger("showbubblepopup", [b, c, true]);
+            return false
+        })
+    };
+    a.fn.ShowAllBubblePopups = function (b, c) {
+        a(this).each(function (d, e) {
+            a(e).trigger("showbubblepopup", [b, c, true])
+        })
+    };
+    a.fn.HideBubblePopup = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("hidebubblepopup", [true]);
+            return false
+        })
+    };
+    a.fn.HideAllBubblePopups = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("hidebubblepopup", [true])
+        })
+    };
+    a.fn.FreezeBubblePopup = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("freezebubblepopup");
+            return false
+        })
+    };
+    a.fn.FreezeAllBubblePopups = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("freezebubblepopup")
+        })
+    };
+    a.fn.UnfreezeBubblePopup = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("unfreezebubblepopup");
+            return false
+        })
+    };
+    a.fn.UnfreezeAllBubblePopups = function () {
+        a(this).each(function (b, c) {
+            a(c).trigger("unfreezebubblepopup")
+        })
+    };
+    a.fn.CreateBubblePopup = function (e) {
         var r = {
             me: this,
             cache: [],
             options_key: "private_jquerybubblepopup_options",
             model_tr: ["top", "middle", "bottom"],
             model_td: ["left", "middle", "right"],
-            model_markup: '<div class="{BASE_CLASS} {TEMPLATE_CLASS}"{DIV_STYLE} id="{DIV_ID}"><table{TABLE_STYLE}><tbody><tr><td class="{BASE_CLASS}-top-left"{TOP-LEFT_STYLE}>{TOP-LEFT}</td><td class="{BASE_CLASS}-top-middle"{TOP-MIDDLE_STYLE}>{TOP-MIDDLE}</td><td class="{BASE_CLASS}-top-right"{TOP-RIGHT_STYLE}>{TOP-RIGHT}</td></tr><tr><td class="{BASE_CLASS}-middle-left"{MIDDLE-LEFT_STYLE}>{MIDDLE-LEFT}</td><td class="{BASE_CLASS}-innerHtml"{INNERHTML_STYLE}>{INNERHTML}</td><td class="{BASE_CLASS}-middle-right"{MIDDLE-RIGHT_STYLE}>{MIDDLE-RIGHT}</td></tr><tr><td class="{BASE_CLASS}-bottom-left"{BOTTOM-LEFT_STYLE}>{BOTTOM-LEFT}</td><td class="{BASE_CLASS}-bottom-middle"{BOTTOM-MIDDLE_STYLE}>{BOTTOM-MIDDLE}</td><td class="{BASE_CLASS}-bottom-right"{BOTTOM-RIGHT_STYLE}>{BOTTOM-RIGHT}</td></tr></tbody></table></div>',
+            model_markup: '<div class="{BASE_CLASS} {TEMPLATE_CLASS}"{DIV_STYLE} id="{DIV_ID}"> 									<table{TABLE_STYLE}> 									<tbody> 									<tr> 										<td class="{BASE_CLASS}-top-left"{TOP-LEFT_STYLE}>{TOP-LEFT}</td> 										<td class="{BASE_CLASS}-top-middle"{TOP-MIDDLE_STYLE}>{TOP-MIDDLE}</td> 										<td class="{BASE_CLASS}-top-right"{TOP-RIGHT_STYLE}>{TOP-RIGHT}</td> 									</tr> 									<tr> 										<td class="{BASE_CLASS}-middle-left"{MIDDLE-LEFT_STYLE}>{MIDDLE-LEFT}</td> 										<td class="{BASE_CLASS}-innerHtml"{INNERHTML_STYLE}>{INNERHTML}</td> 										<td class="{BASE_CLASS}-middle-right"{MIDDLE-RIGHT_STYLE}>{MIDDLE-RIGHT}</td> 									</tr> 									<tr> 										<td class="{BASE_CLASS}-bottom-left"{BOTTOM-LEFT_STYLE}>{BOTTOM-LEFT}</td> 										<td class="{BASE_CLASS}-bottom-middle"{BOTTOM-MIDDLE_STYLE}>{BOTTOM-MIDDLE}</td> 										<td class="{BASE_CLASS}-bottom-right"{BOTTOM-RIGHT_STYLE}>{BOTTOM-RIGHT}</td> 									</tr> 									</tbody> 									</table> 									</div>',
             privateVars: {
                 id: null,
                 creation_datetime: null,
@@ -41,7 +225,7 @@
             alwaysVisible: true,
             selectable: true,
             manageMouseEvents: true,
-            mouseOver: "show",
+            mouseMove: "show",
             mouseOverValues: ["show", "hide"],
             mouseOut: "hide",
             mouseOutValues: ["show", "hide"],
@@ -76,7 +260,7 @@
                 closingSpeed: r.closingSpeed,
                 openingDelay: r.openingDelay,
                 closingDelay: r.closingDelay,
-                mouseOver: r.mouseOver,
+                mouseMove: r.mouseMove,
                 mouseOut: r.mouseOut,
                 tail: r.tail,
                 innerHtml: r.innerHtml,
@@ -116,7 +300,7 @@
             t.closingSpeed = typeof t.closingSpeed == "number" && parseInt(t.closingSpeed) > 0 ? parseInt(t.closingSpeed) : r.closingSpeed;
             t.openingDelay = typeof t.openingDelay == "number" && t.openingDelay >= 0 ? t.openingDelay : r.openingDelay;
             t.closingDelay = typeof t.closingDelay == "number" && t.closingDelay >= 0 ? t.closingDelay : r.closingDelay;
-            t.mouseOver = typeof t.mouseOver == "string" && o(t.mouseOver.toLowerCase(), r.mouseOverValues) ? t.mouseOver.toLowerCase() : r.mouseOver;
+            t.mouseMove = typeof t.mouseMove == "string" && o(t.mouseMove.toLowerCase(), r.mouseOverValues) ? t.mouseMove.toLowerCase() : r.mouseMove;
             t.mouseOut = typeof t.mouseOut == "string" && o(t.mouseOut.toLowerCase(), r.mouseOutValues) ? t.mouseOut.toLowerCase() : r.mouseOut;
             t.tail = t.tail != null && typeof t.tail == "object" && !a.isArray(t.tail) && !a.isEmptyObject(t.tail) ? t.tail : r.tail;
             t.tail.align = typeof t.tail.align != "undefined" ? t.tail.align : r.tail.align;
@@ -141,17 +325,17 @@
             }
             for (var u in t.tail) {
                 switch (u) {
-                    case "align":
-                        t.tail.align = typeof t.tail.align == "string" && o(t.tail.align.toLowerCase(), r.alignValues) ? t.tail.align.toLowerCase() : r.tail.align;
-                        if (t.position == "left" || t.position == "right") {
-                            t.tail.align = o(t.tail.align, r.alignVerticalValues) ? t.tail.align : "middle"
-                        } else {
-                            t.tail.align = o(t.tail.align, r.alignHorizontalValues) ? t.tail.align : "center"
-                        }
-                        break;
-                    case "hidden":
-                        t.tail.hidden = t.tail.hidden == true ? true : false;
-                        break
+                case "align":
+                    t.tail.align = typeof t.tail.align == "string" && o(t.tail.align.toLowerCase(), r.alignValues) ? t.tail.align.toLowerCase() : r.tail.align;
+                    if (t.position == "left" || t.position == "right") {
+                        t.tail.align = o(t.tail.align, r.alignVerticalValues) ? t.tail.align : "middle"
+                    } else {
+                        t.tail.align = o(t.tail.align, r.alignHorizontalValues) ? t.tail.align : "center"
+                    }
+                    break;
+                case "hidden":
+                    t.tail.hidden = t.tail.hidden == true ? true : false;
+                    break
                 }
             }
             return t
@@ -177,9 +361,15 @@
             return t
         }
         function k(t) {
-            a(t).each(function () {
-                a("<img/>")[0].src = this
-            })
+            if (document.createElement) {
+                for (var v = t.length - 1; v >= 0; v--) {
+                    var u = document.createElement("img");
+                    u.src = t[v];
+                    if (a.inArray(t[v], r.cache) > -1) {
+                        r.cache.push(t[v])
+                    }
+                }
+            }
         }
         function b(t) {
             if (t.hideElementId && t.hideElementId.length > 0) {
@@ -221,18 +411,18 @@
             if (a("#" + u.privateVars.id).length > 0) {
                 var t = "bottom-middle";
                 switch (u.position) {
-                    case "left":
-                        t = "middle-right";
-                        break;
-                    case "top":
-                        t = "bottom-middle";
-                        break;
-                    case "right":
-                        t = "middle-left";
-                        break;
-                    case "bottom":
-                        t = "top-middle";
-                        break
+                case "left":
+                    t = "middle-right";
+                    break;
+                case "top":
+                    t = "bottom-middle";
+                    break;
+                case "right":
+                    t = "middle-left";
+                    break;
+                case "bottom":
+                    t = "top-middle";
+                    break
                 }
                 if (o(u.tail.align, r.alignHorizontalValues)) {
                     a("#" + u.privateVars.id).find("td." + u.baseClass + "-" + t).css("text-align", u.tail.align)
@@ -249,22 +439,22 @@
             var u = "";
             if (!v.tail.hidden) {
                 switch (v.position) {
-                    case "left":
-                        G = "right";
-                        u = "{MIDDLE-RIGHT}";
-                        break;
-                    case "top":
-                        G = "bottom";
-                        u = "{BOTTOM-MIDDLE}";
-                        break;
-                    case "right":
-                        G = "left";
-                        u = "{MIDDLE-LEFT}";
-                        break;
-                    case "bottom":
-                        G = "top";
-                        u = "{TOP-MIDDLE}";
-                        break
+                case "left":
+                    G = "right";
+                    u = "{MIDDLE-RIGHT}";
+                    break;
+                case "top":
+                    G = "bottom";
+                    u = "{BOTTOM-MIDDLE}";
+                    break;
+                case "right":
+                    G = "left";
+                    u = "{MIDDLE-LEFT}";
+                    break;
+                case "bottom":
+                    G = "top";
+                    u = "{TOP-MIDDLE}";
+                    break
                 }
                 x = '<img src="' + F + "tail-" + G + ".png" + '" alt="" class="' + v.baseClass + '-tail" />'
             }
@@ -350,34 +540,34 @@
             var A = l(F.total);
             var H = m(x);
             switch (K) {
-                case "left":
-                    I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
-                    I.left = y + A;
-                    break;
-                case "center":
-                    var D = Math.abs(v - P) / 2;
-                    I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
-                    I.left = v >= P ? y - D : y + D;
-                    break;
-                case "right":
-                    var D = Math.abs(v - P);
-                    I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
-                    I.left = v >= P ? y - D + l(A) : y + D + l(A);
-                    break;
-                case "top":
-                    I.top = t + A;
-                    I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
-                    break;
-                case "middle":
-                    var D = Math.abs(M - L) / 2;
-                    I.top = M >= L ? t - D : t + D;
-                    I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
-                    break;
-                case "bottom":
-                    var D = Math.abs(M - L);
-                    I.top = M >= L ? t - D + l(A) : t + D + l(A);
-                    I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
-                    break
+            case "left":
+                I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
+                I.left = y + A;
+                break;
+            case "center":
+                var D = Math.abs(v - P) / 2;
+                I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
+                I.left = v >= P ? y - D : y + D;
+                break;
+            case "right":
+                var D = Math.abs(v - P);
+                I.top = O == "top" ? t - M - z + l(w) : t + L + z + w;
+                I.left = v >= P ? y - D + l(A) : y + D + l(A);
+                break;
+            case "top":
+                I.top = t + A;
+                I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
+                break;
+            case "middle":
+                var D = Math.abs(M - L) / 2;
+                I.top = M >= L ? t - D : t + D;
+                I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
+                break;
+            case "bottom":
+                var D = Math.abs(M - L);
+                I.top = M >= L ? t - D + l(A) : t + D + l(A);
+                I.left = O == "left" ? y - v - z + l(J) : y + P + z + J;
+                break
             }
             I.position = O;
             if (a("#" + x.privateVars.id).length > 0 && a("#" + x.privateVars.id).find("img." + x.baseClass + "-tail").length > 0) {
@@ -385,22 +575,22 @@
                 var G = "bottom";
                 var C = "bottom-middle";
                 switch (O) {
-                    case "left":
-                        G = "right";
-                        C = "middle-right";
-                        break;
-                    case "top":
-                        G = "bottom";
-                        C = "bottom-middle";
-                        break;
-                    case "right":
-                        G = "left";
-                        C = "middle-left";
-                        break;
-                    case "bottom":
-                        G = "top";
-                        C = "top-middle";
-                        break
+                case "left":
+                    G = "right";
+                    C = "middle-right";
+                    break;
+                case "top":
+                    G = "bottom";
+                    C = "bottom-middle";
+                    break;
+                case "right":
+                    G = "left";
+                    C = "middle-left";
+                    break;
+                case "bottom":
+                    G = "top";
+                    C = "top-middle";
+                    break
                 }
                 a("#" + x.privateVars.id).find("td." + x.baseClass + "-" + C).empty();
                 a("#" + x.privateVars.id).find("td." + x.baseClass + "-" + C).html('<img src="' + H + "tail-" + G + ".png" + '" alt="" class="' + x.baseClass + '-tail" />');
@@ -498,6 +688,18 @@
             return u
         }
         function h(t) {
+/*      Kuali customization below - we handle these ourselves:
+
+            a(window).resize(function () {
+                a(r.me).each(function (u, v) {
+                    a(v).trigger("positionbubblepopup")
+                })
+            });
+            a(document).mousemove(function (u) {
+                a(r.me).each(function (v, w) {
+                    a(w).trigger("managebubblepopup", [u.pageX, u.pageY])
+                })
+            });*/
             a(r.me).each(function (v, w) {
                 var u = g(t);
                 u.privateVars.creation_datetime = f();
@@ -522,7 +724,7 @@
                             if (J && !N.privateVars.is_mouse_over) {
                                 N.privateVars.is_mouse_over = true;
                                 d(this, N);
-                                if (N.mouseOver == "show") {
+                                if (N.mouseMove == "show") {
                                     a(this).trigger("showbubblepopup")
                                 } else {
                                     if (N.selectable && a("#" + N.privateVars.id).length > 0) {
@@ -625,30 +827,30 @@
                             })
                         } else {
                             switch (z.position) {
-                                case "left":
-                                    x.css({
-                                        top: C.top,
-                                        left: C.left
-                                    });
-                                    break;
-                                case "top":
-                                    x.css({
-                                        top: C.top,
-                                        left: C.left
-                                    });
-                                    break;
-                                case "right":
-                                    x.css({
-                                        top: C.top,
-                                        left: C.left
-                                    });
-                                    break;
-                                case "bottom":
-                                    x.css({
-                                        top: C.top,
-                                        left: C.left
-                                    });
-                                    break
+                            case "left":
+                                x.css({
+                                    top: C.top,
+                                    left: (C.position != z.position ? C.left - (Math.abs(z.themeMargins.difference) * B) : C.left + (Math.abs(z.themeMargins.difference) * B))
+                                });
+                                break;
+                            case "top":
+                                x.css({
+                                    top: (C.position != z.position ? C.top - (Math.abs(z.themeMargins.difference) * B) : C.top + (Math.abs(z.themeMargins.difference) * B)),
+                                    left: C.left
+                                });
+                                break;
+                            case "right":
+                                x.css({
+                                    top: C.top,
+                                    left: (C.position != z.position ? C.left + (Math.abs(z.themeMargins.difference) * B) : C.left - (Math.abs(z.themeMargins.difference) * B))
+                                });
+                                break;
+                            case "bottom":
+                                x.css({
+                                    top: (C.position != z.position ? C.top + (Math.abs(z.themeMargins.difference) * B) : C.top - (Math.abs(z.themeMargins.difference) * B)),
+                                    left: C.left
+                                });
+                                break
                             }
                         }
                     }
@@ -742,70 +944,70 @@
                             d(w, H);
                             y.stop();
                             switch (H.position) {
-                                case "left":
-                                    y.animate({
-                                        opacity: 1,
-                                        left: (H.privateVars.is_position_changed ? "-=" : "+=") + H.distance + "px"
-                                    }, H.openingSpeed, "swing", function () {
-                                        H.privateVars.is_animating = false;
-                                        H.privateVars.is_animation_complete = true;
-                                        d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
+                            case "left":
+                                y.animate({
+                                    opacity: 1,
+                                    left: (H.privateVars.is_position_changed ? "-=" : "+=") + H.distance + "px"
+                                }, H.openingSpeed, "swing", function () {
+                                    H.privateVars.is_animating = false;
+                                    H.privateVars.is_animation_complete = true;
+                                    d(w, H);
+                                    if (H.dropShadow == true) {
+                                        if (a.browser.msie && parseInt(a.browser.version) > 8) {
+                                            y.addClass(H.baseClass + "-ie")
                                         }
-                                        H.afterShown()
-                                    });
-                                    break;
-                                case "top":
-                                    y.animate({
-                                        opacity: 1,
-                                        top: (H.privateVars.is_position_changed ? "-=" : "+=") + H.distance + "px"
-                                    }, H.openingSpeed, "swing", function () {
-                                        H.privateVars.is_animating = false;
-                                        H.privateVars.is_animation_complete = true;
-                                        d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
+                                    }
+                                    H.afterShown()
+                                });
+                                break;
+                            case "top":
+                                y.animate({
+                                    opacity: 1,
+                                    top: (H.privateVars.is_position_changed ? "-=" : "+=") + H.distance + "px"
+                                }, H.openingSpeed, "swing", function () {
+                                    H.privateVars.is_animating = false;
+                                    H.privateVars.is_animation_complete = true;
+                                    d(w, H);
+                                    if (H.dropShadow == true) {
+                                        if (a.browser.msie && parseInt(a.browser.version) > 8) {
+                                            y.addClass(H.baseClass + "-ie")
                                         }
-                                        H.afterShown()
-                                    });
-                                    break;
-                                case "right":
-                                    y.animate({
-                                        opacity: 1,
-                                        left: (H.privateVars.is_position_changed ? "+=" : "-=") + H.distance + "px"
-                                    }, H.openingSpeed, "swing", function () {
-                                        H.privateVars.is_animating = false;
-                                        H.privateVars.is_animation_complete = true;
-                                        d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
+                                    }
+                                    H.afterShown()
+                                });
+                                break;
+                            case "right":
+                                y.animate({
+                                    opacity: 1,
+                                    left: (H.privateVars.is_position_changed ? "+=" : "-=") + H.distance + "px"
+                                }, H.openingSpeed, "swing", function () {
+                                    H.privateVars.is_animating = false;
+                                    H.privateVars.is_animation_complete = true;
+                                    d(w, H);
+                                    if (H.dropShadow == true) {
+                                        if (a.browser.msie && parseInt(a.browser.version) > 8) {
+                                            y.addClass(H.baseClass + "-ie")
                                         }
-                                        H.afterShown()
-                                    });
-                                    break;
-                                case "bottom":
-                                    y.animate({
-                                        opacity: 1,
-                                        top: (H.privateVars.is_position_changed ? "+=" : "-=") + H.distance + "px"
-                                    }, H.openingSpeed, "swing", function () {
-                                        H.privateVars.is_animating = false;
-                                        H.privateVars.is_animation_complete = true;
-                                        d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
+                                    }
+                                    H.afterShown()
+                                });
+                                break;
+                            case "bottom":
+                                y.animate({
+                                    opacity: 1,
+                                    top: (H.privateVars.is_position_changed ? "+=" : "-=") + H.distance + "px"
+                                }, H.openingSpeed, "swing", function () {
+                                    H.privateVars.is_animating = false;
+                                    H.privateVars.is_animation_complete = true;
+                                    d(w, H);
+                                    if (H.dropShadow == true) {
+                                        if (a.browser.msie && parseInt(a.browser.version) > 8) {
+                                            y.addClass(H.baseClass + "-ie")
                                         }
-                                        H.afterShown()
-                                    });
-                                    break
+                                    }
+                                    H.afterShown()
+                                });
+                                break
                             }
                         }, H.openingDelay)
                     }
@@ -831,58 +1033,58 @@
                                 }
                             }
                             switch (A.position) {
-                                case "left":
-                                    y.animate({
-                                        opacity: 0,
-                                        left: (A.privateVars.is_position_changed ? "+=" : "-=") + A.distance + "px"
-                                    }, A.closingSpeed, "swing", function () {
-                                        A.privateVars.is_open = false;
-                                        A.privateVars.is_animating = false;
-                                        A.privateVars.is_animation_complete = true;
-                                        d(w, A);
-                                        y.css("display", "none");
-                                        A.afterHidden()
-                                    });
-                                    break;
-                                case "top":
-                                    y.animate({
-                                        opacity: 0,
-                                        top: (A.privateVars.is_position_changed ? "+=" : "-=") + A.distance + "px"
-                                    }, A.closingSpeed, "swing", function () {
-                                        A.privateVars.is_open = false;
-                                        A.privateVars.is_animating = false;
-                                        A.privateVars.is_animation_complete = true;
-                                        d(w, A);
-                                        y.css("display", "none");
-                                        A.afterHidden()
-                                    });
-                                    break;
-                                case "right":
-                                    y.animate({
-                                        opacity: 0,
-                                        left: (A.privateVars.is_position_changed ? "-=" : "+=") + A.distance + "px"
-                                    }, A.closingSpeed, "swing", function () {
-                                        A.privateVars.is_open = false;
-                                        A.privateVars.is_animating = false;
-                                        A.privateVars.is_animation_complete = true;
-                                        d(w, A);
-                                        y.css("display", "none");
-                                        A.afterHidden()
-                                    });
-                                    break;
-                                case "bottom":
-                                    y.animate({
-                                        opacity: 0,
-                                        top: (A.privateVars.is_position_changed ? "-=" : "+=") + A.distance + "px"
-                                    }, A.closingSpeed, "swing", function () {
-                                        A.privateVars.is_open = false;
-                                        A.privateVars.is_animating = false;
-                                        A.privateVars.is_animation_complete = true;
-                                        d(w, A);
-                                        y.css("display", "none");
-                                        A.afterHidden()
-                                    });
-                                    break
+                            case "left":
+                                y.animate({
+                                    opacity: 0,
+                                    left: (A.privateVars.is_position_changed ? "+=" : "-=") + A.distance + "px"
+                                }, A.closingSpeed, "swing", function () {
+                                    A.privateVars.is_open = false;
+                                    A.privateVars.is_animating = false;
+                                    A.privateVars.is_animation_complete = true;
+                                    d(w, A);
+                                    y.css("display", "none");
+                                    A.afterHidden()
+                                });
+                                break;
+                            case "top":
+                                y.animate({
+                                    opacity: 0,
+                                    top: (A.privateVars.is_position_changed ? "+=" : "-=") + A.distance + "px"
+                                }, A.closingSpeed, "swing", function () {
+                                    A.privateVars.is_open = false;
+                                    A.privateVars.is_animating = false;
+                                    A.privateVars.is_animation_complete = true;
+                                    d(w, A);
+                                    y.css("display", "none");
+                                    A.afterHidden()
+                                });
+                                break;
+                            case "right":
+                                y.animate({
+                                    opacity: 0,
+                                    left: (A.privateVars.is_position_changed ? "-=" : "+=") + A.distance + "px"
+                                }, A.closingSpeed, "swing", function () {
+                                    A.privateVars.is_open = false;
+                                    A.privateVars.is_animating = false;
+                                    A.privateVars.is_animation_complete = true;
+                                    d(w, A);
+                                    y.css("display", "none");
+                                    A.afterHidden()
+                                });
+                                break;
+                            case "bottom":
+                                y.animate({
+                                    opacity: 0,
+                                    top: (A.privateVars.is_position_changed ? "-=" : "+=") + A.distance + "px"
+                                }, A.closingSpeed, "swing", function () {
+                                    A.privateVars.is_open = false;
+                                    A.privateVars.is_animating = false;
+                                    A.privateVars.is_animation_complete = true;
+                                    d(w, A);
+                                    y.css("display", "none");
+                                    A.afterHidden()
+                                });
+                                break
                             }
                         }, z);
                         A.privateVars.last_display_datetime = f();
