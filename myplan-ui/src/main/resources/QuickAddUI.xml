@@ -129,9 +129,8 @@
                 <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="22" p:maxLength="10">
-                            <property name="onDocumentReadyScript" value="
-                                jQuery(&quot;input[id^='search_text_box']&quot;).focus();​
-                                "/>
+                            <property name="onDocumentReadyScript" value="jQuery('input#search_text_box_control').focus();"/>
+                            <property name="onKeyPressScript" value="if (e.keyCode === 13) jQuery('button#quickAddCourse').click();"/>
                         </bean>
                     </property>
                 </bean>
