@@ -7,6 +7,8 @@
     <title>Session Expired</title>
     <link href="/student/krad/css/global/fss-reset.css" rel="stylesheet" type="text/css">
     <link href="/student/ks-myplan/css/error.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="https://use.typekit.net/jpx3dug.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 <body>
 <div id="container">
