@@ -26,6 +26,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
         runHiddenScripts(planItemId + "_div");
+        fnShowHideQuickAddLink(atpId, "add");
     });
 }
 /*
@@ -37,6 +38,7 @@ function fnRemovePlanItem (atpId, type, planItemId) {
     jQuery("#" + planItemId).unbind('click');
     jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type).parents(".uif-collectionItem").fadeOut(250, function(){
         jQuery(this).remove();
+        fnShowHideQuickAddLink(atpId, "delete");
     });
 }
 /*
@@ -125,15 +127,15 @@ function fnRestoreDetailsAddButton (courseId) {
  Function: show or hide the quick add link in the backup collection
  #################################################################
  */
-function fnShowHideQuickAddLink(atpId,type){
+function fnShowHideQuickAddLink(atpId, type){
     if(type=="add"){
-        if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
-            jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").hide();
+        if(jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout").children("div").size()>8){
+            jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout .quick-add-cell").hide();
         }
     }
     if(type=="delete"){
-        if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
-            jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").show();
+        if(jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout").children("div").size()>=8){
+            jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout .quick-add-cell").show();
         }
     }
 
