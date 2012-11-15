@@ -1224,7 +1224,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     stopEvent(e);
 
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
-        width:"300px",
+        width:"353px",
         height:"16px"
     });
 

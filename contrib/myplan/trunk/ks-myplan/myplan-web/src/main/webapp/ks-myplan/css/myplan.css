@@ -758,11 +758,14 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     background: url('../images/iconWarning.png') no-repeat 4px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
-    font-size: .8em;
+    font-size: 0.8462em;
     font-style: italic;
-    color: gray;
+    color: #117bdf;
     padding: 0px 5px;
     text-align: center;
+    margin: 1px 0 0 0;
+    background: none;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell:hover {

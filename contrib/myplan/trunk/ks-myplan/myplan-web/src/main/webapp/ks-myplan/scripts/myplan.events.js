@@ -23,10 +23,12 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
             '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',null,e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
         '</div>' +
     '</div>';
+    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).data("size")) + 1;
+    jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
+    fnShowHideQuickAddLink(atpId, type, size);
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function() {
         runHiddenScripts(planItemId + "_div");
-        fnShowHideQuickAddLink(atpId, "add");
     });
 }
 /*
@@ -36,9 +38,12 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
  */
 function fnRemovePlanItem (atpId, type, planItemId) {
     jQuery("#" + planItemId).unbind('click');
+    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).data("size")) - 1;
+    jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
+    fnShowHideQuickAddLink(atpId, type, size);
+
     jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type).parents(".uif-collectionItem").fadeOut(250, function(){
         jQuery(this).remove();
-        fnShowHideQuickAddLink(atpId, "delete");
     });
 }
 /*
@@ -124,14 +129,14 @@ function fnRestoreDetailsAddButton (courseId) {
 
 /*
  #################################################################
- Function: show or hide the quick add link in the backup collection
+ Function: show or hide the quick add link
  #################################################################
  */
-function fnShowHideQuickAddLink(atpId, type){
-    if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
-        jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").hide();
-    }else{
-        jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").show();
+function fnShowHideQuickAddLink(atpId, type, size){
+    if (size < 8) {
+        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .quick-add-cell").fadeIn(250);
+    } else {
+        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .quick-add-cell").fadeOut(250);
     }
 
 }
