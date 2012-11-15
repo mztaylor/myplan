@@ -1537,11 +1537,9 @@
             jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
                     fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit);
-                    fnShowHideQuickAddLink(data.atpId, 'add');
                 })
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
-                    fnShowHideQuickAddLink(data.atpId, 'delete');
                 })
                 .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){
                     fnUpdateCredits(data.atpId, data.totalCredits);
