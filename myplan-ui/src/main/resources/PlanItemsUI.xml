@@ -1339,7 +1339,7 @@
             	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('quick-add-cell').html('Add a course to plan').click(function(e){
             		openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:atpId,pageId:'quickAdd_dialog_page',planType:planType},e,null,{tail:{hidden:true},align:'bottom',position:'right'});
             	});
-            	if (size < 8) {
+            	if (size &lt; 8) {
             		jQuery(this).append(jQuickAdd.show());
             	} else {
             		jQuery(this).append(jQuickAdd.hide());
