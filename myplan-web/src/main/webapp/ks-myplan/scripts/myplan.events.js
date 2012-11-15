@@ -128,15 +128,10 @@ function fnRestoreDetailsAddButton (courseId) {
  #################################################################
  */
 function fnShowHideQuickAddLink(atpId, type){
-    if(type=="add"){
-        if(jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout").children("div").size()>8){
-            jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout .quick-add-cell").hide();
-        }
-    }
-    if(type=="delete"){
-        if(jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout").children("div").size()>=8){
-            jQuery("."+atpId+".myplan-term-backup .uif-stackedCollectionLayout .quick-add-cell").show();
-        }
+    if(jQuery("."+atpId+".myplan-term-backup").find("div[class='uif-stackedCollectionLayout']").children("div").size()>8){
+        jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").hide();
+    }else{
+        jQuery("."+atpId+".myplan-term-backup").children("div[class='uif-stackedCollectionLayout']").find(".quick-add-cell").show();
     }
 
 }
