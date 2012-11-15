@@ -1332,24 +1332,19 @@
     <!-- Single term view that lists planned course, total credits and backup courses -->
     <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 620px; margin-right: 10px;">
         <property name="onDocumentReadyScript" value="
-            jQuery('.myplan-carousel-list li .myplan-term-current, .myplan-carousel-list li .myplan-term-future').find('.myplan-carousel-term.myplan-term-planned, .myplan-carousel-term.myplan-term-backup').find(&quot;.uif-stackedCollectionLayout&quot;).each(function(){
-                var atpId = jQuery(this).parents(&quot;li&quot;).find(&quot;div[id^='plan_base_atpId'] span &quot;).text();
-                var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
-                var jQuickAdd = jQuery('&lt;div&gt;', {
-                        'onclick':'openQuickAddPopUp(&quot;quick_Add&quot;,&quot;quickAdd_dialog_page&quot;,{atpId:&quot;'+jQuery.trim( atpId )+'&quot;,pageId:&quot;quickAdd_dialog_page&quot;, planType:&quot;'+planType+'&quot;},event,null,{tail:{hidden:true},align:&quot;top&quot;,position:&quot;right&quot;})',
-                        'class':'uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem quick-add-cell myplan-course-valid'
-                    }).html('&lt;font color=&quot;#117bdf&quot;&gt;Add a course to plan&lt;/font&gt;');
-                jQuery(this).append(jQuickAdd);
+            jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
+            	var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
+            	var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
+            	var size = jQuery(this).parents('.myplan-carousel-term').data('size');
+            	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('quick-add-cell').html('Add a course to plan').click(function(e){
+            		openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:atpId,pageId:'quickAdd_dialog_page',planType:planType},e,null,{tail:{hidden:true},align:'bottom',position:'right'});
+            	});
+            	if (size < 8) {
+            		jQuery(this).append(jQuickAdd.show());
+            	} else {
+            		jQuery(this).append(jQuickAdd.hide());
+            	}
             });
-
-            jQuery(&quot;div[id^='backupCollection']&quot;).
-                            each(
-                                function(){
-                                if(jQuery(this).children(&quot;div[class='uif-stackedCollectionLayout']&quot;).children(&quot;div&quot;).size()&gt;8){
-                                    jQuery(this).children(&quot;div[class='uif-stackedCollectionLayout']&quot;).children(&quot;.quick-add-cell&quot;).hide();
-                                             }
-                                        }
-                                );
 
             if ( jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0 ) {
                 var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
@@ -1477,9 +1472,8 @@
                 <value>uif-boxGroup</value>
                 <value>uif-verticalBoxGroup</value>
                 <value>uif-boxSection</value>
-                <value>@{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and
-                    #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}
-                </value>
+                <value>@{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}</value>
+                <value>@{#line.openForPlanning ? 'open' : 'closed'}</value>
             </list>
         </property>
         <property name="header">
@@ -1872,6 +1866,8 @@
         <property name="dataAttributes">
             <map>
                 <entry key="plantype" value="planned"/>
+                <entry key="atpid" value="@{#line.atpId}"/>
+                <entry key="size" value="@{#line.plannedList.size()}"/>
             </map>
         </property>
         <property name="cssClasses">
@@ -2100,6 +2096,8 @@
         <property name="dataAttributes">
             <map>
                 <entry key="plantype" value="backup"/>
+                <entry key="atpId" value="@{#line.atpId}"/>
+                <entry key="size" value="@{#line.backupList.size()}"/>
             </map>
         </property>
         <property name="cssClasses">
