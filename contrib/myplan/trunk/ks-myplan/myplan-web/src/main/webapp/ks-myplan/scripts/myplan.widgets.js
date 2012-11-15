@@ -746,12 +746,11 @@ function truncateField(id) {
 function truncateAuditTitle(id) {
     jQuery("#" + id + " .myplan-audit-title").each(function () {
         if (readUrlParam("viewId") == "DegreeAudit-FormView") {
-
             if (
                 (readUrlParam("auditId") == false && jQuery(this).siblings("div[id^='hidden_recentAuditId']").length > 0) ||
                 (readUrlParam("auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
             ) {
-                jQuery(this).find(".uif-label label").text("Viewing");
+                jQuery(this).find(".uif-label label").html("Viewing");
             }
         }
 
@@ -988,7 +987,7 @@ function fnAddLoadingText(selector) {
     clearInterval(blockPendingAudit);
     //var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
-    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css);
+    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl","false");
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(getAuditProgram("name"));
 }
 
@@ -1073,6 +1072,7 @@ function blockPendingAudit(id) {
         var elementToBlock = jQuery("#" + id);
         var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
         elementToBlock.block(blockPendingAuditStyle);
+        jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl","true");
         jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(audit.programName);
         jQuery("#" + id).subscribe('AUDIT_COMPLETE', function() { window.location.assign(window.location.href.split("#")[0]); });
     }
@@ -1094,11 +1094,9 @@ function pollPendingAudit(programId, recentAuditId) {
             return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
         success:function (response) {
-            var growl;
-            if (readUrlParam("auditId") == false && readUrlParam("viewId") == "DegreeAudit-FormView") {
-                growl = false;
-            } else {
-                growl = true;
+            var growl = true;
+            if (readUrlParam("viewId") == "DegreeAudit-FormView") {
+                growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
             }
 
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
