@@ -1475,7 +1475,7 @@ table.myplan-course-search-results-datatable .blockUI {
     color: #333;
 }
 .myplan-section .myplan-recent-audit label {
-    color: #777;
+    color: #777777 !important;
     font-weight: normal;
     float: left;
     padding-right: 5px;

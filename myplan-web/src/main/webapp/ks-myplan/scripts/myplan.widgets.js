@@ -756,6 +756,7 @@ function truncateAuditTitle(id) {
 
         var width = jQuery(this).width();
         var label = jQuery(this).find(".uif-label").width();
+        jQuery(this).find(".uif-label label").css({"color":"#777777"});
         jQuery(this).find(".uif-label").next("span").width(width - label - 1).css({
             "text-overflow":"ellipsis",
             "white-space":"nowrap",
