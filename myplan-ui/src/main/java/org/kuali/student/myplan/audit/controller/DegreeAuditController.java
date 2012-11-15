@@ -343,10 +343,10 @@ public class DegreeAuditController extends UifControllerBase {
             if (doc.getElementsByTagName("StatusDescription").getLength() != 0) {
                 return doc.getElementsByTagName("StatusDescription").item(0).getTextContent();
             } else {
-                return "Audit processing Failed";
+                return "Technical Problems";
             }
         } catch (Exception e) {
-            return "Audit processing Failed";
+            return "Technical Problems";
         }
     }
 
