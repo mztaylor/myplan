@@ -133,7 +133,7 @@
                           });"/>
         <property name="items">
             <list>
-                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan &lt;img src=&quot;@{#ConfigProperties['ks.myplan.externalizable.images.url']}rightArrow.png&quot;/&gt;"
                       p:id="@{dataObject.courseId}_addPlannedCourse">
                     <property name="actionScript"
                               value="openPlanItemPopUp('@{dataObject.courseId}','add_dialog_page',{courseId:'@{dataObject.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
