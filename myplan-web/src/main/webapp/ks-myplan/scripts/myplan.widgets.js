@@ -274,7 +274,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
         alwaysVisible:false,
         themeMargins:{total:'20px', difference:'5px'},
         themeName:'myplan',
-        distance:'0px',
+        distance:'10px',
         openingSpeed:0,
         closingSpeed:0
     };
@@ -366,9 +366,9 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         position:'left',
         align:'center',
         alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
+        themeMargins:{total:'18px', difference:'5px'},
         themeName:'myplan',
-        distance:'0px',
+        distance:'10px',
         openingSpeed:0,
         closingSpeed:0
     };
@@ -1287,7 +1287,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
             var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post");
         } else {
             eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
-            var sError = '<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
+            var sError = '<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"/><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
             component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
         elementToBlock.unblock({onUnblock:function () {

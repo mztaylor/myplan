@@ -1252,6 +1252,11 @@
     </bean>
     <bean id="planned_mock_detail" parent="Uif-VerticalBoxSubSection"
           p:style="width: 620px; min-height:400px; margin-right: 10px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-plan-loader</value>
+            </list>
+        </property>
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="onDocumentReadyScript" value="
             var user=jQuery('span[id=&quot;hidden_new_user_flag&quot;]').text();
@@ -1276,7 +1281,7 @@
                 retrieveOptions = {viewId:'PlannedCourses-LookupView'};
             }
 
-            myplanRetrieveComponent('planned_mock_detail','planned_courses_detail','search','lookup', retrieveOptions, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxLoader.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching your plan...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0}, css:{border:'solid 1px #dddddd', borderRadius:'15px', width:'230px', textAlign:'center', padding:'20px'}});"/>
+            myplanRetrieveComponent('planned_mock_detail','planned_courses_detail','search','lookup', retrieveOptions, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching your plan...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});"/>
         <property name="items">
             <list>
             </list>

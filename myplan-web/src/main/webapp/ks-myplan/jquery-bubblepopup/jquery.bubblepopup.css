@@ -33,11 +33,32 @@
 	.jquerybubblepopup tbody{display:table-row-group;vertical-align:middle;border:0px;background-color:transparent;}
 	.jquerybubblepopup td{margin:0px;padding:0px;background-color:transparent;}
 	.jquerybubblepopup-top-left,    .jquerybubblepopup-top-right,
-	.jquerybubblepopup-bottom-left, .jquerybubblepopup-bottom-right{width:21px;height:21px;overflow:hidden;background-repeat:no-repeat;}
-	.jquerybubblepopup-top-middle,  .jquerybubblepopup-bottom-middle{overflow:hidden;background-repeat:repeat-x;height:21px;line-height:1px;}
-	.jquerybubblepopup-middle-left, .jquerybubblepopup-middle-right{overflow:hidden;background-repeat:repeat-y;width:21px;}
+	.jquerybubblepopup-bottom-left, .jquerybubblepopup-bottom-right
+    {
+        width:21px;
+        height:21px;
+        overflow:hidden;
+        background-repeat:no-repeat;
+        font-size:1px;
+        line-height:1px;
+    }
+	.jquerybubblepopup-top-middle,  .jquerybubblepopup-bottom-middle {overflow:hidden;background-repeat:repeat-x;height:21px;line-height:1px;}
+	.jquerybubblepopup-middle-left, .jquerybubblepopup-middle-right  {overflow:hidden;background-repeat:repeat-y;width:21px;}
 	.jquerybubblepopup-tail{border:0px;margin:0px;padding:0px;display:inline;}
     .jquerybubblepopup-innerHtml{position:relative;display:block;min-height:26px;}
+
+    .jquerybubblepopup-top-left img, .jquerybubblepopup-top-right img,
+	.jquerybubblepopup-bottom-left img, .jquerybubblepopup-bottom-right img
+    {
+        width:21px;
+        height:21px;
+        font-size:1px;
+        line-height:1px;
+        min-width:21px;
+        min-height:21px;
+        margin:0px;
+        padding:0px;
+    }
 
 /*  
 	Themes:
