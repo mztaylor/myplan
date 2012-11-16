@@ -1555,8 +1555,18 @@ public class PlanController extends UifControllerBase {
                                 plannedTotalMax += max;
 
                             } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
-                                plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
-                                plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                                if (courseDetails.getCredit().contains(PlanConstants.MULTIPLE)) {
+                                    String[] str = courseDetails.getCredit().split(PlanConstants.MULTIPLE);
+                                    plannedTotalMin += Double.parseDouble(str[0]);
+                                    plannedTotalMax += Double.parseDouble(str[1]);
+                                } else if (courseDetails.getCredit().contains(PlanConstants.RANGE)) {
+                                    String[] str = courseDetails.getCredit().split(PlanConstants.RANGE);
+                                    plannedTotalMin += Double.parseDouble(str[0]);
+                                    plannedTotalMax += Double.parseDouble(str[1]);
+                                } else {
+                                    plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
+                                    plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                                }
                             }
                         }
                         totalCredits = Double.toString(plannedTotalMin);
