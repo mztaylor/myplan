@@ -1433,9 +1433,12 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-section .uif-listCollectionGroup ul li {
     border-bottom:dotted 1px #cfcfcf;
-    padding: 7px 10px;
     display: block;
     clear: both;
+    padding: 0;
+}
+.myplan-section .uif-listCollectionGroup ul li .myplan-click {
+    padding: 7px 10px;
     cursor: pointer;
 }
 .myplan-section .uif-listCollectionGroup.myplan-recent-audit ul li {

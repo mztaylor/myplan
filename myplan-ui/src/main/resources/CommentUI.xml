@@ -574,6 +574,11 @@
                     <!--
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     -->
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-click</value>
+                        </list>
+                    </property>
                     <property name="onClickScript" value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
                     <property name="items">
                         <list>

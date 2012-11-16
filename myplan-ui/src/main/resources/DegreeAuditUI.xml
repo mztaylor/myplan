@@ -167,6 +167,11 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}" p:title="@{#line.programTitle}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-click</value>
+                        </list>
+                    </property>
                     <property name="onClickScript"
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}';"/>
                     <property name="items">

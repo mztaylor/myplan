@@ -85,6 +85,11 @@
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:group.validationMessages.render="false"
                       p:fieldLabel.render="false" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-click</value>
+                        </list>
+                    </property>
                     <property name="onClickScript"
                               value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>
                     <property name="items">
