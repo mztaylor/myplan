@@ -432,7 +432,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             System.out.println("found: " + nodeList.getLength());
             Node root = nodeList.item(0);
 
-            String path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
+            String path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/span[contains(@class,'text')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
             path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/span[contains(@class,'text')]/text()";
