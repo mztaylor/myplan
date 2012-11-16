@@ -171,7 +171,7 @@
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}';"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View" p:style="width:208px;"
+                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View"
                                   p:fieldLabel.render="true" p:fieldLabel.renderColon="false">
                                 <property name="cssClasses">
                                     <list merge="true">
