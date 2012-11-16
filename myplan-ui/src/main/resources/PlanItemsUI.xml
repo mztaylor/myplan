@@ -667,13 +667,13 @@
         </property>
     </bean>
     <!-- Add Course to plan Dialog Box Content-->
-    <bean id="plan_item_course_add_dialog" parent="Uif-VerticalBoxSection" p:headerText="Add to Plan">
+    <bean id="plan_item_course_add_dialog" parent="Uif-VerticalBoxSection" p:headerText="Add to Plan" p:style="margin:0;">
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalBoxGroup" p:style="display:block;" p:validationMessages.render="false">
+                <bean parent="Uif-VerticalBoxGroup" p:style="display:block; margin:0;" p:validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-container-300</value>
@@ -701,7 +701,7 @@
                             <!--  Backup checkbox -->
                             <ref bean="planned_course_backup"/>
                             <bean id="plan_add_actions" parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false"
-                                  p:group.validationMessages.render="false">
+                                  p:group.validationMessages.render="false" p:style="margin:0;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
@@ -733,7 +733,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                              p:group.validationMessages.render="false">
+                                              p:group.validationMessages.render="false" p:style="margin:0;">
                                             <property name="items">
                                                 <list>
                                                     <bean id="hidden_add_error_block" p:id="hidden_add_error_block"
@@ -2697,7 +2697,7 @@
                 <ref bean="planned_course_backup"/>
 
                 <bean id="plan_add_action_items" parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false"
-                      p:group.validationMessages.render="false">
+                      p:group.validationMessages.render="false" p:style="margin:0px;">
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
@@ -2749,7 +2749,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                  p:group.validationMessages.render="false">
+                                  p:group.validationMessages.render="false" p:style="margin:0px;">
                                 <property name="items">
                                     <list>
                                         <bean id="hidden_add_error_block_item" p:id="hidden_add_error_block_item"
