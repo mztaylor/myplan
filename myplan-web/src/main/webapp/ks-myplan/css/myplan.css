@@ -440,7 +440,20 @@ button.uif-secondaryActionButton.disabled:hover {
 
     cursor: default;
 }
-
+button img.rightArrowLarge {
+    width: 8px;
+    height: 12px;
+    margin: 0 0 0 2px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -42px -101px;
+    vertical-align: -1px;
+}
+button img.rightArrowSmall {
+    width: 7px;
+    height: 10px;
+    margin: 0 0 0 2px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -55px -102px;
+    vertical-align: -1px;
+}
 input.myplan-add {
     width: 16px;
     height: 16px;

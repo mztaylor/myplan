@@ -2494,10 +2494,17 @@
     </bean>
 
     <!--  Add to plan button. Used contextually in course details popup actions -->
-    <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton-Small"
-          p:actionLabel="Add to Plan &lt;img src=&quot;@{#ConfigProperties['ks.myplan.externalizable.images.url']}rightArrow.png&quot;/&gt;">
-        <property name="actionScript"
-                  value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
+    <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan" p:actionImagePlacement="RIGHT">
+        <property name="actionScript" value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
+        <property name="actionImage">
+            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>rightArrowSmall</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <!--  Add to saved courses. Used contextually in course details popup actions -->
