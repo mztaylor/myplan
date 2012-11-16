@@ -2262,9 +2262,9 @@
     <bean id="term_no_courses" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="No courses planned.">
+                <bean parent="Uif-Message" p:messageText="No courses planned">
                     <property name="style"
-                              value="margin-top:1px; font-size:90%; height:25px; line-height:25px; padding:0 5px; display:block;"/>
+                              value="margin-top:1px; font-size:0.8462em; height:25px; line-height:25px; padding:0 5px; display:block; text-align:center;"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
