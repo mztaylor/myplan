@@ -1762,7 +1762,7 @@
                       p:group.validationMessages.render="false"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null ? true : false}"
                       p:onClickScript="
-                      openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                      openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -2019,7 +2019,7 @@
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:group.validationMessages.render="false"
                       p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -2222,7 +2222,7 @@
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:group.validationMessages.render="false"
                       p:render="@{#line.courseDetails.code ne null ? true : false}"
-                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.CourseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});">
+                      p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.CourseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -2327,8 +2327,7 @@
                     </property>
                     <property name="render" value="@{courseDetails.scheduledTerms.size() gt 0 ? true : false}"/>
                 </bean>
-                <bean parent="Uif-MessageField" p:label="Scheduled for"
-                      p:cssClasses="fl-text-gray myplan-text-normal"
+                <bean parent="Uif-MessageField" p:label="Scheduled for" p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                       p:render="@{courseDetails.scheduledTerms.size() eq 0 ? true : false}">
                     <property name="message">
                         <bean parent="Uif-Message" p:messageText="Not currently scheduled"/>

@@ -536,7 +536,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:style="margin:0px;">
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
