@@ -362,7 +362,7 @@
                                   p:render="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
                             <bean parent="Uif-Message" p:title="Last Offered"
                                   p:messageText="Not offered for more than 10 years."
-                                  p:cssClasses="fl-text-gray myplan-text-normal"
+                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                                   p:render="@{#line.courseDetails.lastOffered eq null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
 
                             <bean parent="Uif-DataField" p:label="Projected For"
