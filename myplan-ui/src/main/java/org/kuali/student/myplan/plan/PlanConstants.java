@@ -77,6 +77,10 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PUBLISHED="PUBLISHED";
 
     public static final String WITHDRAWN_GRADE="W";
+    
+    /*Course Credit Types*/
+    public static final String RANGE="-";
+    public static final String MULTIPLE=",";
 
 
     /* Keys for storing info in the session. */

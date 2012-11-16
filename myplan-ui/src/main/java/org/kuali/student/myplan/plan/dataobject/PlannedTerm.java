@@ -2,6 +2,7 @@ package org.kuali.student.myplan.plan.dataobject;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class PlannedTerm {
 
     private boolean displayCompletedHelp;
     private boolean displayPlannedHelp;
-    private boolean displayCreditsHelp=true;
+    private boolean displayCreditsHelp = true;
     private boolean displayBackupHelp;
     private boolean displayRegisteredHelp;
 
@@ -99,8 +100,18 @@ public class PlannedTerm {
                     plannedTotalMax += max;
 
                 } else if (pc.getCourseDetails() != null && pc.getCourseDetails().getCredit().contains(".")) {
-                    plannedTotalMin += Double.parseDouble(pc.getCourseDetails().getCredit());
-                    plannedTotalMax += Double.parseDouble(pc.getCourseDetails().getCredit());
+                    if (pc.getCourseDetails().getCredit().contains(PlanConstants.MULTIPLE)) {
+                        String[] str = pc.getCourseDetails().getCredit().split(PlanConstants.MULTIPLE);
+                        plannedTotalMin += Double.parseDouble(str[0]);
+                        plannedTotalMax += Double.parseDouble(str[1]);
+                    } else if (pc.getCourseDetails().getCredit().contains(PlanConstants.RANGE)) {
+                        String[] str = pc.getCourseDetails().getCredit().split(PlanConstants.RANGE);
+                        plannedTotalMin += Double.parseDouble(str[0]);
+                        plannedTotalMax += Double.parseDouble(str[1]);
+                    } else {
+                        plannedTotalMin += Double.parseDouble(pc.getCourseDetails().getCredit());
+                        plannedTotalMax += Double.parseDouble(pc.getCourseDetails().getCredit());
+                    }
                 }
             }
             totalCredits = Double.toString(plannedTotalMin);
@@ -121,7 +132,7 @@ public class PlannedTerm {
                     academicTotalMin += min;
                     double max = Double.parseDouble(str[str.length - 1]);
                     academicTotalMax += max;
-                }  else if(ar.getCredit() != null || !ar.getCredit().isEmpty() && ar.getCredit().contains(".")){
+                } else if (ar.getCredit() != null || !ar.getCredit().isEmpty() && ar.getCredit().contains(".")) {
                     academicTotalMin += Double.parseDouble(ar.getCredit());
                     academicTotalMax += Double.parseDouble(ar.getCredit());
                 }
@@ -165,8 +176,8 @@ public class PlannedTerm {
                 totalCredits = minVal + "-" + maxVal;
             }
         }
-        if(totalCredits!=null){
-            if(totalCredits.contains(".0")) totalCredits=totalCredits.replace(".0","");
+        if (totalCredits != null) {
+            if (totalCredits.contains(".0")) totalCredits = totalCredits.replace(".0", "");
         }
         return totalCredits;
     }
