@@ -1761,6 +1761,9 @@ label.scheduled {
 .fancybox-skin {
     background: #fff !important;
 }
+.fancybox-inner #kualiLightboxForm.uif-lightbox {
+    height: 100%;
+}
 /* jGrowl ########################################################################### */
 div.jGrowl div.jGrowl-notification {
     font-family: inherit;

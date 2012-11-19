@@ -1264,11 +1264,10 @@
         </property>
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="onDocumentReadyScript" value="
-            var user=jQuery('span[id=&quot;hidden_new_user_flag&quot;]').text();
-            user=jQuery.trim(user);
-            if(user==&quot;true&quot; &amp;&amp; jQuery.cookie('new_user_cookie')==null){
-                    jQuery.cookie('new_user_cookie', 'true');
-                    showLightboxUrl('@{#ConfigProperties['myplan.getting.started.page']}');
+            var user = jQuery.trim(jQuery('#hidden_new_user_flag').text());
+            if (user == 'true' &amp;&amp; jQuery.cookie('new_user_cookie')==null){
+                jQuery.cookie('new_user_cookie', 'true');
+                showLightboxUrl('@{#ConfigProperties['myplan.getting.started.page']}');
             }
             var retrieveOptions = {};
             var sFocusAtpId = '';
