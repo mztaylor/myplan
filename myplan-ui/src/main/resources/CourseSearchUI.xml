@@ -96,7 +96,7 @@
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="e.g. COM, Math 124, ENGL 1XX, sun">
 
-                            <property name="onDocumentReadyScript" value="if (jq(&quot;input[name='searchQuery'][type='text']&quot;).val() != '') jq('button.course-search-submit').click();"/>
+                            <property name="onDocumentReadyScript" value="if (jQuery('#text_searchQuery_control').val() != '') jQuery('button.course-search-submit').click();"/>
                             <property name="onLoadScript" value="jQuery(this).blur();"/>
                             <property name="onKeyUpScript" value="
                                 if (jQuery(this).val().length > 0) {
@@ -104,16 +104,10 @@
                                 } else {
                                     jQuery('button.course-search-submit').attr('disabled', true);
                                 }"/>
-                            <property name="onKeyPressScript" value="if (e.keyCode === 13) jq('button.course-search-submit').click();"/>
-
-
-
-                            <!--<property name="onDocumentReadyScript" value="
-                                jq(&quot;input[name='searchQuery'][type='text']&quot;).blur().bind('keypress', function(e) {
-	                                if ( e.keyCode === 13 ) jq(&quot;button.course-search-submit&quot;).click();
-	                            });
-	                            if (jq(&quot;input[name='searchQuery'][type='text']&quot;).val() != '') jq(&quot;button.course-search-submit&quot;).click();
-	                        "/>-->
+                            <property name="onKeyPressScript" value="
+                                var code = (e.keyCode ? e.keyCode : e.which);
+                                if (code == 13) { e.preventDefault(); jQuery('button.course-search-submit').click(); }
+                            "/>
                         </bean>
                     </property>
                 </bean>

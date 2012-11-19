@@ -86,15 +86,16 @@
                 <bean parent="Uif-Page" p:id="message_dialog_response_page"
                       p:headerText="Leave a Message for @{studentName}.">
                     <property name="onDocumentReadyScript" value="
-                        jQuery('form input').keypress(function(e) {if (e.which == 13) e.preventDefault();});
+                        var code = (e.keyCode ? e.keyCode : e.which);
+                        jQuery('form input').keypress(function(e) {if (code == 13) e.preventDefault();});
                         jQuery('form input, form textarea').keyup(function(e) {
                             var disabled = true;
                             jQuery('form .myplan-required').each(function() {
-                                if (jQuery(this).val().length &gt; 0) {
+                                if (jQuery(this).val().length > 0) {
                                     disabled = false;
                                 }
                             });
-                            if (e.which == 13 &amp;&amp; e.target.tagName.toLowerCase() == 'input' &amp;&amp; e.target.type == 'text' &amp;&amp; disabled) {
+                            if (code == 13 &amp;&amp; e.target.tagName.toLowerCase() == 'input' &amp;&amp; e.target.type == 'text' &amp;&amp; disabled) {
                                 jQuery('button#cancelMessage').click();
                             }
                             jQuery('button#leaveMessageButton').attr('disabled', disabled);

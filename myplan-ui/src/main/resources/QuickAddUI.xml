@@ -129,8 +129,11 @@
                 <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:size="22" p:maxLength="10">
-                            <property name="onDocumentReadyScript" value="jQuery('input#search_text_box_control').focus();"/>
-                            <property name="onKeyPressScript" value="if (e.keyCode === 13) jQuery('button#quickAddCourse').click();"/>
+                            <property name="onDocumentReadyScript" value="jQuery('#search_text_box_control').focus();"/>
+                            <property name="onKeyPressScript" value="
+                                var code = (e.keyCode ? e.keyCode : e.which);
+                                if (code == 13) { e.preventDefault(); jQuery('button#quickAddCourse').click(); }
+                            "/>
                         </bean>
                     </property>
                 </bean>
@@ -179,10 +182,7 @@
         </property>
     </bean>
 
-
-
-    <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small"
-          p:actionLabel="Add to Plan">
+    <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
         <property name="actionScript"
                   value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',planType:'@{planType}'},'quickAddCourse',e);"/>
         <property name="onDocumentReadyScript" value="
@@ -195,10 +195,8 @@
 
                                         });"/>
     </bean>
-    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
-          p:actionLabel="Cancel">
-        <property name="actionScript"
-                  value="fnCloseAllPopups();"/>
+    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small" p:actionLabel="Cancel">
+        <property name="actionScript" value="fnCloseAllPopups();"/>
     </bean>
 
 
