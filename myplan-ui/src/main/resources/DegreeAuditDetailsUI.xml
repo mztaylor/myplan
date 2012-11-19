@@ -331,7 +331,7 @@
             <list>
                 <bean id="audit_info_header_1" parent="Uif-Message" p:style="padding: 5px;"
                       p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold myplan-carousel-list">
-                    <property name="messageText" value="Track your Progress"/>
+                    <property name="messageText" value="Track Your Progress"/>
                 </bean>
                 <bean id="audit_info_text_1" parent="Uif-Message" p:style="padding: 5px;"
                       p:cssClasses="fl-font-size-100 ">
@@ -359,7 +359,7 @@
             <list>
                 <bean id="audit_info_header_2" parent="Uif-Message" p:style="padding: 5px;"
                       p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold ">
-                    <property name="messageText" value="Explore programs &amp; minors"/>
+                    <property name="messageText" value="Explore Programs and Minors"/>
                 </bean>
                 <bean id="audit_info_text_2" parent="Uif-Message" p:style="padding: 5px;"
                       p:cssClasses="fl-font-size-100 ">
