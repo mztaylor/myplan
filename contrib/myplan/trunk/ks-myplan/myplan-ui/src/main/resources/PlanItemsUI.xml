@@ -360,7 +360,7 @@
                                   p:propertyName="courseDetails.lastOffered"
                                   p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                                   p:render="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
-                            <bean parent="Uif-Message" p:title="Last Offered"
+                            <bean parent="Uif-MessageField" p:label="Last Offered"
                                   p:messageText="Not offered for more than 10 years."
                                   p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                                   p:render="@{#line.courseDetails.lastOffered eq null and #line.courseDetails.scheduledTerms.size() eq 0 ? true : false}"/>
