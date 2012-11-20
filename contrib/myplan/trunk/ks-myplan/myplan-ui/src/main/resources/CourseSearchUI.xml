@@ -106,7 +106,10 @@
                                 }"/>
                             <property name="onKeyPressScript" value="
                                 var code = (e.keyCode ? e.keyCode : e.which);
-                                if (code == 13) { e.preventDefault(); jQuery('button.course-search-submit').click(); }
+                                if (code == 13) {
+                                    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+                                    jQuery('button.course-search-submit').click();
+                                }
                             "/>
                         </bean>
                     </property>
