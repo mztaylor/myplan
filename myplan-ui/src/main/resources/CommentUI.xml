@@ -87,17 +87,17 @@
                       p:headerText="Leave a Message for @{studentName}.">
                     <property name="onDocumentReadyScript" value="
                         jQuery('form input, form textarea').keyup(function(event) {
-                            var disabled = true;
+                            var empty = false;
                             var code = (event.keyCode ? event.keyCode : event.which);
                             jQuery('form .myplan-required').each(function() {
-                                if (jQuery(this).val().length > 0) {
-                                    disabled = false;
+                                if (jQuery(this).val().replace(/\n/g, '').length == 0) {
+                                    empty = true;
                                 }
                             });
                             if (code == 13 &amp;&amp; event.target.tagName.toLowerCase() == 'input' &amp;&amp; event.target.type == 'text' &amp;&amp; disabled) {
                                 jQuery('button#cancelMessage').click();
                             }
-                            jQuery('button#leaveMessageButton').attr('disabled', disabled);
+                            jQuery('button#leaveMessageButton').attr('disabled', empty);
                         });
                     "/>
                     <property name="cssClasses">
@@ -128,15 +128,11 @@
                         jQuery('form input, form textarea').keyup(function() {
                             var empty = false;
                             jQuery('form .myplan-required').each(function() {
-                                if (jQuery(this).val().length == 0) {
+                                if (jQuery(this).val().replace(/\n/g, '').length == 0) {
                                     empty = true;
                                 }
                             });
-                            if (empty) {
-                                jQuery('button#postCommentButton').attr('disabled', true);
-                            } else {
-                                jQuery('button#postCommentButton').attr('disabled', false);
-                            }
+                            jQuery('button#postCommentButton').attr('disabled', empty);
                         });
                     "/>
                     <property name="cssClasses">
@@ -475,7 +471,7 @@
                 </bean>
                 <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel" p:style="margin: 0 0 0 20px;" p:render="@{feedBackMode eq false ? true : false}">
                     <property name="actionScript"
-                              value="e.preventDefault();e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
+                              value="e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);" />
                 </bean>
                 <ref bean="comment_sent"/>
                 <ref bean="comment_close"/>
