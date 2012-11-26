@@ -279,23 +279,11 @@
         </property>
     </bean>
 
-
-    <bean id="MyPlanLockedImage" parent="Uif-Image"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconLocked.png" p:altText="" p:title="">
-        <property name="render" value="@{#parentLine.completedTerm ? 'true': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'false' : 'false'}"/>
+    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
         <property name="cssClasses">
             <list merge="true">
-                <value>locked</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="MyPlanUnlockedImage" parent="Uif-Image"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconUnlocked.png" p:altText="" p:title="">
-        <property name="render" value="@{#parentLine.completedTerm ? 'false': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'true' : 'false'}"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>unlocked</value>
+                <value>@{#parentLine.completedTerm ? 'locked' : (#parentLine.openForPlanning ? 'unlocked' : 'locked')}</value>
+                <value>myplan-registration-status</value>
             </list>
         </property>
     </bean>
