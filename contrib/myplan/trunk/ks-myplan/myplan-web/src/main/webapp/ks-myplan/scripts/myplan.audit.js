@@ -54,11 +54,14 @@ function initAuditActions() {
         }
     });
     jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function(e) {
-        var jRequirement = jQuery(this).parents(".requirement");
-        if (jRequirement.hasClass("expanded")) {
-            collapseReq(jRequirement, false);
-        } else if (jRequirement.hasClass("collapsed")) {
-            expandReq(jRequirement, false);
+        var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
+        if (target != "a") {
+            var jRequirement = jQuery(this).parents(".requirement");
+            if (jRequirement.hasClass("expanded") && !jRequirement.hasClass("collapsed")) {
+                collapseReq(jRequirement, false);
+            } else { // if (jRequirement.hasClass("collapsed")) {
+                expandReq(jRequirement, false);
+            }
         }
     });
     jQuery(".control-toolbar #requirement-status").change(function() {
