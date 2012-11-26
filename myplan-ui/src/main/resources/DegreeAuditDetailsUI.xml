@@ -408,7 +408,7 @@
                     <property name="items">
                         <list>
                             <bean id="select_programParam_seattle" parent="Uif-InputField"
-                                  p:propertyName="programParamSeattle">
+                                  p:propertyName="programParamSeattle" p:validationMessages.render="false">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
                                         <property name="onChangeScript"
@@ -427,7 +427,7 @@
                     <property name="items">
                         <list>
                             <bean id="select_programParam_bothell" parent="Uif-InputField"
-                                  p:propertyName="programParamBothell"
+                                  p:propertyName="programParamBothell" p:validationMessages.render="false"
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
@@ -447,7 +447,7 @@
                     <property name="items">
                         <list>
                             <bean id="select_programParam_tacoma" parent="Uif-InputField"
-                                  p:propertyName="programParamTacoma"
+                                  p:propertyName="programParamTacoma" p:validationMessages.render="false"
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
