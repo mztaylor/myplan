@@ -1572,8 +1572,7 @@
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <ref bean="MyPlanLockedImage"/>
-                        <ref bean="MyPlanUnlockedImage"/>
+                        <ref bean="MyPlanRegistrationStatusIcon"/>
                     </list>
                 </property>
             </bean>
@@ -1724,8 +1723,7 @@
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <ref bean="MyPlanLockedImage"/>
-                        <ref bean="MyPlanUnlockedImage"/>
+                        <ref bean="MyPlanRegistrationStatusIcon"/>
                     </list>
                 </property>
             </bean>

@@ -724,6 +724,17 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     float: right;
     margin: 7px 0 0 0;
 }
+.myplan-carousel-list ul li .myplan-carousel-term .uif-header .uif-header-lowerGroup .myplan-registration-status {
+    width: 9px;
+    height: 11px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-header .uif-header-lowerGroup .myplan-registration-status.unlocked {
+    background-position: -1px -134px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-header .uif-header-lowerGroup .myplan-registration-status.locked {
+    background-position: -12px -134px;
+}
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-fixed-height .uif-stackedCollectionLayout {
     height: 208px;
 }
