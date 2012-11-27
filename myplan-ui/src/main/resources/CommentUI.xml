@@ -94,7 +94,7 @@
                                     empty = true;
                                 }
                             });
-                            if (code == 13 &amp;&amp; event.target.tagName.toLowerCase() == 'input' &amp;&amp; event.target.type == 'text' &amp;&amp; disabled) {
+                            if (code == 13 &amp;&amp; event.target.tagName.toLowerCase() == 'input' &amp;&amp; event.target.type == 'text' &amp;&amp; empty) {
                                 jQuery('button#cancelMessage').click();
                             }
                             jQuery('button#leaveMessageButton').attr('disabled', empty);
