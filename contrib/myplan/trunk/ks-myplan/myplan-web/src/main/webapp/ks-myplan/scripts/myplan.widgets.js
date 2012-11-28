@@ -964,12 +964,13 @@ var blockPendingAuditStyle = {
         'border-radius': '15px',
         '-webkit-border-radius': '15px',
         '-moz-border-radius': '15px'
-    } /*,
+    },
     overlayCSS: {
         backgroundColor: '#fff',
         opacity: 0.85,
+        border: 'none',
         cursor: 'wait'
-    }*/
+    }
 };
 
 var blockPendingAudit;
@@ -986,7 +987,7 @@ function setLoadingMessage(selector) {
 
 function fnAddLoadingText(selector) {
     clearInterval(blockPendingAudit);
-    //jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
+    jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
     jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl","false");
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(getAuditProgram("name"));
 }
