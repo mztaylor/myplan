@@ -21,6 +21,7 @@ public class CourseLinkBuilderTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
+                {"Complete one GENOME 361, 371 or BIOL/FISH 340", "\n\t\t\t\t\t\t\tComplete one GENOME 361, 371 or BIOL/FISH 340 \n\t\t\t\t\t\t" },
             {"CIV 201",
                     "20 credits, including [unknown::Unknown::ECON 200] and [unknown::Unknown::ECON 201]:"}
                 /*
