@@ -786,8 +786,8 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell:hover {
-    background: #e3f0fe;
-    cursor:pointer;
+    background-color: #e3f0fe;
+    cursor: pointer;
 }
 .myplan-carousel-list .myplan-carousel-term-total {
     background: #f6ebcd;
