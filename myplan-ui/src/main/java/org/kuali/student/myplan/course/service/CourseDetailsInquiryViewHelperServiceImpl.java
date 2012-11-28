@@ -212,14 +212,14 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         List<String> prerequisites = new ArrayList<String>();
 
-        if (str != null && str.contains("Prerequisite")) {
+        if (str != null && str.contains("Prerequisite:")) {
             String req = (getCourseLinkBuilder().makeLinks(str.substring(str.indexOf("Prerequisite:"), str.length()), courseLinkTemplateStyle));
             req = req.substring(req.indexOf("Prerequisite:"), req.length());
             req = req.replace("Prerequisite:", "").trim();
             req = req.substring(0, 1).toUpperCase().concat(req.substring(1, req.length()));
             prerequisites.add(req);
 
-            str = str.substring(0, str.indexOf("Prerequisite"));
+            str = str.substring(0, str.indexOf("Prerequisite:"));
         }
         if (str != null) {
             str = getCourseLinkBuilder().makeLinks(str);
