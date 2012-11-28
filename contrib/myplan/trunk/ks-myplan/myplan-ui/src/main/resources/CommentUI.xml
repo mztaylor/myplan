@@ -885,7 +885,7 @@
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_comments', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="&lt;strong&gt;@{#line.comments.size()}&lt;/strong&gt; comments" p:fieldLabel.render="false"
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments" p:fieldLabel.render="false"
                                   p:render="true"/>
                             <bean parent="Uif-SpaceField" p:style="margin:0;"/> <!--<bean parent="Uif-MessageField" p:messageText="Comments"/>-->
                         </list>
