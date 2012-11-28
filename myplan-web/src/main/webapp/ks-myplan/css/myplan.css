@@ -1748,6 +1748,7 @@ label.scheduled {
     display: none !important;
 }
 .myplan-audit-report .blockUI.blockOverlay {
+    background-color: #fff;
     opacity: .85 !important;
     -moz-opacity: .85 !important;
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 85) !important;
