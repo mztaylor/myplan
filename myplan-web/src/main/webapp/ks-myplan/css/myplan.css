@@ -1744,9 +1744,20 @@ label.scheduled {
     white-space: nowrap;
     padding: 5px 10px;
 }
+.myplan-audit-report iframe.blockUI {
+    display: none !important;
+}
 .myplan-audit-report .blockUI.blockOverlay {
-    opacity: 0.85;
-    background-color: #fff;
+    border: none !important;
+    cursor: wait !important;
+    /* Fallback for web browsers that doesn't support RGBa */
+    background: rgb(255, 255, 255) !important;
+    /* RGBa with 0.6 opacity */
+    background: rgba(255, 255, 255, 0.85) !important;
+   	/* For IE 5.5 - 7*/
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#d8FFFFFF, endColorstr=#d8FFFFFF) !important;
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d8FFFFFF, endColorstr=#d8FFFFFF)" !important;
 }
 .myplan-audit-report .blockUI.blockMsg.blockElement {
     left: 0px !important;
@@ -1768,9 +1779,6 @@ label.scheduled {
 }
 .myplan-audit-report pre a {
     text-decoration: underline;
-}
-.myplan-audit-report .loading-message {
-
 }
 .fancybox-skin {
     background: #fff !important;
