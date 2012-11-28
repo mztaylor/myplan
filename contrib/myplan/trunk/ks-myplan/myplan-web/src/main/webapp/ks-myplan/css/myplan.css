@@ -336,7 +336,8 @@ button.uif-primaryActionButton {
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
     box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #fee495;
 }
-button.uif-primaryActionButton:hover {
+button.uif-primaryActionButton:hover,
+button.uif-primaryActionButton:focus {
     color: #39275b;
 
     border-color: #d6992f;
@@ -376,7 +377,8 @@ button.uif-secondaryActionButton {
     -webkit-box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, 0.2), inset 0px 1px 0px 0px #f7f0e0;
     box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, 0.2), inset 0px 1px 0px 0px #f7f0e0;
 }
-button.uif-secondaryActionButton:hover {
+button.uif-secondaryActionButton:hover,
+button.uif-secondaryActionButton:focus {
     color: #39275b;
 
     border-color: #bea877;
@@ -410,14 +412,20 @@ button.uif-primaryActionButton[disabled="true"],
 button.uif-primaryActionButton[disabled="disabled"],
 button.uif-primaryActionButton[disabled="true"]:hover,
 button.uif-primaryActionButton[disabled="disabled"]:hover,
+button.uif-primaryActionButton[disabled="true"]:focus,
+button.uif-primaryActionButton[disabled="disabled"]:focus,
 button.uif-primaryActionButton.disabled,
 button.uif-primaryActionButton.disabled:hover,
+button.uif-primaryActionButton.disabled:focus,
 button.uif-secondaryActionButton[disabled="true"],
 button.uif-secondaryActionButton[disabled="disabled"],
 button.uif-secondaryActionButton[disabled="true"]:hover,
 button.uif-secondaryActionButton[disabled="disabled"]:hover,
+button.uif-secondaryActionButton[disabled="true"]:focus,
+button.uif-secondaryActionButton[disabled="disabled"]:focus,
 button.uif-secondaryActionButton.disabled,
-button.uif-secondaryActionButton.disabled:hover {
+button.uif-secondaryActionButton.disabled:hover,
+button.uif-secondaryActionButton.disabled:focus {
     color: #ADADAD;
 
     text-shadow: 0px 1px 0px #f2f2f2;
@@ -1180,6 +1188,9 @@ table.myplan-course-search-results-datatable thead tr {
     box-shadow: inset 0px 1px 1px 0px rgba(255, 255, 255, 1);
     border: none;
     border-bottom: solid 1px #e4e4e4;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
 }
 table.myplan-course-search-results-datatable thead tr th {
     border: none;
@@ -1583,6 +1594,11 @@ table.myplan-course-search-results-datatable .blockUI {
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
+    width: 710px;
+    table-layout: fixed;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr {
     background: #F6F6F6;
@@ -1596,17 +1612,28 @@ table.myplan-course-search-results-datatable .blockUI {
     background-image: -webkit-linear-gradient(top, #F6F6F6 0%, #EBEBEB 100%);
     background-image: linear-gradient(to bottom, #F6F6F6 0%, #EBEBEB 100%);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F6F6F6', endColorstr='#E8E8E8')";
+
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th {
     border: none;
     background: transparent;
     background-image: none;
-    font-size: 0.9em;
-    height: 26px;
-    line-height: 26px;
+    padding: 0;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper {
-    display: inline;
+    display: inline-block;
+    font-size: 10px;
+    height: 26px;
+    line-height: 26px;
+    padding: 3px 10px;
+    font-weight: normal;
+}
+.myplan-messages-detail .dataTables_wrapper table thead tr th[aria-sort='ascending'] .DataTables_sort_wrapper,
+.myplan-messages-detail .dataTables_wrapper table thead tr th[aria-sort='descending'] .DataTables_sort_wrapper {
+    color: #06c;
 }
 .myplan-messages-detail .dataTables_wrapper table thead tr th .DataTables_sort_wrapper .ui-icon {
     display: inline-block;
