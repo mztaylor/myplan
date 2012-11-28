@@ -203,9 +203,7 @@
     text-shadow: none;
 }
 .myplan-audit-report .requirement .subrequirement .header .Status_NONE {
-	background-color: transparent;
-	display: block;
-    border-color: transparent;
+    text-shadow: none;
 }
 .myplan-audit-report .requirement .subrequirement .header .required.subreqNumber {
     width: 30px;
