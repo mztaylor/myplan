@@ -314,7 +314,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style) {
         courseLinkTemplateStyle = style;
     }
-
+/*
     public AuditReportInfo getDARSReport(String auditId) {
         JobQueueRunLoader jqrl = getJobQueueRunLoader();
         JobQueueRun run = jqrl.loadJobQueueRun(auditId);
@@ -386,7 +386,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditReportInfo;
 
     }
-
+ */
     String padfront(String source) {
         StringBuilder sb = new StringBuilder();
         boolean front = true;
@@ -429,16 +429,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Object ugh = expr.evaluate(doc, XPathConstants.NODESET);
             NodeList nodeList = (NodeList) ugh;
 
-            System.out.println("found: " + nodeList.getLength());
             Node root = nodeList.item(0);
 
-            String path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/span[contains(@class,'text')]/text()";
-            crazyDOMLinkifier(doc, xpath, path, builder);
-
-            path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/span[contains(@class,'text')]/text()";
-            crazyDOMLinkifier(doc, xpath, path, builder);
-
-            path = "//div[contains(@class,'subrequirement')]/table[contains(@class,'taken')]/tbody/tr/td[contains(@class,'course')]/text()";
+            String path = "//*[contains(@class,'linkify')]/text()";
             crazyDOMLinkifier(doc, xpath, path, builder);
 
             path = "//div[contains(@class,'advisory')]/text()";
@@ -451,7 +444,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             ineptURLLinkifier(doc, xpath, path, builder);
 
             {
-                String preparedFor = UserSessionHelper.getNameCamelCased(UserSessionHelper.getStudentId());
+                String preparedFor = UserSessionHelper.getNameCapitalized(UserSessionHelper.getStudentId());
                 path = "//span[contains(@class,'prepared-for-name')]/text()";
                 XPathExpression godot = xpath.compile(path);
                 Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
@@ -490,6 +483,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
             String scurge = child.getTextContent();
+            scurge = scurge.trim();
             scurge = scurge.replace("&", "&amp;");
             scurge = scurge.replace("<", "&lt;");
             scurge = scurge.replace(">", "&gt;");

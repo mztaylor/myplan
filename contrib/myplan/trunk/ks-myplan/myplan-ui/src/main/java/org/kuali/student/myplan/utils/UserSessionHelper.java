@@ -137,18 +137,33 @@ public class    UserSessionHelper {
      * @param principleId
      * @return The name in first last format.
      */
-    public synchronized static String getNameCamelCased(String principleId) {
-        Person person = null;
-        try {
-            person = getPersonService().getPerson(principleId);
-        } catch (Exception e) {
+    public synchronized static String getNameCapitalized( String principleId )
+    {
+
+        try
+        {
+            Person person = getPersonService().getPerson(principleId);
+
+            String firstName = capitalize(person.getFirstName());
+            String middleName = capitalize(person.getMiddleName());
+            String lastName = capitalize(person.getLastName());
+
+            return firstName + " " + middleName + " " + lastName;
+        }
+        catch (Exception e)
+        {
             logger.error("Could not load the Person Information", e);
         }
-        if (person != null) {
-            return person.getFirstName().substring(0,1).toUpperCase()+person.getFirstName().substring(1,person.getFirstName().length())+" "+ person.getLastName().substring(0,1).toUpperCase()+person.getLastName().substring(1,person.getLastName().length());
-        } else {
-            return null;
-        }
+
+        return null;
+
+    }
+
+    public static String capitalize( String value )
+    {
+        if( value == null ) return null;
+        if( value.length() == 0 ) return value;
+        return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
     public synchronized static String getMailAddress(String principleId) {

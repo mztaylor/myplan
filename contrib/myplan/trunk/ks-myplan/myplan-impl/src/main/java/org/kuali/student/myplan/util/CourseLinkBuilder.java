@@ -199,10 +199,12 @@ public class CourseLinkBuilder {
         matcher = courseNumberPattern.matcher(rawText);
         boolean isCourseNumberPattern = false;
         while (matcher.find()) {
-            isCourseNumberPattern = true;
             String number = matcher.group(1);
+            // Do not link (skip) 100, 200, 300, 400, etc level courses
+            if( number.endsWith( "00" )) continue;
             String courseCode = String.format("%s %s", curriculumAbbreviation, number);
             placeHolders.put(number, makeLink(courseCode, number, template));
+            isCourseNumberPattern = true;
         }
 
         //  Substitute plain text with links.
