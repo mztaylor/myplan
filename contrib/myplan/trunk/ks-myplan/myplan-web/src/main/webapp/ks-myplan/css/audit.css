@@ -207,11 +207,25 @@
 }
 .myplan-audit-report .requirement .subrequirement .header .required.subreqNumber {
     width: 30px;
+    text-align: right;
 }
 .myplan-audit-report .requirement .subrequirement .header .title {
 	text-overflow: clip;
 	cursor: default;
     width: 514px;
+}
+.myplan-audit-report .requirement .subrequirement.justtitle {
+    padding: 10px 0px;
+}
+.myplan-audit-report .requirement .subrequirement.justtitle .subreqNumber.required {
+	display: none;
+}
+.myplan-audit-report .requirement .subrequirement.justtitle .title {
+	margin-left: 80px;
+    font-weight: bold;
+    border-top:dotted 1px #ccc;
+    border-bottom:dotted 1px #ccc;
+    padding: 4px 0px;
 }
 .myplan-audit-report table,
 .myplan-audit-report table th,
