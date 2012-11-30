@@ -39,6 +39,8 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
     private List<String> styleClasses;
     private List<String> emptyListStyleClasses;
 
+    private boolean applyClassOnItem = false;
+
     public CollectionListPropertyEditor() {
         styleClasses = new ArrayList<String>();
         emptyListStyleClasses = new ArrayList<String>();
@@ -111,8 +113,10 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
         StringBuilder elementText = new StringBuilder();
 
         // Strip out any numbers from the value and use the text for class on the list item
-        String liClass = value.replaceAll("\\d*$","").trim();
-        elementText.append("<" + listType.getListItemElementName() +" class=\""+ liClass + "\">");
+        // Apply style class on item only if specified to do so
+        String liClass = (applyClassOnItem) ? " class=\"" + value.replaceAll("\\d*$","").trim() +  "\"" : "";
+        elementText.append("<" + listType.
+                getListItemElementName() + liClass + ">");
         elementText.append(value);
         elementText.append("</" + listType.getListItemElementName() + ">");
         return elementText.toString();
@@ -173,5 +177,13 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
             return StringUtils.join(emptyListStyleClasses, " ");
         }
         return "";
+    }
+
+    public boolean isApplyClassOnItem() {
+        return applyClassOnItem;
+    }
+
+    public void setApplyClassOnItem(boolean applyClassOnItem) {
+        this.applyClassOnItem = applyClassOnItem;
     }
 }
