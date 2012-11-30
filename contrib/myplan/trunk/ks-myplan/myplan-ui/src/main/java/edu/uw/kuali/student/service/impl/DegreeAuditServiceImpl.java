@@ -423,18 +423,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             Document doc = builder.parse(in);
 
-            XPathFactory crapfactory = XPathFactory.newInstance();
-            XPath xpath = crapfactory.newXPath();
+            XPathFactory newInstanceXPathFactory = XPathFactory.newInstance();
+            XPath xpath = newInstanceXPathFactory.newXPath();
             XPathExpression expr = xpath.compile("/html/div");
-            Object ugh = expr.evaluate(doc, XPathConstants.NODESET);
-            NodeList nodeList = (NodeList) ugh;
+            Object untypedRootDegreeAuditHTMLContentDIVNodeList = expr.evaluate(doc, XPathConstants.NODESET);
+            NodeList rootDegreeAuditHTMLContentDIVNodeList = (NodeList) untypedRootDegreeAuditHTMLContentDIVNodeList;
 
-            Node root = nodeList.item(0);
+            Node rootDegreeAuditHTMLContentDIV = rootDegreeAuditHTMLContentDIVNodeList.item(0);
 
-            String path = "//*[contains(@class,'linkify')]/text()";
-            crazyDOMLinkifier(doc, xpath, path, builder);
+            findClassLinkifyTextAndConvertCoursesToLinks(doc, builder);
 
-            path = "//div[contains(@class,'advisory')]/text()";
+            String path = "//div[contains(@class,'advisory')]/text()";
             ineptURLLinkifier( doc, xpath, path, builder );
 
             path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
@@ -460,7 +459,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "html");
-            DOMSource source = new DOMSource(root);
+            DOMSource source = new DOMSource(rootDegreeAuditHTMLContentDIV);
             StringWriter sw = new StringWriter();
             StreamResult result = new StreamResult(sw);
 
@@ -476,37 +475,41 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditReportInfo;
     }
 
-    public void crazyDOMLinkifier(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
-        XPathExpression godot = xpath.compile(path);
-        Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
-        NodeList godotList = (NodeList) godotSet;
-        for (int nth = 0; nth < godotList.getLength(); nth++) {
-            Node child = godotList.item(nth);
-            String scurge = child.getTextContent();
-            scurge = scurge.trim();
-            scurge = scurge.replace("&", "&amp;");
-            scurge = scurge.replace("<", "&lt;");
-            scurge = scurge.replace(">", "&gt;");
-            String victim = CourseLinkBuilder.makeLinks(scurge, courseLinkTemplateStyle);
-            if (!scurge.equals(victim)) {
+    public void findClassLinkifyTextAndConvertCoursesToLinks(Document doc, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
+        XPathFactory xpathFactory = XPathFactory.newInstance();
+        XPath xpath = xpathFactory.newXPath();
+        String path = "//*[contains(@class,'linkify')]/text()";
+        XPathExpression xpathExpression = xpath.compile(path);
+        Object untypedClassLinkifyNodeList = xpathExpression.evaluate(doc, XPathConstants.NODESET);
+        NodeList classLinkifyNodeList = (NodeList) untypedClassLinkifyNodeList;
+        for (int nth = 0; nth < classLinkifyNodeList.getLength(); nth++) {
+            Node child = classLinkifyNodeList.item(nth);
+            String textContent = child.getTextContent();
+            textContent = textContent.replace("&", "&amp;");
+            textContent = textContent.replace("<", "&lt;");
+            textContent = textContent.replace(">", "&gt;");
+            textContent = textContent.replace('\n', ' ');
+            textContent = textContent.replace('\t', ' ');
+            textContent = textContent.trim();
+            String linkifiedTextContent = CourseLinkBuilder.makeLinks(textContent, courseLinkTemplateStyle);
+            if (!textContent.equals(linkifiedTextContent)) {
 //                victim = victim.replace("&", "&amp;");
 
-                victim = "<span>" + victim + "</span>";
+                linkifiedTextContent = "<span>" + linkifiedTextContent + "</span>";
 
-                System.out.println( victim );
                 builder.reset();
                 try
                 {
-                    Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
-                    Node fake = whoopie.getDocumentElement();
+                    Document document = builder.parse(new InputSource(new StringReader(linkifiedTextContent)));
+                    Node root = document.getDocumentElement();
 
                     Node parent = child.getParentNode();
-                    Node crank = doc.importNode(fake, true);
-                    parent.replaceChild(crank, child);
+                    Node newRoot = doc.importNode(root, true);
+                    parent.replaceChild(newRoot, child);
                 }
                 catch( Exception e )
                 {
-                    logger.error("crazyDOMLinkifier failed on '" + victim + "'", e);
+                    logger.error("findClassLinkifyTextAndConvertCoursesToLinks failed on '" + linkifiedTextContent + "'", e);
                 }
             }
         }
