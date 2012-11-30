@@ -181,6 +181,10 @@
 	background-color: transparent;
 	display: none;
 }
+.myplan-audit-report .requirement .subrequirement .status.Status_NONE {
+	visibility: hidden;
+	display: block;
+}
 .myplan-audit-report .requirement .body {
 	clear: both;
 	margin: 20px 0 0 66px;
@@ -212,8 +216,9 @@
 .myplan-audit-report .requirement .subrequirement .header .title {
 	text-overflow: clip;
 	cursor: default;
-    width: 514px;
+    width: 474px;
 }
+/*
 .myplan-audit-report .requirement .subrequirement.justtitle {
     padding: 10px 0px;
 }
@@ -227,6 +232,7 @@
     border-bottom:dotted 1px #ccc;
     padding: 4px 0px;
 }
+*/
 .myplan-audit-report table,
 .myplan-audit-report table th,
 .myplan-audit-report table td {
