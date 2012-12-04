@@ -185,7 +185,7 @@ public class CourseLinkBuilder {
         boolean isUndoTo = false;
         if (matcher.find()) {
             rawText = rawText.replace(" TO ", " to ");
-            isUndoTo=true;
+            isUndoTo = true;
         }
 
         //  Look for simple course codes.
@@ -200,8 +200,6 @@ public class CourseLinkBuilder {
         boolean isCourseNumberPattern = false;
         while (matcher.find()) {
             String number = matcher.group(1);
-            // Do not link (skip) 100, 200, 300, 400, etc level courses
-            if( number.endsWith( "00" )) continue;
             String courseCode = String.format("%s %s", curriculumAbbreviation, number);
             placeHolders.put(number, makeLink(courseCode, number, template));
             isCourseNumberPattern = true;
@@ -225,7 +223,7 @@ public class CourseLinkBuilder {
         if (isUndoOrAnd) {
             rawText = rawText.replace(" or ", " OR ");
         }
-        if(isUndoTo){
+        if (isUndoTo) {
             rawText = rawText.replace(" to ", " TO ");
         }
         return rawText;
@@ -281,7 +279,10 @@ public class CourseLinkBuilder {
 
         String link = null;
 
-        if (!template.equals(LINK_TEMPLATE.TEST)) {
+        // Do not link (skip) 100, 200, 300, 400, etc level courses
+        if (number.endsWith("00")) {
+            link = label;
+        } else if (!template.equals(LINK_TEMPLATE.TEST)) {
             try {
                 Map<String, String> results = getCourseInfo(code, number);
                 if (results.size() > 0) {
