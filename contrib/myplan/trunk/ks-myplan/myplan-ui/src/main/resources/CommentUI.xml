@@ -778,7 +778,7 @@
         </property>
     </bean>
 
-    <bean id="messages_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
+    <bean id="messages_detail" parent="Uif-VerticalBoxSubSection" p:validationMessages.render="false" p:style="width: 710px; margin-right: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-messages-detail</value>
@@ -812,6 +812,8 @@
                 <entry key="sDom" value="irtp"/>
                 <entry key="aaSorting" value="[]"/>
                 <entry key="bSortClasses" value="false"/>
+                <entry key="bDeferRender" value="true"/>
+                <entry key="bAutoWidth" value="false"/>
                 <entry key="oLanguage"
                        value="{
                             'sEmptyTable':'You do not have any messages',
@@ -839,7 +841,7 @@
         </property>
         <property name="items">
             <list>
-                <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject">
+                <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject" p:group.validationMessages.render="false">
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_subject', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
@@ -864,7 +866,7 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_received" parent="Uif-VerticalFieldGroup" p:label="Received">
+                <bean p:id="@{#line.messageId}_received" parent="Uif-VerticalFieldGroup" p:label="Received" p:group.validationMessages.render="false">
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_received', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
@@ -881,7 +883,7 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_comments" parent="Uif-VerticalFieldGroup" p:label="Comments">
+                <bean p:id="@{#line.messageId}_comments" parent="Uif-VerticalFieldGroup" p:label="Comments" p:group.validationMessages.render="false">
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_comments', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
@@ -892,7 +894,7 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_lastcomment" parent="Uif-VerticalFieldGroup" p:label="Last Comment">
+                <bean p:id="@{#line.messageId}_lastcomment" parent="Uif-VerticalFieldGroup" p:label="Last Comment" p:group.validationMessages.render="false">
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}_lastcomment', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
