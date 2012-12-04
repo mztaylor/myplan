@@ -1661,7 +1661,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-messages-detail .dataTables_wrapper table tbody tr td {
     border: none;
 }
-.myplan-messages-detail .dataTables_wrapper table tbody tr:hover {
+.myplan-messages-detail .dataTables_wrapper table tbody tr:hover td {
     background-color: #e3f0fe;
 }
 .myplan-messages-detail .dataTables_wrapper .dataTables_paginate.paging_full_numbers {
