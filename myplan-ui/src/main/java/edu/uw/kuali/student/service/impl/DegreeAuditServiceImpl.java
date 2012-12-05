@@ -485,9 +485,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int nth = 0; nth < classLinkifyNodeList.getLength(); nth++) {
             Node child = classLinkifyNodeList.item(nth);
             String textContent = child.getTextContent();
-            textContent = textContent.replace("&", "&amp;");
-            textContent = textContent.replace("<", "&lt;");
-            textContent = textContent.replace(">", "&gt;");
+//            textContent = textContent.replace("&", "&amp;");
+//            textContent = textContent.replace("<", "&lt;");
+//            textContent = textContent.replace(">", "&gt;");
             textContent = textContent.replace('\n', ' ');
             textContent = textContent.replace('\t', ' ');
             textContent = textContent.trim();
@@ -522,9 +522,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
             String scurge = child.getTextContent();
-            scurge = scurge.replace("&", "&amp;");
-            scurge = scurge.replace("<", "&lt;");
-            scurge = scurge.replace(">", "&gt;");
+//            scurge = scurge.replace("&", "&amp;");
+//            scurge = scurge.replace("<", "&lt;");
+//            scurge = scurge.replace(">", "&gt;");
             String victim = tangerine(scurge);
             if (!scurge.equals(victim)) {
 //                victim = victim.replace("&", "&amp;");
