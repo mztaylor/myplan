@@ -143,12 +143,13 @@ public class    UserSessionHelper {
         try
         {
             Person person = getPersonService().getPerson(principleId);
+            return person.getName().toUpperCase();
 
-            String firstName = capitalize(person.getFirstName());
-            String middleName = capitalize(person.getMiddleName());
-            String lastName = capitalize(person.getLastName());
+//            String firstName = capitalize(person.getFirstName());
+//            String middleName = capitalize(person.getMiddleName());
+//            String lastName = capitalize(person.getLastName());
 
-            return firstName + " " + middleName + " " + lastName;
+            //return firstName + " " + middleName + " " + lastName;
         }
         catch (Exception e)
         {
