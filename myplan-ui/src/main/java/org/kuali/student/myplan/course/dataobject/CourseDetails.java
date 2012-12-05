@@ -26,6 +26,7 @@ public class CourseDetails extends CourseSummaryDetails {
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
 
+
     // Plan related information
     private transient List<PlanItemDataObject> plannedList;
     private transient List<PlanItemDataObject> backupList;
@@ -34,6 +35,7 @@ public class CourseDetails extends CourseSummaryDetails {
     private transient String savedItemId;
     private String savedItemDateCreated;
 
+    private CourseOfferingDetails courseOfferingDetails;
 
     public String getLastOffered() {
         return lastOffered;
@@ -170,6 +172,14 @@ public class CourseDetails extends CourseSummaryDetails {
 
     public void setAcademicTerms(List<String> academicTerms) {
         this.academicTerms = academicTerms;
+    }
+
+    public CourseOfferingDetails getCourseOfferingDetails() {
+        return courseOfferingDetails;
+    }
+
+    public void setCourseOfferingDetails(CourseOfferingDetails courseOfferingDetails) {
+        this.courseOfferingDetails = courseOfferingDetails;
     }
 
 
