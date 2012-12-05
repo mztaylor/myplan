@@ -14,9 +14,9 @@
     <div id="content">
         <h2>SOME OLD DOGS CAN'T LEARN A NEW TRICK.</h2>
         <p>It appears that your browser needs to be updated in order to view MyPlan.</p>
-        <p><a href="http://depts.washington.edu/myplan/help-site/">Visit the Help page</a> to learn more about compatible browsers.</p>
+        <p><a href="http://depts.washington.edu/myplan/help-site/#1030">Visit the Help page</a> to learn more about compatible browsers.</p>
     </div>
-    <div id="more">Still can't find it? Visit our <a href="https://depts.washington.edu/myplan/help-site/#1030">help page</a> or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.</div>
+    <div id="more">Still can't find it? Visit our <a href="https://depts.washington.edu/myplan/help-site/">help page</a> or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.</div>
 </div>
 </body>
 
