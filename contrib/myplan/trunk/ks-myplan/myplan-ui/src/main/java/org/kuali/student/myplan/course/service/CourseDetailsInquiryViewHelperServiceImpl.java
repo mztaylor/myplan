@@ -19,6 +19,7 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.myplan.course.dataobject.*;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -38,7 +39,6 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -368,6 +368,82 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     courseDetails.setBackupList(backupList);
                 }
             }
+
+            CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
+            List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode( "A" );
+                item.setActivityOfferingType(ActivityOfferingType.Lecture );
+                item.setCredits( 5 );
+                item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
+                item.setLocation( "KNE 210" );
+                item.setSLN( 12345 );
+                item.setEnrollRestriction( true );
+                item.setEnrollOpen( true );
+                item.setEnrollCount( 123 );
+                item.setEnrollMaximum( 220 );
+                item.setInstructor( "Pitchford, Susan" );
+                item.setServiceLearning( true );
+                item.setDetails( "View Section Notes and Textbook information" );
+                activityList.add( item );
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("AA");
+                item.setActivityOfferingType(ActivityOfferingType.Quiz);
+                item.setCredits(0);
+                item.setMeetingTime("Th 11:30 - 12:20 AM");
+                item.setLocation("MGH 220");
+                item.setSLN(12346);
+                item.setEnrollRestriction(true);
+                item.setEnrollOpen(false);
+                item.setEnrollCount(123);
+                item.setEnrollMaximum(220);
+                item.setInstructor("Pitchford, Susan");
+                item.setServiceLearning(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("AB");
+                item.setActivityOfferingType(ActivityOfferingType.Quiz);
+                item.setCredits(0);
+                item.setMeetingTime("Th 11:30 - 12:20 AM");
+                item.setLocation("SIG 120");
+                item.setSLN(12347);
+                item.setEnrollRestriction(false);
+                item.setEnrollOpen(true);
+                item.setEnrollCount(23);
+                item.setEnrollMaximum(34);
+                item.setInstructor("TBD");
+                item.setWritingSection(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("AC");
+                item.setActivityOfferingType(ActivityOfferingType.Quiz);
+                item.setCredits(0);
+                item.setMeetingTime("Th 12:30 - 1:20 PM");
+                item.setLocation("SIG 110");
+                item.setSLN(12348);
+                item.setEnrollRestriction(false);
+                item.setEnrollOpen(true);
+                item.setEnrollCount(12);
+                item.setEnrollMaximum(34);
+                item.setInstructor("TBD");
+                item.setWritingSection(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
