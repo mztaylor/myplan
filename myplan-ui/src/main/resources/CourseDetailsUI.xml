@@ -110,7 +110,7 @@
 
 
                             <ref bean="course_details_overview"/>
-                            <ref bean="course_details_links"/>
+                            <!--<ref bean="course_details_links"/>-->
                             <ref bean="course_details_section_data"/>
                         </list>
                     </property>
@@ -211,19 +211,23 @@
 
     </bean>
 
-    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="Course Overview">
+    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="&lt;strong&gt;Course Overview&lt;/strong&gt;">
         <property name="header">
-            <bean parent="Uif-HeaderThree"/>
+            <bean parent="Uif-HeaderThree">
+                <property name="style" value="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
+            </bean>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-DataField" p:propertyName="abbrGenEdRequirements"
-                              p:fieldLabel.renderColon="false" p:escapeHtmlInPropertyValue="false">
+                        <bean parent="Uif-DataField" p:propertyName="genEdRequirements"
+                              p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>myplan-data-list</value>
+                                    <value>fl-text-gray</value>
+                                    <value>myplan-text-normal</value>
                                 </list>
                             </property>
                             <property name="propertyEditor" ref="data_list_formatter"/>
@@ -251,7 +255,7 @@
                     <property name="items">
                         <list>
                             <!--Course Description-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -295,7 +299,7 @@
                             </bean>
 
                             <!--Course Requisites-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
 
                                 <property name="items">
                                     <list>
@@ -363,7 +367,7 @@
                                 </property>
                             </bean>
                             <!--Quarters-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
 
                                 <property name="items">
                                     <list>
@@ -477,7 +481,7 @@
                             </bean>
 
                             <!--Credits-->
-                            <!--<bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <!--<bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -516,7 +520,7 @@
                             </bean>-->
 
                             <!--Genedu-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -548,7 +552,7 @@
 
                                                         <property name="cssClasses">
                                                             <list merge="true">
-                                                                <value>myplan-stacked-list</value>
+                                                                <value>myplan-data-list</value>
                                                             </list>
                                                         </property>
                                                         <property name="propertyEditor"
@@ -563,7 +567,7 @@
                             </bean>
 
                             <!--Curriculum-->
-                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -619,7 +623,7 @@
                             </bean>
 
                             <!--Campus-->
-                            <!--<bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:style="padding-top: 10px;" p:group.validationMessages.render="false">
+                            <!--<bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.renderColon="false" p:group.validationMessages.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -763,7 +767,12 @@
     </bean>-->
 
     <bean id="course_details_section_data" parent="Uif-TableCollectionSection">
-        <property name="headerText" value="Course Sections new"/>
+        <property name="headerText" value="@{dataObject.code} &lt;strong&gt;Course Sections&lt;/strong&gt;"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree">
+                <property name="style" value="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
+            </bean>
+        </property>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="courseOfferingDetails.activityOfferingItemList"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
@@ -772,6 +781,12 @@
         <property name="layoutManager.richTable.templateOptions">
             <map merge="true">
                 <entry key="aoColumnDefs" value="[{&quot;sWidth&quot; : &quot;20px&quot;, &quot;aTargets&quot; : [0]}]"/>
+                <entry key="bPaginate" value="false"/>
+                <entry key="bSort" value="false"/>
+                <entry key="bAutoWidth" value="false"/>
+                <entry key="bLengthChange" value="false"/>
+                <entry key="bFilter" value="false"/>
+                <entry key="sDom" value="it"/>
             </map>
         </property>
         <property name="layoutManager.rowDetailsGroup">
@@ -787,7 +802,46 @@
         <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="code" p:label="Section"/>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="Type (Credit)" p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false"/>
+                            <bean parent="Uif-Message" p:messageText="(" p:render="@{#line.credits gt 0}"/>
+                            <bean parent="Uif-DataField" p:propertyName="credits" p:fieldLabel.render="false" p:render="@{#line.credits gt 0}"/>
+                            <bean parent="Uif-Message" p:messageText=")" p:render="@{#line.credits gt 0}"/>
+                        </list>
+                    </property>
+                </bean>
                 <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:label="Type"/>
+                <bean parent="Uif-DataField" p:propertyName="meetingTime" p:label="Meeting Time"/>
+                <bean parent="Uif-DataField" p:propertyName="location" p:label="Location"/>
+                <bean parent="Uif-DataField" p:propertyName="sln" p:label="SLN"/>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}"/>
+                            <bean parent="Uif-Link" p:linkText="View Restriction" p:href="#" p:render="@{#line.enrollRestriction}"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit" p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message" p:messageText="@{#line.enrollCount} / @{#line.enrollMaximum}" p:render="@{#line.enrollOpen}"/>
+                            <bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}"/>
+                            <!--<bean parent="Uif-DataField" p:propertyName="enrollCount" p:fieldLabel.render="false"/>
+                            <bean parent="Uif-Message" p:messageText="/"/>
+                            <bean parent="Uif-DataField" p:propertyName="enrollMaximum" p:fieldLabel.render="false"/>-->
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ImageField" p:label="Add" p:altText="Add" p:title="Add" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-add</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

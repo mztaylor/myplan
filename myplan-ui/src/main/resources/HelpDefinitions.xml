@@ -51,8 +51,9 @@
                     align: 'left',
                     hidden: false
                 },
-                themeMargins: {total:'22px', difference:'10px'},
-                themeName: 'black',
+                themeMargins: {total:'18px', difference:'8px'},
+                themeName: 'myplan-help',
+                themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
                 selectable: true,
                 width: '250px',
                 closingDelay: 500
@@ -74,8 +75,9 @@
                     align: 'left',
                     hidden: false
                 },
-                themeMargins: {total:'22px', difference:'10px'},
-                themeName: 'black',
+                themeMargins: {total:'18px', difference:'8px'},
+                themeName: 'myplan-help',
+                themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
                 selectable: true,
                 width: '250px',
                 closingDelay: 500
@@ -96,8 +98,9 @@
                     align: 'left',
                     hidden: false
                 },
-                themeMargins: {total:'22px', difference:'10px'},
-                themeName: 'black',
+                themeMargins: {total:'18px', difference:'8px'},
+                themeName: 'myplan-help',
+                themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
                 selectable: true,
                 width: '250px',
                 closingDelay: 500
@@ -118,8 +121,9 @@
                     align: 'left',
                     hidden: false
                 },
-                themeMargins: {total:'22px', difference:'10px'},
-                themeName: 'black',
+                themeMargins: {total:'18px', difference:'8px'},
+                themeName: 'myplan-help',
+                themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
                 selectable: true,
                 width: '250px',
                 closingDelay: 500
@@ -146,8 +150,9 @@
                         align: 'left',
                         hidden: false
                     },
-                    themeMargins: {total:'22px', difference:'10px'},
-                    themeName: 'black',
+                    themeMargins: {total:'18px', difference:'8px'},
+                    themeName: 'myplan-help',
+                    themePath: '../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
                     selectable: true,
                     width: '250px',
                     closingDelay: 500
@@ -189,16 +194,15 @@
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="&lt;strong&gt;General Education Requirements&lt;/strong&gt; &lt;/br&gt;
-                                                                 &lt;strong&gt;C&lt;/strong&gt; - English Composition&lt;/br&gt;
-                                                                 &lt;strong&gt;W&lt;/strong&gt; - Additional Writing&lt;/br&gt;
-                                                                 &lt;strong&gt;Q&lt;/strong&gt; - Quantitative and Symbolic Reasoning&lt;/br&gt;
-                                                                 &lt;strong&gt;VLPA&lt;/strong&gt;  - Visual, Literary, and Performing Arts&lt;/br&gt;
-                                                                 &lt;strong&gt;I&amp;S&lt;/strong&gt; - Individuals and Societies&lt;/br&gt;
-                                                                 &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
-                                                                 &lt;strong&gt;None&lt;/strong&gt; - Does not count towards General Education Requirements&lt;/br&gt;
-                                                                 &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php');&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
+                                    &lt;strong&gt;C&lt;/strong&gt; - English Composition&lt;/br&gt;
+                                    &lt;strong&gt;W&lt;/strong&gt; - Additional Writing&lt;/br&gt;
+                                    &lt;strong&gt;Q&lt;/strong&gt; - Quantitative and Symbolic Reasoning&lt;/br&gt;
+                                    &lt;strong&gt;VLPA&lt;/strong&gt;  - Visual, Literary, and Performing Arts&lt;/br&gt;
+                                    &lt;strong&gt;I&amp;S&lt;/strong&gt; - Individuals and Societies&lt;/br&gt;
+                                    &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
+                                    &lt;strong&gt;None&lt;/strong&gt; - Does not count towards General Education Requirements&lt;/br&gt;
+                                    &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php');&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
         </property>
     </bean>
-
 
 </beans>

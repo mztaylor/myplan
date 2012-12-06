@@ -76,11 +76,11 @@ public class ActivityOfferingItem {
         this.location = location;
     }
 
-    public int getSLN() {
+    public int getSln() {
         return sln;
     }
 
-    public void setSLN(int sln) {
+    public void setSln(int sln) {
         this.sln = sln;
     }
 

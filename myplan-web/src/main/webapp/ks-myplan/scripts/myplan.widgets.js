@@ -886,7 +886,7 @@ function myplanLightBoxLink(href, options, e) {
 function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
     var elementInfo = getHoverElement(id);
     var element = elementInfo.element;
-    options['themePath'] = "../krad/plugins/tooltip/jquerybubblepopup-theme/";
+    if (typeof options['themePath'] === "undefined") options['themePath'] = "../krad/plugins/tooltip/jquerybubblepopup-theme/";
 
     // Check to see if a data attribute help is defined. Use that if defined.
     // This is built so that SpringEL can be used for generating the html. But it
