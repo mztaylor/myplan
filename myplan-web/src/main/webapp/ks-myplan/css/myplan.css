@@ -1397,6 +1397,33 @@ table.myplan-course-search-results-datatable .blockUI {
     width: 515px;
     margin: 0;
 }
+.myplan-course-sections table.uif-tableCollectionLayout {
+    border: solid 1px #ccc;
+}
+.myplan-course-sections table.uif-tableCollectionLayout thead tr {
+    border: none;
+    background: transparent;
+}
+.myplan-course-sections table.uif-tableCollectionLayout thead tr th {
+    border: none;
+    text-transform: uppercase;
+    font-weight: normal;
+    padding: 2px;
+    background: transparent;
+    font-size: 10px;
+    border-left: 1px dotted #ccc;
+    color: #777;
+}
+.myplan-course-sections table.uif-tableCollectionLayout thead tr th label {
+    font-weight: normal;
+}
+.myplan-course-sections table.uif-tableCollectionLayout td {
+    padding: 2px;
+    border-color: #a3a3a3;
+}
+.myplan-course-sections table.uif-tableCollectionLayout td a {
+    white-space: normal;
+}
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;

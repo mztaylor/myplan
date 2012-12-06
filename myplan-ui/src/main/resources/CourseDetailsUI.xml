@@ -773,14 +773,19 @@
                 <property name="style" value="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
             </bean>
         </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-sections</value>
+            </list>
+        </property>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="courseOfferingDetails.activityOfferingItemList"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
-        <property name="layoutManager.rowDetailsUseImage" value="true"/>
+        <property name="layoutManager.rowDetailsUseImage" value="false"/>
+        <property name="layoutManager.rowDetailsLinkName" value="View more"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="layoutManager.richTable.templateOptions">
             <map merge="true">
-                <entry key="aoColumnDefs" value="[{&quot;sWidth&quot; : &quot;20px&quot;, &quot;aTargets&quot; : [0]}]"/>
                 <entry key="bPaginate" value="false"/>
                 <entry key="bSort" value="false"/>
                 <entry key="bAutoWidth" value="false"/>
@@ -806,9 +811,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false"/>
-                            <bean parent="Uif-Message" p:messageText="(" p:render="@{#line.credits gt 0}"/>
-                            <bean parent="Uif-DataField" p:propertyName="credits" p:fieldLabel.render="false" p:render="@{#line.credits gt 0}"/>
-                            <bean parent="Uif-Message" p:messageText=")" p:render="@{#line.credits gt 0}"/>
+                            <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.credits gt 0}"/>
                         </list>
                     </property>
                 </bean>
