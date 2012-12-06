@@ -1,3 +1,7 @@
+/*! Simple AJAX Polling Plugin for jQuery
+* http://www.nickriggs.com/posts/simple-ajax-polling-plugin-for-jquery/
+* Nick Riggs */
+
 (function($) {
 
     jQuery.ajaxPoll = function(s) {
