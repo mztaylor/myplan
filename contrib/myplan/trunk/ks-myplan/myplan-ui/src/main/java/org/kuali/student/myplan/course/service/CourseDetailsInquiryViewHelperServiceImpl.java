@@ -378,7 +378,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setCredits( 5 );
                 item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
                 item.setLocation( "KNE 210" );
-                item.setSLN( 12345 );
+                item.setSln(12345);
                 item.setEnrollRestriction( true );
                 item.setEnrollOpen( true );
                 item.setEnrollCount( 123 );
@@ -396,7 +396,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setCredits(0);
                 item.setMeetingTime("Th 11:30 - 12:20 AM");
                 item.setLocation("MGH 220");
-                item.setSLN(12346);
+                item.setSln(12346);
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
                 item.setEnrollCount(123);
@@ -414,7 +414,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setCredits(0);
                 item.setMeetingTime("Th 11:30 - 12:20 AM");
                 item.setLocation("SIG 120");
-                item.setSLN(12347);
+                item.setSln(12347);
                 item.setEnrollRestriction(false);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(23);
@@ -432,7 +432,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setCredits(0);
                 item.setMeetingTime("Th 12:30 - 1:20 PM");
                 item.setLocation("SIG 110");
-                item.setSLN(12348);
+                item.setSln(12348);
                 item.setEnrollRestriction(false);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(12);

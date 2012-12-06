@@ -462,13 +462,15 @@ button img.rightArrowSmall {
     background: url('../images/myplan_icon_sprites.png') no-repeat -55px -102px;
     vertical-align: -1px;
 }
-input.myplan-add {
+input.myplan-add,
+.uif-imageField.myplan-add img.uif-image {
     width: 16px;
     height: 16px;
     background: url('../images/myplan_icon_sprites.png') no-repeat 0px 0px;
     vertical-align: middle;
 }
-input.myplan-add:hover {
+input.myplan-add:hover,
+.uif-imageField.myplan-add img.uif-image:hover {
     background-position: -16px 0px;
 }
 .myplan-stacked-list,
@@ -1148,24 +1150,24 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     text-decoration: none;
 }
 /* Styles for course search results ########################################################################### */
-.dataTables_wrapper {
+.myplan-course-search-results .dataTables_wrapper {
     width: 550px;
     float: left;
     clear: none;
     margin: 0;
 }
-.dataTables_wrapper .dataTables_info {
+.myplan-course-search-results .dataTables_wrapper .dataTables_info {
     float: none;
     font-size: 150%;
     margin: 0;
 }
-.dataTables_wrapper .dataTables_length {
+.myplan-course-search-results .dataTables_wrapper .dataTables_length {
     float: right;
     text-align: right;
     clear: both;
     margin: 0 0 0.5em 0;
 }
-.dataTables_wrapper .myplan-course-search-results-datatable {
+.myplan-course-search-results .dataTables_wrapper .myplan-course-search-results-datatable {
     border: solid 1px #ddd;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;

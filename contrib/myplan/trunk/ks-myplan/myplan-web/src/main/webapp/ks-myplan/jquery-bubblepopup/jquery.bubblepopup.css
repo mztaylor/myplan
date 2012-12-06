@@ -35,8 +35,8 @@
 	.jquerybubblepopup-top-left,    .jquerybubblepopup-top-right,
 	.jquerybubblepopup-bottom-left, .jquerybubblepopup-bottom-right
     {
-        width:21px;
-        height:21px;
+        /*width:21px;
+        height:21px;*/
         overflow:hidden;
         background-repeat:no-repeat;
         font-size:1px;
@@ -47,7 +47,7 @@
 	.jquerybubblepopup-tail{border:0px;margin:0px;padding:0px;display:inline;}
     .jquerybubblepopup-innerHtml{position:relative;display:block;min-height:26px;}
 
-    .jquerybubblepopup-top-left img, .jquerybubblepopup-top-right img,
+    /*.jquerybubblepopup-top-left img, .jquerybubblepopup-top-right img,
 	.jquerybubblepopup-bottom-left img, .jquerybubblepopup-bottom-right img
     {
         width:21px;
@@ -58,7 +58,7 @@
         min-height:21px;
         margin:0px;
         padding:0px;
-    }
+    }*/
 
 /*  
 	Themes:
@@ -112,3 +112,26 @@
         height:24px;
         margin-bottom:1em;
     }
+
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-innerHtml
+    {
+        color: #fff;
+        font-size: 11px;
+        line-height: 1.5em;
+        padding: 5px;
+        background: url('jquerybubblepopup-theme/myplan-help/innerHtml.png') repeat;
+    }
+
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-top-middle,
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-bottom-middle {height:16px;}
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-middle-left,
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-middle-right {width:16px;}
+
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-top-left, .jquerybubblepopup-myplan-help .jquerybubblepopup-top-right,
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-bottom-left, .jquerybubblepopup-myplan-help .jquerybubblepopup-bottom-right
+    {
+        width:16px;
+        height:16px;
+    }
+
+    .jquerybubblepopup-myplan-help .jquerybubblepopup-innerHtml a {color:#83def7;text-decoration:underline;}
