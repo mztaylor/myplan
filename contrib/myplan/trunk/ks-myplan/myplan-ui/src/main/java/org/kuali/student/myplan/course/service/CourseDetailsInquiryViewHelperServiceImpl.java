@@ -443,6 +443,78 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 activityList.add(item);
             }
 
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("B");
+                item.setActivityOfferingType(ActivityOfferingType.Lecture);
+                item.setCredits(5);
+                item.setMeetingTime("TTh 10:00 - 11:20 AM");
+                item.setLocation("KNE 210");
+                item.setSln(98765);
+                item.setEnrollRestriction(true);
+                item.setEnrollOpen(true);
+                item.setEnrollCount(198);
+                item.setEnrollMaximum(300);
+                item.setInstructor("Osgood, Jason");
+                item.setWritingSection(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("BA");
+                item.setActivityOfferingType(ActivityOfferingType.Quiz);
+                item.setCredits(0);
+                item.setMeetingTime("WTWThF 9:30 - 10:20 AM");
+                item.setLocation("MGH 220");
+                item.setSln(98766);
+                item.setEnrollRestriction(true);
+                item.setEnrollOpen(false);
+                item.setEnrollCount(21);
+                item.setEnrollMaximum(40);
+                item.setInstructor("Gowens, Garett");
+                item.setServiceLearning(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("C");
+                item.setActivityOfferingType(ActivityOfferingType.Lecture);
+                item.setCredits(5);
+                item.setMeetingTime("TTh 10:00 - 11:20 AM");
+                item.setLocation("FSH 108");
+                item.setSln(98767);
+                item.setEnrollRestriction(false);
+                item.setEnrollOpen(true);
+                item.setEnrollCount(111);
+                item.setEnrollMaximum(150);
+                item.setInstructor("Muthuswamy, Kamal");
+                item.setWritingSection(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
+            {
+                ActivityOfferingItem item = new ActivityOfferingItem();
+                item.setCode("D");
+                item.setActivityOfferingType(ActivityOfferingType.Lecture);
+                item.setCredits(5);
+                item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
+                item.setLocation("BHQ 231");
+                item.setSln(98768);
+                item.setEnrollRestriction(true);
+                item.setEnrollOpen(false);
+                item.setEnrollCount(150);
+                item.setEnrollMaximum(150);
+                item.setInstructor("Yetman, Jill");
+                item.setWritingSection(true);
+                item.setDetails("View Section Notes and Textbook information");
+                activityList.add(item);
+            }
+
 
             courseOfferingDetails.setActivityOfferingItemList(activityList);
             courseDetails.setCourseOfferingDetails(courseOfferingDetails);

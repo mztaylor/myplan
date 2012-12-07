@@ -781,7 +781,7 @@
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="courseOfferingDetails.activityOfferingItemList"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
-        <property name="layoutManager.rowDetailsUseImage" value="false"/>
+        <property name="layoutManager.rowDetailsUseImage" value="true"/>
         <property name="layoutManager.rowDetailsLinkName" value="View more"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="layoutManager.richTable.templateOptions">
@@ -795,27 +795,47 @@
             </map>
         </property>
         <property name="layoutManager.rowDetailsGroup">
-            <bean parent="Uif-VerticalBoxGroup">
+            <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false" p:style="margin:0;" p:header.render="false">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor"/>
-                        <bean parent="Uif-DataField" p:propertyName="details" p:label="Additional Details"/>
+                        <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                            <property name="items">
+                                <list>
+                                    <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"/>
+                                    <bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP">
+                                        <property name="message">
+                                            <bean parent="Uif-Message" p:messageText="--"/>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="Uif-LinkField" p:label="Additional Details" p:fieldLabel.renderColon="false" p:labelPlacement="TOP" p:style="margin:0;">
+                            <property name="link">
+                                <bean parent="Uif-Link" p:linkText="@{#line.details}" p:href="#"/>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="code" p:label="Section"/>
-                <bean parent="Uif-HorizontalFieldGroup" p:label="Type (Credit)" p:group.validationMessages.render="false">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false"/>
-                            <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.credits gt 0}"/>
+                <bean parent="Uif-DataField" p:propertyName="code" p:label="Section">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>@{#line.code.length() gt 1 ? 'secondary':'primary'}</value>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:label="Type"/>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="Type (Credit)" p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false" p:style="margin-right:0.33em;"/>
+                            <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.credits gt 0}" p:style="margin:0;"/>
+                        </list>
+                    </property>
+                </bean>
                 <bean parent="Uif-DataField" p:propertyName="meetingTime" p:label="Meeting Time"/>
                 <bean parent="Uif-DataField" p:propertyName="location" p:label="Location"/>
                 <bean parent="Uif-DataField" p:propertyName="sln" p:label="SLN"/>
@@ -830,11 +850,8 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="@{#line.enrollCount} / @{#line.enrollMaximum}" p:render="@{#line.enrollOpen}"/>
+                            <bean parent="Uif-Message" p:messageText="&lt;strong&gt;@{#line.enrollCount}&lt;/strong&gt; / @{#line.enrollMaximum}" p:render="@{#line.enrollOpen}"/>
                             <bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}"/>
-                            <!--<bean parent="Uif-DataField" p:propertyName="enrollCount" p:fieldLabel.render="false"/>
-                            <bean parent="Uif-Message" p:messageText="/"/>
-                            <bean parent="Uif-DataField" p:propertyName="enrollMaximum" p:fieldLabel.render="false"/>-->
                         </list>
                     </property>
                 </bean>
@@ -842,6 +859,7 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-add</value>
+                            <value>fl-text-align-center</value>
                         </list>
                     </property>
                 </bean>
