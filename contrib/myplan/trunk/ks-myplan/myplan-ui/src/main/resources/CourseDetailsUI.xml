@@ -824,6 +824,7 @@
                 <bean parent="Uif-DataField" p:propertyName="code" p:label="Section">
                     <property name="cssClasses">
                         <list merge="true">
+                            <!-- TODO: Remove the length check to determine if primary/secondary, need to use boolean on the data object -->
                             <value>@{#line.code.length() gt 1 ? 'secondary':'primary'}</value>
                         </list>
                     </property>
