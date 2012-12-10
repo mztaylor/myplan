@@ -180,13 +180,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String level = programId.substring(9, 10);
             String type = programId.substring(10, 11);
 
-            String stinker = new String(requestTemplate);
-            stinker = stinker.replace("$campus", campus);
-            stinker = stinker.replace("$level", level);
-            stinker = stinker.replace("$type", type);
-            stinker = stinker.replace("$major", major);
-            stinker = stinker.replace("$pathway", pathway);
-            stinker = stinker.replace("$regid", studentId);
+            String payload = new String(requestTemplate);
+            payload = payload.replace("$campus", campus.replace("&", "&amp;"));
+            payload = payload.replace("$level", level.replace("&", "&amp;"));
+            payload = payload.replace("$type", type.replace("&", "&amp;"));
+            payload = payload.replace("$major", major.replace("&", "&amp;"));
+            payload = payload.replace("$pathway", pathway.replace("&", "&amp;"));
+            payload = payload.replace("$regid", studentId.replace("&", "&amp;"));
 
             String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
 
@@ -194,8 +194,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             Request request = new Request(Method.POST, postAuditRequestURL);
 
-            StringRepresentation lame = new StringRepresentation(stinker);
-            request.setEntity(lame);
+            StringRepresentation entity = new StringRepresentation(payload);
+            request.setEntity(entity);
 
             Response response = client.handle(request);
             Representation rep = response.getEntity();
@@ -204,7 +204,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if (Status.isSuccess(status.getCode())) {
                 SAXReader reader = new SAXReader();
                 org.dom4j.Document document = reader.read(rep.getStream());
-                String xml = document.asXML();
+//                String xml = document.asXML();
 
 
                 Map<String, String> namespaces = new HashMap<String, String>();
