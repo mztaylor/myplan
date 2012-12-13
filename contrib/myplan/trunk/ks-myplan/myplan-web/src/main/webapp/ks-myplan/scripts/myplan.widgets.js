@@ -1387,6 +1387,26 @@ function autoCompleteText(atpId) {
 
 }
 
+function showDataTableDetail(actionComponent, tableId, useImages) {
+    var oTable = null;
+    var tables = jQuery.fn.dataTable.fnTables();
+    jQuery(tables).each(function () {
+        var dataTable = jQuery(this).dataTable();
+        if (jQuery(actionComponent).closest(dataTable).length) {
+            oTable = dataTable;
+        }
+    });
 
+    if (oTable != null) {
+        var nTr = jQuery(actionComponent).parents('tr')[0];
+        if (useImages && jQuery(actionComponent).find("img").length) {
+            jQuery(actionComponent).find("img").hide();
+        } else {
+            jQuery(actionComponent).hide();
+        }
+        var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
+        jQuery(newRow).find(".uif-group").first().show();
+    }
+}
 
 
