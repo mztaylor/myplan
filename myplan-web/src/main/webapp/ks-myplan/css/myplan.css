@@ -1400,18 +1400,22 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections table.uif-tableCollectionLayout {
     border: solid 1px #ccc;
 }
-.myplan-course-sections table.uif-tableCollectionLayout thead tr {
+/* Reset */
+.myplan-course-sections table.uif-tableCollectionLayout tr,
+.myplan-course-sections table.uif-tableCollectionLayout th,
+.myplan-course-sections table.uif-tableCollectionLayout td,
+.myplan-course-sections table.uif-tableCollectionLayout td.uif-rowDetails {
+    padding: 0;
+    margin: 0;
     border: none;
     background: transparent;
 }
+/* End Reset */
 .myplan-course-sections table.uif-tableCollectionLayout th,
 .myplan-course-sections table.uif-tableCollectionLayout td {
     padding: 2px 4px;
-}
-.myplan-course-sections table.uif-tableCollectionLayout thead tr th {
-    border: none;
-    background: transparent;
     border-left: 1px dotted #ccc;
+    vertical-align: middle;
 }
 .myplan-course-sections table.uif-tableCollectionLayout label {
     font-weight: normal;
@@ -1420,17 +1424,25 @@ table.myplan-course-search-results-datatable .blockUI {
     color: #777;
     white-space: nowrap;
 }
-.myplan-course-sections table.uif-tableCollectionLayout tbody tr {
-    border-bottom: 1px solid #ccc;
+.myplan-course-sections table.uif-tableCollectionLayout tbody tr.even,
+.myplan-course-sections table.uif-tableCollectionLayout tbody tr.odd {
+    border-top: 1px solid #ccc;
 }
-.myplan-course-sections table.uif-tableCollectionLayout td {
-    border-color: #ccc;
+.myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group {
+    border-left: 1px dotted #ccc;
+    border-right: 1px dotted #ccc;
+}
+.myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group .uif-field {
+    border-top: 1px dotted #ccc;
+    margin: 0;
+    padding: 2px 4px;
 }
 .myplan-course-sections table.uif-tableCollectionLayout td a {
     white-space: normal;
 }
-.myplan-course-sections table.uif-tableCollectionLayout td.uif-rowDetails {
-    background: none;
+.myplan-course-sections .dataTables_filter label {
+    font-weight: normal;
+    margin: 0 10px 0 0;
 }
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
