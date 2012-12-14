@@ -114,9 +114,8 @@ public class CollectionListPropertyEditor extends PropertyEditorSupport implemen
 
         // Strip out any numbers from the value and use the text for class on the list item
         // Apply style class on item only if specified to do so
-        String liClass = (applyClassOnItem) ? " class=\"" + value.replaceAll("\\d*$","").trim() +  "\"" : "";
-        elementText.append("<" + listType.
-                getListItemElementName() + liClass + ">");
+        String liClass = (applyClassOnItem && value != emptyListMessage) ? " class=\"" + value.replaceAll("\\d*$","").trim() +  "\"" : "";
+        elementText.append("<" + listType.getListItemElementName() + liClass + ">");
         elementText.append(value);
         elementText.append("</" + listType.getListItemElementName() + ">");
         return elementText.toString();
