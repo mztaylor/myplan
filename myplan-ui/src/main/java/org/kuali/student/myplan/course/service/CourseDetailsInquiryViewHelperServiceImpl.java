@@ -385,7 +385,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum( 220 );
                 item.setInstructor( "Pitchford, Susan" );
                 item.setServiceLearning( true );
-                item.setDetails( "View Section Notes and Textbook information" );
+                item.setDetails( "View section notes and textbook information" );
                 activityList.add( item );
             }
 
@@ -403,7 +403,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(220);
                 item.setInstructor("Pitchford, Susan");
                 item.setServiceLearning(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -421,7 +421,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(34);
                 item.setInstructor("TBD");
                 item.setWritingSection(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -439,7 +439,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(34);
                 item.setInstructor("TBD");
                 item.setWritingSection(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -457,7 +457,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(300);
                 item.setInstructor("Osgood, Jason");
                 item.setWritingSection(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -475,7 +475,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(40);
                 item.setInstructor("Gowens, Garett");
                 item.setServiceLearning(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -493,7 +493,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(150);
                 item.setInstructor("Muthuswamy, Kamal");
                 item.setWritingSection(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 
@@ -511,7 +511,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setEnrollMaximum(150);
                 item.setInstructor("Yetman, Jill");
                 item.setWritingSection(true);
-                item.setDetails("View Section Notes and Textbook information");
+                item.setDetails("View section notes and textbook information");
                 activityList.add(item);
             }
 

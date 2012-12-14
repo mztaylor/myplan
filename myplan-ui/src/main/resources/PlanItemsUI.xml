@@ -301,7 +301,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-LinkField" p:target=""
-                                  p:style="width:428px; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
+                                  p:style="width:418px; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
                                 <property name="linkText"
                                           value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
                                 <property name="fieldLabel.render"
@@ -402,6 +402,11 @@
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
                       p:group.validationMessages.render="false">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>uif-boxLayoutVerticalItem</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Description"
@@ -431,6 +436,11 @@
 
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
                       p:group.validationMessages.render="false">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>uif-boxLayoutVerticalItem</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">

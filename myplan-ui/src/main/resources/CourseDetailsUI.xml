@@ -877,7 +877,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ActionLink" p:actionLabel="View More" p:style="margin:0 0 4px 0;" p:render="@{#line.code.length() gt 1}">
+                            <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;" p:render="@{#line.code.length() gt 1}">
                                 <property name="actionScript" value="
                                     if(jQuery(this).hasClass('disabled')){return false;}
                                     expandDataTableDetail(this,'course_details_section_datatable',false);
@@ -889,7 +889,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ActionLink" p:actionLabel="View More" p:render="@{#line.code.length() eq 1}">
+                            <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ActionLink" p:actionLabel="View more" p:render="@{#line.code.length() eq 1}">
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#@{dataObject.courseId}-@{#line.code}').subscribe('DATATABLE_INITIALISED', function(data) {
                                         showDataTableDetail(this,'course_details_section_datatable',false);
@@ -941,7 +941,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}"/>
-                            <bean parent="Uif-Link" p:linkText="View Restriction" p:href="#" p:render="@{#line.enrollRestriction}"/>
+                            <bean parent="Uif-Link" p:linkText="View restrictions" p:href="#" p:render="@{#line.enrollRestriction}"/>
                         </list>
                     </property>
                 </bean>
@@ -949,7 +949,13 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="&lt;strong&gt;@{#line.enrollCount}&lt;/strong&gt; / @{#line.enrollMaximum}" p:render="@{#line.enrollOpen}"/>
-                            <bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}"/>
+                            <bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
