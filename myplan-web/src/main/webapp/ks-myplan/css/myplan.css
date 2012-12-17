@@ -75,6 +75,12 @@ a:focus {
     border: none;
     color: #0066cc;
 }
+.fl-text-gray {
+    color: #777 !important;
+}
+.fl-text-silver {
+    color: #b4b4b4 !important;
+}
 .uif-pageContentWrapper,
 .uif-viewHeader,
 .uif-header {
@@ -1431,6 +1437,9 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group {
     border-left: 1px dotted #ccc;
     border-right: 1px dotted #ccc;
+}
+.myplan-course-sections table.uif-tableCollectionLayout tbody .closed {
+    color: #b4b4b4 !important;
 }
 .myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group .uif-field {
     border-top: 1px dotted #ccc;
