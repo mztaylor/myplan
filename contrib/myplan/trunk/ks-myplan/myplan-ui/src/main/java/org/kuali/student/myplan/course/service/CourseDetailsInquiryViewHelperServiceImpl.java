@@ -503,7 +503,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setActivityOfferingType(ActivityOfferingType.Lecture);
                 item.setCredits(5);
                 item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
-                item.setLocation("BHQ 231");
+                item.setLocation("FSH 231");
                 item.setSln(98768);
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
