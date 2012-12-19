@@ -206,21 +206,60 @@ public class StudentServiceClientImpl
 
     /**
      * @param year
-     * @param Curriculum
-     * @param courseNo
+     * @param abbrev
+     * @param num
      * @return
      * @throws ServiceException
      */
-    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException {
+    public String getSections(String year, String abbrev, String num) throws ServiceException {
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
                 .append("year=").append(year).append("&")
                 .append("quarter=").append("&")
-                .append("curriculum_abbreviation=").append(Curriculum).append("&")
-                .append("course_number=").append(courseNo);
+                .append("curriculum_abbreviation=").append(abbrev).append("&")
+                .append("course_number=").append(num);
         return sendQuery(url.toString().trim());
 
+    }
+
+    /**
+     * /student/v4/public/section?year=2013&quarter=spring&curriculum_abbreviation=ENGL&course_number=102&include_secondaries=on
+     *
+     * @param year
+     * @param quarter
+     * @param abbrev
+     * @param num
+     * @return
+     * @throws ServiceException
+     */
+    public String getSections(String year, String quarter, String abbrev, String num ) throws ServiceException {
+        StringBuilder url = new StringBuilder(getBaseUrl());
+        url.append("/").append(getServiceVersion())
+                .append("/").append("public/section.xml?")
+                .append("year=").append(year).append("&")
+                .append("quarter=").append(quarter).append("&")
+                .append("curriculum_abbreviation=").append(abbrev).append("&")
+                .append("course_number=").append(num)
+//                .append("&include_secondaries=on")
+        ;
+        System.out.println(url);
+
+        return sendQuery(url.toString().trim());
+    }
+
+    /*
+        /student/v4/public/course/2012,autumn,CHEM,110/A.xml
+     */
+    public String getSecondarySections( String year, String quarter, String abbrev, String num, String section )
+        throws ServiceException
+    {
+        String base = getBaseUrl();
+        String ver = getServiceVersion();
+
+        String url = String.format( "%s/%s/public/course/%s,%s,%s,%s/%s.xml", base, ver, year, quarter, abbrev, num, section );
+        System.out.println( url );
+        return sendQuery( url );
     }
 
     /**
@@ -276,7 +315,7 @@ public class StudentServiceClientImpl
        return connectionEstablished;
     }
 
-    public String sendQuery(String url) throws ServiceException {
+public String sendQuery(String url) throws ServiceException {
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.

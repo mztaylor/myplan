@@ -124,6 +124,21 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
+    public String getSections(String year, String quarter, String abbrev, String num) throws ServiceException {
+        //  Read a response for ...
+        //  https://ucswseval1.cac.washington.edu/student/v4/public/section?year=2002&quarter=&curriculum_abbreviation=ESS&course_number=101&reg_id=&search_by=Instructor
+        //  ... from a text file.
+        InputStream in = this.getClass().getResourceAsStream("/txt/student_service_section_response.xml");
+        String out = null;
+        try {
+            out = IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            logger.error("Could not read response file.", e);
+        }
+        return out;
+    }
+
+    @Override
     public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
