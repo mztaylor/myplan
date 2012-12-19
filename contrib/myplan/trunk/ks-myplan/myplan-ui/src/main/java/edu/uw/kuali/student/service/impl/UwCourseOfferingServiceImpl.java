@@ -8,12 +8,15 @@ import org.dom4j.Element;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
+import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -23,6 +26,7 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
+import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -44,6 +48,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private static int CRITERIA_LENGTH = 24;
 
+    private transient CourseService courseService;
     private StudentServiceClient studentServiceClient;
 
     public UwCourseOfferingServiceImpl() {
@@ -54,6 +59,18 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
+    }
+
+    protected synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
+        return this.courseService;
+    }
+
+    public synchronized void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     /**
@@ -128,7 +145,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
      * Queries the student service and creates a collection of courseCodes for a given termKey (term, year)
      * and subject area (curriculum abbreviation)
      *
-     * @param termId      A term key like 'kuali.uw.atp.winter1970'.
+     * @param termId      A term key like 'kuali.uw.atp.9999.4'.
      * @param subjectArea A subject area like 'chem'.
      * @return A Set of course Codes.
      */
@@ -251,28 +268,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override
-    public List<CourseOfferingInfo> getCourseOfferingsByCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-
-        List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
-
-        String subjectArea = courseId.substring(0, 6).trim();
-
-        List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, subjectArea, null);
-
-        if (ids.contains(courseId)) {
-            CourseOfferingInfo co = new CourseOfferingInfo();
-            co.setCourseId(courseId);
-            co.setTermId(termId);
-            co.setCourseOfferingCode(courseId);
-            co.setSubjectArea(subjectArea);
-            co.setCourseNumberSuffix(courseId.substring(7));
-
-            courseOfferingInfos.add(co);
-        }
-        return courseOfferingInfos;
-    }
 
 
     @Override
@@ -779,5 +774,75 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     @Override
     public List<String> searchForSeatpoolDefinitionIds(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented");
+    }
+
+
+    @Override
+    public List<CourseOfferingInfo> getCourseOfferingsByCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+
+        List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
+
+        String year = "2012";
+        String quarter = "winter";
+        // ensure following substring methods cannot fail
+        String padded = courseId + "         ";
+        String curric = courseId.substring(0, 6).trim();
+        String num = courseId.substring(6, 9).trim();
+
+
+        try {
+            String xml = studentServiceClient.getSections(year, quarter, curric, num);
+
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("s", "http://webservices.washington.edu/student/");
+
+            DefaultXPath sectionPath = new DefaultXPath("/s:SearchResults/s:Sections/s:Section");
+            sectionPath.setNamespaceURIs(namespaces);
+
+            DefaultXPath idPath = new DefaultXPath("/s:SectionID");
+            idPath.setNamespaceURIs(namespaces);
+
+            SAXReader reader = new SAXReader();
+            Document doc = reader.read(new StringReader(xml));
+
+            List sections = sectionPath.selectNodes(doc);
+            for (Object object : sections) {
+                Element section = (Element) object;
+                String sectionID = section.elementText("SectionID");
+                CourseOfferingInfo info = new CourseOfferingInfo();
+                info.setSubjectArea(curric);
+                info.setCourseCode(num);
+                info.setTermId(termId);
+//                info.set
+//                String ca = section.elementText("CurriculumAbbreviation");
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new OperationFailedException(e.getMessage());
+        }
+
+        return list;
+
+//        List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, curric, null);
+
+//        if (ids.contains(courseId)) {
+//            CourseOfferingInfo co = new CourseOfferingInfo();
+//            co.setCourseId(courseId);
+//            co.setTermId(termId);
+//            co.setCourseOfferingCode(courseId);
+//            co.setSubjectArea(subjectArea);
+//            co.setCourseNumberSuffix(courseId.substring(7));
+//
+//            courseOfferingInfos.add(co);
+//        }
+//        return list;
+    }
+
+    @Override
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
