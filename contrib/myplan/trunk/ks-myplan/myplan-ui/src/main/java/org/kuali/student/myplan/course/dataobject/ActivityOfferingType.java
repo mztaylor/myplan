@@ -12,7 +12,7 @@ package org.kuali.student.myplan.course.dataobject;
 public enum ActivityOfferingType {
 
     unknown( "??" ),
-//    lecture( "LC" ),
+    lecture( "LC" ),
     laboratory( "LB" ),
     quiz( "QZ" ),
     independentStudy( "IS" ),
