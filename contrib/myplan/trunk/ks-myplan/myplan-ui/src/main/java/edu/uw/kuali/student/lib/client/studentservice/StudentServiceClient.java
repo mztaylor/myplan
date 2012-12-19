@@ -66,12 +66,22 @@ public interface StudentServiceClient {
 
     /**
      * @param year
-     * @param Curriculum
-     * @param courseNo
+     * @param abbrev
+     * @param num
      * @return
      * @throws ServiceException
      */
-    public abstract String getSections(String year, String Curriculum, String courseNo) throws ServiceException;
+    public abstract String getSections(String year, String abbrev, String num) throws ServiceException;
+
+    /**
+     * @param year
+     * @param quarter
+     * @param abbrev
+     * @param num
+     * @return
+     * @throws ServiceException
+     */
+    public abstract String getSections(String year, String quarter, String abbrev, String num) throws ServiceException;
 
     /**
      * @param regId

@@ -10,7 +10,27 @@ package org.kuali.student.myplan.course.dataobject;
  * https://wiki.cac.washington.edu/display/MyPlan/MyPlan+Course+Section+Details+Data+Needs
  */
 public enum ActivityOfferingType {
-    Lecture,
-    Quiz,
-    Lab
+
+    unknown( "??" ),
+//    lecture( "LC" ),
+    laboratory( "LB" ),
+    quiz( "QZ" ),
+    independentStudy( "IS" ),
+    studio( "ST" ),
+    clinic( "CL" ),
+    conference( "CO" ),
+    seminar( "SM" ),
+    clerkship( "CK" ),
+    practicum( "PR" );
+
+
+    private String code;
+    ActivityOfferingType( String code )
+    {
+        this.code = code;
+    }
+    public String getCode() {
+        return code;
+    }
+
 }

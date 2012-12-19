@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jasonosgood
@@ -14,12 +16,12 @@ public class ActivityOfferingItem {
 
     private String code;
     private ActivityOfferingType activityOfferingType;
-    private int credits;
+    private String credits;
     // eg MTWThF 10:30-11:20 AM
     private String meetingTime;
     private String location;
     // Section Line Number - UW-ism
-    private int sln;
+    private String sln;
     private boolean enrollRestriction;
     private boolean enrollOpen;
     private int enrollCount;
@@ -35,6 +37,8 @@ public class ActivityOfferingItem {
     private boolean serviceLearning;
     private boolean newThisYear;
     private boolean ineligibleForFinancialAid;
+
+    private List<ActivityOfferingItem> secondaryActivityOfferingItemList;
 
      public String getCode() {
         return code;
@@ -52,11 +56,11 @@ public class ActivityOfferingItem {
         this.activityOfferingType = activityOfferingType;
     }
 
-    public int getCredits() {
+    public String getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
+    public void setCredits(String credits) {
         this.credits = credits;
     }
 
@@ -76,11 +80,11 @@ public class ActivityOfferingItem {
         this.location = location;
     }
 
-    public int getSln() {
+    public String getSln() {
         return sln;
     }
 
-    public void setSln(int sln) {
+    public void setSln(String sln) {
         this.sln = sln;
     }
 
