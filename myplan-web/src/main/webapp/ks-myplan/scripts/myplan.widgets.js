@@ -879,7 +879,7 @@ function myplanLightBoxLink(href, options, e) {
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     options['autoHeight'] = true;
     options['href'] = href;
-    options['beforeClose'] = cleanupClosedLightboxForms;
+    //options['beforeClose'] = cleanupClosedLightboxForms;
     top.jQuery.fancybox(options);
 }
 
@@ -1409,4 +1409,40 @@ function showDataTableDetail(actionComponent, tableId, useImages) {
     }
 }
 
+function expandDataTableDetail(actionComponent, tableId, useImages, expandText, collapseText) {
+    var oTable = null;
+    var tables = jQuery.fn.dataTable.fnTables();
+    jQuery(tables).each(function () {
+        var dataTable = jQuery(this).dataTable();
+        //ensure the dataTable is the one that contains the action that was clicked
+        if (jQuery(actionComponent).closest(dataTable).length) {
+            oTable = dataTable;
+        }
+    });
 
+    if (oTable != null) {
+        var nTr = jQuery(actionComponent).parents('tr')[0];
+        if (oTable.fnIsOpen(nTr)) {
+            if (useImages && jQuery(actionComponent).find("img").length) {
+                jQuery(actionComponent).find("img").replaceWith(detailsOpenImage.clone());
+            }
+            if (expandText) {
+                jQuery(actionComponent).text(expandText);
+            }
+            jQuery(nTr).next().first().find(".uif-group").first().slideUp(function () {
+                oTable.fnClose(nTr);
+            });
+        }
+        else {
+            if (useImages && jQuery(actionComponent).find("img").length) {
+                jQuery(actionComponent).find("img").replaceWith(detailsCloseImage.clone());
+            }
+            if (collapseText) {
+                jQuery(actionComponent).text(collapseText);
+            }
+            var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
+            //runHiddenScripts(newRow, true, true);
+            jQuery(newRow).find(".uif-group").first().slideDown();
+        }
+    }
+}

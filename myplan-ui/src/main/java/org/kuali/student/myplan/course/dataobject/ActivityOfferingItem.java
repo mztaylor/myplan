@@ -19,7 +19,8 @@ public class ActivityOfferingItem {
     private String credits;
     // eg MTWThF 10:30-11:20 AM
     private String meetingTime;
-    private String location;
+    private String locationBuilding;
+    private String locationRoom;
     // Section Line Number - UW-ism
     private String sln;
     private boolean enrollRestriction;
@@ -72,12 +73,20 @@ public class ActivityOfferingItem {
         this.meetingTime = meetingTime;
     }
 
-    public String getLocation() {
-        return location;
+    public String getLocationBuilding() {
+        return locationBuilding;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocationBuilding(String locationBuilding) {
+        this.locationBuilding = locationBuilding;
+    }
+
+    public String getLocationRoom() {
+        return locationRoom;
+    }
+
+    public void setLocationRoom(String locationRoom) {
+        this.locationRoom = locationRoom;
     }
 
     public String getSln() {
