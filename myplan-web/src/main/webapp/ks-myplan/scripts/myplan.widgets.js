@@ -1405,6 +1405,16 @@ function showDataTableDetail(actionComponent, tableId, useImages) {
             jQuery(actionComponent).hide();
         }
         var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
+        var detailsId = jQuery(newRow).find(".uif-group").first().attr("id");
+        jQuery(newRow).find(".uif-group").first().attr("id", detailsId + "_details")
+        jQuery(newRow).find("a").each(function () {
+            var linkId = jQuery(this).attr("id");
+            jQuery(this).siblings("input[data-for='" + linkId + "']").removeAttr("script").attr("name", "script").val(function (index, value) {
+                return value.replace("'" + linkId + "'", "'" + linkId + "_details'");
+            });
+            jQuery(this).attr("id", linkId + "_details");
+        });
+        runHiddenScripts(detailsId + "_details");
         jQuery(newRow).find(".uif-group").first().show();
     }
 }
@@ -1441,7 +1451,16 @@ function expandDataTableDetail(actionComponent, tableId, useImages, expandText, 
                 jQuery(actionComponent).text(collapseText);
             }
             var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
-            //runHiddenScripts(newRow, true, true);
+            var detailsId = jQuery(newRow).find(".uif-group").first().attr("id");
+            jQuery(newRow).find(".uif-group").first().attr("id", detailsId + "_details")
+            jQuery(newRow).find("a").each(function () {
+                var linkId = jQuery(this).attr("id");
+                jQuery(this).siblings("input[data-for='" + linkId + "']").removeAttr("script").attr("name", "script").val(function (index, value) {
+                    return value.replace("'" + linkId + "'", "'" + linkId + "_details'");
+                });
+                jQuery(this).attr("id", linkId + "_details");
+            });
+            runHiddenScripts(detailsId + "_details");
             jQuery(newRow).find(".uif-group").first().slideDown();
         }
     }

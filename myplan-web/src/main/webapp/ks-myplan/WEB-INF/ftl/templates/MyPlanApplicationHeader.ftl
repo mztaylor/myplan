@@ -2,7 +2,13 @@
 <div id="applicationHeader">
     <div id="applicationHeading">
         <div id="applicationLogo">MyPlan</div>
-        <div id="applicationUser">
+        <#if UserSession.objectMap["kuali.uw.authz.adviser"]??>
+            <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
+                <div id="applicationUser" data-adviser="true">
+            </#if>
+        <#else>
+                <div id="applicationUser" data-adviser="false">
+        </#if>
             <#if UserSession.objectMap["kuali.uw.authz.adviser"]??>
                 <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
                     <div class="identity">

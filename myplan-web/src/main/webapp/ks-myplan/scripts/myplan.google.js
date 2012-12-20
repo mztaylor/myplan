@@ -8,7 +8,11 @@ if (subdomain.indexOf("uwksdev") != -1) {
 } else if (subdomain.indexOf("uwkstrn") != -1) {
     profile = "3";
 } else if (subdomain.indexOf("uwksprod") != -1 || subdomain.indexOf("uwstudent") != -1) {
-    profile = "4";
+    if (!jQuery("#applicationUser").data("adviser")) {
+        profile = "4"; // Students analytics profile
+    } else {
+        profile = "5"; // Advisers analytics profile
+    }
 }
 
 var _gaq = _gaq || [];
