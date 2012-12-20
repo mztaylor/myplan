@@ -380,79 +380,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
-            ContextInfo contextInfo = new ContextInfo();
-
-            // Chat w/ Virginia, these are the steps:
-            // 1) atp of interest
-            // 2) course (subject & number / course code )
-            // 3) versioned course GUID
-
-            CourseOfferingService courseOfferingService = getCourseOfferingService();
-            String atpOfInterest = "gruel";
-            List<CourseOfferingInfo> infoList = courseOfferingService.getCourseOfferingsByCourseAndTerm( courseId, atpOfInterest, contextInfo ) ;
-
-
-
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
             List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
-
-
-            String termId = "kuali.uw.atp.9999.4";
-            String year = "2012";
-            String quarter = "winter";
-            // ensure following substring methods cannot fail
-            String padded = courseId + "         ";
-            String curric = courseId.substring(0, 6).trim();
-            String num = courseId.substring(6, 9).trim();
-
-
-            String url = "https://ucswseval1.cac.washington.edu/student";
-            String ksfile = "/Users/jasonosgood/kuali/main/certs/uwkstest.jks";
-            String kspwd = "changeit";
-            String tsfile = "/Users/jasonosgood/kuali/main/certs/uw.jts";
-            String tspwd = "secret";
-
-            StudentServiceClientImpl studentServiceClient = new StudentServiceClientImpl( url, ksfile, kspwd, tsfile, tspwd );
-
-            List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
-
-            try {
-                String xml = studentServiceClient.getSections(year, quarter, curric, num);
-                System.out.println( xml );
-
-                Map<String, String> namespaces = new HashMap<String, String>();
-                namespaces.put("s", "http://webservices.washington.edu/student/");
-
-                DefaultXPath sectionPath = new DefaultXPath("/s:SearchResults/s:Sections/s:Section");
-                sectionPath.setNamespaceURIs(namespaces);
-
-                DefaultXPath idPath = new DefaultXPath("/s:SectionID");
-                idPath.setNamespaceURIs(namespaces);
-
-                SAXReader reader = new SAXReader();
-                Document doc = reader.read(new StringReader(xml));
-
-                List sections = sectionPath.selectNodes(doc);
-                for (Object object : sections) {
-                    Element section = (Element) object;
-                    String sectionID = section.elementText("SectionID");
-                    CourseOfferingInfo info = new CourseOfferingInfo();
-                    info.setSubjectArea(curric);
-                    info.setCourseCode(num);
-                    info.setTermId(termId);
-//                info.set
-//                String ca = section.elementText("CurriculumAbbreviation");
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-//                throw new org.kuali.student.r2.common.exceptions.OperationFailedException(e.getMessage());
-            }
-
-//            return list;
-
-
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode( "A" );
@@ -478,8 +407,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 item.setActivityOfferingType(ActivityOfferingType.quiz);
                 item.setCredits("0");
                 item.setMeetingTime("Th 11:30 - 12:20 AM");
-                item.setLocationBuilding("MGH");
-                item.setLocationRoom( "220" );
+                item.setLocationBuilding("NOC");
+                item.setLocationRoom( "" );
                 item.setSln( "12357" );
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
