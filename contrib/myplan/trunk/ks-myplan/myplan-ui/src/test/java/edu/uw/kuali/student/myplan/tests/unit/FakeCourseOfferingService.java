@@ -461,4 +461,9 @@ public class FakeCourseOfferingService implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
+    @Override
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 }
