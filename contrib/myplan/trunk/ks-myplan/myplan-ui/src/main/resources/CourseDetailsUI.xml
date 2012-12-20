@@ -772,7 +772,7 @@
                 <value>myplan-course-sections</value>
             </list>
         </property>
-        <property name="onDocumentReadyScript" value="
+        <!--<property name="onDocumentReadyScript" value="
             jQuery('#course_details_section_datatable_info').after('&lt;div class=&quot;dataTables_filter&quot;&gt;&lt;label for=&quot;section_filter&quot;&gt;Show&lt;/label&gt;&lt;select id=&quot;section_filter&quot; name=&quot;section_filter&quot;&gt;&lt;option value=&quot;all&quot;&gt;All Sections&lt;/option&gt;&lt;option value=&quot;open&quot;&gt;Open Sections only&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;');
             jQuery('.dataTables_filter select').change(function() {
                 var oTable = jQuery('#course_details_section_datatable').dataTable();
@@ -788,7 +788,7 @@
                         break;
                 }
             });
-        "/>
+        "/>-->
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="courseOfferingDetails.activityOfferingItemList"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
@@ -819,11 +819,17 @@
                             {'sWidth':'85px'},
                             {'sWidth':'188px'},
                             {'sWidth':'62px'},
-                            {'sWidth':'44px'},
+                            {'sWidth':'44px','sType':'string'},
                             {'sWidth':'116px'},
                             {'sWidth':'68px'},
                             {'sWidth':'24px'}
                        ]"/>
+                <entry key="oLanguage" value="{
+                            'sInfo':'',
+                            'sInfoEmpty':'',
+                            'sInfoFiltered':'',
+                            'sZeroRecords':''
+                       }"/>
                 <entry key="fnInitComplete" value="
                     function(oSettings, json) {
                         if ( oSettings.fnRecordsDisplay() > 0 ) jQuery.publish('DATATABLE_INITIALISED');
@@ -835,6 +841,8 @@
             <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false" p:style="margin:0 0 0 34px;" p:header.render="false">
                 <property name="items">
                     <list>
+                        <bean parent="Uif-ActionLink" p:actionLabel="ActionLinkField"
+                                      p:actionScript="alert('You clicked a button');"/>
                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:style="margin:0;">
                             <property name="items">
                                 <list>
@@ -865,19 +873,8 @@
         </property>-->
         <property name="items">
             <list>
-                <!--<bean parent="Uif-DataField" p:propertyName="code" p:label="Section">
-                    &lt;!&ndash;<property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.code.length() gt 1 ? 'secondary':'primary'}</value>
-                        </list>
-                    </property>&ndash;&gt;
-                </bean>-->
+                <!--<bean parent="Uif-DataField" p:propertyName="code" p:label="Section"/>-->
                 <bean parent="Uif-VerticalFieldGroup" p:label="Section" p:group.validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="code" p:label="Section" p:fieldLabel.render="false" p:style="margin:4px 0; font-size:@{#line.code.length() gt 1 ? '1.75em;':'2.6em; line-height:25px;'}">
@@ -890,7 +887,7 @@
                             <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;" p:render="@{#line.code.length() gt 1}">
                                 <property name="actionScript" value="
                                     if(jQuery(this).hasClass('disabled')){return false;}
-                                    expandDataTableDetail(this,'course_details_section_datatable',false);
+                                    expandDataTableDetail(this, 'course_details_section_datatable', false, 'View more', 'View less');
                                 "/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -904,7 +901,6 @@
                                     jQuery('#@{dataObject.courseId}-@{#line.code}').subscribe('DATATABLE_INITIALISED', function(data) {
                                         showDataTableDetail(this,'course_details_section_datatable',false);
                                     });
-
                                 "/>
                                 <property name="actionScript" value=""/>
                             </bean>
@@ -915,22 +911,9 @@
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:style="width:282px;">
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>uif-field</value>
-                                                                <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                                                            </list>
-                                                        </property>
-                                                    </bean>
+                                                          p:style="width:282px;"/>
                                                     <bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                                                           p:style="border-left:1px dotted #ccc; width:318px;">
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>uif-field</value>
-                                                                <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                                                            </list>
-                                                        </property>
                                                         <property name="message">
                                                             <bean parent="Uif-Message" p:messageText="--"/>
                                                         </property>
@@ -938,7 +921,14 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-LinkField" p:label="Additional Details" p:fieldLabel.renderColon="false" p:labelPlacement="TOP" p:style="margin:0;">
+                                        <bean parent="Uif-HorizontalFieldGroup" p:label="Additional Details" p:group.validationMessages.render="false" p:style="margin:0;">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="current_section_status" p:actionLabel="@{#line.details}"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <!--<bean parent="Uif-LinkField" p:label="Additional Details" p:fieldLabel.renderColon="false" p:labelPlacement="TOP" p:style="margin:0;">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>uif-field</value>
@@ -946,9 +936,9 @@
                                                 </list>
                                             </property>
                                             <property name="link">
-                                                <bean parent="Uif-Link" p:linkText="@{#line.details}" p:href="#"/>
+                                                <bean parent="Uif-Link" p:linkText="@{#line.details}" p:href="http://sdb.admin.washington.edu/textbooks/query.asp?qtr=Winter&amp;sln1=11944" p:target="_blank" p:style="margin:0;"/>
                                             </property>
-                                        </bean>
+                                        </bean>-->
                                     </list>
                                 </property>
                             </bean>
@@ -956,11 +946,6 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="Type (Credit)" p:group.validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false" p:style="margin-right:0.33em;"/>
@@ -968,68 +953,36 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="meetingTime" p:label="Meeting Time">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
-                </bean>
-
+                <bean parent="Uif-DataField" p:propertyName="meetingTime" p:label="Meeting Time"/>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="Location" p:group.validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="@{#line.location.split(' ')[0]}" p:href="http://uw.edu/maps/?@{#line.location.split(' ')[0]}" p:target="_blank" p:style="margin-right:0.33em;"/>
-                            <bean parent="Uif-Message" p:messageText="@{#line.location.split(' ')[1]}" p:style="margin:0;"/>
+                            <bean parent="Uif-Link" p:linkText="@{#line.locationBuilding}" p:href="http://uw.edu/maps/?@{#line.locationBuilding}" p:target="_blank" p:style="margin-right:0.33em;"/>
+                            <bean parent="Uif-Message" p:messageText="@{#line.locationRoom}" p:style="margin:0;"/>
                         </list>
                     </property>
                 </bean>
-
-                <!--
-                <bean parent="Uif-DataField" p:propertyName="location" p:label="Location">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
-                </bean>
-                -->
-
-                <bean parent="Uif-DataField" p:propertyName="sln" p:label="SLN">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="SLN" p:group.validationMessages.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="current_section_status" p:actionLabel="@{#line.sln}"/>
                         </list>
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}"/>
-                            <bean parent="Uif-Link" p:linkText="View restrictions" p:href="#" p:render="@{#line.enrollRestriction}"/>
+                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
+                            <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
+                            <!--<bean parent="Uif-Link" p:linkText="View restrictions" p:href="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944" p:render="@{#line.enrollRestriction}" p:style="margin:0;"/>-->
                         </list>
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit" p:group.validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="&lt;strong&gt;@{#line.enrollCount}&lt;/strong&gt; / @{#line.enrollMaximum}" p:render="@{#line.enrollOpen}"/>
-                            <bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}"/>
+                            <bean parent="Uif-Message" p:messageText="&lt;strong&gt;@{#line.enrollCount}&lt;/strong&gt; / @{#line.enrollMaximum}"/>
+                            <!--<bean parent="Uif-Message" p:messageText="Closed" p:render="@{!#line.enrollOpen}"/>-->
                         </list>
                     </property>
                 </bean>
@@ -1043,6 +996,11 @@
                 </bean>
             </list>
         </property>
+    </bean>
+
+    <bean id="current_section_status" parent="Uif-ActionLink" p:style="margin:0;">
+        <!-- TODO: Update URL to include URL param to include quarter and year -->
+        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=12356', {helpers:{overlay:{closeClick: false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
     </bean>
 
 
