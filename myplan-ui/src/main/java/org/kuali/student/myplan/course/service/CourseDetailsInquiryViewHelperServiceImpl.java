@@ -1,15 +1,24 @@
 package org.kuali.student.myplan.course.service;
 
+import java.io.StringReader;
 import java.lang.String;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.apache.log4j.Logger;
 
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.*;
+import org.kuali.student.common.exceptions.DoesNotExistException;
+import org.kuali.student.common.exceptions.MissingParameterException;
+import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultRow;
@@ -20,6 +29,8 @@ import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.myplan.course.dataobject.*;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -369,16 +380,87 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
+            ContextInfo contextInfo = new ContextInfo();
+
+            // Chat w/ Virginia, these are the steps:
+            // 1) atp of interest
+            // 2) course (subject & number / course code )
+            // 3) versioned course GUID
+
+            CourseOfferingService courseOfferingService = getCourseOfferingService();
+            String atpOfInterest = "gruel";
+            List<CourseOfferingInfo> infoList = courseOfferingService.getCourseOfferingsByCourseAndTerm( courseId, atpOfInterest, contextInfo ) ;
+
+
+
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
             List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
+
+
+            String termId = "kuali.uw.atp.9999.4";
+            String year = "2012";
+            String quarter = "winter";
+            // ensure following substring methods cannot fail
+            String padded = courseId + "         ";
+            String curric = courseId.substring(0, 6).trim();
+            String num = courseId.substring(6, 9).trim();
+
+
+            String url = "https://ucswseval1.cac.washington.edu/student";
+            String ksfile = "/Users/jasonosgood/kuali/main/certs/uwkstest.jks";
+            String kspwd = "changeit";
+            String tsfile = "/Users/jasonosgood/kuali/main/certs/uw.jts";
+            String tspwd = "secret";
+
+            StudentServiceClientImpl studentServiceClient = new StudentServiceClientImpl( url, ksfile, kspwd, tsfile, tspwd );
+
+            List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
+
+            try {
+                String xml = studentServiceClient.getSections(year, quarter, curric, num);
+                System.out.println( xml );
+
+                Map<String, String> namespaces = new HashMap<String, String>();
+                namespaces.put("s", "http://webservices.washington.edu/student/");
+
+                DefaultXPath sectionPath = new DefaultXPath("/s:SearchResults/s:Sections/s:Section");
+                sectionPath.setNamespaceURIs(namespaces);
+
+                DefaultXPath idPath = new DefaultXPath("/s:SectionID");
+                idPath.setNamespaceURIs(namespaces);
+
+                SAXReader reader = new SAXReader();
+                Document doc = reader.read(new StringReader(xml));
+
+                List sections = sectionPath.selectNodes(doc);
+                for (Object object : sections) {
+                    Element section = (Element) object;
+                    String sectionID = section.elementText("SectionID");
+                    CourseOfferingInfo info = new CourseOfferingInfo();
+                    info.setSubjectArea(curric);
+                    info.setCourseCode(num);
+                    info.setTermId(termId);
+//                info.set
+//                String ca = section.elementText("CurriculumAbbreviation");
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+//                throw new org.kuali.student.r2.common.exceptions.OperationFailedException(e.getMessage());
+            }
+
+//            return list;
+
+
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode( "A" );
-                item.setActivityOfferingType(ActivityOfferingType.Lecture );
-                item.setCredits( 5 );
+                item.setActivityOfferingType(ActivityOfferingType.lecture );
+                item.setCredits( "5" );
                 item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
                 item.setLocation( "KNE 210" );
-                item.setSln(12345);
+                item.setSln("12345");
                 item.setEnrollRestriction( true );
                 item.setEnrollOpen( true );
                 item.setEnrollCount( 123 );
@@ -392,11 +474,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("AA");
-                item.setActivityOfferingType(ActivityOfferingType.Quiz);
-                item.setCredits(0);
+                item.setActivityOfferingType(ActivityOfferingType.quiz);
+                item.setCredits("0");
                 item.setMeetingTime("Th 11:30 - 12:20 AM");
                 item.setLocation("MGH 220");
-                item.setSln(12346);
+                item.setSln("12346");
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
                 item.setEnrollCount(123);
@@ -410,11 +492,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("AB");
-                item.setActivityOfferingType(ActivityOfferingType.Quiz);
-                item.setCredits(0);
+                item.setActivityOfferingType(ActivityOfferingType.quiz);
+                item.setCredits("0");
                 item.setMeetingTime("Th 11:30 - 12:20 AM");
                 item.setLocation("SIG 120");
-                item.setSln(12347);
+                item.setSln("12347");
                 item.setEnrollRestriction(false);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(23);
@@ -428,11 +510,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("AC");
-                item.setActivityOfferingType(ActivityOfferingType.Quiz);
-                item.setCredits(0);
+                item.setActivityOfferingType(ActivityOfferingType.quiz);
+                item.setCredits("0");
                 item.setMeetingTime("Th 12:30 - 1:20 PM");
                 item.setLocation("SIG 110");
-                item.setSln(12348);
+                item.setSln("12348");
                 item.setEnrollRestriction(false);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(12);
@@ -446,11 +528,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("B");
-                item.setActivityOfferingType(ActivityOfferingType.Lecture);
-                item.setCredits(5);
+                item.setActivityOfferingType(ActivityOfferingType.lecture);
+                item.setCredits("5");
                 item.setMeetingTime("TTh 10:00 - 11:20 AM");
                 item.setLocation("KNE 210");
-                item.setSln(98765);
+                item.setSln("98765");
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(198);
@@ -464,11 +546,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("BA");
-                item.setActivityOfferingType(ActivityOfferingType.Quiz);
-                item.setCredits(0);
+                item.setActivityOfferingType(ActivityOfferingType.quiz);
+                item.setCredits("0");
                 item.setMeetingTime("WTWThF 9:30 - 10:20 AM");
                 item.setLocation("MGH 220");
-                item.setSln(98766);
+                item.setSln("98766");
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
                 item.setEnrollCount(21);
@@ -482,11 +564,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("C");
-                item.setActivityOfferingType(ActivityOfferingType.Lecture);
-                item.setCredits(5);
+                item.setActivityOfferingType(ActivityOfferingType.lecture);
+                item.setCredits("5");
                 item.setMeetingTime("TTh 10:00 - 11:20 AM");
                 item.setLocation("FSH 108");
-                item.setSln(98767);
+                item.setSln("98767");
                 item.setEnrollRestriction(false);
                 item.setEnrollOpen(true);
                 item.setEnrollCount(111);
@@ -500,11 +582,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             {
                 ActivityOfferingItem item = new ActivityOfferingItem();
                 item.setCode("D");
-                item.setActivityOfferingType(ActivityOfferingType.Lecture);
-                item.setCredits(5);
+                item.setActivityOfferingType(ActivityOfferingType.lecture);
+                item.setCredits("5");
                 item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
                 item.setLocation("FSH 231");
-                item.setSln(98768);
+                item.setSln("98768");
                 item.setEnrollRestriction(true);
                 item.setEnrollOpen(false);
                 item.setEnrollCount(150);
@@ -515,7 +597,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 activityList.add(item);
             }
 
-
+            // Rename courseofferinggroup
             courseOfferingDetails.setActivityOfferingItemList(activityList);
             courseDetails.setCourseOfferingDetails(courseOfferingDetails);
 
