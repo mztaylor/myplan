@@ -395,12 +395,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             
             for( CourseOfferingInfo courseInfo : courseOfferingInfoList )
             {
+            	// Activity offerings come back as a list, the first item is primary, the remaining are secondary
+            	
+            	ActivityOfferingItem primary = null;
+            	
             	String courseOfferingID = courseInfo.getCourseId();
             	List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering( courseOfferingID, nullContextInfo );
             	for( ActivityOfferingDisplayInfo aodi : aodiList )
             	{
-            		ActivityOfferingItem item = new ActivityOfferingItem();
-                    item.setCode( aodi.getActivityOfferingCode() );
+            		ActivityOfferingItem secondary = new ActivityOfferingItem();
+                    secondary.setCode( aodi.getActivityOfferingCode() );
                     
                     ActivityOfferingType activityOfferingType = ActivityOfferingType.unknown;
                     try
@@ -408,185 +412,43 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         activityOfferingType = ActivityOfferingType.valueOf( aodi.getTypeName() );
                     }
                     catch( Exception e ) {}
-                    item.setActivityOfferingType( activityOfferingType );
+                    secondary.setActivityOfferingType( activityOfferingType );
                     
-                    item.setCredits( "-1" );
-                    item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
-                    item.setLocationBuilding( "KNE" );
-                    item.setLocationRoom( "210" );
+                    secondary.setCredits( "9" );
+                    secondary.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
+                    secondary.setLocationBuilding( "KNE" );
+                    secondary.setLocationRoom( "210" );
                     
                     for( AttributeInfo attrib : aodi.getAttributes() )
                     {
                     	if( "SLN".equalsIgnoreCase( attrib.getKey() ))
                     	{
                     		String temp = attrib.getValue();
-                    		item.setSln( temp );
+                    		secondary.setSln( temp );
                     		break;
                     	}
                     }
-                    item.setEnrollRestriction( true );
-                    item.setEnrollOpen( true );
-                    item.setEnrollCount( 000 );
-                    item.setEnrollMaximum( 999 );
-                    item.setInstructor( "$$$" );
-                    item.setServiceLearning( true );
-                    item.setDetails( "View section notes and textbook information" );
-                    activityList.add( item );
+                    secondary.setEnrollRestriction( true );
+                    secondary.setEnrollOpen( true );
+                    secondary.setEnrollCount( 000 );
+                    secondary.setEnrollMaximum( 999 );
+                    secondary.setInstructor( "Socrates" );
+                    secondary.setServiceLearning( true );
+                    secondary.setDetails( "View section notes and textbook information" );
+                    if( primary == null )
+                    {
+                    	primary = secondary;
+                    	primary.setPrimary( true );
+                    }
+                    else
+                    {
+                    	List<ActivityOfferingItem> secondaries = primary.getSecondaryList();
+						secondaries.add( secondary );
+                    }
             	}
             	
+                activityList.add( primary );
             }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode( "$A" );
-//                item.setActivityOfferingType(ActivityOfferingType.lecture );
-//                item.setCredits( "5" );
-//                item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
-//                item.setLocationBuilding( "KNE" );
-//                item.setLocationRoom( "210" );
-//                item.setSln( "00000" );
-//                item.setEnrollRestriction( true );
-//                item.setEnrollOpen( true );
-//                item.setEnrollCount( 123 );
-//                item.setEnrollMaximum( 220 );
-//                item.setInstructor( "Pitchford, Susan" );
-//                item.setServiceLearning( true );
-//                item.setDetails( "View section notes and textbook information" );
-//                activityList.add( item );
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("AA");
-//                item.setActivityOfferingType(ActivityOfferingType.quiz);
-//                item.setCredits("0");
-//                item.setMeetingTime("Th 11:30 - 12:20 AM");
-//                item.setLocationBuilding("NOC");
-//                item.setLocationRoom( "" );
-//                item.setSln( "12357" );
-//                item.setEnrollRestriction(true);
-//                item.setEnrollOpen(false);
-//                item.setEnrollCount(123);
-//                item.setEnrollMaximum(220);
-//                item.setInstructor("Pitchford, Susan");
-//                item.setServiceLearning(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("AB");
-//                item.setActivityOfferingType(ActivityOfferingType.quiz);
-//                item.setCredits("0");
-//                item.setMeetingTime("Th 11:30 - 12:20 AM");
-//                item.setLocationBuilding("SIG");
-//                item.setLocationRoom( "120" );
-//                item.setSln( "12358" );
-//                item.setEnrollRestriction(false);
-//                item.setEnrollOpen(true);
-//                item.setEnrollCount(23);
-//                item.setEnrollMaximum(34);
-//                item.setInstructor("TBD");
-//                item.setWritingSection(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("AC");
-//                item.setActivityOfferingType(ActivityOfferingType.quiz);
-//                item.setCredits("0");
-//                item.setMeetingTime("Th 12:30 - 1:20 PM");
-//                item.setLocationBuilding("SIG");
-//                item.setLocationRoom( "110" );
-//                item.setSln( "12359" );
-//                item.setEnrollRestriction(false);
-//                item.setEnrollOpen(true);
-//                item.setEnrollCount(12);
-//                item.setEnrollMaximum(34);
-//                item.setInstructor("TBD");
-//                item.setWritingSection(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("B");
-//                item.setActivityOfferingType(ActivityOfferingType.lecture);
-//                item.setCredits("5");
-//                item.setMeetingTime("TTh 10:00 - 11:20 AM");
-//                item.setLocationBuilding("KNE");
-//                item.setLocationRoom( "210" );
-//                item.setSln( "98765" );
-//                item.setEnrollRestriction(true);
-//                item.setEnrollOpen(true);
-//                item.setEnrollCount(198);
-//                item.setEnrollMaximum(300);
-//                item.setInstructor("Osgood, Jason");
-//                item.setWritingSection(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("BA");
-//                item.setActivityOfferingType(ActivityOfferingType.quiz);
-//                item.setCredits("0");
-//                item.setMeetingTime("WTWThF 9:30 - 10:20 AM");
-//                item.setLocationBuilding("MGH");
-//                item.setLocationRoom( "220" );
-//                item.setSln( "98766" );
-//                item.setEnrollRestriction(true);
-//                item.setEnrollOpen(false);
-//                item.setEnrollCount(21);
-//                item.setEnrollMaximum(40);
-//                item.setInstructor("Gowens, Garett");
-//                item.setServiceLearning(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("C");
-//                item.setActivityOfferingType(ActivityOfferingType.lecture);
-//                item.setCredits("5");
-//                item.setMeetingTime("TTh 10:00 - 11:20 AM");
-//                item.setLocationBuilding("FSH");
-//                item.setLocationRoom( "108" );
-//                item.setSln( "98767" );
-//                item.setEnrollRestriction(false);
-//                item.setEnrollOpen(true);
-//                item.setEnrollCount(111);
-//                item.setEnrollMaximum(150);
-//                item.setInstructor("Muthuswamy, Kamal");
-//                item.setWritingSection(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
-//
-//            {
-//                ActivityOfferingItem item = new ActivityOfferingItem();
-//                item.setCode("D");
-//                item.setActivityOfferingType(ActivityOfferingType.lecture);
-//                item.setCredits("5");
-//                item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
-//                item.setLocationBuilding("FSH");
-//                item.setLocationRoom( "231" );
-//                item.setSln( "98768" );
-//                item.setEnrollRestriction(true);
-//                item.setEnrollOpen(false);
-//                item.setEnrollCount(150);
-//                item.setEnrollMaximum(150);
-//                item.setInstructor("Yetman, Jill");
-//                item.setWritingSection(true);
-//                item.setDetails("View section notes and textbook information");
-//                activityList.add(item);
-//            }
 
             // Rename courseofferinggroup
             courseOfferingDetails.setActivityOfferingItemList(activityList);

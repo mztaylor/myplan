@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 public class ActivityOfferingItem {
 
     private String code;
+    private String campus;
     private ActivityOfferingType activityOfferingType;
     private String credits;
     // eg MTWThF 10:30-11:20 AM
@@ -39,7 +41,9 @@ public class ActivityOfferingItem {
     private boolean newThisYear;
     private boolean ineligibleForFinancialAid;
 
-    private List<ActivityOfferingItem> secondaryActivityOfferingItemList;
+    private boolean primary = false;
+    
+    private List<ActivityOfferingItem> secondaryList = new ArrayList<ActivityOfferingItem>();
 
      public String getCode() {
         return code;
@@ -47,6 +51,14 @@ public class ActivityOfferingItem {
 
     public void setCode(String code) {
         this.code = code;
+    }
+    
+    public String getCampus() {
+    	return campus;
+    }
+    
+    public void setCampus( String campus ) {
+    	this.campus = campus;
     }
 
     public ActivityOfferingType getActivityOfferingType() {
@@ -214,5 +226,25 @@ public class ActivityOfferingItem {
         this.ineligibleForFinancialAid = ineligibleForFinancialAid;
     }
 
+    public boolean isPrimary() {
+        return primary;
+    }
 
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
+    }
+
+    public List<ActivityOfferingItem> getSecondaryList() {
+    	return secondaryList;
+    }
+    
+    public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {
+    	this.secondaryList = secondaryList;
+    }
+    
+    public boolean isStandalone()
+    {
+    	return isPrimary() && getSecondaryList().size() == 0;
+    }
+    
 }
