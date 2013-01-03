@@ -15,6 +15,7 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
+import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
@@ -776,22 +777,38 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
+    String[] quarters = { "winter", "spring", "summer", "autumn" };
 
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsByCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
 
         List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
-
-        String year = "2012";
-        String quarter = "winter";
-        // ensure following substring methods cannot fail
-        String padded = courseId + "         ";
-        String curric = courseId.substring(0, 6).trim();
-        String num = courseId.substring(6, 9).trim();
+        
+        String year = termId.substring( 13, 17 );
+        char c = termId.charAt( termId.length() - 1 );
+        String quarter;
+       	switch( c )
+       	{
+	       	case '1': 
+	       		quarter = "winter"; break;
+	       	case '2': 
+	       		quarter = "spring"; break;
+	       	case '3': 
+	       		quarter = "summer"; break;
+	       	case '4':
+	       	default:
+	       		quarter = "autumn"; break;
+       	}
+        
 
 
         try {
+        	CourseService courseService = getCourseService();
+        	CourseInfo courseInfo = courseService.getCourse( courseId );
+        	String curric = courseInfo.getSubjectArea().trim();
+        	String num = courseInfo.getCourseNumberSuffix();
+
             String xml = studentServiceClient.getSections(year, quarter, curric, num);
 
             Map<String, String> namespaces = new HashMap<String, String>();
@@ -810,39 +827,151 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             for (Object object : sections) {
                 Element section = (Element) object;
                 String sectionID = section.elementText("SectionID");
-                CourseOfferingInfo info = new CourseOfferingInfo();
-                info.setSubjectArea(curric);
-                info.setCourseCode(num);
-                info.setTermId(termId);
-//                info.set
-//                String ca = section.elementText("CurriculumAbbreviation");
-
+                
+                String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+                
+                DefaultXPath secondaryPath = new DefaultXPath("/s:Section/s:PrimarySection");
+                secondaryPath.setNamespaceURIs(namespaces);
+                SAXReader secondaryReader = new SAXReader();
+                Document secondaryDoc = secondaryReader.read(new StringReader(secondaryXML));
+                Element dupeSectionElement = (Element) secondaryPath.selectSingleNode( secondaryDoc );
+                String primaryID = dupeSectionElement.elementText("SectionID");
+                if( sectionID.equals( primaryID ))
+                {
+               
+	                CourseOfferingInfo info = new CourseOfferingInfo();
+	                info.setSubjectArea( curric );
+	                info.setCourseCode( num );
+	                info.setTermId( termId );
+	                info.setId( sectionID );
+	                String courseID = join( "=", year, quarter, curric, num, sectionID );
+	                info.setCourseId(courseID);
+	                list.add( info );
+                }
             }
 
-        } catch (Exception e) {
+        } 
+        catch( Exception e ) 
+        {
             e.printStackTrace();
             throw new OperationFailedException(e.getMessage());
         }
 
         return list;
-
-//        List<String> ids = getCourseOfferingIdsByTermAndSubjectArea(termId, curric, null);
-
-//        if (ids.contains(courseId)) {
-//            CourseOfferingInfo co = new CourseOfferingInfo();
-//            co.setCourseId(courseId);
-//            co.setTermId(termId);
-//            co.setCourseOfferingCode(courseId);
-//            co.setSubjectArea(subjectArea);
-//            co.setCourseNumberSuffix(courseId.substring(7));
-//
-//            courseOfferingInfos.add(co);
-//        }
-//        return list;
     }
+    
+	String join( String delim, String ... list ) 
+	{
+		StringBuilder sb = new StringBuilder();
+		boolean second = false;
+		for( String item : list ) 
+		{
+			if( second ) 
+			{
+				sb.append( delim );
+			}
+			else
+			{
+				second = true;
+			}
+			sb.append( item );
+		}
+		return sb.toString();
+	}
 
     @Override
-    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingID, @WebParam(name = "contextInfo") ContextInfo contextInfo) 
+    	throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException 
+	{
+    	List<ActivityOfferingDisplayInfo> result = new ArrayList<ActivityOfferingDisplayInfo>();
+    	try
+    	{
+	    	String[] list = courseOfferingID.split( "=" );
+	    	String year = list[0];
+	    	String quarter = list[1];
+	    	String curric = list[2];
+	    	String num = list[3];
+	    	String sectionID = list[4];
+	
+	    	Map<String, String> namespaces = new HashMap<String, String>();
+	    	namespaces.put("s", "http://webservices.washington.edu/student/");
+	    	
+	    	List<String> sectionList = new ArrayList<String>();
+	    	sectionList.add( sectionID );
+	    	{
+		        String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+		        DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
+		        sectionListPath.setNamespaceURIs(namespaces);
+		        SAXReader secondaryReader = new SAXReader();
+		        Document doc = secondaryReader.read(new StringReader(xml));
+		        List sections = sectionListPath.selectNodes( doc );
+		        for (Object node : sections) 
+		        {
+		            Element section = (Element) node;
+		            String secondaryid = section.elementText("SectionID");
+		            sectionList.add( secondaryid );
+		        }
+	    	}
+	    	
+	        for( String id : sectionList )
+	        {
+	        	String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
+	        	
+	        	
+		        SAXReader secondaryReader = new SAXReader();
+		        Document doc = secondaryReader.read(new StringReader(xml));
+		        
+		        
+		        DefaultXPath sectionPath = new DefaultXPath("/s:Section");
+		        sectionPath.setNamespaceURIs(namespaces);
+		        DefaultXPath meetingPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting" );
+		        meetingPath.setNamespaceURIs(namespaces);
+		        DefaultXPath coursePath = new DefaultXPath( "/s:Section/s:Course" );
+		        coursePath.setNamespaceURIs(namespaces);
+
+		        Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
+		        String typeName = sectionNode.elementText("SectionType");
+		        Element courseNode = (Element) coursePath.selectSingleNode( doc );
+		        String title = courseNode.elementText( "CourseTitle" );
+		        String temp = sectionNode.elementText( "HonorsCourse" );
+		        boolean honors = Boolean.getBoolean( temp );
+		        String sln = sectionNode.elementText("SLN");
+		        
+		        
+//		        String credits = sectionNode.elementText("MinimumTermCredit");
+//		        String serviceLearning = sectionNode.elementText( "ServiceLearning" );
+//
+//		        Element meetingNode = (Element) meetingPath.selectSingleNode( doc );
+//		        String building = meetingNode.elementText( "Building" );
+//		        String roomNumber = meetingNode.elementText( "RoomNumber" );
+//		        String startTime = meetingNode.elementText( "StartTime" );
+//		        String endTime = meetingNode.elementText("EndTime");
+//
+//		        String daysOfWeekExpr = "s:DaysOfWeek/s:Text";
+//		        DefaultXPath daysOfWeekPath = new DefaultXPath(daysOfWeekExpr);
+//		        daysOfWeekPath.setNamespaceURIs(namespaces);
+//		        Element daysOfWeekNode = (Element) daysOfWeekPath.selectSingleNode( meetingNode );
+//		        String daysOfWeek = daysOfWeekNode.getStringValue();
+		        
+		        ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
+		        info.setTypeName( typeName );
+		        info.setCourseOfferingTitle( title );
+		        info.setCourseOfferingCode( curric );
+		        info.setActivityOfferingCode( id );
+		        info.setIsHonorsOffering( honors );
+		        AttributeInfo attrib = new AttributeInfo( "SLN", sln );
+				info.getAttributes().add( attrib );
+		        
+		        result.add( info );
+
+	        }
+    	}
+        catch( Exception e ) 
+        {
+            e.printStackTrace();
+            throw new OperationFailedException(e.getMessage());
+        }
+    	
+        return result;
     }
 }
