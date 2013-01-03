@@ -3,10 +3,13 @@ package org.kuali.student.myplan.course.service;
 import java.io.StringReader;
 import java.lang.String;
 import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
+import edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl;
+
 import org.apache.log4j.Logger;
 
 import org.dom4j.Document;
@@ -29,11 +32,13 @@ import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.myplan.course.dataobject.*;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
@@ -310,7 +315,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
           Use the course offering service to see if the course is being offered in the selected term.
           Note: In the UW implementation of the Course Offering service, course id is actually course code.
         */
-        try {
+        CourseOfferingService cos = getCourseOfferingService();
+		try {
             //  Fetch the available terms from the Academic Calendar Service.
             if (isAcademicCalendarServiceUp && isCourseOfferingServiceUp()) {
                 List<TermInfo> termInfos = null;
@@ -327,7 +333,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     String key = term.getId();
                     String subject = course.getSubjectArea();
 
-                    List<String> offerings = getCourseOfferingService()
+                    List<String> offerings = cos
                             .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
 
                     if (offerings.contains(course.getCode())) {
@@ -379,160 +385,208 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     courseDetails.setBackupList(backupList);
                 }
             }
-
+            
+            String termId = "kuali.uw.atp.2013.1";
+            ContextInfo nullContextInfo = new ContextInfo();
+            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm( courseId, termId, nullContextInfo );
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
+            
             List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
+            
+            for( CourseOfferingInfo courseInfo : courseOfferingInfoList )
             {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode( "A" );
-                item.setActivityOfferingType(ActivityOfferingType.lecture );
-                item.setCredits( "5" );
-                item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
-                item.setLocationBuilding( "KNE" );
-                item.setLocationRoom( "210" );
-                item.setSln( "12356" );
-                item.setEnrollRestriction( true );
-                item.setEnrollOpen( true );
-                item.setEnrollCount( 123 );
-                item.setEnrollMaximum( 220 );
-                item.setInstructor( "Pitchford, Susan" );
-                item.setServiceLearning( true );
-                item.setDetails( "View section notes and textbook information" );
-                activityList.add( item );
+            	String courseOfferingID = courseInfo.getCourseId();
+            	List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering( courseOfferingID, nullContextInfo );
+            	for( ActivityOfferingDisplayInfo aodi : aodiList )
+            	{
+            		ActivityOfferingItem item = new ActivityOfferingItem();
+                    item.setCode( aodi.getActivityOfferingCode() );
+                    
+                    ActivityOfferingType activityOfferingType = ActivityOfferingType.unknown;
+                    try
+                    {
+                        activityOfferingType = ActivityOfferingType.valueOf( aodi.getTypeName() );
+                    }
+                    catch( Exception e ) {}
+                    item.setActivityOfferingType( activityOfferingType );
+                    
+                    item.setCredits( "-1" );
+                    item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
+                    item.setLocationBuilding( "KNE" );
+                    item.setLocationRoom( "210" );
+                    
+                    for( AttributeInfo attrib : aodi.getAttributes() )
+                    {
+                    	if( "SLN".equalsIgnoreCase( attrib.getKey() ))
+                    	{
+                    		String temp = attrib.getValue();
+                    		item.setSln( temp );
+                    		break;
+                    	}
+                    }
+                    item.setEnrollRestriction( true );
+                    item.setEnrollOpen( true );
+                    item.setEnrollCount( 000 );
+                    item.setEnrollMaximum( 999 );
+                    item.setInstructor( "$$$" );
+                    item.setServiceLearning( true );
+                    item.setDetails( "View section notes and textbook information" );
+                    activityList.add( item );
+            	}
+            	
             }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("AA");
-                item.setActivityOfferingType(ActivityOfferingType.quiz);
-                item.setCredits("0");
-                item.setMeetingTime("Th 11:30 - 12:20 AM");
-                item.setLocationBuilding("NOC");
-                item.setLocationRoom( "" );
-                item.setSln( "12357" );
-                item.setEnrollRestriction(true);
-                item.setEnrollOpen(false);
-                item.setEnrollCount(123);
-                item.setEnrollMaximum(220);
-                item.setInstructor("Pitchford, Susan");
-                item.setServiceLearning(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("AB");
-                item.setActivityOfferingType(ActivityOfferingType.quiz);
-                item.setCredits("0");
-                item.setMeetingTime("Th 11:30 - 12:20 AM");
-                item.setLocationBuilding("SIG");
-                item.setLocationRoom( "120" );
-                item.setSln( "12358" );
-                item.setEnrollRestriction(false);
-                item.setEnrollOpen(true);
-                item.setEnrollCount(23);
-                item.setEnrollMaximum(34);
-                item.setInstructor("TBD");
-                item.setWritingSection(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("AC");
-                item.setActivityOfferingType(ActivityOfferingType.quiz);
-                item.setCredits("0");
-                item.setMeetingTime("Th 12:30 - 1:20 PM");
-                item.setLocationBuilding("SIG");
-                item.setLocationRoom( "110" );
-                item.setSln( "12359" );
-                item.setEnrollRestriction(false);
-                item.setEnrollOpen(true);
-                item.setEnrollCount(12);
-                item.setEnrollMaximum(34);
-                item.setInstructor("TBD");
-                item.setWritingSection(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("B");
-                item.setActivityOfferingType(ActivityOfferingType.lecture);
-                item.setCredits("5");
-                item.setMeetingTime("TTh 10:00 - 11:20 AM");
-                item.setLocationBuilding("KNE");
-                item.setLocationRoom( "210" );
-                item.setSln( "98765" );
-                item.setEnrollRestriction(true);
-                item.setEnrollOpen(true);
-                item.setEnrollCount(198);
-                item.setEnrollMaximum(300);
-                item.setInstructor("Osgood, Jason");
-                item.setWritingSection(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("BA");
-                item.setActivityOfferingType(ActivityOfferingType.quiz);
-                item.setCredits("0");
-                item.setMeetingTime("WTWThF 9:30 - 10:20 AM");
-                item.setLocationBuilding("MGH");
-                item.setLocationRoom( "220" );
-                item.setSln( "98766" );
-                item.setEnrollRestriction(true);
-                item.setEnrollOpen(false);
-                item.setEnrollCount(21);
-                item.setEnrollMaximum(40);
-                item.setInstructor("Gowens, Garett");
-                item.setServiceLearning(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("C");
-                item.setActivityOfferingType(ActivityOfferingType.lecture);
-                item.setCredits("5");
-                item.setMeetingTime("TTh 10:00 - 11:20 AM");
-                item.setLocationBuilding("FSH");
-                item.setLocationRoom( "108" );
-                item.setSln( "98767" );
-                item.setEnrollRestriction(false);
-                item.setEnrollOpen(true);
-                item.setEnrollCount(111);
-                item.setEnrollMaximum(150);
-                item.setInstructor("Muthuswamy, Kamal");
-                item.setWritingSection(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
-
-            {
-                ActivityOfferingItem item = new ActivityOfferingItem();
-                item.setCode("D");
-                item.setActivityOfferingType(ActivityOfferingType.lecture);
-                item.setCredits("5");
-                item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
-                item.setLocationBuilding("FSH");
-                item.setLocationRoom( "231" );
-                item.setSln( "98768" );
-                item.setEnrollRestriction(true);
-                item.setEnrollOpen(false);
-                item.setEnrollCount(150);
-                item.setEnrollMaximum(150);
-                item.setInstructor("Yetman, Jill");
-                item.setWritingSection(true);
-                item.setDetails("View section notes and textbook information");
-                activityList.add(item);
-            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode( "$A" );
+//                item.setActivityOfferingType(ActivityOfferingType.lecture );
+//                item.setCredits( "5" );
+//                item.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
+//                item.setLocationBuilding( "KNE" );
+//                item.setLocationRoom( "210" );
+//                item.setSln( "00000" );
+//                item.setEnrollRestriction( true );
+//                item.setEnrollOpen( true );
+//                item.setEnrollCount( 123 );
+//                item.setEnrollMaximum( 220 );
+//                item.setInstructor( "Pitchford, Susan" );
+//                item.setServiceLearning( true );
+//                item.setDetails( "View section notes and textbook information" );
+//                activityList.add( item );
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("AA");
+//                item.setActivityOfferingType(ActivityOfferingType.quiz);
+//                item.setCredits("0");
+//                item.setMeetingTime("Th 11:30 - 12:20 AM");
+//                item.setLocationBuilding("NOC");
+//                item.setLocationRoom( "" );
+//                item.setSln( "12357" );
+//                item.setEnrollRestriction(true);
+//                item.setEnrollOpen(false);
+//                item.setEnrollCount(123);
+//                item.setEnrollMaximum(220);
+//                item.setInstructor("Pitchford, Susan");
+//                item.setServiceLearning(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("AB");
+//                item.setActivityOfferingType(ActivityOfferingType.quiz);
+//                item.setCredits("0");
+//                item.setMeetingTime("Th 11:30 - 12:20 AM");
+//                item.setLocationBuilding("SIG");
+//                item.setLocationRoom( "120" );
+//                item.setSln( "12358" );
+//                item.setEnrollRestriction(false);
+//                item.setEnrollOpen(true);
+//                item.setEnrollCount(23);
+//                item.setEnrollMaximum(34);
+//                item.setInstructor("TBD");
+//                item.setWritingSection(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("AC");
+//                item.setActivityOfferingType(ActivityOfferingType.quiz);
+//                item.setCredits("0");
+//                item.setMeetingTime("Th 12:30 - 1:20 PM");
+//                item.setLocationBuilding("SIG");
+//                item.setLocationRoom( "110" );
+//                item.setSln( "12359" );
+//                item.setEnrollRestriction(false);
+//                item.setEnrollOpen(true);
+//                item.setEnrollCount(12);
+//                item.setEnrollMaximum(34);
+//                item.setInstructor("TBD");
+//                item.setWritingSection(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("B");
+//                item.setActivityOfferingType(ActivityOfferingType.lecture);
+//                item.setCredits("5");
+//                item.setMeetingTime("TTh 10:00 - 11:20 AM");
+//                item.setLocationBuilding("KNE");
+//                item.setLocationRoom( "210" );
+//                item.setSln( "98765" );
+//                item.setEnrollRestriction(true);
+//                item.setEnrollOpen(true);
+//                item.setEnrollCount(198);
+//                item.setEnrollMaximum(300);
+//                item.setInstructor("Osgood, Jason");
+//                item.setWritingSection(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("BA");
+//                item.setActivityOfferingType(ActivityOfferingType.quiz);
+//                item.setCredits("0");
+//                item.setMeetingTime("WTWThF 9:30 - 10:20 AM");
+//                item.setLocationBuilding("MGH");
+//                item.setLocationRoom( "220" );
+//                item.setSln( "98766" );
+//                item.setEnrollRestriction(true);
+//                item.setEnrollOpen(false);
+//                item.setEnrollCount(21);
+//                item.setEnrollMaximum(40);
+//                item.setInstructor("Gowens, Garett");
+//                item.setServiceLearning(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("C");
+//                item.setActivityOfferingType(ActivityOfferingType.lecture);
+//                item.setCredits("5");
+//                item.setMeetingTime("TTh 10:00 - 11:20 AM");
+//                item.setLocationBuilding("FSH");
+//                item.setLocationRoom( "108" );
+//                item.setSln( "98767" );
+//                item.setEnrollRestriction(false);
+//                item.setEnrollOpen(true);
+//                item.setEnrollCount(111);
+//                item.setEnrollMaximum(150);
+//                item.setInstructor("Muthuswamy, Kamal");
+//                item.setWritingSection(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
+//
+//            {
+//                ActivityOfferingItem item = new ActivityOfferingItem();
+//                item.setCode("D");
+//                item.setActivityOfferingType(ActivityOfferingType.lecture);
+//                item.setCredits("5");
+//                item.setMeetingTime("MTWThF 1:00 - 1:50 PM");
+//                item.setLocationBuilding("FSH");
+//                item.setLocationRoom( "231" );
+//                item.setSln( "98768" );
+//                item.setEnrollRestriction(true);
+//                item.setEnrollOpen(false);
+//                item.setEnrollCount(150);
+//                item.setEnrollMaximum(150);
+//                item.setInstructor("Yetman, Jill");
+//                item.setWritingSection(true);
+//                item.setDetails("View section notes and textbook information");
+//                activityList.add(item);
+//            }
 
             // Rename courseofferinggroup
             courseOfferingDetails.setActivityOfferingItemList(activityList);
@@ -559,14 +613,17 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             courseDetails.setCurriculumTitle(value.toString());
         }
         //  If course not scheduled for future terms, Check for the last term when course was offered
+        
+        List<String> termList = courseDetails.getScheduledTerms();
+        
         if (isCourseOfferingServiceUp()) {
-            if (courseDetails.getScheduledTerms().size() == 0) {
+            if (termList.size() == 0) {
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 List<CourseOfferingInfo> courseOfferingInfo = null;
                 try {
                     // The right strategy would be using the multiple equal predicates joined using an and
                     String values = String.format("%s, %s, %s", year, subject, number);
-                    courseOfferingInfo = getCourseOfferingService()
+                    courseOfferingInfo = cos
                             .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
                 } catch (Exception e) {
                     String[] params = {};
@@ -580,40 +637,44 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
         }
-        /********* Implementation to get the Academic Record Data from the SWS and set that to CourseDetails acedRecordList ***************/
-        if (isAcademicRecordServiceUp) {
-            List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-            List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-            try {
-                studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
-            }
-
-            if (studentCourseRecordInfos.size() > 0) {
-
-                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                    academicRecordDataObject.setCourseId(studentInfo.getId());
-                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                    academicRecordDataObjectList.add(academicRecordDataObject);
-                    if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
-                        String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
-                        courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
-                    }
-                }
-                if (academicRecordDataObjectList.size() > 0) {
-                    courseDetails.setAcadRecList(academicRecordDataObjectList);
-
-                }
-            }
+        
+        // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
+        try {
+        	List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+        	if (studentCourseRecordInfos.size() > 0) 
+        	{
+        		List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+        		
+        		for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) 
+        		{
+        			AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+        			academicRecordDataObject.setAtpId(studentInfo.getTermName());
+        			academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+        			academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+        			academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+        			academicRecordDataObject.setCourseId(studentInfo.getId());
+        			academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+        			academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+        			academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+        			academicRecordDataObjectList.add(academicRecordDataObject);
+        			if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) 
+        			{
+        				String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
+        				courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+        			}
+        		}
+        		if (academicRecordDataObjectList.size() > 0) 
+        		{
+        			courseDetails.setAcadRecList(academicRecordDataObjectList);
+        			
+        		}
+        	}
+        } catch (Exception e) {
+            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
+
+
+
 
         return courseDetails;
     }

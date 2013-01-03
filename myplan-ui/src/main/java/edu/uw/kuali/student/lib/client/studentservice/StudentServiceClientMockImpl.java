@@ -138,6 +138,11 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         return out;
     }
 
+    public String getSecondarySections(String year, String quarter, String abbrev, String num, String section)
+            throws ServiceException {
+        return null;
+    }
+
     @Override
     public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException {
         //  Read a response for ...
