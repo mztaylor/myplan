@@ -35,7 +35,7 @@ public class CourseDetails extends CourseSummaryDetails {
     private transient String savedItemId;
     private String savedItemDateCreated;
 
-    private CourseOfferingDetails courseOfferingDetails;
+    private List<CourseOfferingDetails> courseOfferingDetails = new ArrayList<CourseOfferingDetails>();
 
     public String getLastOffered() {
         return lastOffered;
@@ -174,11 +174,11 @@ public class CourseDetails extends CourseSummaryDetails {
         this.academicTerms = academicTerms;
     }
 
-    public CourseOfferingDetails getCourseOfferingDetails() {
+    public List<CourseOfferingDetails> getCourseOfferingDetails() {
         return courseOfferingDetails;
     }
 
-    public void setCourseOfferingDetails(CourseOfferingDetails courseOfferingDetails) {
+    public void setCourseOfferingDetails(List<CourseOfferingDetails> courseOfferingDetails) {
         this.courseOfferingDetails = courseOfferingDetails;
     }
 

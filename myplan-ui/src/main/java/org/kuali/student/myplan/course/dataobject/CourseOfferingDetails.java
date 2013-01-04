@@ -11,8 +11,18 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CourseOfferingDetails {
+	private String term = "Winter 2012";
+	
     private List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
+    public String getTerm() {
+    	return term;
+    }
+    
+    public void setTerm( String term ) {
+    	this.term = term;
+    }
+    
     public List<ActivityOfferingItem> getActivityOfferingItemList() {
         return activityOfferingItemList;
     }
