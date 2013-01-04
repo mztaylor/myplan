@@ -389,7 +389,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             String termId = "kuali.uw.atp.2013.1";
             ContextInfo nullContextInfo = new ContextInfo();
             List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm( courseId, termId, nullContextInfo );
+            
+            List<CourseOfferingDetails> courseOfferingDetailsList = courseDetails.getCourseOfferingDetails();
+            
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
+            courseOfferingDetailsList.add( courseOfferingDetails );
             
             List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
             
@@ -452,7 +456,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
             // Rename courseofferinggroup
             courseOfferingDetails.setActivityOfferingItemList(activityList);
-            courseDetails.setCourseOfferingDetails(courseOfferingDetails);
 
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
