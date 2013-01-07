@@ -759,75 +759,34 @@
         </property>
     </bean>-->
 
-    <bean id="course_details_sections" parent="Uif-StackedCollectionGroup">
+    <bean id="course_details_sections" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingDetails"/>
         <property name="propertyName" value="courseOfferingDetails"/>
-        <property name="items">
+        <property name="headerText" value="@{dataObject.code} &lt;strong&gt;Course Sections&lt;/strong&gt;"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree" p:style="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
+        </property>
+        <!--<property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="term"/>
             </list>
-        </property>
+        </property>-->
         <property name="subCollections">
             <list>
-                <ref bean="primary_sections" />
-            </list>
-        </property>
-    </bean>
-    <bean id="primary_sections" parent="Uif-StackedCollectionGroup">
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
-        <property name="propertyName" value="activityOfferingItemList"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-DataField" p:propertyName="code"/>
-            </list>
-        </property>
-        <property name="subCollections">
-            <list>
-                <ref bean="secondary_sections" />
+                <ref bean="course_details_section_data" />
             </list>
         </property>
     </bean>
 
-    <bean id="secondary_sections" parent="Uif-TableSubCollection-WithinSection">
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
-        <property name="propertyName" value="secondaryList"/>
-        <property name="layoutManager.renderSequenceField" value="false"/>
-        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-        <property name="layoutManager.richTable.templateOptions">
-            <map merge="true">
-                <entry key="bPaginate" value="false"/>
-                <entry key="bSort" value="false"/>
-                <entry key="bAutoWidth" value="false"/>
-                <entry key="bLengthChange" value="false"/>
-                <entry key="bFilter" value="true"/>
-                <entry key="sDom" value="it"/>
-                <entry key="oLanguage" value="{
-                            'sInfo':'',
-                            'sInfoEmpty':'',
-                            'sInfoFiltered':'',
-                            'sZeroRecords':''
-                       }"/>
-                <entry key="fnInitComplete" value="
-                    function(oSettings, json) {
-                        if ( oSettings.fnRecordsDisplay() > 0 ) jQuery.publish('DATATABLE_INITIALISED');
-                    }
-                "/>
-            </map>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-DataField" p:propertyName="code"/>
-            </list>
-        </property>
-    </bean>
+
 
     <bean id="course_details_section_data" parent="Uif-TableCollectionSection">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
+        <property name="propertyName" value="activityOfferingItemList"/>
         <property name="layoutManager.id" value="course_details_section_datatable"/>
-        <property name="headerText" value="@{dataObject.code} &lt;strong&gt;Course Sections&lt;/strong&gt;"/>
+        <property name="headerText" value="@{#line.term}"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree">
-                <property name="style" value="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
-            </bean>
+            <bean parent="Uif-HeaderFour" p:style="text-transform:uppercase !important;"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
@@ -851,8 +810,6 @@
                 }
             });
         "/>-->
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
-        <property name="propertyName" value="courseOfferingDetails.activityOfferingItemList"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
         <!--<property name="layoutManager.rowDetailsUseImage" value="true"/>
         <property name="layoutManager.rowDetailsLinkName" value="View more"/>-->
@@ -981,7 +938,7 @@
                                                     <bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                                                           p:style="border-left:1px dotted #ccc; width:348px;">
                                                         <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="--  @{#line.secondaryList.size()} --"/>
+                                                            <bean parent="Uif-Message" p:messageText="- -  @{#line.secondaryList.size()} - -"/>
                                                         </property>
                                                     </bean>
                                                 </list>
@@ -1044,7 +1001,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="- -" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
                             <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
                             <!--<bean parent="Uif-Link" p:linkText="View restrictions" p:href="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944" p:render="@{#line.enrollRestriction}" p:style="margin:0;"/>-->
                         </list>
@@ -1076,6 +1033,4 @@
         <!-- TODO: Update URL to include URL param to include quarter and year -->
         <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=12356', {helpers:{overlay:{closeClick: false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
     </bean>
-
-
 </beans>
