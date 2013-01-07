@@ -1436,7 +1436,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group {
     border-left: 1px dotted #ccc;
-    border-right: 1px dotted #ccc;
+    /*border-right: 1px dotted #ccc;*/
 }
 .myplan-course-sections table.uif-tableCollectionLayout tbody .closed {
     color: #b4b4b4 !important;
