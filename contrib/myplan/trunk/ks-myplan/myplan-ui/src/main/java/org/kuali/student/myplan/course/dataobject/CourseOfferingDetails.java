@@ -31,10 +31,8 @@ public class CourseOfferingDetails {
         this.activityOfferingItemList = activityOfferingItemList;
     }
 
-    public boolean isStandalone()
-    {
-    	for( ActivityOfferingItem item : getActivityOfferingItemList() )
-    	{
+    public boolean isStandalone() {
+    	for( ActivityOfferingItem item : getActivityOfferingItemList() ) {
     		if( !item.isStandalone() ) return false;
     	}
     	return true;

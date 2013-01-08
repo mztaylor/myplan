@@ -251,9 +251,8 @@ public class ActivityOfferingItem {
     	this.secondaryList = secondaryList;
     }
     
-    public boolean isStandalone()
-    {
+    public boolean isStandalone() {
     	return isPrimary() && getSecondaryList().size() == 0;
     }
-    
+
 }
