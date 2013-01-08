@@ -439,6 +439,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     secondary.setInstructor( "Socrates" );
                     secondary.setServiceLearning( true );
                     secondary.setDetails( "View section notes and textbook information" );
+
+                    // Temporary fix to group primary and secondary sections into one list for display in a single table
+                    if( primary == null ) {
+                        primary = secondary;
+                        primary.setPrimary( true );
+                        activityList.add( primary );
+                    }
+                    else {
+                        activityList.add( secondary );
+                    }
+
+                    /*
                     if( primary == null )
                     {
                     	primary = secondary;
@@ -449,9 +461,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     	List<ActivityOfferingItem> secondaries = primary.getSecondaryList();
 						secondaries.add( secondary );
                     }
+                    */
             	}
             	
-                activityList.add( primary );
+                /* activityList.add( primary ); */
             }
 
             // Rename courseofferinggroup
