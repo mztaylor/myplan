@@ -25,6 +25,7 @@ public class ActivityOfferingItem {
     private String locationRoom;
     // Section Line Number - UW-ism
     private String sln;
+    private String qtryr = "WIN+2013";
     private boolean enrollRestriction;
     private boolean enrollOpen;
     private int enrollCount;
@@ -107,6 +108,14 @@ public class ActivityOfferingItem {
 
     public void setSln(String sln) {
         this.sln = sln;
+    }
+
+    public String getQtryr() {
+        return qtryr;
+    }
+
+    public void setQtryr(String qtryr) {
+        this.qtryr = qtryr;
     }
 
     public boolean isEnrollRestriction() {

@@ -938,7 +938,7 @@
                                                     <bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                                                           p:style="border-left:1px dotted #ccc; width:348px;">
                                                         <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="- -  @{#line.secondaryList.size()} - -"/>
+                                                            <bean parent="Uif-Message" p:messageText="--"/>
                                                         </property>
                                                     </bean>
                                                 </list>
@@ -1001,7 +1001,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="- -" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
                             <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
                             <!--<bean parent="Uif-Link" p:linkText="View restrictions" p:href="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944" p:render="@{#line.enrollRestriction}" p:style="margin:0;"/>-->
                         </list>
@@ -1031,6 +1031,6 @@
 
     <bean id="current_section_status" parent="Uif-ActionLink" p:style="margin:0;">
         <!-- TODO: Update URL to include URL param to include quarter and year -->
-        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=12356', {helpers:{overlay:{closeClick: false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
+        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.sln}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 </beans>
