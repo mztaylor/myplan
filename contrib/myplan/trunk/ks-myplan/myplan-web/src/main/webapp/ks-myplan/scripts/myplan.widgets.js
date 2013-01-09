@@ -34,7 +34,6 @@ if (readUrlHash("modified") == "yes") {
         } else {
             window.location.assign(url.split("#")[0]);
         }
-
     }
 }
 
@@ -980,9 +979,9 @@ function changeLoadingMessage(selector) {
 }
 
 function setLoadingMessage(selector) {
-	if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0){
+    if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0){
         fnAddLoadingText(selector);
-	}
+    }
 }
 
 function fnAddLoadingText(selector) {
@@ -1080,11 +1079,8 @@ function blockPendingAudit(id) {
 }
 
 function pollPendingAudit(programId, recentAuditId) {
-    var interval = 1; // polling interval in seconds
-    var maxDuration = 5; // max duration to poll in minutes
-    jQuery.ajaxPollSettings.maxInterval = (maxDuration * 60) / interval;
     jQuery.ajaxPollSettings.pollingType = "interval";
-    jQuery.ajaxPollSettings.interval = (interval * 1000);
+    jQuery.ajaxPollSettings.interval = 250; // polling interval in milliseconds
 
     jQuery.ajaxPoll({
         url: "/student/myplan/audit/status",
@@ -1098,6 +1094,7 @@ function pollPendingAudit(programId, recentAuditId) {
             var growl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
+                if (readUrlParam("auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function() { setUrlParam("auditId", ""); });
             }
 
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
@@ -1139,10 +1136,36 @@ function setUrlHash(key, value) {
 
     aHash = [];
     for (var key in oHash) {
-        aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
+        if (oHash[key] != '')aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
     }
 
     window.location.replace("#" + aHash.join("&"));
+}
+
+function setUrlParam(key, value) {
+
+    var aParams = [];
+    if (window.location.search) {
+        aParams = window.location.search.replace('?', '').split('&');
+    }
+    var oParams = {};
+    if (aParams.length > 0) {
+        jQuery.each(aParams, function (index, value) {
+            oParams[value.split('=')[0]] = value.split('=')[1];
+        });
+        var oTemp = {};
+        oTemp[key] = value;
+        jQuery.extend(oParams, oTemp);
+    } else {
+        oParams[key] = value;
+    }
+
+    aParams = [];
+    for (var key in oParams) {
+        if (oParams[key] != '') aParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(oParams[key]));
+    }
+
+    window.location.assign(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
 }
 
 (function ($) {
@@ -1335,7 +1358,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
                     }
                 }
-                setUrlHash('modified', 'yes');                
+                setUrlHash('modified', 'yes');
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
