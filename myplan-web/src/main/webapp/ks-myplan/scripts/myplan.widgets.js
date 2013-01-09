@@ -1165,7 +1165,7 @@ function setUrlParam(key, value) {
         if (oParams[key] != '') aParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(oParams[key]));
     }
 
-    window.location.assign(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
+    window.location.replace(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
 }
 
 (function ($) {
