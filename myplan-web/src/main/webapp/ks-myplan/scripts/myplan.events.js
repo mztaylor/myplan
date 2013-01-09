@@ -23,7 +23,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
             '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',null,e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
         '</div>' +
     '</div>';
-    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).data("size")) + 1;
+    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).attr("data-size")) + 1;
     jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
     fnShowHideQuickAddLink(atpId, type, size);
 
@@ -38,7 +38,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
  */
 function fnRemovePlanItem (atpId, type, planItemId) {
     jQuery("#" + planItemId).unbind('click');
-    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).data("size")) - 1;
+    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).attr("data-size")) - 1;
     jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
     fnShowHideQuickAddLink(atpId, type, size);
 
