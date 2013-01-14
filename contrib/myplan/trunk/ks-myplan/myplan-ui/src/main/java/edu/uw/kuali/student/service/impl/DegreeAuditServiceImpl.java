@@ -283,20 +283,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         long giveup = System.currentTimeMillis() + timeout;
-        try {
-            while (true) {
-                StatusInfo info = this.getAuditRunStatus(auditId, context);
-                logger.info(info.getMessage());
-                if (info.getIsSuccess()) break;
-                Thread.currentThread().sleep(200);
-                if (System.currentTimeMillis() > giveup) {
-                    throw new TimeoutException("giving up after " + (timeout / 1000) + " seconds");
-                }
+        while( true ) 
+        {
+            StatusInfo info = this.getAuditRunStatus(auditId, context);
+            logger.info(info.getMessage());
+            if (info.getIsSuccess())
+            {
+            	return getHTMLReport(auditId);
             }
-        } catch (Exception e) {
-            logger.error(e);
+            	
+            Thread.sleep(200);
+            if (System.currentTimeMillis() > giveup) {
+                String msg = "getAuditReport giving up after " + (timeout / 1000) + " seconds, auditId: " + auditId;
+                logger.error( msg );
+				throw new OperationFailedException(msg);
+            }
         }
-        return getHTMLReport(auditId);
 //        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
 //        {
         /*return getDARSReport(auditId);*/
@@ -397,7 +399,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             answer = sw.toString();
 
         } catch (Exception e) {
-            logger.error("getHTMLReport failed", e);
+            String msg = "getHTMLReport failed auditId: " + auditId;
+			logger.error(msg, e);
+            throw new OperationFailedException( msg, e );
         }
         AuditDataSource dataSource = new AuditDataSource(answer, auditId);
         DataHandler dh = new DataHandler(dataSource);
