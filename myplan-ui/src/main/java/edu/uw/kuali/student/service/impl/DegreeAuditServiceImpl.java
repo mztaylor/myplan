@@ -291,8 +291,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             {
             	return getHTMLReport(auditId);
             }
-            	
-            Thread.sleep(200);
+
+            try
+            {
+                Thread.sleep(200);
+            }
+            catch( InterruptedException e )
+            {
+                // do nothing
+            }
             if (System.currentTimeMillis() > giveup) {
                 String msg = "getAuditReport giving up after " + (timeout / 1000) + " seconds, auditId: " + auditId;
                 logger.error( msg );
