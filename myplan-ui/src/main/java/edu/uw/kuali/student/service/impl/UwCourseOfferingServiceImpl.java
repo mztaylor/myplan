@@ -189,7 +189,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
         }
 
-        Map map = new HashMap();
+//        Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//s:Section");
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("s", "http://webservices.washington.edu/student/");
@@ -388,7 +388,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         xpath.setNamespaceURIs(namespaces);
         List sections = xpath.selectNodes(document);
         if (sections != null) {
-            StringBuffer cc = new StringBuffer();
+//            StringBuffer cc = new StringBuffer();
             for (Object node : sections) {
                 Element element = (Element) node;
                 List<?> sectionlist = new ArrayList<Object>();
@@ -423,7 +423,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 xpath2.setNamespaceURIs(namespaces2);
                 List curriculum = xpath2.selectNodes(document2);
                 if (curriculum != null) {
-                    StringBuffer cc = new StringBuffer();
+//                    StringBuffer cc = new StringBuffer();
                     for (Object node : curriculum) {
                         Element element = (Element) node;
                         AttributeInfo attributeInfo = new AttributeInfo();
@@ -680,7 +680,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
         }
-        Map map = new HashMap();
+//        Map map = new HashMap();
         DefaultXPath xpath = new DefaultXPath("//s:Section");
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("s", "http://webservices.washington.edu/student/");
@@ -825,27 +825,111 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
             List sections = sectionPath.selectNodes(doc);
             for (Object object : sections) {
-                Element section = (Element) object;
-                String sectionID = section.elementText("SectionID");
+                Element primarySectionNode = (Element) object;
+                String primarySectionID = primarySectionNode.elementText("SectionID");
                 
-                String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+                String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
                 
                 DefaultXPath secondaryPath = new DefaultXPath("/s:Section/s:PrimarySection");
                 secondaryPath.setNamespaceURIs(namespaces);
+                DefaultXPath secondarySectionPath = new DefaultXPath("/s:Section");
+                secondarySectionPath.setNamespaceURIs(namespaces);
+                
                 SAXReader secondaryReader = new SAXReader();
                 Document secondaryDoc = secondaryReader.read(new StringReader(secondaryXML));
+                
+                
+                Element secondarySection = (Element) secondarySectionPath.selectSingleNode( secondaryDoc );
                 Element dupeSectionElement = (Element) secondaryPath.selectSingleNode( secondaryDoc );
+                
                 String primaryID = dupeSectionElement.elementText("SectionID");
-                if( sectionID.equals( primaryID ))
+                if( primarySectionID.equals( primaryID ))
                 {
-               
+                    
+                   
 	                CourseOfferingInfo info = new CourseOfferingInfo();
 	                info.setSubjectArea( curric );
 	                info.setCourseCode( num );
 	                info.setTermId( termId );
-	                info.setId( sectionID );
-	                String courseID = join( "=", year, quarter, curric, num, sectionID );
+	                info.setId( primarySectionID );
+	                String courseID = join( "=", year, quarter, curric, num, primarySectionID );
 	                info.setCourseId(courseID);
+
+	                {
+	                    DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
+	                    instructorPath.setNamespaceURIs(namespaces);
+	                    List instructors = instructorPath.selectNodes( secondaryDoc );
+	                    
+	                    for( Object gundar : instructors )
+	                    {
+	                    	Element instructor = (Element) gundar;
+	                    	String name = instructor.elementText("Name");
+	                    	String regid = instructor.elementText("RegID");
+	                    	OfferingInstructorInfo temp = new OfferingInstructorInfo();
+	                    	temp.setPersonName( name );
+	                    	temp.setPersonId( regid );
+	                    	info.getInstructors().add( temp );
+	                    }
+	                }
+
+	                {
+	                	String gradingSystem = secondarySection.elementText( "GradingSystem" );
+	                	if( "standard".equals( gradingSystem ))
+	                	{
+	                		info.setGradingOptionId( "kuali.uw.resultcomponent.grade.standard" );
+        					info.setGradingOptionName( null );
+	                	}
+	                	else if( "credit/no credit".equals( gradingSystem ))
+	                	{
+	                		info.setGradingOptionId( "kuali.uw.resultcomponent.grade.crnc" );
+        					info.setGradingOptionName( "Credit/No-Credit grading" );
+	                	}
+	                }
+
+	                {
+	                	String creditControl = secondarySection.elementText( "CreditControl" );
+	                	String minCreditID = secondarySection.elementText( "MinimumTermCredit" );
+	                	String minCreditName = minCreditID;
+	                	if( minCreditName != null && minCreditName.endsWith( ".0" ))
+	                	{
+	                		minCreditName = minCreditName.substring( 0, minCreditName.length() - 2 );
+	                	}
+	                	String maxCreditID = secondarySection.elementText( "MaximumTermCredit" );
+	                	String maxCreditName = maxCreditID;
+	                	if( maxCreditName != null && maxCreditName.endsWith( ".0" ))
+	                	{
+	                		maxCreditName = maxCreditName.substring( 0, maxCreditName.length() - 2 );
+	                	}
+	                	
+	                	String creditID = null;
+                		String creditName = null;
+                		
+	                	if( "fixed credit".equals( creditControl ))
+	                	{
+	                		creditID = minCreditID;
+	                		creditName = minCreditName;
+	                	}
+	                	if( "variable credit - min to max credits".equals( creditControl ))
+	                	{
+	                		creditID = minCreditID + "-" + maxCreditID;
+	                		creditName = minCreditName + "-" + maxCreditName;
+	                	}
+	                	if( "variable credit - min or max credits".equals( creditControl ))
+	                	{
+	                		creditID = minCreditID + ", " + maxCreditID;
+	                		creditName = minCreditName + ", " + maxCreditName;
+	                	}
+	                	if( "variable credit - 1 to 25 credits".equals( creditControl ))
+	                	{
+	                		creditID = "1.0-25.0"	;
+	                		creditName = "1-25";
+	                	}
+	                	
+	                	creditID = "kuali.uw.resultcomponent.credit." + creditID;
+	                	info.setCreditOptionId( creditID );
+	                	info.setCreditOptionName( creditName );
+	                	
+	                }
 	                list.add( info );
                 }
             }

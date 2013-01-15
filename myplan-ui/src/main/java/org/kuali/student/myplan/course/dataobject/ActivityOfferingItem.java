@@ -41,6 +41,7 @@ public class ActivityOfferingItem {
     private boolean serviceLearning;
     private boolean newThisYear;
     private boolean ineligibleForFinancialAid;
+    private String gradingOption;
 
     private boolean primary = false;
     
@@ -234,6 +235,15 @@ public class ActivityOfferingItem {
     public void setIneligibleForFinancialAid(boolean ineligibleForFinancialAid) {
         this.ineligibleForFinancialAid = ineligibleForFinancialAid;
     }
+    
+    public String getGradingOption() {
+    	return gradingOption;
+    }
+    
+    public void setGradingOption( String gradingOption ) {
+    	this.gradingOption = gradingOption;
+    }
+
 
     public boolean isPrimary() {
         return primary;
