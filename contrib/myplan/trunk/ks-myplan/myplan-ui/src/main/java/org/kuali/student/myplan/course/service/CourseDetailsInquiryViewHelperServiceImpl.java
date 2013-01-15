@@ -418,7 +418,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     catch( Exception e ) {}
                     secondary.setActivityOfferingType( activityOfferingType );
                     
-                    secondary.setCredits( "9" );
+                    secondary.setCredits( courseInfo.getCreditOptionName() );
+                    secondary.setGradingOption( courseInfo.getGradingOptionName() );
                     secondary.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
                     secondary.setLocationBuilding( "KNE" );
                     secondary.setLocationRoom( "210" );
@@ -450,21 +451,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         activityList.add( secondary );
                     }
 
-                    /*
-                    if( primary == null )
-                    {
-                    	primary = secondary;
-                    	primary.setPrimary( true );
-                    }
-                    else
-                    {
-                    	List<ActivityOfferingItem> secondaries = primary.getSecondaryList();
-						secondaries.add( secondary );
-                    }
-                    */
             	}
             	
-                /* activityList.add( primary ); */
             }
 
             // Rename courseofferinggroup
