@@ -14,7 +14,16 @@
                 <li><a href="http://www.washington.edu/online/privacy" target="_blank">Privacy</a></li>
             </ul>
         </div>
-        <div class="version smaller" title="${Request.request.serverName}">Version: ${ConfigProperties['myplan.version']}</div>
+
+        <#assign hostName= "${Request.request.serverName}">
+        <#if hostName?contains(".")>
+            <#list hostName?split(".") as x>
+                <#assign hostName="${x}">
+                <#if "${x_index}" = "0"><#break></#if>
+            </#list>
+        </#if>
+
+        <div class="version smaller" title="${hostName}">Version: ${ConfigProperties['myplan.version']}</div>
     </div>
 </div>
 </#macro>
