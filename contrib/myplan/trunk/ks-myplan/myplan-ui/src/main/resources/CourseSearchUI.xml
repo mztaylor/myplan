@@ -95,8 +95,10 @@
                       p:fieldLabel.renderColon="false">
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="e.g. COM, Math 124, ENGL 1XX, sun">
-
-                            <property name="onDocumentReadyScript" value="if (jQuery('#text_searchQuery_control').val() != '') jQuery('button.course-search-submit').click();"/>
+                            <property name="onDocumentReadyScript" value="
+                                if (readUrlHash('searchQuery')) {
+                                    jQuery('#text_searchQuery_control').val(readUrlHash('searchQuery'));
+                                }"/>
                             <property name="onLoadScript" value="jQuery(this).blur();"/>
                             <property name="onKeyUpScript" value="
                                 if (jQuery(this).val().length > 0) {
@@ -122,7 +124,12 @@
                         </list>
                     </property>-->
                     <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
+                        <bean parent="Uif-DropdownControl">
+                            <property name="onDocumentReadyScript" value="
+                                if (readUrlHash('searchTerm')) {
+                                    jQuery('#select_searchTerm_control').val(readUrlHash('searchTerm'));
+                                }"/>
+                        </bean>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.utils.PublishedTermsListBuilder">
@@ -137,6 +144,7 @@
                 </bean>
                 <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:actionLabel="Search" p:disabled="true">
                     <property name="actionScript" value="
+                        window.location.replace('#');
                         searchForCourses('course_search_results','course_search_results_panel');
                     "/>
                     <property name="cssClasses">
@@ -167,7 +175,18 @@
                     </list>
                 </property>
                     <property name="control">
-                            <bean parent="Uif-HorizontalCheckboxesControl"/>
+                        <bean parent="Uif-HorizontalCheckboxesControl">
+                            <property name="onDocumentReadyScript" value="
+                                if (readUrlHash('campusSelect')) {
+                                    jQuery.each(jQuery(&quot;input[name='campusSelect']&quot;), function() {
+                                        if (jQuery.inArray(jQuery(this).val(), readUrlHash('campusSelect').split(',')) != -1) {
+                                            jQuery(this).attr('checked','checked');
+                                        } else {
+                                            jQuery(this).removeAttr('checked');
+                                        }
+                                    });
+                                }"/>
+                        </bean>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.CampusSearch"/>
@@ -179,6 +198,11 @@
 
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup" p:style="display: none;">
+        <property name="onDocumentReadyScript" value="
+            if (readUrlHash('searchQuery')) {
+                jQuery('button.course-search-submit').attr('disabled', false);
+                searchForCourses('course_search_results','course_search_results_panel');
+            }"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-results</value>

@@ -1,14 +1,45 @@
 function readUrlHash(key) {
-    var aHash = window.location.hash.replace('#', '').split('&');
-    var oHash = {};
-    jQuery.each(aHash, function (index, value) {
-        oHash[value.split('=')[0]] = value.split('=')[1];
-    });
-    if (oHash[key]) {
-        return oHash[key];
+    if(window.location.href.split("#")[1]) {
+        var aHash = window.location.href.split("#")[1].replace('#', '').split('&');
+        var oHash = {};
+        jQuery.each(aHash, function (index, value) {
+            oHash[value.split('=')[0]] = value.split('=')[1];
+        });
+        if (oHash[key]) {
+            if (decodeURIComponent(oHash[key]) == "true" || decodeURIComponent(oHash[key]) == "false") {
+                return (decodeURIComponent(oHash[key]) == "true");
+            } else {
+                return decodeURIComponent(oHash[key]);
+            }
+        } else {
+            return false;
+        }
     } else {
         return false;
     }
+}
+
+function setUrlHash(key, value) {
+    var aHash = [];
+    if (window.location.href.split("#")[1].replace('#', '')) {
+        aHash = window.location.href.split("#")[1].replace('#', '').split('&');
+    }
+    var oHash = {};
+    if (aHash.length > 0) {
+        jQuery.each(aHash, function (index, value) {
+            oHash[decodeURIComponent(value.split('=')[0])] = decodeURIComponent(value.split('=')[1]);
+        });
+        var oTemp = {};
+        oTemp[key] = value;
+        jQuery.extend(oHash, oTemp);
+    } else {
+        oHash[key] = value;
+    }
+    aHash = [];
+    for (var key in oHash) {
+        if (key != "" && oHash[key] != "") aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
+    }
+    window.location.replace("#" + aHash.join("&"));
 }
 
 function readUrlParam(key) {
@@ -18,23 +49,41 @@ function readUrlParam(key) {
         oParams[value.split('=')[0]] = value.split('=')[1];
     });
     if (oParams[key]) {
-        return oParams[key];
+        return decodeURIComponent(oParams[key]);
     } else {
         return false;
     }
 }
 
-/* This is for DOM changes to refresh the view on back to keep the view updated */
-if (readUrlHash("modified") == "yes") {
-    if (readUrlParam("viewId") != "CourseSearch-FormView") {
-        var url = window.location.href;
-        var hash = window.location.hash;
-        if (url.split("#")[1].replace("modified=yes", "").length > 0) {
-            window.location.assign(url.split("#")[0] + hash.replace("modified=yes", "modified=no"));
-        } else {
-            window.location.assign(url.split("#")[0]);
-        }
+function setUrlParam(key, value) {
+    var aParams = [];
+    if (window.location.search) {
+        aParams = window.location.search.replace('?', '').split('&');
     }
+    var oParams = {};
+    if (aParams.length > 0) {
+        jQuery.each(aParams, function (index, value) {
+            oParams[value.split('=')[0]] = value.split('=')[1];
+        });
+        var oTemp = {};
+        oTemp[key] = value;
+        jQuery.extend(oParams, oTemp);
+    } else {
+        oParams[key] = value;
+    }
+    aParams = [];
+    for (var key in oParams) {
+        if (key != "" && oParams[key] != "") aParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(oParams[key]));
+    }
+    window.location.replace(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
+}
+
+/* This is for DOM changes to refresh the view on back to keep the view updated */
+if (readUrlHash("modified")) {
+    var url = window.location.href;
+    var aHash = window.location.href.split("#")[1].replace("#", "").split("&");
+    aHash.splice("modified=true", 1);
+    window.location.assign(url.split("#")[0] + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
 }
 
 jQuery(document).ready(function () {
@@ -58,10 +107,7 @@ function sessionExpired() {
 }
 
 function stopEvent(e) {
-    if (!e) {
-        var e = window.event
-    }
-    ;
+    if (!e) var e = window.event;
     if (e.stopPropagation) {
         e.preventDefault();
         e.stopPropagation();
@@ -534,7 +580,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
                     }
                 }
-                setUrlHash('modified', 'yes');
+                setUrlHash('modified', 'true');
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
@@ -1117,57 +1163,6 @@ function buttonState(jqueryObj, buttonId) {
     }
 }
 
-function setUrlHash(key, value) {
-    var aHash = [];
-    if (window.location.hash) {
-        aHash = window.location.hash.replace('#', '').split('&');
-    }
-    var oHash = {};
-    if (aHash.length > 0) {
-        jQuery.each(aHash, function (index, value) {
-            oHash[value.split('=')[0]] = value.split('=')[1];
-        });
-        var oTemp = {};
-        oTemp[key] = value;
-        jQuery.extend(oHash, oTemp);
-    } else {
-        oHash[key] = value;
-    }
-
-    aHash = [];
-    for (var key in oHash) {
-        if (oHash[key] != '')aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
-    }
-
-    window.location.replace("#" + aHash.join("&"));
-}
-
-function setUrlParam(key, value) {
-
-    var aParams = [];
-    if (window.location.search) {
-        aParams = window.location.search.replace('?', '').split('&');
-    }
-    var oParams = {};
-    if (aParams.length > 0) {
-        jQuery.each(aParams, function (index, value) {
-            oParams[value.split('=')[0]] = value.split('=')[1];
-        });
-        var oTemp = {};
-        oTemp[key] = value;
-        jQuery.extend(oParams, oTemp);
-    } else {
-        oParams[key] = value;
-    }
-
-    aParams = [];
-    for (var key in oParams) {
-        if (oParams[key] != '') aParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(oParams[key]));
-    }
-
-    window.location.replace(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
-}
-
 (function ($) {
 
     $.fn.characterCount = function (options) {
@@ -1358,7 +1353,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
                     }
                 }
-                setUrlHash('modified', 'yes');
+                setUrlHash('modified', 'true');
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
