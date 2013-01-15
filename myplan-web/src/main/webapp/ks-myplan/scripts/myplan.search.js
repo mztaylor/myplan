@@ -116,7 +116,14 @@ jQuery.fn.iterateSorted = function(sorter, print) {
             for (var n = 0; n < aTemp.length; n++) {
                 var sTemp = jQuery.trim( aTemp[n] );
                 if (!oFacets[iColumn][sTemp]) oFacets[iColumn][sTemp] = {count: 0};
-                if (!oFacets[iColumn][sTemp].checked) oFacets[iColumn][sTemp].checked = false;
+                if (!oFacets[iColumn][sTemp].checked) {
+                    oFacets[iColumn][sTemp].checked = false;
+                    if (readUrlHash(iColumn)) {
+                        if (jQuery.inArray(sTemp, readUrlHash(iColumn).split("|")) != -1) {
+                            oFacets[iColumn][sTemp].checked = true;
+                        }
+                    }
+                }
                 if (bIgnoreEmpty === true && aTemp[n].length === 0) {
                     continue;
                 } else if (bUnique === true && oFacets[iColumn].hasOwnProperty(sTemp)) {
@@ -132,11 +139,15 @@ function searchForCourses(id, parentId) {
     var results = jQuery("#" + parentId); // course_search_results_panel
     results.fadeOut("fast");
     var sQuery = jQuery("input[name='searchQuery']").val();
-    var sTerm = jQuery("select[name='searchTerm'] option:selected").val();
+    var sTerm = jQuery("select[name='searchTerm']").val();
     var aCampus = new Array();
     jQuery.each( jQuery("input[name='campusSelect']:checked"), function() {
         aCampus.push( jQuery(this).val() );
     });
+    var iDisplayLength = 20;
+    if(readUrlHash("show")) iDisplayLength = parseFloat(readUrlHash("show"));
+    var iDisplayStart = 0;
+    if(readUrlHash("start")) iDisplayStart = parseFloat(readUrlHash("start"));
     oFacets = new Object();
     oTable = jQuery("#" + id).dataTable({
         aLengthMenu: [20,50,100],
@@ -162,8 +173,9 @@ function searchForCourses(id, parentId) {
         bServerSide: false,
         bSortClasses: false,
         bStateSave: false,
-        iCookieDuration: 600,
-        iDisplayLength: 20,
+        iCookieDuration: 0,
+        iDisplayLength: iDisplayLength,
+        iDisplayStart: iDisplayStart,
         fnDrawCallback: function() {
             if ( Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength ) > 1)  {
                 jQuery(".dataTables_paginate .ui-button").not(".first, .last").show();
@@ -174,15 +186,21 @@ function searchForCourses(id, parentId) {
                 var targetOffset = jQuery("#" + parentId).offset().top;
                 jQuery('html,body').animate({scrollTop: targetOffset}, 250);
             }
+            fnSaveState(id);
         },
         fnInitComplete: function(oSettings, json) {
             oTable.fnDraw();
+            if(!readUrlHash("searchQuery")) setUrlHash('searchQuery', sQuery);
+            if(!readUrlHash("searchTerm")) setUrlHash('searchTerm', sTerm);
+            if(!readUrlHash("campusSelect")) setUrlHash('campusSelect', aCampus);
             results.fadeIn("fast");
             results.find("table#" + id).width(548);
             jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
                 jQuery(this).empty();
             });
-            if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jQuery.publish("GENERATE_FACETS");
+            if ( oSettings.fnRecordsDisplay() > 0 ) {
+                jQuery.publish("GENERATE_FACETS");
+            }
         },
         fnServerData: function(sSource, aoData, fnCallback) {
             jQuery.ajax({
@@ -213,30 +231,46 @@ function searchForCourses(id, parentId) {
 
 function fnGenerateFacetGroup(iColumn, obj, sorter) {
     if (oTable.fnSettings().aoColumns[iColumn].bSearchable) {
-        oTable.fnGetColumnData(iColumn);
+        oTable.fnGetColumnData(iColumn, true, false);
         fnCreateFacetList(oFacets[iColumn], iColumn, obj, sorter);
     }
 }
 
 function fnCreateFacetList(oData, i, obj, sorter) {
+    var aSelections = [];
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
     if(Object.size(oData) > 1) {
         jFacets.append( jQuery('<div class="all"><ul /></div>') );
-        var jAll = jQuery('<li />').attr("title", "All").addClass("all checked").html('<a href="#">All</a>').click(function(e) {
+        var allClass = 'checked';
+        for (var key in oData) {
+            if (oData.hasOwnProperty(key)) {
+                if (oData[key].checked === true) {
+                    allClass = '';
+                    aSelections.push(";"+key+";");
+                }
+            }
+        }
+        var jAll = jQuery('<li />').attr("title", "All").addClass("all " + allClass).html('<a href="#">All</a>').click(function(e) {
             fnFacetFilter('All', i, e);
         });
         jFacets.find(".all ul").append(jAll);
     }
     jFacets.append( jQuery('<div class="facets"><ul /></div>') );
     jQuery(oData).iterateSorted(sorter, function(key) {
-//      Without title
-//      var jItem = jQuery('<li />').attr("title", key).html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
         var jItem = jQuery('<li />').html('<a href="#">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
             fnFacetFilter(key, i, e);
         });
+        if(oData[key].checked) jItem.addClass("checked");
         if(Object.size(oData) == 1) jItem.addClass("static");
         jFacets.find(".facets ul").append(jItem);
     });
+    if(aSelections.length > 0) {
+        oTable.fnFilter(aSelections.join("|"), i, true, false);
+        if(readUrlHash("start")) {
+            oTable.fnSettings()._iDisplayStart = parseFloat(readUrlHash("start"));
+            oTable.fnDraw(false);
+        }
+    }
 }
 
 function fnUpdateFacetList(n, i, obj) {
@@ -272,7 +306,6 @@ function fnFacetFilter(sFilter, i, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if ( !jQuery(target).is('.disabled') && !jQuery(target).is('.static') ) {
-        //var oCookie = eval('(' + unescape(jQuery.cookie('myplan_course_search_results_course')) + ')');
         if (sFilter === 'All') {
             // Set all facets within column to checked false
             for (var key in oFacets[i]) {
@@ -282,7 +315,7 @@ function fnFacetFilter(sFilter, i, e) {
             }
             // Clear filter
             oTable.fnFilter('', i, true, false);
-            //oCookie.aaSearchCols[i][0] = '';
+            setUrlHash(i, '');
             jQuery.publish("UPDATE_FACETS", [-1]);
         } else {
             // Update checked status of facet
@@ -298,8 +331,17 @@ function fnFacetFilter(sFilter, i, e) {
             }
             // Filter results of facet selection
             oTable.fnFilter(aSelections.join("|"), i, true, false);
-            //oCookie.aaSearchCols[i][0] = aSelections.join("|");
+            setUrlHash(i, aSelections.join("|").replace(/\;/g,""));
             jQuery.publish("UPDATE_FACETS", [i]);
         }
     }
+}
+
+function fnSaveState(id) {
+    jQuery("#" + id + "_length select").change(function(){
+        setUrlHash("show", oTable.fnSettings()._iDisplayLength);
+    });
+    jQuery("#" + id + "_paginate a.ui-button").click(function(e){
+        setUrlHash("start", oTable.fnSettings()._iDisplayStart);
+    });
 }

@@ -972,7 +972,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="activityOfferingType" p:fieldLabel.render="false" p:style="margin-right:0.33em; text-transform:capitalize;"/>
-                            <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.credits ne '0'}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.primary}" p:style="margin:0;"/>
                         </list>
                     </property>
                 </bean>
