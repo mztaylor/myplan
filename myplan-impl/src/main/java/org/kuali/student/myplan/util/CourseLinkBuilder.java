@@ -157,8 +157,9 @@ public class CourseLinkBuilder {
          *  This match will short-circuit the method.
          */
         Matcher matcher = courseNumberRangePattern.matcher(rawText);
-        if (matcher.find()) {
-            return rawText;
+        boolean doCourseNumberPattern = true;
+        if (matcher.find()&&curriculumAbbreviationGroupPattern.matcher(rawText).find()) {
+            doCourseNumberPattern = false;
         }
 
         //  Determine the curriculum abbreviation.
@@ -196,13 +197,15 @@ public class CourseLinkBuilder {
         }
 
         //  Look for 3 digit numbers
-        matcher = courseNumberPattern.matcher(rawText);
         boolean isCourseNumberPattern = false;
-        while (matcher.find()) {
-            String number = matcher.group(1);
-            String courseCode = String.format("%s %s", curriculumAbbreviation, number);
-            placeHolders.put(number, makeLink(courseCode, number, template));
-            isCourseNumberPattern = true;
+        if(doCourseNumberPattern){
+            matcher = courseNumberPattern.matcher(rawText);
+            while (matcher.find()) {
+                String number = matcher.group(1);
+                String courseCode = String.format("%s %s", curriculumAbbreviation, number);
+                placeHolders.put(number, makeLink(courseCode, number, template));
+                isCourseNumberPattern = true;
+            }
         }
 
         //  Substitute plain text with links.
@@ -226,6 +229,7 @@ public class CourseLinkBuilder {
         if (isUndoTo) {
             rawText = rawText.replace(" to ", " TO ");
         }
+
         return rawText;
     }
 
