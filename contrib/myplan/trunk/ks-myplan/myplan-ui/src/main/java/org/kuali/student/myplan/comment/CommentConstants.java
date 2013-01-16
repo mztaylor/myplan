@@ -35,6 +35,7 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String EMAIL_MESSAGE_SUBJECT = "myplan.message.subject";
     public static final String EMAIL_BODY = "myplan.email.body";
     public static final String EMAIL_FROM = "myplan.comment.fromAddress";
+    public static final String EMAIL_SUBJECT = "myplan.message.email.subject";
 
     public static final String MESSAGE_LINK = "myplan.message.env.link";
     public static final String ADVISER_MESSAGE_LINK = "myplan.adviser.message.env.link";

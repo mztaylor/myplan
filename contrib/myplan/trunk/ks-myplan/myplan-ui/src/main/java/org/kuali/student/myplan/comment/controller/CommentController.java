@@ -198,7 +198,8 @@ public class CommentController extends UifControllerBase {
         String subjectProp = pro.getProperty(CommentConstants.EMAIL_COMMENT_SUBJECT);
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, fromName);
-        String body = String.format(emailBody, toName, fromName, messageText, messageLink);
+        String emailSubject = "";
+        String body = String.format(emailBody, toName, fromName,emailSubject, messageText, messageLink);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
@@ -300,7 +301,8 @@ public class CommentController extends UifControllerBase {
         String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, adviserName);
-        String body = String.format(emailBody, studentName, adviserName, messageText, messageLink);
+        String emailSubject =String.format(pro.getProperty(CommentConstants.EMAIL_SUBJECT),form.getSubject());
+        String body = String.format(emailBody, studentName, adviserName,emailSubject, messageText, messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);
