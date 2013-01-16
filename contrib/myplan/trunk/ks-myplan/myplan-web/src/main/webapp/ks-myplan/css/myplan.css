@@ -1446,6 +1446,9 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
     padding: 2px 4px;
 }
+.myplan-course-sections .uif-tableCollectionLayout .uif-rowDetails .uif-verticalFieldGroup .uif-verticalBoxGroup .uif-verticalBoxLayout > span {
+    margin: 0;
+}
 .myplan-course-sections table.uif-tableCollectionLayout td a {
     white-space: normal;
 }

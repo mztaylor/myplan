@@ -438,7 +438,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     secondary.setEnrollCount( 000 );
                     secondary.setEnrollMaximum( 999 );
                     secondary.setInstructor( "Socrates" );
-                    secondary.setServiceLearning( true );
+
+                    secondary.setDistanceLearning( false );
+                    secondary.setHonorsSection( false );
+                    secondary.setJointOffering( false );
+                    secondary.setResearch( false );
+                    secondary.setWritingSection( false );
+                    secondary.setServiceLearning( false );
+                    secondary.setNewThisYear( false );
+                    secondary.setIneligibleForFinancialAid( false );
+
                     secondary.setDetails( "View section notes and textbook information" );
 
                     // Temporary fix to group primary and secondary sections into one list for display in a single table
