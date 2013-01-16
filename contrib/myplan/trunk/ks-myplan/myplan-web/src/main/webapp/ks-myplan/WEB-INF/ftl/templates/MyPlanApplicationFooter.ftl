@@ -15,15 +15,7 @@
             </ul>
         </div>
 
-        <#assign hostName= "${Request.request.serverName}">
-        <#if hostName?contains(".")>
-            <#list hostName?split(".") as x>
-                <#assign hostName="${x}">
-                <#if "${x_index}" = "0"><#break></#if>
-            </#list>
-        </#if>
-
-        <div class="version smaller" title="${hostName}">Version: ${ConfigProperties['myplan.version']}</div>
+        <div class="version smaller" title="${Request.hostName}">Version: ${ConfigProperties['myplan.version']}</div>
     </div>
 </div>
 </#macro>
