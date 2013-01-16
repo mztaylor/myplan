@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,6 +75,11 @@ public class MyplanInterceptor implements HandlerInterceptor {
             request.getRequestDispatcher(BROWSER_INCOMPATIBLE).forward(request, response);
             return false;
         }
+        String hostName= InetAddress.getLocalHost().getHostName();
+        if(hostName.contains(".")) {
+            hostName=hostName.substring(0,hostName.indexOf("."));
+        }
+        request.setAttribute("hostName",hostName);
         return true;
     }
 
