@@ -12,27 +12,23 @@ public class TimeStringMillisConverter
 	public static final long MILLIS_PER_HOUR = 60L * MILLIS_PER_MINUTE;
 	public static final long MILLIS_PER_DAY = 60L * MILLIS_PER_HOUR;
 	
-	public final static Pattern timeRegex = Pattern.compile( "([0-9][0-9]):([0-9][0-9])" );
+	public final static Pattern militaryTimeRegex = Pattern.compile( "([0-9][0-9]):([0-9][0-9])" );
 	
-	public static long militaryTimeToMillis( String example )
+	public static long militaryTimeToMillis( String time )
 	{
-		long timeofday = 0L;
-		
-		Matcher m = timeRegex.matcher(example);
+		Matcher m = militaryTimeRegex.matcher( time );
 		if( m.find() ) 
 		{
-			long hours = Long.parseLong( m.group( 1 ));
-			long minutes = Long.parseLong (m.group( 2 ));
-			if( hours > 23 || minutes > 59)
+			int hours = Integer.parseInt( m.group( 1 ));
+			int minutes = Integer.parseInt( m.group( 2 ));
+			if( hours < 24 && minutes < 60 )
 			{
-				throw new NumberFormatException( example );
+				long timeofday = hours * MILLIS_PER_HOUR;
+				timeofday += minutes * MILLIS_PER_MINUTE;
+				return timeofday;
 			}
-			
-			hours = hours * MILLIS_PER_HOUR;
-			minutes = minutes * MILLIS_PER_MINUTE;
-			timeofday = hours + minutes;
 		}
-		return timeofday;
+		throw new NumberFormatException( time );
 	}
 	
 	public static String millisToMilitaryTime( long millis )
@@ -75,6 +71,7 @@ public class TimeStringMillisConverter
 		throws Exception 
 	{
 			
+		testMilitaryRoundTrip( "X" );
 		testMilitaryRoundTrip( "08:30" );
 		testMilitaryRoundTrip( "00:00" );
 		testMilitaryRoundTrip( "00:01" );
