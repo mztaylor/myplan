@@ -107,7 +107,7 @@ public class DegreeAuditServiceImplTest {
 
             for(AuditReportInfo info : list)
             {
-                      System.out.println( info.getProgramId());
+                      System.out.println( info.getProgramTitle());
             }
         }
         catch( Exception e )

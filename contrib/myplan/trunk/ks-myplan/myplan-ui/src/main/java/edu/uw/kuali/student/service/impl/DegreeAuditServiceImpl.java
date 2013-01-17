@@ -574,7 +574,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 audit.setAuditId(jqr.getJobid());
                 audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
                 audit.setStudentId(stuno);
-                audit.setProgramId(jqr.getWebtitle());
+                audit.setProgramId(jqr.getDprog().replace(" ","$"));
+                audit.setProgramTitle(jqr.getWebtitle());
                 audit.setRunDate(jqr.getRundate());
                 audit.setRequirementsSatisfied("Unknown");
                 list.add(audit);
@@ -610,7 +611,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
         List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
-        String hql = "SELECT dp.comp_id.dprog, dp.webtitle from Dprog dp WHERE (dp.comp_id.dprog LIKE '0%' or dp.comp_id.dprog LIKE '1%' or dp.comp_id.dprog LIKE '2%') AND dp.lyt>=? AND dp.webtitle IS NOT NULL AND dp.webtitle<>'' AND dp.dpstatus='W'";
+        String hql = "SELECT DISTINCT dp.comp_id.dprog, dp.webtitle from Dprog dp WHERE (dp.comp_id.dprog LIKE '0%' or dp.comp_id.dprog LIKE '1%' or dp.comp_id.dprog LIKE '2%') AND dp.lyt>=? AND dp.webtitle IS NOT NULL AND dp.webtitle<>'' AND dp.dpstatus='W'";
         String[] currentTermAndYear = this.getCurrentYearAndTerm();
         int year = Integer.parseInt(currentTermAndYear[1]) - 10;
         StringBuffer termYear = new StringBuffer();

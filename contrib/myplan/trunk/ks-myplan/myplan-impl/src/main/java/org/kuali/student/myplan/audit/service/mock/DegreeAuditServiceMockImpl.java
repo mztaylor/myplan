@@ -83,6 +83,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         auditReportInfo.setReportType(auditTypeKey);
         auditReportInfo.setReport(handler);
         auditReportInfo.setProgramId("programId");
+        auditReportInfo.setProgramTitle("programTitle");
         auditReportInfo.setRunDate(new java.util.Date());
         auditReportInfo.setReportContentTypeKey("html");
         auditReportInfo.setRequirementsSatisfied("Yes!");
