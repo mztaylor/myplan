@@ -1088,7 +1088,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 			        	Element meetingNode = (Element) obj;
 			        	
 			        	String tba = meetingNode.elementText( "DaysOfWeekToBeArranged" );
-			        	boolean tbaFlag = Boolean.getBoolean( tba );
+			        	boolean tbaFlag = Boolean.parseBoolean( tba );
 			        	
 			        	if( !tbaFlag )
 			        	{
