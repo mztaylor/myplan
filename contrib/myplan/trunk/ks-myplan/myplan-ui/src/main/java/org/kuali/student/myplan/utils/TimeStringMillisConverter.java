@@ -56,10 +56,14 @@ public class TimeStringMillisConverter
 		long hours = millis - minutes;
 		minutes = minutes / MILLIS_PER_MINUTE;
 		hours = hours / MILLIS_PER_HOUR;
-		if( hours > 12 )
+		if( hours > 11 )
 		{
 			am = false;
 			hours -= 12;
+		}
+		if( hours == 0 )
+		{
+			hours = 12;
 		}
 		String time = String.format( "%d:%02d %s", hours, minutes, am ? "AM" : "PM" );
 		return time;
@@ -81,6 +85,9 @@ public class TimeStringMillisConverter
 		testMilitaryRoundTrip( "00:60" );
 		
 		testStandardToMilitary( "08:30", "8:30 AM" );
+		testStandardToMilitary( "00:00", "12:00 AM" );
+		testStandardToMilitary( "12:00", "12:00 PM" );
+		testStandardToMilitary( "12:30", "12:30 PM" );
 		testStandardToMilitary( "13:30", "1:30 PM" );
 	}
 
