@@ -11,7 +11,7 @@ public class DegreeAuditDataObjectHelper {
         DegreeAuditItem degreeAuditItem = new DegreeAuditItem();
         degreeAuditItem.setReport(auditReportInfo);
         //  TODO: Find out the program title using the program id.
-        degreeAuditItem.setProgramTitle(auditReportInfo.getProgramId());
+        degreeAuditItem.setProgramTitle(auditReportInfo.getProgramTitle());
         degreeAuditItem.setProgramType("Program Type");
         return degreeAuditItem;
     }

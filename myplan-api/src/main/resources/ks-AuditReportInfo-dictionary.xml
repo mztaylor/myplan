@@ -72,6 +72,11 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
+    <bean id="AuditReportInfo.programTitle" parent="AuditReportInfo.programTitle-parent"/>
+    <bean id="AuditReportInfo.programTitle-parent" abstract="true" parent="AuditReportInfo.programTitle-generated">
+        <!-- insert any overrides to the generated attribute definitions here -->
+    </bean>
+
 	<bean id="AuditReportInfo.runDate" parent="AuditReportInfo.runDate-parent"/>
 	<bean id="AuditReportInfo.runDate-parent" abstract="true" parent="AuditReportInfo.runDate-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->

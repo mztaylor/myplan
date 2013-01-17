@@ -62,6 +62,7 @@ AuditReport message structure
 				<ref bean="AuditReportInfo.requirementsSatisfied"/>
                 <ref bean="AuditReportInfo.studentId"/>
                 <ref bean="AuditReportInfo.programId"/>
+                <ref bean="AuditReportInfo.programTitle"/>
                 <ref bean="AuditReportInfo.runDate"/>
 			</list>
 		</property>
@@ -172,6 +173,23 @@ Program ID
 		</property>
 		<property name="required" value="false"/>
 	</bean>
+
+    <bean id="AuditReportInfo.programTitle-generated" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="programTitle"/>
+        <property name="shortLabel" value="Program Title"/>
+        <property name="summary">
+            <value>
+                Program Title
+            </value>
+        </property>
+        <property name="label" value="Program Title"/>
+        <property name="description">
+            <value>
+                Program Title
+            </value>
+        </property>
+        <property name="required" value="false"/>
+    </bean>
 
 
 	<bean id="AuditReportInfo.runDate-generated" abstract="true" parent="BaseKuali.dateTime">

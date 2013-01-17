@@ -125,6 +125,7 @@ public class DegreeAuditController extends UifControllerBase {
                 Date startDate = new Date();
                 Date endDate = new Date();
                 String programParam = null;
+                String programId = null;
                 form.setCampusParam(campusMap.get("0"));
                 logger.info("audit systemkey " + systemKey);
                 if (!isAuditServiceUp) {
@@ -133,7 +134,7 @@ public class DegreeAuditController extends UifControllerBase {
                     List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
                     if (auditId == null && auditReportInfoList.size() > 0) {
                         auditId = auditReportInfoList.get(0).getAuditId();
-                        programParam = auditReportInfoList.get(0).getProgramId();
+                        programParam = auditReportInfoList.get(0).getProgramTitle();
                     }
 
                     // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
@@ -142,7 +143,8 @@ public class DegreeAuditController extends UifControllerBase {
                         if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
                             for (AuditReportInfo report : auditReportInfoList) {
                                 if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
-                                    programParam = report.getProgramId();
+                                    programParam = report.getProgramTitle();
+                                    programId = report.getProgramId();
                                 }
                             }
                         }
@@ -162,31 +164,22 @@ public class DegreeAuditController extends UifControllerBase {
 
 
                         /*Impl to set the default values for campusParam and programParam properties*/
-                        List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
-                        try {
-                            auditProgramInfoList = getDegreeAuditService().getAuditPrograms(DegreeAuditConstants.CONTEXT_INFO);
-                        } catch (Exception e) {
-                            logger.error("could not retrieve AuditPrograms", e);
-                        }
-                        for (AuditProgramInfo auditProgramInfo : auditProgramInfoList) {
-                            if (auditProgramInfo.getProgramTitle().equalsIgnoreCase(programParam)) {
-                                int campusPrefix = Integer.parseInt(auditProgramInfo.getProgramId().substring(0, 1));
-                                form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
-                                switch (campusPrefix) {
-                                    case 0:
-                                        form.setProgramParamSeattle(auditProgramInfo.getProgramId());
-                                        break;
-                                    case 1:
-                                        form.setProgramParamBothell(auditProgramInfo.getProgramId());
-                                        break;
-                                    case 2:
-                                        form.setProgramParamTacoma(auditProgramInfo.getProgramId());
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                                break;
+                        if (programId != null && programParam != null) {
+                            int campusPrefix = Integer.parseInt(programId.substring(0, 1));
+                            programId = programId.replaceAll(" ", "$");
+                            form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
+                            switch (campusPrefix) {
+                                case 0:
+                                    form.setProgramParamSeattle(programId);
+                                    break;
+                                case 1:
+                                    form.setProgramParamBothell(programId);
+                                    break;
+                                case 2:
+                                    form.setProgramParamTacoma(programId);
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     }
