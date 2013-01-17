@@ -1,24 +1,21 @@
 package org.kuali.student.myplan.course.service;
 
-import java.io.StringReader;
-import java.lang.String;
-import java.util.*;
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
-import edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl;
-
 import org.apache.log4j.Logger;
-
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.common.exceptions.*;
 import org.kuali.student.common.exceptions.DoesNotExistException;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.exceptions.OperationFailedException;
@@ -31,22 +28,16 @@ import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.myplan.course.dataobject.*;
-import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.exceptions.*;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ScheduleComponentDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ScheduleDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
-
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -55,6 +46,10 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingType;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -65,11 +60,14 @@ import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
+import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import static org.kuali.rice.core.api.criteria.PredicateFactory.*;
 
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
@@ -257,6 +255,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
+    
+    public final static String[] weekdaysFirstLetter = { "M", "T", "W", "Th", "F", "Sa", "Su" };
 
     public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
@@ -420,7 +420,36 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     
                     secondary.setCredits( courseInfo.getCreditOptionName() );
                     secondary.setGradingOption( courseInfo.getGradingOptionName() );
-                    secondary.setMeetingTime( "MTWThF 10:30 - 11:20 AM" );
+                    {
+//	                    String meetingTime = "MTWThF 10:30 - 11:20 AM";
+	                    String meetingTime = "TBA";
+	                    ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+	                    for( ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays() )
+	                    {
+	                    	for( TimeSlotInfo timeSlot : scdi.getTimeSlots() )
+	                    	{
+	    	                    meetingTime = "";
+	                    		for( int weekday : timeSlot.getWeekdays() )
+	                    		{
+	                    			if( weekday > -1 && weekday < 7 )
+	                    			{
+	                    				String letter = weekdaysFirstLetter[weekday];
+	                    				meetingTime += letter;
+	                    			}
+	                    		}
+	                    		long startTimeMillis = timeSlot.getStartTime().getMilliSeconds();
+	                    		String startTime = TimeStringMillisConverter.millisToStandardTime( startTimeMillis );
+	                    		
+	                    		long endTimeMillis = timeSlot.getEndTime().getMilliSeconds();
+	                    		String endTime = TimeStringMillisConverter.millisToStandardTime( endTimeMillis );
+	                    		
+	                    		meetingTime = meetingTime + " " + startTime + " - " + endTime;
+	                    	}
+	                    }
+	                    
+						secondary.setMeetingTime( meetingTime );
+                    }
+                    
                     secondary.setLocationBuilding( "KNE" );
                     secondary.setLocationRoom( "210" );
                     

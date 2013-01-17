@@ -19,11 +19,14 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
@@ -51,11 +54,21 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private transient CourseService courseService;
     private StudentServiceClient studentServiceClient;
+    
+    private ArrayList<String> daylist = new ArrayList<String>();
 
     public UwCourseOfferingServiceImpl() {
         //  Compile regexs for parsing term and year from termKey.
         patternTerm = Pattern.compile(REGEX_TERM, Pattern.CASE_INSENSITIVE);
         patternYear = Pattern.compile(REGEX_YEAR);
+        
+        daylist.add( "Monday" );
+        daylist.add( "Tuesday" );
+        daylist.add( "Wednesday" );
+        daylist.add( "Thursday" );
+        daylist.add( "Friday" );
+        daylist.add( "Saturday" );
+        daylist.add( "Sunday" );
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
@@ -827,8 +840,20 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             for (Object object : sections) {
                 Element primarySectionNode = (Element) object;
                 String primarySectionID = primarySectionNode.elementText("SectionID");
-                
-                String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
+
+                String secondaryXML;
+	    		try
+	    		{
+	    			// Skip this section ID if it fails
+	    			secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
+	    		}
+	    		catch( ServiceException e )
+	    		{
+
+                    logger.warn( e );
+	    			continue;
+	    		}
+
                 
                 DefaultXPath secondaryPath = new DefaultXPath("/s:Section/s:PrimarySection");
                 secondaryPath.setNamespaceURIs(namespaces);
@@ -983,23 +1008,43 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 	    	List<String> sectionList = new ArrayList<String>();
 	    	sectionList.add( sectionID );
 	    	{
-		        String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
-		        DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
-		        sectionListPath.setNamespaceURIs(namespaces);
-		        SAXReader secondaryReader = new SAXReader();
-		        Document doc = secondaryReader.read(new StringReader(xml));
-		        List sections = sectionListPath.selectNodes( doc );
-		        for (Object node : sections) 
-		        {
-		            Element section = (Element) node;
-		            String secondaryid = section.elementText("SectionID");
-		            sectionList.add( secondaryid );
-		        }
+	    		try
+	    		{
+			        String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+			        DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
+			        sectionListPath.setNamespaceURIs(namespaces);
+			        SAXReader secondaryReader = new SAXReader();
+			        Document doc = secondaryReader.read(new StringReader(xml));
+			        List sections = sectionListPath.selectNodes( doc );
+			        for (Object node : sections) 
+			        {
+			            Element section = (Element) node;
+			            String secondaryid = section.elementText("SectionID");
+			            sectionList.add( secondaryid );
+			        }
+	    		}
+	    		catch( ServiceException e )
+	    		{
+                    logger.warn( e );
+	    		}
 	    	}
 	    	
 	        for( String id : sectionList )
 	        {
-	        	String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
+		        ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
+		        
+		        String xml;
+	    		try
+	    		{
+	    			// Skips section ID if it fails
+	    			xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
+	    		}
+	    		catch( ServiceException e )
+	    		{
+
+                    logger.warn( e );
+	    			continue;
+	    		}
 	        	
 	        	
 		        SAXReader secondaryReader = new SAXReader();
@@ -1008,13 +1053,12 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 		        
 		        DefaultXPath sectionPath = new DefaultXPath("/s:Section");
 		        sectionPath.setNamespaceURIs(namespaces);
-		        DefaultXPath meetingPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting" );
-		        meetingPath.setNamespaceURIs(namespaces);
 		        DefaultXPath coursePath = new DefaultXPath( "/s:Section/s:Course" );
 		        coursePath.setNamespaceURIs(namespaces);
 
 		        Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
 		        String typeName = sectionNode.elementText("SectionType");
+		        
 		        Element courseNode = (Element) coursePath.selectSingleNode( doc );
 		        String title = courseNode.elementText( "CourseTitle" );
 		        String temp = sectionNode.elementText( "HonorsCourse" );
@@ -1022,25 +1066,80 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 		        String sln = sectionNode.elementText("SLN");
 		        
 		        
-//		        String credits = sectionNode.elementText("MinimumTermCredit");
 //		        String serviceLearning = sectionNode.elementText( "ServiceLearning" );
-//
-//		        Element meetingNode = (Element) meetingPath.selectSingleNode( doc );
-//		        String building = meetingNode.elementText( "Building" );
-//		        String roomNumber = meetingNode.elementText( "RoomNumber" );
-//		        String startTime = meetingNode.elementText( "StartTime" );
-//		        String endTime = meetingNode.elementText("EndTime");
-//
-//		        String daysOfWeekExpr = "s:DaysOfWeek/s:Text";
-//		        DefaultXPath daysOfWeekPath = new DefaultXPath(daysOfWeekExpr);
-//		        daysOfWeekPath.setNamespaceURIs(namespaces);
-//		        Element daysOfWeekNode = (Element) daysOfWeekPath.selectSingleNode( meetingNode );
-//		        String daysOfWeek = daysOfWeekNode.getStringValue();
+
 		        
-		        ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
+		        {
+		        	ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
+		        	scheduleDisplay.setScheduleComponentDisplays( new ArrayList<ScheduleComponentDisplayInfo>() );
+		        	info.setScheduleDisplay( scheduleDisplay );
+		        	
+		        	
+		        	ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
+		        	scdi.setTimeSlots( new ArrayList<TimeSlotInfo>() );		  
+		        	scheduleDisplay.getScheduleComponentDisplays().add( scdi );
+		        	
+			        DefaultXPath meetingPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting" );
+			        meetingPath.setNamespaceURIs(namespaces);
+			        
+			        List meetings = meetingPath.selectNodes( doc );
+			        for( Object obj : meetings )
+			        {
+			        	Element meetingNode = (Element) obj;
+			        	
+			        	String tba = meetingNode.elementText( "DaysOfWeekToBeArranged" );
+			        	boolean tbaFlag = Boolean.getBoolean( tba );
+			        	
+			        	if( !tbaFlag )
+			        	{
+			        		TimeSlotInfo timeSlot = new TimeSlotInfo();
+			        		timeSlot.setWeekdays( new ArrayList<Integer>() );
+			        		
+			        		{
+				        		String time = meetingNode.elementText( "StartTime" );
+				        		long millis = TimeStringMillisConverter.militaryTimeToMillis( time );
+				        		TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+				        		timeInfo.setMilliSeconds( millis );
+				        		timeSlot.setStartTime( timeInfo );
+			        		}
+			        		
+			        		{
+				        		String time = meetingNode.elementText( "EndTime" );
+				        		long millis = TimeStringMillisConverter.militaryTimeToMillis( time );
+				        		TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+				        		timeInfo.setMilliSeconds( millis );
+				        		timeSlot.setEndTime( timeInfo );
+			        		}
+			        		
+			        		DefaultXPath dayNamePath = new DefaultXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
+			        		dayNamePath.setNamespaceURIs(namespaces);
+			        		
+			        		List dayNameNodes = dayNamePath.selectNodes( meetingNode );
+			        		for( Object node : dayNameNodes )
+			        		{
+			        			Element dayNameNode = (Element) node;
+			        			String day = dayNameNode.getTextTrim();
+			        			int weekday = daylist.indexOf( day );
+			        			if( weekday != -1 )
+			        			{
+			        				timeSlot.getWeekdays().add( weekday );
+			        			}
+			        		}
+			        		scdi.getTimeSlots().add( timeSlot );
+			        	}
+			        	
+			        	
+			        	
+				        String building = meetingNode.elementText( "Building" );
+				        String roomNumber = meetingNode.elementText( "RoomNumber" );
+			        }			        
+		        }
+		        
+		        
 		        info.setTypeName( typeName );
 		        info.setCourseOfferingTitle( title );
-		        info.setCourseOfferingCode( curric );
+//		        info.setCourseCode( curric );
+		        info.setCourseOfferingCode( curric + " " + id );
 		        info.setActivityOfferingCode( id );
 		        info.setIsHonorsOffering( honors );
 		        AttributeInfo attrib = new AttributeInfo( "SLN", sln );
