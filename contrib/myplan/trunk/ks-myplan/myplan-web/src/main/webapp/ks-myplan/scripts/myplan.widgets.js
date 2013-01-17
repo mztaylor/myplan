@@ -21,7 +21,7 @@ function readUrlHash(key) {
 
 function setUrlHash(key, value) {
     var aHash = [];
-    if (window.location.href.split("#")[1].replace('#', '')) {
+    if (window.location.href.split("#")[1]) {
         aHash = window.location.href.split("#")[1].replace('#', '').split('&');
     }
     var oHash = {};
