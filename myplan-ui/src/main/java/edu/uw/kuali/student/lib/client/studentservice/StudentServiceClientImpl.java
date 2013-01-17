@@ -234,6 +234,9 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     public String getSections(String year, String quarter, String abbrev, String num ) throws ServiceException {
+        abbrev = abbrev.replace( " ", "%20" );
+        abbrev = abbrev.replace( "&", "%26" );
+
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -257,6 +260,8 @@ public class StudentServiceClientImpl
         String base = getBaseUrl();
         String ver = getServiceVersion();
 
+        abbrev = abbrev.replace( " ", "%20" );
+        abbrev = abbrev.replace( "&", "%26" );
         String url = String.format( "%s/%s/public/course/%s,%s,%s,%s/%s.xml", base, ver, year, quarter, abbrev, num, section );
         System.out.println( url );
         return sendQuery( url );
@@ -315,7 +320,8 @@ public class StudentServiceClientImpl
        return connectionEstablished;
     }
 
-public String sendQuery(String url) throws ServiceException {
+    public String sendQuery(String url) throws ServiceException 
+    {
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
