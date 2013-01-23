@@ -4,11 +4,11 @@
 #################################################################
  */
 function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName) {
-    var alertClass = "scheduled";
-    var imageSource = "/student/ks-myplan/images/pixel.gif";
-    if(showAlert=="true"){
-       alertClass = "notScheduled";
-        imageSource="/student/ks-myplan/images/iconWarning.png";
+    var statusClass = "scheduled";
+    var messageText = "";
+    if (showAlert == "true") {
+        statusClass = "not-scheduled";
+        messageText = "not ";
     }
     var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
@@ -16,8 +16,9 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
                 '<fieldset>' +
                     '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
                         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
-                            '<div class="'+alertClass+' uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" style="padding-right:5px;" title="'+courseCode+' is not scheduled for '+termName+'">'+
-                            '<img  src="'+imageSource+'" alt="'+courseCode+' is not scheduled for '+termName+'" class="uif-image"> </div>'+
+                            '<div class="' + statusClass + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + courseCode + ' is' + messageText + ' scheduled for ' + termName + '">'+
+                                '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + messageText + ' scheduled for ' + termName + '" class="uif-image">' +
+                            '</div>' +
                             '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
                                 '<span class="uif-message">' + courseCode + '</span>' +
                             '</div>' +
