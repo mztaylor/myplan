@@ -15,7 +15,8 @@
             </ul>
         </div>
 
-        <div class="version smaller" title="${Request.hostName}">Version: ${ConfigProperties['myplan.version']}</div>
+        <div class="version smaller" >Version: ${ConfigProperties['myplan.version']}</div>
+        <div class="host smaller" >${Request.hostName}</div>
     </div>
 </div>
 </#macro>
