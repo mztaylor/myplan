@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -32,6 +33,17 @@ public class AtpHelper {
     public static int TERM_COUNT = 4;
 
     private static final Logger logger = Logger.getLogger(AtpHelper.class);
+
+    private static transient CourseOfferingService courseOfferingService;
+
+    private static CourseOfferingService getCourseOfferingService() {
+        if (courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return courseOfferingService;
+    }
+
 
     private static AcademicCalendarService getAcademicCalendarService() {
         if (academicCalendarService == null) {
@@ -254,6 +266,25 @@ public class AtpHelper {
         }
 
         return isAtpCompletedTerm;
+    }
+
+    public static boolean isCourseOfferedInTerm(String atp, String course){
+        boolean isCourseOfferedInTerm = false;
+
+        String[] splitStr = course.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+
+        List<String> offerings = null;
+        try {
+            offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, splitStr[0].trim(), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Exception loading course offering for:" + course, e);
+        }
+
+        if (offerings!=null&&offerings.contains(course)) {
+            isCourseOfferedInTerm = true;
+        }
+
+        return isCourseOfferedInTerm;
     }
 
     public static boolean isAtpIdFormatValid(String atpId) {

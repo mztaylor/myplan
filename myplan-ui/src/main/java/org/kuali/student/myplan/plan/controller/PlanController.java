@@ -1495,6 +1495,9 @@ public class PlanController extends UifControllerBase {
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         }
+        // event for aler Icon
+        params.put("showAlert",String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0),courseDetails.getCode())));
+        params.put("termName",AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
 
         //  Create Javascript events.
         String courseDetailsAsJson;
