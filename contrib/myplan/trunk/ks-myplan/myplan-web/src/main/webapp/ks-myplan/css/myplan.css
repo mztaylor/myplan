@@ -768,6 +768,18 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     background: none;
     font-family: Helvetica, Arial, Verdana, sans-serif;
 }
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status {
+    margin-right: 5px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status.not-scheduled img {
+    background-position: -54px -115px;
+}
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .code {
     color: #000;
 }
@@ -791,11 +803,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
     height: 25px;
     line-height: 25px;
-    padding: 0 5px 0 22px;
-}
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.not-scheduled,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid.not-scheduled {
-    background: url('../images/iconWarning.png') no-repeat 4px;
+    padding: 0 5px; /* 0px 21px */
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
     font-size: 0.8462em;
@@ -1807,9 +1815,23 @@ label.scheduled {
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,
 .myplan-full-plan-detail ul,
-.myplan-full-plan-detail ul li {
+.myplan-full-plan-detail ul li,
+.myplan-full-plan-detail .uif-stackedCollectionLayout,
+.myplan-full-plan-detail .uif-stackedCollectionLayout > .uif-collectionItem {
     padding: 0;
     margin: 0;
+    background: none;
+}
+.myplan-full-plan-detail .uif-stackedCollectionLayout > .uif-collectionItem.uif-horizontalBoxGroup {
+    display: inline-block;
+    float: left;
+}
+.myplan-full-plan-detail table.uif-gridLayout {
+    margin: 0;
+    border-top: solid 1px #a9a9a9;
+}
+.myplan-full-plan-detail .myplan-term {
+    border-left: solid 1px #a9a9a9;
 }
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {
