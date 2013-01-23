@@ -79,7 +79,7 @@ public class MyplanInterceptor implements HandlerInterceptor {
         if(hostName.contains(".")) {
             hostName=hostName.substring(0,hostName.indexOf("."));
         }
-        request.setAttribute("hostName",hostName);
+        request.setAttribute("hostName",hostName.toUpperCase());
         return true;
     }
 

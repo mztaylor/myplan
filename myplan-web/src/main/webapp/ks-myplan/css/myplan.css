@@ -217,6 +217,13 @@ a:focus {
     right: 0px;
     color: #555;
 }
+#applicationFooterSection .host {
+    position: absolute;
+    white-space: nowrap;
+    top: 40px;
+    right: 0px;
+    color: #555;
+}
 #applicationFooterSection ul {
     list-style: none;
     margin: 20px auto;
