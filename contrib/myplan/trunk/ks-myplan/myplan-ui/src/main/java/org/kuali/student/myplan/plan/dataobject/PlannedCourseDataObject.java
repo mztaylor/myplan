@@ -16,6 +16,7 @@ public class PlannedCourseDataObject implements Comparable {
 
     private transient PlanItemDataObject planItemDataObject;
     private transient CourseDetails courseDetails;
+    private transient boolean showAlert;
 
     public CourseDetails getCourseDetails() {
         return courseDetails;
@@ -31,6 +32,14 @@ public class PlannedCourseDataObject implements Comparable {
 
     public void setPlanItemDataObject(PlanItemDataObject planItemDataObject) {
         this.planItemDataObject = planItemDataObject;
+    }
+
+    public boolean isShowAlert() {
+        return showAlert;
+    }
+
+    public void setShowAlert(boolean showAlert) {
+        this.showAlert = showAlert;
     }
 
     @Override

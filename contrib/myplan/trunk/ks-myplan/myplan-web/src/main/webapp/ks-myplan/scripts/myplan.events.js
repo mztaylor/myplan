@@ -3,13 +3,21 @@
     Function: add course to quarter plan view
 #################################################################
  */
-function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits) {
+function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName) {
+    var alertClass = "scheduled";
+    var imageSource = "/student/ks-myplan/images/pixel.gif";
+    if(showAlert=="true"){
+       alertClass = "notScheduled";
+        imageSource="/student/ks-myplan/images/iconWarning.png";
+    }
     var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
             '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g,".") + '">' +
                 '<fieldset>' +
                     '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
                         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
+                            '<div class="'+alertClass+' uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" style="padding-right:5px;" title="'+courseCode+' is not scheduled for '+termName+'">'+
+                            '<img  src="'+imageSource+'" alt="'+courseCode+' is not scheduled for '+termName+'" class="uif-image"> </div>'+
                             '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
                                 '<span class="uif-message">' + courseCode + '</span>' +
                             '</div>' +

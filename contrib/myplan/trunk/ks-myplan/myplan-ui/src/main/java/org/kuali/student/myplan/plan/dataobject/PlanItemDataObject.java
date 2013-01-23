@@ -18,6 +18,7 @@ public class PlanItemDataObject {
     private String refObjId;
     private String refObjType;
     private String term;
+    private String termName;
     private int year;
     private String creditPref;
 
@@ -29,6 +30,7 @@ public class PlanItemDataObject {
         if (item.getPlanPeriods() != null && item.getPlanPeriods().size() > 0) {
             itemDO.setAtp(item.getPlanPeriods().get(0));
             String[] termYear = AtpHelper.atpIdToTermAndYear(itemDO.getAtp());
+            itemDO.setTermName(AtpHelper.atpIdToTermName(itemDO.getAtp()));
             itemDO.setYear(Integer.valueOf(termYear[1]));
             itemDO.setTerm(termYear[0]);
         }
@@ -125,5 +127,13 @@ public class PlanItemDataObject {
 
     public void setAtpIds(List<String> atpIds) {
         this.atpIds = atpIds;
+    }
+
+    public String getTermName() {
+        return termName;
+    }
+
+    public void setTermName(String termName) {
+        this.termName = termName;
     }
 }

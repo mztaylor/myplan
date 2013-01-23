@@ -1349,6 +1349,7 @@
     <!-- Single term view that lists planned course, total credits and backup courses -->
     <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 620px; margin-right: 10px;">
         <property name="onDocumentReadyScript" value="
+            jQuery('.notScheduled img').each(function(){jQuery(this).attr('src','@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconWarning.png')});
             jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
             	var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
             	var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
@@ -1547,7 +1548,7 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
-                    fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit);
+                    fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName);
                 })
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
@@ -1925,6 +1926,13 @@
                     </property>
                     <property name="items">
                         <list>
+                            <bean parent="Uif-ImageField" p:style="padding-right:5px;" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif" p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : ''}" p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : ''}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>@{#line.showAlert ? 'notScheduled' : 'scheduled'}</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
@@ -2155,6 +2163,13 @@
                     </property>
                     <property name="items">
                         <list>
+                            <bean parent="Uif-ImageField" p:style="padding-right:5px;" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif" p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : ''}" p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : ''}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>@{#line.showAlert ? 'notScheduled' : 'scheduled'}</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="Uif-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">

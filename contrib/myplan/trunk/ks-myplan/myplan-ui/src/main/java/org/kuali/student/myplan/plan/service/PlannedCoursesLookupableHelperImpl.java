@@ -81,6 +81,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             logger.error("Could not load plannedCourseslist", e);
 
         }
+            for(PlannedCourseDataObject pl:plannedCoursesList){
+                pl.setShowAlert(!AtpHelper.isCourseOfferedInTerm(pl.getPlanItemDataObject().getAtp(), pl.getCourseDetails().getCode()));
+            }
         }
         /****academic record SWS call to get the studentCourseRecordInfo list *****/
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
@@ -102,6 +105,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             logger.error("Could not load backupCourseList", e);
 
         }
+            for(PlannedCourseDataObject pl:backupCoursesList){
+                pl.setShowAlert(!AtpHelper.isCourseOfferedInTerm(pl.getPlanItemDataObject().getAtp(), pl.getCourseDetails().getCode()));
+            }
         }
 
         List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, focusAtpId,isServiceStatusOK);
