@@ -15,6 +15,15 @@ var oScheduledTermOrder = {
     "AU":4
 };
 
+var oGenEduNames = {
+   "VLPA":"Visual, Literary and Performing Arts",
+   "I&S":"Individuals and Societies",
+   "NW":"Natural World",
+   "QSR":"Quantitative, Symbolic or Formal Reasoning",
+   "C":"English Composition",
+   "W":"Writing"
+};
+
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -139,11 +148,15 @@ function searchForCourses(id, parentId) {
     var results = jQuery("#" + parentId); // course_search_results_panel
     results.fadeOut("fast");
     var sQuery = jQuery("input[name='searchQuery']").val();
-    var sTerm = jQuery("select[name='searchTerm'] option:selected").val();
+    var sTerm = jQuery("select[name='searchTerm']").val();
     var aCampus = new Array();
     jQuery.each( jQuery("input[name='campusSelect']:checked"), function() {
         aCampus.push( jQuery(this).val() );
     });
+    var iDisplayLength = 20;
+    if(readUrlHash("show")) iDisplayLength = parseFloat(readUrlHash("show"));
+    var iDisplayStart = 0;
+    if(readUrlHash("start")) iDisplayStart = parseFloat(readUrlHash("start"));
     oFacets = new Object();
     oTable = jQuery("#" + id).dataTable({
         aLengthMenu: [20,50,100],
@@ -169,8 +182,9 @@ function searchForCourses(id, parentId) {
         bServerSide: false,
         bSortClasses: false,
         bStateSave: false,
-        iCookieDuration: 600,
-        iDisplayLength: 20,
+        iCookieDuration: 0,
+        iDisplayLength: iDisplayLength,
+        iDisplayStart: iDisplayStart,
         fnDrawCallback: function() {
             if ( Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength ) > 1)  {
                 jQuery(".dataTables_paginate .ui-button").not(".first, .last").show();
@@ -181,15 +195,21 @@ function searchForCourses(id, parentId) {
                 var targetOffset = jQuery("#" + parentId).offset().top;
                 jQuery('html,body').animate({scrollTop: targetOffset}, 250);
             }
+            fnSaveState(id);
         },
         fnInitComplete: function(oSettings, json) {
             oTable.fnDraw();
+            if(!readUrlHash("searchQuery")) setUrlHash('searchQuery', sQuery);
+            if(!readUrlHash("searchTerm")) setUrlHash('searchTerm', sTerm);
+            if(!readUrlHash("campusSelect")) setUrlHash('campusSelect', aCampus);
             results.fadeIn("fast");
             results.find("table#" + id).width(548);
             jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function() {
                 jQuery(this).empty();
             });
-            if ( oTable.fnSettings().fnRecordsDisplay() > 0 ) jQuery.publish("GENERATE_FACETS");
+            if ( oSettings.fnRecordsDisplay() > 0 ) {
+                jQuery.publish("GENERATE_FACETS");
+            }
         },
         fnServerData: function(sSource, aoData, fnCallback) {
             jQuery.ajax({
@@ -226,15 +246,6 @@ function fnGenerateFacetGroup(iColumn, obj, sorter) {
 }
 
 function fnCreateFacetList(oData, i, obj, sorter) {
-
-    var genEdMap = {};
-    genEdMap["VLPA"] = "Visual, Literary and Performing Arts";
-    genEdMap["I&S"] = "Individuals and Societies";
-    genEdMap["NW"] = "Natural World";
-    genEdMap["QSR"] = "Quantitative, Symbolic or Formal Reasoning";
-    genEdMap["C"] = "English Composition";
-    genEdMap["W"] = "Writing";
-
     var aSelections = [];
     var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
     if(Object.size(oData) > 1) {
@@ -255,11 +266,11 @@ function fnCreateFacetList(oData, i, obj, sorter) {
     }
     jFacets.append( jQuery('<div class="facets"><ul /></div>') );
     jQuery(oData).iterateSorted(sorter, function(key) {
-        var genEduTitle="";
-        if(key in genEdMap){
-            genEduTitle=genEdMap[key];
+        var title = "";
+        if(key in oGenEduNames){
+            title = ' title="' + oGenEduNames[key] + '"';
         }
-        var jItem = jQuery('<li />').html('<a href="#" title="'+genEduTitle+'">' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
+        var jItem = jQuery('<li />').html('<a href="#"' + title + '>' + key + '</a><span>(' + oData[key].count + ')</span>').click(function(e) {
             fnFacetFilter(key, i, e);
         });
         if(oData[key].checked) jItem.addClass("checked");
@@ -308,7 +319,6 @@ function fnFacetFilter(sFilter, i, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if ( !jQuery(target).is('.disabled') && !jQuery(target).is('.static') ) {
-        //var oCookie = eval('(' + unescape(jQuery.cookie('myplan_course_search_results_course')) + ')');
         if (sFilter === 'All') {
             // Set all facets within column to checked false
             for (var key in oFacets[i]) {
@@ -318,7 +328,7 @@ function fnFacetFilter(sFilter, i, e) {
             }
             // Clear filter
             oTable.fnFilter('', i, true, false);
-            //oCookie.aaSearchCols[i][0] = '';
+            setUrlHash(i, '');
             jQuery.publish("UPDATE_FACETS", [-1]);
         } else {
             // Update checked status of facet
@@ -334,8 +344,17 @@ function fnFacetFilter(sFilter, i, e) {
             }
             // Filter results of facet selection
             oTable.fnFilter(aSelections.join("|"), i, true, false);
-            //oCookie.aaSearchCols[i][0] = aSelections.join("|");
+            setUrlHash(i, aSelections.join("|").replace(/\;/g,""));
             jQuery.publish("UPDATE_FACETS", [i]);
         }
     }
+}
+
+function fnSaveState(id) {
+    jQuery("#" + id + "_length select").change(function(){
+        setUrlHash("show", oTable.fnSettings()._iDisplayLength);
+    });
+    jQuery("#" + id + "_paginate a.ui-button").click(function(e){
+        setUrlHash("start", oTable.fnSettings()._iDisplayStart);
+    });
 }
