@@ -286,6 +286,22 @@ public class AtpHelper {
 
         return isCourseOfferedInTerm;
     }
+    
+    public static List<String> getPublishedTerms() {
+        List<TermInfo> termInfos = null;
+        List<String> publishedTerms = new ArrayList<String>();
+        try {
+            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
+            //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
+            termInfos = new ArrayList<TermInfo>();
+        }
+        for(TermInfo term: termInfos){
+            publishedTerms.add(term.getId());
+        }
+        return publishedTerms;
+    }
 
     public static boolean isAtpIdFormatValid(String atpId) {
         return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
