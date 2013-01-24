@@ -1496,8 +1496,10 @@ public class PlanController extends UifControllerBase {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         }
         // event for aler Icon
+        List<String> publishedTerms=AtpHelper.getPublishedTerms();
         params.put("showAlert",String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0),courseDetails.getCode())));
         params.put("termName",AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
+        params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
 
         //  Create Javascript events.
         String courseDetailsAsJson;
