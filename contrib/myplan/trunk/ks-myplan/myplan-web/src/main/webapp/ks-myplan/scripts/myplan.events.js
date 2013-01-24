@@ -3,12 +3,16 @@
     Function: add course to quarter plan view
 #################################################################
  */
-function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName) {
+function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen) {
     var statusClass = "scheduled";
     var messageText = "";
+    var visibility = "none";
     if (showAlert == "true") {
         statusClass = "not-scheduled";
         messageText = "not ";
+    }
+    if(timeScheduleOpen == "true") {
+        visibility = "inline";
     }
     var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
@@ -16,7 +20,7 @@ function fnAddPlanItem (atpId, type, planItemId, courseCode, courseTitle, course
                 '<fieldset>' +
                     '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
                         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">' +
-                            '<div class="' + statusClass + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + courseCode + ' is' + messageText + ' scheduled for ' + termName + '">'+
+                            '<div style="display:'+visibility+';" class="' + statusClass + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + courseCode + ' is' + messageText + ' scheduled for ' + termName + '">'+
                                 '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + messageText + ' scheduled for ' + termName + '" class="uif-image">' +
                             '</div>' +
                             '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
