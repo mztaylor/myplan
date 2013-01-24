@@ -768,18 +768,6 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     background: none;
     font-family: Helvetica, Arial, Verdana, sans-serif;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status {
-    margin-right: 5px;
-}
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status img {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
-}
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status.not-scheduled img {
-    background-position: -54px -115px;
-}
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .code {
     color: #000;
 }
@@ -803,7 +791,22 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
     height: 25px;
     line-height: 25px;
-    padding: 0 5px; /* 0px 21px */
+    padding: 0 5px 0 26px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule {
+    padding: 0 5px 0 4px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule .schedule-status {
+    margin-right: 4px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status.not-scheduled img {
+    background-position: -54px -115px;
 }
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
     font-size: 0.8462em;
