@@ -461,12 +461,12 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     		secondary.setSln( temp );
                     		break;
                     	}
-                    }
+                    }                    
                     secondary.setEnrollRestriction( true );
                     secondary.setEnrollOpen( true );
                     secondary.setEnrollCount( 000 );
                     secondary.setEnrollMaximum( 999 );
-                    secondary.setInstructor( "Socrates" );
+                    secondary.setInstructor( aodi.getInstructorName() );
 
                     secondary.setDistanceLearning( false );
                     secondary.setHonorsSection( false );

@@ -1064,8 +1064,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 		        String temp = sectionNode.elementText( "HonorsCourse" );
 		        boolean honors = Boolean.getBoolean( temp );
 		        String sln = sectionNode.elementText("SLN");
-		        
-		        
+               	String instructorName = "--";
+                String instructorId = "--";
 //		        String serviceLearning = sectionNode.elementText( "ServiceLearning" );
 
 		        
@@ -1127,9 +1127,21 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 			        		}
 			        		scdi.getTimeSlots().add( timeSlot );
 			        	}
+
+                        /*Instructor Details*/
+                        DefaultXPath instructorPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting/s:Instructors" );
+                        instructorPath.setNamespaceURIs(namespaces);
+                        List instructors = instructorPath.selectNodes( doc );
+                        for(Object instObj: instructors){
+                            Element instructorNode= (Element) instObj;
+                            Element instructor=instructorNode.element("Instructor");
+                            if(instructor!=null){
+                                instructorName = instructor.element("Person").elementText("Name");
+                                instructorId = instructor.element("Person").elementText("RegID");
+                            }
+                        }
 			        	
-			        	
-			        	
+
 				        String building = meetingNode.elementText( "Building" );
 				        String roomNumber = meetingNode.elementText( "RoomNumber" );
 			        }			        
@@ -1137,6 +1149,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 		        
 		        
 		        info.setTypeName( typeName );
+                info.setInstructorName(instructorName);
+                info.setInstructorId(instructorId);
 		        info.setCourseOfferingTitle( title );
 //		        info.setCourseCode( curric );
 		        info.setCourseOfferingCode( curric + " " + id );
