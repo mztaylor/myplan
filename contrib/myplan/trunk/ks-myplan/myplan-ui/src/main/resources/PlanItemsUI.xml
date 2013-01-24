@@ -1920,6 +1920,7 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
+                            <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
                         </list>
                     </property>
                     <property name="items">
@@ -1927,7 +1928,7 @@
                             <bean parent="Uif-ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
                                   p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
-                                  p:render="@{#line.timeScheduleOpen ? true : false}">
+                                  p:render="@{#line.timeScheduleOpen}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>schedule-status</value>
@@ -2161,6 +2162,7 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
+                            <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
                         </list>
                     </property>
                     <property name="items">
@@ -2168,7 +2170,7 @@
                             <bean parent="Uif-ImageField" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
                                   p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
-                                    p:render="@{#line.timeScheduleOpen ? true : false}">
+                                    p:render="@{#line.timeScheduleOpen}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>schedule-status</value>
@@ -2989,8 +2991,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false" p:width="auto"
-                      p:cssClasses="myplan-text-nowrap" p:style="display:block; width:76px; padding:10px;"/>
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false"
+                      p:cssClasses="myplan-text-nowrap" p:style="display:block; width:96px;"/>
             </list>
         </property>
         <property name="subCollections">
