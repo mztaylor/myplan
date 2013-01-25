@@ -2940,32 +2940,42 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection">
+    <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:width="660px">
+        <property name="onDocumentReadyScript" value="
+            jQuery('td.uif-subCollection').each(function() {
+            	var maxHeight = 0;
+            	jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
+            		if (jQuery(this).height() > maxHeight) maxHeight = jQuery(this).height();
+            	});
+            	jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
+            		jQuery(this).height(maxHeight);
+            	});
+            });
+        "/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-full-plan-detail</value>
-                <value>fl-container-700</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:cssClasses="myplan-remove-margin" p:validationMessages.render="false" p:style="margin:0;">
+                <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:style="margin:0;">
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="Year" p:cssClasses=""
-                                  p:style="display:block; width:96px; visibility:hidden;"/>
+                                  p:style="display:block; width:56px; visibility:hidden; margin:0;"/>
                             <bean parent="Uif-Message" p:messageText="Autumn"
                                   p:cssClasses="fl-container-150 fl-text-align-center fl-text-bold"
-                                  p:style="display:block; border-left:solid 1px #a9a9a9;"/>
+                                  p:style="display:block; border-left:solid 1px #a9a9a9; margin:0;"/>
                             <bean parent="Uif-Message" p:messageText="Winter"
                                   p:cssClasses="fl-container-150 fl-text-align-center fl-text-bold"
-                                  p:style="display:block; border-left:solid 1px #a9a9a9;"/>
+                                  p:style="display:block; border-left:solid 1px #a9a9a9; margin:0;"/>
                             <bean parent="Uif-Message" p:messageText="Spring"
                                   p:cssClasses="fl-container-150 fl-text-align-center fl-text-bold"
-                                  p:style="display:block; border-left:solid 1px #a9a9a9;"/>
+                                  p:style="display:block; border-left:solid 1px #a9a9a9; margin:0;"/>
                             <bean parent="Uif-Message" p:messageText="Summer"
                                   p:cssClasses="fl-container-150 fl-text-align-center fl-text-bold"
-                                  p:style="display:block; border-left:solid 1px #a9a9a9;"/>
+                                  p:style="display:block; border-left:solid 1px #a9a9a9; margin:0;"/>
                         </list>
                     </property>
                 </bean>
@@ -2975,7 +2985,7 @@
     </bean>
 
     <!--Collection list of the Full Plan Items-->
-    <bean id="academicYearCollection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false">
+    <bean id="academicYearCollection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false" p:style="margin:0;">
         <property name="cssClasses" value=""/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
@@ -2991,8 +3001,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false"
-                      p:cssClasses="myplan-text-nowrap" p:style="display:block; width:96px;"/>
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false"/>
             </list>
         </property>
         <property name="subCollections">
@@ -3017,10 +3026,10 @@
             <bean parent="UifMyPlan-HorizontalStackedCollectionLayout">
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionHorizontalBoxItem">
-                        <property name="style" value="width:130px; padding:10px;"/>
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>myplan-term</value>
+                                <value>fl-container-150</value>
                             </list>
                         </property>
                     </bean>
@@ -3028,11 +3037,17 @@
             </bean>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer">
-            <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false" p:render="@{#line.credits ne null}">
+            <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>@{#line.credits ne null ? 'myplan-term-footer':'myplan-term-footer-blank'}</value>
+                    </list>
+                </property>
                 <property name="items">
                     <list>
-                        <bean parent="Uif-MessageField" p:label="@{#line.completedTerm ? 'Earned':(#line.currentTermForView ? 'Registered':'Planned')}"
-                              p:messageText="@{#line.credits} credits" p:style="float:right; margin:0;"/>
+                        <bean parent="Uif-MessageField" p:label="Credits"
+                              p:messageText="@{#line.credits}" p:style="float:right; margin:0;" p:render="@{#line.credits ne null}"/>
+                        <bean parent="Uif-SpaceField" p:render="@{#line.credits eq null}"/>
                     </list>
                 </property>
             </bean>

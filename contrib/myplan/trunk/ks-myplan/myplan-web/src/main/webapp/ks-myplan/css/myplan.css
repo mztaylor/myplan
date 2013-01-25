@@ -1814,6 +1814,7 @@ label.scheduled {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
+    font-size: 90%;
 }
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,
@@ -1825,6 +1826,14 @@ label.scheduled {
     margin: 0;
     background: none;
 }
+.myplan-full-plan-detail table th {
+    padding: 5px 0 0 10px;
+    text-align: left;
+    display: block;
+    width: 46px;
+    font-weight: bold;
+    line-height: 1.25em;
+}
 .myplan-full-plan-detail .uif-stackedCollectionLayout > .uif-collectionItem.uif-horizontalBoxGroup {
     display: inline-block;
     float: left;
@@ -1835,6 +1844,19 @@ label.scheduled {
 }
 .myplan-full-plan-detail .myplan-term {
     border-left: solid 1px #a9a9a9;
+}
+.myplan-full-plan-detail .myplan-term > .uif-boxLayout {
+    padding: 5px 10px;
+    min-height: 20px;
+}
+.myplan-full-plan-detail .myplan-term .myplan-term-footer,
+.myplan-full-plan-detail .myplan-term .myplan-term-footer-blank {
+    border-top: dotted 1px #a9a9a9;
+    padding: 0 10px;
+    font-size: 90%;
+}
+.myplan-full-plan-detail .myplan-term .myplan-term-footer-blank {
+    border-top-color: transparent;
 }
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {
