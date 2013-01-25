@@ -54,21 +54,21 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private transient CourseService courseService;
     private StudentServiceClient studentServiceClient;
-    
+
     private ArrayList<String> daylist = new ArrayList<String>();
 
     public UwCourseOfferingServiceImpl() {
         //  Compile regexs for parsing term and year from termKey.
         patternTerm = Pattern.compile(REGEX_TERM, Pattern.CASE_INSENSITIVE);
         patternYear = Pattern.compile(REGEX_YEAR);
-        
-        daylist.add( "Monday" );
-        daylist.add( "Tuesday" );
-        daylist.add( "Wednesday" );
-        daylist.add( "Thursday" );
-        daylist.add( "Friday" );
-        daylist.add( "Saturday" );
-        daylist.add( "Sunday" );
+
+        daylist.add("Monday");
+        daylist.add("Tuesday");
+        daylist.add("Wednesday");
+        daylist.add("Thursday");
+        daylist.add("Friday");
+        daylist.add("Saturday");
+        daylist.add("Sunday");
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
@@ -281,7 +281,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     public List<CourseOfferingInfo> getCourseOfferingsByCourse(@WebParam(name = "courseId") String courseId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented");
     }
-
 
 
     @Override
@@ -790,37 +789,39 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
-    String[] quarters = { "winter", "spring", "summer", "autumn" };
+    String[] quarters = {"winter", "spring", "summer", "autumn"};
 
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsByCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
 
         List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
-        
-        String year = termId.substring( 13, 17 );
-        char c = termId.charAt( termId.length() - 1 );
+
+        String year = termId.substring(13, 17);
+        char c = termId.charAt(termId.length() - 1);
         String quarter;
-       	switch( c )
-       	{
-	       	case '1': 
-	       		quarter = "winter"; break;
-	       	case '2': 
-	       		quarter = "spring"; break;
-	       	case '3': 
-	       		quarter = "summer"; break;
-	       	case '4':
-	       	default:
-	       		quarter = "autumn"; break;
-       	}
-        
+        switch (c) {
+            case '1':
+                quarter = "winter";
+                break;
+            case '2':
+                quarter = "spring";
+                break;
+            case '3':
+                quarter = "summer";
+                break;
+            case '4':
+            default:
+                quarter = "autumn";
+                break;
+        }
 
 
         try {
-        	CourseService courseService = getCourseService();
-        	CourseInfo courseInfo = courseService.getCourse( courseId );
-        	String curric = courseInfo.getSubjectArea().trim();
-        	String num = courseInfo.getCourseNumberSuffix();
+            CourseService courseService = getCourseService();
+            CourseInfo courseInfo = courseService.getCourse(courseId);
+            String curric = courseInfo.getSubjectArea().trim();
+            String num = courseInfo.getCourseNumberSuffix();
 
             String xml = studentServiceClient.getSections(year, quarter, curric, num);
 
@@ -842,333 +843,305 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 String primarySectionID = primarySectionNode.elementText("SectionID");
 
                 String secondaryXML;
-	    		try
-	    		{
-	    			// Skip this section ID if it fails
-	    			secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
-	    		}
-	    		catch( ServiceException e )
-	    		{
+                try {
+                    // Skip this section ID if it fails
+                    secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
+                } catch (ServiceException e) {
 
-                    logger.warn( e );
-	    			continue;
-	    		}
+                    logger.warn(e);
+                    continue;
+                }
 
-                
+
                 DefaultXPath secondaryPath = new DefaultXPath("/s:Section/s:PrimarySection");
                 secondaryPath.setNamespaceURIs(namespaces);
                 DefaultXPath secondarySectionPath = new DefaultXPath("/s:Section");
                 secondarySectionPath.setNamespaceURIs(namespaces);
-                
+
                 SAXReader secondaryReader = new SAXReader();
                 Document secondaryDoc = secondaryReader.read(new StringReader(secondaryXML));
-                
-                
-                Element secondarySection = (Element) secondarySectionPath.selectSingleNode( secondaryDoc );
-                Element dupeSectionElement = (Element) secondaryPath.selectSingleNode( secondaryDoc );
-                
+
+
+                Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
+                Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
+
                 String primaryID = dupeSectionElement.elementText("SectionID");
-                if( primarySectionID.equals( primaryID ))
-                {
-                    
-                   
-	                CourseOfferingInfo info = new CourseOfferingInfo();
-	                info.setSubjectArea( curric );
-	                info.setCourseCode( num );
-	                info.setTermId( termId );
-	                info.setId( primarySectionID );
-	                String courseID = join( "=", year, quarter, curric, num, primarySectionID );
-	                info.setCourseId(courseID);
+                if (primarySectionID.equals(primaryID)) {
 
-	                {
-	                    DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
-	                    instructorPath.setNamespaceURIs(namespaces);
-	                    List instructors = instructorPath.selectNodes( secondaryDoc );
-	                    
-	                    for( Object gundar : instructors )
-	                    {
-	                    	Element instructor = (Element) gundar;
-	                    	String name = instructor.elementText("Name");
-	                    	String regid = instructor.elementText("RegID");
-	                    	OfferingInstructorInfo temp = new OfferingInstructorInfo();
-	                    	temp.setPersonName( name );
-	                    	temp.setPersonId( regid );
-	                    	info.getInstructors().add( temp );
-	                    }
-	                }
 
-	                {
-	                	String gradingSystem = secondarySection.elementText( "GradingSystem" );
-	                	if( "standard".equals( gradingSystem ))
-	                	{
-	                		info.setGradingOptionId( "kuali.uw.resultcomponent.grade.standard" );
-        					info.setGradingOptionName( null );
-	                	}
-	                	else if( "credit/no credit".equals( gradingSystem ))
-	                	{
-	                		info.setGradingOptionId( "kuali.uw.resultcomponent.grade.crnc" );
-        					info.setGradingOptionName( "Credit/No-Credit grading" );
-	                	}
-	                }
+                    CourseOfferingInfo info = new CourseOfferingInfo();
+                    info.setSubjectArea(curric);
+                    info.setCourseCode(num);
+                    info.setTermId(termId);
+                    info.setId(primarySectionID);
+                    String courseID = join("=", year, quarter, curric, num, primarySectionID);
+                    info.setCourseId(courseID);
 
-	                {
-	                	String creditControl = secondarySection.elementText( "CreditControl" );
-	                	String minCreditID = secondarySection.elementText( "MinimumTermCredit" );
-	                	String minCreditName = minCreditID;
-	                	if( minCreditName != null && minCreditName.endsWith( ".0" ))
-	                	{
-	                		minCreditName = minCreditName.substring( 0, minCreditName.length() - 2 );
-	                	}
-	                	String maxCreditID = secondarySection.elementText( "MaximumTermCredit" );
-	                	String maxCreditName = maxCreditID;
-	                	if( maxCreditName != null && maxCreditName.endsWith( ".0" ))
-	                	{
-	                		maxCreditName = maxCreditName.substring( 0, maxCreditName.length() - 2 );
-	                	}
-	                	
-	                	String creditID = null;
-                		String creditName = null;
-                		
-	                	if( "fixed credit".equals( creditControl ))
-	                	{
-	                		creditID = minCreditID;
-	                		creditName = minCreditName;
-	                	}
-	                	if( "variable credit - min to max credits".equals( creditControl ))
-	                	{
-	                		creditID = minCreditID + "-" + maxCreditID;
-	                		creditName = minCreditName + "-" + maxCreditName;
-	                	}
-	                	if( "variable credit - min or max credits".equals( creditControl ))
-	                	{
-	                		creditID = minCreditID + ", " + maxCreditID;
-	                		creditName = minCreditName + ", " + maxCreditName;
-	                	}
-	                	if( "variable credit - 1 to 25 credits".equals( creditControl ))
-	                	{
-	                		creditID = "1.0-25.0"	;
-	                		creditName = "1-25";
-	                	}
-	                	
-	                	creditID = "kuali.uw.resultcomponent.credit." + creditID;
-	                	info.setCreditOptionId( creditID );
-	                	info.setCreditOptionName( creditName );
-	                	
-	                }
-	                list.add( info );
+                    {
+                        DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
+                        instructorPath.setNamespaceURIs(namespaces);
+                        List instructors = instructorPath.selectNodes(secondaryDoc);
+
+                        for (Object gundar : instructors) {
+                            Element instructor = (Element) gundar;
+                            String name = instructor.elementText("Name");
+                            String regid = instructor.elementText("RegID");
+                            OfferingInstructorInfo temp = new OfferingInstructorInfo();
+                            temp.setPersonName(name);
+                            temp.setPersonId(regid);
+                            info.getInstructors().add(temp);
+                        }
+                    }
+
+                    {
+                        String gradingSystem = secondarySection.elementText("GradingSystem");
+                        if ("standard".equals(gradingSystem)) {
+                            info.setGradingOptionId("kuali.uw.resultcomponent.grade.standard");
+                            info.setGradingOptionName(null);
+                        } else if ("credit/no credit".equals(gradingSystem)) {
+                            info.setGradingOptionId("kuali.uw.resultcomponent.grade.crnc");
+                            info.setGradingOptionName("Credit/No-Credit grading");
+                        }
+                    }
+
+                    {
+                        String creditControl = secondarySection.elementText("CreditControl");
+                        String minCreditID = secondarySection.elementText("MinimumTermCredit");
+                        String minCreditName = minCreditID;
+                        if (minCreditName != null && minCreditName.endsWith(".0")) {
+                            minCreditName = minCreditName.substring(0, minCreditName.length() - 2);
+                        }
+                        String maxCreditID = secondarySection.elementText("MaximumTermCredit");
+                        String maxCreditName = maxCreditID;
+                        if (maxCreditName != null && maxCreditName.endsWith(".0")) {
+                            maxCreditName = maxCreditName.substring(0, maxCreditName.length() - 2);
+                        }
+
+                        String creditID = null;
+                        String creditName = null;
+
+                        if ("fixed credit".equals(creditControl)) {
+                            creditID = minCreditID;
+                            creditName = minCreditName;
+                        }
+                        if ("variable credit - min to max credits".equals(creditControl)) {
+                            creditID = minCreditID + "-" + maxCreditID;
+                            creditName = minCreditName + "-" + maxCreditName;
+                        }
+                        if ("variable credit - min or max credits".equals(creditControl)) {
+                            creditID = minCreditID + ", " + maxCreditID;
+                            creditName = minCreditName + ", " + maxCreditName;
+                        }
+                        if ("variable credit - 1 to 25 credits".equals(creditControl)) {
+                            creditID = "1.0-25.0";
+                            creditName = "1-25";
+                        }
+
+                        creditID = "kuali.uw.resultcomponent.credit." + creditID;
+                        info.setCreditOptionId(creditID);
+                        info.setCreditOptionName(creditName);
+
+                    }
+                    list.add(info);
                 }
             }
 
-        } 
-        catch( Exception e ) 
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new OperationFailedException(e.getMessage());
         }
 
         return list;
     }
-    
-	String join( String delim, String ... list ) 
-	{
-		StringBuilder sb = new StringBuilder();
-		boolean second = false;
-		for( String item : list ) 
-		{
-			if( second ) 
-			{
-				sb.append( delim );
-			}
-			else
-			{
-				second = true;
-			}
-			sb.append( item );
-		}
-		return sb.toString();
-	}
+
+    String join(String delim, String... list) {
+        StringBuilder sb = new StringBuilder();
+        boolean second = false;
+        for (String item : list) {
+            if (second) {
+                sb.append(delim);
+            } else {
+                second = true;
+            }
+            sb.append(item);
+        }
+        return sb.toString();
+    }
 
     @Override
-    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingID, @WebParam(name = "contextInfo") ContextInfo contextInfo) 
-    	throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException 
-	{
-    	List<ActivityOfferingDisplayInfo> result = new ArrayList<ActivityOfferingDisplayInfo>();
-    	try
-    	{
-	    	String[] list = courseOfferingID.split( "=" );
-	    	String year = list[0];
-	    	String quarter = list[1];
-	    	String curric = list[2];
-	    	String num = list[3];
-	    	String sectionID = list[4];
-	
-	    	Map<String, String> namespaces = new HashMap<String, String>();
-	    	namespaces.put("s", "http://webservices.washington.edu/student/");
-	    	
-	    	List<String> sectionList = new ArrayList<String>();
-	    	sectionList.add( sectionID );
-	    	{
-	    		try
-	    		{
-			        String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
-			        DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
-			        sectionListPath.setNamespaceURIs(namespaces);
-			        SAXReader secondaryReader = new SAXReader();
-			        Document doc = secondaryReader.read(new StringReader(xml));
-			        List sections = sectionListPath.selectNodes( doc );
-			        for (Object node : sections) 
-			        {
-			            Element section = (Element) node;
-			            String secondaryid = section.elementText("SectionID");
-			            sectionList.add( secondaryid );
-			        }
-	    		}
-	    		catch( ServiceException e )
-	    		{
-                    logger.warn( e );
-	    		}
-	    	}
-	    	
-	        for( String id : sectionList )
-	        {
-		        ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
-		        
-		        String xml;
-	    		try
-	    		{
-	    			// Skips section ID if it fails
-	    			xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
-	    		}
-	    		catch( ServiceException e )
-	    		{
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingID, @WebParam(name = "contextInfo") ContextInfo contextInfo)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        List<ActivityOfferingDisplayInfo> result = new ArrayList<ActivityOfferingDisplayInfo>();
+        try {
+            String[] list = courseOfferingID.split("=");
+            String year = list[0];
+            String quarter = list[1];
+            String curric = list[2];
+            String num = list[3];
+            String sectionID = list[4];
 
-                    logger.warn( e );
-	    			continue;
-	    		}
-	        	
-	        	
-		        SAXReader secondaryReader = new SAXReader();
-		        Document doc = secondaryReader.read(new StringReader(xml));
-		        
-		        
-		        DefaultXPath sectionPath = new DefaultXPath("/s:Section");
-		        sectionPath.setNamespaceURIs(namespaces);
-		        DefaultXPath coursePath = new DefaultXPath( "/s:Section/s:Course" );
-		        coursePath.setNamespaceURIs(namespaces);
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("s", "http://webservices.washington.edu/student/");
 
-		        Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
-		        String typeName = sectionNode.elementText("SectionType");
-		        
-		        Element courseNode = (Element) coursePath.selectSingleNode( doc );
-		        String title = courseNode.elementText( "CourseTitle" );
-		        String temp = sectionNode.elementText( "HonorsCourse" );
-		        boolean honors = Boolean.getBoolean( temp );
-		        String sln = sectionNode.elementText("SLN");
-               	String instructorName = "--";
+            List<String> sectionList = new ArrayList<String>();
+            sectionList.add(sectionID);
+            {
+                try {
+                    String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+                    DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
+                    sectionListPath.setNamespaceURIs(namespaces);
+                    SAXReader secondaryReader = new SAXReader();
+                    Document doc = secondaryReader.read(new StringReader(xml));
+                    List sections = sectionListPath.selectNodes(doc);
+                    for (Object node : sections) {
+                        Element section = (Element) node;
+                        String secondaryid = section.elementText("SectionID");
+                        sectionList.add(secondaryid);
+                    }
+                } catch (ServiceException e) {
+                    logger.warn(e);
+                }
+            }
+
+            for (String id : sectionList) {
+                ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
+
+                String xml;
+                try {
+                    // Skips section ID if it fails
+                    xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
+                } catch (ServiceException e) {
+
+                    logger.warn(e);
+                    continue;
+                }
+
+
+                SAXReader secondaryReader = new SAXReader();
+                Document doc = secondaryReader.read(new StringReader(xml));
+
+
+                DefaultXPath sectionPath = new DefaultXPath("/s:Section");
+                sectionPath.setNamespaceURIs(namespaces);
+                DefaultXPath coursePath = new DefaultXPath("/s:Section/s:Course");
+                coursePath.setNamespaceURIs(namespaces);
+
+                Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
+                String typeName = sectionNode.elementText("SectionType");
+
+                Element courseNode = (Element) coursePath.selectSingleNode(doc);
+                String title = courseNode.elementText("CourseTitle");
+                String sln = sectionNode.elementText("SLN");
+                String instructorName = "--";
                 String instructorId = "--";
 //		        String serviceLearning = sectionNode.elementText( "ServiceLearning" );
 
-		        
-		        {
-		        	ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
-		        	scheduleDisplay.setScheduleComponentDisplays( new ArrayList<ScheduleComponentDisplayInfo>() );
-		        	info.setScheduleDisplay( scheduleDisplay );
-		        	
-		        	
-		        	ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
-		        	scdi.setTimeSlots( new ArrayList<TimeSlotInfo>() );		  
-		        	scheduleDisplay.getScheduleComponentDisplays().add( scdi );
-		        	
-			        DefaultXPath meetingPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting" );
-			        meetingPath.setNamespaceURIs(namespaces);
-			        
-			        List meetings = meetingPath.selectNodes( doc );
-			        for( Object obj : meetings )
-			        {
-			        	Element meetingNode = (Element) obj;
-			        	
-			        	String tba = meetingNode.elementText( "DaysOfWeekToBeArranged" );
-			        	boolean tbaFlag = Boolean.parseBoolean( tba );
-			        	
-			        	if( !tbaFlag )
-			        	{
-			        		TimeSlotInfo timeSlot = new TimeSlotInfo();
-			        		timeSlot.setWeekdays( new ArrayList<Integer>() );
-			        		
-			        		{
-				        		String time = meetingNode.elementText( "StartTime" );
-				        		long millis = TimeStringMillisConverter.militaryTimeToMillis( time );
-				        		TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-				        		timeInfo.setMilliSeconds( millis );
-				        		timeSlot.setStartTime( timeInfo );
-			        		}
-			        		
-			        		{
-				        		String time = meetingNode.elementText( "EndTime" );
-				        		long millis = TimeStringMillisConverter.militaryTimeToMillis( time );
-				        		TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-				        		timeInfo.setMilliSeconds( millis );
-				        		timeSlot.setEndTime( timeInfo );
-			        		}
-			        		
-			        		DefaultXPath dayNamePath = new DefaultXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
-			        		dayNamePath.setNamespaceURIs(namespaces);
-			        		
-			        		List dayNameNodes = dayNamePath.selectNodes( meetingNode );
-			        		for( Object node : dayNameNodes )
-			        		{
-			        			Element dayNameNode = (Element) node;
-			        			String day = dayNameNode.getTextTrim();
-			        			int weekday = daylist.indexOf( day );
-			        			if( weekday != -1 )
-			        			{
-			        				timeSlot.getWeekdays().add( weekday );
-			        			}
-			        		}
-			        		scdi.getTimeSlots().add( timeSlot );
-			        	}
+
+                {
+                    ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
+                    scheduleDisplay.setScheduleComponentDisplays(new ArrayList<ScheduleComponentDisplayInfo>());
+                    info.setScheduleDisplay(scheduleDisplay);
+
+
+                    ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
+                    scdi.setTimeSlots(new ArrayList<TimeSlotInfo>());
+                    scheduleDisplay.getScheduleComponentDisplays().add(scdi);
+
+                    DefaultXPath meetingPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting");
+                    meetingPath.setNamespaceURIs(namespaces);
+
+                    List meetings = meetingPath.selectNodes(doc);
+                    for (Object obj : meetings) {
+                        Element meetingNode = (Element) obj;
+
+                        String tba = meetingNode.elementText("DaysOfWeekToBeArranged");
+                        boolean tbaFlag = Boolean.parseBoolean(tba);
+
+                        if (!tbaFlag) {
+                            TimeSlotInfo timeSlot = new TimeSlotInfo();
+                            timeSlot.setWeekdays(new ArrayList<Integer>());
+
+                            {
+                                String time = meetingNode.elementText("StartTime");
+                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+                                timeInfo.setMilliSeconds(millis);
+                                timeSlot.setStartTime(timeInfo);
+                            }
+
+                            {
+                                String time = meetingNode.elementText("EndTime");
+                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+                                timeInfo.setMilliSeconds(millis);
+                                timeSlot.setEndTime(timeInfo);
+                            }
+
+                            DefaultXPath dayNamePath = new DefaultXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
+                            dayNamePath.setNamespaceURIs(namespaces);
+
+                            List dayNameNodes = dayNamePath.selectNodes(meetingNode);
+                            for (Object node : dayNameNodes) {
+                                Element dayNameNode = (Element) node;
+                                String day = dayNameNode.getTextTrim();
+                                int weekday = daylist.indexOf(day);
+                                if (weekday != -1) {
+                                    timeSlot.getWeekdays().add(weekday);
+                                }
+                            }
+                            scdi.getTimeSlots().add(timeSlot);
+                        }
 
                         /*Instructor Details*/
-                        DefaultXPath instructorPath = new DefaultXPath( "/s:Section/s:Meetings/s:Meeting/s:Instructors" );
-                        instructorPath.setNamespaceURIs(namespaces);
-                        List instructors = instructorPath.selectNodes( doc );
-                        for(Object instObj: instructors){
-                            Element instructorNode= (Element) instObj;
-                            Element instructor=instructorNode.element("Instructor");
-                            if(instructor!=null){
-                                instructorName = instructor.element("Person").elementText("Name");
-                                instructorId = instructor.element("Person").elementText("RegID");
+                        {
+                            DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors");
+                            instructorPath.setNamespaceURIs(namespaces);
+                            List instructors = instructorPath.selectNodes(doc);
+                            for (Object instObj : instructors) {
+                                Element instructorNode = (Element) instObj;
+                                Element instructor = instructorNode.element("Instructor");
+                                if (instructor != null) {
+                                    instructorName = instructor.element("Person").elementText("Name");
+                                    instructorId = instructor.element("Person").elementText("RegID");
+                                }
                             }
                         }
-			        	
 
-				        String building = meetingNode.elementText( "Building" );
-				        String roomNumber = meetingNode.elementText( "RoomNumber" );
-			        }			        
-		        }
-		        
-		        
-		        info.setTypeName( typeName );
+                        String building = meetingNode.elementText("Building");
+                        String roomNumber = meetingNode.elementText("RoomNumber");
+
+                    }
+                }
+
+                /*Course Flags*/
+                {
+                    info.getAttributes().add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
+                    info.getAttributes().add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
+                    info.getAttributes().add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
+                    info.getAttributes().add(new AttributeInfo("DistanceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("DistanceLearning ")))));
+                    info.getAttributes().add(new AttributeInfo("JointSections", String.valueOf(sectionNode.element("JointSections").content().size() > 0)));
+                }
+
+
+                info.setTypeName(typeName);
                 info.setInstructorName(instructorName);
                 info.setInstructorId(instructorId);
-		        info.setCourseOfferingTitle( title );
+                info.setCourseOfferingTitle(title);
 //		        info.setCourseCode( curric );
-		        info.setCourseOfferingCode( curric + " " + id );
-		        info.setActivityOfferingCode( id );
-		        info.setIsHonorsOffering( honors );
-		        AttributeInfo attrib = new AttributeInfo( "SLN", sln );
-				info.getAttributes().add( attrib );
-		        
-		        result.add( info );
+                info.setCourseOfferingCode(curric + " " + id);
+                info.setActivityOfferingCode(id);
+                info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
+                AttributeInfo attrib = new AttributeInfo("SLN", sln);
+                info.getAttributes().add(attrib);
 
-	        }
-    	}
-        catch( Exception e ) 
-        {
+                result.add(info);
+
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             throw new OperationFailedException(e.getMessage());
         }
-    	
+
         return result;
     }
 }

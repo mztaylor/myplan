@@ -255,8 +255,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
-    
-    public final static String[] weekdaysFirstLetter = { "M", "T", "W", "Th", "F", "Sa", "Su" };
+
+    public final static String[] weekdaysFirstLetter = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
     public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
@@ -316,7 +316,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
           Note: In the UW implementation of the Course Offering service, course id is actually course code.
         */
         CourseOfferingService cos = getCourseOfferingService();
-		try {
+        try {
             //  Fetch the available terms from the Academic Calendar Service.
             if (isAcademicCalendarServiceUp && isCourseOfferingServiceUp()) {
                 List<TermInfo> termInfos = null;
@@ -385,112 +385,108 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     courseDetails.setBackupList(backupList);
                 }
             }
-            
+
             String termId = "kuali.uw.atp.2013.1";
             ContextInfo nullContextInfo = new ContextInfo();
-            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm( courseId, termId, nullContextInfo );
-            
+            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, nullContextInfo);
+
             List<CourseOfferingDetails> courseOfferingDetailsList = courseDetails.getCourseOfferingDetails();
-            
+
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-            courseOfferingDetailsList.add( courseOfferingDetails );
-            
-            List<ActivityOfferingItem>  activityList = courseOfferingDetails.getActivityOfferingItemList();
-            
-            for( CourseOfferingInfo courseInfo : courseOfferingInfoList )
-            {
-            	// Activity offerings come back as a list, the first item is primary, the remaining are secondary
-            	
-            	ActivityOfferingItem primary = null;
-            	
-            	String courseOfferingID = courseInfo.getCourseId();
-            	List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering( courseOfferingID, nullContextInfo );
-            	for( ActivityOfferingDisplayInfo aodi : aodiList )
-            	{
-            		ActivityOfferingItem secondary = new ActivityOfferingItem();
-                    secondary.setCode( aodi.getActivityOfferingCode() );
-                    
+            courseOfferingDetailsList.add(courseOfferingDetails);
+
+            List<ActivityOfferingItem> activityList = courseOfferingDetails.getActivityOfferingItemList();
+
+            for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
+                // Activity offerings come back as a list, the first item is primary, the remaining are secondary
+
+                ActivityOfferingItem primary = null;
+
+                String courseOfferingID = courseInfo.getCourseId();
+                List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, nullContextInfo);
+                for (ActivityOfferingDisplayInfo aodi : aodiList) {
+                    ActivityOfferingItem secondary = new ActivityOfferingItem();
+                    secondary.setCode(aodi.getActivityOfferingCode());
+
                     ActivityOfferingType activityOfferingType = ActivityOfferingType.unknown;
-                    try
-                    {
-                        activityOfferingType = ActivityOfferingType.valueOf( aodi.getTypeName() );
+                    try {
+                        activityOfferingType = ActivityOfferingType.valueOf(aodi.getTypeName());
+                    } catch (Exception e) {
                     }
-                    catch( Exception e ) {}
-                    secondary.setActivityOfferingType( activityOfferingType );
-                    
-                    secondary.setCredits( courseInfo.getCreditOptionName() );
-                    secondary.setGradingOption( courseInfo.getGradingOptionName() );
+                    secondary.setActivityOfferingType(activityOfferingType);
+
+                    secondary.setCredits(courseInfo.getCreditOptionName());
+                    secondary.setGradingOption(courseInfo.getGradingOptionName());
                     {
 //	                    String meetingTime = "MTWThF 10:30 - 11:20 AM";
-	                    String meetingTime = "TBA";
-	                    ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
-	                    for( ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays() )
-	                    {
-	                    	for( TimeSlotInfo timeSlot : scdi.getTimeSlots() )
-	                    	{
-	    	                    meetingTime = "";
-	                    		for( int weekday : timeSlot.getWeekdays() )
-	                    		{
-	                    			if( weekday > -1 && weekday < 7 )
-	                    			{
-	                    				String letter = weekdaysFirstLetter[weekday];
-	                    				meetingTime += letter;
-	                    			}
-	                    		}
-	                    		long startTimeMillis = timeSlot.getStartTime().getMilliSeconds();
-	                    		String startTime = TimeStringMillisConverter.millisToStandardTime( startTimeMillis );
-	                    		
-	                    		long endTimeMillis = timeSlot.getEndTime().getMilliSeconds();
-	                    		String endTime = TimeStringMillisConverter.millisToStandardTime( endTimeMillis );
-	                    		
-	                    		meetingTime = meetingTime + " " + startTime + " - " + endTime;
-	                    	}
-	                    }
-	                    
-						secondary.setMeetingTime( meetingTime );
+                        String meetingTime = "TBA";
+                        ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+                        for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
+                            for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
+                                meetingTime = "";
+                                for (int weekday : timeSlot.getWeekdays()) {
+                                    if (weekday > -1 && weekday < 7) {
+                                        String letter = weekdaysFirstLetter[weekday];
+                                        meetingTime += letter;
+                                    }
+                                }
+                                long startTimeMillis = timeSlot.getStartTime().getMilliSeconds();
+                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+
+                                long endTimeMillis = timeSlot.getEndTime().getMilliSeconds();
+                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+
+                                meetingTime = meetingTime + " " + startTime + " - " + endTime;
+                            }
+                        }
+
+                        secondary.setMeetingTime(meetingTime);
                     }
-                    
-                    secondary.setLocationBuilding( "KNE" );
-                    secondary.setLocationRoom( "210" );
-                    
-                    for( AttributeInfo attrib : aodi.getAttributes() )
-                    {
-                    	if( "SLN".equalsIgnoreCase( attrib.getKey() ))
-                    	{
-                    		String temp = attrib.getValue();
-                    		secondary.setSln( temp );
-                    		break;
-                    	}
-                    }                    
-                    secondary.setEnrollRestriction( true );
-                    secondary.setEnrollOpen( true );
-                    secondary.setEnrollCount( 000 );
-                    secondary.setEnrollMaximum( 999 );
-                    secondary.setInstructor( aodi.getInstructorName() );
 
-                    secondary.setDistanceLearning( false );
-                    secondary.setHonorsSection( false );
-                    secondary.setJointOffering( false );
-                    secondary.setResearch( false );
-                    secondary.setWritingSection( false );
-                    secondary.setServiceLearning( false );
-                    secondary.setNewThisYear( false );
-                    secondary.setIneligibleForFinancialAid( false );
+                    secondary.setLocationBuilding("KNE");
+                    secondary.setLocationRoom("210");
 
-                    secondary.setDetails( "View section notes and textbook information" );
+                    for (AttributeInfo attrib : aodi.getAttributes()) {
+                        if ("SLN".equalsIgnoreCase(attrib.getKey())) {
+                            String temp = attrib.getValue();
+                            secondary.setSln(temp);
+                        } else if ("ServiceLearning".equalsIgnoreCase(attrib.getKey())) {
+                            secondary.setServiceLearning(Boolean.valueOf(attrib.getValue()));
+                        } else if ("ResearchCredit".equalsIgnoreCase(attrib.getKey())) {
+                            secondary.setResearch(Boolean.valueOf(attrib.getValue()));
+                        } else if ("DistanceLearning".equalsIgnoreCase(attrib.getKey())) {
+                            secondary.setDistanceLearning(Boolean.valueOf(attrib.getValue()));
+                        } else if ("JointSections".equalsIgnoreCase(attrib.getKey())) {
+                            secondary.setJointOffering(Boolean.valueOf(attrib.getValue()));
+                        } else if ("Writing".equalsIgnoreCase(attrib.getKey())) {
+                            secondary.setWritingSection(Boolean.valueOf(attrib.getValue()));
+                        }
+
+                    }
+                    secondary.setEnrollRestriction(true);
+                    secondary.setEnrollOpen(true);
+                    secondary.setEnrollCount(000);
+                    secondary.setEnrollMaximum(999);
+                    secondary.setInstructor(aodi.getInstructorName());
+
+                    secondary.setHonorsSection(aodi.getIsHonorsOffering());
+
+                    secondary.setNewThisYear(false);
+                    secondary.setIneligibleForFinancialAid(false);
+
+                    secondary.setDetails("View section notes and textbook information");
 
                     // Temporary fix to group primary and secondary sections into one list for display in a single table
-                    if( primary == null ) {
+                    if (primary == null) {
                         primary = secondary;
-                        primary.setPrimary( true );
-                        activityList.add( primary );
-                    }
-                    else {
-                        activityList.add( secondary );
+                        primary.setPrimary(true);
+                        activityList.add(primary);
+                    } else {
+                        activityList.add(secondary);
                     }
 
-            	}
-            	
+                }
+
             }
 
             // Rename courseofferinggroup
@@ -517,9 +513,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             courseDetails.setCurriculumTitle(value.toString());
         }
         //  If course not scheduled for future terms, Check for the last term when course was offered
-        
+
         List<String> termList = courseDetails.getScheduledTerms();
-        
+
         if (isCourseOfferingServiceUp()) {
             if (termList.size() == 0) {
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
@@ -541,43 +537,37 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
         }
-        
+
         // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
         try {
-        	List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
-        	if (studentCourseRecordInfos.size() > 0) 
-        	{
-        		List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-        		
-        		for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) 
-        		{
-        			AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-        			academicRecordDataObject.setAtpId(studentInfo.getTermName());
-        			academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-        			academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-        			academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-        			academicRecordDataObject.setCourseId(studentInfo.getId());
-        			academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-        			academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-        			academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-        			academicRecordDataObjectList.add(academicRecordDataObject);
-        			if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) 
-        			{
-        				String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
-        				courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
-        			}
-        		}
-        		if (academicRecordDataObjectList.size() > 0) 
-        		{
-        			courseDetails.setAcadRecList(academicRecordDataObjectList);
-        			
-        		}
-        	}
+            List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            if (studentCourseRecordInfos.size() > 0) {
+                List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+
+                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                    academicRecordDataObject.setCourseId(studentInfo.getId());
+                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                    academicRecordDataObjectList.add(academicRecordDataObject);
+                    if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
+                        String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
+                        courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+                    }
+                }
+                if (academicRecordDataObjectList.size() > 0) {
+                    courseDetails.setAcadRecList(academicRecordDataObjectList);
+
+                }
+            }
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
-
-
 
 
         return courseDetails;
