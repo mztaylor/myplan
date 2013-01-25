@@ -19,8 +19,10 @@ public class ActivityOfferingItem {
     private String campus;
     private ActivityOfferingType activityOfferingType;
     private String credits;
-    // eg MTWThF 10:30-11:20 AM
+    // TODO: This goes away once UI is changed to a list
     private String meetingTime;
+    // eg MTWThF 10:30-11:20 AM
+    private List<String> meetingTimeList;
     private String locationBuilding;
     private String locationRoom;
     // Section Line Number - UW-ism
@@ -79,12 +81,26 @@ public class ActivityOfferingItem {
         this.credits = credits;
     }
 
+    // TODO: This goes away once UI is changed to a list
     public String getMeetingTime() {
         return meetingTime;
     }
 
+    // TODO: This goes away once UI is changed to a list
     public void setMeetingTime(String meetingTime) {
         this.meetingTime = meetingTime;
+    }
+
+    public List<String> getMeetingTimeList() {
+        if(meetingTimeList == null )
+        {
+            meetingTimeList = new ArrayList<String>();
+        }
+        return meetingTimeList;
+    }
+
+    public void setMeetingTimeList(List<String> meetingTimeList) {
+        this.meetingTimeList = meetingTimeList;
     }
 
     public String getLocationBuilding() {

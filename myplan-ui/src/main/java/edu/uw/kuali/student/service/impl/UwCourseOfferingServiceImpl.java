@@ -26,10 +26,13 @@ import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.room.dto.BuildingInfo;
+import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
@@ -40,6 +43,8 @@ import java.util.regex.Pattern;
  * UW implementation of CourseOfferingService.
  */
 public class UwCourseOfferingServiceImpl implements CourseOfferingService {
+
+    public static final String TO_BE_ARRANGED = "to be arranged";
 
     public enum terms {autumn, winter, spring, summer}
 
@@ -1034,8 +1039,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 String sln = sectionNode.elementText("SLN");
                 String instructorName = "--";
                 String instructorId = "--";
-//		        String serviceLearning = sectionNode.elementText( "ServiceLearning" );
-
 
                 {
                     ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
@@ -1107,11 +1110,33 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                             }
                         }
 
-                        String building = meetingNode.elementText("Building");
-                        String roomNumber = meetingNode.elementText("RoomNumber");
+                        {
+                            String building = TO_BE_ARRANGED;
+                            String buildingTBA = meetingNode.elementText("BuildingToBeArranged");
+                            boolean buildingTBAFlag = Boolean.parseBoolean(buildingTBA);
+                            if (!buildingTBAFlag) {
+                                building = meetingNode.elementText("Building");
+                            }
+                            BuildingInfo buildingInfo = new BuildingInfo();
+                            buildingInfo.setBuildingCode(building);
+                            scdi.setBuilding(buildingInfo);
 
+                            String roomNumber = TO_BE_ARRANGED;
+                            String roomTBA = meetingNode.elementText("RoomToBeArranged");
+                            boolean roomTBAFlag = Boolean.parseBoolean(roomTBA);
+                            if (!roomTBAFlag) {
+
+                                roomNumber = meetingNode.elementText("RoomNumber");
+                            }
+                            RoomInfo roomInfo = new RoomInfo();
+                            roomInfo.setRoomCode(roomNumber);
+                            roomInfo.setBuildingId(building);
+
+                            scdi.setRoom(roomInfo);
+                        }
                     }
                 }
+
 
                 /*Course Flags*/
                 {
