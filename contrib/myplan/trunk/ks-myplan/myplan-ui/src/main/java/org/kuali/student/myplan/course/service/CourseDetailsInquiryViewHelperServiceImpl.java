@@ -417,9 +417,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                     secondary.setCredits(courseInfo.getCreditOptionName());
                     secondary.setGradingOption(courseInfo.getGradingOptionName());
+                    List<String> meetingTimeList = secondary.getMeetingTimeList();
                     {
-//	                    String meetingTime = "MTWThF 10:30 - 11:20 AM";
-                        String meetingTime = "TBA";
+                        String meetingTime = "to be arranged";
                         ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
                         for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
                             for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
@@ -437,29 +437,46 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                                 String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
 
                                 meetingTime = meetingTime + " " + startTime + " - " + endTime;
+                                meetingTimeList.add(meetingTime);
+
+                                String building = scdi.getBuilding().getBuildingCode();
+                                secondary.setLocationBuilding(building);
+                                String room = scdi.getRoom().getRoomCode();
+                                secondary.setLocationRoom(room);
+
                             }
                         }
-
-                        secondary.setMeetingTime(meetingTime);
+                        // TODO: This goes away once UI is changed to a list
+                        if (!meetingTimeList.isEmpty()) {
+                            secondary.setMeetingTime(meetingTimeList.get(0));
+                        }
                     }
-
-                    secondary.setLocationBuilding("KNE");
-                    secondary.setLocationRoom("210");
 
                     for (AttributeInfo attrib : aodi.getAttributes()) {
                         if ("SLN".equalsIgnoreCase(attrib.getKey())) {
                             String temp = attrib.getValue();
                             secondary.setSln(temp);
-                        } else if ("ServiceLearning".equalsIgnoreCase(attrib.getKey())) {
-                            secondary.setServiceLearning(Boolean.valueOf(attrib.getValue()));
-                        } else if ("ResearchCredit".equalsIgnoreCase(attrib.getKey())) {
-                            secondary.setResearch(Boolean.valueOf(attrib.getValue()));
-                        } else if ("DistanceLearning".equalsIgnoreCase(attrib.getKey())) {
-                            secondary.setDistanceLearning(Boolean.valueOf(attrib.getValue()));
-                        } else if ("JointSections".equalsIgnoreCase(attrib.getKey())) {
-                            secondary.setJointOffering(Boolean.valueOf(attrib.getValue()));
-                        } else if ("Writing".equalsIgnoreCase(attrib.getKey())) {
-                            secondary.setWritingSection(Boolean.valueOf(attrib.getValue()));
+                            break;
+                        }
+                    }
+                    for (AttributeInfo attrib : aodi.getAttributes()) {
+                        String key = attrib.getKey();
+                        String value = attrib.getValue();
+                        if ("SLN".equalsIgnoreCase(key)) {
+                            secondary.setSln(value);
+                            continue;
+                        }
+                        Boolean flag = Boolean.valueOf(value);
+                        if ("ServiceLearning".equalsIgnoreCase(key)) {
+                            secondary.setServiceLearning(flag);
+                        } else if ("ResearchCredit".equalsIgnoreCase(key)) {
+                            secondary.setResearch(flag);
+                        } else if ("DistanceLearning".equalsIgnoreCase(key)) {
+                            secondary.setDistanceLearning(flag);
+                        } else if ("JointSections".equalsIgnoreCase(key)) {
+                            secondary.setJointOffering(flag);
+                        } else if ("Writing".equalsIgnoreCase(key)) {
+                            secondary.setWritingSection(flag);
                         }
 
                     }
@@ -469,8 +486,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     secondary.setEnrollMaximum(999);
                     secondary.setInstructor(aodi.getInstructorName());
 
-                    secondary.setHonorsSection(aodi.getIsHonorsOffering());
-
+                    secondary.setHonorsSection(false);
                     secondary.setNewThisYear(false);
                     secondary.setIneligibleForFinancialAid(false);
 
