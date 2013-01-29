@@ -3,15 +3,14 @@ package org.kuali.student.myplan.course.dataobject;
 
 public class MeetingDetails {
 	
-	public final static String TO_BE_ARRANGED = "to be arranged";
 	
 	// eg MTWThF
-	private String days = TO_BE_ARRANGED;
+	private String days;
 	// eg 10:30 AM - 11:20 AM
-    private String time = "";
-    private String building = TO_BE_ARRANGED;
-    private String room = TO_BE_ARRANGED;
-    private String campus = "";
+    private String time;
+    private String building;
+    private String room;
+    private String campus;
     
     public String getDays() {
         return days;
