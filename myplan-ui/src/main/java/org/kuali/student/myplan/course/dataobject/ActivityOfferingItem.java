@@ -19,12 +19,8 @@ public class ActivityOfferingItem {
     private String campus;
     private ActivityOfferingType activityOfferingType;
     private String credits;
-    // TODO: This goes away once UI is changed to a list
-    private String meetingTime;
-    // eg MTWThF 10:30-11:20 AM
-    private List<String> meetingTimeList;
-    private String locationBuilding;
-    private String locationRoom;
+    private List<MeetingDetails> meetingDetailsList;
+    
     // Section Line Number - UW-ism
     private String sln;
     private String qtryr = "WIN+2013";
@@ -81,42 +77,16 @@ public class ActivityOfferingItem {
         this.credits = credits;
     }
 
-    // TODO: This goes away once UI is changed to a list
-    public String getMeetingTime() {
-        return meetingTime;
-    }
-
-    // TODO: This goes away once UI is changed to a list
-    public void setMeetingTime(String meetingTime) {
-        this.meetingTime = meetingTime;
-    }
-
-    public List<String> getMeetingTimeList() {
-        if(meetingTimeList == null )
+    public List<MeetingDetails> getMeetingDetailsList() {
+        if(meetingDetailsList == null )
         {
-            meetingTimeList = new ArrayList<String>();
+        	meetingDetailsList = new ArrayList<MeetingDetails>();
         }
-        return meetingTimeList;
+        return meetingDetailsList;
     }
 
-    public void setMeetingTimeList(List<String> meetingTimeList) {
-        this.meetingTimeList = meetingTimeList;
-    }
-
-    public String getLocationBuilding() {
-        return locationBuilding;
-    }
-
-    public void setLocationBuilding(String locationBuilding) {
-        this.locationBuilding = locationBuilding;
-    }
-
-    public String getLocationRoom() {
-        return locationRoom;
-    }
-
-    public void setLocationRoom(String locationRoom) {
-        this.locationRoom = locationRoom;
+    public void setMeetingDetailsList(List<MeetingDetails> meetingDetailsList) {
+        this.meetingDetailsList = meetingDetailsList;
     }
 
     public String getSln() {

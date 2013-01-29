@@ -50,6 +50,7 @@ import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingType;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingDetails;
+import org.kuali.student.myplan.course.dataobject.MeetingDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -64,7 +65,10 @@ import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.r2.core.room.dto.BuildingInfo;
+import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -417,38 +421,52 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                     secondary.setCredits(courseInfo.getCreditOptionName());
                     secondary.setGradingOption(courseInfo.getGradingOptionName());
-                    List<String> meetingTimeList = secondary.getMeetingTimeList();
+                    List<MeetingDetails> meetingDetailsList = secondary.getMeetingDetailsList();
                     {
-                        String meetingTime = "to be arranged";
                         ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
                         for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
+                        	MeetingDetails meeting = new MeetingDetails();
+                        	
+                        	BuildingInfo building = scdi.getBuilding();
+                        	if( building != null ) {
+                        		meeting.setCampus(building.getCampusKey());
+                        		meeting.setBuilding(building.getBuildingCode());
+                        	}
+                        	
+                        	RoomInfo roomInfo = scdi.getRoom();
+                        	if( roomInfo != null )
+                        	{
+                        		meeting.setRoom(roomInfo.getRoomCode());
+                        	}
+                        	
                             for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
-                                meetingTime = "";
+                            	
+                            	String days = "";
                                 for (int weekday : timeSlot.getWeekdays()) {
                                     if (weekday > -1 && weekday < 7) {
                                         String letter = weekdaysFirstLetter[weekday];
-                                        meetingTime += letter;
+                                        days += letter;
                                     }
                                 }
-                                long startTimeMillis = timeSlot.getStartTime().getMilliSeconds();
-                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
-
-                                long endTimeMillis = timeSlot.getEndTime().getMilliSeconds();
-                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
-
-                                meetingTime = meetingTime + " " + startTime + " - " + endTime;
-                                meetingTimeList.add(meetingTime);
-
-                                String building = scdi.getBuilding().getBuildingCode();
-                                secondary.setLocationBuilding(building);
-                                String room = scdi.getRoom().getRoomCode();
-                                secondary.setLocationRoom(room);
-
+                                if( !"".equals( days )) {
+                            		meeting.setDays(days);
+                                }
+                                
+                                TimeOfDayInfo startInfo = timeSlot.getStartTime();
+                                TimeOfDayInfo endInfo = timeSlot.getEndTime();
+                                if( startInfo != null && endInfo != null ) {
+									long startTimeMillis = startInfo.getMilliSeconds();
+	                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+	
+									long endTimeMillis = endInfo.getMilliSeconds();
+	                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+	
+	                                String time = startTime + " - " + endTime;
+	                                
+	                                meeting.setTime(time);
+                                }
+                                meetingDetailsList.add(meeting);
                             }
-                        }
-                        // TODO: This goes away once UI is changed to a list
-                        if (!meetingTimeList.isEmpty()) {
-                            secondary.setMeetingTime(meetingTimeList.get(0));
                         }
                     }
 
