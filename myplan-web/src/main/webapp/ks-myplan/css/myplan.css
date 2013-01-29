@@ -1474,6 +1474,35 @@ table.myplan-course-search-results-datatable .blockUI {
     font-weight: normal;
     margin: 0 10px 0 0;
 }
+.myplan-course-sections .meetingdetails {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+.myplan-course-sections .meetingdetails .meetingdays,
+.myplan-course-sections .meetingdetails .meetingtime,
+.myplan-course-sections .meetingdetails .meetingbuilding,
+.myplan-course-sections .meetingdetails .meetingroom {
+    display: inline-block;
+    margin-right: 0.33em;
+}
+.myplan-course-sections .meetingdetails .meetingdays {
+    width: 56px;
+}
+.myplan-course-sections .meetingdetails .meetingtime {
+    width: 127px;
+}
+.myplan-course-sections .meetingdetails .meetingroom {
+    margin: 0;
+}
+/*
+.myplan-course-sections .meetingdetails .meetingbuilding {
+    width: 40px;
+}
+.myplan-course-sections .meetingdetails .meetingroom {
+    width: 26px;
+}
+*/
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;
@@ -1857,6 +1886,13 @@ label.scheduled {
 }
 .myplan-full-plan-detail .myplan-term .myplan-term-footer-blank {
     border-top-color: transparent;
+}
+/* Quarter Detail View ######################################################################################### */
+.myplan-quarter-detail .uif-stackedCollectionLayout,
+.myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem {
+    padding: 0;
+    margin: 0;
+    background: none;
 }
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {

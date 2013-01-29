@@ -54,7 +54,7 @@ public class MeetingDetailsPropertyEditor extends PropertyEditorSupport {
 	    		tba = true;
 	    	}
 	    	else if( !"NOC".equals( building) && !building.startsWith("*") && "seattle".equalsIgnoreCase(m.getCampus())) {
-	    		building = String.format( "<a href='http://uw.edu/maps/?%s' target='_blank' style='margin-right:0.33em;'>%s</a>", building, building );
+	    		building = String.format( "<a href='http://uw.edu/maps/?%s' target='_blank'>%s</a>", building, building );
 	    	}
 
 	    	String days = m.getDays();

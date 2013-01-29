@@ -3327,7 +3327,7 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="cssClasses">
             <list merge="true">
-                <!--<value>myplan-carousel-list</value>-->
+                <value>myplan-quarter-detail</value>
                 <value>myplan-remove-margin</value>
             </list>
         </property>
@@ -3648,6 +3648,8 @@
         <property name="propertyName" value="plannedList"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithGridItems">
                 <property name="lineGroupPrototype">
@@ -3764,6 +3766,8 @@
         <property name="propertyName" value="backupList"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithGridItems">
                 <property name="lineGroupPrototype">
