@@ -30,15 +30,15 @@ public class PlannedTermsHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId,boolean isServiceUp) {
+    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, boolean isServiceUp) {
 
 
         String[] focusQuarterYear = new String[2];
-        String globalCurrentAtpId=null;
-        if(isServiceUp){
-            globalCurrentAtpId=AtpHelper.getCurrentAtpId();
-        }else {
-            globalCurrentAtpId=AtpHelper.populateAtpIdFromCalender().get(0).getId();
+        String globalCurrentAtpId = null;
+        if (isServiceUp) {
+            globalCurrentAtpId = AtpHelper.getCurrentAtpId();
+        } else {
+            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
         }
         try {
             if (StringUtils.isEmpty(focusAtpId)) {
@@ -215,20 +215,20 @@ public class PlannedTermsHelperBase {
             List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
             populateFutureData(globalCurrentAtpId, plannedTermList);
             /*Implementation to set the conditional flags based on each plannedTerm atpId*/
-            if(isServiceUp){
-            for (PlannedTerm pl : plannedTermList) {
+            if (isServiceUp) {
+                for (PlannedTerm pl : plannedTermList) {
 
-                if (AtpHelper.isAtpSetToPlanning(pl.getAtpId())) {
-                    pl.setOpenForPlanning(true);
-                }
-                if (AtpHelper.isAtpCompletedTerm(pl.getAtpId())) {
-                    pl.setCompletedTerm(true);
-                }
-                if (globalCurrentAtpId.equalsIgnoreCase(pl.getAtpId())) {
-                    pl.setCurrentTermForView(true);
-                }
+                    if (AtpHelper.isAtpSetToPlanning(pl.getAtpId())) {
+                        pl.setOpenForPlanning(true);
+                    }
+                    if (AtpHelper.isAtpCompletedTerm(pl.getAtpId())) {
+                        pl.setCompletedTerm(true);
+                    }
+                    if (globalCurrentAtpId.equalsIgnoreCase(pl.getAtpId())) {
+                        pl.setCurrentTermForView(true);
+                    }
 
-            }
+                }
             }
             populateHelpIconFlags(plannedTermList);
             return plannedTermList;
@@ -269,25 +269,33 @@ public class PlannedTermsHelperBase {
         for (int i = 0; !term4.equalsIgnoreCase(maxTerm); i++) {
             PlannedTerm plannedTerm1 = new PlannedTerm();
             term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
-            plannedTerm1.setAtpId(term1);
-            plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
-            map.put(term1, plannedTerm1);
-            minYear++;
+            if (AtpHelper.doesAtpExist(term1)) {
+                plannedTerm1.setAtpId(term1);
+                plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
+                map.put(term1, plannedTerm1);
+                minYear++;
+            }
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
-            plannedTerm2.setAtpId(term2);
-            plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
-            map.put(term2, plannedTerm2);
+            if (AtpHelper.doesAtpExist(term2)) {
+                plannedTerm2.setAtpId(term2);
+                plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
+                map.put(term2, plannedTerm2);
+            }
             PlannedTerm plannedTerm3 = new PlannedTerm();
             term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
-            plannedTerm3.setAtpId(term3);
-            plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
-            map.put(term3, plannedTerm3);
+            if (AtpHelper.doesAtpExist(term3)) {
+                plannedTerm3.setAtpId(term3);
+                plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
+                map.put(term3, plannedTerm3);
+            }
             PlannedTerm plannedTerm4 = new PlannedTerm();
             term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
-            plannedTerm4.setAtpId(term4);
-            plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
-            map.put(term4, plannedTerm4);
+            if (AtpHelper.doesAtpExist(term4)) {
+                plannedTerm4.setAtpId(term4);
+                plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
+                map.put(term4, plannedTerm4);
+            }
         }
     }
 
@@ -303,27 +311,40 @@ public class PlannedTermsHelperBase {
         String term3 = "";
         String term4 = "";
         for (int i = 0; i <= 5; i++) {
+
             PlannedTerm plannedTerm1 = new PlannedTerm();
             term1 = AtpHelper.getAtpFromNumTermAndYear(atpTerm4, String.valueOf(minYear));
-            plannedTerm1.setAtpId(term1);
-            plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
-            plannedTermList.add(plannedTerm1);
-            minYear++;
+            if (AtpHelper.doesAtpExist(term1)) {
+                plannedTerm1.setAtpId(term1);
+                plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
+                plannedTermList.add(plannedTerm1);
+                minYear++;
+            }
+
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
-            plannedTerm2.setAtpId(term2);
-            plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
-            plannedTermList.add(plannedTerm2);
+            if (AtpHelper.doesAtpExist(term2)) {
+                plannedTerm2.setAtpId(term2);
+                plannedTerm2.setQtrYear(PlanConstants.TERM_1 + " " + minYear);
+                plannedTermList.add(plannedTerm2);
+            }
+
             PlannedTerm plannedTerm3 = new PlannedTerm();
             term3 = AtpHelper.getAtpFromNumTermAndYear(atpTerm2, String.valueOf(minYear));
-            plannedTerm3.setAtpId(term3);
-            plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
-            plannedTermList.add(plannedTerm3);
+            if (AtpHelper.doesAtpExist(term3)) {
+                plannedTerm3.setAtpId(term3);
+                plannedTerm3.setQtrYear(PlanConstants.TERM_2 + " " + minYear);
+                plannedTermList.add(plannedTerm3);
+            }
+
             PlannedTerm plannedTerm4 = new PlannedTerm();
             term4 = AtpHelper.getAtpFromNumTermAndYear(atpTerm3, String.valueOf(minYear));
-            plannedTerm4.setAtpId(term4);
-            plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
-            plannedTermList.add(plannedTerm4);
+            if (AtpHelper.doesAtpExist(term4)) {
+                plannedTerm4.setAtpId(term4);
+                plannedTerm4.setQtrYear(PlanConstants.TERM_3 + " " + minYear);
+                plannedTermList.add(plannedTerm4);
+            }
+
         }
     }
 

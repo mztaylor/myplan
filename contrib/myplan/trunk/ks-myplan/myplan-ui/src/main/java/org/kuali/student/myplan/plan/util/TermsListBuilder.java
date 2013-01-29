@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
+import org.kuali.student.core.atp.dto.AtpInfo;
+import org.kuali.student.core.atp.service.impl.AtpServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,27 +38,30 @@ public class TermsListBuilder extends KeyValuesBase {
 
         List<KeyValue> list = new ArrayList<KeyValue>(MAX_FUTURE_TERMS);
 
-        String currentATP = AtpHelper.getCurrentAtpId();
-        Matcher m = atpRegex.matcher(currentATP);
-        if (m.find()) {
-            int year = Integer.parseInt(m.group(1));
-            int term = Integer.parseInt(m.group(2));
+        /*TODO Once First and last dates in the Atp table are added change the way of populating the future terms by Using the method AtpService.getAtpsByDates*/
+        String firstPlanATP = AtpHelper.getFirstPlanTerm();
+        if (firstPlanATP != null) {
+            Matcher m = atpRegex.matcher(firstPlanATP);
+            if (m.find()) {
+                int year = Integer.parseInt(m.group(1));
+                int term = Integer.parseInt(m.group(2));
 
-            for (int x = 0; x < MAX_FUTURE_TERMS; x++) {
-                String atp = String.format(atpFormat, year, term);
-                String value = AtpHelper.atpIdToTermName( atp );
-                ConcreteKeyValue concrete = new ConcreteKeyValue( atp, value );
-                list.add( concrete );
-                term++;
-                if (term > 4) {
-                    term = 1;
-                    year++;
+                for (int x = 0; x < MAX_FUTURE_TERMS; x++) {
+                    String atp = String.format(atpFormat, year, term);
+                    if (AtpHelper.doesAtpExist(atp)) {
+                        String value = AtpHelper.atpIdToTermName(atp);
+                        ConcreteKeyValue concrete = new ConcreteKeyValue(atp, value);
+                        list.add(concrete);
+                        term++;
+                        if (term > 4) {
+                            term = 1;
+                            year++;
+                        }
+                    }
                 }
             }
         }
-
         return list;
-
     }
 }
 
