@@ -596,6 +596,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             secondary.setJointOffering(flag);
                         } else if ("Writing".equalsIgnoreCase(key)) {
                             secondary.setWritingSection(flag);
+                        } else if("FinancialAidEligible".equalsIgnoreCase(key)) {
+                            secondary.setIneligibleForFinancialAid(flag);
                         }
 
                     }
