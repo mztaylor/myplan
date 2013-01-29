@@ -4,6 +4,13 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.common.exceptions.DoesNotExistException;
+import org.kuali.student.common.exceptions.InvalidParameterException;
+import org.kuali.student.common.exceptions.MissingParameterException;
+import org.kuali.student.common.exceptions.OperationFailedException;
+import org.kuali.student.core.atp.dto.AtpInfo;
+import org.kuali.student.core.atp.service.AtpService;
+import org.kuali.student.core.atp.service.impl.AtpServiceImpl;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -35,6 +42,19 @@ public class AtpHelper {
     private static final Logger logger = Logger.getLogger(AtpHelper.class);
 
     private static transient CourseOfferingService courseOfferingService;
+
+    private static transient AtpService atpService;
+
+    public static AtpService getAtpService() {
+        if(atpService == null){
+            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
+        }
+        return atpService;
+    }
+
+    public static void setAtpService(AtpService atpService) {
+        AtpHelper.atpService = atpService;
+    }
 
     private static CourseOfferingService getCourseOfferingService() {
         if (courseOfferingService == null) {
@@ -301,6 +321,36 @@ public class AtpHelper {
             publishedTerms.add(term.getId());
         }
         return publishedTerms;
+    }
+
+    public static String getFirstPlanTerm() {
+        List<TermInfo> termInfos = null;
+        String publishedTerms = null;
+        try {
+            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
+            //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
+            termInfos = new ArrayList<TermInfo>();
+        }
+        if(termInfos!=null && termInfos.size()>0){
+           publishedTerms = termInfos.get(0).getId();
+        }
+        
+        return publishedTerms;
+    }
+
+    public static boolean doesAtpExist(String atpId) {
+        boolean doesAtpExist = false;
+        try {
+            AtpInfo atpInfo = getAtpService().getAtp(atpId);
+            if(atpInfo!=null){
+                doesAtpExist = true;
+            }
+        } catch (Exception e){
+            logger.error("Atp does not Exist", e);
+        }
+        return doesAtpExist;
     }
 
     public static boolean isAtpIdFormatValid(String atpId) {
