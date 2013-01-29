@@ -273,8 +273,9 @@ public class PlannedTermsHelperBase {
                 plannedTerm1.setAtpId(term1);
                 plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
                 map.put(term1, plannedTerm1);
-                minYear++;
+
             }
+            minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
             if (AtpHelper.doesAtpExist(term2)) {
@@ -318,9 +319,9 @@ public class PlannedTermsHelperBase {
                 plannedTerm1.setAtpId(term1);
                 plannedTerm1.setQtrYear(PlanConstants.TERM_4 + " " + minYear);
                 plannedTermList.add(plannedTerm1);
-                minYear++;
-            }
 
+            }
+            minYear++;
             PlannedTerm plannedTerm2 = new PlannedTerm();
             term2 = AtpHelper.getAtpFromNumTermAndYear(atpTerm1, String.valueOf(minYear));
             if (AtpHelper.doesAtpExist(term2)) {
