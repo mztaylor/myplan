@@ -391,15 +391,116 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
 
             String termId = "kuali.uw.atp.2013.1";
-            ContextInfo nullContextInfo = new ContextInfo();
-            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, nullContextInfo);
 
-            List<CourseOfferingDetails> courseOfferingDetailsList = courseDetails.getCourseOfferingDetails();
+
+            // Rename courseofferinggroup
+
+            CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
+            courseOfferingDetails.setActivityOfferingItemList(getActivityOfferingItems(courseId, termId));
+            courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
+
+        } catch (Exception e) {
+            logger.error("Exception loading course offering for:" + course.getCode(), e);
+        }
+
+
+        //Curriculum
+        String courseCode = courseDetails.getCode();
+        String subject = null;
+        String number = null;
+        if (courseCode != null) {
+            String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            subject = splitStr[0];
+            number = splitStr[1];
+            String temp = getTitle(subject);
+            StringBuffer value = new StringBuffer();
+            value = value.append(temp);
+            value = value.append(" (").append(subject.trim()).append(")");
+
+            courseDetails.setCurriculumTitle(value.toString());
+        }
+        //  If course not scheduled for future terms, Check for the last term when course was offered
+
+        List<String> termList = courseDetails.getScheduledTerms();
+
+        if (isCourseOfferingServiceUp()) {
+            if (termList.size() == 0) {
+                int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+                List<CourseOfferingInfo> courseOfferingInfo = null;
+                try {
+                    // The right strategy would be using the multiple equal predicates joined using an and
+                    String values = String.format("%s, %s, %s", year, subject, number);
+                    courseOfferingInfo = cos
+                            .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    String[] params = {};
+                    GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
+                    logger.error("Could not load courseOfferingInfo list.", e);
+                }
+                if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
+                    String lastOffered = courseOfferingInfo.get(0).getTermId();
+                    lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
+                    courseDetails.setLastOffered(lastOffered);
+                }
+            }
+        }
+
+        // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
+        try {
+            List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            if (studentCourseRecordInfos.size() > 0) {
+                List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+
+                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                    academicRecordDataObject.setCourseId(studentInfo.getId());
+                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                    academicRecordDataObjectList.add(academicRecordDataObject);
+                    if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
+                        String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
+                        courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+                    }
+                }
+                if (academicRecordDataObjectList.size() > 0) {
+                    courseDetails.setAcadRecList(academicRecordDataObjectList);
+
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
+        }
+
+
+        return courseDetails;
+    }
+
+    public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
+        CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
+        CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
+        courseOfferingDetails.setActivityOfferingItemList(getActivityOfferingItems(courseId, termId));
+        courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
+        return courseDetails;
+    }
+
+    public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId) {
+        List<ActivityOfferingItem> activityList = new ArrayList<ActivityOfferingItem>();
+        try {
+            CourseOfferingService cos = getCourseOfferingService();
+
+            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
+
+            List<CourseOfferingDetails> courseOfferingDetailsList = new ArrayList<CourseOfferingDetails>();
 
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
             courseOfferingDetailsList.add(courseOfferingDetails);
 
-            List<ActivityOfferingItem> activityList = courseOfferingDetails.getActivityOfferingItemList();
+            activityList = courseOfferingDetails.getActivityOfferingItemList();
 
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
@@ -407,7 +508,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 ActivityOfferingItem primary = null;
 
                 String courseOfferingID = courseInfo.getCourseId();
-                List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, nullContextInfo);
+                List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
                 for (ActivityOfferingDisplayInfo aodi : aodiList) {
                     ActivityOfferingItem secondary = new ActivityOfferingItem();
                     secondary.setCode(aodi.getActivityOfferingCode());
@@ -522,89 +623,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
 
             }
-
-            // Rename courseofferinggroup
-            courseOfferingDetails.setActivityOfferingItemList(activityList);
-
         } catch (Exception e) {
-            logger.error("Exception loading course offering for:" + course.getCode(), e);
+            logger.error("Could not load the Section Details");
         }
+        return activityList;
 
-
-        //Curriculum
-        String courseCode = courseDetails.getCode();
-        String subject = null;
-        String number = null;
-        if (courseCode != null) {
-            String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            subject = splitStr[0];
-            number = splitStr[1];
-            String temp = getTitle(subject);
-            StringBuffer value = new StringBuffer();
-            value = value.append(temp);
-            value = value.append(" (").append(subject.trim()).append(")");
-
-            courseDetails.setCurriculumTitle(value.toString());
-        }
-        //  If course not scheduled for future terms, Check for the last term when course was offered
-
-        List<String> termList = courseDetails.getScheduledTerms();
-
-        if (isCourseOfferingServiceUp()) {
-            if (termList.size() == 0) {
-                int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
-                List<CourseOfferingInfo> courseOfferingInfo = null;
-                try {
-                    // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, subject, number);
-                    courseOfferingInfo = cos
-                            .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
-                } catch (Exception e) {
-                    String[] params = {};
-                    GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-                    logger.error("Could not load courseOfferingInfo list.", e);
-                }
-                if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
-                    String lastOffered = courseOfferingInfo.get(0).getTermId();
-                    lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
-                    courseDetails.setLastOffered(lastOffered);
-                }
-            }
-        }
-
-        // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
-        try {
-            List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
-            if (studentCourseRecordInfos.size() > 0) {
-                List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-
-                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
-                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                    academicRecordDataObject.setCourseId(studentInfo.getId());
-                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                    academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                    academicRecordDataObjectList.add(academicRecordDataObject);
-                    if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
-                        String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
-                        courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
-                    }
-                }
-                if (academicRecordDataObjectList.size() > 0) {
-                    courseDetails.setAcadRecList(academicRecordDataObjectList);
-
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
-        }
-
-
-        return courseDetails;
     }
 
 
