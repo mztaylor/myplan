@@ -711,6 +711,11 @@
         <property name="baseUrl" value="https://www.washington.edu/students/timeschd/"/>
     </bean>
 
+    <bean id="meeting_building_link_formatter"
+          class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
+     <!--    <property name="baseUrl" value="https://www.washington.edu/students/timeschd/"/> -->
+    </bean>
+
     <!--<bean id="Advisor-FormView" parent="MyPlanBaseFormView">
         <property name="id" value="Advisor-FormView"/>
         <property name="footer.render" value="false"/>
@@ -1003,21 +1008,25 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:label="Meeting Time" p:propertyName="meetingTime"/>
-                <bean parent="Uif-HorizontalFieldGroup" p:label="Location" p:group.validationMessages.render="false">
+                <bean parent="Uif-DataField" p:label="Meeting Time" p:propertyName="meetingDetailsList" p:escapeHtmlInPropertyValue="false">
+                	<property name="propertyEditor" ref="meeting_building_link_formatter"/>
+                </bean>
+                
+                
+                <!-- <bean parent="Uif-HorizontalFieldGroup" p:label="Location" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <!-- Building code NOC means not on campus, map only applies to Seattle campus -->
-                            <!-- Building code may start with an asterisk to represent a TBD -->
+                            Building code NOC means not on campus, map only applies to Seattle campus
+                            Building code may start with an asterisk to represent a TBD
                             <bean parent="Uif-Link" p:linkText="@{#line.locationBuilding}" p:href="http://uw.edu/maps/?@{#line.locationBuilding}" p:target="_blank" p:style="margin-right:0.33em;"
-                                  p:render="@{#line.locationBuilding ne 'NOC' AND !#line.locationBuilding.startsWith('*')}"/> <!--  AND #line.campus.toLowerCase() eq 'seattle' -->
+                                  p:render="@{#line.locationBuilding ne 'NOC' AND !#line.locationBuilding.startsWith('*')}"/>  AND #line.campus.toLowerCase() eq 'seattle'
                             <bean parent="Uif-Message" p:messageText="@{#line.locationBuilding}" p:style="margin-right:0.33em;"
-                                  p:render="@{#line.locationBuilding eq 'NOC' OR #line.locationBuilding.startsWith('*')}"/> <!-- #line.campus.toLowerCase() ne 'seattle' -->
+                                  p:render="@{#line.locationBuilding eq 'NOC' OR #line.locationBuilding.startsWith('*')}"/> #line.campus.toLowerCase() ne 'seattle'
                             <bean parent="Uif-Message" p:messageText="@{#line.locationRoom}" p:style="margin:0;"
                                   p:render="@{#line.locationBuilding ne 'NOC' AND !#line.locationBuilding.startsWith('*')}"/>
                         </list>
                     </property>
-                </bean>
+                </bean> -->
                 <bean parent="Uif-HorizontalFieldGroup" p:label="SLN" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>

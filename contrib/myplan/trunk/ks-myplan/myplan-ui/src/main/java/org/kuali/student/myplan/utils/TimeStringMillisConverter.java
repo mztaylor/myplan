@@ -70,7 +70,7 @@ public class TimeStringMillisConverter
 	public static void main( String[] args ) 
 		throws Exception 
 	{
-			
+		
 		testMilitaryRoundTrip( "X" );
 		testMilitaryRoundTrip( "08:30" );
 		testMilitaryRoundTrip( "00:00" );

@@ -44,8 +44,6 @@ import java.util.regex.Pattern;
  */
 public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
-    public static final String TO_BE_ARRANGED = "to be arranged";
-
     public enum terms {autumn, winter, spring, summer}
 
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
@@ -1033,6 +1031,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
                 String typeName = sectionNode.elementText("SectionType");
+                String campus = sectionNode.elementText("CourseCampus");
 
                 Element courseNode = (Element) coursePath.selectSingleNode(doc);
                 String title = courseNode.elementText("CourseTitle");
@@ -1045,11 +1044,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     scheduleDisplay.setScheduleComponentDisplays(new ArrayList<ScheduleComponentDisplayInfo>());
                     info.setScheduleDisplay(scheduleDisplay);
 
-
-                    ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
-                    scdi.setTimeSlots(new ArrayList<TimeSlotInfo>());
-                    scheduleDisplay.getScheduleComponentDisplays().add(scdi);
-
                     DefaultXPath meetingPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting");
                     meetingPath.setNamespaceURIs(namespaces);
 
@@ -1057,28 +1051,18 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     for (Object obj : meetings) {
                         Element meetingNode = (Element) obj;
 
+                        ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
+                        scdi.setTimeSlots(new ArrayList<TimeSlotInfo>());
+                        scheduleDisplay.getScheduleComponentDisplays().add(scdi);
+                        
+
+                        TimeSlotInfo timeSlot = new TimeSlotInfo();
+                        scdi.getTimeSlots().add(timeSlot);
+                        timeSlot.setWeekdays(new ArrayList<Integer>());
+                        
                         String tba = meetingNode.elementText("DaysOfWeekToBeArranged");
                         boolean tbaFlag = Boolean.parseBoolean(tba);
-
                         if (!tbaFlag) {
-                            TimeSlotInfo timeSlot = new TimeSlotInfo();
-                            timeSlot.setWeekdays(new ArrayList<Integer>());
-
-                            {
-                                String time = meetingNode.elementText("StartTime");
-                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
-                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-                                timeInfo.setMilliSeconds(millis);
-                                timeSlot.setStartTime(timeInfo);
-                            }
-
-                            {
-                                String time = meetingNode.elementText("EndTime");
-                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
-                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-                                timeInfo.setMilliSeconds(millis);
-                                timeSlot.setEndTime(timeInfo);
-                            }
 
                             DefaultXPath dayNamePath = new DefaultXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
                             dayNamePath.setNamespaceURIs(namespaces);
@@ -1092,7 +1076,45 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                                     timeSlot.getWeekdays().add(weekday);
                                 }
                             }
-                            scdi.getTimeSlots().add(timeSlot);
+                        
+	                        {
+	                            String time = meetingNode.elementText("StartTime");
+	                            long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+	                            TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+	                            timeInfo.setMilliSeconds(millis);
+	                            timeSlot.setStartTime(timeInfo);
+	                        }
+	
+	                        {
+	                            String time = meetingNode.elementText("EndTime");
+	                            long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+	                            TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+	                            timeInfo.setMilliSeconds(millis);
+	                            timeSlot.setEndTime(timeInfo);
+	                        }
+                        }
+
+                        {
+                            String buildingTBA = meetingNode.elementText("BuildingToBeArranged");
+                            boolean buildingTBAFlag = Boolean.parseBoolean(buildingTBA);
+                            if (!buildingTBAFlag) {
+                            	BuildingInfo buildingInfo = new BuildingInfo();
+                            	buildingInfo.setCampusKey( campus );
+                            	String building = meetingNode.elementText("Building");
+                            	buildingInfo.setBuildingCode(building);
+                            	scdi.setBuilding(buildingInfo);
+                            }
+                            
+                            String roomTBA = meetingNode.elementText("RoomToBeArranged");
+                            boolean roomTBAFlag = Boolean.parseBoolean(roomTBA);
+                            if (!roomTBAFlag) {
+
+                            	String roomNumber = meetingNode.elementText("RoomNumber");
+                            	RoomInfo roomInfo = new RoomInfo();
+                            	roomInfo.setRoomCode(roomNumber);
+//                            	roomInfo.setBuildingId(building);
+                            	scdi.setRoom(roomInfo);
+                            }
                         }
 
                         /*Instructor Details*/
@@ -1110,30 +1132,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                             }
                         }
 
-                        {
-                            String building = TO_BE_ARRANGED;
-                            String buildingTBA = meetingNode.elementText("BuildingToBeArranged");
-                            boolean buildingTBAFlag = Boolean.parseBoolean(buildingTBA);
-                            if (!buildingTBAFlag) {
-                                building = meetingNode.elementText("Building");
-                            }
-                            BuildingInfo buildingInfo = new BuildingInfo();
-                            buildingInfo.setBuildingCode(building);
-                            scdi.setBuilding(buildingInfo);
-
-                            String roomNumber = TO_BE_ARRANGED;
-                            String roomTBA = meetingNode.elementText("RoomToBeArranged");
-                            boolean roomTBAFlag = Boolean.parseBoolean(roomTBA);
-                            if (!roomTBAFlag) {
-
-                                roomNumber = meetingNode.elementText("RoomNumber");
-                            }
-                            RoomInfo roomInfo = new RoomInfo();
-                            roomInfo.setRoomCode(roomNumber);
-                            roomInfo.setBuildingId(building);
-
-                            scdi.setRoom(roomInfo);
-                        }
                     }
                 }
 
