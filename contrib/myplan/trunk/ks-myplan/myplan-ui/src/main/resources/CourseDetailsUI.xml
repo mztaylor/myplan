@@ -842,11 +842,10 @@
                 <entry key="aoColumns" value="[
                             {'sWidth':'48px'},
                             {'sWidth':'86px'},
-                            {'sWidth':'191px'},
-                            {'sWidth':'82px'},
-                            {'sWidth':'44px','sType':'string'},
-                            {'sWidth':'115px'},
-                            {'sWidth':'80px'}
+                            {'sWidth':'277px'},
+                            {'sWidth':'46px','sType':'string'},
+                            {'sWidth':'117px'},
+                            {'sWidth':'81px'}
                        ]"/>
                 <entry key="oLanguage" value="{
                             'sInfo':'',
@@ -936,13 +935,13 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
-                                            <property name="style" value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 294px 0px repeat-y;"/>
+                                            <property name="style" value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 380px 0px repeat-y;"/>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:style="width:286px;"/>
+                                                          p:style="width:372px;"/>
                                                     <bean parent="Uif-VerticalFieldGroup" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:group.validationMessages.render="false" p:style="width:348px;">
+                                                          p:group.validationMessages.render="false" p:style="width:262px;">
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-Message" p:messageText="@{#line.gradingOption}" p:render="@{#line.gradingOption ne null}"/>
