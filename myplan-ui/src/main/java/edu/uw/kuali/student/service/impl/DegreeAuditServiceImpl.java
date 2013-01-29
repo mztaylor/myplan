@@ -275,8 +275,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public int timeout = 30 * 1000; // 30 seconds
-//    public int timeout = 1000; // 30 seconds
+    public int timeout = 5 * 60 * 1000; // 5 minutes
 
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context)
@@ -306,39 +305,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 				throw new OperationFailedException(msg);
             }
         }
-//        if (AUDIT_TYPE_KEY_DEFAULT.equals(auditTypeKey))
-//        {
-        /*return getDARSReport(auditId);*/
-//        }
-        //if (AUDIT_TYPE_KEY_HTML.equals(auditTypeKey)) {
-        //return getHTMLReport(auditId);
-        //}
-//        throw new InvalidParameterException("auditTypeKey: " + auditTypeKey);
     }
 
     // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
     private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
-//    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.TEST;
 
     public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style) {
         courseLinkTemplateStyle = style;
     }
-
-
-//    String padfront(String source) {
-//        StringBuilder sb = new StringBuilder();
-//        boolean front = true;
-//        for (int nth = 0; nth < source.length(); nth++) {
-//            char c = source.charAt(nth);
-//            if (front && c == ' ') {
-//                sb.append("&nbsp;");
-//            } else {
-//                front = false;
-//                sb.append(c);
-//            }
-//        }
-//        return sb.toString();
-//    }
 
     public AuditReportInfo getHTMLReport(String auditId) throws OperationFailedException {
         AuditReportInfo auditReportInfo = new AuditReportInfo();
