@@ -619,8 +619,8 @@
                       p:cssClasses="fl-text-gray fl-font-size-90"
                       p:render="@{setToPlanning eq true and backup eq false and acadRecAtpId eq null ? true : false}"/>
 
-                <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkText="Mark it as Planned course"
-                      p:title="Mark it as Planned course"
+                <bean p:id="@{planItemId}_planned" parent="Uif-Link" p:target="" p:linkText="Mark as Planned course"
+                      p:title="Mark as Planned course"
                       p:render="@{setToPlanning eq true and backup eq true and acadRecAtpId eq null ? true : false}">
                     <property name="onClickScript"
                               value="myPlanAjaxPlanItemMove('@{planItemId}','planItemId','backupToPlanned',e);"/>
@@ -1095,8 +1095,8 @@
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Mark it as Planned course"
-                      p:title="Mark it as Planned course"
+                      p:linkText="Mark as Planned course"
+                      p:title="Mark as Planned course"
                       p:style="margin:0;">
                     <property name="onClickScript"
                               value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','backupToPlanned',e);"/>
@@ -2851,7 +2851,7 @@
         <property name="items">
             <list>
                 <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
-                      p:label="Mark it as &lt;strong&gt;'Backup'&lt;/strong&gt; course. (Optional)"
+                      p:label="Mark as &lt;strong&gt;'Backup'&lt;/strong&gt; course. (Optional)"
                       p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT"
                       p:render="@{moveCourse eq false ? true : false}"
                       p:fieldLabel.cssClasses="myplan-text-normal">
