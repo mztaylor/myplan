@@ -175,6 +175,20 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.course.version.id">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="lu.resultColumn.cluId"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
     <search:searchType id="myplan.lu.search.title">
         <search:searchResultTypeInfo>
             <search:name/>
@@ -760,6 +774,15 @@
                         AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where
                         att.name='course.catalogOmit_ind' and att.value='Y')
                         ORDER BY ident.division, ident.suffixCode
+                    </value>
+                </entry>
+
+                <entry key="myplan.course.version.id">
+                    <value>NATIVE:
+                        SELECT clu.ID
+                        FROM KSLU_CLU clu
+                        WHERE clu.id = :courseId OR (clu.ver_ind_id = :courseId) AND clu.EXP_FIRST_ATP = (select min(c.EXP_FIRST_ATP)
+                        FROM KSLU_CLU c where c.ver_ind_id = clu.ver_ind_id and c.LAST_ATP >= :lastScheduledTerm group by c.ver_ind_id )
                     </value>
                 </entry>
 

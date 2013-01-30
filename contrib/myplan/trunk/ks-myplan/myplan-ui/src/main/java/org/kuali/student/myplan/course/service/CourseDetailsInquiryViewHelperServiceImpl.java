@@ -21,6 +21,7 @@ import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
@@ -210,15 +211,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         CourseDetails courseDetails = new CourseDetails();
         courseDetails.setSummaryOnly(true);
 
+
         CourseInfo course = getCourseInfo();
         try {
-            course = getCourseService().getCourse(courseId);
+            /*Get version verified course*/
+            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
             throw new RuntimeException("Query failed.", e);
         }
 
+        courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         String str = null;
@@ -268,7 +272,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         CourseInfo course = null;
         try {
-            course = getCourseService().getCourse(courseId);
+            /*Get version verified course*/
+            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
@@ -480,6 +485,27 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
+    public String getVerifiedCourseId(String courseId) {
+        String verifiedCourseId = null;
+        try {
+            SearchRequest req = new SearchRequest("myplan.course.version.id");
+            req.addParam("courseId", courseId);
+            req.addParam("courseId", courseId);
+            req.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
+            SearchResult result = getLuService().search(req);
+            for (SearchResultRow row : result.getRows()) {
+                for (SearchResultCell cell : row.getCells()) {
+                    if ("lu.resultColumn.cluId".equals(cell.getKey())) {
+                        verifiedCourseId = cell.getValue();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("version verified Id retrieval failed", e);
+        }
+        return verifiedCourseId;
+    }
+
     public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
@@ -526,45 +552,44 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     {
                         ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
                         for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
-                        	MeetingDetails meeting = new MeetingDetails();
-                        	
-                        	BuildingInfo building = scdi.getBuilding();
-                        	if( building != null ) {
-                        		meeting.setCampus(building.getCampusKey());
-                        		meeting.setBuilding(building.getBuildingCode());
-                        	}
-                        	
-                        	RoomInfo roomInfo = scdi.getRoom();
-                        	if( roomInfo != null )
-                        	{
-                        		meeting.setRoom(roomInfo.getRoomCode());
-                        	}
-                        	
+                            MeetingDetails meeting = new MeetingDetails();
+
+                            BuildingInfo building = scdi.getBuilding();
+                            if (building != null) {
+                                meeting.setCampus(building.getCampusKey());
+                                meeting.setBuilding(building.getBuildingCode());
+                            }
+
+                            RoomInfo roomInfo = scdi.getRoom();
+                            if (roomInfo != null) {
+                                meeting.setRoom(roomInfo.getRoomCode());
+                            }
+
                             for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
-                            	
-                            	String days = "";
+
+                                String days = "";
                                 for (int weekday : timeSlot.getWeekdays()) {
                                     if (weekday > -1 && weekday < 7) {
                                         String letter = weekdaysFirstLetter[weekday];
                                         days += letter;
                                     }
                                 }
-                                if( !"".equals( days )) {
-                            		meeting.setDays(days);
+                                if (!"".equals(days)) {
+                                    meeting.setDays(days);
                                 }
-                                
+
                                 TimeOfDayInfo startInfo = timeSlot.getStartTime();
                                 TimeOfDayInfo endInfo = timeSlot.getEndTime();
-                                if( startInfo != null && endInfo != null ) {
-									long startTimeMillis = startInfo.getMilliSeconds();
-	                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
-	
-									long endTimeMillis = endInfo.getMilliSeconds();
-	                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
-	
-	                                String time = startTime + " - " + endTime;
-	                                
-	                                meeting.setTime(time);
+                                if (startInfo != null && endInfo != null) {
+                                    long startTimeMillis = startInfo.getMilliSeconds();
+                                    String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+
+                                    long endTimeMillis = endInfo.getMilliSeconds();
+                                    String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+
+                                    String time = startTime + " - " + endTime;
+
+                                    meeting.setTime(time);
                                 }
                                 meetingDetailsList.add(meeting);
                             }
@@ -596,7 +621,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             secondary.setJointOffering(flag);
                         } else if ("Writing".equalsIgnoreCase(key)) {
                             secondary.setWritingSection(flag);
-                        } else if("FinancialAidEligible".equalsIgnoreCase(key)) {
+                        } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
                             secondary.setIneligibleForFinancialAid(flag);
                         }
 
