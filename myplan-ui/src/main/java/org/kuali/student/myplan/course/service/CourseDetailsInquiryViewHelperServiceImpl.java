@@ -632,9 +632,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     secondary.setEnrollMaximum(999);
                     secondary.setInstructor(aodi.getInstructorName());
 
-                    secondary.setHonorsSection(false);
+                    secondary.setHonorsSection(aodi.getIsHonorsOffering());
                     secondary.setNewThisYear(false);
-                    secondary.setIneligibleForFinancialAid(false);
 
                     secondary.setDetails("View section notes and textbook information");
 
