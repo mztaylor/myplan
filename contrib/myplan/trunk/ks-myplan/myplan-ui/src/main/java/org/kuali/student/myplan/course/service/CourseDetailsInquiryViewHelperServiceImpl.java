@@ -362,7 +362,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                 //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
                 for (PlanItem planItemInPlanTemp : planItemsInPlan) {
-                    if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getCourseId())) {
+                    if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getVersionIndependentId())) {
                         //  Assuming type is planned or backup if not wishlist.
                         String typeKey = planItemInPlanTemp.getTypeKey();
                         if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {

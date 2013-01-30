@@ -75,7 +75,7 @@
                             <ref bean="course_details_actions"/>
 
                             <bean id="course_details_page_messaging" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false"
-                                  p:render="@{(dataObject.backupList ne null or dataObject.plannedList ne null or dataObject.academicTerms.size() gt 0) ? true : false}">
+                                  p:render="@{(dataObject.backupList.size() gt 0 or dataObject.plannedList.size() gt 0 or dataObject.academicTerms.size() gt 0) ? true : false}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-status</value>
@@ -170,7 +170,7 @@
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseId}', 'courseId', 'addSavedCourse', e);"/>
                 </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseId}_bookmarked"
-                      p:render="@{dataObject.savedItemId ne null and dataObject.plannedList eq null and dataObject.backupList eq null and dataObject.academicTerms.size() eq 0 ? true : false}"
+                      p:render="@{dataObject.savedItemId ne null and dataObject.plannedList.size() eq 0 and dataObject.backupList.size() eq 0 and dataObject.academicTerms.size() eq 0 ? true : false}"
                       p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
                     <!--<property name="onDocumentReadyScript"
                               value="jQuery('#@{dataObject.courseId}_bookmarked').subscribe('PLAN_ITEM_DELETED', function(data){

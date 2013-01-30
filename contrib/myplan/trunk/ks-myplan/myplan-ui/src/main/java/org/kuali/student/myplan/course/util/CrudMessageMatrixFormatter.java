@@ -151,7 +151,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         /*When plannedList or backupList are not null then populating message
             *"Added to Spring 2013 Plan, Spring 2014 Plan on 01/18/2012" or
             *"Added to Spring 2013 Plan on 01/18/2012 and Spring 2014 Plan on 09/18/2012" */
-        if (courseDetails.getPlannedList() != null || courseDetails.getBackupList() != null) {
+        if ((courseDetails.getPlannedList() != null && courseDetails.getPlannedList().size()>0) || (courseDetails.getBackupList() != null && courseDetails.getBackupList().size()>0)) {
             List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
             if (courseDetails.getPlannedList() != null) {
                 for (PlanItemDataObject pl : courseDetails.getPlannedList()) {
