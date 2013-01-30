@@ -66,7 +66,6 @@ import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
@@ -79,6 +78,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
+
+    private final static String[] WEEKDAYS_FIRST_LETTER = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
     private transient CourseService courseService;
 
@@ -265,8 +266,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
-
-    public final static String[] weekdaysFirstLetter = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
     public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
@@ -472,27 +471,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
-    public String getVerifiedCourseId(String courseId) {
-        String verifiedCourseId = null;
-        try {
-            SearchRequest req = new SearchRequest("myplan.course.version.id");
-            req.addParam("courseId", courseId);
-            req.addParam("courseId", courseId);
-            req.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
-            SearchResult result = getLuService().search(req);
-            for (SearchResultRow row : result.getRows()) {
-                for (SearchResultCell cell : row.getCells()) {
-                    if ("lu.resultColumn.cluId".equals(cell.getKey())) {
-                        verifiedCourseId = cell.getValue();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("version verified Id retrieval failed", e);
-        }
-        return verifiedCourseId;
-    }
-
     public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
@@ -557,7 +535,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                                 String days = "";
                                 for (int weekday : timeSlot.getWeekdays()) {
                                     if (weekday > -1 && weekday < 7) {
-                                        String letter = weekdaysFirstLetter[weekday];
+                                        String letter = WEEKDAYS_FIRST_LETTER[weekday];
                                         days += letter;
                                     }
                                 }
@@ -672,7 +650,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<String> campusLocations = new ArrayList<String>();
         SearchRequest searchRequest = new SearchRequest("myplan.course.getCampusLocations");
         searchRequest.addParam("cluId", courseId);
-        searchRequest.addParam("currentTerm", AtpHelper.getCurrentAtpId());
+        searchRequest.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
         SearchResult searchResult = null;
         try {
             searchResult = getLuService().search(searchRequest);
@@ -765,6 +743,36 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     public void setAcademicPlanService(AcademicPlanService academicPlanService) {
         this.academicPlanService = academicPlanService;
     }
+
+
+    /**
+     * Takes a courseId that can be either a version independent Id or a version dependent Id and
+     * returns a version dependent Id. In case of being passed in a version depend
+     *
+     * @param courseId
+     * @return
+     */
+    private String getVerifiedCourseId(String courseId) {
+        String verifiedCourseId = null;
+        try {
+            SearchRequest req = new SearchRequest("myplan.course.version.id");
+            req.addParam("courseId", courseId);
+            req.addParam("courseId", courseId);
+            req.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
+            SearchResult result = getLuService().search(req);
+            for (SearchResultRow row : result.getRows()) {
+                for (SearchResultCell cell : row.getCells()) {
+                    if ("lu.resultColumn.cluId".equals(cell.getKey())) {
+                        verifiedCourseId = cell.getValue();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("version verified Id retrieval failed", e);
+        }
+        return verifiedCourseId;
+    }
+
 
     /**
      * Initializes ATP term cache.

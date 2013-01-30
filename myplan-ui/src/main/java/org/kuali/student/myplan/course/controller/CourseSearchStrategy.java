@@ -397,14 +397,19 @@ public class CourseSearchStrategy {
 
     private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {
         String currentTerm = null;
+        String lastScheduledTerm = null;
 
         if (isAcademicCalenderServiceUp) {
             currentTerm = AtpHelper.getCurrentAtpId();
+            lastScheduledTerm = AtpHelper.getLastScheduledAtpId();
         } else {
             currentTerm = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+            lastScheduledTerm = currentTerm;
         }
         for (SearchRequest searchRequest : searchRequests) {
-            searchRequest.addParam("currentTerm", currentTerm);
+            // TODO: Fix when version issue for course is addressed
+//            searchRequest.addParam("currentTerm", currentTerm);
+            searchRequest.addParam("lastScheduledTerm", lastScheduledTerm);
         }
     }
 
