@@ -1894,6 +1894,18 @@ label.scheduled {
     margin: 0;
     background: none;
 }
+.myplan-quarter-detail h5 {
+    border: solid 1px #dddddd;
+    text-transform: uppercase;
+    background: #e9e9e9;
+    font-weight: bold;
+    line-height: 1em;
+    padding: 10px 5px;
+}
+.myplan-quarter-detail .dataTables_wrapper,
+.myplan-quarter-detail .dataTables_info {
+    margin: 0;
+}
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {
     background: #fcf9f0;
