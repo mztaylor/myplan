@@ -2446,7 +2446,7 @@
                             <!-- If not in plan and not in saved courses and not in academic record list -->
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
                                   p:group.validationMessages.render="false"
-                                  p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                                  p:render="@{(courseDetails.backupList.size() eq 0 and courseDetails.plannedList.size() eq 0 and courseDetails.savedItemId eq null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -2471,7 +2471,7 @@
                             <!-- If not in plan and in saved courses and not in academic list-->
                             <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
                                   p:group.validationMessages.render="false"
-                                  p:render="@{(courseDetails.backupList eq null and courseDetails.plannedList eq null and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
+                                  p:render="@{(courseDetails.backupList.size() eq 0 and courseDetails.plannedList.size() eq 0 and courseDetails.savedItemId ne null and courseDetails.academicTerms.size() eq 0) ? true : false}">
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -2495,7 +2495,7 @@
                     </property>
                 </bean>
                 <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:style="margin:0px"
-                      p:render="@{(courseDetails.backupList ne null or courseDetails.plannedList ne null or courseDetails.savedItemId ne null or courseDetails.academicTerms.size() gt 0) ? true : false}"
+                      p:render="@{(courseDetails.backupList.size() gt 0 or courseDetails.plannedList.size() gt 0 or courseDetails.savedItemId ne null or courseDetails.academicTerms.size() gt 0) ? true : false}"
                       p:validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">

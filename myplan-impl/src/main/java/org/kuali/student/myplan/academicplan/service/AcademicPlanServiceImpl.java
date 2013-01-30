@@ -1,12 +1,18 @@
 package org.kuali.student.myplan.academicplan.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultCell;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.common.util.UUIDHelper;
 
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.service.CourseService;
 
 import org.kuali.student.lum.course.service.CourseServiceConstants;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
@@ -16,6 +22,7 @@ import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
 import org.kuali.student.myplan.academicplan.model.*;
 
+import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
 import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -44,9 +51,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private PlanItemTypeDao planItemTypeDao;
     private CourseService courseService;
     private AtpService atpService;
+    private LuService luService;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
+     *
      * @param courseService
      */
     public void setCourseService(CourseService courseService) {
@@ -61,6 +70,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return this.courseService;
     }
 
+    protected synchronized LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
+
+
     /**
      * Provides an instance of the AtpService client.
      */
@@ -72,8 +89,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return this.atpService;
     }
 
-     /**
+    /**
      * This method provides a way to manually provide a CourseService implementation during testing.
+     *
      * @param atpService
      */
     public void setAtpService(AtpService atpService) {
@@ -114,7 +132,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId,
-                                        @WebParam(name = "context") ContextInfo context)
+                                            @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
@@ -128,7 +146,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo getPlanItem(@WebParam(name = "planItemId") String planItemId,
-                                @WebParam(name = "context") ContextInfo context)
+                                    @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         PlanItemEntity planItem = planItemDao.find(planItemId);
@@ -141,16 +159,15 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId,
-                                                   @WebParam(name = "planItemTypeKey") String planItemTypeKey,
-                                                   @WebParam(name = "context") ContextInfo context)
+                                                       @WebParam(name = "planItemTypeKey") String planItemTypeKey,
+                                                       @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<PlanItemInfo> planItemInfos=new ArrayList<PlanItemInfo>();
-        List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId,planItemTypeKey);
-        if (null == planItemEntities){
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId, planItemTypeKey);
+        if (null == planItemEntities) {
             throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] does not exist", learningPlanId));
-        }
-        else {
-            for(PlanItemEntity planItemEntity:planItemEntities){
+        } else {
+            for (PlanItemEntity planItemEntity : planItemEntities) {
                 planItemInfos.add(planItemEntity.toDto());
             }
         }
@@ -159,7 +176,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlan(@WebParam(name = "learningPlanId") String learningPlanId,
-                                             @WebParam(name = "context") ContextInfo context)
+                                                 @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<PlanItemInfo> dtos = new ArrayList<PlanItemInfo>();
@@ -173,9 +190,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
-                                                  @WebParam(name = "atpKey") String atpKey,
-                                                  @WebParam(name = "planItemTypeKey") String planItemTypeKey,
-                                                  @WebParam(name = "context") ContextInfo context)
+                                                      @WebParam(name = "atpKey") String atpKey,
+                                                      @WebParam(name = "planItemTypeKey") String planItemTypeKey,
+                                                      @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<PlanItemEntity> planItemsList = planItemDao.getLearningPlanItems(learningPlanId, planItemTypeKey);
@@ -209,22 +226,22 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     @Override
     public PlanItemSetInfo getPlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId,
-                                      @WebParam(name = "context") ContextInfo context)
+                                          @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<PlanItemInfo> getPlanItemsInSet(@WebParam(name = "planItemSetId") String planItemSetId,
-                                            @WebParam(name = "context") ContextInfo context)
+                                                @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
     public List<LearningPlanInfo> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId,
-                                                               @WebParam(name = "planTypeKey") String planTypeKey,
-                                                               @WebParam(name = "context") ContextInfo context)
+                                                                   @WebParam(name = "planTypeKey") String planTypeKey,
+                                                                   @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<LearningPlanEntity> lpeList = learningPlanDao.getLearningPlansByType(studentId, planTypeKey);
@@ -385,7 +402,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                        @WebParam(name = "planItem") PlanItemInfo planItem,
                                        @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, DataValidationErrorException, InvalidParameterException,
-                MissingParameterException, OperationFailedException, PermissionDeniedException {
+            MissingParameterException, OperationFailedException, PermissionDeniedException {
 
         //  See if the plan item exists before trying to update it.
         PlanItemEntity planItemEntity = planItemDao.find(planItemId);
@@ -402,12 +419,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  Update the plan item type if it has changed.
         boolean createNewPlanItem = false;
-        if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())
+        if (!planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())
                 && planItemEntity.getLearningPlanItemType().getId().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
             createNewPlanItem = true;
         }
 
-        if ( ! planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
+        if (!planItemEntity.getLearningPlanItemType().getId().equals(planItem.getTypeKey())) {
             PlanItemTypeEntity planItemTypeEntity = planItemTypeDao.find(planItem.getTypeKey());
             if (planItemTypeEntity == null) {
                 throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
@@ -415,7 +432,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
             // Reset the plan Item
             planItemEntity.setLearningPlanItemType(planItemTypeEntity);
-            updatePlanTypeId =  planItemEntity.getId();
+            updatePlanTypeId = planItemEntity.getId();
         }
 
         //  Update plan periods.
@@ -436,7 +453,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Update text entity.
         planItemEntity.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
-         //  Update meta data.
+        //  Update meta data.
         planItemEntity.setUpdateId(context.getPrincipalId());
         planItemEntity.setUpdateTime(new Date());
 
@@ -447,7 +464,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         LearningPlanEntity newPlan = null;
-        if ( ! planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
+        if (!planItemEntity.getLearningPlan().getId().equals(planItem.getLearningPlanId())) {
             String planId = planItem.getLearningPlanId();
             if (planId == null) {
                 throw new InvalidParameterException("Learning plan id was null.");
@@ -461,10 +478,10 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         // If plan type changes create a new one and delete
         String updatePlanItemId = null;
-        if(createNewPlanItem) {
+        if (createNewPlanItem) {
             try {
                 PlanItemInfo newpiInfo = createPlanItem(planItemEntity.toDto(), context);
-                updatePlanItemId =  newpiInfo.getId();
+                updatePlanItemId = newpiInfo.getId();
             } catch (AlreadyExistsException e) {
                 throw new OperationFailedException(e.getMessage());
             }
@@ -474,7 +491,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             planItemDao.merge(planItemEntity);
         }
 
-         //  Update meta data on the original plan.
+        //  Update meta data on the original plan.
         originalPlan.setUpdateId(context.getPrincipalId());
         originalPlan.setUpdateTime(new Date());
         learningPlanDao.update(originalPlan);
@@ -567,15 +584,29 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
          * TODO: Move this validation to the data dictionary.
          */
         try {
-            getCourseService().getCourse(planItemInfo.getRefObjectId());
-        } catch (org.kuali.student.common.exceptions.DoesNotExistException e) {
-            validationResultInfos.add(makeValidationResultInfo(
-                String.format("Could not find course with ID [%s].", planItemInfo.getRefObjectId()),
-                "refObjectId", ValidationResult.ErrorLevel.ERROR));
+            String verifiedCourseId = null;
+            SearchRequest req = new SearchRequest("myplan.course.version.id");
+            req.addParam("courseId", planItemInfo.getRefObjectId());
+            req.addParam("courseId", planItemInfo.getRefObjectId());
+            req.addParam("lastScheduledTerm", DegreeAuditAtpHelper.getLastScheduledAtpId());
+            SearchResult result = getLuService().search(req);
+            for (SearchResultRow row : result.getRows()) {
+                for (SearchResultCell cell : row.getCells()) {
+                    if ("lu.resultColumn.cluId".equals(cell.getKey())) {
+                        verifiedCourseId = cell.getValue();
+                    }
+                }
+            }
+            if (verifiedCourseId == null) {
+                validationResultInfos.add(makeValidationResultInfo("Invalid Course Id",
+                        "refObjectId", ValidationResult.ErrorLevel.ERROR));
+            }
+
         } catch (Exception e) {
             validationResultInfos.add(makeValidationResultInfo(e.getLocalizedMessage(),
-                "refObjectId", ValidationResult.ErrorLevel.ERROR));
+                    "refObjectId", ValidationResult.ErrorLevel.ERROR));
         }
+
 
         //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
         //  Make sure a plan period exists if type is planned course.
@@ -583,21 +614,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 || planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
                 validationResultInfos.add(makeValidationResultInfo(
-                    String.format("Plan Item Type was [%s], but no plan periods were defined.", planItemInfo.getTypeKey()),
-                    "typeKey", ValidationResult.ErrorLevel.ERROR));
+                        String.format("Plan Item Type was [%s], but no plan periods were defined.", planItemInfo.getTypeKey()),
+                        "typeKey", ValidationResult.ErrorLevel.ERROR));
             } else {
                 //  Make sure the plan periods are valid. Note: There should never be more than one item in the collection.
                 for (String atpId : planItemInfo.getPlanPeriods()) {
                     boolean valid = false;
                     try {
                         valid = isValidAtp(atpId);
-                        if ( ! valid) {
+                        if (!valid) {
                             validationResultInfos.add(makeValidationResultInfo(
-                                String.format("ATP ID [%s] was not valid.", atpId), "atpId", ValidationResult.ErrorLevel.ERROR));
+                                    String.format("ATP ID [%s] was not valid.", atpId), "atpId", ValidationResult.ErrorLevel.ERROR));
                         }
                     } catch (Exception e) {
                         validationResultInfos.add(makeValidationResultInfo(
-                            "ATP ID lookup failed.", "typeKey", ValidationResult.ErrorLevel.ERROR));
+                                "ATP ID lookup failed.", "typeKey", ValidationResult.ErrorLevel.ERROR));
                     }
                 }
             }
@@ -644,7 +675,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<PlanItemEntity> planItems = this.planItemDao.getLearningPlanItems(planItemId, planItemType);
         for (PlanItemEntity p : planItems) {
             if (p.getRefObjectId().equals(courseId)) {
-                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)||planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) || planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     for (String atpId : planItem.getPlanPeriods()) {
                         if (p.getPlanPeriods().contains(atpId)) {
                             throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
@@ -652,8 +683,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                         }
                     }
                 } else {
-                     throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
-                        p.getLearningPlan().getId(), courseId));
+                    throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
+                            p.getLearningPlan().getId(), courseId));
                 }
             }
         }
