@@ -15,6 +15,7 @@ public class CourseSummaryDetails {
 
     // List of fields populated when only summary information is loaded
     private String courseId;
+    private String versionIndependentId;
     private String code;
     private String courseTitle;
     private String credit;
@@ -71,5 +72,13 @@ public class CourseSummaryDetails {
 
     public void setTermsOffered(List<String> termsOffered) {
         this.termsOffered = termsOffered;
+    }
+
+    public String getVersionIndependentId() {
+        return versionIndependentId;
+    }
+
+    public void setVersionIndependentId(String versionIndependentId) {
+        this.versionIndependentId = versionIndependentId;
     }
 }
