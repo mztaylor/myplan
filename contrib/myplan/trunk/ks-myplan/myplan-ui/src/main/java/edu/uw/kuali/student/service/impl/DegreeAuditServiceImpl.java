@@ -12,6 +12,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -632,9 +633,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     /*Implemented to get the current year and the term value from the academic calender service.*/
-    public String[] getCurrentYearAndTerm() {
-        String currentAtp = DegreeAuditAtpHelper.getCurrentAtpId();
-        String[] termYear = DegreeAuditAtpHelper.atpIdToTermAndYear(currentAtp);
+    private String[] getCurrentYearAndTerm() {
+        String currentAtp = AtpHelper.getCurrentAtpId();
+        String[] termYear = AtpHelper.atpIdToTermAndYear(currentAtp);
         return new String[]{termYear[0].trim(), termYear[1].trim()};
     }
 

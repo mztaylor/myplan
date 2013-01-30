@@ -143,7 +143,7 @@ public class CourseSearchController extends UifControllerBase {
         try {
             searchRequest.addParam("number", number);
             searchRequest.addParam("subject", subject.trim());
-            searchRequest.addParam("currentTerm", AtpHelper.getCurrentAtpId());
+            searchRequest.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());;
 
             searchResult = getLuService().search(searchRequest);
         } catch (Exception e) {
@@ -426,7 +426,7 @@ public class CourseSearchController extends UifControllerBase {
             } else {
                 return results;
             }
-            request.addParam("currentTerm", AtpHelper.getCurrentAtpId());
+            request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
 
             searchResult = getLuService().search(request);
 
