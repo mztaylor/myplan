@@ -92,6 +92,9 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public List<String> getScheduledTerms() {
+    	if(scheduledTerms == null) {
+    		scheduledTerms = new ArrayList<String>();
+    	}
         return scheduledTerms;
     }
 
@@ -100,6 +103,9 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public List<PlanItemDataObject> getPlannedList() {
+        if( plannedList == null ) {
+            plannedList = new ArrayList<PlanItemDataObject>();
+        }
         return plannedList;
     }
 
@@ -108,6 +114,9 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public List<PlanItemDataObject> getBackupList() {
+        if (backupList == null) {
+            backupList = new ArrayList<PlanItemDataObject>();
+        }
         return backupList;
     }
 
@@ -132,6 +141,9 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public List<AcademicRecordDataObject> getAcadRecList() {
+        if( acadRecList == null ) {
+            acadRecList = new ArrayList<AcademicRecordDataObject>();
+        }
         return acadRecList;
     }
 

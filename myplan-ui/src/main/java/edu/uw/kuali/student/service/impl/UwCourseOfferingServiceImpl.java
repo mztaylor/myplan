@@ -4,12 +4,12 @@ import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 
@@ -19,6 +19,8 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -32,11 +34,9 @@ import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -48,30 +48,32 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
 
-    private static final String REGEX_TERM = "\\d{4}\\.([1-4]{1})$";
-    private static final String REGEX_YEAR = "(\\d{4})\\.[1-4]{1}$";
-    private static Pattern patternTerm;
-    private static Pattern patternYear;
-
     private static int CRITERIA_LENGTH = 24;
 
     private transient CourseService courseService;
     private StudentServiceClient studentServiceClient;
 
-    private ArrayList<String> daylist = new ArrayList<String>();
+    private List<String> DAY_LIST = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
 
     public UwCourseOfferingServiceImpl() {
-        //  Compile regexs for parsing term and year from termKey.
-        patternTerm = Pattern.compile(REGEX_TERM, Pattern.CASE_INSENSITIVE);
-        patternYear = Pattern.compile(REGEX_YEAR);
+    }
 
-        daylist.add("Monday");
-        daylist.add("Tuesday");
-        daylist.add("Wednesday");
-        daylist.add("Thursday");
-        daylist.add("Friday");
-        daylist.add("Saturday");
-        daylist.add("Sunday");
+    private Document newDocument(String xml) throws DocumentException {
+        SAXReader sax = new SAXReader();
+        StringReader sr = new StringReader(xml);
+        Document doc = sax.read(sr);
+        return doc;
+    }
+
+    private static Map<String, String> NAMESPACES = new HashMap<String, String>() {{
+        put("s", "http://webservices.washington.edu/student/");
+    }};
+
+
+    public DefaultXPath newXPath(String expr) {
+        DefaultXPath path = new DefaultXPath(expr);
+        path.setNamespaceURIs(NAMESPACES);
+        return path;
     }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
@@ -107,20 +109,39 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
-        List<String> ids = new ArrayList<String>(100);
-
         //  Query the web service. Because the results of the call to this method are cached it important that an
         //  an exception is thrown and the call doesn't complete successfully.
-        Set<String> courseCodes = null;
         try {
-            courseCodes = getCourseOfferings(termId, subjectArea);
-        } catch (ServiceException e) {
+            YearTerm yt = AtpHelper.atpToYearTerm(termId);
+            String year = yt.getYearAsString();
+            String term = yt.getTermAsID();
+            String responseText = studentServiceClient.getSectionInfo(year, term, subjectArea);
+
+            Document document = newDocument(responseText);
+
+            DefaultXPath xpath = newXPath("//s:Section");
+            List sections = xpath.selectNodes(document);
+
+            Set<String> courseCodes = new HashSet<String>(sections.size());
+            for (Object node : sections) {
+                Element section = (Element) node;
+                String number = section.elementText("CourseNumber");
+                String ca = section.elementText("CurriculumAbbreviation");
+
+                //  This needs to be 10 characters wide. Curriculum code is 4-6 chars, number is 3.
+                StringBuilder cc = new StringBuilder("          ");
+                cc.replace(0, ca.length() - 1, ca);
+                cc.replace(7, 9, number);
+
+                courseCodes.add(cc.toString().trim());
+            }
+
+            return new ArrayList<String>(courseCodes);
+
+        } catch (Exception e) {
             throw new OperationFailedException("Call to the student service failed.", e);
         }
 
-        ids.addAll(courseCodes);
-
-        return ids;
     }
 
     @Override
@@ -158,77 +179,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Queries the student service and creates a collection of courseCodes for a given termKey (term, year)
-     * and subject area (curriculum abbreviation)
-     *
-     * @param termId      A term key like 'kuali.uw.atp.9999.4'.
-     * @param subjectArea A subject area like 'chem'.
-     * @return A Set of course Codes.
-     */
-    private Set<String> getCourseOfferings(String termId, String subjectArea) throws ServiceException {
-
-        String term, year;
-        Matcher matcher = patternTerm.matcher(termId);
-        if (matcher.find()) {
-            term = matcher.group(1);
-        } else {
-            throw new RuntimeException("Term key did not contain a term.");
-        }
-
-        matcher = patternYear.matcher(termId);
-        if (matcher.find()) {
-            year = matcher.group(1);
-        } else {
-            throw new RuntimeException("Term key did not contain a year.");
-        }
-
-        //  TODO: THis should be in AtpHelper.
-        if (term.equals("4")) {
-            term = "autumn";
-        } else if (term.equals("1")) {
-            term = "winter";
-        } else if (term.equals("2")) {
-            term = "spring";
-        } else if (term.equals("3")) {
-            term = "summer";
-        }
-
-        logger.info(String.format("Querying the Student Section Service for: %s - %s %s", year, term, subjectArea));
-        String responseText = studentServiceClient.getSectionInfo(year, term, subjectArea);
-
-        Document document = null;
-        try {
-            SAXReader reader = new SAXReader();
-            document = reader.read(new StringReader(responseText));
-        } catch (Exception e) {
-            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
-        }
-
-//        Map map = new HashMap();
-        DefaultXPath xpath = new DefaultXPath("//s:Section");
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("s", "http://webservices.washington.edu/student/");
-        xpath.setNamespaceURIs(namespaces);
-
-        Set<String> courseCodes = new HashSet<String>(100);
-
-        List sections = xpath.selectNodes(document);
-        for (Object node : sections) {
-            Element section = (Element) node;
-            String number = section.elementText("CourseNumber");
-            String ca = section.elementText("CurriculumAbbreviation");
-
-            //  This needs to be 10 characters wide. Curriculum code is 4-6 chars, number is 3.
-            StringBuilder cc = new StringBuilder("          ");
-            cc.replace(0, ca.length() - 1, ca);
-            cc.replace(7, 9, number);
-
-            courseCodes.add(cc.toString().trim());
-        }
-
-        return courseCodes;
-    }
 
     @Override
     public CourseOfferingAdminDisplayInfo getCourseOfferingAdminDisplay(@WebParam(name = "courseOfferingId") String courseOfferingId, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
@@ -380,80 +330,44 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     @Override
     public ActivityOfferingInfo getActivityOffering(@WebParam(name = "activityOfferingId") String activityOfferingId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
-        String[] params = activityOfferingId.split(",");
-        List<AttributeInfo> timeScheduleAbbrevations = new ArrayList<AttributeInfo>();
-        String responseText = null;
-        List<String> hrefs = new ArrayList<String>();
-        try {
-            responseText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
-        } catch (ServiceException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        Document document = null;
-        try {
-            SAXReader reader = new SAXReader();
-            document = reader.read(new StringReader(responseText));
-        } catch (Exception e) {
-            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
-        }
 
-        DefaultXPath xpath = new DefaultXPath("//s:Sections");
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("s", "http://webservices.washington.edu/student/");
-        xpath.setNamespaceURIs(namespaces);
-        List sections = xpath.selectNodes(document);
-        if (sections != null) {
-//            StringBuffer cc = new StringBuffer();
+        String[] params = activityOfferingId.split(",");
+
+        try {
+            String allText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
+            Document allDoc = newDocument(allText);
+
+            List<String> hrefs = new ArrayList<String>();
+
+            DefaultXPath xpath = newXPath("//s:Sections/s:Section/s:Href");
+            List sections = xpath.selectNodes(allDoc);
             for (Object node : sections) {
                 Element element = (Element) node;
-                List<?> sectionlist = new ArrayList<Object>();
-                sectionlist = element.elements("Section");
-                for (Object section : sectionlist) {
-                    Element secElement = (Element) section;
-                    hrefs.add(secElement.elementText("Href"));
-                }
-
+                String href = element.getText();
+                hrefs.add(href);
             }
-        }
-
-        if (hrefs.size() > 0) {
 
             for (String href : hrefs) {
                 href = href.replace("/student", "").trim();
-                try {
-                    responseText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
-                } catch (ServiceException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                Document document2 = null;
-                try {
-                    SAXReader reader = new SAXReader();
-                    document2 = reader.read(new StringReader(responseText));
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
-                }
-                DefaultXPath xpath2 = new DefaultXPath("//s:Curriculum");
-                Map<String, String> namespaces2 = new HashMap<String, String>();
-                namespaces2.put("s", "http://webservices.washington.edu/student/");
-                xpath2.setNamespaceURIs(namespaces2);
-                List curriculum = xpath2.selectNodes(document2);
-                if (curriculum != null) {
-//                    StringBuffer cc = new StringBuffer();
-                    for (Object node : curriculum) {
-                        Element element = (Element) node;
-                        AttributeInfo attributeInfo = new AttributeInfo();
-                        attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
-                        attributeInfo.setValue(element.elementText("TimeScheduleLinkAbbreviation"));
-                        timeScheduleAbbrevations.add(attributeInfo);
-                    }
-                }
+                String hrefText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
+                Document hrefDoc = newDocument(hrefText);
+                DefaultXPath xpath2 = newXPath("//s:Curriculum");
+                List curriculum = xpath2.selectNodes(hrefDoc);
+                for (Object node : curriculum) {
+                    Element element = (Element) node;
 
+                    AttributeInfo attributeInfo = new AttributeInfo();
+                    attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
+                    String abbrev = element.elementText("TimeScheduleLinkAbbreviation");
+                    attributeInfo.setValue(abbrev);
+
+                    activityOfferingInfo.getAttributes().add(attributeInfo);
+                }
             }
+        } catch (Exception e) {
+            logger.error(e);
         }
 
-        if (timeScheduleAbbrevations.size() > 0) {
-            activityOfferingInfo.setAttributes(timeScheduleAbbrevations);
-        }
         return activityOfferingInfo;
 
     }
@@ -695,11 +609,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         } catch (Exception e) {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
         }
-//        Map map = new HashMap();
-        DefaultXPath xpath = new DefaultXPath("//s:Section");
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("s", "http://webservices.washington.edu/student/");
-        xpath.setNamespaceURIs(namespaces);
+
+        DefaultXPath xpath = newXPath("//s:Section");
 
         List sections = xpath.selectNodes(document);
         //  From the sections last offered for the course is figured out
@@ -792,35 +703,16 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         throw new RuntimeException("Not implemented");
     }
 
-    String[] quarters = {"winter", "spring", "summer", "autumn"};
-
     @Override
     public List<CourseOfferingInfo> getCourseOfferingsByCourseAndTerm(@WebParam(name = "courseId") String courseId, @WebParam(name = "termId") String termId, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
 
-        List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
-
-        String year = termId.substring(13, 17);
-        char c = termId.charAt(termId.length() - 1);
-        String quarter;
-        switch (c) {
-            case '1':
-                quarter = "winter";
-                break;
-            case '2':
-                quarter = "spring";
-                break;
-            case '3':
-                quarter = "summer";
-                break;
-            case '4':
-            default:
-                quarter = "autumn";
-                break;
-        }
-
-
         try {
+            List<CourseOfferingInfo> list = new ArrayList<CourseOfferingInfo>();
+            YearTerm yt = AtpHelper.atpToYearTerm(termId);
+            String year = yt.getYearAsString();
+            String quarter = yt.getTermAsID();
+
             CourseService courseService = getCourseService();
             CourseInfo courseInfo = courseService.getCourse(courseId);
             String curric = courseInfo.getSubjectArea().trim();
@@ -828,17 +720,9 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
             String xml = studentServiceClient.getSections(year, quarter, curric, num);
 
-            Map<String, String> namespaces = new HashMap<String, String>();
-            namespaces.put("s", "http://webservices.washington.edu/student/");
+            DefaultXPath sectionPath = newXPath("/s:SearchResults/s:Sections/s:Section");
 
-            DefaultXPath sectionPath = new DefaultXPath("/s:SearchResults/s:Sections/s:Section");
-            sectionPath.setNamespaceURIs(namespaces);
-
-            DefaultXPath idPath = new DefaultXPath("/s:SectionID");
-            idPath.setNamespaceURIs(namespaces);
-
-            SAXReader reader = new SAXReader();
-            Document doc = reader.read(new StringReader(xml));
+            Document doc = newDocument(xml);
 
             List sections = sectionPath.selectNodes(doc);
             for (Object object : sections) {
@@ -856,13 +740,10 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 }
 
 
-                DefaultXPath secondaryPath = new DefaultXPath("/s:Section/s:PrimarySection");
-                secondaryPath.setNamespaceURIs(namespaces);
-                DefaultXPath secondarySectionPath = new DefaultXPath("/s:Section");
-                secondarySectionPath.setNamespaceURIs(namespaces);
+                DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
+                DefaultXPath secondarySectionPath = newXPath("/s:Section");
 
-                SAXReader secondaryReader = new SAXReader();
-                Document secondaryDoc = secondaryReader.read(new StringReader(secondaryXML));
+                Document secondaryDoc = newDocument(secondaryXML);
 
 
                 Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
@@ -881,8 +762,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.setCourseId(courseID);
 
                     {
-                        DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
-                        instructorPath.setNamespaceURIs(namespaces);
+                        DefaultXPath instructorPath = newXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
                         List instructors = instructorPath.selectNodes(secondaryDoc);
 
                         for (Object gundar : instructors) {
@@ -948,15 +828,20 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     list.add(info);
                 }
             }
+            return list;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw new OperationFailedException(e.getMessage());
         }
-
-        return list;
     }
 
+    /* 
+     * Joins an array of stings using a delimiter.
+     *  
+     * eg join( "," "a", "b", "c" ) => "a,b,c"
+     * 
+     */
     String join(String delim, String... list) {
         StringBuilder sb = new StringBuilder();
         boolean second = false;
@@ -983,18 +868,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String num = list[3];
             String sectionID = list[4];
 
-            Map<String, String> namespaces = new HashMap<String, String>();
-            namespaces.put("s", "http://webservices.washington.edu/student/");
-
             List<String> sectionList = new ArrayList<String>();
             sectionList.add(sectionID);
             {
                 try {
                     String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
-                    DefaultXPath sectionListPath = new DefaultXPath("//s:LinkedSection/s:Section");
-                    sectionListPath.setNamespaceURIs(namespaces);
-                    SAXReader secondaryReader = new SAXReader();
-                    Document doc = secondaryReader.read(new StringReader(xml));
+                    DefaultXPath sectionListPath = newXPath("//s:LinkedSection/s:Section");
+                    Document doc = newDocument(xml);
                     List sections = sectionListPath.selectNodes(doc);
                     for (Object node : sections) {
                         Element section = (Element) node;
@@ -1020,14 +900,11 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 }
 
 
-                SAXReader secondaryReader = new SAXReader();
-                Document doc = secondaryReader.read(new StringReader(xml));
+                Document doc = newDocument(xml);
 
 
-                DefaultXPath sectionPath = new DefaultXPath("/s:Section");
-                sectionPath.setNamespaceURIs(namespaces);
-                DefaultXPath coursePath = new DefaultXPath("/s:Section/s:Course");
-                coursePath.setNamespaceURIs(namespaces);
+                DefaultXPath sectionPath = newXPath("/s:Section");
+                DefaultXPath coursePath = newXPath("/s:Section/s:Course");
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
                 String typeName = sectionNode.elementText("SectionType");
@@ -1044,8 +921,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     scheduleDisplay.setScheduleComponentDisplays(new ArrayList<ScheduleComponentDisplayInfo>());
                     info.setScheduleDisplay(scheduleDisplay);
 
-                    DefaultXPath meetingPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting");
-                    meetingPath.setNamespaceURIs(namespaces);
+                    DefaultXPath meetingPath = newXPath("/s:Section/s:Meetings/s:Meeting");
 
                     List meetings = meetingPath.selectNodes(doc);
                     for (Object obj : meetings) {
@@ -1064,14 +940,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                         boolean tbaFlag = Boolean.parseBoolean(tba);
                         if (!tbaFlag) {
 
-                            DefaultXPath dayNamePath = new DefaultXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
-                            dayNamePath.setNamespaceURIs(namespaces);
+                            DefaultXPath dayNamePath = newXPath("s:DaysOfWeek/s:Days/s:Day/s:Name");
 
                             List dayNameNodes = dayNamePath.selectNodes(meetingNode);
                             for (Object node : dayNameNodes) {
                                 Element dayNameNode = (Element) node;
                                 String day = dayNameNode.getTextTrim();
-                                int weekday = daylist.indexOf(day);
+                                int weekday = DAY_LIST.indexOf(day);
                                 if (weekday != -1) {
                                     timeSlot.getWeekdays().add(weekday);
                                 }
@@ -1119,8 +994,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                         /*Instructor Details*/
                         {
-                            DefaultXPath instructorPath = new DefaultXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors");
-                            instructorPath.setNamespaceURIs(namespaces);
+                            DefaultXPath instructorPath = newXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors");
                             List instructors = instructorPath.selectNodes(doc);
                             for (Object instObj : instructors) {
                                 Element instructorNode = (Element) instObj;
