@@ -97,6 +97,30 @@ public class AtpHelper {
         return currentTerm.getId();
     }
 
+    /**
+     * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
+     *
+     * @return The ID of the last scheduled ATP.
+     * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
+     */
+    public static String getLastScheduledAtpId() {
+        //   The first arg here is "usageKey" which isn't used.
+        List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
+        try {
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Query to Academic Calendar Service failed.", e);
+            /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
+            scheduledTerms=populateAtpIdFromCalender();
+        }
+        //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
+        //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
+        //  is the Right thing to do.
+        TermInfo currentTerm = scheduledTerms.get( scheduledTerms.size() - 1 );
+        return currentTerm.getId();
+    }
+
+
 
     public static List<TermInfo> populateAtpIdFromCalender() {
 
