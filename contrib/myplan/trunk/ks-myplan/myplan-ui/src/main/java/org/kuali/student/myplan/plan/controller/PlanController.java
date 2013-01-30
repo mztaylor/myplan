@@ -735,7 +735,7 @@ public class PlanController extends UifControllerBase {
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
-
+        
         /*  Do validations. */
         //  Plan Size exceeded.
         boolean hasCapacity = false;
@@ -1494,12 +1494,13 @@ public class PlanController extends UifControllerBase {
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+            // event for aler Icon
+            List<String> publishedTerms=AtpHelper.getPublishedTerms();
+            params.put("showAlert",String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0),courseDetails.getCode())));
+            params.put("termName",AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
+            params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
         }
-        // event for aler Icon
-        List<String> publishedTerms=AtpHelper.getPublishedTerms();
-        params.put("showAlert",String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0),courseDetails.getCode())));
-        params.put("termName",AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
-        params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
+
 
         //  Create Javascript events.
         String courseDetailsAsJson;
