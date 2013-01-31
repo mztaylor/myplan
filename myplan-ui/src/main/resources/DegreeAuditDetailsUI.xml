@@ -471,7 +471,7 @@
     <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
-        <property name="onClickScript" value="setPendingAudit(2); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
+        <property name="onClickScript" value="setPendingAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
         <property name="onDocumentReadyScript" value="
             if (jQuery.cookie('myplan_audit_running')) {
                 jQuery('button#degree_audit_run').attr('disabled', true);
@@ -499,7 +499,6 @@
                 </bean>
             </list>
         </property>
-
     </bean>
 
 
