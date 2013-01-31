@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class PlannedTermsHelperBase {
     /*Count of no of future years to be shown the quarter view */
-    private static int futureTermsCount = 6;
+    private static int futureTermsCount = 0;
 
     private static final Logger logger = Logger.getLogger(PlannedTermsHelperBase.class);
 
@@ -30,9 +30,9 @@ public class PlannedTermsHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, boolean isServiceUp) {
+    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, boolean isServiceUp, int futureTerms, boolean fullPlanView) {
 
-
+        futureTermsCount = futureTerms;
         String[] focusQuarterYear = new String[2];
         String globalCurrentAtpId = null;
         if (isServiceUp) {
@@ -132,7 +132,12 @@ public class PlannedTermsHelperBase {
             } else {
                 minTerm = globalCurrentAtpId;
             }
-            String maxTerm = globalCurrentAtpId;
+            String maxTerm = null;
+            if (plannedTerms.size() > 0 && fullPlanView) {
+                maxTerm = plannedTerms.get(plannedTerms.size() - 1).getAtpId();
+            } else {
+                maxTerm = globalCurrentAtpId;
+            }
             populateMockList(minTerm, maxTerm, termsList);
             if (plannedTerms.size() > 0) {
                 for (PlannedTerm plannedTerm : plannedTerms) {

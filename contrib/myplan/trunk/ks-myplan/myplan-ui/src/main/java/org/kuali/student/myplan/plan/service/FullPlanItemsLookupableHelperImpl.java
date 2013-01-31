@@ -73,7 +73,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         }
 
 
-        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, studentCourseRecordInfos, null,isServiceStatusOK);
+        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, studentCourseRecordInfos, null,isServiceStatusOK, 1, true);
 
         List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
         int size = perfectPlannedTerms.size();
