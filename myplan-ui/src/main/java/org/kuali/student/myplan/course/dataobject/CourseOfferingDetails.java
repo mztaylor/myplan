@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class CourseOfferingDetails {
 	private String term;
-	
-    private List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
+
+    private List<ActivityOfferingItem> activityOfferingItemList;
 
     public String getTerm() {
     	return term;
@@ -24,6 +24,9 @@ public class CourseOfferingDetails {
     }
     
     public List<ActivityOfferingItem> getActivityOfferingItemList() {
+        if (activityOfferingItemList == null) {
+            activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
+        }
         return activityOfferingItemList;
     }
 

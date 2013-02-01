@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  Course Details
+ * Course Details
  */
 public class CourseSummaryDetails {
 
@@ -59,7 +59,7 @@ public class CourseSummaryDetails {
     }
 
     public String getCourseDescription() {
-            return courseDescription;
+        return courseDescription;
     }
 
     public void setCourseDescription(String courseDescription) {
@@ -67,6 +67,9 @@ public class CourseSummaryDetails {
     }
 
     public List<String> getTermsOffered() {
+        if (termsOffered == null) {
+            termsOffered = new ArrayList<String>();
+        }
         return termsOffered;
     }
 

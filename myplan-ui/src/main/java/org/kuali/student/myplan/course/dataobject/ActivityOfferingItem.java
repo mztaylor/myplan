@@ -42,10 +42,10 @@ public class ActivityOfferingItem {
     private String gradingOption;
 
     private boolean primary = false;
-    
-    private List<ActivityOfferingItem> secondaryList = new ArrayList<ActivityOfferingItem>();
 
-     public String getCode() {
+    private List<ActivityOfferingItem> secondaryList;
+
+    public String getCode() {
         return code;
     }
 
@@ -240,7 +240,10 @@ public class ActivityOfferingItem {
     }
 
     public List<ActivityOfferingItem> getSecondaryList() {
-    	return secondaryList;
+        if (secondaryList == null) {
+            secondaryList = new ArrayList<ActivityOfferingItem>();
+        }
+        return secondaryList;
     }
     
     public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {

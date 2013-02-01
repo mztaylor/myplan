@@ -399,7 +399,7 @@ public class AtpHelper {
     public static List<String> TERM_ID_LIST = Arrays.asList("winter", "spring", "summer", "autumn");
     public static String[] TERM_LABELS = {"Winter", "Spring", "Summer", "Autumn"};
 
-    public static class YearTerm {
+    public static class YearTerm implements Comparable<YearTerm> {
         private final int year;
         private final int term;
 
@@ -427,6 +427,32 @@ public class AtpHelper {
         public String toATP() {
             return String.format(ATP_FORMAT, year, term);
         }
+        
+		@Override
+		public int compareTo( YearTerm that ) {
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+			if( this == that ) return EQUAL;
+			int a = this.year * 10 + this.term;
+			int b = that.year * 10 + that.term;
+			if( a < b ) return BEFORE;
+			if( a > b ) return AFTER;
+			return EQUAL;
+		}
+		
+		@Override
+		public boolean equals( Object obj ) {
+			if( this == obj ) return true;
+			if( obj instanceof YearTerm ) {
+				YearTerm that = (YearTerm) obj;
+ 				return this.year == that.year && this.term == that.term;
+			}
+			return false;
+		}
+		public String toString() {
+			return "year: " + year + " term: " + term + " (" + getTermAsID() +")";
+		}
 
     }
 
@@ -453,6 +479,7 @@ public class AtpHelper {
         throw new IllegalArgumentException(atp);
     }
 
+    public static final Pattern TERM_REGEX = Pattern.compile("(winter|spring|summer|autumn)\\s+([0-9]{4})");
     /**
      * Converts UW quarter string into a YearTerm object.
      *
@@ -463,11 +490,10 @@ public class AtpHelper {
      */
     public static YearTerm termToYearTerm(String text) {
         if (text == null) {
-            throw new NullPointerException("quarter");
+            throw new NullPointerException("text");
         }
         text = text.toLowerCase();
 
-        Pattern TERM_REGEX = Pattern.compile("(winter|spring|summer|autumn)\\s+([0-9]{4})");
         Matcher m = TERM_REGEX.matcher(text);
         if (m.find()) {
             String temp = m.group(1);
@@ -476,6 +502,32 @@ public class AtpHelper {
             return new YearTerm(year, term);
         }
         throw new IllegalArgumentException(text);
+    }
+
+    /**
+     * Converts UW quarter string into a YearTerm object.
+     *
+     * eg "Winter","2012" becomes year = 2012, term = 1
+     *
+     * @param text
+     * @return
+     */
+    public static YearTerm quarterYearToYearTerm(String quarter, String year) {
+        if (quarter == null) {
+            throw new NullPointerException("quarter");
+        }
+        if (year == null) {
+            throw new NullPointerException("year");
+        }
+        quarter = quarter.toLowerCase();
+
+        int term = TERM_ID_LIST.indexOf(quarter);
+        if( term != -1 ) {
+        	term = term + 1;
+        	int y = Integer.parseInt(year);
+        	return new YearTerm(y, term);
+        }
+        throw new IllegalArgumentException( quarter + " " + year );
     }
 
     public static void main(String[] args) {
