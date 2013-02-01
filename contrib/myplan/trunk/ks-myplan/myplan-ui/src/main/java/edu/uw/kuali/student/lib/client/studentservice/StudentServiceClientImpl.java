@@ -205,6 +205,8 @@ public class StudentServiceClientImpl
     }
 
     /**
+     * https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2003&quarter=&curriculum_abbreviation=ECON&course_number=299
+     * 
      * @param year
      * @param abbrev
      * @param num

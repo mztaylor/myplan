@@ -96,8 +96,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private transient AcademicRecordService academicRecordService;
 
-    private transient CourseInfo courseInfo;
-
     private transient boolean isAcademicCalendarServiceUp = true;
 
     private transient boolean isAcademicRecordServiceUp = true;
@@ -135,10 +133,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private HashMap<String, Map<String, String>> hashMap;
 
     public HashMap<String, Map<String, String>> getHashMap() {
-        if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, Map<String, String>>();
+        if (hashMap == null) {
+            hashMap = new HashMap<String, Map<String, String>>();
         }
-        return this.hashMap;
+        return hashMap;
     }
 
     public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
@@ -179,14 +177,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         this.courseLinkBuilder = courseLinkBuilder;
     }
 
-    public CourseInfo getCourseInfo() {
-        return courseInfo;
-    }
-
-    public void setCourseInfo(CourseInfo courseInfo) {
-        this.courseInfo = courseInfo;
-    }
-
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
         String studentId = UserSessionHelper.getStudentId();
@@ -207,65 +197,62 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         boolean academicRecordServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString());
         if (!courseOfferingServiceUp || !academicCalendarServiceUp || !academicRecordServiceUp) {
             AtpHelper.addServiceError("curriculumTitle");
-            this.setAcademicCalendarServiceUp(academicCalendarServiceUp);
-            this.setAcademicRecordServiceUp(academicRecordServiceUp);
-            this.setCourseOfferingServiceUp(courseOfferingServiceUp);
+            setAcademicCalendarServiceUp(academicCalendarServiceUp);
+            setAcademicRecordServiceUp(academicRecordServiceUp);
+            setCourseOfferingServiceUp(courseOfferingServiceUp);
         }
-        CourseDetails courseDetails = new CourseDetails();
-        courseDetails.setSummaryOnly(true);
 
 
-        CourseInfo course = getCourseInfo();
         try {
+            CourseDetails courseDetails = new CourseDetails();
+            courseDetails.setSummaryOnly(true);
+
             /*Get version verified course*/
-            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
+            String verifiedCourseId = getVerifiedCourseId(courseId);
+            CourseInfo course = getCourseService().getCourse(verifiedCourseId);
+            courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
+            courseDetails.setCourseId(course.getId());
+            courseDetails.setCode(course.getCode());
+
+            if (course.getDescr() != null) {
+                String formatted = course.getDescr().getFormatted();
+
+                // Split course description "AAA Prerequisite: BBB Offering: CCC" and pull out "AAA" and "BBB"
+                // Guarantee result arrays will always have at least one element
+                if (formatted == null) formatted = "";
+                String[] aaa = formatted.split("Offered:");
+                String[] bbb = aaa[0].split("Prerequisite:");
+
+                String descr = bbb[0].trim();
+                descr = getCourseLinkBuilder().makeLinks(descr);
+                courseDetails.setCourseDescription(descr);
+
+                if (bbb.length > 1) {
+                    String prereq = bbb[1].trim();
+                    prereq = prereq.substring(0, 1).toUpperCase().concat(prereq.substring(1));
+                    prereq = getCourseLinkBuilder().makeLinks(prereq);
+                    courseDetails.getRequisites().add(prereq);
+                }
+            }
+
+            courseDetails.setCredit(CreditsFormatter.formatCredits(course));
+            courseDetails.setCourseTitle(course.getCourseTitle());
+
+            // Terms Offered
+            Map<String, String> atpMap = initializeAtpTypesCache();
+            for (String term : course.getTermsOffered()) {
+                String atp = atpMap.get(term);
+                courseDetails.getTermsOffered().add(atp);
+            }
+
+            return courseDetails;
+
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
             throw new RuntimeException("Query failed.", e);
         }
-
-        courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
-        courseDetails.setCourseId(course.getId());
-        courseDetails.setCode(course.getCode());
-        String str = null;
-        if (course.getDescr() != null) {
-            str = course.getDescr().getFormatted();
-        }
-        if (str != null && str.contains("Offered:")) {
-            str = str.substring(0, str.indexOf("Offered"));
-        }
-        List<String> prerequisites = new ArrayList<String>();
-
-        if (str != null && str.contains("Prerequisite:")) {
-            String req = (getCourseLinkBuilder().makeLinks(str.substring(str.indexOf("Prerequisite:"), str.length()), courseLinkTemplateStyle));
-            req = req.substring(req.indexOf("Prerequisite:"), req.length());
-            req = req.replace("Prerequisite:", "").trim();
-            req = req.substring(0, 1).toUpperCase().concat(req.substring(1, req.length()));
-            prerequisites.add(req);
-
-            str = str.substring(0, str.indexOf("Prerequisite:"));
-        }
-        if (str != null) {
-            str = getCourseLinkBuilder().makeLinks(str);
-        }
-
-        courseDetails.setRequisites(prerequisites);
-        courseDetails.setCourseDescription(str);
-        courseDetails.setCredit(CreditsFormatter.formatCredits(course));
-        courseDetails.setCourseTitle(course.getCourseTitle());
-
-        // Terms Offered
-        initializeAtpTypesCache();
-        List<String> termsOffered = new ArrayList<String>();
-        for (String term : course.getTermsOffered()) {
-            termsOffered.add(atpCache.get(term));
-        }
-        courseDetails.setTermsOffered(termsOffered);
-
-        return courseDetails;
     }
-
 
     public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
@@ -285,41 +272,32 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         List<OrgInfo> orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
         getCampusLocationCache().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
 
-        List<String> campusLocations = new ArrayList<String>();
-
         for (String campus : getCampusLocationsOfferedIn(courseId)) {
-
             for (OrgInfo orgInfo : orgInfoList) {
                 if (campus.equalsIgnoreCase(orgInfo.getId())) {
-                    campusLocations.add(orgInfo.getLongName());
+                    String longName = orgInfo.getLongName();
+                    courseDetails.getCampusLocations().add(longName);
                     break;
                 }
             }
         }
 
-        courseDetails.setCampusLocations(campusLocations);
-
-        // Get only the abbre_val of gen ed requirements
-        List<String> abbrGenEdReqs = new ArrayList<String>();
         Map<String, String> abbrAttributes = course.getAttributes();
         for (Map.Entry<String, String> entry : abbrAttributes.entrySet()) {
-            if ("Y".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
-                abbrGenEdReqs.add(EnumerationHelper.getEnumAbbrValForCode(entry.getKey()));
-            }
-        }
-        courseDetails.setAbbrGenEdRequirements(abbrGenEdReqs);
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if ("Y".equals(value) && key.startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
 
-        //  Get general education requirements.
-        List<String> genEdReqs = new ArrayList<String>();
-        Map<String, String> attributes = course.getAttributes();
-        for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            if ("Y".equals(entry.getValue()) && entry.getKey().startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
-                EnumeratedValueInfo e = EnumerationHelper.getGenEdReqEnumInfo(entry.getKey());
-                String genEdText = String.format("%s (%s)", e.getValue(), e.getAbbrevValue());
-                genEdReqs.add(genEdText);
+                // Get only the abbre_val of gen ed requirements
+                String abbrev = EnumerationHelper.getEnumAbbrValForCode(key);
+                courseDetails.getAbbrGenEdRequirements().add(abbrev);
+
+                //  Get general education requirements.
+                EnumeratedValueInfo info = EnumerationHelper.getGenEdReqEnumInfo(key);
+                String genEdText = String.format("%s (%s)", info.getValue(), info.getAbbrevValue());
+                courseDetails.getGenEdRequirements().add(genEdText);
             }
         }
-        courseDetails.setGenEdRequirements(genEdReqs);
 
         /*
           Use the course offering service to see if the course is being offered in the selected term.
@@ -778,20 +756,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * Initializes ATP term cache.
      * AtpSeasonalTypes rarely change, so fetch them all and store them in a Map.
      */
-    private synchronized void initializeAtpTypesCache() {
-
-        if (null == atpCache || atpCache.isEmpty()) {
-            atpCache = new HashMap<String, String>();
-            List<AtpTypeInfo> atpTypeInfos;
+    private synchronized Map<String, String> initializeAtpTypesCache() {
+        if (null == atpCache) {
             try {
-                atpTypeInfos = getAtpService().getAtpTypes();
+                List<AtpTypeInfo> atpTypeInfos = getAtpService().getAtpTypes();
+                atpCache = new HashMap<String, String>();
+                for (AtpTypeInfo ti : atpTypeInfos) {
+                    atpCache.put(ti.getId(), ti.getName().substring(0, 1).toUpperCase() + ti.getName().substring(1));
+                }
             } catch (OperationFailedException e) {
                 logger.error("ATP types lookup failed.", e);
-                return;
-            }
-            for (AtpTypeInfo ti : atpTypeInfos) {
-                atpCache.put(ti.getId(), ti.getName().substring(0, 1).toUpperCase() + ti.getName().substring(1));
             }
         }
+        return atpCache;
     }
 }
