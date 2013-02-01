@@ -2,6 +2,7 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -58,7 +59,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     public UwCourseOfferingServiceImpl() {
     }
 
-    private Document newDocument(String xml) throws DocumentException {
+    private static Document newDocument(String xml) throws DocumentException {
         SAXReader sax = new SAXReader();
         StringReader sr = new StringReader(xml);
         Document doc = sax.read(sr);
@@ -70,7 +71,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     }};
 
 
-    public DefaultXPath newXPath(String expr) {
+    public static DefaultXPath newXPath(String expr) {
         DefaultXPath path = new DefaultXPath(expr);
         path.setNamespaceURIs(NAMESPACES);
         return path;
@@ -579,93 +580,46 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     @Override
     public List<CourseOfferingInfo> searchForCourseOfferings(@WebParam(name = "criteria") QueryByCriteria criteria, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
-        CourseOfferingInfo courseOfferingInfo = new CourseOfferingInfo();
         // The right strategy would be using the multiple equal predicates joined using an and
         Predicate p = criteria.getPredicate();
         String str = p.toString();
-        String responseText = null;
         str = str.substring(CRITERIA_LENGTH, str.length() - 1);
-        String[] strings = null;
-        String year = null;
-        String curriculum = null;
-        String courseCode = null;
-        strings = str.split(",");
+        String[] strings = str.split(",");
         if (strings != null && strings.length == 3) {
-            year = strings[0].trim();
-            curriculum = strings[1].trim();
-            courseCode = strings[2].trim();
-        }
+            String year = strings[0].trim();
+            String curriculum = strings[1].trim();
+            String courseCode = strings[2].trim();
 
-        try {
-            responseText = studentServiceClient.getSections(year, curriculum, courseCode);
-        } catch (Exception e) {
-            logger.error(e);
-        }
-        Document document = null;
-        try {
-            SAXReader reader = new SAXReader();
-            document = reader.read(new StringReader(responseText));
-        } catch (Exception e) {
-            throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
-        }
-
-        DefaultXPath xpath = newXPath("//s:Section");
-
-        List sections = xpath.selectNodes(document);
-        //  From the sections last offered for the course is figured out
-        if (sections != null && sections.size() > 0) {
-            StringBuffer cc = new StringBuffer();
-            int maxQ = 0;
-            String[] quarters = new String[sections.size()];
-            Integer[] resultYear = new Integer[sections.size()];
-            //Logical implementation to get the last offered year
-            int actualYear = -1;
-            String actualQuarter = null;
-            int resultQuarter = 0;
-            int count = 0;
-            for (Object node : sections) {
-
-                Element section = (Element) node;
-
-                resultYear[count] = Integer.parseInt(section.elementText("Year"));
-                if (resultYear[count] > actualYear) {
-                    actualYear = resultYear[count];
+            try {
+                String responseText = studentServiceClient.getSections(year, curriculum, courseCode);
+                Document document = newDocument(responseText);
+                DefaultXPath sectionPath = newXPath("/s:SearchResults/s:Sections/s:Section");
+                List<YearTerm> yearTermList = new ArrayList<YearTerm>();
+                List<Object> nodes = sectionPath.selectNodes(document);
+                for (Object a : nodes) {
+                    Element e = (Element) a;
+                    String q = e.elementText("Quarter");
+                    String y = e.elementText("Year");
+                    YearTerm yt = AtpHelper.quarterYearToYearTerm(q, y);
+                    yearTermList.add(yt);
                 }
-                quarters[count] = section.elementText("Quarter");
-                count++;
-            }
-            //Logical implementation to get the last offered quarter
-            for (int i = 0; i < quarters.length; i++) {
-                String tempQuarter = quarters[i];
-                terms fd = terms.valueOf(quarters[i]);
-                switch (fd) {
-                    case autumn:
-                        resultQuarter = 1;
-                        break;
-                    case winter:
-                        resultQuarter = 2;
-                        break;
-                    case spring:
-                        resultQuarter = 3;
-                        break;
-                    case summer:
-                        resultQuarter = 4;
-                        break;
+                if (!yearTermList.isEmpty()) {
+                    Collections.sort(yearTermList, Collections.reverseOrder());
+                    YearTerm last = yearTermList.get(0);
+                    String termId = last.getTermAsID() + " " + last.getYearAsString();
+                    CourseOfferingInfo courseOfferingInfo = new CourseOfferingInfo();
+                    courseOfferingInfo.setTermId(termId);
+                    List<CourseOfferingInfo> courseOfferingInfos = new ArrayList<CourseOfferingInfo>();
+                    courseOfferingInfos.add(courseOfferingInfo);
+                    return courseOfferingInfos;
                 }
-                if (resultYear[i].equals(actualYear) && resultQuarter > maxQ) {
-                    maxQ = resultQuarter;
-                    actualQuarter = tempQuarter;
+            } catch (Exception e) {
+                throw new OperationFailedException("Call to the student service failed.", e);
+            }
 
-                }
-            }
-            if (actualQuarter != null && actualYear != -1) {
-                cc = cc.append(actualQuarter).append(" ").append(actualYear);
-                courseOfferingInfo.setTermId(cc.toString().trim());
-                courseOfferingInfos.add(courseOfferingInfo);
-            }
         }
-        return courseOfferingInfos;
+
+        return null;
     }
 
     @Override
@@ -721,6 +675,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String xml = studentServiceClient.getSections(year, quarter, curric, num);
 
             DefaultXPath sectionPath = newXPath("/s:SearchResults/s:Sections/s:Section");
+            DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
+            DefaultXPath secondarySectionPath = newXPath("/s:Section");
 
             Document doc = newDocument(xml);
 
@@ -729,30 +685,22 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 Element primarySectionNode = (Element) object;
                 String primarySectionID = primarySectionNode.elementText("SectionID");
 
-                String secondaryXML;
-                try {
-                    // Skip this section ID if it fails
-                    secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
-                } catch (ServiceException e) {
 
+                Document secondaryDoc;
+                try {
+                    String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
+                    secondaryDoc = newDocument(secondaryXML);
+                } catch (ServiceException e) {
                     logger.warn(e);
+                    // Skip this section ID if it fails
                     continue;
                 }
-
-
-                DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
-                DefaultXPath secondarySectionPath = newXPath("/s:Section");
-
-                Document secondaryDoc = newDocument(secondaryXML);
-
 
                 Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
                 Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
 
                 String primaryID = dupeSectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
-
-
                     CourseOfferingInfo info = new CourseOfferingInfo();
                     info.setSubjectArea(curric);
                     info.setCourseCode(num);
@@ -930,12 +878,12 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                         ScheduleComponentDisplayInfo scdi = new ScheduleComponentDisplayInfo();
                         scdi.setTimeSlots(new ArrayList<TimeSlotInfo>());
                         scheduleDisplay.getScheduleComponentDisplays().add(scdi);
-                        
+
 
                         TimeSlotInfo timeSlot = new TimeSlotInfo();
                         scdi.getTimeSlots().add(timeSlot);
                         timeSlot.setWeekdays(new ArrayList<Integer>());
-                        
+
                         String tba = meetingNode.elementText("DaysOfWeekToBeArranged");
                         boolean tbaFlag = Boolean.parseBoolean(tba);
                         if (!tbaFlag) {
@@ -951,44 +899,44 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                                     timeSlot.getWeekdays().add(weekday);
                                 }
                             }
-                        
-	                        {
-	                            String time = meetingNode.elementText("StartTime");
-	                            long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
-	                            TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-	                            timeInfo.setMilliSeconds(millis);
-	                            timeSlot.setStartTime(timeInfo);
-	                        }
-	
-	                        {
-	                            String time = meetingNode.elementText("EndTime");
-	                            long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
-	                            TimeOfDayInfo timeInfo = new TimeOfDayInfo();
-	                            timeInfo.setMilliSeconds(millis);
-	                            timeSlot.setEndTime(timeInfo);
-	                        }
+
+                            {
+                                String time = meetingNode.elementText("StartTime");
+                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+                                timeInfo.setMilliSeconds(millis);
+                                timeSlot.setStartTime(timeInfo);
+                            }
+
+                            {
+                                String time = meetingNode.elementText("EndTime");
+                                long millis = TimeStringMillisConverter.militaryTimeToMillis(time);
+                                TimeOfDayInfo timeInfo = new TimeOfDayInfo();
+                                timeInfo.setMilliSeconds(millis);
+                                timeSlot.setEndTime(timeInfo);
+                            }
                         }
 
                         {
                             String buildingTBA = meetingNode.elementText("BuildingToBeArranged");
                             boolean buildingTBAFlag = Boolean.parseBoolean(buildingTBA);
                             if (!buildingTBAFlag) {
-                            	BuildingInfo buildingInfo = new BuildingInfo();
-                            	buildingInfo.setCampusKey( campus );
-                            	String building = meetingNode.elementText("Building");
-                            	buildingInfo.setBuildingCode(building);
-                            	scdi.setBuilding(buildingInfo);
+                                BuildingInfo buildingInfo = new BuildingInfo();
+                                buildingInfo.setCampusKey(campus);
+                                String building = meetingNode.elementText("Building");
+                                buildingInfo.setBuildingCode(building);
+                                scdi.setBuilding(buildingInfo);
                             }
-                            
+
                             String roomTBA = meetingNode.elementText("RoomToBeArranged");
                             boolean roomTBAFlag = Boolean.parseBoolean(roomTBA);
                             if (!roomTBAFlag) {
 
-                            	String roomNumber = meetingNode.elementText("RoomNumber");
-                            	RoomInfo roomInfo = new RoomInfo();
-                            	roomInfo.setRoomCode(roomNumber);
+                                String roomNumber = meetingNode.elementText("RoomNumber");
+                                RoomInfo roomInfo = new RoomInfo();
+                                roomInfo.setRoomCode(roomNumber);
 //                            	roomInfo.setBuildingId(building);
-                            	scdi.setRoom(roomInfo);
+                                scdi.setRoom(roomInfo);
                             }
                         }
 
@@ -1017,7 +965,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.getAttributes().add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
                     info.getAttributes().add(new AttributeInfo("DistanceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("DistanceLearning")))));
                     info.getAttributes().add(new AttributeInfo("JointSections", String.valueOf(sectionNode.element("JointSections").content().size() > 0)));
-                    info.getAttributes().add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length()>0))));
+                    info.getAttributes().add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length() > 0))));
                 }
 
 
