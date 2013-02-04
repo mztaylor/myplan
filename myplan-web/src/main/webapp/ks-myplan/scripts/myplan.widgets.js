@@ -1483,3 +1483,21 @@ function expandDataTableDetail(actionComponent, tableId, useImages, expandText, 
         }
     }
 }
+
+function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
+    var subcollection = jQuery(actionComponent).closest('.uif-group.uif-collectionItem').children('.uif-boxLayout').children('.uif-subCollection');
+
+    if (subcollection.is(":visible")) {
+        subcollection.slideUp(250, function() {
+            if (expandText) {
+                jQuery(actionComponent).text(expandText);
+            }
+        });
+    } else {
+        subcollection.slideDown(250, function() {
+            if (collapseText) {
+                jQuery(actionComponent).text(collapseText);
+            }
+        });
+    }
+}
