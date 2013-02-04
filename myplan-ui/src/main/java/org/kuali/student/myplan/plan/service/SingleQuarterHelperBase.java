@@ -2,6 +2,7 @@ package org.kuali.student.myplan.plan.service;
 
 import org.apache.log4j.Logger;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
@@ -88,8 +89,19 @@ public class SingleQuarterHelperBase {
                     } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
                         academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                     }
+                    academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                    academicRecordDataObject.setActivityOfferingItemList(courseDetailsService.getActivityOfferingItems(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId()));
+                    List<ActivityOfferingItem> activityOfferingItemList = courseDetailsService.getActivityOfferingItems(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId(), studentInfo.getCourseCode());
+                    for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
+                        if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {
+                            List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
+                            activityOfferingItems.add(activityOfferingItem);
+                            academicRecordDataObject.setActivityOfferingItemList(activityOfferingItems);
+                            break;
+                        }
+                    }
+
+
                     academicRecordDataObjectList.add(academicRecordDataObject);
                 }
             }
