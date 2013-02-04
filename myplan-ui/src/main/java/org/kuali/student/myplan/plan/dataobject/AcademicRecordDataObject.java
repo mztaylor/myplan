@@ -19,6 +19,7 @@ public class AcademicRecordDataObject {
     private transient String courseId;
     private transient String courseTitle;
     private transient String courseCode;
+    private transient String activityCode;
     private transient String atpId;
     private transient String grade;
     private transient String credit;
@@ -103,5 +104,13 @@ public class AcademicRecordDataObject {
 
     public void setActivityOfferingItemList(List<ActivityOfferingItem> activityOfferingItemList) {
         this.activityOfferingItemList = activityOfferingItemList;
+    }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 }
