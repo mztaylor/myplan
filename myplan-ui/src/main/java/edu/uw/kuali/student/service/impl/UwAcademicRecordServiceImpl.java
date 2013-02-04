@@ -204,6 +204,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                     studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                     studentCourseRecordInfo.setTermName(termName);
                                     studentCourseRecordInfo.setPersonId(personId);
+                                    studentCourseRecordInfo.setActivityCode(section.elementText("SectionID"));
                                     if (!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())) {
                                         studentCourseRecordInfoList.add(studentCourseRecordInfo);
                                         courseIds.put(studentCourseRecordInfo.getCourseCode(), studentCourseRecordInfo.getTermName());
@@ -326,6 +327,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
                                     studentCourseRecordInfo.setCourseCode(courseCode.toString());
                                     studentCourseRecordInfo.setTermName(termName);
                                     studentCourseRecordInfo.setPersonId(personId);
+                                    studentCourseRecordInfo.setActivityCode(section.elementText("SectionID"));
 
 
                                     if (!courseIds.containsKey(studentCourseRecordInfo.getCourseCode())) {
