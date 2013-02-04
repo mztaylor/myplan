@@ -1484,8 +1484,9 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections .meetingdetails .meetingbuilding,
 .myplan-course-sections .meetingdetails .meetingroom {
     display: inline-block;
-    margin-right: 0.33em;
+    margin-right: 10px;
 }
+/*
 .myplan-course-sections .meetingdetails .meetingdays {
     width: 56px;
 }
@@ -1495,7 +1496,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections .meetingdetails .meetingroom {
     margin: 0;
 }
-/*
+
 .myplan-course-sections .meetingdetails .meetingbuilding {
     width: 40px;
 }
@@ -1895,16 +1896,29 @@ label.scheduled {
     background: none;
 }
 .myplan-quarter-detail h5 {
-    border: solid 1px #dddddd;
+    border: solid 1px #ccc;
+    border-bottom: none;
     text-transform: uppercase;
     background: #e9e9e9;
     font-weight: bold;
     line-height: 1em;
     padding: 10px 5px;
 }
+.myplan-quarter-detail .myplan-course-item {
+    border: solid 1px #ccc;
+    border-bottom: none;
+    padding: 5px;
+}
+.myplan-quarter-detail .myplan-course-sections table {
+    border-bottom: none;
+}
 .myplan-quarter-detail .dataTables_wrapper,
 .myplan-quarter-detail .dataTables_info {
     margin: 0;
+}
+.myplan-quarter-detail .myplan-credit-total {
+    padding: 10px 5px;
+    background: #ccc;
 }
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-run-audit-panel {
