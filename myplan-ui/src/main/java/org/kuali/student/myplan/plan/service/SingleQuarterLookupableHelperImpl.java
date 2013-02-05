@@ -134,7 +134,7 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
             List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
 
             for (PlanItemInfo planItem : planItemList) {
-                if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId)) {
+                if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                     PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
                     String courseID = planItem.getRefObjectId();
                     //  Only create a data object for the specified type.

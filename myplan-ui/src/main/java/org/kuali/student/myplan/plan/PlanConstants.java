@@ -17,6 +17,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
+    public static final String SECTION_TYPE = "kuali.lu.type.CourseSection";
 
     // CRUD operations positive feedback.
     public static final String SUCCESS_KEY = "myplan.text.success";
