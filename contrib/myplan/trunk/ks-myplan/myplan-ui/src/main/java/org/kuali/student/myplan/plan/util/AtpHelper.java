@@ -235,6 +235,30 @@ public class AtpHelper {
         return newAtpId.toString();
     }
 
+    /*  Returns ATP ID in format kuali.uw.atp.1991.1 for term="Winter 1991"*/
+    public static String getAtpIdFromTermYear(String termYear) {
+        String[] splitStr = termYear.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");   
+        String term = splitStr[0].trim();
+        String year = splitStr[1].trim();
+
+        int termVal = 0;
+        if (term.equalsIgnoreCase(term1)) {
+            termVal = 1;
+        }
+        if (term.equalsIgnoreCase(term2)) {
+            termVal = 2;
+        }
+        if (term.equalsIgnoreCase(term3)) {
+            termVal = 3;
+        }
+        if (term.equalsIgnoreCase(term4)) {
+            termVal = 4;
+        }
+        StringBuffer newAtpId = new StringBuffer();
+        newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(termVal);
+        return newAtpId.toString();
+    }
+
     /* Returns ATP ID as kuali.uw.atp.1991.1 for term=1 and year = 1991 */
     public static String getAtpFromNumTermAndYear(String term, String year) {
         StringBuffer newAtpId = new StringBuffer();

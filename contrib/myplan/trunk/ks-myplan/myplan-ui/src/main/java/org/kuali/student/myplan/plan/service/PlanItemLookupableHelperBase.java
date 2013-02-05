@@ -58,10 +58,12 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
                     //  If the course info lookup fails just log the error and omit the item.
                     try {
-                        if (loadSummaryInfoOnly) {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID, studentId));
-                        } else {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID, studentId));
+                        if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
+                            if (loadSummaryInfoOnly) {
+                                plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummary(courseID, studentId));
+                            } else {
+                                plannedCourseDO.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(courseID, studentId));
+                            }
                         }
                     } catch (Exception e) {
                         logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
@@ -78,6 +80,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     /**
      * Override and ignore criteria validation
+     *
      * @param form
      * @param searchCriteria
      * @return

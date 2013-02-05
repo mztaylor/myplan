@@ -583,7 +583,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
          *  Validate that the course exists.
          * TODO: Move this validation to the data dictionary.
          */
-        try {
+        /*try {
             String verifiedCourseId = null;
             SearchRequest req = new SearchRequest("myplan.course.version.id");
             req.addParam("courseId", planItemInfo.getRefObjectId());
@@ -606,7 +606,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             validationResultInfos.add(makeValidationResultInfo(e.getLocalizedMessage(),
                     "refObjectId", ValidationResult.ErrorLevel.ERROR));
         }
-
+*/
 
         //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
         //  Make sure a plan period exists if type is planned course.

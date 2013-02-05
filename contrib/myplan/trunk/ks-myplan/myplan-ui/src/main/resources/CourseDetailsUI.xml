@@ -845,7 +845,8 @@
                             {'sWidth':'277px'},
                             {'sWidth':'46px','sType':'string'},
                             {'sWidth':'117px'},
-                            {'sWidth':'81px'}
+                            {'sWidth':'81px'},
+                            {'sWidth':'21px'}
                        ]"/>
                 <entry key="oLanguage" value="{
                             'sInfo':'',
@@ -1050,16 +1051,28 @@
                         </list>
                     </property>
                 </bean>
-                <!--
-                <bean parent="Uif-ImageField" p:label="Add" p:altText="Add" p:title="Add" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add" p:title="Add" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif" p:render="@{#line.planned eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-add</value>
                             <value>fl-text-align-center</value>
                         </list>
                     </property>
+                    <property name="onClickScript" value="openPlanItemPopUp('@{dataObject.courseId}','add_section_dialog_page',{courseId:'@{dataObject.courseId}',sectionCode:'@{#line.code}',termYear:'@{#line.atpId}',pageId:'add_section_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
                 </bean>
-                -->
+                <bean parent="Uif-MessageField" p:fieldLabel.render="false" p:render="@{#line.planned eq true ? true : false}">
+                    <property name="message">
+
+                        <bean parent="Uif-Message" p:messageText="InPlan">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>fl-font-size-80</value>
+                                <value>fl-text-green</value>
+                            </list>
+                        </property>
+                        </bean>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

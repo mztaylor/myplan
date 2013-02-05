@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.DoesNotExistException;
@@ -55,6 +56,7 @@ import org.kuali.student.myplan.course.dataobject.MeetingDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -368,7 +370,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 String atp = yt.toATP();
                 CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
                 courseOfferingDetails.setTerm(term);
-                List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp);
+                List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp,courseDetails.getCode());
                 courseOfferingDetails.setActivityOfferingItemList(list);
                 courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
             }
@@ -452,12 +454,25 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-        courseOfferingDetails.setActivityOfferingItemList(getActivityOfferingItems(courseId, termId));
+        courseOfferingDetails.setActivityOfferingItemList(getActivityOfferingItems(courseId, termId,null));
         courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
         return courseDetails;
     }
 
-    public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId) {
+    public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
+        courseId = getVerifiedCourseId(courseId);
+        if(courseCode==null){
+            CourseInfo course = null;
+            try {
+                /*Get version verified course*/
+                course = getCourseService().getCourse(getVerifiedCourseId(courseId));
+            } catch (DoesNotExistException e) {
+                throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+            } catch (Exception e) {
+                throw new RuntimeException("Query failed.", e);
+            }
+            courseCode = course.getCode();
+        }
         List<ActivityOfferingItem> activityList = new ArrayList<ActivityOfferingItem>();
         try {
             CourseOfferingService cos = getCourseOfferingService();
@@ -580,6 +595,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                     secondary.setDetails("View section notes and textbook information");
 
+                    /*Added this flag to know if the activityoffering is planned/backup*/
+                    secondary.setPlanned(isPlanned(courseCode+" "+aodi.getActivityOfferingCode(),termId));
+                    secondary.setAtpId(termId);
+
                     // Temporary fix to group primary and secondary sections into one list for display in a single table
                     if (primary == null) {
                         primary = secondary;
@@ -643,6 +662,44 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
         return campusLocations;
     }
+
+
+    /**
+     * Validates if the courseId/versionIndependentId is valid or not.
+     *
+     * @param courseId
+     * @return
+     */
+    public boolean isCourseIdValid(String courseId) {
+        boolean isCourseIdValid = false;
+
+        CourseInfo course = null;
+        try {
+            /*Get version verified course*/
+            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
+        if (course != null) {
+            isCourseIdValid = true;
+        }
+        return isCourseIdValid;
+    }
+
+    public boolean isPlanned(String refObjId, String atpId) {
+        boolean isPlanned = false;
+        PlanItemInfo planItem = null;
+        PlanController planController = new PlanController();
+        planItem=planController.getPlannedOrBackupPlanItem(refObjId,atpId);
+        if (planItem != null) {
+            isPlanned = true;
+        }
+        return isPlanned;
+    }
+
+    
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {

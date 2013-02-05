@@ -22,6 +22,7 @@ public class ActivityOfferingItem {
     private List<MeetingDetails> meetingDetailsList;
     
     // Section Line Number - UW-ism
+    private String atpId;
     private String sln;
     private String qtryr = "WIN+2013";
     private boolean enrollRestriction;
@@ -40,6 +41,8 @@ public class ActivityOfferingItem {
     private boolean newThisYear;
     private boolean ineligibleForFinancialAid;
     private String gradingOption;
+
+    private boolean planned = false;
 
     private boolean primary = false;
 
@@ -254,4 +257,19 @@ public class ActivityOfferingItem {
     	return isPrimary() && getSecondaryList().size() == 0;
     }
 
+    public boolean isPlanned() {
+        return planned;
+    }
+
+    public void setPlanned(boolean planned) {
+        this.planned = planned;
+    }
+
+    public String getAtpId() {
+        return atpId;
+    }
+
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
+    }
 }
