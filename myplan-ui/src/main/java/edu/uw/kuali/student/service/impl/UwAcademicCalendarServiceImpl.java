@@ -32,6 +32,7 @@ import java.util.List;
 public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
     private final static Logger logger = Logger.getLogger(UwAcademicCalendarServiceImpl.class);
 
+
     /**
      * The number of terms to inspect when looking for section data.
      */
@@ -347,6 +348,20 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             termInfo.setId(atp);
             termInfo.setName(currentTerm + " " + year);
             termInfos.add(termInfo);
+
+            List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+
+            AttributeInfo lastDropAttr = new AttributeInfo();
+            lastDropAttr.setKey(AtpHelper.LAST_DROP_DAY);
+            lastDropAttr.setValue(lastDropDayDateString);
+
+            AttributeInfo priorityOneRegStAttr = new AttributeInfo();
+            priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
+            priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
+
+            attributes.add(lastDropAttr);
+            attributes.add(priorityOneRegStAttr);
+            termInfo.setAttributes(attributes);
         }
         if (str.equalsIgnoreCase(PlanConstants.PUBLISHED) || str.equalsIgnoreCase(PlanConstants.PLANNING)) {
             CircularTermList ccl = new CircularTermList(currentTerm, Integer.valueOf(year));
@@ -395,14 +410,31 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                         || isTrue(timeSchedulePublished.element("Seattle").getText())
                         || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
 
+                    String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+
                     TermInfo ti = new TermInfo();
                     //  Create the ATP ID.
                     ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
                     ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
+
+                    List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+                    AttributeInfo lastDropAttr = new AttributeInfo();
+                    lastDropAttr.setKey(AtpHelper.LAST_DROP_DAY);
+                    lastDropAttr.setValue(lastDropDayStr);
+
+                    AttributeInfo priorityOneRegStAttr = new AttributeInfo();
+                    priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
+                    priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
+
+                    attributes.add(lastDropAttr);
+                    attributes.add(priorityOneRegStAttr);
+                    ti.setAttributes(attributes);
+
                     termInfos.add(ti);
                     if (str.equalsIgnoreCase(PlanConstants.PLANNING)) {
                         break;
                     }
+
                     ccl.incrementQuarter();
                 } else {
                     break;
@@ -739,4 +771,31 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         throw new RuntimeException("Not implemented.");
     }
 
+
+    /**
+     * Calculates and returns the start date of priority 1 registration for the provided term
+     *
+     * @param termDocument
+     * @return
+     */
+    private String getPriorityOneRegistrationStartDate(Document termDocument) {
+        Element registrationPeriods = termDocument.getRootElement().element("RegistrationPeriods");
+        String earliestStartRegistrationDateStr = null;
+        DateTime earliestStartRegistrationDate = null;
+        for (Element registrationPeriod : (List<Element>) registrationPeriods.elements()) {
+            String startDateStr = registrationPeriod.element("StartDate").getTextTrim();
+            if (null == earliestStartRegistrationDateStr) {
+                earliestStartRegistrationDateStr = startDateStr;
+                earliestStartRegistrationDate = new DateTime(earliestStartRegistrationDateStr);
+            } else {
+                DateTime startDt = new DateTime(startDateStr);
+                if (startDt.isBefore(earliestStartRegistrationDate)) {
+                    earliestStartRegistrationDate = startDt;
+                    earliestStartRegistrationDateStr = startDateStr;
+                }
+            }
+        }
+
+        return (null == earliestStartRegistrationDateStr) ? "" : earliestStartRegistrationDateStr;
+    }
 }
