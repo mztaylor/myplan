@@ -1,7 +1,6 @@
 package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
@@ -11,10 +10,8 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
-import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -23,16 +20,12 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.restlet.Client;
-import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
-import org.restlet.data.Parameter;
-import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
-import org.restlet.util.Series;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +42,6 @@ import javax.activation.DataHandler;
 import javax.jws.WebParam;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +65,9 @@ import org.w3c.dom.NodeList;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceImpl implements DegreeAuditService {
+
+    private int TIMEOUT = 5 * 60 * 1000; // 5 minutes
+
 
 //    public static void main(String[] args)
 //            throws Exception {
@@ -276,13 +271,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return info;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public int timeout = 5 * 60 * 1000; // 5 minutes
-
     @Override
     public AuditReportInfo getAuditReport(@WebParam(name = "auditId") String auditId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        long giveup = System.currentTimeMillis() + timeout;
+        long giveup = System.currentTimeMillis() + TIMEOUT;
         while( true ) 
         {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
@@ -301,7 +294,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 // do nothing
             }
             if (System.currentTimeMillis() > giveup) {
-                String msg = "getAuditReport giving up after " + (timeout / 1000) + " seconds, auditId: " + auditId;
+                String msg = "getAuditReport giving up after " + (TIMEOUT / 1000) + " seconds, auditId: " + auditId;
                 logger.error( msg );
 				throw new OperationFailedException(msg);
             }
