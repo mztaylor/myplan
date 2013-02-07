@@ -17,7 +17,7 @@ public class ActivityOfferingItem {
 
     private String code;
     private String campus;
-    private ActivityOfferingType activityOfferingType;
+    private String activityOfferingType;
     private String credits;
     private List<MeetingDetails> meetingDetailsList;
     
@@ -64,11 +64,11 @@ public class ActivityOfferingItem {
     	this.campus = campus;
     }
 
-    public ActivityOfferingType getActivityOfferingType() {
+    public String getActivityOfferingType() {
         return activityOfferingType;
     }
 
-    public void setActivityOfferingType(ActivityOfferingType activityOfferingType) {
+    public void setActivityOfferingType(String activityOfferingType) {
         this.activityOfferingType = activityOfferingType;
     }
 

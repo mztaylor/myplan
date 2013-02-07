@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.DoesNotExistException;
@@ -49,7 +48,6 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingType;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingDetails;
 import org.kuali.student.myplan.course.dataobject.MeetingDetails;
@@ -497,12 +495,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     ActivityOfferingItem secondary = new ActivityOfferingItem();
                     secondary.setCode(aodi.getActivityOfferingCode());
 
-                    ActivityOfferingType activityOfferingType = ActivityOfferingType.unknown;
-                    try {
-                        activityOfferingType = ActivityOfferingType.valueOf(aodi.getTypeName());
-                    } catch (Exception e) {
-                    }
-                    secondary.setActivityOfferingType(activityOfferingType);
+                    String typeName = aodi.getTypeName();
+                    secondary.setActivityOfferingType(typeName);
 
                     secondary.setCredits(courseInfo.getCreditOptionName());
                     secondary.setGradingOption(courseInfo.getGradingOptionName());
