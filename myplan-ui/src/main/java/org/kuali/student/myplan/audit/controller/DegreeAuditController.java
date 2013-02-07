@@ -259,9 +259,15 @@ public class DegreeAuditController extends UifControllerBase {
             logger.error("Could not complete audit run");
             String[] params = {};
             GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-            String errorMessage = getErrorMessageFromXml(e.getCause().getMessage());
-            String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
-            form.setAuditHtml(html);
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                String message = cause.getMessage();
+                if (message != null) {
+                    String errorMessage = getErrorMessageFromXml(message);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
+                    form.setAuditHtml(html);
+                }
+            }
         }
         return getUIFModelAndView(form);
     }
