@@ -4,6 +4,7 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -200,8 +201,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if (Status.isSuccess(status.getCode())) {
                 SAXReader reader = new SAXReader();
                 org.dom4j.Document document = reader.read(rep.getStream());
-//                String xml = document.asXML();
-
 
                 Map<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("x", "http://webservices.washington.edu/student/");
@@ -314,10 +313,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String answer = "Audit ID " + auditId + " not available";
         try {
             JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
-            String sql = "SELECT report.report FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
+            String sql = "SELECT report.report, run.stuno FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
 
             List list = dao.find(sql, new Object[]{auditId});
-            byte[] report = (byte[]) list.get(0);
+            Object[] item = (Object[]) list.get(0);
+            byte[] report = (byte[]) item[0];
+            String stuno = (String) item[1];
+            stuno = convertMyPlanStunoToSDBSyskey( stuno );
             String garbage = new String(report);
             InputStream in = new ByteArrayInputStream(garbage.getBytes());
 
@@ -341,23 +343,18 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             findClassLinkifyTextAndConvertCoursesToLinks(doc, builder);
 
             String path = "//*[contains(@class,'urlify')]";;
-            ineptURLLinkifier( doc, xpath, path, builder );
-
-//            path = "//div[contains(@class,'requirement')]/div[contains(@class,'header')]/div[contains(@class,'title')]/text()";
-//            ineptURLLinkifier(doc, xpath, path, builder);
-//
-//            path = "//div[contains(@class,'bigsection')]/div[contains(@class,'heading')]/text()";
-//            ineptURLLinkifier(doc, xpath, path, builder);
+            linkifyURLs(doc, xpath, path, builder);
 
             {
-                String preparedFor = UserSessionHelper.getNameCapitalized(UserSessionHelper.getStudentId());
                 path = "//span[contains(@class,'prepared-for-name')]/text()";
                 XPathExpression godot = xpath.compile(path);
                 Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
                 NodeList godotList = (NodeList) godotSet;
                 for (int nth = 0; nth < godotList.getLength(); nth++) {
                     Node child = godotList.item(nth);
-                    String scurge = child.getTextContent();
+//                    String whoops = child.getTextContent();
+//                    List<Person> personList = UserSessionHelper.getPersonService().getPersonByExternalIdentifier("systemKey", stuno);
+                    String preparedFor = UserSessionHelper.getNameCapitalized(UserSessionHelper.getStudentId());
                     child.setTextContent( preparedFor );
                 }
             }
@@ -423,7 +420,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
-    public void ineptURLLinkifier(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
+    public void linkifyURLs(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
         XPathExpression godot = xpath.compile(path);
         Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
         NodeList godotList = (NodeList) godotSet;
@@ -444,7 +441,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 transformer.transform(new DOMSource(child), new StreamResult(stringWriter));
                 String scurge = stringWriter.toString(); //This is string data of xml file
                 System.out.println(scurge);
-                victim = tangerine(scurge);
+                victim = linkifyCourseSubjAndNum(scurge);
                 if (!scurge.equals(victim)) {
 
 //                    victim = "<span>" + victim + "</span>";
@@ -458,13 +455,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 }
             }
             catch (Exception e) {
-                logger.error("ineptURLLinkifier failed on '" + victim + "'", e);
+                logger.error("linkifyURLs failed on '" + victim + "'", e);
             }
         }
     }
 
 
-    public static String tangerine(String initialText) {
+    public static String linkifyCourseSubjAndNum(String initialText) {
         StringBuffer result = new StringBuffer(initialText.length());
         Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\-=?\\+\\%/\\.\\w]+)?");
 
@@ -501,8 +498,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return false;
     }
 
+    // Convert systemKey to myplan stuno
+    // eg "1000723033" becomes "000723033" (note the "1" prefix)
     public String convertSDBSyskeyToMyPlanStuno(String syskey) {
-        // Convert systemKey to myplan stuno
         if (syskey.length() < 9 || !syskey.startsWith("1")) {
             while (syskey.startsWith("0")) {
                 syskey = syskey.substring(1);
@@ -512,6 +510,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
 
         return syskey;
+    }
+
+    // Convert  myplan stuno systemKey to
+    // eg "000723033" becomes "1000723033" (note the "1" prefix)
+    public String convertMyPlanStunoToSDBSyskey(String stuno) {
+        if (stuno.length() == 9 && stuno.startsWith("1")) {
+            stuno = stuno.substring( 1 );
+        }
+        return stuno;
     }
 
     @Override
@@ -524,7 +531,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
         logger.info("getAuditsForStudentInDateRange studentid " + studentId + "  stuno " + stuno);
-
 
         // TODO: configurable constant for UW
         String instid = "4854";
@@ -599,28 +605,31 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public String getAuditStatus(String studentId, String programId, String recentAuditId) {
-        String auditStatus = "PENDING";
         String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
-        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
-        List list = null;
-        String hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and run.rundate > (SELECT DISTINCT jqrun.rundate FROM JobQueueRun jqrun where jqrun.jobid= ?)  and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
-        if (!StringUtils.hasText(recentAuditId)) {
-            hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
-            list = dao.find(hql, new Object[]{programId, stuno});
+
+        String hql = null;
+        Object[] params = null;
+        if (StringUtils.hasText(recentAuditId)) {
+            hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and run.rundate > (SELECT DISTINCT jqrun.rundate FROM JobQueueRun jqrun where jqrun.jobid= ?)  and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
+            params = new Object[]{recentAuditId, programId, stuno};
         } else {
-            list = dao.find(hql, new Object[]{recentAuditId, programId, stuno});
+            hql = "SELECT detail.status FROM JobQueueRun run, JobQueueDetail detail WHERE detail.jobQueueList.comp_id.jobid=run.jobid and detail.fdprog= ? and detail.stuno= ? order by run.rundate desc";
+            params = new Object[]{programId, stuno};
         }
 
+        DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
+        List list = dao.find(hql, params);
 
+        String auditStatus = "PENDING";
         if (list != null && list.size() > 0) {
-            if (list.get(0).toString().length() > 0 && !list.get(0).toString().equalsIgnoreCase("X")) {
-                auditStatus = list.get(0).toString();
+            String first = list.get(0).toString();
+            if (first.length() > 0 && !first.equalsIgnoreCase("X")) {
+                if (first.equalsIgnoreCase("D")) {
+                    auditStatus = "DONE";
+                } else if (first.equalsIgnoreCase("E")) {
+                    auditStatus = "FAILED";
+                }
             }
-        }
-        if (auditStatus.equalsIgnoreCase("D")) {
-            auditStatus = "DONE";
-        } else if (auditStatus.equalsIgnoreCase("E")) {
-            auditStatus = "FAILED";
         }
         return auditStatus;
     }
