@@ -623,13 +623,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String auditStatus = "PENDING";
         if (list != null && list.size() > 0) {
             String first = list.get(0).toString();
-            if (first.length() > 0 && !first.equalsIgnoreCase("X")) {
-                if (first.equalsIgnoreCase("D")) {
-                    auditStatus = "DONE";
-                } else if (first.equalsIgnoreCase("E")) {
-                    auditStatus = "FAILED";
-                }
+            if ("D".equalsIgnoreCase(first)) {
+                auditStatus = "DONE";
+            } else if ("E".equalsIgnoreCase(first)) {
+                auditStatus = "FAILED";
             }
+            // Ignores audit status "X"
         }
         return auditStatus;
     }
