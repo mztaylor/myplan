@@ -1,8 +1,10 @@
 package org.kuali.student.myplan.util;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -24,6 +26,9 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
  */
 @Deprecated
 public class DegreeAuditAtpHelper {
+
+    public static final String PRIORITY_ONE_REGISTRATION_START = "priority_one_registration_start";
+    public static final String LAST_DROP_DAY = "last_drop_day";
 
     private static String term1 = "winter";
     private static String term2 = "spring";
@@ -51,26 +56,45 @@ public class DegreeAuditAtpHelper {
 
 
   /**
-     * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
-     *
-     * @return The ID of the last scheduled ATP.
-     * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
-     */
+    * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
+    *
+    * EXCEPTION FOR SUMMER: Change summer last published date to 3 weeks prior to registration for summer quarter to
+    * update the course catalog for summer
+    *
+    * @return The ID of the last scheduled ATP.
+    * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
+    */
     public static String getLastScheduledAtpId() {
-        //   The first arg here is "usageKey" which isn't used.
         List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
         try {
-            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "PUBLISHED")), CONTEXT_INFO);
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "PUBLISHED")), new ContextInfo());
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
-            scheduledTerms=populateAtpIdFromCalender();
+            scheduledTerms = populateAtpIdFromCalender();
         }
         //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
         //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
         //  is the Right thing to do.
-        TermInfo currentTerm = scheduledTerms.get( scheduledTerms.size() - 1 );
-        return currentTerm.getId();
+        TermInfo lastTerm = scheduledTerms.get( scheduledTerms.size() - 1 );
+
+        // SUMMER EXCEPTION
+        if(lastTerm.getId().endsWith(".3")) {
+            List<AttributeInfo> attrs = lastTerm.getAttributes();
+            for(AttributeInfo attr : attrs) {
+                if(attr.getKey().equals(DegreeAuditAtpHelper.PRIORITY_ONE_REGISTRATION_START)){
+                    // Check to see if the priority registration is still more than 3 weeks away
+                    DateTime regStart = new DateTime(attr.getValue());
+                    if(regStart.minusWeeks(3).isAfterNow()) {
+                        lastTerm = scheduledTerms.get(scheduledTerms.size() - 2);
+                    }
+                }
+            }
+        }
+
+
+        return lastTerm.getId();
+
     }
 
 
