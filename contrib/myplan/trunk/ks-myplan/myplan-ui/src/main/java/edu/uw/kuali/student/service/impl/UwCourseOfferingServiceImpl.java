@@ -38,7 +38,6 @@ import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * UW implementation of CourseOfferingService.
@@ -710,21 +709,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.setCourseId(courseID);
 
                     {
-                        DefaultXPath instructorPath = newXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
-                        List instructors = instructorPath.selectNodes(secondaryDoc);
-
-                        for (Object gundar : instructors) {
-                            Element instructor = (Element) gundar;
-                            String name = instructor.elementText("Name");
-                            String regid = instructor.elementText("RegID");
-                            OfferingInstructorInfo temp = new OfferingInstructorInfo();
-                            temp.setPersonName(name);
-                            temp.setPersonId(regid);
-                            info.getInstructors().add(temp);
-                        }
-                    }
-
-                    {
                         String gradingSystem = secondarySection.elementText("GradingSystem");
                         if ("standard".equals(gradingSystem)) {
                             info.setGradingOptionId("kuali.uw.resultcomponent.grade.standard");
@@ -855,14 +839,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 DefaultXPath coursePath = newXPath("/s:Section/s:Course");
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
+                
                 String typeName = sectionNode.elementText("SectionType");
+                info.setTypeName(typeName);
+
                 String campus = sectionNode.elementText("CourseCampus");
 
                 Element courseNode = (Element) coursePath.selectSingleNode(doc);
                 String title = courseNode.elementText("CourseTitle");
                 String sln = sectionNode.elementText("SLN");
-                String instructorName = "--";
-                String instructorId = "--";
 
                 {
                     ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
@@ -940,20 +925,24 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                             }
                         }
 
-                        /*Instructor Details*/
                         {
-                            DefaultXPath instructorPath = newXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors");
-                            List instructors = instructorPath.selectNodes(doc);
-                            for (Object instObj : instructors) {
-                                Element instructorNode = (Element) instObj;
-                                Element instructor = instructorNode.element("Instructor");
-                                if (instructor != null) {
-                                    instructorName = instructor.element("Person").elementText("Name");
-                                    instructorId = instructor.element("Person").elementText("RegID");
-                                }
-                            }
-                        }
+                            String name = "--";
+                            String regid = "--";
 
+                            DefaultXPath instructorPath = newXPath("/s:Section/s:Meetings/s:Meeting/s:Instructors/s:Instructor/s:Person");
+                            List instructors = instructorPath.selectNodes(doc);
+
+                            for (Object node : instructors) {
+								Element instructor = (Element) node;
+								name = instructor.elementText("Name");
+								name = name.replaceFirst(",", ", " );
+								regid = instructor.elementText("RegID");
+								// Only show the first instructor
+								break;
+                            }
+                            info.setInstructorName(name);
+                            info.setInstructorId(regid);
+                        }
                     }
                 }
 
@@ -969,9 +958,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 }
 
 
-                info.setTypeName(typeName);
-                info.setInstructorName(instructorName);
-                info.setInstructorId(instructorId);
                 info.setCourseOfferingTitle(title);
 //		        info.setCourseCode( curric );
                 info.setCourseOfferingCode(curric + " " + id);
