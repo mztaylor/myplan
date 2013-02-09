@@ -444,7 +444,7 @@ public class AtpHelper {
     public static final String ATP_FORMAT = "kuali.uw.atp.%d.%d";
 
     public static List<String> TERM_ID_LIST = Arrays.asList("winter", "spring", "summer", "autumn");
-    public static String[] TERM_LABELS = {"Winter", "Spring", "Summer", "Autumn"};
+    public static List<String> TERM_LABELS_LIST = Arrays.asList("Winter", "Spring", "Summer", "Autumn");
 
     public static class YearTerm implements Comparable<YearTerm> {
         private final int year;
@@ -471,8 +471,19 @@ public class AtpHelper {
             return TERM_ID_LIST.get(getTerm() - 1);
         }
 
+        // "kuali.uw.atp.1999.1"
         public String toATP() {
             return String.format(ATP_FORMAT, year, term);
+        }
+        
+        // "Winter 1999"
+        public String toLabel() {
+            return TERM_LABELS_LIST.get(getTerm() - 1) + " " + getYearAsString();
+        }
+        
+        // "WIN+1999"
+        public String toQTRYRParam() {
+            return TERM_ID_LIST.get(getTerm() - 1).substring(0, 3).toUpperCase() + "+" + getYearAsString();
         }
         
 		@Override

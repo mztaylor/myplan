@@ -4,6 +4,7 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -362,13 +363,19 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
+            List<YearTerm> ytList = new ArrayList<YearTerm>();
             List<String> termList = courseDetails.getScheduledTerms();
             for (String term : termList) {
                 YearTerm yt = AtpHelper.termToYearTerm(term);
-                String atp = yt.toATP();
+                ytList.add( yt );
+            }
+            Collections.sort(ytList, Collections.reverseOrder());
+            
+            for (YearTerm yt : ytList) {
                 CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-                courseOfferingDetails.setTerm(term);
-                List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp,courseDetails.getCode());
+                courseOfferingDetails.setTerm(yt.toLabel());
+                String atp = yt.toATP();
+                List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
                 courseOfferingDetails.setActivityOfferingItemList(list);
                 courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
             }
@@ -458,20 +465,21 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
     public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
+    	// Get version verified course
         courseId = getVerifiedCourseId(courseId);
-        if(courseCode==null){
-            CourseInfo course = null;
+
+        if (courseCode==null) {
             try {
-                /*Get version verified course*/
-                course = getCourseService().getCourse(getVerifiedCourseId(courseId));
+            	CourseInfo course = getCourseService().getCourse(courseId);
+            	courseCode = course.getCode();
             } catch (DoesNotExistException e) {
                 throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
             } catch (Exception e) {
                 throw new RuntimeException("Query failed.", e);
             }
-            courseCode = course.getCode();
         }
-        List<ActivityOfferingItem> activityList = new ArrayList<ActivityOfferingItem>();
+        
+        List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
         try {
             CourseOfferingService cos = getCourseOfferingService();
 
@@ -482,25 +490,25 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
             courseOfferingDetailsList.add(courseOfferingDetails);
 
-            activityList = courseOfferingDetails.getActivityOfferingItemList();
+            activityOfferingItemList = courseOfferingDetails.getActivityOfferingItemList();
 
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
 
-                ActivityOfferingItem primary = null;
-
                 String courseOfferingID = courseInfo.getCourseId();
                 List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
+                boolean primary = true;
+
                 for (ActivityOfferingDisplayInfo aodi : aodiList) {
-                    ActivityOfferingItem secondary = new ActivityOfferingItem();
-                    secondary.setCode(aodi.getActivityOfferingCode());
+                    ActivityOfferingItem activity = new ActivityOfferingItem();
+                    activity.setCode(aodi.getActivityOfferingCode());
 
                     String typeName = aodi.getTypeName();
-                    secondary.setActivityOfferingType(typeName);
+                    activity.setActivityOfferingType(typeName);
 
-                    secondary.setCredits(courseInfo.getCreditOptionName());
-                    secondary.setGradingOption(courseInfo.getGradingOptionName());
-                    List<MeetingDetails> meetingDetailsList = secondary.getMeetingDetailsList();
+                    activity.setCredits(courseInfo.getCreditOptionName());
+                    activity.setGradingOption(courseInfo.getGradingOptionName());
+                    List<MeetingDetails> meetingDetailsList = activity.getMeetingDetailsList();
                     {
                         ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
                         for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
@@ -549,58 +557,49 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     }
 
                     for (AttributeInfo attrib : aodi.getAttributes()) {
-                        if ("SLN".equalsIgnoreCase(attrib.getKey())) {
-                            String temp = attrib.getValue();
-                            secondary.setSln(temp);
-                            break;
-                        }
-                    }
-                    for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
                         if ("SLN".equalsIgnoreCase(key)) {
-                            secondary.setSln(value);
+                            activity.setSln(value);
                             continue;
                         }
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
-                            secondary.setServiceLearning(flag);
+                            activity.setServiceLearning(flag);
                         } else if ("ResearchCredit".equalsIgnoreCase(key)) {
-                            secondary.setResearch(flag);
+                            activity.setResearch(flag);
                         } else if ("DistanceLearning".equalsIgnoreCase(key)) {
-                            secondary.setDistanceLearning(flag);
+                            activity.setDistanceLearning(flag);
                         } else if ("JointSections".equalsIgnoreCase(key)) {
-                            secondary.setJointOffering(flag);
+                            activity.setJointOffering(flag);
                         } else if ("Writing".equalsIgnoreCase(key)) {
-                            secondary.setWritingSection(flag);
+                            activity.setWritingSection(flag);
                         } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
-                            secondary.setIneligibleForFinancialAid(flag);
+                            activity.setIneligibleForFinancialAid(flag);
                         }
 
                     }
-                    secondary.setEnrollRestriction(true);
-                    secondary.setEnrollOpen(true);
-                    secondary.setEnrollCount(000);
-                    secondary.setEnrollMaximum(999);
-                    secondary.setInstructor(aodi.getInstructorName());
+                    activity.setEnrollRestriction(true);
+                    activity.setEnrollOpen(true);
+                    activity.setEnrollCount(000);
+                    activity.setEnrollMaximum(999);
+                    activity.setInstructor(aodi.getInstructorName());
 
-                    secondary.setHonorsSection(aodi.getIsHonorsOffering());
-                    secondary.setNewThisYear(false);
+                    activity.setHonorsSection(aodi.getIsHonorsOffering());
+                    activity.setNewThisYear(false);
 
-                    secondary.setDetails("View section notes and textbook information");
+                    activity.setDetails("View section notes and textbook information");
 
-                    /*Added this flag to know if the activityoffering is planned/backup*/
-                    secondary.setPlanned(isPlanned(courseCode+" "+aodi.getActivityOfferingCode(),termId));
-                    secondary.setAtpId(termId);
+                    // Added this flag to know if the activityoffering is planned/backup
+                    boolean planned = isPlanned(courseCode+" "+aodi.getActivityOfferingCode(),termId);
+					activity.setPlanned(planned);
+                    activity.setAtpId(termId);
+                    YearTerm yt = AtpHelper.atpToYearTerm(termId);
+                    activity.setQtryr(yt.toQTRYRParam());
 
-                    // Temporary fix to group primary and secondary sections into one list for display in a single table
-                    if (primary == null) {
-                        primary = secondary;
-                        primary.setPrimary(true);
-                        activityList.add(primary);
-                    } else {
-                        activityList.add(secondary);
-                    }
+                    activity.setPrimary(primary);
+                    primary = false;
+    				activityOfferingItemList.add(activity);
 
                 }
 
@@ -608,7 +607,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         } catch (Exception e) {
             logger.error("Could not load the Section Details");
         }
-        return activityList;
+        return activityOfferingItemList;
 
     }
 

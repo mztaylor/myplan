@@ -24,7 +24,9 @@ public class ActivityOfferingItem {
     // Section Line Number - UW-ism
     private String atpId;
     private String sln;
-    private String qtryr = "WIN+2013";
+    // Used by the UI to feed the QTRYR query parameter, like in the following:
+    // https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944
+    private String qtryr;
     private boolean enrollRestriction;
     private boolean enrollOpen;
     private int enrollCount;
