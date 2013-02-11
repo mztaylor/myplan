@@ -559,9 +559,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
+                        if ("FeeAmount".equalsIgnoreCase(key) && value.length()>0) {
+                            secondary.setFeeAmount(value);
+                            continue;
+                        }
                         if ("SLN".equalsIgnoreCase(key)) {
                             activity.setSln(value);
                             continue;
+                        }
+                        if("SectionComments".equalsIgnoreCase(key)) {
+                            secondary.setSectionComments(value);
                         }
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
@@ -577,6 +584,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
                             activity.setIneligibleForFinancialAid(flag);
                         }
+                        else if ("AddCodeRequired".equalsIgnoreCase(key)) {
+                            secondary.setAddCodeRequired(flag);
+                        }
+                        else if("IndependentStudy".equalsIgnoreCase(key)) {
+                            secondary.setIndependentStudy(flag);
+                        }
+
 
                     }
                     activity.setEnrollRestriction(true);
