@@ -969,6 +969,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.getAttributes().add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length() > 0))));
                     info.getAttributes().add(new AttributeInfo("AddCodeRequired",String.valueOf(Boolean.valueOf(sectionNode.elementText("AddCodeRequired")))));
                     info.getAttributes().add(new AttributeInfo("IndependentStudy",String.valueOf(Boolean.valueOf(sectionNode.elementText("IndependentStudy")))));
+                    info.getAttributes().add(new AttributeInfo("EnrollmentRestrictions",String.valueOf(Boolean.valueOf(sectionNode.elementText("EnrollmentRestrictions")))));
                     info.getAttributes().add(new AttributeInfo("FeeAmount",feeAmount));
                     info.getAttributes().add(new AttributeInfo("SectionComments",sectionComments.toString()));
                 }
