@@ -590,10 +590,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         else if("IndependentStudy".equalsIgnoreCase(key)) {
                             activity.setIndependentStudy(flag);
                         }
-
+                        else if("EnrollmentRestrictions".equalsIgnoreCase(key)) {
+                            activity.setEnrollRestriction(flag);
+                        }
 
                     }
-                    activity.setEnrollRestriction(true);
                     activity.setEnrollOpen(true);
                     activity.setEnrollCount(000);
                     activity.setEnrollMaximum(999);
