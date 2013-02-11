@@ -954,6 +954,8 @@
                                                                 <bean parent="Uif-Message" p:messageText="Service learning" p:render="@{#line.serviceLearning}"/>
                                                                 <bean parent="Uif-Message" p:messageText="New course" p:render="@{#line.newThisYear}"/>
                                                                 <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
+                                                                <bean parent="Uif-Message" p:messageText="Course Fee $@{#line.feeAmount}" p:render="@{#line.feeAmount ne null}"/>
+                                                                <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
                                                                 <bean parent="Uif-Message" p:messageText="--"
                                                                       p:render="@{#line.gradingOption eq null AND
                                                                                  !#line.distanceLearning AND
@@ -963,7 +965,9 @@
                                                                                  !#line.writingSection AND
                                                                                  !#line.serviceLearning AND
                                                                                  !#line.newThisYear AND
-                                                                                 !#line.ineligibleForFinancialAid}"/>
+                                                                                 !#line.ineligibleForFinancialAid AND
+                                                                                 #line.feeAmount eq null  AND
+                                                                                 !#line.independentStudy}"/>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -979,6 +983,7 @@
                                         <bean parent="Uif-HorizontalFieldGroup" p:label="Additional Details" p:group.validationMessages.render="false" p:style="margin:0;">
                                             <property name="items">
                                                 <list>
+                                                    <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}"/>
                                                     <bean parent="current_section_status" p:actionLabel="@{#line.details}"/>
                                                 </list>
                                             </property>
@@ -1037,8 +1042,23 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="Add Code Required" p:render="@{#line.addCodeRequired}" >
+                                <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-font-size-90</value>
+                                </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:messageText="Faculty Code Required" p:render="@{#line.independentStudy}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
+
                             <!--<bean parent="Uif-Link" p:linkText="View restrictions" p:href="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944" p:render="@{#line.enrollRestriction}" p:style="margin:0;"/>-->
                         </list>
                     </property>

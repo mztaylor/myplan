@@ -837,6 +837,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 DefaultXPath sectionPath = newXPath("/s:Section");
                 DefaultXPath coursePath = newXPath("/s:Section/s:Course");
+                DefaultXPath sectionCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:SectionComments/s:Lines");
+
+                Element sectionCommentsNode = (Element) sectionCommentsPath.selectSingleNode(doc);
+                StringBuffer sectionComments = new StringBuffer();
+               List comments = sectionCommentsNode.content();
+                          for(Object ob:comments){
+                              Element element = (Element) ob;
+                              sectionComments = sectionComments.append(element.elementText("Text")+" ");
+                          }
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
                 
@@ -945,7 +954,10 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                         }
                     }
                 }
-
+                String feeAmount =  sectionNode.elementText("FeeAmount").trim();
+                if(feeAmount.contains(".")){
+                    feeAmount = feeAmount.substring(0,feeAmount.indexOf("."));
+                }
 
                 /*Course Flags*/
                 {
@@ -955,6 +967,10 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.getAttributes().add(new AttributeInfo("DistanceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("DistanceLearning")))));
                     info.getAttributes().add(new AttributeInfo("JointSections", String.valueOf(sectionNode.element("JointSections").content().size() > 0)));
                     info.getAttributes().add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length() > 0))));
+                    info.getAttributes().add(new AttributeInfo("AddCodeRequired",String.valueOf(Boolean.valueOf(sectionNode.elementText("AddCodeRequired")))));
+                    info.getAttributes().add(new AttributeInfo("IndependentStudy",String.valueOf(Boolean.valueOf(sectionNode.elementText("IndependentStudy")))));
+                    info.getAttributes().add(new AttributeInfo("FeeAmount",feeAmount));
+                    info.getAttributes().add(new AttributeInfo("SectionComments",sectionComments.toString()));
                 }
 
 

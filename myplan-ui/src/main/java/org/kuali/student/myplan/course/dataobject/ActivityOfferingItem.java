@@ -17,6 +17,7 @@ public class ActivityOfferingItem {
 
     private String code;
     private String campus;
+    private String feeAmount;
     private String activityOfferingType;
     private String credits;
     private List<MeetingDetails> meetingDetailsList;
@@ -42,7 +43,10 @@ public class ActivityOfferingItem {
     private boolean serviceLearning;
     private boolean newThisYear;
     private boolean ineligibleForFinancialAid;
+    private boolean addCodeRequired;
+    private boolean independentStudy;
     private String gradingOption;
+    private String sectionComments;
 
     private boolean planned = false;
 
@@ -273,5 +277,37 @@ public class ActivityOfferingItem {
 
     public void setAtpId(String atpId) {
         this.atpId = atpId;
+    }
+
+    public String getFeeAmount() {
+        return feeAmount;
+    }
+
+    public void setFeeAmount(String feeAmount) {
+        this.feeAmount = feeAmount;
+    }
+
+    public boolean isAddCodeRequired() {
+        return addCodeRequired;
+    }
+
+    public void setAddCodeRequired(boolean addCodeRequired) {
+        this.addCodeRequired = addCodeRequired;
+    }
+
+    public boolean isIndependentStudy() {
+        return independentStudy;
+    }
+
+    public void setIndependentStudy(boolean independentStudy) {
+        this.independentStudy = independentStudy;
+    }
+
+    public String getSectionComments() {
+        return sectionComments;
+    }
+
+    public void setSectionComments(String sectionComments) {
+        this.sectionComments = sectionComments;
     }
 }
