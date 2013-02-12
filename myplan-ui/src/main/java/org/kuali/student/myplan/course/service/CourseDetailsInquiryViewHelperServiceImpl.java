@@ -133,6 +133,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     private Map<String, List<OrgInfo>> campusLocationCache;
     private Map<String, String> atpCache;
     private HashMap<String, Map<String, String>> hashMap;
+    private HashMap<String, String> courseComments = new HashMap<String, String>();
+
+    public HashMap<String, String> getCourseComments() {
+        return courseComments;
+    }
+
+    public void setCourseComments(HashMap<String, String> courseComments) {
+        this.courseComments = courseComments;
+    }
 
     public HashMap<String, Map<String, String>> getHashMap() {
         if (hashMap == null) {
@@ -406,6 +415,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         courseOfferingTerm = new CourseOfferingTerm();
                         courseOfferingTerm.setYearTerm(yt);
                         courseOfferingTerm.setTerm(yt.toLabel());
+                        courseOfferingTerm.setCourseComments(courseComments.get(atp));
                         courseOfferingTermList.add(courseOfferingTerm);
                     }
 
@@ -506,7 +516,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
         // Get version verified course
         courseId = getVerifiedCourseId(courseId);
-
         if (courseCode == null) {
             try {
                 CourseInfo course = getCourseService().getCourse(courseId);
@@ -525,8 +534,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
 
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
-                // Activity offerings come back as a list, the first item is primary, the remaining are secondary
+                for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0 && !courseComments.containsKey(courseInfo.getTermId())) {
+                        courseComments.put(courseInfo.getTermId(), value);
+                        break;
+                    }
+                }
 
+                // Activity offerings come back as a list, the first item is primary, the remaining are secondary
                 String courseOfferingID = courseInfo.getCourseId();
                 List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
                 boolean primary = true;
@@ -620,7 +637,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             continue;
                         }
 
-                        if("SectionComments".equalsIgnoreCase(key)){
+                        if ("SectionComments".equalsIgnoreCase(key)) {
                             activity.setSectionComments(value);
                             continue;
                         }

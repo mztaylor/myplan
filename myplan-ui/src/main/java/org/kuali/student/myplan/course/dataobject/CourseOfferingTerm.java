@@ -15,6 +15,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 public class CourseOfferingTerm {
 	private YearTerm yearTerm;
 	private String term;
+    private String courseComments;
     private List<ActivityOfferingItem> activityOfferingItemList;
 
 
@@ -32,6 +33,14 @@ public class CourseOfferingTerm {
     
     public void setTerm( String term ) {
     	this.term = term;
+    }
+
+    public String getCourseComments() {
+        return courseComments;
+    }
+
+    public void setCourseComments(String courseComments) {
+        this.courseComments = courseComments;
     }
 
     public List<ActivityOfferingItem> getActivityOfferingItemList() {

@@ -676,6 +676,9 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             DefaultXPath sectionPath = newXPath("/s:SearchResults/s:Sections/s:Section");
             DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
             DefaultXPath secondarySectionPath = newXPath("/s:Section");
+            DefaultXPath courseCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CourseComments/s:Lines");
+            StringBuffer courseComments = new StringBuffer();
+
 
             Document doc = newDocument(xml);
 
@@ -697,6 +700,17 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
                 Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
+                Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(secondaryDoc);
+                List comments = courseCommentsNode.content();
+                for (Object ob : comments) {
+                    Element element = (Element) ob;
+                    String text = element.elementText("Text");
+                    if (text.startsWith("*****")) {
+                        courseComments = courseComments.append("<br>" + text + "</br> ");
+                    } else {
+                        courseComments = courseComments.append(text + " ");
+                    }
+                }
 
                 String primaryID = dupeSectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
@@ -707,6 +721,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.setId(primarySectionID);
                     String courseID = join("=", year, quarter, curric, num, primarySectionID);
                     info.setCourseId(courseID);
+                    info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
 
                     {
                         String gradingSystem = secondarySection.elementText("GradingSystem");
