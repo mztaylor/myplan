@@ -766,6 +766,17 @@
     <bean id="course_details_institution_data" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
+        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>
+        <property name="headerText" value="@{dataObject.code} Course Sections"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-underline-header</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="subCollections">
             <list>
                 <ref bean="course_details_term_data" />
@@ -934,8 +945,8 @@
                                         <bean parent="Uif-HorizontalFieldGroup" p:label="Additional Details" p:group.validationMessages.render="false" p:style="margin:0;">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}"/>
-                                                    <bean parent="current_section_status" p:actionLabel="@{#line.details}"/>
+                                                    <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}" p:style="display:inline; margin:0; float:none;"/>
+                                                    <bean parent="current_section_status" p:actionLabel="@{#line.details}" p:style="display:inline; margin:0; float:none;"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -966,22 +977,10 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
+                            <bean parent="Uif-Message" p:messageText="Faculty Code Required" p:render="@{#line.independentStudy}" p:style="margin:0;"/>
+                            <bean parent="Uif-Message" p:messageText="Add Code Required" p:render="@{#line.addCodeRequired AND !#line.independentStudy}" p:style="margin:0;"/>
+                            <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction AND !#line.independentStudy AND !#line.addCodeRequired}" p:style="margin:0;"/>
                             <bean parent="Uif-Message" p:messageText="--" p:render="@{!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy}" p:style="margin:0;"/>
-                            <bean parent="Uif-Message" p:messageText="Add Code Required" p:render="@{#line.addCodeRequired}" >
-                                <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-font-size-90</value>
-                                </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-Message" p:messageText="Faculty Code Required" p:render="@{#line.independentStudy}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
                         </list>
                     </property>
                 </bean>

@@ -655,7 +655,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     activity.setHonorsSection(aodi.getIsHonorsOffering());
                     activity.setNewThisYear(false);
 
-                    activity.setDetails("View section notes and textbook information");
+                    activity.setDetails("View more details");
 
                     // Added this flag to know if the activityoffering is planned/backup
                     boolean planned = isPlanned(courseCode + " " + aodi.getActivityOfferingCode(), termId);
