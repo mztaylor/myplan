@@ -69,6 +69,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private int TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
+    // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
+    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
 //    public static void main(String[] args)
 //            throws Exception {
@@ -299,9 +301,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
         }
     }
-
-    // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
-    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
     public void setCourseLinkTemplateStyle(CourseLinkBuilder.LINK_TEMPLATE style) {
         courseLinkTemplateStyle = style;
