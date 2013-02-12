@@ -620,6 +620,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             continue;
                         }
 
+                        if("SectionComments".equalsIgnoreCase(key)){
+                            activity.setSectionComments(value);
+                            continue;
+                        }
+
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
                             activity.setServiceLearning(flag);
