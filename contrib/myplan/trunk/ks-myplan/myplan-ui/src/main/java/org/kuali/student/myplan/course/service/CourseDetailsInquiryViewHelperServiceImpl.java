@@ -364,12 +364,12 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
-            
+
             List<YearTerm> ytList = new ArrayList<YearTerm>();
             List<String> termList = courseDetails.getScheduledTerms();
             for (String term : termList) {
                 YearTerm yt = AtpHelper.termToYearTerm(term);
-                ytList.add( yt );
+                ytList.add(yt);
             }
             Collections.sort(ytList, Collections.reverseOrder());
 
@@ -493,7 +493,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
         List<CourseOfferingInstitution> courseOfferingInstitutionList = courseDetails.getCourseOfferingInstitutionList();
         CourseOfferingInstitution courseOfferingInstitution = new CourseOfferingInstitution();
-        courseOfferingInstitutionList.add( courseOfferingInstitution );
+        courseOfferingInstitutionList.add(courseOfferingInstitution);
         List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
         CourseOfferingTerm courseOfferingTerm = new CourseOfferingTerm();
         courseOfferingTermList.add(courseOfferingTerm);
@@ -504,20 +504,20 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
     public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
-    	// Get version verified course
+        // Get version verified course
         courseId = getVerifiedCourseId(courseId);
 
-        if (courseCode==null) {
+        if (courseCode == null) {
             try {
-            	CourseInfo course = getCourseService().getCourse(courseId);
-            	courseCode = course.getCode();
+                CourseInfo course = getCourseService().getCourse(courseId);
+                courseCode = course.getCode();
             } catch (DoesNotExistException e) {
                 throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
             } catch (Exception e) {
                 throw new RuntimeException("Query failed.", e);
             }
         }
-        
+
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
         try {
             CourseOfferingService cos = getCourseOfferingService();
@@ -588,13 +588,22 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         }
                     }
 
-                	String instituteCode = "";
-                	String instituteName = "";
-                	
-                   for (AttributeInfo attrib : aodi.getAttributes()) {
+
+                    String instituteCode = "";
+                    String instituteName = "";
+
+                    // Use campus as default institute code and name
+                    if (!meetingDetailsList.isEmpty()) {
+                        MeetingDetails details = meetingDetailsList.get(0);
+                        String campus = details.getCampus();
+                        instituteCode = campus;
+                        instituteName = campus;
+                    }
+
+                    for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
-                        if ("FeeAmount".equalsIgnoreCase(key) && value.length()>0) {
+                        if ("FeeAmount".equalsIgnoreCase(key) && value.length() > 0) {
                             activity.setFeeAmount(value);
                             continue;
                         }
@@ -602,15 +611,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             activity.setSln(value);
                             continue;
                         }
-    					if( "instituteCode".equals( key )) {
-                			instituteCode = value;
+                        if ("instituteCode".equals(key)) {
+                            instituteCode = value;
                             continue;
-                		}
-                		if( "instituteName".equals( key )) {
-                			instituteName = value;
+                        }
+                        if ("instituteName".equals(key)) {
+                            instituteName = value;
                             continue;
-                		}
-                		
+                        }
+
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
                             activity.setServiceLearning(flag);
@@ -624,14 +633,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             activity.setWritingSection(flag);
                         } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
                             activity.setIneligibleForFinancialAid(flag);
-                        }
-                        else if ("AddCodeRequired".equalsIgnoreCase(key)) {
+                        } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
                             activity.setAddCodeRequired(flag);
-                        }
-                        else if("IndependentStudy".equalsIgnoreCase(key)) {
+                        } else if ("IndependentStudy".equalsIgnoreCase(key)) {
                             activity.setIndependentStudy(flag);
-                        }
-                        else if("EnrollmentRestrictions".equalsIgnoreCase(key)) {
+                        } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
                             activity.setEnrollRestriction(flag);
                         }
 
@@ -647,18 +653,18 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     activity.setDetails("View section notes and textbook information");
 
                     // Added this flag to know if the activityoffering is planned/backup
-                    boolean planned = isPlanned(courseCode+" "+aodi.getActivityOfferingCode(),termId);
-					activity.setPlanned(planned);
+                    boolean planned = isPlanned(courseCode + " " + aodi.getActivityOfferingCode(), termId);
+                    activity.setPlanned(planned);
                     activity.setAtpId(termId);
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
                     activity.setQtryr(yt.toQTRYRParam());
 
-                    activity.setInstituteName( instituteName );
-                    activity.setInstituteCode( instituteCode );
-                    
+                    activity.setInstituteName(instituteName);
+                    activity.setInstituteCode(instituteCode);
+
                     activity.setPrimary(primary);
                     primary = false;
-    				activityOfferingItemList.add(activity);
+                    activityOfferingItemList.add(activity);
 
                 }
 
@@ -744,14 +750,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         boolean isPlanned = false;
         PlanItemInfo planItem = null;
         PlanController planController = new PlanController();
-        planItem=planController.getPlannedOrBackupPlanItem(refObjId,atpId);
+        planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
         if (planItem != null) {
             isPlanned = true;
         }
         return isPlanned;
     }
 
-    
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {

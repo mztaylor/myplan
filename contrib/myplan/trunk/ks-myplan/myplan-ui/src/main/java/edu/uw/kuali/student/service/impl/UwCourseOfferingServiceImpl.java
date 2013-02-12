@@ -841,14 +841,14 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 Element sectionCommentsNode = (Element) sectionCommentsPath.selectSingleNode(doc);
                 StringBuffer sectionComments = new StringBuffer();
-               List comments = sectionCommentsNode.content();
-                          for(Object ob:comments){
-                              Element element = (Element) ob;
-                              sectionComments = sectionComments.append(element.elementText("Text")+" ");
-                          }
+                List comments = sectionCommentsNode.content();
+                for (Object ob : comments) {
+                    Element element = (Element) ob;
+                    sectionComments = sectionComments.append(element.elementText("Text") + " ");
+                }
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
-                
+
                 String typeName = sectionNode.elementText("SectionType");
                 info.setTypeName(typeName);
 
@@ -942,26 +942,26 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                             List instructors = instructorPath.selectNodes(doc);
 
                             for (Object node : instructors) {
-								Element instructor = (Element) node;
-								name = instructor.elementText("Name");
-								name = name.replaceFirst(",", ", " );
-								regid = instructor.elementText("RegID");
-								// Only show the first instructor
-								break;
+                                Element instructor = (Element) node;
+                                name = instructor.elementText("Name");
+                                name = name.replaceFirst(",", ", ");
+                                regid = instructor.elementText("RegID");
+                                // Only show the first instructor
+                                break;
                             }
                             info.setInstructorName(name);
                             info.setInstructorId(regid);
                         }
                     }
                 }
-                String feeAmount =  sectionNode.elementText("FeeAmount").trim();
-                if(feeAmount.contains(".")){
-                    feeAmount = feeAmount.substring(0,feeAmount.indexOf("."));
+                String feeAmount = sectionNode.elementText("FeeAmount").trim();
+                if (feeAmount.contains(".")) {
+                    feeAmount = feeAmount.substring(0, feeAmount.indexOf("."));
                 }
 
 
                 /*Course Flags*/
-				List<AttributeInfo> attributes = info.getAttributes();
+                List<AttributeInfo> attributes = info.getAttributes();
                 attributes.add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
                 attributes.add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
                 attributes.add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
@@ -983,27 +983,25 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
                 attributes.add(attrib);
-                
+
                 {
-                	DefaultXPath linkPath = newXPath( "s:Curriculum/s:TimeScheduleLinkAbbreviation" );
-                	Element link = (Element) linkPath.selectSingleNode( sectionNode );
-                	if( link != null )
-                	{
-                		String instituteCode = link.getTextTrim();
+                    DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
+                    Element link = (Element) linkPath.selectSingleNode(sectionNode);
+                    if (link != null) {
+                        String instituteCode = link.getTextTrim();
                         AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
                         attributes.add(whoop);
-                	}
+                    }
                 }
 
                 {
-                	DefaultXPath namePath = newXPath( "s:InstituteName" );
-                	Element nameNode = (Element) namePath.selectSingleNode( sectionNode );
-                	if( nameNode != null )
-                	{
-                		String instituteName = nameNode.getTextTrim();
+                    DefaultXPath namePath = newXPath("s:InstituteName");
+                    Element nameNode = (Element) namePath.selectSingleNode(sectionNode);
+                    if (nameNode != null) {
+                        String instituteName = nameNode.getTextTrim();
                         AttributeInfo whoop = new AttributeInfo("instituteName", instituteName);
                         attributes.add(whoop);
-                	}
+                    }
                 }
 
                 result.add(info);
