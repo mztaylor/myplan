@@ -804,6 +804,15 @@
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
+        <property name="header.lowerGroup">
+            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Message" p:messageText="@{#line.courseComments}" p:render="@{#line.courseComments ne null}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-sections</value>
