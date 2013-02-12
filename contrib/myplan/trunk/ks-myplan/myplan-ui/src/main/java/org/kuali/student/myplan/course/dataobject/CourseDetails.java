@@ -35,8 +35,6 @@ public class CourseDetails extends CourseSummaryDetails {
     private transient String savedItemId;
     private String savedItemDateCreated;
 
-    private List<CourseOfferingDetails> courseOfferingDetails;
-
     public String getLastOffered() {
         return lastOffered;
     }
@@ -199,15 +197,17 @@ public class CourseDetails extends CourseSummaryDetails {
         this.academicTerms = academicTerms;
     }
 
-    public List<CourseOfferingDetails> getCourseOfferingDetails() {
-        if (courseOfferingDetails == null) {
-            courseOfferingDetails = new ArrayList<CourseOfferingDetails>();
+    private List<CourseOfferingInstitution> courseOfferingInstitutionList;
+    
+    public List<CourseOfferingInstitution> getCourseOfferingInstitutionList() {
+        if (courseOfferingInstitutionList == null) {
+        	courseOfferingInstitutionList = new ArrayList<CourseOfferingInstitution>();
         }
-        return courseOfferingDetails;
+        return courseOfferingInstitutionList;
     }
 
-    public void setCourseOfferingDetails(List<CourseOfferingDetails> courseOfferingDetails) {
-        this.courseOfferingDetails = courseOfferingDetails;
+    public void setCourseOfferingInstitutionList(List<CourseOfferingInstitution> courseOfferingInstitutionList) {
+        this.courseOfferingInstitutionList = courseOfferingInstitutionList;
     }
 
 

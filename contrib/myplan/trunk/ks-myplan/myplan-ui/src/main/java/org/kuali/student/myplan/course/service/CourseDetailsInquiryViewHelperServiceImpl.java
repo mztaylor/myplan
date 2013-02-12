@@ -50,7 +50,8 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingDetails;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.course.dataobject.MeetingDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
@@ -363,6 +364,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 }
             }
 
+            
             List<YearTerm> ytList = new ArrayList<YearTerm>();
             List<String> termList = courseDetails.getScheduledTerms();
             for (String term : termList) {
@@ -370,14 +372,45 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 ytList.add( yt );
             }
             Collections.sort(ytList, Collections.reverseOrder());
-            
+
+            List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
+
             for (YearTerm yt : ytList) {
-                CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-                courseOfferingDetails.setTerm(yt.toLabel());
                 String atp = yt.toATP();
                 List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
-                courseOfferingDetails.setActivityOfferingItemList(list);
-                courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
+                for (ActivityOfferingItem activityOfferingItem : list) {
+                    String instituteCode = activityOfferingItem.getInstituteCode();
+                    String instituteName = activityOfferingItem.getInstituteName();
+                    CourseOfferingInstitution courseOfferingInstitution = null;
+                    for (CourseOfferingInstitution temp : instituteList) {
+                        if (instituteCode.equals(temp.getCode())) {
+                            courseOfferingInstitution = temp;
+                            break;
+                        }
+                    }
+                    if (courseOfferingInstitution == null) {
+                        courseOfferingInstitution = new CourseOfferingInstitution();
+                        courseOfferingInstitution.setCode(instituteCode);
+                        courseOfferingInstitution.setName(instituteName);
+                        instituteList.add(courseOfferingInstitution);
+                    }
+
+                    List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
+                    CourseOfferingTerm courseOfferingTerm = null;
+                    for (CourseOfferingTerm temp : courseOfferingTermList) {
+                        if (yt.equals(temp.getYearTerm())) {
+                            courseOfferingTerm = temp;
+                        }
+                    }
+                    if (courseOfferingTerm == null) {
+                        courseOfferingTerm = new CourseOfferingTerm();
+                        courseOfferingTerm.setYearTerm(yt);
+                        courseOfferingTerm.setTerm(yt.toLabel());
+                        courseOfferingTermList.add(courseOfferingTerm);
+                    }
+
+                    courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+                }
             }
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
@@ -458,9 +491,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
-        CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-        courseOfferingDetails.setActivityOfferingItemList(getActivityOfferingItems(courseId, termId,null));
-        courseDetails.getCourseOfferingDetails().add(courseOfferingDetails);
+        List<CourseOfferingInstitution> courseOfferingInstitutionList = courseDetails.getCourseOfferingInstitutionList();
+        CourseOfferingInstitution courseOfferingInstitution = new CourseOfferingInstitution();
+        courseOfferingInstitutionList.add( courseOfferingInstitution );
+        List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
+        CourseOfferingTerm courseOfferingTerm = new CourseOfferingTerm();
+        courseOfferingTermList.add(courseOfferingTerm);
+        List<ActivityOfferingItem> activityOfferingItemList = getActivityOfferingItems(courseId, termId, null);
+        courseOfferingTerm.setActivityOfferingItemList(activityOfferingItemList);
+
         return courseDetails;
     }
 
@@ -484,13 +523,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             CourseOfferingService cos = getCourseOfferingService();
 
             List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
-
-            List<CourseOfferingDetails> courseOfferingDetailsList = new ArrayList<CourseOfferingDetails>();
-
-            CourseOfferingDetails courseOfferingDetails = new CourseOfferingDetails();
-            courseOfferingDetailsList.add(courseOfferingDetails);
-
-            activityOfferingItemList = courseOfferingDetails.getActivityOfferingItemList();
 
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
@@ -556,7 +588,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         }
                     }
 
-                    for (AttributeInfo attrib : aodi.getAttributes()) {
+                	String instituteCode = "";
+                	String instituteName = "";
+                	
+                   for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
                         if ("FeeAmount".equalsIgnoreCase(key) && value.length()>0) {
@@ -567,9 +602,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             activity.setSln(value);
                             continue;
                         }
-                        if("SectionComments".equalsIgnoreCase(key)) {
-                            activity.setSectionComments(value);
-                        }
+    					if( "instituteCode".equals( key )) {
+                			instituteCode = value;
+                            continue;
+                		}
+                		if( "instituteName".equals( key )) {
+                			instituteName = value;
+                            continue;
+                		}
+                		
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
                             activity.setServiceLearning(flag);
@@ -612,6 +653,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
                     activity.setQtryr(yt.toQTRYRParam());
 
+                    activity.setInstituteName( instituteName );
+                    activity.setInstituteCode( instituteCode );
+                    
                     activity.setPrimary(primary);
                     primary = false;
     				activityOfferingItemList.add(activity);

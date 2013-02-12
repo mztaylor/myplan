@@ -41,7 +41,6 @@ import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;

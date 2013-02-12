@@ -2,11 +2,11 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientImpl;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -959,20 +959,20 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     feeAmount = feeAmount.substring(0,feeAmount.indexOf("."));
                 }
 
+
                 /*Course Flags*/
-                {
-                    info.getAttributes().add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
-                    info.getAttributes().add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
-                    info.getAttributes().add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
-                    info.getAttributes().add(new AttributeInfo("DistanceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("DistanceLearning")))));
-                    info.getAttributes().add(new AttributeInfo("JointSections", String.valueOf(sectionNode.element("JointSections").content().size() > 0)));
-                    info.getAttributes().add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length() > 0))));
-                    info.getAttributes().add(new AttributeInfo("AddCodeRequired",String.valueOf(Boolean.valueOf(sectionNode.elementText("AddCodeRequired")))));
-                    info.getAttributes().add(new AttributeInfo("IndependentStudy",String.valueOf(Boolean.valueOf(sectionNode.elementText("IndependentStudy")))));
-                    info.getAttributes().add(new AttributeInfo("EnrollmentRestrictions",String.valueOf(Boolean.valueOf(sectionNode.elementText("EnrollmentRestrictions")))));
-                    info.getAttributes().add(new AttributeInfo("FeeAmount",feeAmount));
-                    info.getAttributes().add(new AttributeInfo("SectionComments",sectionComments.toString()));
-                }
+				List<AttributeInfo> attributes = info.getAttributes();
+                attributes.add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
+                attributes.add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
+                attributes.add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
+                attributes.add(new AttributeInfo("DistanceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("DistanceLearning")))));
+                attributes.add(new AttributeInfo("JointSections", String.valueOf(sectionNode.element("JointSections").content().size() > 0)));
+                attributes.add(new AttributeInfo("FinancialAidEligible", String.valueOf(Boolean.valueOf(sectionNode.elementText("FinancialAidEligible").length() > 0))));
+                attributes.add(new AttributeInfo("AddCodeRequired", String.valueOf(Boolean.valueOf(sectionNode.elementText("AddCodeRequired")))));
+                attributes.add(new AttributeInfo("IndependentStudy", String.valueOf(Boolean.valueOf(sectionNode.elementText("IndependentStudy")))));
+                attributes.add(new AttributeInfo("EnrollmentRestrictions", String.valueOf(Boolean.valueOf(sectionNode.elementText("EnrollmentRestrictions")))));
+                attributes.add(new AttributeInfo("FeeAmount", feeAmount));
+                attributes.add(new AttributeInfo("SectionComments", sectionComments.toString()));
 
 
                 info.setCourseOfferingTitle(title);
@@ -980,8 +980,31 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 info.setCourseOfferingCode(curric + " " + id);
                 info.setActivityOfferingCode(id);
                 info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
+
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
-                info.getAttributes().add(attrib);
+                attributes.add(attrib);
+                
+                {
+                	DefaultXPath linkPath = newXPath( "s:Curriculum/s:TimeScheduleLinkAbbreviation" );
+                	Element link = (Element) linkPath.selectSingleNode( sectionNode );
+                	if( link != null )
+                	{
+                		String instituteCode = link.getTextTrim();
+                        AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
+                        attributes.add(whoop);
+                	}
+                }
+
+                {
+                	DefaultXPath namePath = newXPath( "s:InstituteName" );
+                	Element nameNode = (Element) namePath.selectSingleNode( sectionNode );
+                	if( nameNode != null )
+                	{
+                		String instituteName = nameNode.getTextTrim();
+                        AttributeInfo whoop = new AttributeInfo("instituteName", instituteName);
+                        attributes.add(whoop);
+                	}
+                }
 
                 result.add(info);
 

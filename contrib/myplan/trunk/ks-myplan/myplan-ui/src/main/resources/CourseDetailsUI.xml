@@ -112,9 +112,8 @@
                             <ref bean="course_details_overview"/>
                             <!--<ref bean="course_details_links"/>-->
 
-                            <ref bean="course_details_sections"/>
-
-                            <!--<ref bean="course_details_section_data"/>-->
+			                <ref bean="course_details_institution_data" />
+                            <!-- <ref bean="course_details_sections"/> -->
                         </list>
                     </property>
                 </bean>
@@ -764,28 +763,48 @@
         </property>
     </bean>-->
 
-    <bean id="course_details_sections" parent="Uif-ListCollectionSection">
+    <!-- <bean id="course_details_sections" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingDetails"/>
         <property name="propertyName" value="courseOfferingDetails"/>
         <property name="headerText" value="@{dataObject.code} &lt;strong&gt;Course Sections&lt;/strong&gt;"/>
         <property name="header">
             <bean parent="Uif-HeaderThree" p:style="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
         </property>
-        <!--<property name="items">
+        <property name="items">
             <list>
                 <bean parent="Uif-DataField" p:propertyName="term"/>
             </list>
-        </property>-->
+        </property>
         <property name="subCollections">
             <list>
                 <ref bean="course_details_section_data" />
             </list>
         </property>
+    </bean> -->
+
+    <bean id="course_details_institution_data" parent="Uif-ListCollectionSection">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
+        <property name="propertyName" value="courseOfferingInstitutionList"/>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_term_data" />
+            </list>
+        </property>
     </bean>
 
+    <bean id="course_details_term_data" parent="Uif-ListCollectionSection">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
+        <property name="headerText" value="Institute Code: @{#line.code} Name: @{#line.name}"/>
+        
+        <property name="propertyName" value="courseOfferingTermList"/>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_activity_data" />
+            </list>
+        </property>
+    </bean>
 
-
-    <bean id="course_details_section_data" parent="Uif-TableCollectionSection">
+    <bean id="course_details_activity_data" parent="Uif-TableCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="activityOfferingItemList"/>
         <property name="layoutManager.id" value="course_details_section_datatable"/>
