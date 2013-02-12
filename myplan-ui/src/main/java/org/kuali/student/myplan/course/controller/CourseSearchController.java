@@ -302,8 +302,8 @@ public class CourseSearchController extends UifControllerBase {
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
                     String courseId = course.getCourseId();
-                    if (courseStatusMap.containsKey(courseId)) {
-                        course.setStatus(courseStatusMap.get(courseId));
+                    if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
+                        course.setStatus(courseStatusMap.get(course.getCourseVersionIndependentId()));
                     }
                     courseList.add(course);
                     if (courseList.size() >= maxCount) {
@@ -645,6 +645,8 @@ public class CourseSearchController extends UifControllerBase {
             String level = getCellValue(row, "course.level");
             String creditsID = getCellValue(row, "course.credits");
             String code = getCellValue(row, "course.code");
+            String versionIndId = getCellValue(row,"course.verIndId");
+            course.setCourseVersionIndependentId(versionIndId);
 
             course.setCourseId(courseId);
             course.setSubject(subject);

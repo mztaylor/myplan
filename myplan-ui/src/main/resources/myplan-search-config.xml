@@ -50,6 +50,9 @@
                 <search:resultColumn id="course.code">
                     <search:dataType>string</search:dataType>
                 </search:resultColumn>
+                <search:resultColumn id="course.verIndId">
+                    <search:dataType>string</search:dataType>
+                </search:resultColumn>
             </search:resultColumns>
         </search:searchResultTypeInfo>
         <search:searchCriteriaTypeInfo>
@@ -548,7 +551,8 @@
                         trim( ident.DIVISION ),
                         trim( ident.LVL ),
                         opt.RES_COMP_ID,
-                        ident.cd
+                        ident.cd,
+                        clu.VER_IND_ID
                         FROM
                         KSLU_CLU clu,
                         KSLU_CLU_IDENT ident,

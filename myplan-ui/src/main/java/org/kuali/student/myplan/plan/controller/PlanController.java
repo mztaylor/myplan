@@ -28,11 +28,13 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.courseoffering.infc.ActivityOffering;
+import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -233,6 +235,7 @@ public class PlanController extends UifControllerBase {
             return doPageRefreshError(planForm, "Plan item not found.", e);
 
         }
+
         /*Checks if the course is added as plan/backup to that term in case of sections to add only to that particular type*/
         if (planForm.getCourseDetails() != null && planForm.getTermYear() != null) {
             PlanItemInfo existingPlanItem = null;
@@ -253,9 +256,8 @@ public class PlanController extends UifControllerBase {
         }
 
 
-        /*plan item does not exists for academic Record course
- In that case acadRecAtpId is passed in through the UI
- which is used for populating the right flag*/
+        /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
+           which is used for populating the right flag*/
         if (planForm.getAcadRecAtpId() != null) {
             /*Condition to check if the atp is greater than or equal to planning term*/
             if (!planForm.isSetToPlanning()) {
@@ -707,6 +709,25 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
+        // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
+        CourseDetails courseDetails = null;
+        // Now switch to the details based on the version independent Id
+        //  Lookup course details as well need them in case there is an error below.
+        List<ActivityOfferingItem> activityOfferings = new ArrayList<ActivityOfferingItem>();
+        try {
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+
+            // Now switch the courseDetails based on the versionIndependent Id
+            if (!courseId.equals(courseDetails.getVersionIndependentId())) {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseDetails.getVersionIndependentId(), getUserId());
+            }
+
+            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItems(courseId, form.getTermYear(), null);
+        } catch (Exception e) {
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
+        }
+
+
         //  Further validation of ATP IDs will happen in the service validation methods.
         if (StringUtils.isEmpty(form.getTermYear())) {
             return doOperationFailedError(form, "Term Year value missing", null);
@@ -753,18 +774,8 @@ public class PlanController extends UifControllerBase {
                 return doOperationFailedError(form, "Unable to create learning plan.", e);
             }
         }
-        //  Lookup course details as well need them in case there is an error below.
-        CourseDetails courseDetails = null;
-        List<ActivityOfferingItem> activityOfferings = new ArrayList<ActivityOfferingItem>();
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
-            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItems(courseId, form.getTermYear(), null);
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
-        }
+
         /*Retrieve course activity offerings for the term to be planned*/
-
-
         /*Adding Section related courses logic */
         boolean addCourse = true;
         boolean addPrimaryCourse = false;
@@ -1110,12 +1121,19 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-        //  Grab course details.
+        // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
         CourseDetails courseDetails = null;
+        // Now switch to the details based on the version independent Id
+        //  Lookup course details as well need them in case there is an error below.
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+
+            // Now switch the courseDetails based on the versionIndependent Id
+            if (!courseId.equals(courseDetails.getVersionIndependentId())) {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseDetails.getVersionIndependentId(), getUserId());
+            }
         } catch (Exception e) {
-            return doOperationFailedError(form, String.format("Unable to retrieve Course Details for [%s].", courseId), e);
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
 
         PlanItemInfo planItem = null;
@@ -1151,7 +1169,7 @@ public class PlanController extends UifControllerBase {
         }
 
         if (StringUtils.isEmpty(planItemId)) {
-            planItemId = getPlanIdFromCourseId(courseId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+            planItemId = getPlanIdFromCourseId(courseId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         }
 
 
@@ -1165,12 +1183,14 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Query for plan item failed.", e);
         }
         CourseDetails courseDetail = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), UserSessionHelper.getStudentId());
-        List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryService().getActivityOfferingItems(planItem.getRefObjectId(), planItem.getPlanPeriods().get(0), null);
         List<String> plannedSections = new ArrayList<String>();
-        if (activityOfferingItems != null) {
-            for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-                if (activityOfferingItem.isPlanned()) {
-                    plannedSections.add(getPlanIdFromCourseId(courseDetail.getCode() + " " + activityOfferingItem.getCode(),planItem.getTypeKey()));
+        if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
+            List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryService().getActivityOfferingItems(planItem.getRefObjectId(), planItem.getPlanPeriods().get(0), null);
+            if (activityOfferingItems != null) {
+                for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+                    if (activityOfferingItem.isPlanned()) {
+                        plannedSections.add(getPlanIdFromCourseId(courseDetail.getCode() + " " + activityOfferingItem.getCode(), planItem.getTypeKey()));
+                    }
                 }
             }
         }
@@ -1178,8 +1198,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         //  Make events ...
-        CourseDetails courseDetails = null;
-        events.putAll(makeRemoveEvent(planItem, courseDetails));
+        events.putAll(makeRemoveEvent(planItem, null));
 
         try {
             // Delete the plan item

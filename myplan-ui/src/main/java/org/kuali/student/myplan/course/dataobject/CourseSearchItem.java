@@ -25,6 +25,7 @@ public class CourseSearchItem {
     public static final String EMPTY_RESULT_VALUE_KEY = "&mdash;";
 
     private String courseId;
+    private String courseVersionIndependentId;
     private String code;
 
     private String number;
@@ -325,6 +326,14 @@ public class CourseSearchItem {
 
     public void addScheduledTerm(String term) {
         scheduledTermsList.add(term);
+    }
+
+    public String getCourseVersionIndependentId() {
+        return courseVersionIndependentId;
+    }
+
+    public void setCourseVersionIndependentId(String courseVersionIndependentId) {
+        this.courseVersionIndependentId = courseVersionIndependentId;
     }
 
     @Override
