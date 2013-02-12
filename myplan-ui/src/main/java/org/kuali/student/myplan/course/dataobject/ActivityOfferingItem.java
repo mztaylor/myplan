@@ -52,7 +52,9 @@ public class ActivityOfferingItem {
 
     private boolean primary = false;
 
-    private List<ActivityOfferingItem> secondaryList;
+    private String instituteCode;
+    private String instituteName;
+
 
     public String getCode() {
         return code;
@@ -248,19 +250,20 @@ public class ActivityOfferingItem {
         this.primary = primary;
     }
 
-    public List<ActivityOfferingItem> getSecondaryList() {
-        if (secondaryList == null) {
-            secondaryList = new ArrayList<ActivityOfferingItem>();
-        }
-        return secondaryList;
-    }
-    
-    public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {
-    	this.secondaryList = secondaryList;
-    }
+//    public List<ActivityOfferingItem> getSecondaryList() {
+//        if (secondaryList == null) {
+//            secondaryList = new ArrayList<ActivityOfferingItem>();
+//        }
+//        return secondaryList;
+//    }
+//    
+//    public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {
+//    	this.secondaryList = secondaryList;
+//    }
     
     public boolean isStandalone() {
-    	return isPrimary() && getSecondaryList().size() == 0;
+    	return isPrimary();
+//    	return isPrimary() && getSecondaryList().size() == 0;
     }
 
     public boolean isPlanned() {
@@ -310,4 +313,22 @@ public class ActivityOfferingItem {
     public void setSectionComments(String sectionComments) {
         this.sectionComments = sectionComments;
     }
+
+    public String getInstituteCode() {
+        return instituteCode;
+    }
+
+    public void setInstituteCode(String instituteCode) {
+        this.instituteCode = instituteCode;
+    }
+
+    public String getInstituteName() {
+        return instituteName;
+    }
+
+    public void setInstituteName(String instituteName) {
+        this.instituteName = instituteName;
+    }
+
+
 }
