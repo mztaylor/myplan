@@ -67,7 +67,7 @@
     <bean id="registered_help_icon" parent="MyPlanHelpImage"
           p:render="@{!#parentLine.completedTerm and (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning) and #parentLine.displayRegisteredHelp ? true : false}">
         <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('registered_help_icon_line@{#index}', 'Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration &lt;/a&gt;page.',{
+            myplanCreateTooltip('registered_help_icon_line@{#index}', 'Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page.',{
                 position: 'top',
                 align: 'left',
                 alwaysVisible: false,

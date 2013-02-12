@@ -107,8 +107,6 @@
                                     </list>
                                 </property>
                             </bean>
-
-
                             <ref bean="course_details_overview"/>
                             <!--<ref bean="course_details_links"/>-->
 
@@ -211,10 +209,14 @@
         </property>
     </bean>
 
-    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="&lt;strong&gt;Course Overview&lt;/strong&gt;">
+    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="Course Overview">
         <property name="header">
             <bean parent="Uif-HeaderThree">
-                <property name="style" value="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-underline-header</value>
+                    </list>
+                </property>
             </bean>
         </property>
         <property name="header.rightGroup">
@@ -628,7 +630,6 @@
                                                 <list>
                                                     <bean parent="Uif-Label" p:labelText="Campus"
                                                           p:renderColon="false"/>
-
                                                 </list>
                                             </property>
                                         </bean>
@@ -655,11 +656,9 @@
                                                 </list>
                                             </property>
                                         </bean>
-
                                     </list>
                                 </property>
                             </bean>-->
-
                         </list>
                     </property>
                 </bean>
@@ -671,28 +670,9 @@
         <property name="items">
             <list>
                 <!-- The propertyEditor renders the time schedule info as a list of links. -->
-
                 <!-- Lightbox Link -->
                 <bean parent="Uif-DataField" p:propertyName="this" p:fieldLabel.render="false"
                       p:escapeHtmlInPropertyValue="false">
-                    <!--
-                    <property name="onDocumentReadyScript" value="
-                        jQuery('#course_details_links_div ul li a').each(function(){
-                            var href = jQuery(this).attr('href');
-                            var id = href.split('#')[1];
-                            var quarter = href.split('/')[5];
-                            jQuery(this).attr('id',id+quarter);
-                            jQuery(this).attr('href',href.split('#')[0]+'?external=true&amp;dialogMode=true'+'#'+id);
-                        });
-                        jQuery('#course_details_links_div ul li a').click(function(e){
-                            e.preventDefault();
-                            var id = jQuery(this).attr('href').split('#')[1];
-                            alert(jQuery(this).attr('id'));
-                            createLightBoxLink(jQuery(this).attr('id'), {autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,hideOnOverlayClick:true,type:'iframe',width:'90%',height:'95%'});
-                        });
-                    "/>
-
-                    -->
                     <property name="propertyEditor" ref="time_schedule_links_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -712,7 +692,6 @@
 
     <bean id="meeting_building_link_formatter"
           class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
-     <!--    <property name="baseUrl" value="https://www.washington.edu/students/timeschd/"/> -->
     </bean>
 
     <!--<bean id="Advisor-FormView" parent="MyPlanBaseFormView">
@@ -766,14 +745,16 @@
     <!-- <bean id="course_details_sections" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingDetails"/>
         <property name="propertyName" value="courseOfferingDetails"/>
-        <property name="headerText" value="@{dataObject.code} &lt;strong&gt;Course Sections&lt;/strong&gt;"/>
+        <property name="render" value="@{dataObject.courseOfferingDetails.size() gt 0}"/>
+        <property name="headerText" value="@{dataObject.code} Course Sections"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree" p:style="border-bottom:solid 3px #f2e4b7; margin-bottom:10px;"/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-DataField" p:propertyName="term"/>
-            </list>
+            <bean parent="Uif-HeaderThree">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-underline-header</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="subCollections">
             <list>
@@ -795,7 +776,7 @@
     <bean id="course_details_term_data" parent="Uif-ListCollectionSection">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
         <property name="headerText" value="Institute Code: @{#line.code} Name: @{#line.name}"/>
-        
+
         <property name="propertyName" value="courseOfferingTermList"/>
         <property name="subCollections">
             <list>
@@ -810,7 +791,7 @@
         <property name="layoutManager.id" value="course_details_section_datatable"/>
         <property name="headerText" value="@{#line.term}"/>
         <property name="header">
-            <bean parent="Uif-HeaderFour" p:style="text-transform:uppercase !important;"/>
+            <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
@@ -835,8 +816,6 @@
             });
         "/>-->
         <property name="layoutManager.renderSequenceField" value="false"/>
-        <!--<property name="layoutManager.rowDetailsUseImage" value="true"/>
-        <property name="layoutManager.rowDetailsLinkName" value="View more"/>-->
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="layoutManager.richTable.templateOptions">
             <map merge="true">
@@ -846,26 +825,14 @@
                 <entry key="bLengthChange" value="false"/>
                 <entry key="bFilter" value="true"/>
                 <entry key="sDom" value="it"/>
-                <!--
-                <entry key="aoColumns" value="[
-                            {'sWidth':'48px'},
-                            {'sWidth':'85px'},
-                            {'sWidth':'188px'},
-                            {'sWidth':'62px'},
-                            {'sWidth':'44px','sType':'string'},
-                            {'sWidth':'116px'},
-                            {'sWidth':'68px'},
-                            {'sWidth':'24px'}
-                        ]"/>
-                -->
                 <entry key="aoColumns" value="[
                             {'sWidth':'48px'},
                             {'sWidth':'86px'},
-                            {'sWidth':'277px'},
-                            {'sWidth':'46px','sType':'string'},
-                            {'sWidth':'117px'},
-                            {'sWidth':'81px'},
-                            {'sWidth':'21px'}
+                            {'sWidth':'288px'},
+                            {'sWidth':'42px','sType':'string'},
+                            {'sWidth':'85px'},
+                            {'sWidth':'72px'},
+                            {'sWidth':'25px'}
                        ]"/>
                 <entry key="oLanguage" value="{
                             'sInfo':'',
@@ -880,47 +847,16 @@
                 "/>
             </map>
         </property>
-        <!--
-        <property name="layoutManager.rowDetailsGroup">
-            <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false" p:style="margin:0 0 0 34px;" p:header.render="false">
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-ActionLink" p:actionLabel="ActionLinkField"
-                                      p:actionScript="alert('You clicked a button');"/>
-                        <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:style="margin:0;">
-                            <property name="items">
-                                <list>
-                                    <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                          p:style="width:312px;"/>
-                                    <bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                          p:style="border-left:1px dotted #ccc; width:307px;">
-                                        <property name="message">
-                                            <bean parent="Uif-Message" p:messageText="- -"/>
-                                        </property>
-                                    </bean>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean parent="Uif-LinkField" p:label="Additional Details" p:fieldLabel.renderColon="false" p:labelPlacement="TOP" p:style="margin:0;">
-                            <property name="link">
-                                <bean parent="Uif-Link" p:linkText="@{#line.details}" p:href="#"/>
-                            </property>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        -->
-        <!--
-        <property name="layoutManager.rowCssClasses">
+        <!--<property name="layoutManager.rowDetailsUseImage" value="true"/>
+        <property name="layoutManager.rowDetailsLinkName" value="View more"/>-->
+        <!-- layoutManager.rowCssClasses does not work currently, but no exception is thrown. TableLayoutManager clears any values set -->
+        <!--<property name="layoutManager.rowCssClasses">
             <list merge="true">
-                <value>closed</value>
+                <value></value>
             </list>
-        </property>
-        -->
+        </property>-->
         <property name="items">
             <list>
-                <!--<bean parent="Uif-DataField" p:propertyName="code" p:label="Section"/>-->
                 <bean parent="Uif-VerticalFieldGroup" p:label="Section" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
@@ -947,21 +883,23 @@
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#@{dataObject.courseId}-@{#line.code}-@{#line.sln}').subscribe('DATATABLE_INITIALISED', function(data) {
                                         showDataTableDetail(this,'course_details_section_datatable',false);
+                                        jQuery(this).parents('tr').css('border-top-width','3px');
+                                        jQuery(this).parents('tr').next('tr').children('td.uif-rowDetails').parents('tr').css('border-bottom','solid 3px #ccc');
                                     });
                                 "/>
                                 <property name="actionScript" value=""/>
                             </bean>
-                            <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false" p:style="margin:0 0 0 56px; display:none; width:651px;" p:header.render="false">
+                            <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false" p:style="margin:0 33px 0 56px; display:none; width:617px;" p:header.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
-                                            <property name="style" value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 380px 0px repeat-y;"/>
+                                            <property name="style" value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 391px 0px repeat-y;"/>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-DataField" p:propertyName="instructor" p:label="Instructor" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:style="width:372px;"/>
+                                                          p:style="width:383px;"/>
                                                     <bean parent="Uif-VerticalFieldGroup" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:group.validationMessages.render="false" p:style="width:262px;">
+                                                          p:group.validationMessages.render="false" p:style="width:217px;">
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-Message" p:messageText="@{#line.gradingOption}" p:render="@{#line.gradingOption ne null}"/>
@@ -990,12 +928,6 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <!--<bean parent="Uif-MessageField" p:label="Other" p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
-                                                          p:style="border-left:1px dotted #ccc; width:348px;">
-                                                        <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="- - @{#line.gradingOption}"/>
-                                                        </property>
-                                                    </bean>-->
                                                 </list>
                                             </property>
                                         </bean>
@@ -1007,17 +939,6 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <!--<bean parent="Uif-LinkField" p:label="Additional Details" p:fieldLabel.renderColon="false" p:labelPlacement="TOP" p:style="margin:0;">
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>uif-field</value>
-                                                    <value>@{#line.enrollOpen ? 'open':'closed'}</value>
-                                                </list>
-                                            </property>
-                                            <property name="link">
-                                                <bean parent="Uif-Link" p:linkText="@{#line.details}" p:href="http://sdb.admin.washington.edu/textbooks/query.asp?qtr=Winter&amp;sln1=11944" p:target="_blank" p:style="margin:0;"/>
-                                            </property>
-                                        </bean>-->
                                     </list>
                                 </property>
                             </bean>
@@ -1032,25 +953,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:label="Meeting Time" p:propertyName="meetingDetailsList" p:escapeHtmlInPropertyValue="false">
+                <bean parent="Uif-DataField" p:label="Meeting Time &amp; Location" p:propertyName="meetingDetailsList" p:escapeHtmlInPropertyValue="false">
                 	<property name="propertyEditor" ref="meeting_building_link_formatter"/>
                 </bean>
-                
-                
-                <!-- <bean parent="Uif-HorizontalFieldGroup" p:label="Location" p:group.validationMessages.render="false">
-                    <property name="items">
-                        <list>
-                            Building code NOC means not on campus, map only applies to Seattle campus
-                            Building code may start with an asterisk to represent a TBD
-                            <bean parent="Uif-Link" p:linkText="@{#line.locationBuilding}" p:href="http://uw.edu/maps/?@{#line.locationBuilding}" p:target="_blank" p:style="margin-right:0.33em;"
-                                  p:render="@{#line.locationBuilding ne 'NOC' AND !#line.locationBuilding.startsWith('*')}"/>  AND #line.campus.toLowerCase() eq 'seattle'
-                            <bean parent="Uif-Message" p:messageText="@{#line.locationBuilding}" p:style="margin-right:0.33em;"
-                                  p:render="@{#line.locationBuilding eq 'NOC' OR #line.locationBuilding.startsWith('*')}"/> #line.campus.toLowerCase() ne 'seattle'
-                            <bean parent="Uif-Message" p:messageText="@{#line.locationRoom}" p:style="margin:0;"
-                                  p:render="@{#line.locationBuilding ne 'NOC' AND !#line.locationBuilding.startsWith('*')}"/>
-                        </list>
-                    </property>
-                </bean> -->
                 <bean parent="Uif-HorizontalFieldGroup" p:label="SLN" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
@@ -1077,8 +982,6 @@
                                 </property>
                             </bean>
                             <bean parent="current_section_status" p:actionLabel="View restrictions" p:render="@{#line.enrollRestriction}"/>
-
-                            <!--<bean parent="Uif-Link" p:linkText="View restrictions" p:href="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944" p:render="@{#line.enrollRestriction}" p:style="margin:0;"/>-->
                         </list>
                     </property>
                 </bean>

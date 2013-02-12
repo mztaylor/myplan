@@ -94,9 +94,7 @@ public class SingleQuarterHelperBase {
                     List<ActivityOfferingItem> activityOfferingItemList = courseDetailsService.getActivityOfferingItems(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId(), studentInfo.getCourseCode());
                     for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
                         if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {
-                            List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-                            activityOfferingItems.add(activityOfferingItem);
-                            academicRecordDataObject.setActivityOfferingItemList(activityOfferingItems);
+                            academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);
                             break;
                         }
                     }

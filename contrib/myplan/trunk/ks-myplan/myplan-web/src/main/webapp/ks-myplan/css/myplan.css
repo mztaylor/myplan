@@ -1101,7 +1101,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 }
 .myplan-facets-panel .myplan-facets-group .uif-header img.uif-disclosure-image {
     position: absolute;
-    top: 7px;
+    top: 9px;
     right: 10px;
     background: url('../images/myplan_icon_sprites.png') no-repeat 0px -16px;
     margin: 0;
@@ -1394,15 +1394,13 @@ table.myplan-course-search-results-datatable .blockUI {
     list-style-position: inside;
 }
 /* Course Details Styles ########################################################################### */
-/*
-.myplan-course-details table td,
-.myplan-course-details table th {
-    padding-bottom: 1.8em;
+.myplan-view .myplan-underline-header {
+    border-bottom: solid 3px #f2e4b7;
+    margin-bottom: 20px;
 }
-.myplan-course-details table td .uif-boxLayoutHorizontalItem {
-    margin: 0 0.33em 0 0;
+.myplan-view .myplan-underline-header .uif-headerText {
+    font-weight: 700;
 }
-*/
 .myplan-view .myplan-course-detail-label {
     width: 150px;
     margin-right: 20px;
@@ -1421,10 +1419,15 @@ table.myplan-course-search-results-datatable .blockUI {
     width: 515px;
     margin: 0;
 }
-.myplan-course-sections table.uif-tableCollectionLayout {
-    border: solid 1px #ccc;
+.myplan-course-sections h4.uif-headerText {
+    text-transform: uppercase;
+    color: #5d5d5d;
+    font-size: 1.4em;
+    font-weight: 500;
 }
 /* Reset */
+.myplan-course-sections .dataTables_wrapper,
+.myplan-course-sections .dataTables_wrapper .dataTables_info,
 .myplan-course-sections table.uif-tableCollectionLayout tr,
 .myplan-course-sections table.uif-tableCollectionLayout th,
 .myplan-course-sections table.uif-tableCollectionLayout td,
@@ -1435,9 +1438,16 @@ table.myplan-course-search-results-datatable .blockUI {
     background: transparent;
 }
 /* End Reset */
+.myplan-course-sections .dataTables_wrapper {
+    margin: 20px 0px;
+}
+.myplan-course-sections table.uif-tableCollectionLayout {
+    border: solid 1px #ccc;
+    line-height: 16px;
+}
 .myplan-course-sections table.uif-tableCollectionLayout th,
 .myplan-course-sections table.uif-tableCollectionLayout td {
-    padding: 2px 4px;
+    padding: 4px;
     border-left: 1px dotted #ccc;
     vertical-align: middle;
 }
@@ -1454,7 +1464,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group {
     border-left: 1px dotted #ccc;
-    /*border-right: 1px dotted #ccc;*/
+    border-right: 1px dotted #ccc;
 }
 .myplan-course-sections table.uif-tableCollectionLayout tbody .closed {
     color: #b4b4b4 !important;
@@ -1462,7 +1472,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group .uif-field {
     border-top: 1px dotted #ccc;
     margin: 0;
-    padding: 2px 4px;
+    padding: 4px;
 }
 .myplan-course-sections .uif-tableCollectionLayout .uif-rowDetails .uif-verticalFieldGroup .uif-verticalBoxGroup .uif-verticalBoxLayout > span {
     margin: 0;
@@ -1481,29 +1491,29 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 .myplan-course-sections .meetingdetails .meetingdays,
 .myplan-course-sections .meetingdetails .meetingtime,
+.myplan-course-sections .meetingdetails .meetingtba,
 .myplan-course-sections .meetingdetails .meetingbuilding,
 .myplan-course-sections .meetingdetails .meetingroom {
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 8px;
 }
-/*
 .myplan-course-sections .meetingdetails .meetingdays {
     width: 56px;
 }
 .myplan-course-sections .meetingdetails .meetingtime {
     width: 127px;
 }
-.myplan-course-sections .meetingdetails .meetingroom {
-    margin: 0;
+.myplan-course-sections .meetingdetails .meetingtba {
+    width: 191px;
 }
-
 .myplan-course-sections .meetingdetails .meetingbuilding {
     width: 40px;
 }
 .myplan-course-sections .meetingdetails .meetingroom {
-    width: 26px;
+    width: 30px;
+    margin: 0;
 }
-*/
+
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;
@@ -1838,13 +1848,17 @@ label.scheduled {
     line-height: 1.8em;
     display: inline-block;
 }
-
 .myplan-full-plan-detail {
+    margin: 0 auto !important;
+}
+.myplan-full-plan-detail > .uif-boxLayout {
     border: solid 1px #a9a9a9;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     font-size: 90%;
+    width: 618px;
+    margin:0 20px;
 }
 .myplan-full-plan-detail table td,
 .myplan-full-plan-detail table th,
@@ -1860,9 +1874,14 @@ label.scheduled {
     padding: 5px 0 0 10px;
     text-align: left;
     display: block;
-    width: 46px;
+    width: 44px;
     font-weight: bold;
     line-height: 1.25em;
+}
+.myplan-full-plan-detail h4.uif-headerText {
+    font-size: 85%;
+    text-transform: uppercase;
+    color: #999;
 }
 .myplan-full-plan-detail .uif-stackedCollectionLayout > .uif-collectionItem.uif-horizontalBoxGroup {
     display: inline-block;
@@ -1874,10 +1893,11 @@ label.scheduled {
 }
 .myplan-full-plan-detail .myplan-term {
     border-left: solid 1px #a9a9a9;
+    width: 140px;
 }
 .myplan-full-plan-detail .myplan-term > .uif-boxLayout {
     padding: 5px 10px;
-    min-height: 20px;
+    min-height: 100px;
 }
 .myplan-full-plan-detail .myplan-term .myplan-term-footer,
 .myplan-full-plan-detail .myplan-term .myplan-term-footer-blank {
