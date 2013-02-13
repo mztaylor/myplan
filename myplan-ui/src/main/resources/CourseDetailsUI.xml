@@ -951,7 +951,6 @@
                                                                 <bean parent="Uif-Message" p:messageText="New course" p:render="@{#line.newThisYear}"/>
                                                                 <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
                                                                 <bean parent="Uif-Message" p:messageText="Course Fee $@{#line.feeAmount}" p:render="@{#line.feeAmount ne null}"/>
-                                                                <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
                                                                 <bean parent="Uif-Message" p:messageText="--"
                                                                       p:render="@{#line.gradingOption eq null AND
                                                                                  !#line.distanceLearning AND
