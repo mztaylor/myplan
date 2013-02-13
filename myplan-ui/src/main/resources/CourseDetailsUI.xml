@@ -763,11 +763,39 @@
         </property>
     </bean> -->
 
-    <bean id="course_details_institution_data" parent="Uif-ListCollectionSection">
+    <!--<bean id="course_details_institution_data" parent="Uif-ListCollectionSection">-->
+        <!--<property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>-->
+        <!--<property name="propertyName" value="courseOfferingInstitutionList"/>-->
+        <!--<property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>-->
+        <!--<property name="headerText" value="@{dataObject.code} Course Sections"/>-->
+        <!--<property name="header">-->
+            <!--<bean parent="Uif-HeaderThree">-->
+                <!--<property name="cssClasses">-->
+                    <!--<list merge="true">-->
+                        <!--<value>myplan-underline-header</value>-->
+                    <!--</list>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
+        <!--<property name="items">-->
+            <!--<list>-->
+                <!--<bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>-->
+            <!--</list>-->
+        <!--</property>-->
+        <!--<property name="subCollections">-->
+            <!--<list>-->
+                <!--<ref bean="course_details_term_data" />-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+    <bean id="course_details_institution_data" parent="Uif-TabbedCollectionGroup">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
         <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>
         <property name="headerText" value="@{dataObject.code} Course Sections"/>
+        <property name="layoutManager.summaryFields" value="name"/>
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
@@ -779,7 +807,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>
+                <!--<bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>-->
             </list>
         </property>
         <property name="subCollections">
