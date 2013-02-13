@@ -144,6 +144,11 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
+    public String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/enrollment?reg_id=9136CCB8F66711D5BE060004AC494FFE&verbose=on
