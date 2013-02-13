@@ -989,6 +989,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 attributes.add(new AttributeInfo("FeeAmount", feeAmount));
                 attributes.add(new AttributeInfo("SectionComments", sectionComments.toString()));
 
+                populateEnrollmentFields(info, year, quarter, curric, num, sectionID);
 
                 info.setCourseOfferingTitle(title);
 //		        info.setCourseCode( curric );
@@ -1028,5 +1029,25 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
 
         return result;
+    }
+
+    void populateEnrollmentFields(ActivityOfferingDisplayInfo activity, String year, String quarter, String curric, String num, String sectionID)
+            throws Exception {
+        String xml = studentServiceClient.getSectionStatus(year, quarter, curric, num, sectionID);
+        Document doc = newDocument(xml);
+        DefaultXPath statusPath = newXPath("/s:SectionStatus");
+        Element status = (Element) statusPath.selectSingleNode(doc);
+
+        List<AttributeInfo> attributes = activity.getAttributes();
+
+        String enrollmentLimit = status.elementText("LimitEstimateEnrollment");
+        String currentEnrollment = status.elementText("CurrentEnrollment");
+        String limitEstimate = status.elementText("LimitEstimateEnrollmentIndicator");
+        limitEstimate = "estimate".equalsIgnoreCase(limitEstimate) ? "E" : "";
+
+        attributes.add(new AttributeInfo("enrollmentLimit", enrollmentLimit));
+        attributes.add(new AttributeInfo("currentEnrollment", currentEnrollment));
+        attributes.add(new AttributeInfo("limitEstimate", limitEstimate));
+
     }
 }

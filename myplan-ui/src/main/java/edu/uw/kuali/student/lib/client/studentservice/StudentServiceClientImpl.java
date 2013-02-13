@@ -268,6 +268,25 @@ public class StudentServiceClientImpl
         System.out.println( url );
         return sendQuery( url );
     }
+    
+    /**
+
+		Lighter weight query used for checking just enrollment info: current #, limit #, estimate/limited, etc. 
+		
+     	/student/v4/course/2013,winter,ASTR,101/A/status.xml
+    
+     */
+    public String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException {
+        String base = getBaseUrl();
+        String ver = getServiceVersion();
+
+        abbrev = abbrev.replace( " ", "%20" );
+        abbrev = abbrev.replace( "&", "%26" );
+        String url = String.format( "%s/%s/course/%s,%s,%s,%s/%s/status.xml", base, ver, year, quarter, abbrev, num, section );
+        System.out.println( url );
+        return sendQuery( url );
+    
+    }
 
     /**
      * @param regId

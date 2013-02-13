@@ -30,8 +30,9 @@ public class ActivityOfferingItem {
     private String qtryr;
     private boolean enrollRestriction;
     private boolean enrollOpen;
-    private int enrollCount;
-    private int enrollMaximum;
+    private String enrollCount;
+    private String enrollMaximum;
+    private String enrollEstimate;
     private String instructor;
     private String details;
 
@@ -132,20 +133,28 @@ public class ActivityOfferingItem {
         this.enrollOpen = enrollOpen;
     }
 
-    public int getEnrollCount() {
+    public String getEnrollCount() {
         return enrollCount;
     }
 
-    public void setEnrollCount(int enrollCount) {
+    public void setEnrollCount(String enrollCount) {
         this.enrollCount = enrollCount;
     }
 
-    public int getEnrollMaximum() {
+    public String getEnrollMaximum() {
         return enrollMaximum;
     }
 
-    public void setEnrollMaximum(int enrollMaximum) {
+    public void setEnrollMaximum(String enrollMaximum) {
         this.enrollMaximum = enrollMaximum;
+    }
+
+    public String getEnrollEstimate() {
+        return enrollEstimate;
+    }
+
+    public void setEnrollEstimate(String enrollEstimate) {
+        this.enrollEstimate = enrollEstimate;
     }
 
     public String getInstructor() {

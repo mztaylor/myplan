@@ -617,10 +617,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         instituteName = campus;
                     }
 
+                    String enrollCount = null;
+                    String enrollMaximum = null;
+                    String enrollEstimate = null;
                     for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
-                        if ("FeeAmount".equalsIgnoreCase(key) && value.length() > 0) {
+                        if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
                             activity.setFeeAmount(value);
                             continue;
                         }
@@ -632,8 +635,23 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             instituteCode = value;
                             continue;
                         }
-                        if ("instituteName".equals(key)) {
+                        if ("instituteName".equals(key) && !"".equals(value)) {
                             instituteName = value;
+                            continue;
+                        }
+
+                        if ("currentEnrollment".equals(key) && !"".equals(value)) {
+                            enrollCount = value;
+                            continue;
+                        }
+
+                        if ("enrollmentLimit".equals(key) && !"".equals(value)) {
+                            enrollMaximum = value;
+                            continue;
+                        }
+
+                        if ("limitEstimate".equals(key) && "E".equals(value)) {
+                            enrollEstimate = value;
                             continue;
                         }
 
@@ -665,8 +683,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                     }
                     activity.setEnrollOpen(true);
-                    activity.setEnrollCount(000);
-                    activity.setEnrollMaximum(999);
+                    activity.setEnrollCount(enrollCount);
+                    activity.setEnrollMaximum(enrollMaximum);
+                    activity.setEnrollEstimate(enrollEstimate);
                     activity.setInstructor(aodi.getInstructorName());
 
                     activity.setHonorsSection(aodi.getIsHonorsOffering());
