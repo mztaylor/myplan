@@ -777,6 +777,11 @@
                 </property>
             </bean>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>
+            </list>
+        </property>
         <property name="subCollections">
             <list>
                 <ref bean="course_details_term_data" />
@@ -784,11 +789,25 @@
         </property>
     </bean>
 
-    <bean id="course_details_term_data" parent="Uif-ListCollectionSection">
+    <bean id="course_details_term_data" parent="Uif-StackedCollectionGroup">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
-        <property name="headerText" value="Institute Code: @{#line.code} Name: @{#line.name}"/>
-
         <property name="propertyName" value="courseOfferingTermList"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false" p:footer.render="false"/>
+                </property>
+            </bean>
+        </property>
         <property name="subCollections">
             <list>
                 <ref bean="course_details_activity_data" />
@@ -805,10 +824,10 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.lowerGroup">
-            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:render="@{#line.courseComments ne null}" p:style="margin-top: 10px;">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-Message" p:messageText="@{#line.courseComments}" p:render="@{#line.courseComments ne null}"/>
+                        <bean parent="Uif-Message" p:messageText="@{#line.courseComments}"/>
                     </list>
                 </property>
             </bean>

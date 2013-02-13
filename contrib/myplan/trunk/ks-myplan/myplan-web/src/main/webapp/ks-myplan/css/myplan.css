@@ -308,6 +308,12 @@ a:focus {
     padding: 0;
     margin: 0;
 }
+.myplan-view .uif-stackedCollectionLayout,
+.myplan-view .uif-stackedCollectionLayout > .uif-collectionItem {
+    padding: 0;
+    margin: 0;
+    background: none;
+}
 /* BUTTONS #################################################################### */
 button.uif-primaryActionButton,
 button.uif-secondaryActionButton {
