@@ -58,7 +58,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
          */
         Set<String> programSet = new HashSet<String>();
         for (AuditReportInfo audit : audits) {
-            String programId = audit.getProgramTitle();
+            String programId = audit.getProgramId();
             if (!programSet.contains(programId)) {
                 programSet.add(programId);
                 degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
