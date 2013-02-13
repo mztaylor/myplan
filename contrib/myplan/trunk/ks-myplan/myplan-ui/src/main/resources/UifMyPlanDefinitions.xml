@@ -282,16 +282,19 @@
         </property>
     </bean>
 
-    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
         <property name="cssClasses">
             <list merge="true">
-                <value>@{#parentLine.completedTerm ? 'locked' : (#parentLine.openForPlanning ? 'unlocked' : 'locked')}</value>
+                <value>@{#parentLine.completedTerm ? 'locked' : (#parentLine.openForPlanning ? 'unlocked' : 'locked')}
+                </value>
                 <value>myplan-registration-status</value>
             </list>
         </property>
     </bean>
 
-    <bean id="MyPlanMessagingIcon" parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+    <bean id="MyPlanMessagingIcon" parent="Uif-Image"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
         <property name="cssClasses">
             <list merge="true">
                 <value>icon</value>
