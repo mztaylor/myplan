@@ -24,9 +24,9 @@ public class ActivityOfferingItem {
     
     // Section Line Number - UW-ism
     private String atpId;
-    private String sln;
+    private String registrationCode;
     // Used by the UI to feed the QTRYR query parameter, like in the following:
-    // https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=WIN+2013&amp;SLN=11944
+    // https://sdb.admin.washington.edu/timeschd/uwnetid/registrationCode.asp?QTRYR=WIN+2013&amp;SLN=11944
     private String qtryr;
     private boolean enrollRestriction;
     private boolean enrollOpen;
@@ -101,12 +101,12 @@ public class ActivityOfferingItem {
         this.meetingDetailsList = meetingDetailsList;
     }
 
-    public String getSln() {
-        return sln;
+    public String getRegistrationCode() {
+        return registrationCode;
     }
 
-    public void setSln(String sln) {
-        this.sln = sln;
+    public void setRegistrationCode(String registrationCode) {
+        this.registrationCode = registrationCode;
     }
 
     public String getQtryr() {
