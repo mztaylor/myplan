@@ -30,7 +30,7 @@
         <#local style="style=\"${manager.style}\""/>
     </#if>
 
-    <div id="${manager.id}_tab" ${style!} ${styleClass!}>
+    <div id="${manager.id}_tabs" ${style!} ${styleClass!}>
         <ul id="${manager.id}_tabList">
             <#list manager.stackedGroups as item>
                 <li data-tabfor="${item.id}">
@@ -40,11 +40,13 @@
         </ul>
 
         <#list manager.stackedGroups as item>
-            <div id="${item.id}_tab">
+            <div data-tabwrapperfor="${item.id}" data-type="TabWrapper" id="${item.id}_tab">
                 <@krad.template component=item/>
             </div>
         </#list>
     </div>
 
-    <@krad.script component=container value="createTabs('${manager.id}_tab', ${container.tabsWidget.templateOptionsJSString});"/>
+    <#-- render tabs widget -->
+    <@krad.template component=container.tabsWidget parent=manager/>
+
 </#macro>
