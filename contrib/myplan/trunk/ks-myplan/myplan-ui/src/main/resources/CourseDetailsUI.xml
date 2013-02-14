@@ -796,6 +796,7 @@
         <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>
         <property name="headerText" value="@{dataObject.code} Course Sections"/>
         <property name="layoutManager.summaryFields" value="name"/>
+        <property name="tabsWidget.templateOptionsJSString" value="value 1"/>
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
