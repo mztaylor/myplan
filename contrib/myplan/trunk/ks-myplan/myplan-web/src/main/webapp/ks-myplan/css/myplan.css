@@ -1425,7 +1425,7 @@ table.myplan-course-search-results-datatable .blockUI {
     width: 515px;
     margin: 0;
 }
-.myplan-course-sections h4.uif-headerText {
+.myplan-course-sections h5.uif-headerText {
     text-transform: uppercase;
     color: #5d5d5d;
     font-size: 1.4em;

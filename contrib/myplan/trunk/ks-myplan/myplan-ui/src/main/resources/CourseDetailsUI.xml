@@ -734,69 +734,17 @@
                             </bean>
                         </list>
                     </property>
-
-
                 </bean>
-
             </list>
         </property>
     </bean>-->
 
-    <!-- <bean id="course_details_sections" parent="Uif-ListCollectionSection">
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingDetails"/>
-        <property name="propertyName" value="courseOfferingDetails"/>
-        <property name="render" value="@{dataObject.courseOfferingDetails.size() gt 0}"/>
-        <property name="headerText" value="@{dataObject.code} Course Sections"/>
-        <property name="header">
-            <bean parent="Uif-HeaderThree">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>myplan-underline-header</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="subCollections">
-            <list>
-                <ref bean="course_details_section_data" />
-            </list>
-        </property>
-    </bean> -->
-
-    <!--<bean id="course_details_institution_data" parent="Uif-ListCollectionSection">-->
-        <!--<property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>-->
-        <!--<property name="propertyName" value="courseOfferingInstitutionList"/>-->
-        <!--<property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>-->
-        <!--<property name="headerText" value="@{dataObject.code} Course Sections"/>-->
-        <!--<property name="header">-->
-            <!--<bean parent="Uif-HeaderThree">-->
-                <!--<property name="cssClasses">-->
-                    <!--<list merge="true">-->
-                        <!--<value>myplan-underline-header</value>-->
-                    <!--</list>-->
-                <!--</property>-->
-            <!--</bean>-->
-        <!--</property>-->
-        <!--<property name="items">-->
-            <!--<list>-->
-                <!--<bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>-->
-            <!--</list>-->
-        <!--</property>-->
-        <!--<property name="subCollections">-->
-            <!--<list>-->
-                <!--<ref bean="course_details_term_data" />-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-
-    <bean id="course_details_institution_data" parent="Uif-TabbedCollectionGroup">
+    <bean id="course_details_institution_data" parent="Uif-TabbedCollectionGroup" p:validationMessages.render="false">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
         <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>
         <property name="headerText" value="@{dataObject.code} Course Sections"/>
-        <property name="layoutManager.summaryFields" value="name"/>
-        <property name="tabsWidget.templateOptionsJSString" value="value 1"/>
+        <property name="layoutManager.summaryFields" value="name"/> <!-- Tab Label -->
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
@@ -805,11 +753,6 @@
                     </list>
                 </property>
             </bean>
-        </property>
-        <property name="items">
-            <list>
-                <!--<bean parent="Uif-MessageField" p:messageText="Name: @{#line.name} Code: @{#line.code}"/>-->
-            </list>
         </property>
         <property name="subCollections">
             <list>
@@ -818,7 +761,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_term_data" parent="Uif-StackedCollectionGroup">
+    <bean id="course_details_term_data" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
         <property name="propertyName" value="courseOfferingTermList"/>
         <property name="layoutManager">
@@ -850,7 +793,7 @@
         <property name="layoutManager.id" value="course_details_section_datatable"/>
         <property name="headerText" value="@{#line.term}"/>
         <property name="header">
-            <bean parent="Uif-HeaderFour"/>
+            <bean parent="Uif-HeaderFive"/>
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false" p:render="@{#line.courseComments ne null}" p:style="margin-top: 10px;">
@@ -928,7 +871,7 @@
                 <bean parent="Uif-VerticalFieldGroup" p:label="Section" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="code" p:label="Section" p:fieldLabel.render="false" p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
+                            <bean p:id="@{#line.atpId}.@{#line.sln}" parent="Uif-DataField" p:propertyName="code" p:label="Section" p:fieldLabel.render="false" p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-align-center</value>
@@ -980,6 +923,7 @@
                                                                 <bean parent="Uif-Message" p:messageText="New course" p:render="@{#line.newThisYear}"/>
                                                                 <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
                                                                 <bean parent="Uif-Message" p:messageText="Course Fee $@{#line.feeAmount}" p:render="@{#line.feeAmount ne null}"/>
+                                                                <bean parent="Uif-Message" p:messageText="May not be eligible for Financial Aid" p:render="@{#line.ineligibleForFinancialAid}"/>
                                                                 <bean parent="Uif-Message" p:messageText="--"
                                                                       p:render="@{#line.gradingOption eq null AND
                                                                                  !#line.distanceLearning AND
