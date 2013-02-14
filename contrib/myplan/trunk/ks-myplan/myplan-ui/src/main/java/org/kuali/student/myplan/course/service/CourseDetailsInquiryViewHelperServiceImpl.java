@@ -483,6 +483,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 acadrec.setCredit(studentInfo.getCreditsEarned());
                 acadrec.setGrade(studentInfo.getCalculatedGradeValue());
                 acadrec.setRepeated(studentInfo.getIsRepeated());
+                acadrec.setActivityCode(studentInfo.getActivityCode());
 
                 courseDetails.getAcadRecList().add(acadrec);
 
@@ -628,7 +629,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             continue;
                         }
                         if ("SLN".equalsIgnoreCase(key)) {
-                            activity.setSln(value);
+                            activity.setRegistrationCode(value);
                             continue;
                         }
                         if ("instituteCode".equals(key)) {

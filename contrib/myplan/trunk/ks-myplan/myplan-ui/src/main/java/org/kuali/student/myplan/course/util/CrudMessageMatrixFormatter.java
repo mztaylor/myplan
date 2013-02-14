@@ -1,15 +1,23 @@
 package org.kuali.student.myplan.course.util;
 
 import org.apache.log4j.Logger;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 
+import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
 import java.util.*;
 
@@ -22,6 +30,20 @@ import java.util.*;
  */
 public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(CrudMessageMatrixFormatter.class);
+
+    private transient CourseOfferingService courseOfferingService;
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
 
     @Override
     public void setValue(Object value) {
@@ -100,16 +122,27 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String term = nonWithdrawnTerm;
                 String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
-                List<TermInfo> scheduledTerms = null;
+                List<String> sections = getSections(courseDetails, term);
                 String currentTerm = AtpHelper.getCurrentAtpId();
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                     if (counter2 == 0) {
-                        String message = "You're currently enrolled in this course for ";
+                        String message = "You're currently enrolled for ";
                         if (UserSessionHelper.isAdviser()) {
                             String user = UserSessionHelper.getStudentName();
                             message = user + ". currently enrolled in this course for ";
                         }
-                        sb = sb.append("<dd>").append(message)
+                        StringBuffer sec = new StringBuffer();
+                        int count = 0;
+                        for (String section : sections) {
+                            if (count == 0) {
+                                sec = sec.append(section);
+                                count++;
+                            } else {
+                                sec = sec.append(" and ").append(section);
+                                count++;
+                            }
+                        }
+                        sb = sb.append("<dd>").append(message).append(sec).append(" in ")
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
@@ -151,7 +184,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         /*When plannedList or backupList are not null then populating message
             *"Added to Spring 2013 Plan, Spring 2014 Plan on 01/18/2012" or
             *"Added to Spring 2013 Plan on 01/18/2012 and Spring 2014 Plan on 09/18/2012" */
-        if ((courseDetails.getPlannedList() != null && courseDetails.getPlannedList().size()>0) || (courseDetails.getBackupList() != null && courseDetails.getBackupList().size()>0)) {
+        if ((courseDetails.getPlannedList() != null && courseDetails.getPlannedList().size() > 0) || (courseDetails.getBackupList() != null && courseDetails.getBackupList().size() > 0)) {
             List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
             if (courseDetails.getPlannedList() != null) {
                 for (PlanItemDataObject pl : courseDetails.getPlannedList()) {
@@ -251,4 +284,41 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         return sb.toString();
     }
 
+
+    private List<String> getSections(CourseDetails courseDetails, String term) {
+        String[] yearAndTerm = term.split(" ");
+        String[] curricAndNum = courseDetails.getCode().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+
+        List<String> sections = new ArrayList<String>();
+        List<String> sectionAndSln = new ArrayList<String>();
+        for (AcademicRecordDataObject acr : courseDetails.getAcadRecList()) {
+            if (courseDetails.getCourseId().equalsIgnoreCase(acr.getCourseId())) {
+                sections.add(acr.getActivityCode());
+            }
+        }
+        for (String section : sections) {
+            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), curricAndNum[0].trim(), curricAndNum[1].trim(), section);
+            String sectionSln = String.format("Section %s (%s)", section, sln);
+            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
+            sectionAndSln.add(sec);
+        }
+        return sectionAndSln;
+    }
+
+    private String getSLN(String year, String term, String curriculum, String number, String section) {
+        String sln = null;
+        ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
+        try {
+            activityOfferingInfo = getCourseOfferingService().getActivityOffering(year + "," + term + "," + curriculum + "," + number + "," + section, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("could not load the ActivityOfferinInfo from SWS", e);
+        }
+        for (AttributeInfo attributeInfo : activityOfferingInfo.getAttributes()) {
+            if (attributeInfo.getKey().equalsIgnoreCase("SLN")) {
+                sln = attributeInfo.getValue();
+                break;
+            }
+        }
+        return sln;
+    }
 }

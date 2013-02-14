@@ -333,39 +333,56 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         String[] params = activityOfferingId.split(",");
 
-        try {
-            String allText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
-            Document allDoc = newDocument(allText);
+        if (params.length == 4) {
+            try {
+                String allText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
+                Document allDoc = newDocument(allText);
 
-            List<String> hrefs = new ArrayList<String>();
+                List<String> hrefs = new ArrayList<String>();
 
-            DefaultXPath xpath = newXPath("//s:Sections/s:Section/s:Href");
-            List sections = xpath.selectNodes(allDoc);
-            for (Object node : sections) {
-                Element element = (Element) node;
-                String href = element.getText();
-                hrefs.add(href);
-            }
-
-            for (String href : hrefs) {
-                href = href.replace("/student", "").trim();
-                String hrefText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
-                Document hrefDoc = newDocument(hrefText);
-                DefaultXPath xpath2 = newXPath("//s:Curriculum");
-                List curriculum = xpath2.selectNodes(hrefDoc);
-                for (Object node : curriculum) {
+                DefaultXPath xpath = newXPath("//s:Sections/s:Section/s:Href");
+                List sections = xpath.selectNodes(allDoc);
+                for (Object node : sections) {
                     Element element = (Element) node;
-
-                    AttributeInfo attributeInfo = new AttributeInfo();
-                    attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
-                    String abbrev = element.elementText("TimeScheduleLinkAbbreviation");
-                    attributeInfo.setValue(abbrev);
-
-                    activityOfferingInfo.getAttributes().add(attributeInfo);
+                    String href = element.getText();
+                    hrefs.add(href);
                 }
+
+                for (String href : hrefs) {
+                    href = href.replace("/student", "").trim();
+                    String hrefText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
+                    Document hrefDoc = newDocument(hrefText);
+                    DefaultXPath xpath2 = newXPath("//s:Curriculum");
+                    List curriculum = xpath2.selectNodes(hrefDoc);
+                    for (Object node : curriculum) {
+                        Element element = (Element) node;
+
+                        AttributeInfo attributeInfo = new AttributeInfo();
+                        attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
+                        String abbrev = element.elementText("TimeScheduleLinkAbbreviation");
+                        attributeInfo.setValue(abbrev);
+
+                        activityOfferingInfo.getAttributes().add(attributeInfo);
+                    }
+                }
+            } catch (Exception e) {
+                logger.error(e);
             }
-        } catch (Exception e) {
-            logger.error(e);
+        } else if (params.length == 5) {
+            try {
+                /* calls https://ucswseval1.cac.washington.edu/student/v4/course/2013,winter,ECON,200/BA
+                * getting the sln for that section of the course*/
+                String xml = studentServiceClient.getSecondarySections(params[0], params[1], params[2], params[3], params[4]);
+                Document doc = newDocument(xml);
+                DefaultXPath sectionPath = newXPath("/s:Section");
+                Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
+                AttributeInfo attributeInfo = new AttributeInfo("SLN", sectionNode.elementText("SLN"));
+                activityOfferingInfo.getAttributes().add(attributeInfo);
+
+            } catch (Exception e) {
+                logger.error(e);
+            }
+
         }
 
         return activityOfferingInfo;

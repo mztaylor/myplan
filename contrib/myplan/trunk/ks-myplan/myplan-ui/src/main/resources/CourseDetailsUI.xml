@@ -871,14 +871,14 @@
                 <bean parent="Uif-VerticalFieldGroup" p:label="Section" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean p:id="@{#line.atpId}.@{#line.sln}" parent="Uif-DataField" p:propertyName="code" p:label="Section" p:fieldLabel.render="false" p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
+                            <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}" parent="Uif-DataField" p:propertyName="code" p:label="Section" p:fieldLabel.render="false" p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-align-center</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseId}-@{#line.code}-@{#line.sln}" parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;" p:render="@{!#line.primary}">
+                            <bean p:id="@{dataObject.courseId}-@{#line.code}-@{#line.registrationCode}" parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;" p:render="@{!#line.primary}">
                                 <property name="actionScript" value="
                                     if(jQuery(this).hasClass('disabled')){return false;}
                                     expandDataTableDetail(this, 'course_details_section_datatable', false, 'View more', 'View less');
@@ -890,9 +890,9 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseId}-@{#line.code}-@{#line.sln}" parent="Uif-ActionLink" p:actionLabel="View more" p:render="@{#line.primary}">
+                            <bean p:id="@{dataObject.courseId}-@{#line.code}-@{#line.registrationCode}" parent="Uif-ActionLink" p:actionLabel="View more" p:render="@{#line.primary}">
                                 <property name="onDocumentReadyScript" value="
-                                    jQuery('#@{dataObject.courseId}-@{#line.code}-@{#line.sln}').subscribe('DATATABLE_INITIALISED', function(data) {
+                                    jQuery('#@{dataObject.courseId}-@{#line.code}-@{#line.registrationCode}').subscribe('DATATABLE_INITIALISED', function(data) {
                                         showDataTableDetail(this,'course_details_section_datatable',false);
                                         jQuery(this).parents('tr').css('border-top-width','3px');
                                         jQuery(this).parents('tr').next('tr').children('td.uif-rowDetails').parents('tr').css('border-bottom','solid 3px #ccc');
@@ -970,7 +970,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:label="SLN" p:group.validationMessages.render="false">
                     <property name="items">
                         <list>
-                            <bean parent="current_section_status" p:actionLabel="@{#line.sln}"/>
+                            <bean parent="current_section_status" p:actionLabel="@{#line.registrationCode}"/>
                         </list>
                     </property>
                 </bean>
@@ -1020,6 +1020,6 @@
 
     <bean id="current_section_status" parent="Uif-ActionLink" p:style="margin:0;">
         <!-- TODO: Update URL to include URL param to include quarter and year -->
-        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.sln}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
+        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/registrationCode.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 </beans>
