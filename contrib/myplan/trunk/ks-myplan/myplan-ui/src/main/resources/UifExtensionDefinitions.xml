@@ -24,19 +24,19 @@
         <property name="template" value="/ks-myplan/WEB-INF/ftl/layout/tabbedcollection.ftl"/>
         <property name="templateName" value="uif_tabbedcollection"/>
         <property name="lineGroupPrototype">
-          <bean parent="Uif-VerticalBoxSection">
-            <property name="header">
-              <bean parent="Uif-HeaderFour"/>
-            </property>
-            <property name="header.render" value="false"/>
-            <property name="disclosure.renderImage" value="false"/>
-            <property name="disclosure.defaultOpen" value="true"/>
-          </bean>
+            <bean parent="Uif-VerticalBoxSection">
+                <property name="header">
+                    <bean parent="Uif-HeaderFour"/>
+                </property>
+                <property name="header.render" value="false"/>
+                <property name="disclosure.renderImage" value="false"/>
+                <property name="disclosure.defaultOpen" value="true"/>
+            </bean>
         </property>
         <property name="subCollectionFieldGroupPrototype">
             <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false"
-            p:cssClasses="uif-subCollection"/>
-    </property>
+                  p:cssClasses="uif-subCollection"/>
+        </property>
     </bean>
 
     <bean id="Uif-TabbedCollectionGroup" parent="Uif-ListCollectionGroup-parentBean">
