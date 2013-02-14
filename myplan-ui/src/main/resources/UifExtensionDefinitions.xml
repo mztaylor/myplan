@@ -39,9 +39,15 @@
         </property>
     </bean>
 
-    <bean id="Uif-TabbedCollectionGroup" parent="Uif-ListCollectionGroup-parentBean">
+    <bean id="Uif-TabbedCollectionGroup" parent="Uif-TabbedCollectionGroup-parentBean"/>
+    <bean id="Uif-TabbedCollectionGroup-parentBean" abstract="true"
+          class="org.kuali.rice.krad.uif.container.extension.TabCollectionGroup"
+          parent="Uif-ListCollectionGroup-parentBean">
         <property name="layoutManager">
             <bean parent="Uif-TabbedCollectionLayout"/>
+        </property>
+        <property name="tabsWidget">
+            <bean parent="Uif-Tabs"/>
         </property>
     </bean>
 
