@@ -1425,6 +1425,58 @@ table.myplan-course-search-results-datatable .blockUI {
     width: 515px;
     margin: 0;
 }
+
+.myplan-course-sections .ui-tabs .ui-widget-header,
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active a,
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-default a,
+.myplan-course-sections .ui-tabs .ui-tabs-panel,
+.myplan-course-sections .ui-tabs-nav li.ui-state-default,
+.myplan-course-sections .ui-tabs-nav li.ui-state-active,
+.myplan-course-sections .ui-tabs-nav li.ui-state-hover,
+.myplan-course-sections .ui-tabs-nav li.ui-state-focus,
+.myplan-course-sections .ui-tabs-nav li.ui-state-hover a,
+.myplan-course-sections .ui-tabs-nav li.ui-state-focus a,
+.myplan-course-sections .ui-tabs-nav li.ui-state-active a,
+.myplan-course-sections .ui-tabs-nav li.ui-state-hover a:hover,
+.myplan-course-sections .ui-tabs-nav li.ui-state-focus a:hover,
+.myplan-course-sections .tab-navigation-block li,
+.myplan-course-sections .tab-navigation-block a:focus,
+.myplan-course-sections .tab-navigation-block li.ui-state-active,
+.myplan-course-sections .tab-navigation-block li a:hover,
+.myplan-course-sections .tab-navigation-block li.ui-state-active a,
+.myplan-course-sections .tab-navigation-block li.ui-state-hover a,
+.myplan-course-sections .tab-navigation-block li.ui-state-focus a,
+.myplan-course-sections .tab-navigation-block li.ui-state-hover a:hover,
+.myplan-course-sections .tab-navigation-block li.ui-state-focus a:hover {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-weight: normal;
+    color: inherit;
+    background: none;
+    border-radius: 0px;
+}
+
+.myplan-course-sections .ui-tabs .ui-tabs-nav {
+    margin-bottom: 20px;
+}
+.myplan-course-sections .ui-tabs .ui-tabs-nav li {
+    margin: 0 0 0 1em;
+    padding: 0 0 0 1em;
+    border-left: solid 2px #000;
+    border-radius: 0px;
+}
+.myplan-course-sections .ui-tabs-nav li:first-child {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+.myplan-course-sections .ui-tabs .ui-tabs-nav li a {
+    font-size: 1.25em;
+}
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active a {
+    font-weight: 700;
+}
 .myplan-course-sections h5.uif-headerText {
     text-transform: uppercase;
     color: #5d5d5d;
