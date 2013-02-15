@@ -142,7 +142,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:actionLabel="Search" p:disabled="true">
+                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:actionLabel="Search" p:disabled="true" p:style="margin:0;">
                     <property name="actionScript" value="
                         window.location.replace('#');
                         searchForCourses('course_search_results','course_search_results_panel');
