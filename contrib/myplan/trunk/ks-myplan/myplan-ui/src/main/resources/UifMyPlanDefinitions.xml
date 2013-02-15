@@ -146,9 +146,9 @@
     <bean id="MyPlanTheme-parentBean" parent="Uif-KradTheme">
         <property name="cssFiles">
             <list merge="true">
-                <value>ks-myplan/css/myplan.css</value>
                 <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
+                <value>ks-myplan/css/myplan.css</value>
             </list>
         </property>
         <property name="scriptFiles">
@@ -171,9 +171,9 @@
         <property name="cssFiles">
             <list merge="true">
                 <value>ks-myplan/css/base.css</value>
-                <value>ks-myplan/css/myplan.css</value>
                 <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
+                <value>ks-myplan/css/myplan.css</value>
             </list>
         </property>
         <property name="scriptFiles">

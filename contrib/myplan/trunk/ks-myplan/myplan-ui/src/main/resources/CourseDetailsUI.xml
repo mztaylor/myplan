@@ -110,7 +110,8 @@
                             <ref bean="course_details_overview"/>
                             <!--<ref bean="course_details_links"/>-->
 
-			                <ref bean="course_details_institution_data" />
+			                <ref bean="course_details_institution_data_single" />
+                            <ref bean="course_details_institution_data_multi" />
                             <!-- <ref bean="course_details_sections"/> -->
                         </list>
                     </property>
@@ -739,12 +740,62 @@
         </property>
     </bean>-->
 
-    <bean id="course_details_institution_data" parent="Uif-TabbedCollectionGroup" p:validationMessages.render="false">
+    <bean id="course_details_institution_data_single" parent="Uif-StackedCollectionGroup"
+          p:validationMessages.render="false">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
+        <property name="propertyName" value="courseOfferingInstitutionList"/>
+        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() eq 1}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-sections</value>
+            </list>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
+                          p:footer.render="false"/>
+                </property>
+            </bean>
+        </property>
+        <property name="headerText" value="@{dataObject.code} Course Sections"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-underline-header</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="course_details_term_data"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_institution_data_multi" parent="Uif-TabbedCollectionGroup" p:validationMessages.render="false">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
         <property name="propertyName" value="courseOfferingInstitutionList"/>
-        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 0}"/>
-        <property name="headerText" value="@{dataObject.code} Course Sections"/>
+        <property name="render" value="@{dataObject.courseOfferingInstitutionList.size() gt 1}"/>
         <property name="layoutManager.summaryFields" value="name"/> <!-- Tab Label -->
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-sections</value>
+            </list>
+        </property>
+        <property name="headerText" value="@{dataObject.code} Course Sections"/>
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
@@ -803,11 +854,6 @@
                     </list>
                 </property>
             </bean>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-course-sections</value>
-            </list>
         </property>
         <!--<property name="onDocumentReadyScript" value="
             jQuery('#course_details_section_datatable_info').after('&lt;div class=&quot;dataTables_filter&quot;&gt;&lt;label for=&quot;section_filter&quot;&gt;Show&lt;/label&gt;&lt;select id=&quot;section_filter&quot; name=&quot;section_filter&quot;&gt;&lt;option value=&quot;all&quot;&gt;All Sections&lt;/option&gt;&lt;option value=&quot;open&quot;&gt;Open Sections only&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;');
@@ -1019,7 +1065,6 @@
     </bean>
 
     <bean id="current_section_status" parent="Uif-ActionLink" p:style="margin:0;">
-        <!-- TODO: Update URL to include URL param to include quarter and year -->
-        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/registrationCode.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
+        <property name="actionScript" value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 </beans>
