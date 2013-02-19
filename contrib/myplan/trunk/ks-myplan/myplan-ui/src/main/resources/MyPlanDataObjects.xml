@@ -418,7 +418,6 @@
         <property name="collections">
             <list merge="true">
                 <ref bean="CourseDetails.campusLocations"/>
-                <ref bean="CourseDetails.scheduledTerms"/>
                 <ref bean="CourseDetails.requisites"/>
                 <ref bean="CourseDetails.genEdRequirements"/>
                 <ref bean="CourseDetails.plannedList"/>
@@ -544,18 +543,6 @@
         </property>
         <property name="label" value="Campus Locations"/>
         <property name="elementLabel" value="Campus Locations"/>
-        <property name="minOccurs" value="0"/>
-        <property name="dataObjectClass" value="java.lang.String"/>
-    </bean>
-
-    <bean id="CourseDetails.scheduledTerms" parent="CourseDetails.scheduledTerms-parentBean"/>
-    <bean id="CourseDetails.scheduledTerms-parentBean" abstract="true" parent="CollectionDefinition">
-        <property name="name" value="scheduledTerms"/>
-        <property name="shortLabel" value="Scheduled Quarter"/>
-        <property name="summary">
-            <value>Scheduled Quarter</value>
-        </property>
-        <property name="label" value="Scheduled Quarter"/>
         <property name="minOccurs" value="0"/>
         <property name="dataObjectClass" value="java.lang.String"/>
     </bean>

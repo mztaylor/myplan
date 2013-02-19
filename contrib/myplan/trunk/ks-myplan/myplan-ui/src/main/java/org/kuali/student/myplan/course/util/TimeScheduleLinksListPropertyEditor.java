@@ -129,7 +129,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
         String styleClassNames = getEmptyListStyleClassesAsString();
 
         List<String> scheduledTerms = courseDetails.getScheduledTerms();
-        if (scheduledTerms == null) {
+        if (scheduledTerms == null || scheduledTerms.size() == 0) {
             return "";
         }
 
@@ -255,7 +255,7 @@ public class TimeScheduleLinksListPropertyEditor extends PropertyEditorSupport i
                 urlBuilder = urlBuilder.append(url);
                 urlBuilder.append(timeScheduleLinkAbbreviation.getValue())
                         .append(".html#");
-                        //.append(".html?external=true&dialogMode=true#");
+                //.append(".html?external=true&dialogMode=true#");
 
                 if (campusLocationString.equals("Seattle")) { //Seattle
                     urlBuilder.append(curriculumCode.toLowerCase().replaceAll("\\s", ""));

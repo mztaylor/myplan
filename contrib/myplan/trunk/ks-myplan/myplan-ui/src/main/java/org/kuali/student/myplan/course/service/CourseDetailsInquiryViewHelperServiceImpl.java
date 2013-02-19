@@ -314,6 +314,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
           Use the course offering service to see if the course is being offered in the selected term.
           Note: In the UW implementation of the Course Offering service, course id is actually course code.
         */
+        List<String> scheduledTerms = new ArrayList<String>();
         try {
             //  Fetch the available terms from the Academic Calendar Service.
             if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
@@ -329,7 +330,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                                 .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
 
                         if (offerings.contains(course.getCode())) {
-                            courseDetails.getScheduledTerms().add(term.getName());
+                            scheduledTerms.add(term.getName());
                         }
                     }
                 } catch (Exception e) {
@@ -375,12 +376,12 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
 
             List<YearTerm> ytList = new ArrayList<YearTerm>();
-            List<String> termList = courseDetails.getScheduledTerms();
+            List<String> termList = scheduledTerms;
             for (String term : termList) {
                 YearTerm yt = AtpHelper.termToYearTerm(term);
                 ytList.add(yt);
             }
-            Collections.sort(ytList, Collections.reverseOrder());
+            //Collections.sort(ytList, Collections.reverseOrder());
 
             List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
 
@@ -448,7 +449,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         if (isCourseOfferingServiceUp()) {
             CourseOfferingService cos = getCourseOfferingService();
 
-            List<String> termList = courseDetails.getScheduledTerms();
+            List<String> termList = scheduledTerms;
             if (termList.isEmpty()) {
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {

@@ -21,7 +21,6 @@ public class CourseDetails extends CourseSummaryDetails {
     private String lastOffered;
 
     private List<String> campusLocations;
-    private List<String> scheduledTerms;
     private List<String> requisites;
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
@@ -99,19 +98,25 @@ public class CourseDetails extends CourseSummaryDetails {
         this.campusLocations = campusLocations;
     }
 
+    /*Populating the scheduled terms list from the institution list course offerings
+    * Adding the distinct scheduled terms from all the course offering institution list items.
+    *
+    * */
     public List<String> getScheduledTerms() {
-    	if(scheduledTerms == null) {
-    		scheduledTerms = new ArrayList<String>();
-    	}
+        List<String> scheduledTerms = new ArrayList<String>();
+        for (CourseOfferingInstitution courseOfferingInstitution : this.getCourseOfferingInstitutionList()) {
+            for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
+                if (!scheduledTerms.contains(courseOfferingTerm.getTerm())) {
+                    scheduledTerms.add(courseOfferingTerm.getTerm());
+                }
+            }
+
+        }
         return scheduledTerms;
     }
 
-    public void setScheduledTerms(List<String> scheduledTerms) {
-        this.scheduledTerms = scheduledTerms;
-    }
-
     public List<PlanItemDataObject> getPlannedList() {
-        if( plannedList == null ) {
+        if (plannedList == null) {
             plannedList = new ArrayList<PlanItemDataObject>();
         }
         return plannedList;
@@ -149,7 +154,7 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     public List<AcademicRecordDataObject> getAcadRecList() {
-        if( acadRecList == null ) {
+        if (acadRecList == null) {
             acadRecList = new ArrayList<AcademicRecordDataObject>();
         }
         return acadRecList;
@@ -198,10 +203,10 @@ public class CourseDetails extends CourseSummaryDetails {
     }
 
     private List<CourseOfferingInstitution> courseOfferingInstitutionList;
-    
+
     public List<CourseOfferingInstitution> getCourseOfferingInstitutionList() {
         if (courseOfferingInstitutionList == null) {
-        	courseOfferingInstitutionList = new ArrayList<CourseOfferingInstitution>();
+            courseOfferingInstitutionList = new ArrayList<CourseOfferingInstitution>();
         }
         return courseOfferingInstitutionList;
     }
@@ -224,6 +229,14 @@ public class CourseDetails extends CourseSummaryDetails {
     @JsonIgnore
     public CourseDetails getDetails() {
         return this;
+    }
+
+    //  Using this as a property for the scheduleterms property editor
+    // because courseofferinginstitution  is already used for the scheduled terms property editor
+    //In order to use the same list for another property we created this.
+    @JsonIgnore
+    public List<CourseOfferingInstitution> getInstitutionsList() {
+        return this.getCourseOfferingInstitutionList();
     }
 
 
