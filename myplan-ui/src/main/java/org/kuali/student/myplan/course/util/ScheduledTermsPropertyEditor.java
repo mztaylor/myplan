@@ -18,32 +18,90 @@ package org.kuali.student.myplan.course.util;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
+import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 
 public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
 
     private final static Logger logger = Logger.getLogger(ScheduledTermsPropertyEditor.class);
 
-    @Override
-    protected String makeHtmlList(Collection c) {
-        StringBuilder list = new StringBuilder();
-        Iterator<Object> i = c.iterator();
-        while (i.hasNext()) {
-            String term = (String) i.next();
-            String elemTxt = term;
+    private static String DLClass = "<dl class=\"scheduled\"> %s </dl>";
 
-            // Convert Winter 2012 to WI 12
-            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
-            if(m.matches()) {
-                elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
-            }
-            list.append(wrapListItem(elemTxt));
-        }
-        return list.toString();
+    private static String DDClass = "<dd class=\"%s\">%s</dd>";
+
+    protected boolean fullLinks = false;
+
+    public boolean isFullLinks() {
+        return fullLinks;
     }
+
+    public void setFullLinks(boolean fullLinks) {
+        this.fullLinks = fullLinks;
+    }
+
+    @Override
+    public String getAsText() {
+        /*Logic to build the scheduled terms for given course offering institutions course offering terms. 
+        *
+        * if fullLinks boolean is false then the scheduled term badges are returned
+        * returns following string if the course is scheduled for Summer 2013.
+        * <dl class="scheduled"><dd class="SU"> SU 13 </dd></dl>
+        *
+        * if fullLinks boolean is true then the scheduled term links are returned
+        * returns following string if the course is scheduled for Winter 2013 , Spring 2013.
+        * view all sections for Winter 2013, Spring 2013.
+        * */
+
+        String courseId = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getParameter("courseId");
+        StringBuilder sb = new StringBuilder();
+        List<CourseOfferingInstitution> courseOfferingInstitutions = (List<CourseOfferingInstitution>) super.getValue();
+        List<String> scheduledTerms = new ArrayList<String>();
+        int counter = 0;
+        for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
+            for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
+                if (!scheduledTerms.contains(courseOfferingTerm.getTerm())) {
+                    scheduledTerms.add(courseOfferingTerm.getTerm());
+                    String serverUrl = ConfigContext.getCurrentContextConfig().getProperty(CourseSearchConstants.APP_URL);
+                    String atpId = AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm()).replace(".", "-");
+                    if (!fullLinks) {
+                        Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(courseOfferingTerm.getTerm());
+                        if (m.matches()) {
+                            String elemTxt = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
+                            String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, courseOfferingInstitution.getCode(), atpId, elemTxt);
+                            sb.append(String.format(DDClass, elemTxt, link));
+                        }
+                    } else {
+                        String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, courseOfferingInstitution.getCode(), atpId, courseOfferingTerm.getTerm());
+                        if (counter == 0) {
+                            sb.append(String.format("View all sections for %s", link));
+                            counter++;
+
+                        } else if (counter > 0) {
+                            sb.append(String.format(", %s", link));
+                            counter++;
+
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+        return String.format(DLClass, sb.toString());
+    }
+
 }
+
