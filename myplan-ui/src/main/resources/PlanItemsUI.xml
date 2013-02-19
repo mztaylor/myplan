@@ -1519,7 +1519,6 @@
         <property name="validationMessages.displayMessages" value="false"/>
         <property name="items">
             <list>
-                <ref bean="overallPlanLink"/>
                 <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1588,6 +1587,7 @@
                     </property>
                 </bean>
                 <ref bean="planned_courses_detail_list"/>
+                <ref bean="overallPlanLink"/>
             </list>
         </property>
     </bean>
@@ -1595,8 +1595,8 @@
         <property name="items">
             <list>
                 <bean parent="Uif-LinkField" p:target="_blank">
-                    <property name="linkText" value="View Overall Academic Plan"/>
-                    <property name="title" value="View Overall Academic Plan"/>
+                    <property name="linkText" value="Print your entire academic plan"/>
+                    <property name="title" value="Print your entire academic plan"/>
                     <property name="href"
                               value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
                     <property name="lightBox">
@@ -3116,7 +3116,7 @@
                         <list>
                             <!-- TODO: Output student name and student number -->
                             <bean parent="Uif-MessageField" p:label="Prepared for"
-                                  p:messageText="STUDENT NAME (STUDENT NUMBER)">
+                                  p:messageText="@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentName()} (STUDENT NUMBER)">
                                 <property name="fieldLabel.cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-normal</value>
@@ -3271,6 +3271,7 @@
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>myplan-term</value>
+                                <value>@{#line.currentTermForView ? 'myplan-current-term':''}</value>
                             </list>
                         </property>
                     </bean>

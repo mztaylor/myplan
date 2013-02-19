@@ -2291,6 +2291,10 @@ label.scheduled {
     min-height: 100px;
 }
 
+.myplan-full-plan-detail .myplan-term.myplan-current-term > .uif-boxLayout {
+    font-weight: bold;
+}
+
 .myplan-full-plan-detail .myplan-term .myplan-term-footer,
 .myplan-full-plan-detail .myplan-term .myplan-term-footer-blank {
     border-top: dotted 1px #a9a9a9;
