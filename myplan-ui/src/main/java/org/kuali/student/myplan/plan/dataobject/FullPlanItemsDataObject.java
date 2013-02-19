@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
 import java.util.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: hemanthg
@@ -16,7 +17,9 @@ public class FullPlanItemsDataObject {
 
     private String yearRange;
 
-    private List<PlannedTerm> terms=new ArrayList<PlannedTerm>();
+    private List<PlannedTerm> terms = new ArrayList<PlannedTerm>();
+
+    private boolean currentYear;
 
     public String getYearRange() {
         return yearRange;
@@ -36,11 +39,19 @@ public class FullPlanItemsDataObject {
     }
 
     public String getTotalCredits() {
-       return totalCredits;
+        return totalCredits;
 
     }
 
     public void setTotalCredits(String totalCredits) {
         this.totalCredits = totalCredits;
+    }
+
+    public boolean isCurrentYear() {
+        return currentYear;
+    }
+
+    public void setCurrentYear(boolean currentYear) {
+        this.currentYear = currentYear;
     }
 }
