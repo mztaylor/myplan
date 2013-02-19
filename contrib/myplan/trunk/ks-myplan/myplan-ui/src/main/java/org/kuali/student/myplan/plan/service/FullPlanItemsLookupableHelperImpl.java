@@ -47,11 +47,11 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     protected List<FullPlanItemsDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
         /*Setting the Warning message if isServiceStatusOK is false*/
-        boolean isServiceStatusOK=true;
+        boolean isServiceStatusOK = true;
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
                 || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
-            isServiceStatusOK=false;
+            isServiceStatusOK = false;
             AtpHelper.addServiceError("qtrYear");
         }
         String studentId = UserSessionHelper.getStudentId();
@@ -73,17 +73,19 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         }
 
 
-        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, studentCourseRecordInfos, null,isServiceStatusOK, 1, true);
-
+        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, studentCourseRecordInfos, null, isServiceStatusOK, 1, true);
         List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
         int size = perfectPlannedTerms.size();
-        for (int i = 0; size>0 ; i++) {
+        for (int i = 0; size > 0; i++) {
             FullPlanItemsDataObject fullPlanItemsDataObject = new FullPlanItemsDataObject();
             List<PlannedTerm> plannedTermList = new ArrayList<PlannedTerm>();
-
+            boolean currentYear = false;
 
             for (int j = 0; j < AtpHelper.TERM_COUNT; j++) {
                 plannedTermList.add(perfectPlannedTerms.get(0));
+                if (perfectPlannedTerms.get(0).isCurrentTermForView()) {
+                    currentYear = true;
+                }
                 perfectPlannedTerms.remove(perfectPlannedTerms.get(0));
                 size--;
             }
@@ -95,6 +97,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             fullPlanItemsDataObject.setYearRange(yearRange.toString());
             fullPlanItemsDataObject.setTerms(plannedTermList);
             fullPlanItemsDataObjectList.add(fullPlanItemsDataObject);
+            fullPlanItemsDataObject.setCurrentYear(currentYear);
         }
         return fullPlanItemsDataObjectList;
     }
