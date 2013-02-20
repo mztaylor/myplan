@@ -1,17 +1,5 @@
 package org.kuali.student.myplan.course.service;
 
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.namespace.QName;
-
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -48,11 +36,7 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
-import org.kuali.student.myplan.course.dataobject.MeetingDetails;
+import org.kuali.student.myplan.course.dataobject.*;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -60,10 +44,10 @@ import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
-import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -75,6 +59,12 @@ import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
+import java.util.*;
+
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 
 public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
@@ -423,6 +413,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
                 }
             }
+            Collections.sort(instituteList, Collections.reverseOrder());
+
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
@@ -552,7 +544,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                 for (ActivityOfferingDisplayInfo aodi : aodiList) {
                     ActivityOfferingItem activity = new ActivityOfferingItem();
-                    activity.setCode(aodi.getActivityOfferingCode());
+                    String sectionId = aodi.getActivityOfferingCode();
+                    activity.setCode(sectionId);
 
                     String typeName = aodi.getTypeName();
                     activity.setActivityOfferingType(typeName);
@@ -696,7 +689,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     activity.setDetails("View more details");
 
                     // Added this flag to know if the activityoffering is planned/backup
-                    boolean planned = isPlanned(courseCode + " " + aodi.getActivityOfferingCode(), termId);
+                    boolean planned = isPlanned(courseCode + " " + sectionId, termId);
                     activity.setPlanned(planned);
                     activity.setAtpId(termId);
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
