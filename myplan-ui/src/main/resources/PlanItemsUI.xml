@@ -360,10 +360,6 @@
                                   p:propertyName="courseDetails.lastOffered"
                                   p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                                   p:render="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.courseOfferingInstitutionList.size() eq 0 ? true : false}"/>
-                            <bean parent="Uif-MessageField" p:label="Last Offered"
-                                  p:messageText="Not offered for more than 10 years."
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
-                                  p:render="@{#line.courseDetails.lastOffered eq null and #line.courseDetails.courseOfferingInstitutionList.size() eq 0 ? true : false}"/>
 
                             <bean parent="Uif-DataField" p:label="Projected For"
                                   p:propertyName="courseDetails.termsOffered"
@@ -2502,13 +2498,6 @@
                 <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="courseDetails.lastOffered"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                       p:render="@{courseDetails.lastOffered ne null and courseDetails.courseOfferingInstitutionList.size() eq 0 ? true : false}"/>
-                <bean parent="Uif-MessageField" p:label="Last Offered"
-                      p:cssClasses="fl-text-gray myplan-text-normal"
-                      p:render="@{courseDetails.lastOffered eq null and courseDetails.courseOfferingInstitutionList.size() eq 0 ? true : false}">
-                    <property name="message">
-                        <bean parent="Uif-Message" p:messageText="Not offered for more than 10 years"/>
-                    </property>
-                </bean>
                 <!-- Projected Terms -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseDetails.termsOffered"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
