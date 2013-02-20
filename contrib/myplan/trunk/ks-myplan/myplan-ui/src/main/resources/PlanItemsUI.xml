@@ -3121,7 +3121,7 @@
                         <list>
                             <!-- TODO: Output student name and student number -->
                             <bean parent="Uif-MessageField" p:label="Prepared for"
-                                  p:messageText="@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentName()} (STUDENT NUMBER)">
+                                  p:messageText="@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentName()} (@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() ne null ? T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() : 'No student number'})">
                                 <property name="fieldLabel.cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-normal</value>
