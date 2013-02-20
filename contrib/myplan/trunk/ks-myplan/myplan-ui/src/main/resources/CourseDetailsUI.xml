@@ -450,14 +450,6 @@
                                                                       p:label="Last Offered"
                                                                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                                                                       p:render="@{dataObject.lastOffered ne null ? true : false}"/>
-                                                                <bean parent="Uif-MessageField" p:label="Last Offered"
-                                                                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
-                                                                      p:render="@{dataObject.lastOffered eq null ? true : false}">
-                                                                    <property name="message">
-                                                                        <bean parent="Uif-Message"
-                                                                              p:messageText="Not offered for more than 10 years."/>
-                                                                    </property>
-                                                                </bean>
                                                             </list>
                                                         </property>
                                                     </bean>

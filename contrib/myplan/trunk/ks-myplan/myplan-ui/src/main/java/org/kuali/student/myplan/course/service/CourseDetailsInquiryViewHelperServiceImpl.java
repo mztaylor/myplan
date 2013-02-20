@@ -73,6 +73,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private final static String[] WEEKDAYS_FIRST_LETTER = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
+    public static final String NOT_OFFERED_IN_LAST_TEN_YEARS = "Not offered for more than 10 years.";
+
     private transient CourseService courseService;
 
     private transient CourseOfferingService courseOfferingService;
@@ -454,7 +456,12 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
                         String lastOffered = courseOfferingInfo.get(0).getTermId();
                         lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
-                        courseDetails.setLastOffered(lastOffered);
+                        String atpId = AtpHelper.getAtpIdFromTermYear(lastOffered);
+                        if (AtpHelper.isAtpCompletedTerm(atpId)) {
+                            courseDetails.setLastOffered(lastOffered);
+                        }
+                    } else {
+                        courseDetails.setLastOffered(NOT_OFFERED_IN_LAST_TEN_YEARS);
                     }
                 } catch (Exception e) {
                     String[] params = {};
