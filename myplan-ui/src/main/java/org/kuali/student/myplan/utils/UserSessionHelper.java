@@ -1,13 +1,9 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.log4j.Logger;
-import org.kuali.rice.kim.api.common.template.Template;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.util.StringUtils;
 import org.kuali.rice.kim.api.identity.IdentityService;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.kim.api.identity.PersonService;
-import org.kuali.rice.kim.api.identity.email.EntityEmail;
 import org.kuali.rice.kim.api.identity.entity.Entity;
 import org.kuali.rice.kim.api.identity.type.EntityTypeContactInfo;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
@@ -15,8 +11,8 @@ import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
-
-
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +20,7 @@ import java.util.Map;
 /**
  * Provides an initialized Context which can be used for service requests.
  */
-public class    UserSessionHelper {
+public class UserSessionHelper {
 
     private static final Logger logger = Logger.getLogger(UserSessionHelper.class);
 
@@ -106,7 +102,10 @@ public class    UserSessionHelper {
                 throw new RuntimeException("User is in adviser mode, but no student name was set in the session. (This shouldn't happen and should be reported).");
             }
         } else {
-            studentName = session.getPerson().getFirstName().substring(0, 1).toUpperCase() + session.getPerson().getFirstName().substring(1, session.getPerson().getFirstName().length()) + " " + session.getPerson().getLastName().substring(0, 1).toUpperCase();
+            Person person = session.getPerson();
+            String firstName = capitalize(person.getFirstName());
+            String lastName = capitalize(person.getLastName());
+            studentName = firstName + " " + lastName;
         }
         return studentName;
     }
@@ -137,11 +136,9 @@ public class    UserSessionHelper {
      * @param principleId
      * @return The name in first last format.
      */
-    public synchronized static String getNameCapitalized( String principleId )
-    {
+    public synchronized static String getNameCapitalized(String principleId) {
 
-        try
-        {
+        try {
             Person person = getPersonService().getPerson(principleId);
             return person.getName().toUpperCase();
 
@@ -150,9 +147,7 @@ public class    UserSessionHelper {
 //            String lastName = capitalize(person.getLastName());
 
             //return firstName + " " + middleName + " " + lastName;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Could not load the Person Information", e);
         }
 
@@ -160,40 +155,38 @@ public class    UserSessionHelper {
 
     }
 
-    public static String capitalize( String value )
-    {
-        if( value == null ) return null;
-        if( value.length() == 0 ) return value;
+    public static String capitalize(String value) {
+        if (value == null) return null;
+        if (value.length() == 0) return value;
         return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
     public synchronized static String getMailAddress(String principleId) {
-        try{
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String emailAddress = user.getEmailAddress();
+        try {
+            Person user = GlobalVariables.getUserSession().getPerson();
+            String emailAddress = user.getEmailAddress();
 
-        Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
-            if(entity==null){
+            Entity entity = getIdentityService().getEntityByPrincipalId(principleId);
+            if (entity == null) {
                 return null;
             }
-        List <EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
-        for (EntityTypeContactInfo ci : contactInfos) {
-            emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
-            /*for (EntityEmail e : ci.getEmailAddresses()) {
-                //  FIXME: Probably want to make this more deterministic.
-                if (e.getEmailType().getName().equals("Student")) {
-                    emailAddress = e.getEmailAddress();
-                }
-                if (e.getEmailType().getName().equals("Employee")) {
-                    emailAddress = e.getEmailAddress();
-                }
-            } */
-        }
-        return emailAddress;
-        }
-        catch (Exception e){
-            logger.error("Could not get the Email Address for the student"+e);
-           return null;
+            List<EntityTypeContactInfo> contactInfos = entity.getEntityTypeContactInfos();
+            for (EntityTypeContactInfo ci : contactInfos) {
+                emailAddress = ci.getDefaultEmailAddress().getEmailAddress();
+                /*for (EntityEmail e : ci.getEmailAddresses()) {
+                   //  FIXME: Probably want to make this more deterministic.
+                   if (e.getEmailType().getName().equals("Student")) {
+                       emailAddress = e.getEmailAddress();
+                   }
+                   if (e.getEmailType().getName().equals("Employee")) {
+                       emailAddress = e.getEmailAddress();
+                   }
+               } */
+            }
+            return emailAddress;
+        } catch (Exception e) {
+            logger.error("Could not get the Email Address for the student" + e);
+            return null;
         }
     }
 
@@ -207,25 +200,44 @@ public class    UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-            Map<String,String> idmap = person.getExternalIdentifiers();
-            for( String key : idmap.keySet() )
-            {
-                String value = idmap.get( key );
-                logger.info( "identifier : " + key + " = " + value );
+            Map<String, String> idmap = person.getExternalIdentifiers();
+            for (String key : idmap.keySet()) {
+                String value = idmap.get(key);
+                logger.info("identifier : " + key + " = " + value);
 
             }
-            logger.info(person.getExternalIdentifiers().values());
-            systemKey = person.getExternalIdentifiers().get("systemKey");
+            // Rice KIM's equivalent to systemKey is /Person/StudentSystemKey from SWS
+            systemKey = idmap.get("systemKey");
         }
-        if ( ! StringUtils.hasText(systemKey)) {
+        if (!StringUtils.hasText(systemKey)) {
             throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
         }
         return systemKey;
     }
 
-    public synchronized static boolean isStudent(){
+    /**
+     * Return value as-is, including null
+     *
+     * @return
+     */
+    public synchronized static String getStudentNumber() {
+        try {
+            String studentId = getStudentId();
+            Person person = getPersonService().getPerson(studentId);
+            Map<String, String> map = person.getExternalIdentifiers();
+
+            // Rice KIM's equivalent to systemID is /Person/StudentNumber from SWS
+            String systemNumber = map.get("systemID");
+            return systemNumber;
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+            throw new DataRetrievalFailureException("Could not find the SystemNumber for the Student", e);
+        }
+    }
+
+    public synchronized static boolean isStudent() {
         Person person = null;
-        boolean isStudent=false;
+        boolean isStudent = false;
         try {
             person = getPersonService().getPerson(getStudentId());
         } catch (Exception e) {
@@ -236,7 +248,7 @@ public class    UserSessionHelper {
                 isStudent = true;
             }
         }
-         return isStudent;
+        return isStudent;
     }
 
 }
