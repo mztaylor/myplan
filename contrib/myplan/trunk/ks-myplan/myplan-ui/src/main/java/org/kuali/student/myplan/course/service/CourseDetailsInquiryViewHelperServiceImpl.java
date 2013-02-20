@@ -371,7 +371,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 YearTerm yt = AtpHelper.termToYearTerm(term);
                 ytList.add(yt);
             }
-            //Collections.sort(ytList, Collections.reverseOrder());
+            Collections.sort(ytList, Collections.reverseOrder());
 
             List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
 
