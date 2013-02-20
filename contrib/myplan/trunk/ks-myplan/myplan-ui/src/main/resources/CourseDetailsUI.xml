@@ -414,7 +414,8 @@
                                                                 <bean parent="Uif-DataField" p:label="Scheduled For"
                                                                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                                                                       p:propertyName="courseOfferingInstitutionList"
-                                                                      p:escapeHtmlInPropertyValue="false" p:render="@{dataObject.courseOfferingInstitutionList.size() gt 0}">
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:render="@{dataObject.courseOfferingInstitutionList.size() gt 0}">
                                                                     <property name="propertyEditor"
                                                                               ref="scheduled_terms_list_formatter"/>
                                                                     <property name="cssClasses">
@@ -424,7 +425,8 @@
                                                                     </property>
                                                                 </bean>
                                                                 <bean parent="Uif-Message" p:style="line-height: 20px;"
-                                                                      p:messageText="Not Currently Scheduled" p:render="@{dataObject.courseOfferingInstitutionList.size() eq 0}">
+                                                                      p:messageText="Not Currently Scheduled"
+                                                                      p:render="@{dataObject.courseOfferingInstitutionList.size() eq 0}">
                                                                 </bean>
                                                                 <bean parent="Uif-Message" p:style="line-height: 20px;"
                                                                       p:messageText="(Source: Time Schedule)">
@@ -1124,7 +1126,10 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add"
+
+                <!-- TODO: Enable the add button in 1.3 and remove empty cell placeholder -->
+                <bean parent="Uif-MessageField" p:label="" p:messageText=""/>
+                <!--<bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add"
                       p:title="Add" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planned eq false ? true : false}">
                     <property name="cssClasses">
@@ -1149,6 +1154,7 @@
                         </bean>
                     </property>
                 </bean>
+                -->
             </list>
         </property>
     </bean>
