@@ -2478,7 +2478,8 @@
         <property name="items">
             <list>
                 <!-- Scheduled Terms -->
-                <bean parent="Uif-DataField" p:label="Scheduled for" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                <bean parent="Uif-DataField" p:label="Scheduled for"
+                      p:propertyName="courseDetails.courseOfferingInstitutionList"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -2487,7 +2488,8 @@
                             <value>myplan-data-list</value>
                         </list>
                     </property>
-                    <property name="render" value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? true : false}"/>
+                    <property name="render"
+                              value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? true : false}"/>
                 </bean>
                 <bean parent="Uif-MessageField" p:label="Scheduled for"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
@@ -2517,7 +2519,8 @@
                             <value>myplan-data-list</value>
                         </list>
                     </property>
-                    <property name="render" value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? false : true}"/>
+                    <property name="render"
+                              value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? false : true}"/>
                 </bean>
                 <!-- Requisites -->
                 <bean id="course_details_popup_requisites_testing" parent="Uif-DataField" p:label="Course Requisites"
@@ -2547,7 +2550,8 @@
                             <value>myplan-data-list</value>
                         </list>
                     </property>
-                    <property name="render" value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? true : false}"/>
+                    <property name="render"
+                              value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? true : false}"/>
                 </bean>
             </list>
         </property>
@@ -2868,7 +2872,8 @@
                 <bean parent="Uif-Message"
                       p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseDetails.code}&lt;/strong&gt; to?"/>
 
-                <bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList" p:label="Scheduled For"
+                <bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                      p:label="Scheduled For"
                       p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -3140,9 +3145,8 @@
                                 </property>
                             </bean>
 
-                            <!-- TODO: Output the current date and time in mm/dd/yy - hh:mm am/pm -->
                             <bean parent="Uif-MessageField" p:label="Document is accurate at the time of creation"
-                                  p:messageText="CURRENT DATE and TIME">
+                                  p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')}">
                                 <property name="style" value="margin:0;"/>
                                 <property name="fieldLabel.cssClasses">
                                     <list merge="true">
@@ -3175,7 +3179,8 @@
                 </bean>
                 <ref bean="full_planned_courses_detail"/>
                 <bean parent="Uif-MessageField" p:label="Document was created"
-                      p:messageText="CURRENT DATE and TIME [End of document]" p:fieldLabel.renderColon="false">
+                      p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')} [End of document]"
+                      p:fieldLabel.renderColon="false">
                     <property name="style" value="padding:10px; margin:0;"/>
                     <property name="fieldLabel.cssClasses">
                         <list merge="true">
@@ -3253,7 +3258,13 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false"/>
+                <bean parent="Uif-DataField" p:propertyName="yearRange" p:fieldLabel.render="false">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>@{#line.currentYear ? 'myplan-current-year':''}</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="subCollections">
