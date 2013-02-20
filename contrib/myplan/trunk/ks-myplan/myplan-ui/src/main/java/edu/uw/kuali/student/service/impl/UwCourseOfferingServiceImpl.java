@@ -830,33 +830,33 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String quarter = list[1];
             String curric = list[2];
             String num = list[3];
-            String sectionID = list[4];
+            String primarySectionID = list[4];
 
             List<String> sectionList = new ArrayList<String>();
-            sectionList.add(sectionID);
+            sectionList.add(primarySectionID);
             {
                 try {
-                    String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+                    String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
                     DefaultXPath sectionListPath = newXPath("//s:LinkedSection/s:Section");
                     Document doc = newDocument(xml);
                     List sections = sectionListPath.selectNodes(doc);
                     for (Object node : sections) {
                         Element section = (Element) node;
-                        String secondaryid = section.elementText("SectionID");
-                        sectionList.add(secondaryid);
+                        String secondarySectionID = section.elementText("SectionID");
+                        sectionList.add(secondarySectionID);
                     }
                 } catch (ServiceException e) {
                     logger.warn(e);
                 }
             }
 
-            for (String id : sectionList) {
+            for (String sectionID : sectionList) {
                 ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
 
                 String xml;
                 try {
                     // Skips section ID if it fails
-                    xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, id);
+                    xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
                 } catch (ServiceException e) {
 
                     logger.warn(e);
@@ -1010,8 +1010,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 info.setCourseOfferingTitle(title);
 //		        info.setCourseCode( curric );
-                info.setCourseOfferingCode(curric + " " + id);
-                info.setActivityOfferingCode(id);
+                info.setCourseOfferingCode(curric + " " + sectionID);
+                info.setActivityOfferingCode(sectionID);
                 info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
 
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
