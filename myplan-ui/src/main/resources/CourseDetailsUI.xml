@@ -860,7 +860,9 @@
                     </bean>
                 </property>
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
+                    <!-- TODO: parentLine expression not available within the lineGroupPrototype, KRAD bug https://jira.kuali.org/browse/KULRICE-9003 -->
+                    <bean p:id="@{#line.instituteCode}_tab-@{#line.yearTerm.toATP().replace('.','-')}"
+                          parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
                           p:footer.render="false"/>
                 </property>
             </bean>
