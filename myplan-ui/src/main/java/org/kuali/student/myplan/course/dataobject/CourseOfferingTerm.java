@@ -13,26 +13,29 @@ import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
  * To change this template use File | Settings | File Templates.
  */
 public class CourseOfferingTerm {
-	private YearTerm yearTerm;
-	private String term;
+    private YearTerm yearTerm;
+    private String term;
     private String courseComments;
+    /*NOTE: Added the institute code in this course offering term
+    because in UI accessing the parent element is difficult.*/
+    private String instituteCode;
     private List<ActivityOfferingItem> activityOfferingItemList;
 
 
     public YearTerm getYearTerm() {
-    	return yearTerm;
+        return yearTerm;
     }
-    
-    public void setYearTerm( YearTerm yearTerm ) {
-    	this.yearTerm = yearTerm;
+
+    public void setYearTerm(YearTerm yearTerm) {
+        this.yearTerm = yearTerm;
     }
 
     public String getTerm() {
-    	return term;
+        return term;
     }
-    
-    public void setTerm( String term ) {
-    	this.term = term;
+
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public String getCourseComments() {
@@ -54,4 +57,11 @@ public class CourseOfferingTerm {
         this.activityOfferingItemList = activityOfferingItemList;
     }
 
+    public String getInstituteCode() {
+        return instituteCode;
+    }
+
+    public void setInstituteCode(String instituteCode) {
+        this.instituteCode = instituteCode;
+    }
 }

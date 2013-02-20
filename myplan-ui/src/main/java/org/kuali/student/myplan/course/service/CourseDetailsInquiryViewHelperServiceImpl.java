@@ -407,6 +407,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         courseOfferingTerm.setYearTerm(yt);
                         courseOfferingTerm.setTerm(yt.toLabel());
                         courseOfferingTerm.setCourseComments(courseComments.get(atp));
+                        courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
                         courseOfferingTermList.add(courseOfferingTerm);
                     }
 
