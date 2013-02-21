@@ -1596,7 +1596,7 @@
                     <property name="href"
                               value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
                     <property name="lightBox">
-                        <bean parent="Uif-LightBox"/>
+                        <bean parent="Uif-LightBox" p:width="90%"/>
                     </property>
                 </bean>
             </list>
@@ -3119,7 +3119,6 @@
                       p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
                     <property name="items">
                         <list>
-                            <!-- TODO: Output student name and student number -->
                             <bean parent="Uif-MessageField" p:label="Prepared for"
                                   p:messageText="@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentName()} (@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() ne null ? T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() : 'No student number'})">
                                 <property name="fieldLabel.cssClasses">
@@ -3184,6 +3183,7 @@
     <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:headerText="Entire Academic Plan">
         <property name="style" value="padding:10px;"/>
         <property name="onDocumentReadyScript" value="
+            jQuery('th, td').removeAttr('width');
             jQuery('td.uif-subCollection').each(function() {
             	var maxHeight = 0;
             	jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
