@@ -73,6 +73,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     private final static String[] WEEKDAYS_FIRST_LETTER = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
+    private final static List<String> QUARTERS = Arrays.asList("Autumn", "Winter", "Spring", "Summer");
+
     public static final String NOT_OFFERED_IN_LAST_TEN_YEARS = "Not offered for more than 10 years.";
 
     private transient CourseService courseService;
@@ -246,6 +248,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             for (String term : course.getTermsOffered()) {
                 String atp = atpMap.get(term);
                 courseDetails.getTermsOffered().add(atp);
+            }
+            //Sorting Terms Offered
+            if (courseDetails.getTermsOffered().size() > 0) {
+                Collections.sort(courseDetails.getTermsOffered(), new Comparator<String>() {
+                    @Override
+                    public int compare(String val1, String val2) {
+                        return String.valueOf(QUARTERS.indexOf(val1)).compareTo(String.valueOf(QUARTERS.indexOf(val2)));
+                    }
+                });
             }
 
             return courseDetails;
