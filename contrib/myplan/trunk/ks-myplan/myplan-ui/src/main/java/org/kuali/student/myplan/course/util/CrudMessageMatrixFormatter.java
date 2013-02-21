@@ -126,7 +126,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String currentTerm = AtpHelper.getCurrentAtpId();
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                     if (counter2 == 0) {
-                        String message = "You're currently enrolled for ";
+                        String message = "You are enrolled in ";
                         if (UserSessionHelper.isAdviser()) {
                             String user = UserSessionHelper.getStudentName();
                             message = user + ". currently enrolled in this course for ";
@@ -142,7 +142,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                                 count++;
                             }
                         }
-                        sb = sb.append("<dd>").append(message).append(sec).append(" in ")
+                        sb = sb.append("<dd>").append(message).append(sec).append(" for ")
                                 .append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
