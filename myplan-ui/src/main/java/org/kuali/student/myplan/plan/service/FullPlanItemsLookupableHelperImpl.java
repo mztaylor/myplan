@@ -93,7 +93,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             String[] minYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(0).getAtpId());
             String[] maxYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(plannedTermList.size() - 1).getAtpId());
             StringBuffer yearRange = new StringBuffer();
-            yearRange = yearRange.append(minYear[1]).append("-").append(maxYear[1]);
+            yearRange = yearRange.append(minYear[1]).append(" - ").append(maxYear[1]);
             fullPlanItemsDataObject.setYearRange(yearRange.toString());
             fullPlanItemsDataObject.setTerms(plannedTermList);
             fullPlanItemsDataObjectList.add(fullPlanItemsDataObject);
