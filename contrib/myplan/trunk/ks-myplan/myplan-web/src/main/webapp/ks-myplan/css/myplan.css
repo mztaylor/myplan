@@ -1704,23 +1704,43 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav {
     margin-bottom: 20px;
+    border-right: solid 1px #cccccc;
+    border-bottom: solid 1px #cccccc;
+    background-image: -ms-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
+    background-image: -moz-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
+    background-image: -o-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #f0f0f0));
+    background-image: -webkit-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
+    background-image: linear-gradient(to bottom, #F7F7F7 0%, #f0f0f0 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F7F7F7', endColorstr='#f0f0f0')"; /* IE8 */
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li {
-    margin: 0 0 0 1em;
-    padding: 0 0 0 1em;
-    border-left: solid 2px #000;
     border-radius: 0px;
-}
-
-.myplan-course-sections .ui-tabs-nav li:first-child {
-    margin: 0;
-    padding: 0;
-    border: none;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    top: 0px;
+    margin-bottom: -1px;
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li a {
     font-size: 1.25em;
+}
+
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active {
+    border-right: solid 1px #cccccc;
+    border-left: solid 1px #cccccc;
+    background: #fff;
+    border-bottom: solid 1px #fff;
+}
+
+.myplan-course-sections .ui-tabs .ui-tabs-nav li:first-child {
+    border-left: solid 1px #cccccc;
+}
+
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active:first-child {
+    border-left: none;
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active a {

@@ -787,7 +787,7 @@
         </property>
         <property name="headerText" value="@{dataObject.code} Course Sections"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree">
+            <bean parent="Uif-HeaderThree" p:style="margin:0;">
                 <property name="cssClasses">
                     <list merge="true">
                         <value>myplan-underline-header</value>
@@ -822,7 +822,7 @@
         </property>
         <property name="headerText" value="@{dataObject.code} Course Sections"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree">
+            <bean parent="Uif-HeaderThree" p:style="margin:0;">
                 <property name="cssClasses">
                     <list merge="true">
                         <value>myplan-underline-header</value>
