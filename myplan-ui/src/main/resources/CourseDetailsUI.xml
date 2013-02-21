@@ -1044,7 +1044,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalFieldGroup" p:label="Additional Details"
+                                        <bean parent="Uif-HorizontalFieldGroup" p:label="Section Details"
                                               p:group.validationMessages.render="false" p:style="margin:0;">
                                             <property name="items">
                                                 <list>
