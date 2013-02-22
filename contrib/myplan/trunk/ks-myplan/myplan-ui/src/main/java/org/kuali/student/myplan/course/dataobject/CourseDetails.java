@@ -1,13 +1,11 @@
 package org.kuali.student.myplan.course.dataobject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hsqldb.lib.StringUtil;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.springframework.util.StringUtils;
 
 /**
@@ -112,6 +110,14 @@ public class CourseDetails extends CourseSummaryDetails {
             }
 
         }
+        Collections.sort(scheduledTerms, new Comparator<String>() {
+            @Override
+            public int compare(String val1, String val2) {
+                val1 = AtpHelper.getAtpIdFromTermYear(val1);
+                val2 = AtpHelper.getAtpIdFromTermYear(val2);
+                return val1.compareTo(val2);
+            }
+        });
         return scheduledTerms;
     }
 
