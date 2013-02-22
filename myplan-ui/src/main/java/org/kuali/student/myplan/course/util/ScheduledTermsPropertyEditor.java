@@ -27,10 +27,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 
 public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
@@ -67,33 +64,44 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
         String courseId = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getParameter("courseId");
         StringBuilder sb = new StringBuilder();
         List<CourseOfferingInstitution> courseOfferingInstitutions = (List<CourseOfferingInstitution>) super.getValue();
-        List<String> scheduledTerms = new ArrayList<String>();
+        Map<String, String> scheduledTerms = new HashMap<String, String>();
         int counter = 0;
         for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
             for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
-                if (!scheduledTerms.contains(courseOfferingTerm.getTerm())) {
-                    scheduledTerms.add(courseOfferingTerm.getTerm());
-                    String serverUrl = ConfigContext.getCurrentContextConfig().getProperty(CourseSearchConstants.APP_URL);
-                    String atpId = AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm()).replace(".", "-");
-                    if (!fullLinks) {
-                        Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(courseOfferingTerm.getTerm());
-                        if (m.matches()) {
-                            String elemTxt = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
-                            String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, courseOfferingInstitution.getCode(), atpId, elemTxt);
-                            sb.append(String.format(DDClass, elemTxt, link));
-                        }
-                    } else {
-                        String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, courseOfferingInstitution.getCode(), atpId, courseOfferingTerm.getTerm());
-                        if (counter == 0) {
-                            sb.append(String.format("View all sections for %s", link));
-                            counter++;
+                if (scheduledTerms.get(AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm())) == null) {
+                    scheduledTerms.put(AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm()), String.format("%s:%s", courseOfferingTerm.getTerm(), courseOfferingInstitution.getCode()));
+                }
+            }
 
-                        } else if (counter > 0) {
-                            sb.append(String.format(", %s", link));
-                            counter++;
+        }
+        if (scheduledTerms.size() > 0) {
+            SortedSet<String> sortedKeys = new TreeSet<String>(scheduledTerms.keySet());
+            for (String scheduledTerm : sortedKeys) {
+                String[] values = scheduledTerms.get(scheduledTerm).split(":");
+                String term = values[0];
+                String instCode = values[1];
+                String serverUrl = ConfigContext.getCurrentContextConfig().getProperty(CourseSearchConstants.APP_URL);
+                String atpId = AtpHelper.getAtpIdFromTermYear(term).replace(".", "-");
+                if (!fullLinks) {
+                    Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+                    if (m.matches()) {
+                        String elemTxt = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
+                        String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, instCode, atpId, elemTxt);
+                        sb.append(String.format(DDClass, elemTxt, link));
+                    }
+                } else {
+                    String link = String.format(CourseSearchConstants.LINK, serverUrl, courseId, instCode, atpId, term);
+                    if (counter == 0) {
+                        sb.append(String.format("View all sections for %s", link));
+                        counter++;
 
-                        }
+                    } else if (counter > 0 && !(counter == sortedKeys.size() - 1)) {
+                        sb.append(String.format(", %s", link));
+                        counter++;
 
+                    } else if (counter > 0 && (counter == sortedKeys.size() - 1)) {
+                        sb.append(String.format(" and %s", link));
+                        counter++;
                     }
 
                 }
