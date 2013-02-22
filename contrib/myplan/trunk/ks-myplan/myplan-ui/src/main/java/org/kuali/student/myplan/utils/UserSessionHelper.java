@@ -226,8 +226,8 @@ public class UserSessionHelper {
             Person person = getPersonService().getPerson(studentId);
             Map<String, String> map = person.getExternalIdentifiers();
 
-            // Rice KIM's equivalent to systemID is /Person/StudentNumber from SWS
-            String systemNumber = map.get("systemID");
+            // Rice KIM's equivalent to studentID is /Person/StudentNumber from SWS
+            String systemNumber = map.get("studentID");
             return systemNumber;
         } catch (Exception e) {
             logger.error("Could not load the Person Information", e);
