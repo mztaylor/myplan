@@ -4,7 +4,6 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
-import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -31,25 +30,21 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import uachieve.apis.audit.*;
+import uachieve.apis.audit.JobQueueRun;
 import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.dao.hibernate.JobQueueRunHibernateDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
+import uachieve.apis.requirement.dao.DprogDao;
+import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
-import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
-import uachieve.apis.requirement.dao.DprogDao;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -58,10 +53,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -156,6 +151,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             throws InvalidParameterException, MissingParameterException, OperationFailedException
 
     {
+
         try {
             programId = programId.replace('$', ' ');
             // padding, because sometimes degree program ids are not 12 chars long
@@ -188,6 +184,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             payload = payload.replace("$regid", studentId.replace("&", "&amp;"));
 
             String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
+            logger.info("REST HTTP POST");
+            logger.info(postAuditRequestURL);
+            logger.info(payload);
 
             Client client = studentServiceClient.getClient();
 
@@ -226,10 +225,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 return auditReportInfo;
             } else {
                 StringBuilder sb = new StringBuilder();
+                sb.append("HTTP Status: " + status.getCode());
+                sb.append(" ");
+                sb.append(rep.toString());
+                sb.append(" ");
                 InputStream in = rep.getStream();
-                int c = 0;
-                while ((c = in.read()) != -1) {
-                    sb.append((char) c);
+                if (in != null) {
+                    int c = 0;
+                    while ((c = in.read()) != -1) {
+                        sb.append((char) c);
+                    }
                 }
                 throw new Exception(sb.toString());
             }
@@ -277,27 +282,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         long giveup = System.currentTimeMillis() + TIMEOUT;
-        while( true ) 
-        {
+        while (true) {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
             logger.info(info.getMessage());
-            if (info.getIsSuccess())
-            {
-            	return getHTMLReport(auditId);
+            if (info.getIsSuccess()) {
+                return getHTMLReport(auditId);
             }
 
-            try
-            {
+            try {
                 Thread.sleep(200);
-            }
-            catch( InterruptedException e )
-            {
+            } catch (InterruptedException e) {
                 // do nothing
             }
             if (System.currentTimeMillis() > giveup) {
                 String msg = "getAuditReport giving up after " + (TIMEOUT / 1000) + " seconds, auditId: " + auditId;
-                logger.error( msg );
-				throw new OperationFailedException(msg);
+                logger.error(msg);
+                throw new OperationFailedException(msg);
             }
         }
     }
@@ -318,7 +318,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Object[] item = (Object[]) list.get(0);
             byte[] report = (byte[]) item[0];
             String stuno = (String) item[1];
-            stuno = convertMyPlanStunoToSDBSyskey( stuno );
+            stuno = convertMyPlanStunoToSDBSyskey(stuno);
             String garbage = new String(report);
             InputStream in = new ByteArrayInputStream(garbage.getBytes());
 
@@ -341,7 +341,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             findClassLinkifyTextAndConvertCoursesToLinks(doc, builder);
 
-            String path = "//*[contains(@class,'urlify')]";;
+            String path = "//*[contains(@class,'urlify')]";
+            ;
             linkifyURLs(doc, xpath, path, builder);
 
             {
@@ -354,7 +355,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 //                    String whoops = child.getTextContent();
 //                    List<Person> personList = UserSessionHelper.getPersonService().getPersonByExternalIdentifier("systemKey", stuno);
                     String preparedFor = UserSessionHelper.getNameCapitalized(UserSessionHelper.getStudentId());
-                    child.setTextContent( preparedFor );
+                    child.setTextContent(preparedFor);
                 }
             }
 
@@ -371,8 +372,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         } catch (Exception e) {
             String msg = "getHTMLReport failed auditId: " + auditId;
-			logger.error(msg, e);
-            throw new OperationFailedException( msg, e );
+            logger.error(msg, e);
+            throw new OperationFailedException(msg, e);
         }
         AuditDataSource dataSource = new AuditDataSource(answer, auditId);
         DataHandler dh = new DataHandler(dataSource);
@@ -402,17 +403,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 linkifiedTextContent = "<span>" + linkifiedTextContent + "</span>";
 
                 builder.reset();
-                try
-                {
+                try {
                     Document document = builder.parse(new InputSource(new StringReader(linkifiedTextContent)));
                     Node root = document.getDocumentElement();
 
                     Node parent = child.getParentNode();
                     Node newRoot = doc.importNode(root, true);
                     parent.replaceChild(newRoot, child);
-                }
-                catch( Exception e )
-                {
+                } catch (Exception e) {
                     logger.error("findClassLinkifyTextAndConvertCoursesToLinks failed on '" + linkifiedTextContent + "'", e);
                 }
             }
@@ -452,8 +450,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     Node crank = doc.importNode(fake, true);
                     parent.replaceChild(crank, child);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("linkifyURLs failed on '" + victim + "'", e);
             }
         }
@@ -467,14 +464,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         Matcher m = p.matcher(initialText);
         while (m.find()) {
             String href = m.group();
-            if (!href.contains("@") && href.contains( "washington.edu" ))  {
+            if (!href.contains("@") && href.contains("washington.edu")) {
                 String period = "";
                 if (href.endsWith(".")) {
                     href = href.substring(0, href.length() - 1);
                     period = ".";
                 }
                 String url = href;
-                if( !url.startsWith("http://") ) {
+                if (!url.startsWith("http://")) {
                     url = "http://" + url;
                 }
                 String trix = "<a href=\"" + url + "\" target=\"_blank\">" + href + "</a>" + period;
@@ -515,7 +512,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     // eg "000723033" becomes "1000723033" (note the "1" prefix)
     public String convertMyPlanStunoToSDBSyskey(String stuno) {
         if (stuno.length() == 9 && stuno.startsWith("1")) {
-            stuno = stuno.substring( 1 );
+            stuno = stuno.substring(1);
         }
         return stuno;
     }
@@ -527,7 +524,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                                                 @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
-
         String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
         logger.info("getAuditsForStudentInDateRange studentid " + studentId + "  stuno " + stuno);
 
@@ -536,8 +532,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         // TODO: configurable constant for UW
         String instidq = "72";
         // I have no idea what 'instcd' list does
-        List<String> instcd = new ArrayList<String>();
-        instcd.add("");
+        List<String> instcd = Arrays.asList("");
         try {
             JobQueueRunDao runrun = getJobQueueRunDao();
             List<JobQueueRun> load = runrun.load(instid, instidq, instcd, stuno);
@@ -547,7 +542,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 audit.setAuditId(jqr.getJobid());
                 audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
                 audit.setStudentId(stuno);
-                audit.setProgramId(jqr.getDprog().replace(" ","$"));
+                audit.setProgramId(jqr.getDprog().replace(" ", "$"));
                 audit.setProgramTitle(jqr.getWebtitle());
                 audit.setRunDate(jqr.getRundate());
                 audit.setRequirementsSatisfied("Unknown");
@@ -589,6 +584,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         int year = Integer.parseInt(currentTermAndYear[1]) - 10;
         StringBuffer termYear = new StringBuffer();
         termYear = termYear.append(year).append(currentTermAndYear[0]);
+//        YearTerm yt = AtpHelper.getCurrentYearTerm();
+//        yt = new AtpHelper.YearTerm( yt.getYear() - 10, yt.getTerm() );
+//        String whoof = yt.toUAchieveValue();
         String[] params = new String[]{termYear.toString()};
         List programs = dao.find(hql, params);
         for (int i = 0; i < programs.size(); i++) {
