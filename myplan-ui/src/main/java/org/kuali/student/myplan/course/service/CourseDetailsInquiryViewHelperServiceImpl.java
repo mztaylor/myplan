@@ -512,19 +512,68 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return courseDetails;
     }
 
+    /**
+     * Returs course summary information along with the Activity Offering info for a particular course
+     *
+     * @param courseId
+     * @param studentId
+     * @param termId
+     * @return
+     */
     public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
         CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
-        List<CourseOfferingInstitution> courseOfferingInstitutionList = courseDetails.getCourseOfferingInstitutionList();
-        CourseOfferingInstitution courseOfferingInstitution = new CourseOfferingInstitution();
-        courseOfferingInstitutionList.add(courseOfferingInstitution);
-        List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
-        CourseOfferingTerm courseOfferingTerm = new CourseOfferingTerm();
-        courseOfferingTermList.add(courseOfferingTerm);
-        List<ActivityOfferingItem> activityOfferingItemList = getActivityOfferingItems(courseId, termId, null);
-        courseOfferingTerm.setActivityOfferingItemList(activityOfferingItemList);
+        YearTerm yt = AtpHelper.atpToYearTerm(termId);
+
+        List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
+        String atp = yt.toATP();
+        List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
+        for (ActivityOfferingItem activityOfferingItem : list) {
+            String instituteCode = activityOfferingItem.getInstituteCode();
+            String instituteName = activityOfferingItem.getInstituteName();
+            CourseOfferingInstitution courseOfferingInstitution = null;
+            for (CourseOfferingInstitution temp : instituteList) {
+                if (instituteCode.equals(temp.getCode())) {
+                    courseOfferingInstitution = temp;
+                    break;
+                }
+            }
+            if (courseOfferingInstitution == null) {
+                courseOfferingInstitution = new CourseOfferingInstitution();
+                courseOfferingInstitution.setCode(instituteCode);
+                courseOfferingInstitution.setName(instituteName);
+                instituteList.add(courseOfferingInstitution);
+            }
+
+            List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
+            CourseOfferingTerm courseOfferingTerm = null;
+            for (CourseOfferingTerm temp : courseOfferingTermList) {
+                if (yt.equals(temp.getYearTerm())) {
+                    courseOfferingTerm = temp;
+                }
+            }
+            if (courseOfferingTerm == null) {
+                courseOfferingTerm = new CourseOfferingTerm();
+                courseOfferingTerm.setYearTerm(yt);
+                courseOfferingTerm.setTerm(yt.toLabel());
+                courseOfferingTerm.setCourseComments(courseComments.get(atp));
+                courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
+                courseOfferingTermList.add(courseOfferingTerm);
+            }
+
+            courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+        }
 
         return courseDetails;
     }
+
+    /**
+     * Returns activity Offerings for given courseId and term
+     *
+     * @param courseId
+     * @param termId
+     * @param courseCode
+     * @return
+     */
 
     public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
         // Get version verified course
