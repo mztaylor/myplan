@@ -1550,7 +1550,7 @@ public class PlanController extends UifControllerBase {
         String studentId = getUserId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
-            throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
+        return null;
         }
 
         PlanItemInfo planItem = null;
