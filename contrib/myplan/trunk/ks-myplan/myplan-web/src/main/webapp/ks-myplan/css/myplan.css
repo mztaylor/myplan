@@ -597,7 +597,6 @@ input.myplan-add:hover,
 
 .myplan-data-list .scheduled dl dd,
 .myplan-data-list dl.scheduled dd {
-    background: #ccc;
     color: #333;
     border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -609,6 +608,13 @@ input.myplan-add:hover,
     margin-right: 0.33em;
     line-height: 1.8em;
     display: inline-block;
+}
+
+.myplan-data-list .scheduled dl dd a,
+.myplan-data-list dl.scheduled dd a {
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .AU {
@@ -1636,7 +1642,7 @@ table.myplan-course-search-results-datatable .blockUI {
 
 /* Course Details Styles ########################################################################### */
 .myplan-view .myplan-underline-header {
-    border-bottom: solid 3px #f2e4b7;
+    border-bottom: solid 2px #f2e4b7;
     margin-bottom: 20px;
 }
 
@@ -1704,15 +1710,15 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav {
     margin-bottom: 20px;
-    border-right: solid 1px #cccccc;
-    border-bottom: solid 1px #cccccc;
-    background-image: -ms-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
-    background-image: -moz-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
-    background-image: -o-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F7F7F7), color-stop(1, #f0f0f0));
-    background-image: -webkit-linear-gradient(top, #F7F7F7 0%, #f0f0f0 100%);
-    background-image: linear-gradient(to bottom, #F7F7F7 0%, #f0f0f0 100%);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F7F7F7', endColorstr='#f0f0f0')"; /* IE8 */
+    border-right: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+    background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -moz-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -o-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F5F5F5), color-stop(1, #EBEBEB));
+    background-image: -webkit-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
+    background-image: linear-gradient(to bottom, #F5F5F5 0%, #EBEBEB 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F5F5F5', endColorstr='#EBEBEB')"; /* IE8 */
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li {
@@ -1725,18 +1731,18 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li a {
-    font-size: 1.25em;
+    font-size: 1.15em;
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active {
-    border-right: solid 1px #cccccc;
-    border-left: solid 1px #cccccc;
+    border-right: solid 1px #ddd;
+    border-left: solid 1px #ddd;
     background: #fff;
     border-bottom: solid 1px #fff;
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li:first-child {
-    border-left: solid 1px #cccccc;
+    border-left: solid 1px #ddd;
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active:first-child {
@@ -1745,6 +1751,7 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active a {
     font-weight: 700;
+    font-size: 1.25em;
 }
 
 .myplan-course-sections h5.uif-headerText {
@@ -1752,6 +1759,9 @@ table.myplan-course-search-results-datatable .blockUI {
     color: #5d5d5d;
     font-size: 1.4em;
     font-weight: 500;
+    padding: 2px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 /* Reset */

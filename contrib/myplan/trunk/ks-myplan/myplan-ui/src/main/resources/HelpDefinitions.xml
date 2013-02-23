@@ -21,21 +21,24 @@
 
     <bean id="quarter_facet_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Left" p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#820&quot;);&gt;Learn more&lt;/a&gt;"/>
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#820&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
 
     <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
+            <bean parent="MyPlan-Tooltip-Right"
+                  p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
 
     <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
-         <property name="toolTip">
-          <bean parent="MyPlan-Tooltip-Right" p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Right"
+                  p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -202,6 +205,19 @@
                                     &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
                                     &lt;strong&gt;None&lt;/strong&gt; - Does not count towards General Education Requirements&lt;/br&gt;
                                     &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php');&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
+        </property>
+    </bean>
+
+    <bean id="course_sections_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Right"
+                  p:tooltipContent="&lt;strong&gt;ENRL/LIMIT&lt;/strong&gt; = section enrollment and overall enrollment limit&lt;/br&gt;
+                  &lt;strong&gt;ENRL. RESTR.&lt;/strong&gt; = applicable enrollment restrictions for each section&lt;/br&gt;
+                  &lt;strong&gt;OTHER&lt;/strong&gt; = additional information for each section&lt;/br&gt;
+                  &lt;strong&gt;PCE&lt;/strong&gt; = UW Professional &amp; Continuing Education&lt;/br&gt;
+                  &lt;/br&gt;
+                  &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#1308');&gt;Learn more about section details.&lt;/a&gt;
+                  "/>
         </property>
     </bean>
 

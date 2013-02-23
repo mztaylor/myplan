@@ -23,7 +23,6 @@
 
         <p>You do not have permission to perform that trick.</p>
     </div>
-    <h3>Try these links to the MyPlan site:</h3>
 
     <div id="more">Still can't find it? Visit our <a href="http://depts.washington.edu/myplan/help-site/">help page</a>
         or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.

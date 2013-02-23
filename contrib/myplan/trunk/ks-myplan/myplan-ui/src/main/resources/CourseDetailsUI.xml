@@ -461,7 +461,8 @@
                                                                       p:messageText="Projected to be offered in "
                                                                       p:render="@{dataObject.termsOffered.size() gt 0 ? true : false}"
                                                                       p:style="margin: 0 0.33em 0 0;"/>-->
-                                                                <bean parent="Uif-DataField" p:label="Projected For"
+                                                                <bean parent="Uif-DataField"
+                                                                      p:label="Projected Quarter Info"
                                                                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
                                                                       p:propertyName="termsOffered"
                                                                       p:escapeHtmlInPropertyValue="false">
@@ -830,6 +831,13 @@
                 </property>
             </bean>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField"
+                      p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
+                      p:render="@{#line.code.startsWith('95')}" p:style="margin-bottom:20px;"/>
+            </list>
+        </property>
         <property name="subCollections">
             <list>
                 <ref bean="course_details_term_data"/>
@@ -866,20 +874,37 @@
         </property>
     </bean>
 
-    <bean id="course_details_activity_data" parent="Uif-TableCollectionSection">
+    <bean id="course_details_activity_data" parent="Uif-TableCollectionSection" p:validationMessages.render="false"
+          p:style="margin-bottom:30px;">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="activityOfferingItemList"/>
         <property name="layoutManager.id" value="course_details_section_datatable"/>
         <property name="headerText" value="@{#line.term}"/>
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="Uif-HeaderFive">
+                <property name="headerTagCssClasses">
+                    <list merge="true">
+                        <value>@{#line.term.substring(0, 2).toUpperCase()}</value>
+                        <value>uif-headerText</value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="header.lowerGroup">
-            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false"
-                  p:render="@{#line.courseComments ne null}" p:style="margin-top: 10px;">
+            <bean parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-Message" p:messageText="@{#line.courseComments}"/>
+                        <bean parent="Uif-Message" p:messageText="@{#line.courseComments}"
+                              p:render="@{#line.courseComments ne null}" p:style="margin-top: 10px;"/>
+                        <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                            <property name="items">
+                                <list>
+                                    <bean parent="Uif-Message"
+                                          p:messageText="Enrollment status gets updated every few minutes."/>
+                                    <bean parent="course_sections_help_icon" p:style="float:right;"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>

@@ -505,7 +505,8 @@
         </property>
     </bean>
 
-    <bean id="section_scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
+    <bean id="section_scheduled_terms_list_formatter"
+          class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListMessage" value="Not currently scheduled"/>
         <property name="fullLinks" value="true"/>
@@ -523,7 +524,7 @@
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
         <property name="emptyListMessage"
-                  value="Projected quarter information is not available for this course. Check with your adviser or the Time Schedule."/>
+                  value="Projected quarter information is not available for this course. Check with the department or your adviser for more information about this course."/>
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListStyleClasses">
             <list merge="true">
