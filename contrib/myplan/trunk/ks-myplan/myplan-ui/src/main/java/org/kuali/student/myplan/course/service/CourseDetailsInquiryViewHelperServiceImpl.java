@@ -756,6 +756,12 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return titleValue;
     }
 
+    /**
+     * returns the campus Locations in which the course (for given courseId) is offered
+     *
+     * @param courseId
+     * @return
+     */
     private List<String> getCampusLocationsOfferedIn(String courseId) {
         List<String> campusLocations = new ArrayList<String>();
         SearchRequest searchRequest = new SearchRequest("myplan.course.getCampusLocations");
