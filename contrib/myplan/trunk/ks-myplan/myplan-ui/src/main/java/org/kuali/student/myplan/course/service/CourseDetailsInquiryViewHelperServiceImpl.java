@@ -801,6 +801,14 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return isCourseIdValid;
     }
 
+    /**
+     * Checks if the Given refObjId for a section (eg: com 453 A or com 453 AA or can use a versionIndependentId) for the given atpId exists in Plan/backup
+     * returns true if exists otherwise returns false.
+     *
+     * @param refObjId
+     * @param atpId
+     * @return
+     */
     public boolean isPlanned(String refObjId, String atpId) {
         boolean isPlanned = false;
         PlanItemInfo planItem = null;
