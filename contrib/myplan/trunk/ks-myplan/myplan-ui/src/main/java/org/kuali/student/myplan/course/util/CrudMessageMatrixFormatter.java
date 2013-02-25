@@ -148,7 +148,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                                 .append(term).append("</a>");
                         currentTermRegistered = true;
                     }
-                    if (counter3 > 0) {
+                    if (counter2 > 0) {
                         sb = sb.append(",").append("<a href=plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=")
                                 .append(atpId).append(">")
                                 .append(term).append("</a>");
@@ -284,7 +284,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         return sb.toString();
     }
 
-
+    /**
+     * returns the section links string for given courseId and term in the form
+     * ("<a href="http://localhost:8080/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=60325fa8-7307-454a-be73-3cc1c642122d#kuali-uw-atp-2013-1-19889"> Section (SLN) </a>")
+     *
+     * @param courseDetails
+     * @param term
+     * @return
+     */
     private List<String> getSections(CourseDetails courseDetails, String term) {
         String[] yearAndTerm = term.split(" ");
         String[] curricAndNum = courseDetails.getCode().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
@@ -292,7 +299,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
         for (AcademicRecordDataObject acr : courseDetails.getAcadRecList()) {
-            if (courseDetails.getCourseId().equalsIgnoreCase(acr.getCourseId())) {
+            if (courseDetails.getCourseId().equalsIgnoreCase(acr.getCourseId()) && acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term))) {
                 sections.add(acr.getActivityCode());
             }
         }
@@ -305,6 +312,16 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         return sectionAndSln;
     }
 
+    /**
+     * returns the SLN for the given params
+     *
+     * @param year
+     * @param term
+     * @param curriculum
+     * @param number
+     * @param section
+     * @return
+     */
     private String getSLN(String year, String term, String curriculum, String number, String section) {
         String sln = null;
         ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
