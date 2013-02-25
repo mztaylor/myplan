@@ -996,6 +996,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField" p:messageText="PCE"
+                                  p:title="UW Professional &amp; Continuing Education"
                                   p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
                                 <property name="cssClasses">
                                     <list merge="true">
