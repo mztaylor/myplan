@@ -669,23 +669,20 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     }
 
 
-                    String instituteCode = "";
-                    String instituteName = "";
+                    String instituteCode = null;
+                    String instituteName = null;
 
-                    // Use campus as default institute code and name
-                    if (!meetingDetailsList.isEmpty()) {
-                        MeetingDetails details = meetingDetailsList.get(0);
-                        String campus = details.getCampus();
-                        instituteCode = campus;
-                        instituteName = campus;
-                    }
-
+                    String campus = null;
                     String enrollCount = null;
                     String enrollMaximum = null;
                     String enrollEstimate = null;
                     for (AttributeInfo attrib : aodi.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
+                        if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
+                            campus = value;
+                            continue;
+                        }
                         if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
                             activity.setFeeAmount(value);
                             continue;
@@ -762,6 +759,13 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     activity.setAtpId(termId);
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
                     activity.setQtryr(yt.toQTRYRParam());
+
+                    if (instituteCode == null) {
+                        instituteCode = campus;
+                    }
+                    if (instituteName == null) {
+                        instituteName = campus;
+                    }
 
                     activity.setInstituteName(instituteName);
                     activity.setInstituteCode(instituteCode);
@@ -865,14 +869,14 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * @return
      */
     public boolean isPlanned(String refObjId, String atpId) {
-        boolean isPlanned = false;
-        PlanItemInfo planItem = null;
-        PlanController planController = new PlanController();
-        planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
-        if (planItem != null) {
-            isPlanned = true;
+        try {
+            PlanController planController = new PlanController();
+            PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
+            boolean isPlanned = planItem != null;
+            return isPlanned;
+        } catch (Exception e) {
         }
-        return isPlanned;
+        return false;
     }
 
 
