@@ -821,7 +821,7 @@
                 <value>myplan-course-sections</value>
             </list>
         </property>
-        <property name="headerText" value="@{dataObject.code} Course Sections"/>
+        <property name="headerText" value="@{dataObject.code} Sections"/>
         <property name="header">
             <bean parent="Uif-HeaderThree" p:style="margin:0;">
                 <property name="cssClasses">
@@ -835,7 +835,7 @@
             <list>
                 <bean parent="Uif-MessageField"
                       p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
-                      p:render="@{#line.code.startsWith('95')}" p:style="margin-bottom:20px;"/>
+                      p:render="@{#line.code.startsWith('95')}" p:style="margin-top:20px;"/>
             </list>
         </property>
         <property name="subCollections">
@@ -875,7 +875,7 @@
     </bean>
 
     <bean id="course_details_activity_data" parent="Uif-TableCollectionSection" p:validationMessages.render="false"
-          p:style="margin-bottom:30px;">
+          p:style="margin-top:30px;">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="activityOfferingItemList"/>
         <property name="layoutManager.id" value="course_details_section_datatable"/>
@@ -995,6 +995,15 @@
                                     </list>
                                 </property>
                             </bean>
+                            <bean parent="Uif-MessageField" p:messageText="PCE"
+                                  p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-font-size-80</value>
+                                        <value>fl-text-align-center</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean p:id="@{dataObject.courseId}-@{#line.code}-@{#line.registrationCode}"
                                   parent="Uif-ActionLink" p:actionLabel="View more" p:render="@{#line.primary}">
                                 <property name="onDocumentReadyScript" value="
@@ -1070,6 +1079,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup" p:label="Section Details"
+                                              p:fieldLabel.renderColon="false"
                                               p:group.validationMessages.render="false" p:style="margin:0;">
                                             <property name="items">
                                                 <list>

@@ -1709,7 +1709,6 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav {
-    margin-bottom: 20px;
     border-right: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
@@ -1746,7 +1745,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active:first-child {
-    border-left: none;
+    /*border-left: none;*/
 }
 
 .myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active a {
@@ -1756,7 +1755,7 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections h5.uif-headerText {
     text-transform: uppercase;
-    color: #5d5d5d;
+    color: #666;
     font-size: 1.4em;
     font-weight: 500;
     padding: 2px 10px;
