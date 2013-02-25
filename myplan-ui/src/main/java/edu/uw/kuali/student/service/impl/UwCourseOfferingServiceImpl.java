@@ -2,20 +2,17 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
-
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-
-import org.apache.log4j.Logger;
-import org.dom4j.io.SAXReader;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -23,11 +20,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
-import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.TimeOfDayInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
+import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
@@ -38,6 +31,8 @@ import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * UW implementation of CourseOfferingService.
@@ -54,6 +49,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     private StudentServiceClient studentServiceClient;
 
     private List<String> DAY_LIST = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+    private static Pattern regexInstituteCodePrefix = Pattern.compile("([0-9]+)(.)*");
 
     public UwCourseOfferingServiceImpl() {
     }
@@ -994,6 +990,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 /*Course Flags*/
                 List<AttributeInfo> attributes = info.getAttributes();
+                attributes.add(new AttributeInfo("Campus", campus));
                 attributes.add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
                 attributes.add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
                 attributes.add(new AttributeInfo("ResearchCredit", String.valueOf(Boolean.valueOf(sectionNode.elementText("ResearchCredit")))));
@@ -1017,11 +1014,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
                 attributes.add(attrib);
 
+                String instituteCode = null;
+                String instituteName = null;
                 {
                     DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
                     Element link = (Element) linkPath.selectSingleNode(sectionNode);
                     if (link != null) {
-                        String instituteCode = link.getTextTrim();
+                        instituteCode = link.getTextTrim();
                         AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
                         attributes.add(whoop);
                     }
@@ -1031,14 +1030,29 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     DefaultXPath namePath = newXPath("s:InstituteName");
                     Element nameNode = (Element) namePath.selectSingleNode(sectionNode);
                     if (nameNode != null) {
-                        String instituteName = nameNode.getTextTrim();
+                        instituteName = nameNode.getTextTrim();
                         AttributeInfo whoop = new AttributeInfo("instituteName", instituteName);
                         attributes.add(whoop);
                     }
                 }
 
-                result.add(info);
 
+                // refer to https://jira.cac.washington.edu/browse/MYPLAN-1583 for list of supported institute codes
+
+                // displaying main campus, PCE, and ROTC
+                int instituteNumber = getInstituteNumber(instituteCode);
+                switch (instituteNumber) {
+                    case 0: // Main campus
+                    case 95: // PCE
+                    case 88: // ROTC
+                    {
+                        result.add(info);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1046,6 +1060,24 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
 
         return result;
+    }
+
+    /**
+     * Extracts institute number prefix from the SWS link information, which is reused as the institutecode.
+     * <p/>
+     * "123abc" -> 123
+     * "abc" -> 0
+     * "" -> 0
+     */
+
+    private static int getInstituteNumber(String link) {
+        int institute = 0;
+        Matcher m = regexInstituteCodePrefix.matcher(link);
+        if (m.find()) {
+            String ugh = m.group(1);
+            institute = Integer.parseInt(ugh);
+        }
+        return institute;
     }
 
     void populateEnrollmentFields(ActivityOfferingDisplayInfo activity, String year, String quarter, String curric, String num, String sectionID)
