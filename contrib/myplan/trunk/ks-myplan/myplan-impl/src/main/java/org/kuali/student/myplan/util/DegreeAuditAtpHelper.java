@@ -67,7 +67,7 @@ public class DegreeAuditAtpHelper {
     public static String getLastScheduledAtpId() {
         List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
         try {
-            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "PUBLISHED")), new ContextInfo());
+            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", "PUBLISHED")), CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
