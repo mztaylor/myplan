@@ -22,6 +22,7 @@ import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -69,7 +70,11 @@ public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
         for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
             for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
                 if (scheduledTerms.get(AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm())) == null) {
-                    scheduledTerms.put(AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm()), String.format("%s:%s", courseOfferingTerm.getTerm(), courseOfferingInstitution.getCode()));
+                    String instituteCode = courseOfferingInstitution.getCode();
+                    if(!StringUtils.hasText(instituteCode)){
+                        instituteCode = null;
+                    }
+                    scheduledTerms.put(AtpHelper.getAtpIdFromTermYear(courseOfferingTerm.getTerm()), String.format("%s:%s", courseOfferingTerm.getTerm(), instituteCode));
                 }
             }
 
