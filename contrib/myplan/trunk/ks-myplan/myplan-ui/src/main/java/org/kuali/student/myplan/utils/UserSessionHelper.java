@@ -87,6 +87,16 @@ public class UserSessionHelper {
     }
 
     /**
+     * Returns true if a user is logged in, false means it's a webservice client.
+     *
+     * @return
+     */
+    public synchronized static boolean isUserSession() {
+        UserSession session = GlobalVariables.getUserSession();
+        return session != null;
+    }
+
+    /**
      * Determines the student id that should be used for queries. If the user has the
      * adviser flag set in the session then there should also be a student id. Otherwise,
      * just return the principal it.
