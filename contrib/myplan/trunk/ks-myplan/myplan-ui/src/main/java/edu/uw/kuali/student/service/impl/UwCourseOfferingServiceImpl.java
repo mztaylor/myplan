@@ -1021,8 +1021,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     Element link = (Element) linkPath.selectSingleNode(sectionNode);
                     if (link != null) {
                         instituteCode = link.getTextTrim();
-                        AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
-                        attributes.add(whoop);
                     }
                 }
 
@@ -1031,8 +1029,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     Element nameNode = (Element) namePath.selectSingleNode(sectionNode);
                     if (nameNode != null) {
                         instituteName = nameNode.getTextTrim();
-                        AttributeInfo whoop = new AttributeInfo("instituteName", instituteName);
-                        attributes.add(whoop);
                     }
                 }
 
@@ -1046,6 +1042,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     case 95: // PCE
                     case 88: // ROTC
                     {
+                        instituteCode = Integer.toString(instituteNumber);
+                        AttributeInfo a = new AttributeInfo("instituteCode", instituteCode);
+                        attributes.add(a);
+
+                        AttributeInfo b = new AttributeInfo("instituteName", instituteName);
+                        attributes.add(b);
+
                         result.add(info);
                         break;
                     }
