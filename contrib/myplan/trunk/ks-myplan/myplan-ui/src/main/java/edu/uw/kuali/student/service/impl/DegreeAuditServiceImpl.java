@@ -342,19 +342,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             findClassLinkifyTextAndConvertCoursesToLinks(doc, builder);
 
             String path = "//*[contains(@class,'urlify')]";
-            ;
             linkifyURLs(doc, xpath, path, builder);
-
-            {
+            boolean isUserSession = UserSessionHelper.isUserSession();
+            if (isUserSession) {
                 path = "//span[contains(@class,'prepared-for-name')]/text()";
                 XPathExpression godot = xpath.compile(path);
                 Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
                 NodeList godotList = (NodeList) godotSet;
                 for (int nth = 0; nth < godotList.getLength(); nth++) {
                     Node child = godotList.item(nth);
-//                    String whoops = child.getTextContent();
-//                    List<Person> personList = UserSessionHelper.getPersonService().getPersonByExternalIdentifier("systemKey", stuno);
-                    String preparedFor = UserSessionHelper.getNameCapitalized(UserSessionHelper.getStudentId());
+                    String studentId = UserSessionHelper.getStudentId();
+                    String preparedFor = UserSessionHelper.getNameCapitalized(studentId);
                     child.setTextContent(preparedFor);
                 }
             }
@@ -362,7 +360,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.METHOD, "html");
+
+            // Changed so that logged in users (via KRAD) receive HTML and webservices clients get XML
+            //
+            // Quickfix until KRAD/MyPlan has its MIME-Type changed from "text/html" to "application/xhtml+xml", which
+            // forces all current web browsers to recognizes self-closing tags eg <br/> and <div/>. Otherwise they treat
+            // content has HTML 4, failing or incorrectly rendering self-closing tags.
+            //
+            // Great explanation of this mess here: http://stackoverflow.com/a/206409
+            String method = isUserSession ? "html" : "xml";
+            transformer.setOutputProperty(OutputKeys.METHOD, method);
             DOMSource source = new DOMSource(rootDegreeAuditHTMLContentDIV);
             StringWriter sw = new StringWriter();
             StreamResult result = new StreamResult(sw);
