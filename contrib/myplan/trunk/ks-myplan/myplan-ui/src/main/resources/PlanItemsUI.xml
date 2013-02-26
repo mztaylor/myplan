@@ -594,7 +594,7 @@
                       p:render="@{courseDetails.code ne null and acadRecAtpId eq null ? true : false}"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp('@{planItemId}','course_summary_dialog_page',{planItemId:'@{planItemId}',pageId:'course_summary_dialog_page',courseId:'@{courseDetails.courseId}'},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean p:id="@{courseId}_summary" parent="Uif-Link" p:target="" p:linkText="View Course Summary"
@@ -1153,7 +1153,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1207,7 +1207,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
@@ -1261,7 +1261,7 @@
                       p:linkText="View Course Summary"
                       p:title="View Course Summary">
                     <property name="onClickScript"
-                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
+                              value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
                 </bean>
 
                 <bean parent="Uif-Link" p:target="" p:href="#"
