@@ -1701,6 +1701,7 @@ table.myplan-course-search-results-datatable .blockUI {
     font-weight: normal;
     color: inherit;
     background: none;
+    filter: none;
     border-radius: 0px;
 }
 
