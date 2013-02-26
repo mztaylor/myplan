@@ -27,7 +27,7 @@
         <p><a href="http://depts.washington.edu/myplan/help-site/#1030">Visit the Help page to learn more about
             compatible browsers</a>.</p>
     </div>
-    <div id="more">Still can't find it? Visit our <a href="https://depts.washington.edu/myplan/help-site/">help page</a>
+    <div id="more">Completely lost? Visit our <a href="https://depts.washington.edu/myplan/help-site/">help page</a>
         or <a href="https://depts.washington.edu/myplan/contact-the-myplan-team/feedback/">let us know</a>.
     </div>
 </div>
