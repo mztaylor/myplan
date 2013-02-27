@@ -300,6 +300,18 @@ public class AtpHelper {
     }
 
     /**
+     * Gives the short form of Term name
+     * for given atp kuali.uw.atp.2013.1 the short form is WI 13
+     *
+     * @param atpId
+     * @return
+     */
+    public static String atpIdToShortTermName(String atpId) {
+        String[] termYear = atpIdToTermNameAndYear(atpId);
+        return (termYear[0].substring(0, 2).toUpperCase() + " " + termYear[1].substring(2, 4));
+    }
+
+    /**
      * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
      *
      * @param atpId

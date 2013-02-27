@@ -767,125 +767,6 @@
         </property>
     </bean>
 
-    <bean id="plan_item_section_add_dialog" parent="Uif-VerticalBoxSection"
-          p:headerText="@{courseInPlan eq false AND courseInBackup eq true ? 'Add to Backup' : 'Add to Plan'}"
-          p:style="margin:0;">
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-VerticalBoxGroup" p:style="display:block; margin:0;"
-                      p:validationMessages.render="false">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-container-300</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Would you like to add &lt;strong&gt;@{courseDetails.code} @{sectionCode}&lt;/strong&gt; to @{termName}"
-                                  p:render="@{courseInPlan eq false AND courseInBackup eq false ? true : false}"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="You can only add &lt;strong&gt;@{courseDetails.code} @{sectionCode}&lt;/strong&gt; for @{termName} as Plan"
-                                  p:render="@{courseInPlan eq true AND courseInBackup eq false ? true : false}"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="You can only add &lt;strong&gt;@{courseDetails.code} @{sectionCode}&lt;/strong&gt; for @{termName} as Backup"
-                                  p:render="@{courseInPlan eq false AND courseInBackup eq true ? true : false}"/>
-                            <!--  Backup checkbox -->
-                            <ref bean="planned_course_backup"/>
-
-                            <bean id="plan_section_add_actions" parent="Uif-VerticalFieldGroup"
-                                  p:fieldLabel.render="false"
-                                  p:group.validationMessages.render="false" p:style="margin:0;">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                              p:group.validationMessages.render="false">
-                                            <property name="items">
-                                                <list>
-                                                    <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                                          p:actionLabel="Add To Plan">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{courseDetails.courseId}', 'courseId', 'addPlannedCourse', e,true);"/>
-                                                        <property name="onDocumentReadyScript" value="
-                                                jQuery('#addPlannedCourse')
-                                                    .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                            fnDisplayMessage(data.message, data.cssClass, 'plan_section_add_actions', true, false);
-                                                            jQuery(&quot;#@{courseDetails.courseId}-@{sectionCode}&quot;).replaceWith(&quot;&lt;span class='uif-message fl-font-size-80 fl-text-green'&gt;InPlan&lt;/span&gt;&quot;);
-                                                        }
-                                                    })
-                                                    .subscribe('ERROR', function(data){
-                                                        fnDisplayMessage(data.message, data.cssClass, 'hidden_add_error_block', true, false,true,'hidden_add_error_block');
-                                                    });"/>
-                                                    </bean>
-                                                    <bean p:id="cancelAddPlannedCourse"
-                                                          parent="Uif-SecondaryActionButton-Small"
-                                                          p:actionLabel="Cancel">
-                                                        <property name="actionScript"
-                                                                  value="fnCloseAllPopups();"/>
-                                                    </bean>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                                              p:group.validationMessages.render="false" p:style="margin:0;">
-                                            <property name="items">
-                                                <list>
-                                                    <bean id="hidden_section_add_error_block"
-                                                          p:id="hidden_add_error_block"
-                                                          parent="Uif-InputField"
-                                                          p:propertyName="courseDetails.courseId"
-                                                          p:fieldLabel.render="false"
-                                                          p:style="width: 300px;">
-                                                        <property name="control">
-                                                            <bean parent="Uif-HiddenControl"/>
-                                                        </property>
-                                                    </bean>
-                                                    <bean id="hidden_sectionCode" p:id="hidden_sectionCode"
-                                                          parent="Uif-InputField"
-                                                          p:propertyName="sectionCode"
-                                                          p:fieldLabel.render="false"
-                                                          p:style="width: 300px;"
-                                                          p:render="@{sectionCode ne null ? true : false}">
-                                                        <property name="control">
-                                                            <bean parent="Uif-HiddenControl"/>
-                                                        </property>
-                                                    </bean>
-                                                    <bean id="hidden_sectionAtp" p:id="hidden_sectionAtp"
-                                                          parent="Uif-InputField"
-                                                          p:propertyName="termYear"
-                                                          p:fieldLabel.render="false"
-                                                          p:style="width: 300px;"
-                                                          p:render="@{termYear ne null ? true : false}">
-                                                        <property name="control">
-                                                            <bean parent="Uif-HiddenControl"/>
-                                                        </property>
-                                                    </bean>
-                                                    <bean id="hidden_backUp" p:id="hidden_backUp"
-                                                          parent="Uif-InputField"
-                                                          p:render="@{courseInPlan eq false AND courseInBackup eq true ? true : false}"
-                                                          p:propertyName="courseInBackup"
-                                                          p:fieldLabel.render="false"
-                                                          p:style="width: 300px;">
-                                                        <property name="control">
-                                                            <bean parent="Uif-HiddenControl"/>
-                                                        </property>
-                                                    </bean>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
     <!--Move Course to another Quarter Dialog Box Content-->
     <bean id="plan_item_course_move_dialog" parent="Uif-VerticalBoxSection" p:headerText="Move to Another Quarter">
         <property name="header">
@@ -2530,7 +2411,7 @@
                     <property name="href"
                               value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseDetails.courseId}"/>
                 </bean>
-                <bean parent="Uif-DataField" p:label="" p:propertyName="courseDetails.institutionsList"
+                <!--<bean parent="Uif-DataField" p:label="" p:propertyName="courseDetails.institutionsList"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="section_scheduled_terms_list_formatter"/>
@@ -2541,7 +2422,7 @@
                     </property>
                     <property name="render"
                               value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? true : false}"/>
-                </bean>
+                </bean>-->
             </list>
         </property>
     </bean>
@@ -2755,19 +2636,6 @@
                     <property name="items">
                         <list>
                             <bean parent="plan_item_course_add_dialog"/>
-                        </list>
-                    </property>
-                </bean>
-                <!--This page is used for the section Add to plan dialog box-->
-                <bean parent="Uif-Page" p:id="add_section_dialog_page">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-container-300</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="plan_item_section_add_dialog"/>
                         </list>
                     </property>
                 </bean>
@@ -2994,7 +2862,7 @@
                 <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
                       p:label="Mark as &lt;strong&gt;'Backup'&lt;/strong&gt; course. (Optional)"
                       p:fieldLabel.renderColon="false" p:labelPlacement="RIGHT"
-                      p:render="@{moveCourse eq false AND courseInPlan eq false AND courseInBackup eq false ? true : false}"
+                      p:render="@{moveCourse eq false}"
                       p:fieldLabel.cssClasses="myplan-text-normal">
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
@@ -3828,7 +3696,7 @@
         </property>
     </bean>
 
-    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false">
+    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false" >
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
@@ -3907,7 +3775,7 @@
         </property>
         <property name="subCollections">
             <list>
-                <ref bean="courseOfferingCollection"/>
+                <ref bean="institution_data_single"/>
             </list>
         </property>
         <property name="footer">
@@ -3997,16 +3865,50 @@
         </property>
         <property name="subCollections">
             <list>
+                <ref bean="institution_data_single"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="institution_data_single" parent="Uif-StackedCollectionGroup"
+          p:validationMessages.render="false">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
+        <property name="propertyName" value="courseDetails.courseOfferingInstitutionList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
+                          p:footer.render="false"/>
+                </property>
+            </bean>
+        </property>
+        <property name="subCollections">
+            <list>
                 <ref bean="courseOfferingCollection"/>
             </list>
         </property>
     </bean>
 
     <bean id="courseOfferingCollection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false"
-          p:headerText="Offering">
+          p:header.render="@{#line.name eq 'Seattle' ? false : true}">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
-        <property name="propertyName" value="courseDetails.courseOfferingDetails"/>
+        <property name="propertyName" value="courseOfferingTermList"/>
+        <property name="headerText" value="@{#line.name}"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFive"/>
+        </property>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager">
@@ -4021,7 +3923,9 @@
                     </bean>
                 </property>
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
+                    <!-- TODO: parentLine expression not available within the lineGroupPrototype, KRAD bug https://jira.kuali.org/browse/KULRICE-9003 -->
+                    <bean p:id="@{#line.instituteCode}_tab-@{#line.yearTerm.toATP().replace('.','-')}"
+                          parent="Uif-CollectionVerticalBoxItem" p:validationMessages.render="false"
                           p:footer.render="false"/>
                 </property>
             </bean>

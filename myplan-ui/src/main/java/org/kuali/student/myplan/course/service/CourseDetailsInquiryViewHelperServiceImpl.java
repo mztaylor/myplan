@@ -563,6 +563,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
         }
 
+        Collections.sort(instituteList, Collections.reverseOrder());
+
         return courseDetails;
     }
 

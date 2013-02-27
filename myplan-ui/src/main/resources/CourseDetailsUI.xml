@@ -1163,10 +1163,9 @@
                     </property>
                 </bean>
 
-                <!-- TODO: Enable the add button in 1.3 and remove empty cell placeholder -->
-                <bean parent="Uif-MessageField" p:label="" p:messageText=""/>
-                <!--<bean p:id="@{dataObject.courseId}-@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add"
-                      p:title="Add" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                <bean p:id="@{#line.instituteCode}_section_@{#line.atpId.replace('.','-')}_@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add"
+                      p:title="Add section @{#line.code} to @{#line.shortTermName} Plan"
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planned eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1174,10 +1173,10 @@
                             <value>fl-text-align-center</value>
                         </list>
                     </property>
-                    <property name="onClickScript"
-                              value="openPlanItemPopUp('@{dataObject.courseId}','add_section_dialog_page',{courseId:'@{dataObject.courseId}',sectionCode:'@{#line.code}',termYear:'@{#line.atpId}',pageId:'add_section_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
+                    <!--<property name="onClickScript"
+                              value="openPlanItemPopUp('@{dataObject.courseId}','add_section_dialog_page',{courseId:'@{dataObject.courseId}',sectionCode:'@{#line.code}',termYear:'@{#line.atpId}',pageId:'add_section_dialog_page', secondarySection:'@{#line.primary eq false ? true : false}', instituteCode:'@{#line.instituteCode}'},e,null,{tail:{align:top},position:'right',align:'top'});"/>-->
                 </bean>
-                <bean parent="Uif-MessageField" p:fieldLabel.render="false"
+                <bean parent="Uif-MessageField" p:fieldLabel.render="false" p:title="@{#line.code} is added. To delete or move, go to @{#line.shortTermName} Plan."
                       p:render="@{#line.planned eq true ? true : false}">
                     <property name="message">
                         <bean parent="Uif-Message" p:messageText="InPlan">
@@ -1190,7 +1189,6 @@
                         </bean>
                     </property>
                 </bean>
-                -->
             </list>
         </property>
     </bean>

@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.kuali.student.myplan.plan.util.AtpHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class ActivityOfferingItem {
     private String activityOfferingType;
     private String credits;
     private List<MeetingDetails> meetingDetailsList;
-    
+
     // Section Line Number - UW-ism
     private String atpId;
     private String registrationCode;
@@ -64,11 +66,11 @@ public class ActivityOfferingItem {
     public void setCode(String code) {
         this.code = code;
     }
-    
+
     public String getCampus() {
     	return campus;
     }
-    
+
     public void setCampus( String campus ) {
     	this.campus = campus;
     }
@@ -90,9 +92,8 @@ public class ActivityOfferingItem {
     }
 
     public List<MeetingDetails> getMeetingDetailsList() {
-        if(meetingDetailsList == null )
-        {
-        	meetingDetailsList = new ArrayList<MeetingDetails>();
+        if (meetingDetailsList == null) {
+            meetingDetailsList = new ArrayList<MeetingDetails>();
         }
         return meetingDetailsList;
     }
@@ -169,7 +170,7 @@ public class ActivityOfferingItem {
         return details;
     }
 
-    public void setDetails( String details ) {
+    public void setDetails(String details) {
         this.details = details;
     }
 
@@ -241,13 +242,13 @@ public class ActivityOfferingItem {
     public void setIneligibleForFinancialAid(boolean ineligibleForFinancialAid) {
         this.ineligibleForFinancialAid = ineligibleForFinancialAid;
     }
-    
+
     public String getGradingOption() {
-    	return gradingOption;
+        return gradingOption;
     }
-    
-    public void setGradingOption( String gradingOption ) {
-    	this.gradingOption = gradingOption;
+
+    public void setGradingOption(String gradingOption) {
+        this.gradingOption = gradingOption;
     }
 
 
@@ -269,9 +270,9 @@ public class ActivityOfferingItem {
 //    public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {
 //    	this.secondaryList = secondaryList;
 //    }
-    
+
     public boolean isStandalone() {
-    	return isPrimary();
+        return isPrimary();
 //    	return isPrimary() && getSecondaryList().size() == 0;
     }
 
@@ -337,6 +338,11 @@ public class ActivityOfferingItem {
 
     public void setInstituteName(String instituteName) {
         this.instituteName = instituteName;
+    }
+
+    /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
+    public String getShortTermName() {
+        return AtpHelper.atpIdToShortTermName(this.getAtpId());
     }
 
 
