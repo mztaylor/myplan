@@ -26,6 +26,7 @@ import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
+import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
@@ -876,6 +877,26 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 }
 
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
+                List<AttributeInfo> attributes = info.getAttributes();
+
+                String instituteCode = null;
+                String instituteName = null;
+                {
+                    DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
+                    Element link = (Element) linkPath.selectSingleNode(sectionNode);
+
+                    //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
+                    if(null == link || !StringUtils.hasText( link.getTextTrim()) ) {
+                        continue;
+                    }
+
+                    if (link != null) {
+                        instituteCode = link.getTextTrim();
+                        AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
+                        attributes.add(whoop);
+                    }
+                }
+
 
                 String typeName = sectionNode.elementText("SectionType");
                 info.setTypeName(typeName);
@@ -989,7 +1010,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
 
                 /*Course Flags*/
-                List<AttributeInfo> attributes = info.getAttributes();
                 attributes.add(new AttributeInfo("Campus", campus));
                 attributes.add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
                 attributes.add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
@@ -1014,15 +1034,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
                 attributes.add(attrib);
 
-                String instituteCode = null;
-                String instituteName = null;
-                {
-                    DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
-                    Element link = (Element) linkPath.selectSingleNode(sectionNode);
-                    if (link != null) {
-                        instituteCode = link.getTextTrim();
-                    }
-                }
+
 
                 {
                     DefaultXPath namePath = newXPath("s:InstituteName");
