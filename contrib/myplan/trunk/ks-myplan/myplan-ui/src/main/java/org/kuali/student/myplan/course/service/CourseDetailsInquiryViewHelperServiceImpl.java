@@ -427,7 +427,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
                 }
             }
-            Collections.sort(instituteList, Collections.reverseOrder());
+            Collections.sort(instituteList);
 
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course.getCode(), e);
