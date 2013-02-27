@@ -1695,10 +1695,10 @@ public class PlanController extends UifControllerBase {
             params.put("showAlert", String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0), courseDetails.getCode())));
             params.put("termName", AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
             params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
-            if(planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)){
-                params.put("SectionCode",planForm.getSectionCode());
-                params.put("PrimarySectionCode",planForm.getPrimarySectionCode());
-                params.put("InstituteCode",planForm.getInstituteCode());
+            if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                params.put("SectionCode", planForm.getSectionCode());
+                params.put("PrimarySectionCode", planForm.getPrimarySectionCode());
+                params.put("InstituteCode", planForm.getInstituteCode());
             }
         }
 
@@ -1930,6 +1930,11 @@ public class PlanController extends UifControllerBase {
         }
     }
 
+    /**
+     * User who has no Learning Plan or auditInfo is considered a new User.
+     *
+     * @return
+     */
     private boolean isNewUser() {
         boolean isNewUser = false;
         String studentId = UserSessionHelper.getStudentId();
@@ -1942,18 +1947,21 @@ public class PlanController extends UifControllerBase {
         }
         /*check if any audits are ran ! if no plans found*/
         if (learningPlanList.size() == 0) {
-            String systemKey = UserSessionHelper.getAuditSystemKey();
-            Date startDate = new Date();
-            Date endDate = new Date();
-            ContextInfo contextInfo = new ContextInfo();
             try {
-                auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                String systemKey = UserSessionHelper.getAuditSystemKey();
+                Date startDate = new Date();
+                Date endDate = new Date();
+                ContextInfo contextInfo = new ContextInfo();
+                if (systemKey != null) {
+                    auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                }
+                if (auditReportInfoList.size() == 0) {
+                    isNewUser = true;
+                }
             } catch (Exception e) {
-                throw new RuntimeException("Could not retrieve degreeaudit details", e);
+                logger.error("Could not retieve Audit Info", e);
             }
-            if (auditReportInfoList.size() == 0) {
-                isNewUser = true;
-            }
+
         }
         return isNewUser;
     }
