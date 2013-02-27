@@ -236,25 +236,6 @@ public class PlanController extends UifControllerBase {
 
         }
 
-        /*Checks if the course is added as plan/backup to that term in case of sections to add only to that particular type*/
-        if (planForm.getCourseDetails() != null && planForm.getTermYear() != null) {
-            PlanItemInfo existingPlanItem = null;
-            try {
-                existingPlanItem = getPlannedOrBackupPlanItem(planForm.getCourseDetails().getVersionIndependentId(), planForm.getTermYear());
-            } catch (RuntimeException e) {
-                return doOperationFailedError(planForm, "Query for existing plan item failed.", null);
-            }
-            if (existingPlanItem != null) {
-                if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                    planForm.setCourseInPlan(true);
-
-                } else if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                    planForm.setCourseInBackup(true);
-                    planForm.setBackup(true);
-                }
-            }
-        }
-
 
         /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
            which is used for populating the right flag*/
@@ -334,7 +315,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
-        events.putAll(makeAddEvent(planItem, courseDetails));
+        events.putAll(makeAddEvent(planItem, courseDetails, form));
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -408,7 +389,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
-        events.putAll(makeAddEvent(planItem, courseDetails));
+        events.putAll(makeAddEvent(planItem, courseDetails, form));
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -539,7 +520,7 @@ public class PlanController extends UifControllerBase {
         events.putAll(makeUpdateTotalCreditsEvent(originalAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS));
 
         try {
-            events.putAll(makeAddEvent(planItem, courseDetails));
+            events.putAll(makeAddEvent(planItem, courseDetails, form));
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
         }
@@ -679,7 +660,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         try {
-            events.putAll(makeAddEvent(planItemCopy, courseDetails));
+            events.putAll(makeAddEvent(planItemCopy, courseDetails, form));
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
         }
@@ -736,7 +717,7 @@ public class PlanController extends UifControllerBase {
         //  Should the course be type 'planned' or 'backup'. Default to planned.
         boolean backup = form.isBackup();
         String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
-        if (backup || form.isCourseInBackup()) {
+        if (backup) {
             newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
         }
 
@@ -801,6 +782,7 @@ public class PlanController extends UifControllerBase {
                         } else {
                             addPrimaryCourse = true;
                             primarySectionCode = activityOfferingItem.getCode().substring(0, 1);
+                            form.setPrimarySectionCode(primarySectionCode);
                             PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getTermYear());
                             if (coursePlanItem != null) {
                                 addCourse = false;
@@ -914,13 +896,13 @@ public class PlanController extends UifControllerBase {
 
         try {
             if (planItem != null) {
-                events.putAll(makeAddEvent(planItem, courseDetails));
+                events.putAll(makeAddEvent(planItem, courseDetails, form));
             }
             if (primaryPlanItem != null) {
-                events.putAll(makeAddEvent(primaryPlanItem, courseDetails));
+                events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
             }
             if (secondaryPlanItem != null) {
-                events.putAll(makeAddEvent(secondaryPlanItem, courseDetails));
+                events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
             }
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
@@ -1074,7 +1056,7 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.");
         } else {
             for (PlanItem p : planItems) {
-                if (p.getPlanPeriods().get(0).equals(atpId)) {
+                if (p.getPlanPeriods().get(0).equals(atpId) && p.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                     counter++;
                 }
             }
@@ -1147,7 +1129,7 @@ public class PlanController extends UifControllerBase {
 
         //  Create events
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-        events.putAll(makeAddEvent(planItem, courseDetails));
+        events.putAll(makeAddEvent(planItem, courseDetails, form));
 
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         form.setJavascriptEvents(events);
@@ -1550,7 +1532,7 @@ public class PlanController extends UifControllerBase {
         String studentId = getUserId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
-        return null;
+            return null;
         }
 
         PlanItemInfo planItem = null;
@@ -1699,7 +1681,7 @@ public class PlanController extends UifControllerBase {
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
@@ -1713,6 +1695,11 @@ public class PlanController extends UifControllerBase {
             params.put("showAlert", String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0), courseDetails.getCode())));
             params.put("termName", AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
             params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
+            if(planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)){
+                params.put("SectionCode",planForm.getSectionCode());
+                params.put("PrimarySectionCode",planForm.getPrimarySectionCode());
+                params.put("InstituteCode",planForm.getInstituteCode());
+            }
         }
 
 
@@ -1726,7 +1713,11 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
         params.put("courseDetails", courseDetailsAsJson);
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+        } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+            events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_ADDED, params);
+        }
         return events;
     }
 
@@ -1764,35 +1755,37 @@ public class PlanController extends UifControllerBase {
 
                 for (PlanItemInfo planItem : planItemList) {
                     String courseID = planItem.getRefObjectId();
-                    if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
-                        for (String atp : planItem.getPlanPeriods()) {
-                            if (atp.equalsIgnoreCase(termId)) {
-                                CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID, getUserId());
-                                if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
-                                    String[] str = courseDetails.getCredit().split("\\D");
-                                    double min = Double.parseDouble(str[0]);
-                                    plannedTotalMin += min;
-                                    double max = Double.parseDouble(str[str.length - 1]);
-                                    plannedTotalMax += max;
+                    if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                        if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
+                            for (String atp : planItem.getPlanPeriods()) {
+                                if (atp.equalsIgnoreCase(termId)) {
+                                    CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID, getUserId());
+                                    if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
+                                        String[] str = courseDetails.getCredit().split("\\D");
+                                        double min = Double.parseDouble(str[0]);
+                                        plannedTotalMin += min;
+                                        double max = Double.parseDouble(str[str.length - 1]);
+                                        plannedTotalMax += max;
 
-                                } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
-                                    if (courseDetails.getCredit().contains(PlanConstants.MULTIPLE)) {
-                                        String[] str = courseDetails.getCredit().split(PlanConstants.MULTIPLE);
-                                        plannedTotalMin += Double.parseDouble(str[0]);
-                                        plannedTotalMax += Double.parseDouble(str[1]);
-                                    } else if (courseDetails.getCredit().contains(PlanConstants.RANGE)) {
-                                        String[] str = courseDetails.getCredit().split(PlanConstants.RANGE);
-                                        plannedTotalMin += Double.parseDouble(str[0]);
-                                        plannedTotalMax += Double.parseDouble(str[1]);
-                                    } else {
-                                        plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
-                                        plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                                    } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
+                                        if (courseDetails.getCredit().contains(PlanConstants.MULTIPLE)) {
+                                            String[] str = courseDetails.getCredit().split(PlanConstants.MULTIPLE);
+                                            plannedTotalMin += Double.parseDouble(str[0]);
+                                            plannedTotalMax += Double.parseDouble(str[1]);
+                                        } else if (courseDetails.getCredit().contains(PlanConstants.RANGE)) {
+                                            String[] str = courseDetails.getCredit().split(PlanConstants.RANGE);
+                                            plannedTotalMin += Double.parseDouble(str[0]);
+                                            plannedTotalMax += Double.parseDouble(str[1]);
+                                        } else {
+                                            plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
+                                            plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                                        }
                                     }
                                 }
-                            }
-                            totalCredits = Double.toString(plannedTotalMin);
-                            if (plannedTotalMin != plannedTotalMax) {
-                                totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
+                                totalCredits = Double.toString(plannedTotalMin);
+                                if (plannedTotalMin != plannedTotalMax) {
+                                    totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
+                                }
                             }
                         }
                     }

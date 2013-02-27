@@ -89,7 +89,9 @@ public class SingleQuarterHelperBase {
                     } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
                         academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                     }
-                    academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
+                    if (!AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                        academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
+                    }
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
                     List<ActivityOfferingItem> activityOfferingItemList = courseDetailsService.getActivityOfferingItems(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId(), studentInfo.getCourseCode());
                     for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {

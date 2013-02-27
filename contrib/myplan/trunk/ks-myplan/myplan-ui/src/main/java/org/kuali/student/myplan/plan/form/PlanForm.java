@@ -53,12 +53,18 @@ public class PlanForm extends UifFormBase {
     private String planItemId;
 
     private String courseId;
-
+    
+    
+    /*properties used for section Planning*/
     private String sectionCode;
+    
+    private String primarySectionCode;
+
+    private String instituteCode;
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
-    private String enableAdviserView=PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
+    private String enableAdviserView = PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
 
     private CourseDetails courseDetails;
 
@@ -85,17 +91,13 @@ public class PlanForm extends UifFormBase {
     private boolean showOther = false;
 
     /*Flag used for populating the exact menu items for a course in past,present, future terms */
-    private boolean setToPlanning=false;
+    private boolean setToPlanning = false;
 
-    private int messagesCount=0;
+    private int messagesCount = 0;
 
-    private int bookmarkedCount=0;
+    private int bookmarkedCount = 0;
 
     private boolean newUser;
-
-    private boolean courseInPlan;
-
-    private boolean courseInBackup;
 
     public int getBookmarkedCount() {
         return bookmarkedCount;
@@ -267,20 +269,20 @@ public class PlanForm extends UifFormBase {
         this.sectionCode = sectionCode;
     }
 
-    public boolean isCourseInPlan() {
-        return courseInPlan;
+    public String getPrimarySectionCode() {
+        return primarySectionCode;
     }
 
-    public void setCourseInPlan(boolean courseInPlan) {
-        this.courseInPlan = courseInPlan;
+    public void setPrimarySectionCode(String primarySectionCode) {
+        this.primarySectionCode = primarySectionCode;
     }
 
-    public boolean isCourseInBackup() {
-        return courseInBackup;
+    public String getInstituteCode() {
+        return instituteCode;
     }
 
-    public void setCourseInBackup(boolean courseInBackup) {
-        this.courseInBackup = courseInBackup;
+    public void setInstituteCode(String instituteCode) {
+        this.instituteCode = instituteCode;
     }
 
     /**
