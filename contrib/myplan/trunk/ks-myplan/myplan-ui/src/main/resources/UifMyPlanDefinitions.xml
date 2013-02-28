@@ -524,7 +524,7 @@
 
     <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
         <property name="emptyListMessage"
-                  value="Projected quarter information is not available for this course. Check with the department or your adviser for more information about this course."/>
+                  value="Check with the department or your adviser for more information about this course."/>
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListStyleClasses">
             <list merge="true">

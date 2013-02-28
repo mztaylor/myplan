@@ -63,7 +63,8 @@
     </bean>
 
     <!-- Layout for Course Search Result Page -->
-    <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
+    <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection"
+          p:style="width: 710px; margin-right: 10px;">
         <property name="items">
             <list>
                 <ref bean="course_search_panel"/>
@@ -88,7 +89,8 @@
     </bean>
 
     <!-- Group for Search Input Fields -->
-    <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup" p:style="margin:0 0 20px 0;" p:group.validationMessages.render="false">
+    <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup" p:style="margin:0 0 20px 0;"
+          p:group.validationMessages.render="false">
         <property name="items">
             <list>
                 <bean id="text_searchQuery" parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for"
@@ -142,7 +144,8 @@
                         </bean>
                     </property>
                 </bean>
-                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:actionLabel="Search" p:disabled="true" p:style="margin:0;">
+                <bean p:id="searchForCourses" parent="Uif-PrimaryActionButton" p:actionLabel="Search" p:disabled="true"
+                      p:style="margin:0;">
                     <property name="actionScript" value="
                         window.location.replace('#');
                         searchForCourses('course_search_results','course_search_results_panel');
@@ -166,14 +169,14 @@
         </property>
         <property name="items">
             <list>
-                <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto" >
+                <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto">
                     <property name="defaultValues">
-                    <list>
-                        <value>306</value>
-                        <value>310</value>
-                        <value>323</value>
-                    </list>
-                </property>
+                        <list>
+                            <value>306</value>
+                            <value>310</value>
+                            <value>323</value>
+                        </list>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-HorizontalCheckboxesControl">
                             <property name="onDocumentReadyScript" value="
@@ -217,7 +220,7 @@
     </bean>
 
     <bean id="course_search_results" parent="Uif-DataTable" p:style="width: 548px; margin:0;">
-         <!-- p:ajaxSource="@{#ConfigProperties['courseSearchBaseUrl']}/search/course/@{searchQuery}/@{searchTerm}/@{campusSelect}">-->
+        <!-- p:ajaxSource="@{#ConfigProperties['courseSearchBaseUrl']}/search/course/@{searchQuery}/@{searchTerm}/@{campusSelect}">-->
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-results-datatable</value>
@@ -294,7 +297,8 @@
     </bean>
 
     <!-- Group for Search Facets -->
-    <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results" p:style="width:146px; margin-right: 10px;">
+    <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results"
+          p:style="width:146px; margin-right: 10px;">
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
@@ -427,7 +431,8 @@
     </bean>
 
     <!--Add Course Menu-->
-    <bean id="add_course_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="myplan-container-75" p:style="margin: 0;">
+    <bean id="add_course_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="myplan-container-75"
+          p:style="margin: 0;">
         <property name="hidden" value="true"/>
         <property name="items">
             <list>
