@@ -42,6 +42,18 @@
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
+                    <property name="onDocumentReadyScript"
+                              value="
+                                  jQuery('body')
+                                      .subscribe('SECTION_ITEM_ADDED', function(data){
+                                          var link = jQuery('&lt;a /&gt;').attr('href','lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.'));
+                                          jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                          fnDisplayMessage(link.text('Added'), 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode, false);
+                                          if (data.PrimarySectionCode != null) {
+                                              jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                              fnDisplayMessage(link.text('Added'), 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode, false);
+                                          }
+                                      });"/>
                     <property name="items">
                         <list>
                             <ref bean="course_details_section"/>
@@ -906,7 +918,7 @@
                             <property name="items">
                                 <list>
                                     <bean parent="Uif-Message"
-                                          p:messageText="Enrollment status gets updated every few minutes."/>
+                                          p:messageText="Enrollment status is updated every few minutes."/>
                                     <bean parent="course_sections_help_icon" p:style="float:right;"/>
                                 </list>
                             </property>
@@ -947,9 +959,9 @@
                             {'sWidth':'86px'},
                             {'sWidth':'288px'},
                             {'sWidth':'42px','sType':'string'},
-                            {'sWidth':'85px'},
-                            {'sWidth':'72px'},
-                            {'sWidth':'25px'}
+                            {'sWidth':'80px'},
+                            {'sWidth':'70px'},
+                            {'sWidth':'32px'}
                        ]"/>
                 <entry key="oLanguage" value="{
                             'sInfo':'',
@@ -1023,7 +1035,7 @@
                                 <property name="actionScript" value=""/>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false"
-                                  p:style="margin:0 33px 0 56px; display:none; width:617px;" p:header.render="false">
+                                  p:style="margin:0 40px 0 56px; display:none; width:610px;" p:header.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
@@ -1038,7 +1050,7 @@
                                                     <bean parent="Uif-VerticalFieldGroup" p:label="Other"
                                                           p:fieldLabel.renderColon="false" p:labelPlacement="TOP"
                                                           p:group.validationMessages.render="false"
-                                                          p:style="width:217px;">
+                                                          p:style="width:210px;">
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-Message"
@@ -1163,7 +1175,8 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.instituteCode}_section_@{#line.atpId.replace('.','-')}_@{#line.code}" parent="Uif-ImageField" p:label="Add" p:altText="Add"
+                <bean p:id="section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
+                      parent="Uif-ImageField" p:label="Add" p:altText="Add"
                       p:title="Add section @{#line.code} to @{#line.shortTermName} Plan"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planned eq false ? true : false}">
@@ -1173,17 +1186,21 @@
                             <value>fl-text-align-center</value>
                         </list>
                     </property>
-                    <!--<property name="onClickScript"
-                              value="openPlanItemPopUp('@{dataObject.courseId}','add_section_dialog_page',{courseId:'@{dataObject.courseId}',sectionCode:'@{#line.code}',termYear:'@{#line.atpId}',pageId:'add_section_dialog_page', secondarySection:'@{#line.primary eq false ? true : false}', instituteCode:'@{#line.instituteCode}'},e,null,{tail:{align:top},position:'right',align:'top'});"/>-->
+                    <property name="onClickScript"
+                              value="myplanAjaxSubmitSectionItem('@{dataObject.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseId}',sectionCode:'@{#line.code}',termYear:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView'}, e);"/>
                 </bean>
-                <bean parent="Uif-MessageField" p:fieldLabel.render="false" p:title="@{#line.code} is added. To delete or move, go to @{#line.shortTermName} Plan."
+                <bean parent="Uif-LinkField" p:fieldLabel.render="false"
                       p:render="@{#line.planned eq true ? true : false}">
-                    <property name="message">
-                        <bean parent="Uif-Message" p:messageText="InPlan">
+                    <property name="link">
+                        <bean parent="Uif-Link" p:target="">
+                            <property name="linkText" value="Added"/>
+                            <property name="title"
+                                      value="@{#line.code} is added. To delete or move, go to @{#line.longTermName} Plan."/>
+                            <property name="href"
+                                      value="lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=@{#line.atpId}"/>
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-font-size-80</value>
-                                    <value>fl-text-green</value>
                                 </list>
                             </property>
                         </bean>
