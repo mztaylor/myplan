@@ -11,8 +11,8 @@ import java.util.List;
  * Date: 12/5/12
  * Time: 11:06 AM
  * To change this template use File | Settings | File Templates.
- *
- *
+ * <p/>
+ * <p/>
  * https://wiki.cac.washington.edu/display/MyPlan/MyPlan+Course+Section+Details+Data+Needs
  */
 public class ActivityOfferingItem {
@@ -68,11 +68,11 @@ public class ActivityOfferingItem {
     }
 
     public String getCampus() {
-    	return campus;
+        return campus;
     }
 
-    public void setCampus( String campus ) {
-    	this.campus = campus;
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 
     public String getActivityOfferingType() {
@@ -345,5 +345,9 @@ public class ActivityOfferingItem {
         return AtpHelper.atpIdToShortTermName(this.getAtpId());
     }
 
+    /*Used to get the Short term name for atp (Winter 13 for kuali.uw.atp.2013.1)*/
+    public String getLongTermName() {
+        return AtpHelper.atpIdToTermName(this.getAtpId());
+    }
 
 }

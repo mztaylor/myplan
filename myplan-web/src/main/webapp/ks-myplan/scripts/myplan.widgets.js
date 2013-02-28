@@ -1,5 +1,5 @@
 function readUrlHash(key) {
-    if(window.location.href.split("#")[1]) {
+    if (window.location.href.split("#")[1]) {
         var aHash = window.location.href.split("#")[1].replace('#', '').split('&');
         var oHash = {};
         jQuery.each(aHash, function (index, value) {
@@ -75,7 +75,7 @@ function setUrlParam(key, value) {
     for (var key in oParams) {
         if (key != "" && oParams[key] != "") aParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(oParams[key]));
     }
-    window.location.replace(window.location.protocol + "//" + window.location.host + window.location.pathname +"?" + aParams.join("&"));
+    window.location.replace(window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + aParams.join("&"));
 }
 
 /* This is for DOM changes to refresh the view on back to keep the view updated */
@@ -621,6 +621,61 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
     fnCloseAllPopups();
     jQuery("form#" + id + "_form").remove();
 }
+
+function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
+    stopEvent(e);
+    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var targetText = ( jQuery.trim(jQuery(target).text()) != '') ? jQuery.trim(jQuery(target).text()) : "Error";
+    var elementToBlock = (target.nodeName != 'INPUT') ? jQuery(target) : jQuery(target).parent();
+    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">';
+    tempForm += '<input type="hidden" name="methodToCall" value="' + methodToCall + '" />';
+    jQuery.each(formData, function (name, value) {
+        tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
+    });
+    tempForm += '</form>';
+    jQuery("body").append(tempForm);
+
+    var updateRefreshableComponentCallback = function (htmlContent) {
+        var status = jQuery.trim(jQuery("span#request_status_item_key", htmlContent).text().toLowerCase());
+        eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
+        elementToBlock.unblock();
+        switch (status) {
+            case 'success':
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
+                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
+                    }
+                }
+                setUrlHash('modified', 'true');
+                break;
+            case 'error':
+                var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
+                var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
+                var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
+                if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
+                openDialog(sHtml.html(), e);
+                break;
+        }
+    };
+    var blockOptions = {
+        message:'<img src="../ks-myplan/images/btnLoader.gif"/>',
+        css:{
+            width:'100%',
+            border:'none',
+            backgroundColor:'transparent'
+        },
+        overlayCSS:{
+            backgroundColor:'#fff',
+            opacity:0.6,
+            padding:'0px 1px',
+            margin:'0px -1px'
+        }
+    };
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:'false'}, elementToBlock, id, blockOptions);
+    jQuery("form#" + id + "_form").remove();
+}
 /*
  ######################################################################################
  Function: Retrieve component content through ajax
@@ -793,8 +848,8 @@ function truncateAuditTitle(id) {
         if (readUrlParam("viewId") == "DegreeAudit-FormView") {
             if (
                 (readUrlParam("auditId") == false && jQuery(this).siblings("div[id^='hidden_recentAuditId']").length > 0) ||
-                (readUrlParam("auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
-            ) {
+                    (readUrlParam("auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
+                ) {
                 jQuery(this).find(".uif-label label").html("Viewing");
             }
         }
@@ -996,36 +1051,38 @@ function degreeAuditButton() {
 }
 
 var blockPendingAuditStyle = {
-    message: '<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
-    fadeIn: 400,
-    fadeOut: 800,
-    css: {
-        padding: '30px 30px 30px 82px',
-        margin: '30px',
-        width: 'auto',
-        textAlign: 'left',
-        border: 'solid 1px #ffd14c',
-        backgroundColor: '#fffdd7',
-        'border-radius': '15px',
-        '-webkit-border-radius': '15px',
-        '-moz-border-radius': '15px'
+    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
+    fadeIn:400,
+    fadeOut:800,
+    css:{
+        padding:'30px 30px 30px 82px',
+        margin:'30px',
+        width:'auto',
+        textAlign:'left',
+        border:'solid 1px #ffd14c',
+        backgroundColor:'#fffdd7',
+        'border-radius':'15px',
+        '-webkit-border-radius':'15px',
+        '-moz-border-radius':'15px'
     },
-    overlayCSS: {
-        backgroundColor: '#fff',
-        opacity: 0.85,
-        border: 'none',
-        cursor: 'wait'
+    overlayCSS:{
+        backgroundColor:'#fff',
+        opacity:0.85,
+        border:'none',
+        cursor:'wait'
     }
 };
 
 var blockPendingAudit;
 
 function changeLoadingMessage(selector) {
-    blockPendingAudit = setInterval(function(){setLoadingMessage(selector)},100);
+    blockPendingAudit = setInterval(function () {
+        setLoadingMessage(selector)
+    }, 100);
 }
 
 function setLoadingMessage(selector) {
-    if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0){
+    if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0) {
         fnAddLoadingText(selector);
     }
 }
@@ -1033,12 +1090,12 @@ function setLoadingMessage(selector) {
 function fnAddLoadingText(selector) {
     clearInterval(blockPendingAudit);
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
-    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl","false");
+    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(getAuditProgram("name"));
 }
 
 function removeCookie() {
-    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+    jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
 }
 
 function getAuditProgram(param) {
@@ -1089,8 +1146,10 @@ function setPendingAudit(minutes) {
                     }
                 },
                 statusCode:{
-                    500: function() { sessionExpired(); }
+                    500:function () {
+                        sessionExpired();
                     }
+                }
             });
         }
     } else {
@@ -1118,9 +1177,11 @@ function blockPendingAudit(id) {
         var elementToBlock = jQuery("#" + id);
         var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
         elementToBlock.block(blockPendingAuditStyle);
-        jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl","true");
+        jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
         jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(audit.programName);
-        jQuery("#" + id).subscribe('AUDIT_COMPLETE', function() { window.location.assign(window.location.href.split("#")[0]); });
+        jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
+            window.location.assign(window.location.href.split("#")[0]);
+        });
     }
 }
 
@@ -1129,18 +1190,20 @@ function pollPendingAudit(programId, recentAuditId) {
     jQuery.ajaxPollSettings.interval = 250; // polling interval in milliseconds
 
     jQuery.ajaxPoll({
-        url: "/student/myplan/audit/status",
-        data: {"programId":programId, "auditId":recentAuditId},
-        dataType: "json",
-        beforeSend: null,
-        successCondition: function(response) {
+        url:"/student/myplan/audit/status",
+        data:{"programId":programId, "auditId":recentAuditId},
+        dataType:"json",
+        beforeSend:null,
+        successCondition:function (response) {
             return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
         success:function (response) {
             var growl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
-                if (readUrlParam("auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function() { setUrlParam("auditId", ""); });
+                if (readUrlParam("auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function () {
+                    setUrlParam("auditId", "");
+                });
             }
 
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
@@ -1488,13 +1551,13 @@ function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
     var subcollection = jQuery(actionComponent).closest('.uif-group.uif-collectionItem').children('.uif-boxLayout').children('.uif-subCollection');
 
     if (subcollection.is(":visible")) {
-        subcollection.slideUp(250, function() {
+        subcollection.slideUp(250, function () {
             if (expandText) {
                 jQuery(actionComponent).text(expandText);
             }
         });
     } else {
-        subcollection.slideDown(250, function() {
+        subcollection.slideDown(250, function () {
             if (collapseText) {
                 jQuery(actionComponent).text(collapseText);
             }
