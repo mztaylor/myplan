@@ -46,12 +46,12 @@
                               value="
                                   jQuery('body')
                                       .subscribe('SECTION_ITEM_ADDED', function(data){
-                                          var link = jQuery('&lt;a /&gt;').attr('href','lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.'));
+                                          var link = '&lt;a href=&quot;lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
                                           jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                          fnDisplayMessage(link.text('Added'), 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode, false);
+                                          fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode, false);
                                           if (data.PrimarySectionCode != null) {
                                               jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                              fnDisplayMessage(link.text('Added'), 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode, false);
+                                              fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode, false);
                                           }
                                       });"/>
                     <property name="items">
