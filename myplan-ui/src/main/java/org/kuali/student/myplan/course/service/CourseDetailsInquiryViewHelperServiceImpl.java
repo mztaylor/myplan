@@ -433,24 +433,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
 
-
-        //Curriculum
-        String courseCode = courseDetails.getCode();
-        String subject = null;
-        String number = null;
-        if (courseCode != null) {
-            String[] splitStr = courseCode.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            subject = splitStr[0];
-            number = splitStr[1];
-            String temp = getTitle(subject);
-            StringBuffer value = new StringBuffer();
-            value = value.append(temp);
-            value = value.append(" (").append(subject.trim()).append(")");
-
-            courseDetails.setCurriculumTitle(value.toString());
-        }
-        //  If course not scheduled for future terms, Check for the last term when course was offered
-
+        String title = String.format( "%s (%s)", course.getCourseTitle().trim(), course.getSubjectArea().trim() );
+        courseDetails.setCurriculumTitle(title);
 
         if (isCourseOfferingServiceUp()) {
             CourseOfferingService cos = getCourseOfferingService();
@@ -460,7 +444,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {
                     // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, subject, number);
+                    String values = String.format("%s, %s, %s", year, course.getSubjectArea(), course.getCourseNumberSuffix() );
                     QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
                     List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
 
