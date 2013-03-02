@@ -286,7 +286,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
             logger.info(info.getMessage());
             if (info.getIsSuccess()) {
-                return getHTMLReport(auditId);
+                return getHTMLReport(auditId, auditTypeKey);
             }
 
             try {
@@ -306,7 +306,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         courseLinkTemplateStyle = style;
     }
 
-    public AuditReportInfo getHTMLReport(String auditId) throws OperationFailedException {
+    public AuditReportInfo getHTMLReport(String auditId, String auditTypeKey) throws OperationFailedException {
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
         String answer = "Audit ID " + auditId + " not available";
@@ -368,7 +368,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             // content has HTML 4, failing or incorrectly rendering self-closing tags.
             //
             // Great explanation of this mess here: http://stackoverflow.com/a/206409
-            String method = isUserSession ? "html" : "xml";
+            String method = "html";
+            if( DegreeAuditServiceConstants.AUDIT_TYPE_KEY_XML.equalsIgnoreCase( auditTypeKey )){
+            	method = "xml";
+            }
             transformer.setOutputProperty(OutputKeys.METHOD, method);
             DOMSource source = new DOMSource(rootDegreeAuditHTMLContentDIV);
             StringWriter sw = new StringWriter();
