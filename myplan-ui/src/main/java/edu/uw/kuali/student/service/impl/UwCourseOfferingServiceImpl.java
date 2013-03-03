@@ -886,7 +886,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     Element link = (Element) linkPath.selectSingleNode(sectionNode);
 
                     //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
-                    if(null == link || !StringUtils.hasText( link.getTextTrim()) ) {
+                    if (null == link || !StringUtils.hasText(link.getTextTrim())) {
                         continue;
                     }
 
@@ -1003,9 +1003,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                         }
                     }
                 }
+
                 String feeAmount = sectionNode.elementText("FeeAmount").trim();
                 if (feeAmount.contains(".")) {
                     feeAmount = feeAmount.substring(0, feeAmount.indexOf("."));
+                }
+
+                String summerTerm = null;
+                if (StringUtils.hasText(sectionNode.elementText("SummerTerm"))) {
+                    summerTerm = sectionNode.elementText("SummerTerm");
                 }
 
 
@@ -1022,6 +1028,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 attributes.add(new AttributeInfo("EnrollmentRestrictions", String.valueOf(Boolean.valueOf(sectionNode.elementText("EnrollmentRestrictions")))));
                 attributes.add(new AttributeInfo("FeeAmount", feeAmount));
                 attributes.add(new AttributeInfo("SectionComments", sectionComments.toString()));
+                attributes.add(new AttributeInfo("SummerTerm", summerTerm));
 
                 populateEnrollmentFields(info, year, quarter, curric, num, sectionID);
 
@@ -1033,7 +1040,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
                 attributes.add(attrib);
-
 
 
                 {
