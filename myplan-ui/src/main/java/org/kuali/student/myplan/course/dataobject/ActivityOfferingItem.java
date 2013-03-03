@@ -50,8 +50,9 @@ public class ActivityOfferingItem {
     private boolean independentStudy;
     private String gradingOption;
     private String sectionComments;
+    private String summerTerm;
 
-    private boolean planned = false;
+    private String planItemId;
 
     private boolean primary = false;
 
@@ -276,12 +277,12 @@ public class ActivityOfferingItem {
 //    	return isPrimary() && getSecondaryList().size() == 0;
     }
 
-    public boolean isPlanned() {
-        return planned;
+    public String getPlanItemId() {
+        return planItemId;
     }
 
-    public void setPlanned(boolean planned) {
-        this.planned = planned;
+    public void setPlanItemId(String planItemId) {
+        this.planItemId = planItemId;
     }
 
     public String getAtpId() {
@@ -338,6 +339,14 @@ public class ActivityOfferingItem {
 
     public void setInstituteName(String instituteName) {
         this.instituteName = instituteName;
+    }
+
+    public String getSummerTerm() {
+        return summerTerm;
+    }
+
+    public void setSummerTerm(String summerTerm) {
+        this.summerTerm = summerTerm;
     }
 
     /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
