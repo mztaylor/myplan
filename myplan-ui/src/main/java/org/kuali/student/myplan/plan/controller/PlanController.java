@@ -1158,7 +1158,7 @@ public class PlanController extends UifControllerBase {
             planItemId = getPlanIdFromCourseId(course.getVersionIndependentId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         }
 
-
+        String sectionCode = null;
         //  See if the plan item exists.
         PlanItemInfo planItem = null;
         try {
@@ -1176,11 +1176,14 @@ public class PlanController extends UifControllerBase {
             String[] splitStr = planItem.getRefObjectId().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
             courseId = getCourseDetailsInquiryService().getCourseId(splitStr[0].trim(), splitStr[1].trim());
             courseDetail = getCourseDetailsInquiryService().getCourseSummaryWithSections(courseId, UserSessionHelper.getStudentId(), planItem.getPlanPeriods().get(0));
+            sectionCode = splitStr[2].trim();
         }
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
-            if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE) || form.isPrimary()) {
-                planItemsToRemove = getPlannedSections(courseDetail, planItem, form.getInstituteCode());
+            if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                planItemsToRemove = getPlannedSections(courseDetail, planItem, form.getInstituteCode(), false, null);
+            } else if (form.isPrimary()) {
+                planItemsToRemove = getPlannedSections(courseDetail, planItem, form.getInstituteCode(), true, sectionCode);
             }
         }
 
@@ -1216,7 +1219,7 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<String, String> getPlannedSections(CourseDetails courseDetails, PlanItem planItem, String instituteCode) {
+    private Map<String, String> getPlannedSections(CourseDetails courseDetails, PlanItem planItem, String instituteCode, boolean isPrimary, String sectionCode) {
         Map<String, String> plannedSections = new HashMap<String, String>();
         String planItemId = planItem.getId();
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
@@ -1232,7 +1235,11 @@ public class PlanController extends UifControllerBase {
 
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
             if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItemId)) {
-                plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
+                if (isPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode)) {
+                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
+                } else if (!isPrimary) {
+                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
+                }
             }
         }
 
