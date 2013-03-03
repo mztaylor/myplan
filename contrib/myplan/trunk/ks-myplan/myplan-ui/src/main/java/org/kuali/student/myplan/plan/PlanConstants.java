@@ -40,8 +40,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String ERROR_KEY_PAGE_RESET_REQUIRED = "myplan.text.error.pageResetRequired";
 
-    public static final String ERROR_KEY_ADVISER_ACCESS="myplan.text.error.adviserAccess";
-    public static final String ERROR_KEY_ILLEGAL_ADVISER_ACCESS="myplan.text.error.illegalAdviserAccess";
+    public static final String ERROR_KEY_ADVISER_ACCESS = "myplan.text.error.adviserAccess";
+    public static final String ERROR_KEY_ILLEGAL_ADVISER_ACCESS = "myplan.text.error.illegalAdviserAccess";
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_COURSE = "myplan.text.error.unknownCourse";
     public static final String ERROR_KEY_UNKNOWN_PLAN_ITEM = "myplan.text.error.savedCoursesList.unknownPlanItem";
@@ -51,7 +51,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_INVALID_PARAM = "myplan.text.error.invalidParameter";
     public static final String ERROR_KEY_MISSING_PARAM = "myplan.text.error.missingParameter";
     public static final String ERROR_KEY_PERMISSION_DENIED = "myplan.text.error.permissionDenied";
-    public static final String ERROR_TECHNICAL_PROBLEMS="myplan.text.error.technicalProblems";
+    public static final String ERROR_TECHNICAL_PROBLEMS = "myplan.text.error.technicalProblems";
 
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
@@ -66,22 +66,22 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String QUARTER_LINK = "<a href=\"/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId={atpId}\">{label}</a>";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
-    public static final String TERM_1="Winter";
-    public static final String TERM_2="Spring";
-    public static final String TERM_3="Summer";
-    public static final String TERM_4="Autumn";
+    public static final String TERM_1 = "Winter";
+    public static final String TERM_2 = "Spring";
+    public static final String TERM_3 = "Summer";
+    public static final String TERM_4 = "Autumn";
 
 
     /*Query keys for getting the termInfos from the academic calender*/
-    public static final String PLANNING="PLANNING";
-    public static final String INPROGRESS="INPROGRESS";
-    public static final String PUBLISHED="PUBLISHED";
+    public static final String PLANNING = "PLANNING";
+    public static final String INPROGRESS = "INPROGRESS";
+    public static final String PUBLISHED = "PUBLISHED";
 
-    public static final String WITHDRAWN_GRADE="W";
-    
+    public static final String WITHDRAWN_GRADE = "W";
+
     /*Course Credit Types*/
-    public static final String RANGE="-";
-    public static final String MULTIPLE=",";
+    public static final String RANGE = "-";
+    public static final String MULTIPLE = ",";
 
 
     /* Keys for storing info in the session. */
@@ -99,6 +99,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
         SECTION_ITEM_ADDED,
         /* atpId, type, courseId */
         PLAN_ITEM_DELETED,
+        /*atpId, courseId, sectionCode, primarySection, courseCredits*/
+        SECTION_ITEM_DELETED,
         /* atpId, newTotalCredits */
         UPDATE_NEW_TERM_TOTAL_CREDITS,
         /*atpId, oldTotalCredits*/

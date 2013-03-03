@@ -1563,4 +1563,73 @@ function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
             }
         });
     }
+
+}
+/**
+ *Function used to toggle the action buttons from add to delete or delete to add in single quarter view.
+ */
+function toggleButtons(){
+    jQuery('body')
+        .subscribe('SECTION_ITEM_ADDED', function(data){
+            var value = "jQuery('#section_"+ data.planItemId+"').click(function(e){myplanAjaxSubmitSectionItem('"+data.planItemId+"', 'removeItem', 'plan', {planItemId:'"+data.planItemId+"',sectionCode:'"+data.SectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',viewId:'PlannedCourse-FormView', primary:'"+data.Primary+"'}, e);});"
+            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).data('coursesection', data.SectionCode).data('primary', data.Primary).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).data('coursesection', data.SectionCode).data('primary', data.Primary);
+            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).parent().find('input').data('for','section_' + data.planItemId).attr('value',value).removeAttr('script').attr('name','script');
+            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('id', 'section_' + data.planItemId );
+            runScriptsForId('section_' + data.planItemId);
+            if (data.PrimarySectionCode != null) {
+                var value = "jQuery('#section_"+ data.PrimaryPlanItemId+"').click(function(e){myplanAjaxSubmitSectionItem('"+data.PrimaryPlanItemId+"', 'removeItem', 'plan', {planItemId:'"+data.PrimaryPlanItemId+"',sectionCode:'"+data.PrimarySectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',viewId:'PlannedCourse-FormView', primary:'true'}, e);});"
+                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).data('coursesection', data.PrimarySectionCode).data('primary', true).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).data('coursesection', data.PrimarySectionCode).data('primary', true);
+                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).parent().find('input').data('for','section_' + data.PrimaryPlanItemId).attr('value',value).removeAttr('script').attr('name','script');
+                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('id', 'section_' + data.PrimaryPlanItemId );
+                runScriptsForId('section_' + data.PrimaryPlanItemId);
+            }
+        }).subscribe('SECTION_ITEM_DELETED', function(data){
+            var courseId = data.courseDetails.courseId;
+            var value = "jQuery('#section_"+ data.InstituteCode + "_" + data.atpId + "_" + data.SectionCode+"').click(function(e) {myplanAjaxSubmitSectionItem('"+courseId+"', 'addPlannedCourse', 'plan', {courseId:'"+courseId+"',sectionCode:'"+data.SectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',primary:'"+data.Primary+"',viewId:'PlannedCourse-FormView'}, e);});";
+            jQuery('#section_' + data.planItemId).unbind('click').removeClass('myplan-delete').addClass('myplan-add').attr('title', 'Add section ' + data.SectionCode +' to '+data.shortTermName).parent().removeClass('myplan-delete').addClass('myplan-add').attr('title', 'Add section ' + data.SectionCode +' to '+data.shortTermName);
+            jQuery('#section_' + data.planItemId).parent().find('input').data('for','section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('value',value).removeAttr('script').attr('name','script');
+            jQuery('#section_' + data.planItemId).attr('id', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode);
+            runScriptsForId('section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode);
+            var object = data.PlanItemsDeleted;
+            if(object!=null){
+                for (planItemId in object)
+                {
+                    var sectionCode = object[planItemId];
+                    var sectionValue = "jQuery('#section_"+ data.InstituteCode + "_" + data.atpId + "_" + sectionCode+"').click(function(e) {myplanAjaxSubmitSectionItem('"+courseId+"', 'addPlannedCourse', 'plan', {courseId:'"+courseId+"',sectionCode:'"+sectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',primary:'"+data.Primary+"',viewId:'PlannedCourse-FormView'}, e);});";
+                    jQuery('#section_' + planItemId).unbind('click').removeClass('myplan-delete').addClass('myplan-add').attr('title', 'Add section ' + sectionCode +' to '+data.shortTermName).parent().removeClass('myplan-delete').addClass('myplan-add').attr('title', 'Add section ' + sectionCode +' to '+data.shortTermName);
+                    jQuery('#section_' + planItemId).parent().find('input').data('for','section_' + data.InstituteCode + '_' + data.atpId + '_' + sectionCode).attr('value',sectionValue).removeAttr('script').attr('name','script');
+                    jQuery('#section_' + planItemId).attr('id', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + sectionCode);
+                    runScriptsForId('section_' + data.InstituteCode + '_' + data.atpId + '_' + sectionCode);
+
+                }
+            }
+        }).subscribe('PLAN_ITEM_DELETED', function(data){
+            var planitem = data.planItemId;
+        });
+
+}
+
+/*This function is used for adding the delete hover text for primary section which are planned
+* changes to "Delete Section A, AA, AC and AD" if the size of the secondary section is less than 4
+* otherwise changes to "Delete Section A. All sections will be deleted as well." */
+function addDeleteHoverText(element){
+    if(jQuery(element).data('primary') === true){
+    var obj =jQuery(element).closest('table').find('div.myplan-delete[data-primary=false]');
+       if(obj != undefined){
+           var hoverText = 'Delete Section '+jQuery(element).data('coursesection');
+           if(obj.size()>=4){
+               hoverText = hoverText.concat('. All sections will be deleted as well.');
+           }else{
+               jQuery.each(obj,function(index,value){
+                   if(index == obj.size()-1){
+                       hoverText = hoverText.concat(' and '+value.dataset.coursesection);
+                   }else {
+                       hoverText = hoverText.concat(', '+value.dataset.coursesection);
+                   }
+               });
+           }
+           jQuery(element).attr('title',hoverText);
+           jQuery(element).parent().attr('title',hoverText);
+       }
+    }
 }

@@ -490,6 +490,10 @@
 
     <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
+
+    <bean id="planned_sections_formatter" class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor"/>
+
+
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListMessage" value="Not currently scheduled"/>

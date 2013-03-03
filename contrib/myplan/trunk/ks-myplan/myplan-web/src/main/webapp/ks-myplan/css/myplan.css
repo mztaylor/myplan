@@ -563,6 +563,15 @@ input.myplan-add:hover,
     background-position: -16px 0px;
 }
 
+input.myplan-delete,
+.uif-imageField.myplan-delete img.uif-image {
+    width: 16px;
+    height: 16px;
+    background: url('../images/iconError16.png') no-repeat 0px 0px;
+    vertical-align: middle;
+}
+
+
 .myplan-stacked-list,
 .myplan-stacked-list ul,
 .myplan-stacked-list li,

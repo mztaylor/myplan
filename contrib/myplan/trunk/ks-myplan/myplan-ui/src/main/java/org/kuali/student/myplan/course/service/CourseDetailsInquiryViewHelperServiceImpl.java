@@ -387,7 +387,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             Collections.sort(ytList, Collections.reverseOrder());
 
             List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
-
+            List<ActivityOfferingItem> plannedSections = courseDetails.getPlannedSections();
             for (YearTerm yt : ytList) {
                 String atp = yt.toATP();
                 List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
@@ -424,6 +424,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                         courseOfferingTermList.add(courseOfferingTerm);
                     }
 
+                    if (activityOfferingItem.getPlanItemId() != null) {
+                        plannedSections.add(activityOfferingItem);
+                    }
+
                     courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
                 }
             }
@@ -433,7 +437,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
 
-        String title = String.format( "%s (%s)", course.getCourseTitle().trim(), course.getSubjectArea().trim() );
+        String title = String.format("%s (%s)", course.getCourseTitle().trim(), course.getSubjectArea().trim());
         courseDetails.setCurriculumTitle(title);
 
         if (isCourseOfferingServiceUp()) {
@@ -444,7 +448,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {
                     // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, course.getSubjectArea(), course.getCourseNumberSuffix() );
+                    String values = String.format("%s, %s, %s", year, course.getSubjectArea(), course.getCourseNumberSuffix());
                     QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
                     List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
 
@@ -509,6 +513,7 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         YearTerm yt = AtpHelper.atpToYearTerm(termId);
 
         List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
+        List<ActivityOfferingItem> plannedSections = courseDetails.getPlannedSections();
         String atp = yt.toATP();
         List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
         for (ActivityOfferingItem activityOfferingItem : list) {
@@ -542,6 +547,9 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 courseOfferingTerm.setCourseComments(courseComments.get(atp));
                 courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
                 courseOfferingTermList.add(courseOfferingTerm);
+            }
+            if (activityOfferingItem.getPlanItemId() != null) {
+                plannedSections.add(activityOfferingItem);
             }
 
             courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
@@ -706,6 +714,15 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                             continue;
                         }
 
+                        if ("SummerTerm".equalsIgnoreCase(key)) {
+                            if (value != null) {
+                                activity.setSummerTerm(value);
+                            }
+
+                            continue;
+                        }
+
+
                         Boolean flag = Boolean.valueOf(value);
                         if ("ServiceLearning".equalsIgnoreCase(key)) {
                             activity.setServiceLearning(flag);
@@ -739,9 +756,11 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
                     activity.setDetails("View more details");
 
-                    // Added this flag to know if the activityoffering is planned/backup
-                    boolean planned = isPlanned(courseCode + " " + sectionId, termId);
-                    activity.setPlanned(planned);
+                    // Added this to know if the activityoffering is planned, if planned planItemId is returned or else null
+                    String planItemId = getPlanItemId(String.format("%s %s", courseCode, sectionId), termId);
+                    if (planItemId != null) {
+                        activity.setPlanItemId(planItemId);
+                    }
                     activity.setAtpId(termId);
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
                     activity.setQtryr(yt.toQTRYRParam());
@@ -848,21 +867,52 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     /**
      * Checks if the Given refObjId for a section (eg: com 453 A or com 453 AA or can use a versionIndependentId) for the given atpId exists in Plan/backup
-     * returns true if exists otherwise returns false.
+     * returns planItemId if exists otherwise returns null.
      *
      * @param refObjId
      * @param atpId
      * @return
      */
-    public boolean isPlanned(String refObjId, String atpId) {
+    public String getPlanItemId(String refObjId, String atpId) {
+        String planItemId = null;
         try {
             PlanController planController = new PlanController();
             PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
-            boolean isPlanned = planItem != null;
-            return isPlanned;
+            if (planItem != null) {
+                planItemId = planItem.getId();
+            }
+
         } catch (Exception e) {
         }
-        return false;
+        return planItemId;
+    }
+
+    /**
+     * Used to get the course Id for the given subject area and course number (CHEM, 120)
+     *
+     * @param subjectArea
+     * @param number
+     * @return
+     */
+    public String getCourseId(String subjectArea, String number) {
+        List<SearchRequest> requests = new ArrayList<SearchRequest>();
+        SearchRequest request = new SearchRequest("myplan.course.getcluid");
+        request.addParam("subject", subjectArea);
+        request.addParam("number", number);
+        request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
+        requests.add(request);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getLuService().search(request);
+        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        String courseId = null;
+        if (searchResult.getRows().size() > 0) {
+            courseId = searchResult.getRows().get(0).getCells().get(0).getValue();
+
+        }
+        return courseId;
     }
 
 

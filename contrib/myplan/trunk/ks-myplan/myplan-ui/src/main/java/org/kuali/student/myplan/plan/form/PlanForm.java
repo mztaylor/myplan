@@ -20,7 +20,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,14 +55,20 @@ public class PlanForm extends UifFormBase {
     private String planItemId;
 
     private String courseId;
-    
-    
+
+
     /*properties used for section Planning*/
     private String sectionCode;
-    
+
     private String primarySectionCode;
 
+    private String primaryPlanItemId;
+
     private String instituteCode;
+
+    private boolean primary;
+
+    private List<String> sectionsToDelete;
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
@@ -74,9 +82,6 @@ public class PlanForm extends UifFormBase {
     private String termName;
 
     private boolean other = false;
-
-    //  Additional fields needed for the Other option.
-    private String termYear;
 
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup = false;
@@ -197,14 +202,6 @@ public class PlanForm extends UifFormBase {
         this.backup = backup;
     }
 
-    public String getTermYear() {
-        return termYear;
-    }
-
-    public void setTermYear(String termYear) {
-        this.termYear = termYear;
-    }
-
     public CourseDetails getCourseDetails() {
         return this.courseDetails;
     }
@@ -283,6 +280,39 @@ public class PlanForm extends UifFormBase {
 
     public void setInstituteCode(String instituteCode) {
         this.instituteCode = instituteCode;
+    }
+
+    public boolean isPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
+    }
+
+    public String getPrimaryPlanItemId() {
+        return primaryPlanItemId;
+    }
+
+    public void setPrimaryPlanItemId(String primaryPlanItemId) {
+        this.primaryPlanItemId = primaryPlanItemId;
+    }
+
+    public List<String> getSectionsToDelete() {
+        return sectionsToDelete;
+    }
+
+    public void setSectionsToDelete(List<String> sectionsToDelete) {
+        this.sectionsToDelete = sectionsToDelete;
+    }
+
+    /*Only used in the Ui for getting the short Term*/
+    public String getShortTerm() {
+        String shortTermName = "";
+        if (getAtpId() != null) {
+            shortTermName = AtpHelper.atpIdToShortTermName(getAtpId());
+        }
+        return shortTermName;
     }
 
     /**
