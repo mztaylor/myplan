@@ -32,6 +32,9 @@ public class CourseDetails extends CourseSummaryDetails {
     private transient String savedItemId;
     private String savedItemDateCreated;
 
+    //Sections which are planned
+    List<ActivityOfferingItem> plannedSections;
+
     public String getLastOffered() {
         return lastOffered;
     }
@@ -221,6 +224,16 @@ public class CourseDetails extends CourseSummaryDetails {
         this.courseOfferingInstitutionList = courseOfferingInstitutionList;
     }
 
+    public List<ActivityOfferingItem> getPlannedSections() {
+        if(plannedSections == null){
+            plannedSections = new ArrayList<ActivityOfferingItem>();
+        }
+        return plannedSections;
+    }
+
+    public void setPlannedSections(List<ActivityOfferingItem> plannedSections) {
+        this.plannedSections = plannedSections;
+    }
 
     //TODO: Review why we really need this
     //  It's because we need access to more than on property in one of the property editors.
