@@ -1572,14 +1572,16 @@ function toggleButtons(){
     jQuery('body')
         .subscribe('SECTION_ITEM_ADDED', function(data){
             var value = "jQuery('#section_"+ data.planItemId+"').click(function(e){myplanAjaxSubmitSectionItem('"+data.planItemId+"', 'removeItem', 'plan', {planItemId:'"+data.planItemId+"',sectionCode:'"+data.SectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',viewId:'PlannedCourse-FormView', primary:'"+data.Primary+"'}, e);});"
-            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).data('coursesection', data.SectionCode).data('primary', data.Primary).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).data('coursesection', data.SectionCode).data('primary', data.Primary);
-            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).parent().find('input').data('for','section_' + data.planItemId).attr('value',value).removeAttr('script').attr('name','script');
+            var onMouseHover = "jQuery('#section_"+ data.planItemId+"').mouseover(function(e) {addDeleteHoverText(jQuery(this));});";
+            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).attr('data-coursesection', data.SectionCode).attr('data-primary', data.Primary).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.SectionCode ).attr('data-coursesection', data.SectionCode).attr('data-primary', data.Primary);
+            jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).parent().find('input').data('for','section_' + data.planItemId).attr('value',value+onMouseHover).removeAttr('script').attr('name','script');
             jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('id', 'section_' + data.planItemId );
             runScriptsForId('section_' + data.planItemId);
             if (data.PrimarySectionCode != null) {
                 var value = "jQuery('#section_"+ data.PrimaryPlanItemId+"').click(function(e){myplanAjaxSubmitSectionItem('"+data.PrimaryPlanItemId+"', 'removeItem', 'plan', {planItemId:'"+data.PrimaryPlanItemId+"',sectionCode:'"+data.PrimarySectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',viewId:'PlannedCourse-FormView', primary:'true'}, e);});"
-                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).data('coursesection', data.PrimarySectionCode).data('primary', true).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).data('coursesection', data.PrimarySectionCode).data('primary', true);
-                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).parent().find('input').data('for','section_' + data.PrimaryPlanItemId).attr('value',value).removeAttr('script').attr('name','script');
+                var onMouseHover = "jQuery('#section_"+ data.PrimaryPlanItemId+"').mouseover(function(e) {addDeleteHoverText(jQuery(this));});";
+                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).unbind('click').removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).attr('data-coursesection', data.PrimarySectionCode).attr('data-primary', true).parent().removeClass('myplan-add').addClass('myplan-delete').attr('title', 'Delete section ' + data.PrimarySectionCode ).attr('data-coursesection', data.PrimarySectionCode).attr('data-primary', true);
+                jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).parent().find('input').data('for','section_' + data.PrimaryPlanItemId).attr('value',value+onMouseHover).removeAttr('script').attr('name','script');
                 jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('id', 'section_' + data.PrimaryPlanItemId );
                 runScriptsForId('section_' + data.PrimaryPlanItemId);
             }
@@ -1614,14 +1616,25 @@ function toggleButtons(){
 * otherwise changes to "Delete Section A. All sections will be deleted as well." */
 function addDeleteHoverText(element){
     if(jQuery(element).data('primary') === true){
+    var section = jQuery(element).data('coursesection').toString();
+    var sectionList = new Array();;
     var obj =jQuery(element).closest('table').find('div.myplan-delete[data-primary=false]');
-       if(obj != undefined){
+        if(obj != undefined){
+            jQuery.each(obj,function(index,value){
+                var sec = value.dataset.coursesection.toString();
+                if(sec.match('^'+section) && sec != section){
+                    sectionList.push(obj[index]);
+                }
+            });
+        }
+       if(sectionList.length > 0){
            var hoverText = 'Delete Section '+jQuery(element).data('coursesection');
-           if(obj.size()>=4){
+           if(sectionList.length >= 4){
                hoverText = hoverText.concat('. All sections will be deleted as well.');
            }else{
-               jQuery.each(obj,function(index,value){
-                   if(index == obj.size()-1){
+               jQuery.each(sectionList,function(index,value){
+                   var sec = value.dataset.coursesection.toString();
+                   if(index == sectionList.length-1){
                        hoverText = hoverText.concat(' and '+value.dataset.coursesection);
                    }else {
                        hoverText = hoverText.concat(', '+value.dataset.coursesection);
