@@ -3702,14 +3702,10 @@
         </property>
     </bean>
 
-    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false">
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
-        <property name="propertyName" value="plannedList"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="collectionLookup.render" value="false"/>
-        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false" p:headerText="Planned">
+        <property name="header">
+            <bean parent="Uif-HeaderFive"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="subCollectionFieldGroupPrototype">
@@ -3727,10 +3723,15 @@
                 </property>
             </bean>
         </property>
-        <property name="headerText" value="Planned Courses"/>
-        <property name="header">
-            <bean parent="Uif-HeaderFive"/>
-        </property>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
+        <property name="propertyName" value="plannedList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup"
@@ -3792,6 +3793,8 @@
                 </bean>
             </list>
         </property>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="subCollections">
             <list>
                 <ref bean="institution_data_single"/>
@@ -3820,15 +3823,11 @@
         </property>
     </bean>
 
-    <bean id="single_Backup_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false"
+    <bean id="single_Backup_Collection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false" p:headerText="BackUp"
           p:style="border-bottom: solid 1px #ccc;">
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
-        <property name="propertyName" value="backupList"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="collectionLookup.render" value="false"/>
-        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFive"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="subCollectionFieldGroupPrototype">
@@ -3846,10 +3845,22 @@
                 </property>
             </bean>
         </property>
-        <property name="headerText" value="Backup Courses"/>
-        <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="plantype" value="backup"/>
+                <entry key="atpid" value="@{#line.atpId}"/>
+                <entry key="size" value="@{#line.plannedList.size()}"/>
+            </map>
         </property>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
+        <property name="propertyName" value="backupList"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
@@ -3910,6 +3921,8 @@
                 </bean>
             </list>
         </property>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="subCollections">
             <list>
                 <ref bean="institution_data_single"/>
@@ -4058,7 +4071,7 @@
                             </bean>
 
                             <bean parent="Uif-VerticalBoxSection" p:validationMessages.render="false"
-                                  p:style="margin:0 0 0 56px; display:none; width:561px;" p:header.render="false">
+                                  p:style="margin:0 0 0 56px; display:none;" p:header.render="false">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
