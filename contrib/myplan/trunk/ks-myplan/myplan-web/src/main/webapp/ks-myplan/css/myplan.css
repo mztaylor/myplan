@@ -68,6 +68,10 @@ strong {
     line-height: 1.6667em;
 }
 
+.myplan-view table.dataTable thead th.sorting_disabled {
+    cursor: default;
+}
+
 .smtext {
     font: normal 0.8462/1.8182 Arial, Helvetica, Verdana, sans-serif;
 }
@@ -335,7 +339,8 @@ a:focus {
 
 .myplan-view .uif-pageHeaderField .uif-header {
     border: none;
-    font-size: 1.8462em/1.6667em;
+    font-size: 1.8462em;
+    line-height: 1.6667em;
     padding: 0;
 }
 
@@ -570,7 +575,6 @@ input.myplan-delete,
     background: url('../images/iconError16.png') no-repeat 0px 0px;
     vertical-align: middle;
 }
-
 
 .myplan-stacked-list,
 .myplan-stacked-list ul,
