@@ -1569,6 +1569,7 @@ function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
  *Function used to toggle the action buttons from add to delete or delete to add in single quarter view.
  */
 function toggleButtons(){
+    var id = null;
     jQuery('body')
         .subscribe('SECTION_ITEM_ADDED', function(data){
             var value = "jQuery('#section_"+ data.planItemId+"').click(function(e){myplanAjaxSubmitSectionItem('"+data.planItemId+"', 'removeItem', 'plan', {planItemId:'"+data.planItemId+"',sectionCode:'"+data.SectionCode+"',atpId:'"+data.atpId.replace(/-/g,'.')+"',instituteCode:'"+data.InstituteCode+"',viewId:'PlannedCourse-FormView', primary:'"+data.Primary+"'}, e);});"
@@ -1606,7 +1607,15 @@ function toggleButtons(){
                 }
             }
         }).subscribe('PLAN_ITEM_DELETED', function(data){
-            var planitem = data.planItemId;
+            id=data.planItemId;
+            jQuery('#'+data.planItemId+'_planned').parent().fadeOut('slow');
+        }).subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){
+            var totalCredits = data.totalCredits;
+            var credits = jQuery('.myplan-credit-total span.uif-message');
+            jQuery.each(credits ,function(index,value){
+                if(jQuery(credits[index]).text().trim() != '*'){
+                    jQuery(credits[index]).text(totalCredits);
+                }});
         });
 
 }
