@@ -88,6 +88,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
     public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
     public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
+    
+    /*Regex to Split Digits and alphabets Eg: COM 348 --> COM  348*/
+    public static final String SPLIT_DIGITS_ALPHABETS = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
