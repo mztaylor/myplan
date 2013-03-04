@@ -1,16 +1,10 @@
 package org.kuali.student.myplan.course.dataobject;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
-import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 
 /**
  * This data object records all instances where the course has been planned,
@@ -25,7 +19,7 @@ public class CourseDetails {
     private PlannedCourseSummary plannedCourseSummary;
 
 
-    public void CourseDetails() {
+    public CourseDetails() {
         plannedCourseSummary = new PlannedCourseSummary();
     }
 
@@ -78,7 +72,7 @@ public class CourseDetails {
     //In order to use the same list for another property we created this.
     @JsonIgnore
     public List<CourseOfferingInstitution> getInstitutionsList() {
-        return this.getCourseOfferingInstitutionList();
+        return getCourseOfferingInstitutionList();
     }
 
 
