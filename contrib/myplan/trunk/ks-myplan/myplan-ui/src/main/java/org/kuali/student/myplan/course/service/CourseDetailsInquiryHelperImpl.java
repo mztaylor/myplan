@@ -65,9 +65,9 @@ import java.util.*;
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 
-public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableImpl {
+public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
-    private final Logger logger = Logger.getLogger(CourseDetailsInquiryViewHelperServiceImpl.class);
+    private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
 
     private final static String[] WEEKDAYS_FIRST_LETTER = {"M", "T", "W", "Th", "F", "Sa", "Su"};
 
