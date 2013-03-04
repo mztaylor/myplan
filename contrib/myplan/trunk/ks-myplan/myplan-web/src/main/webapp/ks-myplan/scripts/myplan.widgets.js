@@ -1608,7 +1608,11 @@ function toggleButtons(){
             }
         }).subscribe('PLAN_ITEM_DELETED', function(data){
             id=data.planItemId;
-            jQuery('#'+data.planItemId+'_planned').parent().fadeOut('slow');
+            if(data.planItemType == 'planned'){
+                jQuery('#'+data.planItemId+'_planned').parent().fadeOut('slow');
+            }else if (data.planItemType == 'backup'){
+                jQuery('#'+data.planItemId+'_backup').parent().fadeOut('slow');
+            }
         }).subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){
             var totalCredits = data.totalCredits;
             var credits = jQuery('.myplan-credit-total span.uif-message');

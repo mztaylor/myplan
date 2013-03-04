@@ -3854,6 +3854,11 @@
             <list>
                 <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseDetails.courseTitle}" p:group.validationMessages.render="false">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
+                        </map>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-item</value>
@@ -3872,10 +3877,33 @@
                             <bean parent="Uif-Link"
                                   p:linkText="@{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"
                                   p:href="#"/>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Show all sections" p:style="float:right;">
+                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:style="float:right;">
+                                <property name="actionScript"
+                                          value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                                <property name="render" value="@{!#line.showAlert}"/>
+                            </bean>
+
+                            <bean parent="Uif-ActionLink" p:actionLabel="Show all sections" p:style="float:right; padding-right: 10px;">
                                 <property name="actionScript"
                                           value="expandHiddenSubcollection(this, 'Show all sections', 'Hide all sections');"/>
                                 <property name="render" value="@{!#line.showAlert}"/>
+                            </bean>
+
+                            <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
+                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
+                                <property name="render" value="@{#line.showAlert}"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Move"
+                                              p:style="display:inline-block;">
+                                            <property name="actionScript" value="alert('Moving');"/>
+                                        </bean>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                              p:style="display:inline-block;">
+                                            <property name="actionScript" value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -4161,7 +4189,7 @@
                     </property>
                 </bean>
                 <bean p:id="section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
-                      parent="Uif-ImageField" p:label="Add" p:altText="Add"
+                      parent="Uif-ImageField" p:label="Plan" p:altText="Plan"
                       p:title="Add section @{#line.code} to @{#line.shortTermName} Plan"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planItemId eq null ? true : false}">
