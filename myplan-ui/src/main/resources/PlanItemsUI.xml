@@ -3960,8 +3960,7 @@
         </property>
     </bean>
 
-    <bean id="courseOfferingCollection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false"
-          p:header.render="@{#line.name eq 'Seattle' ? false : true}">
+    <bean id="courseOfferingCollection" parent="Uif-StackedCollectionGroup" p:validationMessages.render="false">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
         <property name="propertyName" value="courseOfferingTermList"/>
