@@ -697,30 +697,6 @@
         </property>
     </bean>
 
-    <bean id="course_details_links" parent="Uif-VerticalBoxGroup" p:validationMessages.render="false">
-        <property name="items">
-            <list>
-                <!-- The propertyEditor renders the time schedule info as a list of links. -->
-                <!-- Lightbox Link -->
-                <bean parent="Uif-DataField" p:propertyName="this" p:fieldLabel.render="false"
-                      p:escapeHtmlInPropertyValue="false">
-                    <property name="propertyEditor" ref="time_schedule_links_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-stacked-list</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- TODO: UW specific. Uses the student web service. -->
-    <bean id="time_schedule_links_formatter"
-          class="org.kuali.student.myplan.course.util.TimeScheduleLinksListPropertyEditor">
-        <property name="baseUrl" value="https://www.washington.edu/students/timeschd/"/>
-    </bean>
-
     <bean id="meeting_building_link_formatter"
           class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
     </bean>

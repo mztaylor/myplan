@@ -61,14 +61,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         *"You took this course on Winter 2012" or
         *"This course was withdrawn on week 6 in Spring 2012" or
         *"You're enrolled in this course for Autumn 2012" */
-        if (courseDetails.getAcademicTerms().size() > 0) {
+        if (courseDetails.getPlannedCourseSummary().getAcademicTerms().size() > 0) {
             List<String> withDrawnCourseTerms = new ArrayList<String>();
             List<String> nonWithDrawnCourseTerms = new ArrayList<String>();
 
-            for (String term : courseDetails.getAcademicTerms()) {
+            for (String term : courseDetails.getPlannedCourseSummary().getAcademicTerms()) {
                 String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
-                for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getAcadRecList()) {
+                for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
                     if (atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
                         if (!withDrawnCourseTerms.contains(term)) {
@@ -180,15 +180,15 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         /*When plannedList or backupList are not null then populating message
             *"Added to Spring 2013 Plan, Spring 2014 Plan on 01/18/2012" or
             *"Added to Spring 2013 Plan on 01/18/2012 and Spring 2014 Plan on 09/18/2012" */
-        if ((courseDetails.getPlannedList() != null && courseDetails.getPlannedList().size() > 0) || (courseDetails.getBackupList() != null && courseDetails.getBackupList().size() > 0)) {
+        if ((courseDetails.getPlannedCourseSummary().getPlannedList() != null && courseDetails.getPlannedCourseSummary().getPlannedList().size() > 0) || (courseDetails.getPlannedCourseSummary().getBackupList() != null && courseDetails.getPlannedCourseSummary().getBackupList().size() > 0)) {
             List<PlanItemDataObject> planItemDataObjects = new ArrayList<PlanItemDataObject>();
-            if (courseDetails.getPlannedList() != null) {
-                for (PlanItemDataObject pl : courseDetails.getPlannedList()) {
+            if (courseDetails.getPlannedCourseSummary().getPlannedList() != null) {
+                for (PlanItemDataObject pl : courseDetails.getPlannedCourseSummary().getPlannedList()) {
                     planItemDataObjects.add(pl);
                 }
             }
-            if (courseDetails.getBackupList() != null) {
-                for (PlanItemDataObject bl : courseDetails.getBackupList()) {
+            if (courseDetails.getPlannedCourseSummary().getBackupList() != null) {
+                for (PlanItemDataObject bl : courseDetails.getPlannedCourseSummary().getBackupList()) {
                     planItemDataObjects.add(bl);
                 }
             }
@@ -271,8 +271,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         }
         /*When savedItemId and savedItemDateCreated are not null then populating message
             *"Bookmarked on 8/15/2012"*/
-        if (courseDetails.getSavedItemId() != null && courseDetails.getSavedItemDateCreated() != null) {
-            sb = sb.append("<dd>").append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked").append("</a>").append(" on ").append(courseDetails.getSavedItemDateCreated());
+        if (courseDetails.getPlannedCourseSummary().getSavedItemId() != null && courseDetails.getPlannedCourseSummary().getSavedItemDateCreated() != null) {
+            sb = sb.append("<dd>").append("<a href=lookup?methodToCall=search&viewId=SavedCoursesDetail-LookupView>").append("Bookmarked").append("</a>").append(" on ").append(courseDetails.getPlannedCourseSummary().getSavedItemDateCreated());
 
         }
 
@@ -293,15 +293,15 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
-        for (AcademicRecordDataObject acr : courseDetails.getAcadRecList()) {
+        for (AcademicRecordDataObject acr : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
             if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term))) {
                 sections.add(acr.getActivityCode());
             }
         }
         for (String section : sections) {
-            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), courseDetails.getCourseDetails().getSubjectArea(), courseDetails.getCourseDetails().getCourseNumber(), section);
+            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
             String sectionSln = String.format("Section %s (%s)", section, sln);
-            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
+            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
             sectionAndSln.add(sec);
         }
         return sectionAndSln;
