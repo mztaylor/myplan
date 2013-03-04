@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.service;
 import org.apache.log4j.Logger;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
@@ -79,6 +80,7 @@ public class SingleQuarterHelperBase {
                     academicRecordDataObject.setAtpId(studentInfo.getTermName());
                     academicRecordDataObject.setPersonId(studentInfo.getPersonId());
                     academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+
                     /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
                     academicRecordDataObject.setCourseId(studentInfo.getId());
                     academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
@@ -92,6 +94,8 @@ public class SingleQuarterHelperBase {
                         academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
                     }
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+
+                    //TODO: We should move these methods out of courseDetailsInquiryHelper
                     List<ActivityOfferingItem> activityOfferingItemList = courseDetailsHelper.getActivityOfferingItemsById(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId());
                     for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
                         if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {

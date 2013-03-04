@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 
@@ -20,8 +21,6 @@ public class PlannedCourseDataObject implements Comparable {
     private transient CourseSummaryDetails courseDetails;
 
     private transient boolean showAlert;
-
-    private List<CourseOfferingInstitution> courseOfferingInstitutionList;
 
     // TODO: KULRICE-9003. This should be on plannedTerm once the jira is resolved
     private transient boolean timeScheduleOpen;
@@ -64,12 +63,4 @@ public class PlannedCourseDataObject implements Comparable {
         this.timeScheduleOpen = timeScheduleOpen;
     }
 
-
-    public List<CourseOfferingInstitution> getCourseOfferingInstitutionList() {
-        return courseOfferingInstitutionList;
-    }
-
-    public void setCourseOfferingInstitutionList(List<CourseOfferingInstitution> courseOfferingInstitutionList) {
-        this.courseOfferingInstitutionList = courseOfferingInstitutionList;
-    }
 }

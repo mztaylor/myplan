@@ -6,6 +6,7 @@ import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
@@ -32,7 +33,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
 
-    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, boolean loadSummaryInfoOnly, String studentId)
+    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
@@ -58,11 +59,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     //  If the course info lookup fails just log the error and omit the item.
                     try {
                         if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
-                            if (loadSummaryInfoOnly) {
-                                plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
-                            } else {
-                                plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseDetails(courseID, studentId));
-                            }
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
                         }
                     } catch (Exception e) {
                         logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
