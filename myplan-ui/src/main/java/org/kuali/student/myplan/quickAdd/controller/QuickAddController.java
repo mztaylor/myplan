@@ -26,6 +26,8 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -385,7 +387,7 @@ public class QuickAddController extends UifControllerBase {
             }
         }
         //  Lookup course details as well need them in case there is an error below.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
             courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
         } catch (Exception e) {
@@ -470,7 +472,7 @@ public class QuickAddController extends UifControllerBase {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo
-                                                                                          planItem, CourseDetails courseDetails) {
+                                                                                          planItem, CourseSummaryDetails courseDetails) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -695,7 +697,7 @@ public class QuickAddController extends UifControllerBase {
                     String courseID = planItem.getRefObjectId();
                     for (String atp : planItem.getPlanPeriods()) {
                         if (atp.equalsIgnoreCase(termId)) {
-                            CourseDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
                             if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
                                 String[] str = courseDetails.getCredit().split("\\D");
                                 double min = Double.parseDouble(str[0]);
@@ -823,7 +825,7 @@ public class QuickAddController extends UifControllerBase {
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
@@ -1101,7 +1103,7 @@ public class QuickAddController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions.
      */
-    private ModelAndView doDuplicatePlanItem(QuickAddForm form, String atpId, CourseDetails courseDetails) {
+    private ModelAndView doDuplicatePlanItem(QuickAddForm form, String atpId, CourseSummaryDetails courseDetails) {
         /*String[] t = {"?", "?"};
         try {
             t = AtpHelper.atpIdToTermNameAndYear(atpId);
