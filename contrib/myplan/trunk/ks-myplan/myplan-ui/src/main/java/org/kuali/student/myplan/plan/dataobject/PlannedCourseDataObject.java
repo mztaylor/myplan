@@ -1,16 +1,14 @@
 package org.kuali.student.myplan.plan.dataobject;
 
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 
-import java.security.PrivateKey;
 import java.util.List;
 
 /**
  * Captures a course detail object along with a single instance of its planned information.
- *
+ * <p/>
  * Date: 4/26/12
  */
 public class PlannedCourseDataObject implements Comparable {
@@ -23,7 +21,7 @@ public class PlannedCourseDataObject implements Comparable {
 
     private transient boolean showAlert;
 
-    private List<CourseOfferingInstitution>
+    private List<CourseOfferingInstitution> courseOfferingInstitutionList;
 
     // TODO: KULRICE-9003. This should be on plannedTerm once the jira is resolved
     private transient boolean timeScheduleOpen;
@@ -53,9 +51,9 @@ public class PlannedCourseDataObject implements Comparable {
     }
 
     @Override
-    public int compareTo( Object object ) {
+    public int compareTo(Object object) {
         PlannedCourseDataObject that = (PlannedCourseDataObject) object;
-        return this.getPlanItemDataObject().getDateAdded().compareTo( that.getPlanItemDataObject().getDateAdded() ) * -1;
+        return this.getPlanItemDataObject().getDateAdded().compareTo(that.getPlanItemDataObject().getDateAdded()) * -1;
     }
 
     public boolean isTimeScheduleOpen() {
