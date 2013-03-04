@@ -144,7 +144,10 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
 
                         //  If the course info lookup fails just log the error and omit the item.
                         try {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().getCourseSummaryWithSections(courseID, studentId, termId));
+
+                            plannedCourseDO.setCourseDetails( getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID) );
+
+                            // TODO: Add Plan activities to this view
 
                         } catch (Exception e) {
                             logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);

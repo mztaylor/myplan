@@ -58,7 +58,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
-            plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, true, studentId);
+            plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, studentId);
         } catch (Exception e) {
             logger.error("Could not load plannedCourseslist", e);
 

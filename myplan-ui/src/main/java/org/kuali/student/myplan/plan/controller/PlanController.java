@@ -27,8 +27,6 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.enrollment.courseoffering.infc.ActivityOffering;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -43,7 +41,7 @@ import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
@@ -83,7 +81,7 @@ public class PlanController extends UifControllerBase {
     private transient DegreeAuditService degreeAuditService;
 
 
-    private transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
+    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
 
     //  Java to JSON outputter.
     private transient ObjectMapper mapper = new ObjectMapper();
@@ -2072,14 +2070,14 @@ public class PlanController extends UifControllerBase {
         this.academicPlanService = academicPlanService;
     }
 
-    public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryService() {
         if (this.courseDetailsInquiryService == null) {
-            this.courseDetailsInquiryService = new CourseDetailsInquiryViewHelperServiceImpl();
+            this.courseDetailsInquiryService = new CourseDetailsInquiryHelperImpl();
         }
         return courseDetailsInquiryService;
     }
 
-    public void setCourseDetailsInquiryService(CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService) {
+    public void setCourseDetailsInquiryService(CourseDetailsInquiryHelperImpl courseDetailsInquiryService) {
         this.courseDetailsInquiryService = courseDetailsInquiryService;
     }
 }
