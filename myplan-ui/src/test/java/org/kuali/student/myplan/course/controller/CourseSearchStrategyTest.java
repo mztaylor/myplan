@@ -837,12 +837,12 @@ public class CourseSearchStrategyTest {
 
     /*@Test
     public void testGetEnumerationValueInfoList() throws Exception {
-        String param = CourseSearchConstants.CAMPUS_LOCATION;
+        String param = CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE;
         CourseSearchStrategy strategy = getCourseSearchStrategy();
         List<EnumeratedValueInfo> enumeratedValueInfoList = strategy.getEnumerationValueInfoList(param);
         assertEquals(4, enumeratedValueInfoList.size());
         for (EnumeratedValueInfo enumeratedValueInfo : enumeratedValueInfoList) {
-            assertEquals(CourseSearchConstants.CAMPUS_LOCATION, enumeratedValueInfo.getEnumerationKey());
+            assertEquals(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, enumeratedValueInfo.getEnumerationKey());
         }
 
         assertEquals("0", enumeratedValueInfoList.get(0).getCode());

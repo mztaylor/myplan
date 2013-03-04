@@ -103,7 +103,7 @@
     </bean>
 
 
-    <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
+    <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="courseOfferingService" ref="coService"/>
         <property name="academicCalendarService" ref="acalService"/>
@@ -116,12 +116,12 @@
     </bean>
 
     <bean id="planController" class="org.kuali.student.myplan.plan.controller.PlanController">
-        <property name="courseDetailsInquiryService" ref="CourseDetailsInquiryViewHelperService"/>
+        <property name="courseDetailsInquiryHelper" ref="CourseDetailsInquiryViewHelperService"/>
         <!--<property name="person" ref="personimpl"/>-->
         <property name="academicPlanService" ref="academicPlanService"/>
 
     </bean>
-    <bean name="CourseDetailsInquiryViewHelperService" class=" org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl">
+    <bean name="CourseDetailsInquiryViewHelperService" class=" org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
                   <property name="courseService" ref="CourseService" />
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="academicCalendarService" ref="acalService"/>

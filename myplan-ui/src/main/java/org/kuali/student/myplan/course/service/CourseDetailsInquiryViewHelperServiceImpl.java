@@ -6,13 +6,10 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.DoesNotExistException;
-import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -43,6 +40,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
@@ -124,9 +122,8 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
     //TODO: These should be changed to an ehCache spring bean
-    private Map<String, List<OrgInfo>> campusLocationCache;
-    private Map<String, String> atpCache;
     private HashMap<String, Map<String, String>> hashMap;
+
     private HashMap<String, String> courseComments = new HashMap<String, String>();
 
     public HashMap<String, String> getCourseComments() {
@@ -146,17 +143,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
     public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
         this.hashMap = hashMap;
-    }
-
-    public Map<String, List<OrgInfo>> getCampusLocationCache() {
-        if (this.campusLocationCache == null) {
-            this.campusLocationCache = new HashMap<String, List<OrgInfo>>();
-        }
-        return this.campusLocationCache;
-    }
-
-    public void setCampusLocationCache(Map<String, List<OrgInfo>> campusLocationCache) {
-        this.campusLocationCache = campusLocationCache;
     }
 
     protected LuService getLuService() {
@@ -188,6 +174,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         return retrieveCourseDetails((String) fieldValues.get(PlanConstants.PARAM_COURSE_ID), studentId);
     }
 
+
+    //TODO: All of this needs to be moved into a separate class of its own with an interface to allow institutions to easily override
+
+
     /**
      * Populates course with catalog information (title, id, code, description) and next offering information.
      * Other properties are left empty and a flag is set to indicate only summary view
@@ -195,8 +185,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
      * @param courseId
      * @return
      */
-    public CourseDetails retrieveCourseSummary(String courseId, String studentId) {
+    public CourseSummaryDetails retrieveCourseSummaryById(String courseId) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        // Check to see if all the services we depend on is up and running
         boolean courseOfferingServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString());
         boolean academicCalendarServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
         boolean academicRecordServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString());
@@ -208,59 +200,16 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
 
 
+        /**
+         * If version identpendent Id provided, retrieve the right course version Id based on current term/date
+         * else get the same id as the provided course version specific Id
+         */
+        String verifiedCourseId = getVerifiedCourseId(courseId);
         try {
-            CourseDetails courseDetails = new CourseDetails();
-            courseDetails.setSummaryOnly(true);
-
-            /*Get version verified course*/
-            String verifiedCourseId = getVerifiedCourseId(courseId);
             CourseInfo course = getCourseService().getCourse(verifiedCourseId);
-            courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
-            courseDetails.setCourseId(course.getId());
-            courseDetails.setCode(course.getCode());
-
-            if (course.getDescr() != null) {
-                String formatted = course.getDescr().getFormatted();
-
-                // Split course description "AAA Prerequisite: BBB Offering: CCC" and pull out "AAA" and "BBB"
-                // Guarantee result arrays will always have at least one element
-                if (formatted == null) formatted = "";
-                String[] aaa = formatted.split("Offered:");
-                String[] bbb = aaa[0].split("Prerequisite:");
-
-                String descr = bbb[0].trim();
-                descr = getCourseLinkBuilder().makeLinks(descr);
-                courseDetails.setCourseDescription(descr);
-
-                if (bbb.length > 1) {
-                    String prereq = bbb[1].trim();
-                    prereq = prereq.substring(0, 1).toUpperCase().concat(prereq.substring(1));
-                    prereq = getCourseLinkBuilder().makeLinks(prereq);
-                    courseDetails.getRequisites().add(prereq);
-                }
-            }
-
-            courseDetails.setCredit(CreditsFormatter.formatCredits(course));
-            courseDetails.setCourseTitle(course.getCourseTitle());
-
-            // Terms Offered
-            Map<String, String> atpMap = initializeAtpTypesCache();
-            for (String term : course.getTermsOffered()) {
-                String atp = atpMap.get(term);
-                courseDetails.getTermsOffered().add(atp);
-            }
-            //Sorting Terms Offered
-            if (courseDetails.getTermsOffered().size() > 0) {
-                Collections.sort(courseDetails.getTermsOffered(), new Comparator<String>() {
-                    @Override
-                    public int compare(String val1, String val2) {
-                        return String.valueOf(QUARTERS.indexOf(val1)).compareTo(String.valueOf(QUARTERS.indexOf(val2)));
-                    }
-                });
-            }
+            CourseSummaryDetails courseDetails = retrieveCourseSummary(course);
 
             return courseDetails;
-
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
@@ -268,38 +217,83 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
         }
     }
 
-    public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
-        CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
-        courseDetails.setSummaryOnly(false);
 
-        CourseInfo course = null;
-        try {
-            /*Get version verified course*/
-            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
-        } catch (DoesNotExistException e) {
-            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Query failed.", e);
+    /**
+     * Retrieves course details based on the course argument
+     *
+     * @param course
+     * @return
+     */
+    protected CourseSummaryDetails retrieveCourseSummary(CourseInfo course) {
+
+        if (null == course) {
+            return null;
         }
 
-        // Campus Locations
-        List<OrgInfo> orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
-        getCampusLocationCache().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
+        CourseSummaryDetails courseDetails = new CourseSummaryDetails();
 
-        for (String campus : getCampusLocationsOfferedIn(courseId)) {
-            for (OrgInfo orgInfo : orgInfoList) {
-                if (campus.equalsIgnoreCase(orgInfo.getId())) {
-                    String longName = orgInfo.getLongName();
-                    courseDetails.getCampusLocations().add(longName);
-                    break;
-                }
+
+        courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
+        courseDetails.setCourseId(course.getId());
+        courseDetails.setCode(course.getCode());
+        courseDetails.setCredit(CreditsFormatter.formatCredits(course));
+        courseDetails.setCourseTitle(course.getCourseTitle());
+        courseDetails.setSubjectArea(course.getSubjectArea().trim());
+        courseDetails.setCourseNumber(course.getCourseNumberSuffix());
+
+        // -- Course Description
+        // -- Course Requisites
+        if (course.getDescr() != null) {
+            String formatted = course.getDescr().getFormatted();
+
+            // Split course description "AAA Prerequisite: BBB Offering: CCC" and pull out "AAA" and "BBB"
+            // Guarantee result arrays will always have at least one element
+            if (formatted == null) formatted = "";
+            String[] aaa = formatted.split("Offered:");
+            String[] bbb = aaa[0].split("Prerequisite:");
+
+            String descr = bbb[0].trim();
+            descr = getCourseLinkBuilder().makeLinks(descr);
+            courseDetails.setCourseDescription(descr);
+
+            if (bbb.length > 1) {
+                String prereq = bbb[1].trim();
+                prereq = prereq.substring(0, 1).toUpperCase().concat(prereq.substring(1));
+                prereq = getCourseLinkBuilder().makeLinks(prereq);
+                courseDetails.getRequisites().add(prereq);
             }
         }
 
+
+        // -- Terms Offered
+        for (String term : course.getTermsOffered()) {
+            String atp = AtpHelper.getAtpTypeName(term);
+            if (null != atp) {
+                courseDetails.getTermsOffered().add(atp);
+            }
+        }
+
+        //Sorting Terms Offered
+        if (courseDetails.getTermsOffered().size() > 0) {
+            Collections.sort(courseDetails.getTermsOffered(), new Comparator<String>() {
+                @Override
+                public int compare(String val1, String val2) {
+                    return String.valueOf(QUARTERS.indexOf(val1)).compareTo(String.valueOf(QUARTERS.indexOf(val2)));
+                }
+            });
+        }
+
+        // Load campus location map
+        List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+
         Map<String, String> abbrAttributes = course.getAttributes();
+
         for (Map.Entry<String, String> entry : abbrAttributes.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
+
+
+            // -- Gen Ed requirements
             if ("Y".equals(value) && key.startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
 
                 // Get only the abbre_val of gen ed requirements
@@ -311,149 +305,67 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 String genEdText = String.format("%s (%s)", info.getValue(), info.getAbbrevValue());
                 courseDetails.getGenEdRequirements().add(genEdText);
             }
+
+
+            // -- Campus Locations
+            if (key.startsWith(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE)) {
+                for (OrgInfo campusOrg : campusList) {
+                    if (campusOrg.getId().equals(value)) {
+                        courseDetails.getCampusLocations().add(campusOrg.getLongName());
+                    }
+                }
+            }
         }
 
-        /*
-          Use the course offering service to see if the course is being offered in the selected term.
-          Note: In the UW implementation of the Course Offering service, course id is actually course code.
-        */
+        // -- Curriculum  Title
+        Map<String, String> subjectAreaMap = OrgHelper.getTrimmedSubjectAreas();
+        courseDetails.setCurriculumTitle(subjectAreaMap.get(course.getSubjectArea().trim()));
+
+
+        // -- Scheduled Terms
         List<String> scheduledTerms = new ArrayList<String>();
-        try {
-            //  Fetch the available terms from the Academic Calendar Service.
-            if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
-                try {
-                    QueryByCriteria predicates = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED));
-                    List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(predicates, CourseSearchConstants.CONTEXT_INFO);
-                    CourseOfferingService cos = getCourseOfferingService();
-                    for (TermInfo term : termInfos) {
-                        String key = term.getId();
-                        String subject = course.getSubjectArea();
+        //  Fetch the available terms from the Academic Calendar Service.
+        if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
+            try {
+                QueryByCriteria predicates = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED));
+                List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(predicates, CourseSearchConstants.CONTEXT_INFO);
+                CourseOfferingService cos = getCourseOfferingService();
+                for (TermInfo term : termInfos) {
+                    String key = term.getId();
+                    String subject = course.getSubjectArea();
 
-                        List<String> offerings = cos
-                                .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
+                    List<String> offerings = cos
+                            .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
 
-                        if (offerings.contains(course.getCode())) {
-                            scheduledTerms.add(term.getName());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.error("Web service call failed.", e);
-                }
-
-            }
-
-            AcademicPlanService academicPlanService = getAcademicPlanService();
-
-            //   Get the first learning plan. There should only be one ...
-            String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, PlanConstants.CONTEXT_INFO);
-            if (plans.size() > 0) {
-                LearningPlan plan = plans.get(0);
-
-                //  Fetch the plan items which are associated with the plan.
-                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), PlanConstants.CONTEXT_INFO);
-
-                //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
-                for (PlanItem planItemInPlanTemp : planItemsInPlan) {
-                    if (planItemInPlanTemp.getRefObjectId().equals(courseDetails.getVersionIndependentId())) {
-                        //  Assuming type is planned or backup if not wishlist.
-                        String typeKey = planItemInPlanTemp.getTypeKey();
-                        if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-                            courseDetails.setSavedItemId(planItemInPlanTemp.getId());
-                            String dateStr = planItemInPlanTemp.getMeta().getCreateTime().toString();
-                            dateStr = DateFormatHelper.getDateFomatted(dateStr);
-                            courseDetails.setSavedItemDateCreated(dateStr);
-                        } else {
-                            PlanItemDataObject planItem = PlanItemDataObject.build(planItemInPlanTemp);
-                            if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                                courseDetails.getPlannedList().add(planItem);
-                            } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-
-                                courseDetails.getBackupList().add(planItem);
-
-                            }
-                        }
+                    if (offerings.contains(course.getCode())) {
+                        scheduledTerms.add(term.getName());
                     }
                 }
+            } catch (Exception e) {
+                logger.error("Web service call failed.", e);
             }
-
-
-            List<YearTerm> ytList = new ArrayList<YearTerm>();
-            List<String> termList = scheduledTerms;
-            for (String term : termList) {
-                YearTerm yt = AtpHelper.termToYearTerm(term);
-                ytList.add(yt);
-            }
-            Collections.sort(ytList, Collections.reverseOrder());
-
-            List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
-            List<ActivityOfferingItem> plannedSections = courseDetails.getPlannedSections();
-            for (YearTerm yt : ytList) {
-                String atp = yt.toATP();
-                List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
-                for (ActivityOfferingItem activityOfferingItem : list) {
-                    String instituteCode = activityOfferingItem.getInstituteCode();
-                    String instituteName = activityOfferingItem.getInstituteName();
-                    CourseOfferingInstitution courseOfferingInstitution = null;
-                    for (CourseOfferingInstitution temp : instituteList) {
-                        if (instituteCode.equals(temp.getCode())) {
-                            courseOfferingInstitution = temp;
-                            break;
-                        }
-                    }
-                    if (courseOfferingInstitution == null) {
-                        courseOfferingInstitution = new CourseOfferingInstitution();
-                        courseOfferingInstitution.setCode(instituteCode);
-                        courseOfferingInstitution.setName(instituteName);
-                        instituteList.add(courseOfferingInstitution);
-                    }
-
-                    List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
-                    CourseOfferingTerm courseOfferingTerm = null;
-                    for (CourseOfferingTerm temp : courseOfferingTermList) {
-                        if (yt.equals(temp.getYearTerm())) {
-                            courseOfferingTerm = temp;
-                        }
-                    }
-                    if (courseOfferingTerm == null) {
-                        courseOfferingTerm = new CourseOfferingTerm();
-                        courseOfferingTerm.setYearTerm(yt);
-                        courseOfferingTerm.setTerm(yt.toLabel());
-                        courseOfferingTerm.setCourseComments(courseComments.get(atp));
-                        courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
-                        courseOfferingTermList.add(courseOfferingTerm);
-                    }
-
-                    if (activityOfferingItem.getPlanItemId() != null) {
-                        plannedSections.add(activityOfferingItem);
-                    }
-
-                    courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
-                }
-            }
-            Collections.sort(instituteList);
-
-        } catch (Exception e) {
-            logger.error("Exception loading course offering for:" + course.getCode(), e);
         }
 
-        String title = String.format("%s (%s)", course.getCourseTitle().trim(), course.getSubjectArea().trim());
-        courseDetails.setCurriculumTitle(title);
+        courseDetails.setScheduledTerms(scheduledTerms);
 
+
+        // Last Offered
+        //  If course not scheduled for future terms, Check for the last term when course was offered
         if (isCourseOfferingServiceUp()) {
             CourseOfferingService cos = getCourseOfferingService();
 
-            List<String> termList = scheduledTerms;
-            if (termList.isEmpty()) {
+            if (scheduledTerms.isEmpty()) {
+                //TODO: The number 10 should really come from a property at the very least a static constant
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {
                     // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, course.getSubjectArea(), course.getCourseNumberSuffix());
+                    String values = String.format("%s, %s, %s", year, course.getSubjectArea().trim(), course.getCourseNumberSuffix());
                     QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
                     List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
 
                     if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
                         String lastOffered = courseOfferingInfo.get(0).getTermId();
+                        // TODO: this needs to be moved into ATP helper
                         lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                         String atpId = AtpHelper.getAtpIdFromTermYear(lastOffered);
                         if (AtpHelper.isAtpCompletedTerm(atpId)) {
@@ -468,6 +380,127 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                     logger.error("Could not load courseOfferingInfo list.", e);
                 }
             }
+        }
+
+        return courseDetails;
+
+    }
+
+
+    /**
+     * Method returns a courseDetails object with course summary, academic record, course offering and planned information for the course
+     *
+     * @param courseId
+     * @param studentId
+     * @return
+     */
+    public CourseDetails retrieveCourseDetails(String courseId, String studentId) {
+
+        CourseDetails courseDetails = new CourseDetails();
+
+        CourseInfo course = null;
+        try {
+            /*Get version verified course*/
+            course = getCourseService().getCourse(getVerifiedCourseId(courseId));
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
+
+        // Get Course Summary first
+        CourseSummaryDetails courseSummaryDetails = retrieveCourseSummary(course);
+        courseDetails.setCourseSummaryDetails(courseSummaryDetails);
+
+        // Course Plan + Academic Records
+        courseDetails.setPlannedCourseSummary(getPlannedCourseSummary(course, studentId));
+
+        // Course offerings
+        courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, courseDetails.getCourseSummaryDetails().getScheduledTerms()));
+
+        return courseDetails;
+    }
+
+
+    /**
+     * Retrieves plan summary for the course. Finds all the plan, backup and academic record information spread across
+     * multiple terms for the provided course Id and Student Id
+     *
+     * @param courseId
+     * @param studentId
+     * @return
+     */
+    public PlannedCourseSummary getPlannedCourseSummaryById(String courseId, String studentId) {
+
+        /**
+         * If version identpendent Id provided, retrieve the right course version Id based on current term/date
+         * else get the same id as the provided course version specific Id
+         */
+        String verifiedCourseId = getVerifiedCourseId(courseId);
+        try {
+            CourseInfo course = getCourseService().getCourse(verifiedCourseId);
+            return getPlannedCourseSummary(course, studentId);
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
+
+
+    }
+
+
+    /**
+     * Retrieves plan summary for the course. Finds all the plan, backup and academic record information spread across
+     * multiple terms for the provided course and student Id
+     *
+     * @param course
+     * @param studentId
+     * @return
+     */
+    public PlannedCourseSummary getPlannedCourseSummary(CourseInfo course, String studentId) {
+
+        PlannedCourseSummary plannedCourseSummary = new PlannedCourseSummary();
+
+
+        // Planned, backup and Saved Item
+        AcademicPlanService academicPlanService = getAcademicPlanService();
+
+        //   Get the first learning plan. There should only be one ...
+        String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+        try {
+            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, PlanConstants.CONTEXT_INFO);
+            if (plans.size() > 0) {
+                LearningPlan plan = plans.get(0);
+
+                //  Fetch the plan items which are associated with the plan.
+                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), PlanConstants.CONTEXT_INFO);
+
+                //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
+                for (PlanItem planItemInPlanTemp : planItemsInPlan) {
+                    if (planItemInPlanTemp.getRefObjectId().equals(course.getVersionInfo().getVersionIndId())) {
+                        //  Assuming type is planned or backup if not wishlist.
+                        String typeKey = planItemInPlanTemp.getTypeKey();
+                        if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+                            plannedCourseSummary.setSavedItemId(planItemInPlanTemp.getId());
+                            String dateStr = planItemInPlanTemp.getMeta().getCreateTime().toString();
+                            dateStr = DateFormatHelper.getDateFomatted(dateStr);
+                            plannedCourseSummary.setSavedItemDateCreated(dateStr);
+                        } else {
+                            PlanItemDataObject planItem = PlanItemDataObject.build(planItemInPlanTemp);
+                            if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                                plannedCourseSummary.getPlannedList().add(planItem);
+                            } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                                plannedCourseSummary.getBackupList().add(planItem);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
+            // Ignore and not load any plan data
+        } catch (Exception e1) {
+            logger.error(" Error loading plan information for course :" + course.getCode() + " " + e1.getMessage());
         }
 
         // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
@@ -485,308 +518,359 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
                 acadrec.setRepeated(studentInfo.getIsRepeated());
                 acadrec.setActivityCode(studentInfo.getActivityCode());
 
-                courseDetails.getAcadRecList().add(acadrec);
+                if (course.getId().equalsIgnoreCase(studentInfo.getId())) {
+                    plannedCourseSummary.getAcadRecList().add(acadrec);
 
-                if (courseDetails.getCourseId().equalsIgnoreCase(studentInfo.getId())) {
                     String[] str = AtpHelper.atpIdToTermNameAndYear(studentInfo.getTermName());
-                    courseDetails.getAcademicTerms().add(str[0] + " " + str[1]);
+                    plannedCourseSummary.getAcademicTerms().add(str[0] + " " + str[1]);
                 }
             }
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
 
+        return plannedCourseSummary;
 
-        return courseDetails;
+    }
+
+
+    /**
+     * Get courseOffering information broken down by institution code across the terms requested
+     *
+     * @param courseId
+     * @param terms
+     * @return
+     */
+    public List<CourseOfferingInstitution> getCourseOfferingInstitutionsById(String courseId, List<String> terms) {
+
+        /**
+         * If version identpendent Id provided, retrieve the right course version Id based on current term/date
+         * else get the same id as the provided course version specific Id
+         */
+        String verifiedCourseId = getVerifiedCourseId(courseId);
+        try {
+            CourseInfo course = getCourseService().getCourse(verifiedCourseId);
+            return getCourseOfferingInstitutions(course, terms);
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
+    }
+
+
+    /**
+     * Get courseOffering information broken down by institution code across the terms requested.
+     *
+     * @param course
+     * @param terms
+     * @return list of course offering institution
+     */
+    public List<CourseOfferingInstitution> getCourseOfferingInstitutions(CourseInfo course, List<String> terms) {
+        List<CourseOfferingInstitution> instituteList = new ArrayList<CourseOfferingInstitution>();
+
+
+        List<YearTerm> ytList = new ArrayList<YearTerm>();
+        for (String term : terms) {
+            YearTerm yt = AtpHelper.termToYearTerm(term);
+            ytList.add(yt);
+        }
+        Collections.sort(ytList, Collections.reverseOrder());
+
+
+        for (YearTerm yt : ytList) {
+            String atp = yt.toATP();
+
+            // Load course offering comments
+            List<CourseOfferingInfo> courseOfferingInfoList = null;
+            try {
+                courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), atp, CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error(" Could not load course offerings for : " + course.getCode() + " atp : " + atp);
+                return instituteList;
+            }
+
+            String courseComments = null;
+            for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
+
+                if (null != courseComments) break;
+
+                for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0) {
+                        courseComments = value;
+                        break;
+                    }
+                }
+            }
+
+
+            List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp);
+            for (ActivityOfferingItem activityOfferingItem : list) {
+                String instituteCode = activityOfferingItem.getInstituteCode();
+                String instituteName = activityOfferingItem.getInstituteName();
+                CourseOfferingInstitution courseOfferingInstitution = null;
+                for (CourseOfferingInstitution temp : instituteList) {
+                    if (instituteCode.equals(temp.getCode())) {
+                        courseOfferingInstitution = temp;
+                        break;
+                    }
+                }
+                if (courseOfferingInstitution == null) {
+                    courseOfferingInstitution = new CourseOfferingInstitution();
+                    courseOfferingInstitution.setCode(instituteCode);
+                    courseOfferingInstitution.setName(instituteName);
+                    instituteList.add(courseOfferingInstitution);
+                }
+
+                List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
+                CourseOfferingTerm courseOfferingTerm = null;
+                for (CourseOfferingTerm temp : courseOfferingTermList) {
+                    if (yt.equals(temp.getYearTerm())) {
+                        courseOfferingTerm = temp;
+                    }
+                }
+                if (courseOfferingTerm == null) {
+                    courseOfferingTerm = new CourseOfferingTerm();
+                    courseOfferingTerm.setYearTerm(yt);
+                    courseOfferingTerm.setTerm(yt.toLabel());
+                    courseOfferingTerm.setCourseComments(courseComments);
+                    courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
+                    courseOfferingTermList.add(courseOfferingTerm);
+                }
+
+                courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+            }
+        }
+        Collections.sort(instituteList, Collections.reverseOrder());
+
+        return instituteList;
+
     }
 
     /**
-     * Returs course summary information along with the Activity Offering info for a particular course
-     *
      * @param courseId
-     * @param studentId
      * @param termId
      * @return
      */
-    public CourseDetails getCourseSummaryWithSections(String courseId, String studentId, String termId) {
-        CourseDetails courseDetails = retrieveCourseSummary(courseId, studentId);
-        YearTerm yt = AtpHelper.atpToYearTerm(termId);
+    public List<ActivityOfferingItem> getActivityOfferingItemsById(String courseId, String termId) {
 
-        List<CourseOfferingInstitution> instituteList = courseDetails.getCourseOfferingInstitutionList();
-        List<ActivityOfferingItem> plannedSections = courseDetails.getPlannedSections();
-        String atp = yt.toATP();
-        List<ActivityOfferingItem> list = getActivityOfferingItems(courseId, atp, courseDetails.getCode());
-        for (ActivityOfferingItem activityOfferingItem : list) {
-            String instituteCode = activityOfferingItem.getInstituteCode();
-            String instituteName = activityOfferingItem.getInstituteName();
-            CourseOfferingInstitution courseOfferingInstitution = null;
-            for (CourseOfferingInstitution temp : instituteList) {
-                if (instituteCode.equals(temp.getCode())) {
-                    courseOfferingInstitution = temp;
-                    break;
-                }
-            }
-            if (courseOfferingInstitution == null) {
-                courseOfferingInstitution = new CourseOfferingInstitution();
-                courseOfferingInstitution.setCode(instituteCode);
-                courseOfferingInstitution.setName(instituteName);
-                instituteList.add(courseOfferingInstitution);
-            }
+        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
 
-            List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
-            CourseOfferingTerm courseOfferingTerm = null;
-            for (CourseOfferingTerm temp : courseOfferingTermList) {
-                if (yt.equals(temp.getYearTerm())) {
-                    courseOfferingTerm = temp;
-                }
-            }
-            if (courseOfferingTerm == null) {
-                courseOfferingTerm = new CourseOfferingTerm();
-                courseOfferingTerm.setYearTerm(yt);
-                courseOfferingTerm.setTerm(yt.toLabel());
-                courseOfferingTerm.setCourseComments(courseComments.get(atp));
-                courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
-                courseOfferingTermList.add(courseOfferingTerm);
-            }
-            if (activityOfferingItem.getPlanItemId() != null) {
-                plannedSections.add(activityOfferingItem);
-            }
+        // Get version verified course
+        courseId = getVerifiedCourseId(courseId);
+        try {
+            CourseInfo course = getCourseService().getCourse(courseId);
 
-            courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+            List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
+            activityOfferingItems = getActivityOfferingItems(course, courseOfferingInfoList, termId);
+
+
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
         }
 
-        Collections.sort(instituteList, Collections.reverseOrder());
-
-        return courseDetails;
+        return activityOfferingItems;
     }
+
 
     /**
      * Returns activity Offerings for given courseId and term
      *
-     * @param courseId
-     * @param termId
-     * @param courseCode
+     * @param course
+     * @param courseOfferingInfoList
      * @return
      */
 
-    public List<ActivityOfferingItem> getActivityOfferingItems(String courseId, String termId, String courseCode) {
-        // Get version verified course
-        courseId = getVerifiedCourseId(courseId);
-        if (courseCode == null) {
-            try {
-                CourseInfo course = getCourseService().getCourse(courseId);
-                courseCode = course.getCode();
-            } catch (DoesNotExistException e) {
-                throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
-            } catch (Exception e) {
-                throw new RuntimeException("Query failed.", e);
-            }
-        }
+    public List<ActivityOfferingItem> getActivityOfferingItems(CourseInfo course, List<CourseOfferingInfo> courseOfferingInfoList, String termId) {
 
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
-        try {
-            CourseOfferingService cos = getCourseOfferingService();
 
-            List<CourseOfferingInfo> courseOfferingInfoList = cos.getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
+        for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
-            for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
-                for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
-                    String key = attributeInfo.getKey();
-                    String value = attributeInfo.getValue();
-                    if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0 && !courseComments.containsKey(courseInfo.getTermId())) {
-                        courseComments.put(courseInfo.getTermId(), value);
-                        break;
-                    }
-                }
+            // Activity offerings come back as a list, the first item is primary, the remaining are secondary
+            String courseOfferingID = courseInfo.getCourseId();
+            List<ActivityOfferingDisplayInfo> aodiList = null;
 
-                // Activity offerings come back as a list, the first item is primary, the remaining are secondary
-                String courseOfferingID = courseInfo.getCourseId();
-                List<ActivityOfferingDisplayInfo> aodiList = cos.getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
-                boolean primary = true;
-
-                for (ActivityOfferingDisplayInfo aodi : aodiList) {
-                    ActivityOfferingItem activity = new ActivityOfferingItem();
-                    String sectionId = aodi.getActivityOfferingCode();
-                    activity.setCode(sectionId);
-
-                    String typeName = aodi.getTypeName();
-                    activity.setActivityOfferingType(typeName);
-
-                    activity.setCredits(courseInfo.getCreditOptionName());
-                    activity.setGradingOption(courseInfo.getGradingOptionName());
-                    List<MeetingDetails> meetingDetailsList = activity.getMeetingDetailsList();
-                    {
-                        ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
-                        for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
-                            MeetingDetails meeting = new MeetingDetails();
-
-                            BuildingInfo building = scdi.getBuilding();
-                            if (building != null) {
-                                meeting.setCampus(building.getCampusKey());
-                                meeting.setBuilding(building.getBuildingCode());
-                            }
-
-                            RoomInfo roomInfo = scdi.getRoom();
-                            if (roomInfo != null) {
-                                meeting.setRoom(roomInfo.getRoomCode());
-                            }
-
-                            for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
-
-                                String days = "";
-                                for (int weekday : timeSlot.getWeekdays()) {
-                                    if (weekday > -1 && weekday < 7) {
-                                        String letter = WEEKDAYS_FIRST_LETTER[weekday];
-                                        days += letter;
-                                    }
-                                }
-                                if (!"".equals(days)) {
-                                    meeting.setDays(days);
-                                }
-
-                                TimeOfDayInfo startInfo = timeSlot.getStartTime();
-                                TimeOfDayInfo endInfo = timeSlot.getEndTime();
-                                if (startInfo != null && endInfo != null) {
-                                    long startTimeMillis = startInfo.getMilliSeconds();
-                                    String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
-
-                                    long endTimeMillis = endInfo.getMilliSeconds();
-                                    String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
-
-                                    String time = startTime + " - " + endTime;
-
-                                    meeting.setTime(time);
-                                }
-                                meetingDetailsList.add(meeting);
-                            }
-                        }
-                    }
-
-
-                    String instituteCode = null;
-                    String instituteName = null;
-
-                    String campus = null;
-                    String enrollCount = null;
-                    String enrollMaximum = null;
-                    String enrollEstimate = null;
-                    for (AttributeInfo attrib : aodi.getAttributes()) {
-                        String key = attrib.getKey();
-                        String value = attrib.getValue();
-                        if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
-                            campus = value;
-                            continue;
-                        }
-                        if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
-                            activity.setFeeAmount(value);
-                            continue;
-                        }
-                        if ("SLN".equalsIgnoreCase(key)) {
-                            activity.setRegistrationCode(value);
-                            continue;
-                        }
-                        if ("instituteCode".equals(key)) {
-                            instituteCode = value;
-                            continue;
-                        }
-                        if ("instituteName".equals(key) && !"".equals(value)) {
-                            instituteName = value;
-                            continue;
-                        }
-
-                        if ("currentEnrollment".equals(key) && !"".equals(value)) {
-                            enrollCount = value;
-                            continue;
-                        }
-
-                        if ("enrollmentLimit".equals(key) && !"".equals(value)) {
-                            enrollMaximum = value;
-                            continue;
-                        }
-
-                        if ("limitEstimate".equals(key) && "E".equals(value)) {
-                            enrollEstimate = value;
-                            continue;
-                        }
-
-                        if ("SectionComments".equalsIgnoreCase(key)) {
-                            activity.setSectionComments(value);
-                            continue;
-                        }
-
-                        if ("SummerTerm".equalsIgnoreCase(key)) {
-                            if (value != null) {
-                                activity.setSummerTerm(value);
-                            }
-
-                            continue;
-                        }
-
-
-                        Boolean flag = Boolean.valueOf(value);
-                        if ("ServiceLearning".equalsIgnoreCase(key)) {
-                            activity.setServiceLearning(flag);
-                        } else if ("ResearchCredit".equalsIgnoreCase(key)) {
-                            activity.setResearch(flag);
-                        } else if ("DistanceLearning".equalsIgnoreCase(key)) {
-                            activity.setDistanceLearning(flag);
-                        } else if ("JointSections".equalsIgnoreCase(key)) {
-                            activity.setJointOffering(flag);
-                        } else if ("Writing".equalsIgnoreCase(key)) {
-                            activity.setWritingSection(flag);
-                        } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
-                            activity.setIneligibleForFinancialAid(flag);
-                        } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
-                            activity.setAddCodeRequired(flag);
-                        } else if ("IndependentStudy".equalsIgnoreCase(key)) {
-                            activity.setIndependentStudy(flag);
-                        } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
-                            activity.setEnrollRestriction(flag);
-                        }
-
-                    }
-                    activity.setEnrollOpen(true);
-                    activity.setEnrollCount(enrollCount);
-                    activity.setEnrollMaximum(enrollMaximum);
-                    activity.setEnrollEstimate(enrollEstimate);
-                    activity.setInstructor(aodi.getInstructorName());
-
-                    activity.setHonorsSection(aodi.getIsHonorsOffering());
-                    activity.setNewThisYear(false);
-
-                    activity.setDetails("View more details");
-
-                    // Added this to know if the activityoffering is planned, if planned planItemId is returned or else null
-                    String planItemId = getPlanItemId(String.format("%s %s", courseCode, sectionId), termId);
-                    if (planItemId != null) {
-                        activity.setPlanItemId(planItemId);
-                    }
-                    activity.setAtpId(termId);
-                    YearTerm yt = AtpHelper.atpToYearTerm(termId);
-                    activity.setQtryr(yt.toQTRYRParam());
-
-                    if (instituteCode == null) {
-                        instituteCode = campus;
-                    }
-                    if (instituteName == null) {
-                        instituteName = campus;
-                    }
-
-                    activity.setInstituteName(instituteName);
-                    activity.setInstituteCode(instituteCode);
-
-                    activity.setPrimary(primary);
-                    primary = false;
-                    activityOfferingItemList.add(activity);
-
-                }
-
+            try {
+                aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error(" Could not load activity offering for course offering: " + courseOfferingID);
+                return activityOfferingItemList;
             }
-        } catch (Exception e) {
-            logger.error("Could not load the Section Details");
-        }
-        return activityOfferingItemList;
 
+
+            boolean primary = true;
+
+            for (ActivityOfferingDisplayInfo aodi : aodiList) {
+                ActivityOfferingItem activity = new ActivityOfferingItem();
+                String sectionId = aodi.getActivityOfferingCode();
+                activity.setCode(sectionId);
+
+                String typeName = aodi.getTypeName();
+                activity.setActivityOfferingType(typeName);
+
+                activity.setCredits(courseInfo.getCreditOptionName());
+                activity.setGradingOption(courseInfo.getGradingOptionName());
+                List<MeetingDetails> meetingDetailsList = activity.getMeetingDetailsList();
+                {
+                    ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+                    for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
+                        MeetingDetails meeting = new MeetingDetails();
+
+                        BuildingInfo building = scdi.getBuilding();
+                        if (building != null) {
+                            meeting.setCampus(building.getCampusKey());
+                            meeting.setBuilding(building.getBuildingCode());
+                        }
+
+                        RoomInfo roomInfo = scdi.getRoom();
+                        if (roomInfo != null) {
+                            meeting.setRoom(roomInfo.getRoomCode());
+                        }
+
+                        for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
+
+                            String days = "";
+                            for (int weekday : timeSlot.getWeekdays()) {
+                                if (weekday > -1 && weekday < 7) {
+                                    String letter = WEEKDAYS_FIRST_LETTER[weekday];
+                                    days += letter;
+                                }
+                            }
+                            if (!"".equals(days)) {
+                                meeting.setDays(days);
+                            }
+
+                            TimeOfDayInfo startInfo = timeSlot.getStartTime();
+                            TimeOfDayInfo endInfo = timeSlot.getEndTime();
+                            if (startInfo != null && endInfo != null) {
+                                long startTimeMillis = startInfo.getMilliSeconds();
+                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+
+                                long endTimeMillis = endInfo.getMilliSeconds();
+                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+
+                                String time = startTime + " - " + endTime;
+
+                                meeting.setTime(time);
+                            }
+                            meetingDetailsList.add(meeting);
+                        }
+                    }
+                }
+
+
+                String instituteCode = null;
+                String instituteName = null;
+
+                String campus = null;
+                String enrollCount = null;
+                String enrollMaximum = null;
+                String enrollEstimate = null;
+                for (AttributeInfo attrib : aodi.getAttributes()) {
+                    String key = attrib.getKey();
+                    String value = attrib.getValue();
+                    if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
+                        campus = value;
+                        continue;
+                    }
+                    if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
+                        activity.setFeeAmount(value);
+                        continue;
+                    }
+                    if ("SLN".equalsIgnoreCase(key)) {
+                        activity.setRegistrationCode(value);
+                        continue;
+                    }
+                    if ("instituteCode".equals(key)) {
+                        instituteCode = value;
+                        continue;
+                    }
+                    if ("instituteName".equals(key) && !"".equals(value)) {
+                        instituteName = value;
+                        continue;
+                    }
+
+                    if ("currentEnrollment".equals(key) && !"".equals(value)) {
+                        enrollCount = value;
+                        continue;
+                    }
+
+                    if ("enrollmentLimit".equals(key) && !"".equals(value)) {
+                        enrollMaximum = value;
+                        continue;
+                    }
+
+                    if ("limitEstimate".equals(key) && "E".equals(value)) {
+                        enrollEstimate = value;
+                        continue;
+                    }
+
+                    if ("SectionComments".equalsIgnoreCase(key)) {
+                        activity.setSectionComments(value);
+                        continue;
+                    }
+
+                    Boolean flag = Boolean.valueOf(value);
+                    if ("ServiceLearning".equalsIgnoreCase(key)) {
+                        activity.setServiceLearning(flag);
+                    } else if ("ResearchCredit".equalsIgnoreCase(key)) {
+                        activity.setResearch(flag);
+                    } else if ("DistanceLearning".equalsIgnoreCase(key)) {
+                        activity.setDistanceLearning(flag);
+                    } else if ("JointSections".equalsIgnoreCase(key)) {
+                        activity.setJointOffering(flag);
+                    } else if ("Writing".equalsIgnoreCase(key)) {
+                        activity.setWritingSection(flag);
+                    } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
+                        activity.setIneligibleForFinancialAid(flag);
+                    } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
+                        activity.setAddCodeRequired(flag);
+                    } else if ("IndependentStudy".equalsIgnoreCase(key)) {
+                        activity.setIndependentStudy(flag);
+                    } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
+                        activity.setEnrollRestriction(flag);
+                    }
+
+                }
+                activity.setEnrollOpen(true);
+                activity.setEnrollCount(enrollCount);
+                activity.setEnrollMaximum(enrollMaximum);
+                activity.setEnrollEstimate(enrollEstimate);
+                activity.setInstructor(aodi.getInstructorName());
+
+                activity.setHonorsSection(aodi.getIsHonorsOffering());
+                activity.setNewThisYear(false);
+
+                activity.setDetails("View more details");
+
+                // Added this flag to know if the activityoffering is planned/backup
+                activity.setPlanItemId(getPlanItemId(course.getCode() + " " + sectionId, termId));
+                activity.setAtpId(termId);
+                YearTerm yt = AtpHelper.atpToYearTerm(termId);
+                activity.setQtryr(yt.toQTRYRParam());
+
+                if (instituteCode == null) {
+                    instituteCode = campus;
+                }
+                if (instituteName == null) {
+                    instituteName = campus;
+                }
+
+                activity.setInstituteName(instituteName);
+                activity.setInstituteCode(instituteCode);
+
+                activity.setPrimary(primary);
+                primary = false;
+                activityOfferingItemList.add(activity);
+            }
+        }
+
+        return activityOfferingItemList;
     }
 
 
@@ -813,33 +897,6 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
 
         return titleValue;
     }
-
-    /**
-     * returns the campus Locations in which the course (for given courseId) is offered
-     *
-     * @param courseId
-     * @return
-     */
-    private List<String> getCampusLocationsOfferedIn(String courseId) {
-        List<String> campusLocations = new ArrayList<String>();
-        SearchRequest searchRequest = new SearchRequest("myplan.course.getCampusLocations");
-        searchRequest.addParam("cluId", courseId);
-        searchRequest.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
-        SearchResult searchResult = null;
-        try {
-            searchResult = getLuService().search(searchRequest);
-        } catch (MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        if (searchResult != null) {
-            for (SearchResultRow row : searchResult.getRows()) {
-                campusLocations.add(OrgHelper.getCellValue(row, "lu.resultColumn.campusVal"));
-            }
-        }
-        return campusLocations;
-    }
-
 
     /**
      * Validates if the courseId/versionIndependentId is valid or not.
@@ -883,36 +940,10 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
             }
 
         } catch (Exception e) {
+            logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
+            return null;
         }
         return planItemId;
-    }
-
-    /**
-     * Used to get the course Id for the given subject area and course number (CHEM, 120)
-     *
-     * @param subjectArea
-     * @param number
-     * @return
-     */
-    public String getCourseId(String subjectArea, String number) {
-        List<SearchRequest> requests = new ArrayList<SearchRequest>();
-        SearchRequest request = new SearchRequest("myplan.course.getcluid");
-        request.addParam("subject", subjectArea);
-        request.addParam("number", number);
-        request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
-        requests.add(request);
-        SearchResult searchResult = new SearchResult();
-        try {
-            searchResult = getLuService().search(request);
-        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        String courseId = null;
-        if (searchResult.getRows().size() > 0) {
-            courseId = searchResult.getRows().get(0).getCells().get(0).getValue();
-
-        }
-        return courseId;
     }
 
 
@@ -1024,22 +1055,4 @@ public class CourseDetailsInquiryViewHelperServiceImpl extends KualiInquirableIm
     }
 
 
-    /**
-     * Initializes ATP term cache.
-     * AtpSeasonalTypes rarely change, so fetch them all and store them in a Map.
-     */
-    private synchronized Map<String, String> initializeAtpTypesCache() {
-        if (null == atpCache) {
-            try {
-                List<AtpTypeInfo> atpTypeInfos = getAtpService().getAtpTypes();
-                atpCache = new HashMap<String, String>();
-                for (AtpTypeInfo ti : atpTypeInfos) {
-                    atpCache.put(ti.getId(), ti.getName().substring(0, 1).toUpperCase() + ti.getName().substring(1));
-                }
-            } catch (OperationFailedException e) {
-                logger.error("ATP types lookup failed.", e);
-            }
-        }
-        return atpCache;
-    }
 }

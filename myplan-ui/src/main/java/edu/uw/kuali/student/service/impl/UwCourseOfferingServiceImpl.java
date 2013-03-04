@@ -40,8 +40,6 @@ import java.util.regex.Pattern;
  */
 public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
-    public enum terms {autumn, winter, spring, summer}
-
     private final static Logger logger = Logger.getLogger(UwCourseOfferingServiceImpl.class);
 
     private static int CRITERIA_LENGTH = 24;
@@ -886,7 +884,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     Element link = (Element) linkPath.selectSingleNode(sectionNode);
 
                     //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
-                    if (null == link || !StringUtils.hasText(link.getTextTrim())) {
+                    if(null == link || !StringUtils.hasText( link.getTextTrim()) ) {
                         continue;
                     }
 
@@ -1030,8 +1028,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 attributes.add(new AttributeInfo("SectionComments", sectionComments.toString()));
                 attributes.add(new AttributeInfo("SummerTerm", summerTerm));
 
-                populateEnrollmentFields(info, year, quarter, curric, num, sectionID);
-
                 info.setCourseOfferingTitle(title);
 //		        info.setCourseCode( curric );
                 info.setCourseOfferingCode(curric + " " + sectionID);
@@ -1040,6 +1036,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 AttributeInfo attrib = new AttributeInfo("SLN", sln);
                 attributes.add(attrib);
+
 
 
                 {
@@ -1101,6 +1098,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         return institute;
     }
 
+
+    // TODO: Move this to plan controller
     void populateEnrollmentFields(ActivityOfferingDisplayInfo activity, String year, String quarter, String curric, String num, String sectionID)
             throws Exception {
         String xml = studentServiceClient.getSectionStatus(year, quarter, curric, num, sectionID);

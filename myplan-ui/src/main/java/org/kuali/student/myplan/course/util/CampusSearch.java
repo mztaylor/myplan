@@ -43,11 +43,11 @@ public class CampusSearch extends KeyValuesBase {
         }
         List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
         try {
-            if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-                orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
-                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION, orgInfoList);
+            if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE)) {
+                orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, orgInfoList);
             } else {
-                orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION);
+                orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE);
             }
         } catch (Exception e) {
             logger.error("No Values for campuses found", e);
