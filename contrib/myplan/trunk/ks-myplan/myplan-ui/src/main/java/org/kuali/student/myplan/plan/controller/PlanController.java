@@ -39,8 +39,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.*;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -51,13 +50,7 @@ import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
-import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -224,10 +217,10 @@ public class PlanController extends UifControllerBase {
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
-            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseDetails(planForm.getCourseId(), UserSessionHelper.getStudentId()));
+            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummaryById(planForm.getCourseId()));
         } catch (RuntimeException e) {
-            CourseDetails courseDetails = new CourseDetails();
-            planForm.setCourseDetails(courseDetails);
+            CourseSummaryDetails courseSummaryDetails = new CourseSummaryDetails();
+            planForm.setCourseDetails(courseSummaryDetails);
             GlobalVariables.getMessageMap().clearErrorMessages();
             GlobalVariables.getMessageMap().putErrorForSectionId("add_planned_course", PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
             return doPageRefreshError(planForm, "Plan item not found.", e);
@@ -235,10 +228,10 @@ public class PlanController extends UifControllerBase {
         }
 
         /*Checks if the course is added as plan/backup to that term in case of sections to add only to that particular type*/
-        if (planForm.getCourseDetails() != null && planForm.getTermYear() != null) {
+        if (planForm.getCourseSummaryDetails() != null && planForm.getTermYear() != null) {
             PlanItemInfo existingPlanItem = null;
             try {
-                existingPlanItem = getPlannedOrBackupPlanItem(planForm.getCourseDetails().getVersionIndependentId(), planForm.getTermYear());
+                existingPlanItem = getPlannedOrBackupPlanItem(planForm.getCourseSummaryDetails().getVersionIndependentId(), planForm.getTermYear());
             } catch (RuntimeException e) {
                 return doOperationFailedError(planForm, "Query for existing plan item failed.", null);
             }
@@ -266,7 +259,6 @@ public class PlanController extends UifControllerBase {
         if (planForm.getTermYear() != null) {
             planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getTermYear()));
         }
-        this.otherOptionValidation(planForm);
         return getUIFModelAndView(planForm);
     }
 
@@ -309,9 +301,9 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Lookup course details.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -381,9 +373,9 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Lookup course details.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -473,9 +465,9 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Lookup course details as they will be needed for errors.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
@@ -616,9 +608,9 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Lookup course details as they will be needed for errors.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
         }
@@ -708,16 +700,16 @@ public class PlanController extends UifControllerBase {
         }
 
         // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         // Now switch to the details based on the version independent Id
         //  Lookup course details as well need them in case there is an error below.
         List<ActivityOfferingItem> activityOfferings = new ArrayList<ActivityOfferingItem>();
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
 
             // Now switch the courseDetails based on the versionIndependent Id
             if (!courseId.equals(courseDetails.getVersionIndependentId())) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseDetails.getVersionIndependentId(), getUserId());
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
             }
 
             activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
@@ -1123,15 +1115,15 @@ public class PlanController extends UifControllerBase {
         }
 
         // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         // Now switch to the details based on the version independent Id
         //  Lookup course details as well need them in case there is an error below.
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
 
             // Now switch the courseDetails based on the versionIndependent Id
             if (!courseId.equals(courseDetails.getVersionIndependentId())) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseDetails.getVersionIndependentId(), getUserId());
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
             }
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
@@ -1170,7 +1162,7 @@ public class PlanController extends UifControllerBase {
         }
 
         if (StringUtils.isEmpty(planItemId)) {
-            CourseDetails course = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
+            CourseSummaryDetails course = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             planItemId = getPlanIdFromCourseId(course.getVersionIndependentId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         }
 
@@ -1184,22 +1176,27 @@ public class PlanController extends UifControllerBase {
         } catch (Exception e) {
             return doOperationFailedError(form, "Query for plan item failed.", e);
         }
-        CourseDetails courseDetail = null;
+        CourseSummaryDetails courseDetail = null;
+        List<CourseOfferingInstitution> courseOfferingInstitutions = new ArrayList<CourseOfferingInstitution>();
         if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-            courseDetail = getCourseDetailsInquiryService().getCourseSummaryWithSections(planItem.getRefObjectId(), UserSessionHelper.getStudentId(), planItem.getPlanPeriods().get(0));
+            courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
+            courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
             courseId = courseDetail.getCourseId();
         } else {
-            String[] splitStr = planItem.getRefObjectId().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            String[] splitStr = planItem.getRefObjectId().split(PlanConstants.SPLIT_DIGITS_ALPHABETS);
             courseId = getCourseDetailsInquiryService().getCourseId(splitStr[0].trim(), splitStr[1].trim());
-            courseDetail = getCourseDetailsInquiryService().getCourseSummaryWithSections(courseId, UserSessionHelper.getStudentId(), planItem.getPlanPeriods().get(0));
+            courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+            courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
             sectionCode = splitStr[2].trim();
         }
+        courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+        courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                planItemsToRemove = getPlannedSections(courseDetail, planItem, form.getInstituteCode(), false, null);
+                planItemsToRemove = getPlannedSections(courseDetail, courseOfferingInstitutions, planItem, form.getInstituteCode(), false, null);
             } else if (form.isPrimary()) {
-                planItemsToRemove = getPlannedSections(courseDetail, planItem, form.getInstituteCode(), true, sectionCode);
+                planItemsToRemove = getPlannedSections(courseDetail,courseOfferingInstitutions, planItem, form.getInstituteCode(), true, sectionCode);
             }
         }
 
@@ -1235,14 +1232,24 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<String, String> getPlannedSections(CourseDetails courseDetails, PlanItem planItem, String instituteCode, boolean isPrimary, String sectionCode) {
+    private Map<String, String> getPlannedSections(CourseSummaryDetails courseDetails, List<CourseOfferingInstitution> courseOfferingInstitutions, PlanItem planItem, String instituteCode, boolean isPrimary, String sectionCode) {
         Map<String, String> plannedSections = new HashMap<String, String>();
         String planItemId = planItem.getId();
+        List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
+        for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
+            for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
+                for (ActivityOfferingItem activityOfferingItem : courseOfferingTerm.getActivityOfferingItemList()) {
+                    if (null != activityOfferingItem.getPlanItemId()) {
+                        sectionsPlanned.add(activityOfferingItem);
+                    }
+                }
+            }
+        }
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
         if (instituteCode == null) {
-            activityOfferingItems = courseDetails.getPlannedSections();
+            activityOfferingItems = sectionsPlanned;
         } else {
-            for (ActivityOfferingItem activityOfferingItem : courseDetails.getPlannedSections()) {
+            for (ActivityOfferingItem activityOfferingItem : sectionsPlanned) {
                 if (activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
                     activityOfferingItems.add(activityOfferingItem);
                 }
@@ -1349,7 +1356,7 @@ public class PlanController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions.
      */
-    private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseDetails courseDetails) {
+    private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseSummaryDetails courseDetails) {
         /*String[] t = {"?", "?"};
         try {
             t = AtpHelper.atpIdToTermNameAndYear(atpId);
@@ -1372,9 +1379,9 @@ public class PlanController extends UifControllerBase {
 
     private String getCourseDetailsAsJson(String courseId) {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
-        CourseDetails courseDetails = null;
+        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
+            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
@@ -1684,7 +1691,7 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseDetails courseDetails, String courseId, PlanForm planForm, Map<String, String> removedPlanItemIds) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, Map<String, String> removedPlanItemIds) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -1700,7 +1707,7 @@ public class PlanController extends UifControllerBase {
         String removedPlanItemsJson = null;
         try {
             if (courseDetails == null) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             }
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
@@ -1751,7 +1758,7 @@ public class PlanController extends UifControllerBase {
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseDetails courseDetails, PlanForm planForm) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
@@ -1831,7 +1838,7 @@ public class PlanController extends UifControllerBase {
                         if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
                             for (String atp : planItem.getPlanPeriods()) {
                                 if (atp.equalsIgnoreCase(termId)) {
-                                    CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID, getUserId());
+                                    CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
                                     if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
                                         String[] str = courseDetails.getCredit().split("\\D");
                                         double min = Double.parseDouble(str[0]);
@@ -1966,40 +1973,6 @@ public class PlanController extends UifControllerBase {
             return studentCourseRecordInfos;
         }
         return studentCourseRecordInfos;
-    }
-
-    private void otherOptionValidation(PlanForm form) {
-        CourseDetails courseDetails = form.getCourseDetails();
-        if (courseDetails != null && courseDetails.getScheduledTerms() != null) {
-            for (String term : courseDetails.getScheduledTerms()) {
-                String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                String termsOffered = null;
-                boolean atpAlreadyexists = false;
-                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
-                if (m.matches()) {
-                    termsOffered = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
-                }
-                String atp = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
-
-                if (courseDetails.getPlannedList() != null) {
-                    for (PlanItemDataObject plan : courseDetails.getPlannedList()) {
-                        if (plan.getAtp().equalsIgnoreCase(atp)) {
-                            atpAlreadyexists = true;
-                        }
-                    }
-                }
-                if (courseDetails.getBackupList() != null && !atpAlreadyexists) {
-                    for (PlanItemDataObject plan : courseDetails.getBackupList()) {
-                        if (plan.getAtp().equalsIgnoreCase(atp)) {
-                            atpAlreadyexists = true;
-                        }
-                    }
-                }
-                if (!atpAlreadyexists) {
-                    form.setShowOther(true);
-                }
-            }
-        }
     }
 
     /**

@@ -946,6 +946,34 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return planItemId;
     }
 
+    /**
+     * Used to get the course Id for the given subject area and course number (CHEM, 120)
+     *
+     * @param subjectArea
+     * @param number
+     * @return
+     */
+    public String getCourseId(String subjectArea, String number) {
+        List<SearchRequest> requests = new ArrayList<SearchRequest>();
+        SearchRequest request = new SearchRequest("myplan.course.getcluid");
+        request.addParam("subject", subjectArea);
+        request.addParam("number", number);
+        request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
+        requests.add(request);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getLuService().search(request);
+        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        String courseId = null;
+        if (searchResult.getRows().size() > 0) {
+            courseId = searchResult.getRows().get(0).getCells().get(0).getValue();
+
+        }
+        return courseId;
+    }
+
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
