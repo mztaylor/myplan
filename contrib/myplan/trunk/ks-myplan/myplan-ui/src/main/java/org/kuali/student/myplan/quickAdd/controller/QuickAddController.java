@@ -6,7 +6,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
-import org.kuali.rice.krad.uif.view.View;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -15,7 +14,6 @@ import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
@@ -28,12 +26,8 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
-import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryViewHelperServiceImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.quickAdd.QuickAddConstants;
 import org.kuali.student.myplan.quickAdd.form.QuickAddForm;
@@ -87,7 +81,7 @@ public class QuickAddController extends UifControllerBase {
 
     public transient AcademicPlanService academicPlanService;
 
-    public transient CourseDetailsInquiryViewHelperServiceImpl courseDetailsInquiryService;
+    public transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
 
     //  Java to JSON outputter.
     public transient ObjectMapper mapper = new ObjectMapper();
@@ -104,11 +98,11 @@ public class QuickAddController extends UifControllerBase {
         return this.academicRecordService;
     }
 
-    public synchronized CourseDetailsInquiryViewHelperServiceImpl getCourseDetailsInquiryService() {
-        if (this.courseDetailsInquiryService == null) {
-            this.courseDetailsInquiryService = new CourseDetailsInquiryViewHelperServiceImpl();
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
+        if (this.courseDetailsInquiryHelper == null) {
+            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
         }
-        return courseDetailsInquiryService;
+        return courseDetailsInquiryHelper;
     }
 
 
@@ -393,7 +387,7 @@ public class QuickAddController extends UifControllerBase {
         //  Lookup course details as well need them in case there is an error below.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, UserSessionHelper.getStudentId());
+            courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
@@ -491,7 +485,7 @@ public class QuickAddController extends UifControllerBase {
         String courseDetailsAsJson;
         try {
             if (courseDetails == null) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(planItem.getRefObjectId(), UserSessionHelper.getStudentId());
+                courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(planItem.getRefObjectId());
             }
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
@@ -701,7 +695,7 @@ public class QuickAddController extends UifControllerBase {
                     String courseID = planItem.getRefObjectId();
                     for (String atp : planItem.getPlanPeriods()) {
                         if (atp.equalsIgnoreCase(termId)) {
-                            CourseDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseID, UserSessionHelper.getStudentId());
+                            CourseDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
                             if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
                                 String[] str = courseDetails.getCredit().split("\\D");
                                 double min = Double.parseDouble(str[0]);

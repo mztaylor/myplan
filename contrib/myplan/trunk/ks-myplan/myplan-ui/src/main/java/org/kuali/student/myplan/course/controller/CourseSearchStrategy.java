@@ -10,10 +10,7 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.util.*;
 
@@ -72,7 +69,7 @@ public class CourseSearchStrategy {
     }
 
 
-    // TODO: Fetch these from the enumeration service, ala CourseDetailsInquiryViewHelperServiceImpl.initializeCampusLocations
+    // TODO: Fetch these from the enumeration service, ala CourseDetailsInquiryHelperImpl.initializeCampusLocations
     public final static String NO_CAMPUS = "-1";
 
 
@@ -84,11 +81,11 @@ public class CourseSearchStrategy {
         }
 
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
-        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
-            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
+        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE)) {
+            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, campusLocations);
         } else {
-            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE);
         }
 
         String[] campus = new String[campusLocations.size()];
@@ -124,11 +121,11 @@ public class CourseSearchStrategy {
             results = str.toArray(new String[str.size()]);
         }
         List<OrgInfo> campusLocations = new ArrayList<OrgInfo>();
-        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION)) {
-            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
-            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION, campusLocations);
+        if (!this.getOrgTypeCache().containsKey(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE)) {
+            campusLocations = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+            this.getOrgTypeCache().put(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, campusLocations);
         } else {
-            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION);
+            campusLocations = getOrgTypeCache().get(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE);
         }
 
         String[] campus = new String[campusLocations.size()];

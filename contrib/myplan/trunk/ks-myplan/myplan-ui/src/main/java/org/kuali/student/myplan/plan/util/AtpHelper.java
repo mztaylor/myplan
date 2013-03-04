@@ -5,7 +5,9 @@ import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.core.atp.dto.AtpInfo;
+import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -16,10 +18,7 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +46,8 @@ public class AtpHelper {
     private static transient CourseOfferingService courseOfferingService;
 
     private static transient AtpService atpService;
+
+    private static Map<String, String> atpCache;
 
     public static AtpService getAtpService() {
         if (atpService == null) {
@@ -611,4 +612,27 @@ public class AtpHelper {
     public static void main(String[] args) {
         System.out.println(termToYearTerm("Summer 2002").toATP());
     }
+
+
+    /**
+     * Return ATP Type Name in display format
+     *
+     * @param atpTypeKey Atp Type Key
+     */
+    public static String getAtpTypeName(String atpTypeKey) {
+        try {
+            List<AtpTypeInfo> atpTypeInfos = getAtpService().getAtpTypes();
+            atpCache = new HashMap<String, String>();
+            for (AtpTypeInfo ti : atpTypeInfos) {
+                if (ti.getId().equals(atpTypeKey)) {
+                    return ti.getName().substring(0, 1).toUpperCase() + ti.getName().substring(1);
+                }
+            }
+        } catch (OperationFailedException e) {
+            logger.error("ATP types lookup failed.", e);
+        }
+
+        return null;
+    }
+
 }

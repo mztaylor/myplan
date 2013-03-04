@@ -27,9 +27,13 @@ import java.util.Map;
 public class OrgHelper {
 
     private static final Logger logger = Logger.getLogger(OrgHelper.class);
+
+    private static final SearchRequest SUBJECT_AREA_SEARCH_REQUEST = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
+
     public static OrganizationService organizationService;
 
     public static HashMap<String, List<OrgInfo>> orgTypeCache;
+
 
     public static HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (OrgHelper.orgTypeCache == null) {
@@ -85,10 +89,9 @@ public class OrgHelper {
 
     public static Map<String, String> getSubjectAreas() {
         Map<String, String> subjects = new HashMap<String, String>();
-        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
         SearchResult searchResult = new SearchResult();
         try {
-            searchResult = getOrganizationService().search(searchRequest);
+            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST);
         } catch (MissingParameterException e) {
             logger.error("Search Failed to get the Organization Data ", e);
         }
@@ -102,10 +105,9 @@ public class OrgHelper {
     /*Used for the subjects area's with trimmed key value */
     public static Map<String, String> getTrimmedSubjectAreas() {
         Map<String, String> subjects = new HashMap<String, String>();
-        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
         SearchResult searchResult = new SearchResult();
         try {
-            searchResult = getOrganizationService().search(searchRequest);
+            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST);
         } catch (MissingParameterException e) {
             logger.error("Search Failed to get the Organization Data ", e);
         }

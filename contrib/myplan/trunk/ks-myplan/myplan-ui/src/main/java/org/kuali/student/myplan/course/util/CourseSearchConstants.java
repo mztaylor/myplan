@@ -19,6 +19,7 @@ public class CourseSearchConstants {
     //public static final String COURSE_SEARCH_EMPTY_RESULT_PAGE = "course_search_no_results";
 
     public static final String GEN_EDU_REQUIREMENTS_PREFIX = "course.genEdRequirement.";
+    public static final String CAMPUS_LOCATION_COURSE_ATTRIBUTE = "course.campus";
 
     // Service Constants
     public static final String STATEMENT_SERVICE_NAMESPACE = "http://student.kuali.org/wsdl/statement";
@@ -34,7 +35,7 @@ public class CourseSearchConstants {
 
     public static final String SUBJECT_AREA = "kuali.lu.subjectArea";
 
-    public static final String CAMPUS_LOCATION = "kuali.uw.org.type.campus";
+    public static final String CAMPUS_LOCATION_ORG_TYPE = "kuali.uw.org.type.campus";
 
     public static final String TIME_SCHEDULE_KEY = "TimeScheduleLinkAbbreviation";
 

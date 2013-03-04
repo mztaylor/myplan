@@ -18,9 +18,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 
 import java.util.List;
 import java.util.Map;
@@ -56,25 +57,17 @@ public class PlanForm extends UifFormBase {
 
     private String courseId;
 
-
-    /*properties used for section Planning*/
     private String sectionCode;
-
-    private String primarySectionCode;
-
-    private String primaryPlanItemId;
-
-    private String instituteCode;
-
-    private boolean primary;
-
-    private List<String> sectionsToDelete;
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
-    private String enableAdviserView = PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
+    private String enableAdviserView=PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
 
-    private CourseDetails courseDetails;
+    private CourseSummaryDetails courseSummaryDetails;
+
+    private List<ActivityOfferingItem> planActivities;
+
+    private PlannedCourseSummary plannedCourseSummary;
 
     //  Form fields.
     private String atpId;
@@ -82,6 +75,9 @@ public class PlanForm extends UifFormBase {
     private String termName;
 
     private boolean other = false;
+
+    //  Additional fields needed for the Other option.
+    private String termYear;
 
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup = false;
@@ -96,13 +92,17 @@ public class PlanForm extends UifFormBase {
     private boolean showOther = false;
 
     /*Flag used for populating the exact menu items for a course in past,present, future terms */
-    private boolean setToPlanning = false;
+    private boolean setToPlanning=false;
 
-    private int messagesCount = 0;
+    private int messagesCount=0;
 
-    private int bookmarkedCount = 0;
+    private int bookmarkedCount=0;
 
     private boolean newUser;
+
+    private boolean courseInPlan;
+
+    private boolean courseInBackup;
 
     public int getBookmarkedCount() {
         return bookmarkedCount;
@@ -202,12 +202,28 @@ public class PlanForm extends UifFormBase {
         this.backup = backup;
     }
 
-    public CourseDetails getCourseDetails() {
-        return this.courseDetails;
+    public String getTermYear() {
+        return termYear;
     }
 
-    public void setCourseDetails(CourseDetails courseDetails) {
-        this.courseDetails = courseDetails;
+    public void setTermYear(String termYear) {
+        this.termYear = termYear;
+    }
+
+    public CourseSummaryDetails getCourseSummaryDetails() {
+        return this.courseSummaryDetails;
+    }
+
+    public void setCourseDetails(CourseSummaryDetails courseDetails) {
+        this.courseSummaryDetails = courseSummaryDetails;
+    }
+
+    public PlannedCourseSummary getPlannedCourseSummary() {
+        return plannedCourseSummary;
+    }
+
+    public void setPlannedCourseSummary(PlannedCourseSummary plannedCourseSummary) {
+        this.plannedCourseSummary = plannedCourseSummary;
     }
 
     public REQUEST_STATUS getRequestStatus() {
@@ -266,53 +282,20 @@ public class PlanForm extends UifFormBase {
         this.sectionCode = sectionCode;
     }
 
-    public String getPrimarySectionCode() {
-        return primarySectionCode;
+    public boolean isCourseInPlan() {
+        return courseInPlan;
     }
 
-    public void setPrimarySectionCode(String primarySectionCode) {
-        this.primarySectionCode = primarySectionCode;
+    public void setCourseInPlan(boolean courseInPlan) {
+        this.courseInPlan = courseInPlan;
     }
 
-    public String getInstituteCode() {
-        return instituteCode;
+    public boolean isCourseInBackup() {
+        return courseInBackup;
     }
 
-    public void setInstituteCode(String instituteCode) {
-        this.instituteCode = instituteCode;
-    }
-
-    public boolean isPrimary() {
-        return primary;
-    }
-
-    public void setPrimary(boolean primary) {
-        this.primary = primary;
-    }
-
-    public String getPrimaryPlanItemId() {
-        return primaryPlanItemId;
-    }
-
-    public void setPrimaryPlanItemId(String primaryPlanItemId) {
-        this.primaryPlanItemId = primaryPlanItemId;
-    }
-
-    public List<String> getSectionsToDelete() {
-        return sectionsToDelete;
-    }
-
-    public void setSectionsToDelete(List<String> sectionsToDelete) {
-        this.sectionsToDelete = sectionsToDelete;
-    }
-
-    /*Only used in the Ui for getting the short Term*/
-    public String getShortTerm() {
-        String shortTermName = "";
-        if (getAtpId() != null) {
-            shortTermName = AtpHelper.atpIdToShortTermName(getAtpId());
-        }
-        return shortTermName;
+    public void setCourseInBackup(boolean courseInBackup) {
+        this.courseInBackup = courseInBackup;
     }
 
     /**

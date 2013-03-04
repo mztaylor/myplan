@@ -69,17 +69,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
                 String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
                 for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getAcadRecList()) {
-                    if (academicRecordDataObject.getCourseId() != null
-                            && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
-                            && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
+                    if (atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
                         if (!withDrawnCourseTerms.contains(term)) {
                             withDrawnCourseTerms.add(term);
                         }
                     }
-                    if (academicRecordDataObject.getCourseId() != null
-                            && academicRecordDataObject.getCourseId().equalsIgnoreCase(courseDetails.getCourseId())
-                            && atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
+                    if (atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && !academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
                         if (!nonWithDrawnCourseTerms.contains(term)) {
                             nonWithDrawnCourseTerms.add(term);
@@ -294,19 +290,18 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
      */
     private List<String> getSections(CourseDetails courseDetails, String term) {
         String[] yearAndTerm = term.split(" ");
-        String[] curricAndNum = courseDetails.getCode().split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
 
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
         for (AcademicRecordDataObject acr : courseDetails.getAcadRecList()) {
-            if (courseDetails.getCourseId().equalsIgnoreCase(acr.getCourseId()) && acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term))) {
+            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term))) {
                 sections.add(acr.getActivityCode());
             }
         }
         for (String section : sections) {
-            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), curricAndNum[0].trim(), curricAndNum[1].trim(), section);
+            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), courseDetails.getCourseDetails().getSubjectArea(), courseDetails.getCourseDetails().getCourseNumber(), section);
             String sectionSln = String.format("Section %s (%s)", section, sln);
-            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
+            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
             sectionAndSln.add(sec);
         }
         return sectionAndSln;

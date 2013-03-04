@@ -192,9 +192,7 @@ public class PlanController extends UifControllerBase {
         if (planForm.getPlanItemId() != null) {
             try {
                 planItem = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
-                if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                    courseId = planItem.getRefObjectId();
-                }
+                courseId = planItem.getRefObjectId();
                 //Following data used for the Dialog boxes
                 if (planItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     planForm.setBackup(true);
@@ -238,8 +236,28 @@ public class PlanController extends UifControllerBase {
 
         }
 
+        /*Checks if the course is added as plan/backup to that term in case of sections to add only to that particular type*/
+        if (planForm.getCourseDetails() != null && planForm.getTermYear() != null) {
+            PlanItemInfo existingPlanItem = null;
+            try {
+                existingPlanItem = getPlannedOrBackupPlanItem(planForm.getCourseDetails().getVersionIndependentId(), planForm.getTermYear());
+            } catch (RuntimeException e) {
+                return doOperationFailedError(planForm, "Query for existing plan item failed.", null);
+            }
+            if (existingPlanItem != null) {
+                if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                    planForm.setCourseInPlan(true);
+
+                } else if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                    planForm.setCourseInBackup(true);
+                    planForm.setBackup(true);
+                }
+            }
+        }
+
+
         /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
-            which is used for populating the right flag*/
+           which is used for populating the right flag*/
         if (planForm.getAcadRecAtpId() != null) {
             /*Condition to check if the atp is greater than or equal to planning term*/
             if (!planForm.isSetToPlanning()) {
@@ -247,8 +265,8 @@ public class PlanController extends UifControllerBase {
             }
 
         }
-        if (planForm.getAtpId() != null) {
-            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
+        if (planForm.getTermYear() != null) {
+            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getTermYear()));
         }
         this.otherOptionValidation(planForm);
         return getUIFModelAndView(planForm);
@@ -704,7 +722,7 @@ public class PlanController extends UifControllerBase {
                 courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseDetails.getVersionIndependentId(), getUserId());
             }
 
-            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItems(courseId, form.getAtpId(), null);
+            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
@@ -1154,7 +1172,7 @@ public class PlanController extends UifControllerBase {
         }
 
         if (StringUtils.isEmpty(planItemId)) {
-            CourseDetails course = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, UserSessionHelper.getStudentId());
+            CourseDetails course = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
             planItemId = getPlanIdFromCourseId(course.getVersionIndependentId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
         }
 
@@ -1358,7 +1376,7 @@ public class PlanController extends UifControllerBase {
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         CourseDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummary(courseId, getUserId());
+            courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
