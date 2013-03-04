@@ -325,7 +325,10 @@
             </bean>
         </property>
         <property name="lineGroupPrototype">
-            <bean parent="Uif-CollectionHorizontalBoxItem" p:footer.render="false" p:validationMessages.render="false"/>
+            <bean parent="Uif-CollectionHorizontalBoxItem">
+                <property name="validationMessages.render" value="false"/>
+                <property name="footer.render" value="false"/>
+            </bean>
         </property>
 
         <property name="subCollectionFieldGroupPrototype">
@@ -551,7 +554,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:style="margin:0px;">
+                <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
@@ -577,7 +581,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
@@ -603,7 +608,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
