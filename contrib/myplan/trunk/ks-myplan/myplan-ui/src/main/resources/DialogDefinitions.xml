@@ -184,8 +184,8 @@
         <property name="items">
             <list>
                 <!-- Scheduled Terms -->
-                <!--<bean parent="Uif-DataField" p:label="Scheduled for"
-                      p:propertyName="courseDetails.courseOfferingInstitutionList"
+                <bean parent="Uif-DataField" p:label="Scheduled for"
+                      p:propertyName="courseSummaryDetails.scheduledTerms"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
@@ -195,20 +195,20 @@
                         </list>
                     </property>
                     <property name="render"
-                              value="@{courseDetails.courseOfferingInstitutionList.size() gt 0}"/>
-                </bean>-->
-                <!--<bean parent="Uif-MessageField" p:label="Scheduled for"
+                              value="@{courseSummaryDetails.scheduledTerms.size() gt 0}"/>
+                </bean>
+                <bean parent="Uif-MessageField" p:label="Scheduled for"
                       p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
-                      p:render="@{courseDetails.courseOfferingInstitutionList.size() eq 0}">
+                      p:render="@{courseSummaryDetails.scheduledTerms.size() eq 0}">
                     <property name="message">
                         <bean parent="Uif-Message" p:messageText="Not currently scheduled"/>
                     </property>
-                </bean>-->
+                </bean>
                 <!-- Last Offered -->
                 <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="courseSummaryDetails.lastOffered"
                       p:labelPlacement="LEFT">
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                    <!--<property name="render" value="@{courseSummaryDetails.lastOffered ne null and courseSummaryDetails.courseOfferingInstitutionList.size() eq 0}"/>-->
+                    <property name="render" value="@{courseSummaryDetails.lastOffered ne null and courseSummaryDetails.scheduledTerms.size() eq 0}"/>
                 </bean>
                 <!-- Projected Terms -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseSummaryDetails.termsOffered"
@@ -220,8 +220,8 @@
                             <value>myplan-data-list</value>
                         </list>
                     </property>
-                    <!--<property name="render"
-                              value="@{courseDetails.courseOfferingInstitutionList.size() gt 0 ? false : true}"/>-->
+                    <property name="render"
+                              value="@{courseSummaryDetails.scheduledTerms.size() gt 0 ? false : true}"/>
                 </bean>
                 <!-- Requisites -->
                 <bean id="course_details_popup_requisites_testing" parent="Uif-DataField" p:label="Course Requisites"
@@ -625,7 +625,7 @@
                 <bean parent="Uif-Message"
                       p:messageText="Which quarter would you like to @{moveCourse eq false ? 'add' : 'move'} &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt; to?"/>
 
-                <!--<bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.scheduledTerms"
                       p:label="Scheduled For"
                       p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
@@ -635,7 +635,7 @@
                             <value>myplan-data-list</value>
                         </list>
                     </property>
-                </bean>-->
+                </bean>
 
                 <ref bean="planned_course_quarter_selection"/>
 
@@ -839,7 +839,7 @@
                             <bean parent="Uif-Message"
                                   p:messageText="Which quarter would you like to add &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt; to?"/>
 
-                            <!--<bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                            <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.scheduledTerms"
                                   p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
                                   p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
@@ -849,7 +849,7 @@
                                         <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                            </bean>-->
+                            </bean>
 
                             <ref bean="planned_course_quarter_selection"/>
 
@@ -935,7 +935,7 @@
                             <bean parent="Uif-Message"
                                   p:messageText="Which quarter would you like to move &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt; to?"/>
 
-                            <!--<bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                            <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.scheduledTerms"
                                   p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
                                   p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
@@ -945,7 +945,7 @@
                                         <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                            </bean>-->
+                            </bean>
 
                             <ref bean="planned_course_quarter_selection"/>
 
@@ -1031,7 +1031,7 @@
                             <bean parent="Uif-Message"
                                   p:messageText="Which quarter would you like to copy &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt; to?"/>
 
-                            <!--<bean parent="Uif-DataField" p:propertyName="courseDetails.courseOfferingInstitutionList"
+                            <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.scheduledTerms"
                                   p:label="Scheduled For"
                                   p:fieldLabel.cssClasses="fl-text-gray fl-font-size-90 myplan-text-normal"
                                   p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
@@ -1041,7 +1041,7 @@
                                         <value>myplan-data-list</value>
                                     </list>
                                 </property>
-                            </bean>-->
+                            </bean>
 
                             <ref bean="planned_course_quarter_selection"/>
 
