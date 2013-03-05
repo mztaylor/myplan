@@ -2,13 +2,17 @@ package org.kuali.student.myplan.plan.service;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
@@ -37,11 +41,38 @@ import java.util.Map;
  * Time: 11:14 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperBase {
+public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
-    private final Logger logger = Logger.getLogger(SingleQuarterLookupableHelperImpl.class);
+    private final Logger logger = Logger.getLogger(SingleQuarterInquiryHelperImpl.class);
 
     private transient AcademicRecordService academicRecordService;
+
+    private transient AcademicPlanService academicPlanService;
+
+    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
+        if (this.courseDetailsInquiryHelper == null) {
+            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+        }
+        return courseDetailsInquiryHelper;
+    }
+
+    public void setCourseDetailsInquiryHelper(CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper) {
+        this.courseDetailsInquiryHelper = courseDetailsInquiryHelper;
+    }
+
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
@@ -57,7 +88,7 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
 
 
     @Override
-    protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+    public PlannedTerm retrieveDataObject(Map fieldValues) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String termAtpId = request.getParameter("term_atp_id");
         String studentId = UserSessionHelper.getStudentId();
@@ -114,8 +145,8 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
             }
         }
 
-        List<PlannedTerm> perfectPlannedTerms = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, termAtpId, isServiceStatusOK);
-        return perfectPlannedTerms;
+        PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, termAtpId, isServiceStatusOK);
+        return perfectPlannedTerm;
     }
 
     protected List<PlannedCourseDataObject> getPlanItemListByTermId(String planItemType, String studentId, String termId)
@@ -145,7 +176,8 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
                         //  If the course info lookup fails just log the error and omit the item.
                         try {
 
-                            plannedCourseDO.setCourseDetails( getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID) );
+                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
+                            plannedCourseDO.setPlanActivities(getPlannedSections(plannedCourseDO.getCourseDetails().getCourseId(), termId));
 
                             // TODO: Add Plan activities to this view
 
@@ -160,6 +192,18 @@ public class SingleQuarterLookupableHelperImpl extends PlanItemLookupableHelperB
             }
         }
         return plannedCoursesList;
+    }
+
+    /*Used to get the planned sections for a coursId and term*/
+    private List<ActivityOfferingItem> getPlannedSections(String courseId, String term) {
+        List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
+        List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryHelper().getActivityOfferingItemsById(courseId, term);
+        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+            if (activityOfferingItem.getPlanItemId() != null) {
+                sectionsPlanned.add(activityOfferingItem);
+            }
+        }
+        return sectionsPlanned;
     }
 
 }

@@ -30,7 +30,7 @@ public class SingleQuarterHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp, boolean isServiceUp) {
+    public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp, boolean isServiceUp) {
 
 
         String globalCurrentAtpId = null;
@@ -126,15 +126,10 @@ public class SingleQuarterHelperBase {
             plannedTerm.setCurrentTermForView(true);
         }
 
-        List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
-        if (plannedTerm != null) {
-            perfectPlannedTerms.add(plannedTerm);
-        }
-
 /*
         populateHelpIconFlags(perfectPlannedTerms);
 */
-        return perfectPlannedTerms;
+        return plannedTerm;
 
     }
 
