@@ -416,7 +416,15 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         courseDetails.setPlannedCourseSummary(getPlannedCourseSummary(course, studentId));
 
         // Course offerings
-        courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, courseDetails.getCourseSummaryDetails().getScheduledTerms()));
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        if (request.getParameter("section_term") != null) {
+            String termId = AtpHelper.atpIdToTermName(request.getParameter("section_term"));
+            List<String> termList = new ArrayList<String>();
+            termList.add(termId);
+            courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, termList));
+        } else {
+            courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, courseDetails.getCourseSummaryDetails().getScheduledTerms()));
+        }
 
         return courseDetails;
     }
