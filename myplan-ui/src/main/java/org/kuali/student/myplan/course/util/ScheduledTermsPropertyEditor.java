@@ -16,38 +16,34 @@ package org.kuali.student.myplan.course.util;
  */
 
 import org.apache.log4j.Logger;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
-import java.util.ArrayList;
+import java.beans.PropertyEditorSupport;
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 
 public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
 
-//    private final static Logger logger = Logger.getLogger(ScheduledTermsPropertyEditor.class);
+    private final static Logger logger = Logger.getLogger(ScheduledTermsPropertyEditor.class);
 
     @Override
     protected String makeHtmlList(Collection c) {
-    	
-    	ArrayList<CourseOfferingInstitution> list = (ArrayList<CourseOfferingInstitution>) c;
-    	StringBuilder sb = new StringBuilder();
-    	for( CourseOfferingInstitution coi : list )
-    	{
-    		List<CourseOfferingTerm> terms = coi.getCourseOfferingTermList();
-    		for( CourseOfferingTerm term : terms )
-    		{
-    			String text = term.getTerm();
-    			
-                // Convert Winter 2012 to WI 12
-                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(text);
-                if(m.matches()) {
-                	text = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
-                }
-                sb.append(wrapListItem(text));
-    		}
-    	}
-    	return sb.toString();
+        StringBuilder list = new StringBuilder();
+        Iterator<Object> i = c.iterator();
+        while (i.hasNext()) {
+            String term = (String) i.next();
+            String elemTxt = term;
+
+            // Convert Winter 2012 to WI 12
+            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+            if(m.matches()) {
+                elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
+            }
+            list.append(wrapListItem(elemTxt));
+        }
+        return list.toString();
     }
 }
