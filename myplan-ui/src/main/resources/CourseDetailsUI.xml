@@ -441,9 +441,9 @@
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-DataField" p:label="Scheduled For"
-                                                                      p:propertyName="courseOfferingInstitutionList"
+                                                                      p:propertyName="courseSummaryDetails.scheduledTerms"
                                                                       p:escapeHtmlInPropertyValue="false"
-                                                                      p:render="@{dataObject.courseOfferingInstitutionList.size() gt 0}">
+                                                                      p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
                                                                     <property name="fieldLabel.cssClasses"
                                                                               value="fl-text-gray myplan-text-normal"/>
                                                                     <property name="propertyEditor"
@@ -456,7 +456,7 @@
                                                                 </bean>
                                                                 <bean parent="Uif-Message" p:style="line-height: 20px;"
                                                                       p:messageText="Not Currently Scheduled"
-                                                                      p:render="@{dataObject.courseOfferingInstitutionList.size() eq 0}">
+                                                                      p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() eq 0}">
                                                                 </bean>
                                                                 <bean parent="Uif-Message" p:style="line-height: 20px;"
                                                                       p:messageText="(Source: Time Schedule)">
@@ -471,7 +471,7 @@
                                                         </property>
                                                     </bean>
                                                     <bean parent="Uif-VerticalBoxGroup" p:style="margin:0;"
-                                                          p:render="@{dataObject.courseOfferingInstitutionList.size() gt 0 ? false : true}">
+                                                          p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0 ? false : true}">
                                                         <property name="validationMessages.render" value="false"/>
                                                         <property name="items">
                                                             <list>
