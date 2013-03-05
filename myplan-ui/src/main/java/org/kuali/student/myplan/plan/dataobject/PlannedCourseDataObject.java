@@ -63,4 +63,11 @@ public class PlannedCourseDataObject implements Comparable {
         this.timeScheduleOpen = timeScheduleOpen;
     }
 
+    public List<ActivityOfferingItem> getPlanActivities() {
+        return planActivities;
+    }
+
+    public void setPlanActivities(List<ActivityOfferingItem> planActivities) {
+        this.planActivities = planActivities;
+    }
 }
