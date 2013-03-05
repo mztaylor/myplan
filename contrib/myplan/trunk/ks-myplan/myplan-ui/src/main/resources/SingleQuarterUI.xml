@@ -380,6 +380,7 @@
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="dataAttributes">
                         <map>
+                            <entry key="planType" value="plan"/>
                             <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
                         </map>
                     </property>
@@ -494,13 +495,6 @@
                 </property>
             </bean>
         </property>
-        <property name="dataAttributes">
-            <map>
-                <entry key="plantype" value="backup"/>
-                <entry key="atpid" value="@{#line.atpId}"/>
-                <entry key="size" value="@{#line.plannedList.size()}"/>
-            </map>
-        </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
         <property name="collectionObjectClass"
@@ -517,6 +511,7 @@
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="dataAttributes">
                         <map>
+                            <entry key="planType" value="backup"/>
                             <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
                         </map>
                     </property>

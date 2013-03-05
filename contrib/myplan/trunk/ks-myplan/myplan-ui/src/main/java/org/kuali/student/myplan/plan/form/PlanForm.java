@@ -16,9 +16,11 @@ package org.kuali.student.myplan.plan.form;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
@@ -227,7 +229,7 @@ public class PlanForm extends UifFormBase {
         return this.courseSummaryDetails;
     }
 
-    public void setCourseDetails(CourseSummaryDetails courseDetails) {
+    public void setCourseSummaryDetails(CourseSummaryDetails courseSummaryDetails) {
         this.courseSummaryDetails = courseSummaryDetails;
     }
 
@@ -351,6 +353,14 @@ public class PlanForm extends UifFormBase {
         this.sectionsToDelete = sectionsToDelete;
     }
 
+    public List<ActivityOfferingItem> getPlanActivities() {
+        return planActivities;
+    }
+
+    public void setPlanActivities(List<ActivityOfferingItem> planActivities) {
+        this.planActivities = planActivities;
+    }
+
     /*Only used in the Ui for getting the short Term*/
     public String getShortTerm() {
         String shortTermName = "";
@@ -382,5 +392,11 @@ public class PlanForm extends UifFormBase {
         return jsonOut;
     }
 
-
+    //  Added this for using in the crud message matrix property editor
+    public CourseDetails getCourseAndPlanSummary() {
+        CourseDetails courseDetails = new CourseDetails();
+        courseDetails.setCourseSummaryDetails(this.getCourseSummaryDetails());
+        courseDetails.setPlannedCourseSummary(this.getPlannedCourseSummary());
+        return courseDetails;
+    }
 }
