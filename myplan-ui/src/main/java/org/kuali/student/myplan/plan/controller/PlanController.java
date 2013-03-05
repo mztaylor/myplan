@@ -27,6 +27,7 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -217,10 +218,10 @@ public class PlanController extends UifControllerBase {
 
         //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
         try {
-            planForm.setCourseDetails(getCourseDetailsInquiryService().retrieveCourseSummaryById(planForm.getCourseId()));
+            planForm.setCourseSummaryDetails(getCourseDetailsInquiryService().retrieveCourseSummaryById(planForm.getCourseId()));
         } catch (RuntimeException e) {
             CourseSummaryDetails courseSummaryDetails = new CourseSummaryDetails();
-            planForm.setCourseDetails(courseSummaryDetails);
+            planForm.setCourseSummaryDetails(courseSummaryDetails);
             GlobalVariables.getMessageMap().clearErrorMessages();
             GlobalVariables.getMessageMap().putErrorForSectionId("add_planned_course", PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
             return doPageRefreshError(planForm, "Plan item not found.", e);
@@ -246,6 +247,7 @@ public class PlanController extends UifControllerBase {
             }
         }
 
+        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId,UserSessionHelper.getStudentId()));
 
         /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
            which is used for populating the right flag*/
