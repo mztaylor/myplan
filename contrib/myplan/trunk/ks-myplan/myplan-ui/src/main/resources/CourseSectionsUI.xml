@@ -40,6 +40,20 @@
                             <bean p:id="course_details_institution_data"
                                   parent="course_details_institution_data_single">
                                 <property name="render" value="true"/>
+                                <property name="header.render" value="false"/>
+                                <property name="subCollections">
+                                    <list>
+                                        <bean parent="course_details_term_data">
+                                            <property name="subCollections">
+                                                <list>
+                                                    <bean parent="course_details_activity_data">
+                                                        <property name="header.render" value="false"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
