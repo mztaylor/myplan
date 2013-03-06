@@ -96,11 +96,14 @@ public class SingleQuarterHelperBase {
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
 
                     //TODO: We should move these methods out of courseDetailsInquiryHelper
-                    List<ActivityOfferingItem> activityOfferingItemList = courseDetailsHelper.getActivityOfferingItemsById(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId());
-                    for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
-                        if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {
-                            academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);
-                            break;
+                    if (academicRecordDataObject.getCourseId() != null) {
+                        List<ActivityOfferingItem> activityOfferingItemList = courseDetailsHelper.getActivityOfferingItemsById(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId());
+                        for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
+                            if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {
+                                academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);
+                                break;
+                            }
+
                         }
                     }
 
