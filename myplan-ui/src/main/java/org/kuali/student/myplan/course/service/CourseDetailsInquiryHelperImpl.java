@@ -41,11 +41,8 @@ import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
-import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
-import org.kuali.student.myplan.plan.util.DateFormatHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
-import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -415,6 +412,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         // Course Plan + Academic Records
         courseDetails.setPlannedCourseSummary(getPlannedCourseSummary(course, studentId));
 
+
         // Course offerings
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request.getParameter("section_term") != null) {
@@ -424,6 +422,26 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, termList));
         } else {
             courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, courseDetails.getCourseSummaryDetails().getScheduledTerms()));
+        }
+
+
+        EnrollmentStatusHelperImpl enrollmentStatusHelper = new EnrollmentStatusHelperImpl();
+        for (CourseOfferingInstitution institution : courseDetails.getCourseOfferingInstitutionList()) {
+            for (CourseOfferingTerm term : institution.getCourseOfferingTermList()) {
+                for (ActivityOfferingItem activity : term.getActivityOfferingItemList()) {
+
+                    String year = term.getYearTerm().getYearAsString();
+                    String quarter = term.getYearTerm().getTermAsID();
+                    String curric = courseSummaryDetails.getSubjectArea();
+                    String num = courseSummaryDetails.getCourseNumber();
+                    String sectionID = activity.getCode();
+                    try {
+                        enrollmentStatusHelper.populateEnrollmentFields(activity, year, quarter, curric, num, sectionID);
+                    } catch (Exception e) {
+                        logger.warn("cannot populate enrollment fields", e);
+                    }
+                }
+            }
         }
 
         return courseDetails;
@@ -776,9 +794,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 String instituteName = null;
 
                 String campus = null;
-                String enrollCount = null;
-                String enrollMaximum = null;
-                String enrollEstimate = null;
+//                String enrollCount = null;
+//                String enrollMaximum = null;
+//                String enrollEstimate = null;
                 for (AttributeInfo attrib : aodi.getAttributes()) {
                     String key = attrib.getKey();
                     String value = attrib.getValue();
@@ -803,20 +821,20 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                         continue;
                     }
 
-                    if ("currentEnrollment".equals(key) && !"".equals(value)) {
-                        enrollCount = value;
-                        continue;
-                    }
-
-                    if ("enrollmentLimit".equals(key) && !"".equals(value)) {
-                        enrollMaximum = value;
-                        continue;
-                    }
-
-                    if ("limitEstimate".equals(key) && "E".equals(value)) {
-                        enrollEstimate = value;
-                        continue;
-                    }
+//                    if ("currentEnrollment".equals(key) && !"".equals(value)) {
+//                        enrollCount = value;
+//                        continue;
+//                    }
+//
+//                    if ("enrollmentLimit".equals(key) && !"".equals(value)) {
+//                        enrollMaximum = value;
+//                        continue;
+//                    }
+//
+//                    if ("limitEstimate".equals(key) && "E".equals(value)) {
+//                        enrollEstimate = value;
+//                        continue;
+//                    }
 
                     if ("SectionComments".equalsIgnoreCase(key)) {
                         activity.setSectionComments(value);
@@ -845,10 +863,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
 
                 }
-                activity.setEnrollOpen(true);
-                activity.setEnrollCount(enrollCount);
-                activity.setEnrollMaximum(enrollMaximum);
-                activity.setEnrollEstimate(enrollEstimate);
+//                activity.setEnrollOpen(true);
+//                activity.setEnrollCount(enrollCount);
+//                activity.setEnrollMaximum(enrollMaximum);
+//                activity.setEnrollEstimate(enrollEstimate);
                 activity.setInstructor(aodi.getInstructorName());
 
                 activity.setHonorsSection(aodi.getIsHonorsOffering());
