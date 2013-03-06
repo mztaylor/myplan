@@ -3,14 +3,15 @@ package org.kuali.student.myplan.plan.util;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
 
@@ -28,6 +28,14 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
+
+    public StudentServiceClient getStudentServiceClient() {
+        if (studentServiceClient == null) {
+            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService(StudentServiceClient.SERVICE_NAME);
+        }
+        return studentServiceClient;
+    }
+
 
     private static transient LuService luService;
 
@@ -86,24 +94,22 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
     }
 
 
-    public void populateEnrollmentFields(ActivityOfferingDisplayInfo activity, String year, String quarter, String curric, String num, String sectionID)
+    public void populateEnrollmentFields(ActivityOfferingItem activity, String year, String quarter, String curric, String num, String sectionID)
             throws Exception {
-//        String xml = studentServiceClient.getSectionStatus(year, quarter, curric, num, sectionID);
-//        Document doc = newDocument(xml);
-//        DefaultXPath statusPath = newXPath("/s:SectionStatus");
-//        Element status = (Element) statusPath.selectSingleNode(doc);
-//
-//        List<AttributeInfo> attributes = activity.getAttributes();
-//
-//        String enrollmentLimit = status.elementText("LimitEstimateEnrollment");
-//        String currentEnrollment = status.elementText("CurrentEnrollment");
-//        String limitEstimate = status.elementText("LimitEstimateEnrollmentIndicator");
-//        limitEstimate = "estimate".equalsIgnoreCase(limitEstimate) ? "E" : "";
-//
-//        attributes.add(new AttributeInfo("enrollmentLimit", enrollmentLimit));
-//        attributes.add(new AttributeInfo("currentEnrollment", currentEnrollment));
-//        attributes.add(new AttributeInfo("limitEstimate", limitEstimate));
+        StudentServiceClient client = getStudentServiceClient();
+        String xml = client.getSectionStatus(year, quarter, curric, num, sectionID);
+        Document doc = newDocument(xml);
+        DefaultXPath statusPath = newXPath("/s:SectionStatus");
+        Element status = (Element) statusPath.selectSingleNode(doc);
 
+        String enrollmentLimit = status.elementText("LimitEstimateEnrollment");
+        String currentEnrollment = status.elementText("CurrentEnrollment");
+        String limitEstimate = status.elementText("LimitEstimateEnrollmentIndicator");
+        limitEstimate = "estimate".equalsIgnoreCase(limitEstimate) ? "E" : "";
+
+        activity.setEnrollCount(currentEnrollment);
+        activity.setEnrollMaximum(enrollmentLimit);
+        activity.setEnrollEstimate(limitEstimate);
     }
 
     /**
