@@ -457,9 +457,9 @@
             <list>
                 <bean parent="Uif-Message"
                       p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt;? Once deleted, you cannot undo."/>
-                <bean parent="Uif-DataField" p:propertyName="courseDetails.plannedSections"
+                <bean parent="Uif-DataField" p:propertyName="planActivities"
                       p:escapeHtmlInPropertyValue="false"
-                      p:render="@{planActivities.size() gt 0 ? true : false}">
+                      p:render="@{planActivities ne null ? true : false}">
                     <property name="propertyEditor" ref="planned_sections_formatter"/>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
