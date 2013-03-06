@@ -31,8 +31,7 @@ public class AcademicTermMessageEditor extends CollectionListPropertyEditor {
 
         while (i.hasNext()) {
             String term = (String) i.next();
-            String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-            String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+            String atpId = AtpHelper.termToYearTerm(term).toATP();
             List<TermInfo> scheduledTerms = null;
             String currentTerm = AtpHelper.getCurrentAtpId();
             if (atpId.compareToIgnoreCase(currentTerm) >= 0) {

@@ -40,6 +40,8 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -110,23 +112,18 @@ public class CourseSearchController extends UifControllerBase {
         String number = "";
         String subject = "";
         String courseId = "";
-        courseCd = courseCd.toUpperCase();
         StringBuffer campus = new StringBuffer();
         List<KeyValue> campusKeys = campusSearch.getKeyValues();
         for (KeyValue k : campusKeys) {
             campus.append(k.getKey().toString());
             campus.append(",");
         }
-        String[] splitStr = courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        if (splitStr.length == 2) {
-            number = splitStr[1];
-            subject = splitStr[0];
+        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(courseCd);
+        if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
+            number = courseCode.getNumber();
+            subject = courseCode.getSubject();
         } else {
-            StringBuffer splitBuff = new StringBuffer();
-            for (int i = 0; i < splitStr.length; i++) {
-                splitBuff.append(splitStr[i]);
-            }
-            response.sendRedirect("/student/myplan/course?searchQuery=" + splitBuff + "&searchTerm=any&campusSelect=" + campus);
+            response.sendRedirect("/student/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus);
             return null;
 
         }
@@ -137,22 +134,8 @@ public class CourseSearchController extends UifControllerBase {
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
-
-        SearchRequest searchRequest = new SearchRequest("myplan.course.getcluid");
-        SearchResult searchResult = null;
-        try {
-            searchRequest.addParam("number", number);
-            searchRequest.addParam("subject", subject.trim());
-            searchRequest.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());;
-
-            searchResult = getLuService().search(searchRequest);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        for (SearchResultRow row : searchResult.getRows()) {
-            courseId = getCellValue(row, "lu.resultColumn.cluId");
-        }
-        if (courseId.equalsIgnoreCase("")) {
+        courseId = EnrollmentStatusHelperImpl.getCourseId(subject.trim(), number);
+        if (!StringUtils.hasText(courseId)) {
             response.sendRedirect("/student/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus);
             return null;
 
@@ -645,7 +628,7 @@ public class CourseSearchController extends UifControllerBase {
             String level = getCellValue(row, "course.level");
             String creditsID = getCellValue(row, "course.credits");
             String code = getCellValue(row, "course.code");
-            String versionIndId = getCellValue(row,"course.verIndId");
+            String versionIndId = getCellValue(row, "course.verIndId");
             course.setCourseVersionIndependentId(versionIndId);
 
             course.setCourseId(courseId);

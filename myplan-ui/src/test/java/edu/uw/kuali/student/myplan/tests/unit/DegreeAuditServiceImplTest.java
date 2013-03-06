@@ -8,6 +8,8 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -44,10 +46,9 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
-        String[] splitStr = courseCd.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        for( String ugh : splitStr ) {
-            System.out.println( ugh );
-        }
+        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(courseCd);
+        System.out.println( courseCode.getSubject() );
+        System.out.println( courseCode.getNumber() );
     }
     @Test
     public void requestDegreeAudit() {
