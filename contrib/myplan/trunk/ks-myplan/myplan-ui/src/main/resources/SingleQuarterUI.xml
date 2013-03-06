@@ -294,7 +294,7 @@
                             <bean parent="Uif-SpaceField"/>
                             <bean parent="Uif-Link"
                                   p:linkText="@{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"
-                                  p:href="#"/>
+                                  p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
 
                             <bean parent="Uif-ActionLink" p:actionLabel="Delete"
                                   p:style="float:right;">

@@ -46,7 +46,7 @@
                               value="
                                   jQuery('body')
                                       .subscribe('SECTION_ITEM_ADDED', function(data){
-                                          var link = '&lt;a href=&quot;lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
+                                          var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
                                           jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
                                           fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode, false);
                                           if (data.PrimarySectionCode != null) {
@@ -1227,7 +1227,7 @@
                             <property name="title"
                                       value="@{#line.code} is added. To delete or move, go to @{#line.longTermName} Plan."/>
                             <property name="href"
-                                      value="lookup?methodToCall=search&amp;viewId=SingleTerm-LookupView&amp;term_atp_id=@{#line.atpId}"/>
+                                      value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}"/>
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-font-size-80</value>

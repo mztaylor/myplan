@@ -124,7 +124,7 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
         String subject = null;
         String number = null;
         String section = null;
-        if (courseCode.matches(CourseSearchConstants.COURSE_CODE_REGEX)) {
+        if (courseCode.matches(CourseSearchConstants.FORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
@@ -133,6 +133,10 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
             section = splitStr[2].trim();
+        } else if(courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
+            String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
+            subject = splitStr[0].trim();
+            number = splitStr[1].trim();
         }
         return new CourseCode(subject, number, section);
     }
