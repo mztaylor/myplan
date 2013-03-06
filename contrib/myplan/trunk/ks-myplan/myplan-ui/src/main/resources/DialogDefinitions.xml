@@ -314,6 +314,31 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <!-- If in plan and in saved courses and not in academic record list -->
+                            <bean parent="Uif-HorizontalFieldGroup"
+                                  p:render="@{((plannedCourseSummary.backupList.size() gt 0 or plannedCourseSummary.plannedList.size() gt 0) and plannedCourseSummary.savedItemId ne null and plannedCourseSummary.academicTerms.size() eq 0)}">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="addToPlanButton"/>
+                                        <ref bean="removeSavedCourseButton"/>
+                                    </list>
+                                </property>
+                                <property name="propertyReplacers">
+                                    <list>
+                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                                            <property name="replacement">
+                                                <list>
+                                                    <bean parent="Uif-Message" p:messageText=""/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>

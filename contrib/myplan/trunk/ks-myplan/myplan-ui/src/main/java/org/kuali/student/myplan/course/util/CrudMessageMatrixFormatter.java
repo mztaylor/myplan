@@ -66,8 +66,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             List<String> nonWithDrawnCourseTerms = new ArrayList<String>();
 
             for (String term : courseDetails.getPlannedCourseSummary().getAcademicTerms()) {
-                String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
+                String atpId = AtpHelper.termToYearTerm(term).toATP();
                 for (AcademicRecordDataObject academicRecordDataObject : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
                     if (atpId.equalsIgnoreCase(academicRecordDataObject.getAtpId())
                             && academicRecordDataObject.getGrade().contains(PlanConstants.WITHDRAWN_GRADE)) {
@@ -86,9 +85,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             int counter = 0;
             for (String withdrawnTerm : withDrawnCourseTerms) {
                 String term = withdrawnTerm;
-                String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
-
+                String atpId = AtpHelper.termToYearTerm(term).toATP();
                 if (counter == 0) {
                     if (UserSessionHelper.isAdviser()) {
                         String user = UserSessionHelper.getStudentName();
@@ -116,8 +113,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             int counter3 = 0;
             for (String nonWithdrawnTerm : nonWithDrawnCourseTerms) {
                 String term = nonWithdrawnTerm;
-                String[] splitStr = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                String atpId = AtpHelper.getAtpIdFromTermAndYear(splitStr[0].trim(), splitStr[1].trim());
+                String atpId = AtpHelper.termToYearTerm(term).toATP();
                 List<String> sections = getSections(courseDetails, term);
                 String currentTerm = AtpHelper.getCurrentAtpId();
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
@@ -226,16 +222,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     if (planItemsMap.get(key).contains(",")) {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
-                            String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = startsSub.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a>").append(", ");
+                            sb = startsSub.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.termToYearTerm(term).toATP()).append("\">").append(term).append(" plan").append("</a>").append(", ");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(","));
                         StringBuffer formattedSubBuf = new StringBuffer();
                         formattedSubBuf = formattedSubBuf.append(formattedString);
                         sb = formattedSubBuf.append(" on ").append(key);
                     } else {
-                        String[] str = planItemsMap.get(key).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                        String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
+                        String atpId = AtpHelper.termToYearTerm(planItemsMap.get(key)).toATP();
                         if (!currentTermRegistered) {
                             sb = sb.append("<dd>").append("Added to ").append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                     .append(" on ").append(key).append(" ");
@@ -250,16 +244,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     if (planItemsMap.get(key).contains(",")) {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
-                            String[] str = term.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                            sb = sb.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim())).append("\">").append(term).append(" plan").append("</a> ").append(",");
+                            sb = sb.append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(AtpHelper.termToYearTerm(term).toATP()).append("\">").append(term).append(" plan").append("</a> ").append(",");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(",") - 1);
                         StringBuffer formattedSubBuf = new StringBuffer();
                         formattedSubBuf = formattedSubBuf.append(formattedString);
                         sb = formattedSubBuf.append(" on ").append(key);
                     } else {
-                        String[] str = planItemsMap.get(key).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                        String atpId = AtpHelper.getAtpIdFromTermAndYear(str[0].trim(), str[1].trim());
+                        String atpId = AtpHelper.termToYearTerm(planItemsMap.get(key)).toATP();
                         sb = sb.append(" and ").append("<a href=\"plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=").append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                 .append(" on ").append(key);
                     }

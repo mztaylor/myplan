@@ -56,4 +56,21 @@ public class CourseSearchConstants {
     public static final String LINK = "<a href=\"%s/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
 
     public static final String APP_URL = "appserver.url";
+
+    public static final String COURSE_SEARCH_FOR_COURSE_ID = "myplan.course.getcluid";
+
+    public static final String SEARCH_REQUEST_SUBJECT_PARAM = "subject";
+
+    public static final String SEARCH_REQUEST_NUMBER_PARAM = "number";
+
+    public static final String SEARCH_REQUEST_LAST_SCHEDULED_PARAM = "lastScheduledTerm";
+
+    /*Regex to Split Digits and alphabets Eg: COM 348 --> COM  348*/
+    public static final String SPLIT_DIGITS_ALPHABETS = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
+
+    /*Regex for validating the course Code eg: COM 301*/
+    public static final String COURSE_CODE_REGEX = "^[A-Z]{1}[A-Z &]{2,6}\\s[0-9]{3}$";
+    
+    public static final String COURSE_CODE_WITH_SECTION_REGEX = "^[A-Z]{1}[A-Z &]{2,6}\\s[0-9]{3}\\s[A-Z]{1}[A-Z0-9]{0,1}$";
+    
 }

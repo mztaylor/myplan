@@ -15,6 +15,7 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
 import javax.xml.namespace.QName;
@@ -261,33 +262,14 @@ public class AtpHelper {
 
     /*  Returns ATP ID in format kuali.uw.atp.1991.1 for term="Winter 1991"*/
     public static String getAtpIdFromTermYear(String termYear) {
-        String[] splitStr = termYear.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        String term = splitStr[0].trim();
-        String year = splitStr[1].trim();
-
-        int termVal = 0;
-        if (term.equalsIgnoreCase(term1)) {
-            termVal = 1;
-        }
-        if (term.equalsIgnoreCase(term2)) {
-            termVal = 2;
-        }
-        if (term.equalsIgnoreCase(term3)) {
-            termVal = 3;
-        }
-        if (term.equalsIgnoreCase(term4)) {
-            termVal = 4;
-        }
-        StringBuffer newAtpId = new StringBuffer();
-        newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(termVal);
-        return newAtpId.toString();
+        YearTerm yearTerm = termToYearTerm(termYear);
+        return yearTerm.toATP();
     }
 
     /* Returns ATP ID as kuali.uw.atp.1991.1 for term=1 and year = 1991 */
     public static String getAtpFromNumTermAndYear(String term, String year) {
-        StringBuffer newAtpId = new StringBuffer();
-        newAtpId = newAtpId.append(PlanConstants.TERM_ID_PREFIX).append(year).append(".").append(term);
-        return newAtpId.toString();
+        YearTerm yearTerm = new YearTerm(Integer.parseInt(year), Integer.parseInt(term));
+        return yearTerm.toATP();
     }
 
     /**
@@ -380,12 +362,10 @@ public class AtpHelper {
 
     public static boolean isCourseOfferedInTerm(String atp, String course) {
         boolean isCourseOfferedInTerm = false;
-
-        String[] splitStr = course.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-
+        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(course);
         List<String> offerings = null;
         try {
-            offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, splitStr[0].trim(), CourseSearchConstants.CONTEXT_INFO);
+            offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course, e);
         }

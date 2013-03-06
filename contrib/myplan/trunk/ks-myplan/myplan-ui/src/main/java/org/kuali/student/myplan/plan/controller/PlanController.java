@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
+import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
@@ -47,6 +48,8 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
@@ -247,7 +250,7 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId,UserSessionHelper.getStudentId()));
+        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentId()));
 
         /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
            which is used for populating the right flag*/
@@ -1178,27 +1181,28 @@ public class PlanController extends UifControllerBase {
         } catch (Exception e) {
             return doOperationFailedError(form, "Query for plan item failed.", e);
         }
+        List<String> terms = new ArrayList();
+        for (String term : planItem.getPlanPeriods()) {
+            terms.add(AtpHelper.atpIdToTermName(term));
+        }
         CourseSummaryDetails courseDetail = null;
         List<CourseOfferingInstitution> courseOfferingInstitutions = new ArrayList<CourseOfferingInstitution>();
         if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
-            courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
             courseId = courseDetail.getCourseId();
         } else {
-            String[] splitStr = planItem.getRefObjectId().split(PlanConstants.SPLIT_DIGITS_ALPHABETS);
-            courseId = getCourseDetailsInquiryService().getCourseId(splitStr[0].trim(), splitStr[1].trim());
+            CourseCode courseCodeAndSection = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(planItem.getRefObjectId());
+            courseId = EnrollmentStatusHelperImpl.getCourseId(courseCodeAndSection.getSubject(), courseCodeAndSection.getNumber());
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-            courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
-            sectionCode = splitStr[2].trim();
+            sectionCode = courseCodeAndSection.getSection();
         }
-        courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-        courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(planItem.getRefObjectId(), planItem.getPlanPeriods());
+        courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(courseId, terms);
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                 planItemsToRemove = getPlannedSections(courseDetail, courseOfferingInstitutions, planItem, form.getInstituteCode(), false, null);
             } else if (form.isPrimary()) {
-                planItemsToRemove = getPlannedSections(courseDetail,courseOfferingInstitutions, planItem, form.getInstituteCode(), true, sectionCode);
+                planItemsToRemove = getPlannedSections(courseDetail, courseOfferingInstitutions, planItem, form.getInstituteCode(), true, sectionCode);
             }
         }
 

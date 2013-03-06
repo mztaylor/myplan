@@ -30,6 +30,8 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -132,19 +134,19 @@ public class QuickAddSuggestHelperService {
                 String searchText = org.apache.commons.lang.StringUtils.upperCase(courseCd);
                 String number = null;
                 String subject = null;
-                String[] splitStr = searchText.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-                if (splitStr.length == 2) {
-                    number = splitStr[1];
+                CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(searchText);
+                if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
+                    number = courseCode.getNumber();
                     ArrayList<String> divisions = new ArrayList<String>();
-                    subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                    subject = searchController.extractDivisions(divisionMap, courseCode.getSubject(), divisions, true);
                     if (divisions.size() > 0) {
                         subject = divisions.get(0);
                         searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
                         results = searchController.getResults(searchRequest, subject, number);
                     }
-                } else if (splitStr.length == 1 && !org.apache.commons.lang.StringUtils.isNumeric(splitStr[0])) {
+                } else if (courseCode.getSubject() != null && !org.apache.commons.lang.StringUtils.isNumeric(courseCode.getSubject())) {
                     ArrayList<String> divisions = new ArrayList<String>();
-                    subject = searchController.extractDivisions(divisionMap, splitStr[0], divisions, true);
+                    subject = searchController.extractDivisions(divisionMap, courseCode.getSubject(), divisions, true);
                     if (divisions.size() > 0) {
                         subject = divisions.get(0);
                         searchRequest = new SearchRequest("myplan.clu.division");
@@ -177,7 +179,7 @@ public class QuickAddSuggestHelperService {
         int resultsSize = results.size();
         if (isCourseOfferingServiceUp()) {
             for (int i = 0; i < resultsSize; i++) {
-                String[] splitStr = results.get(i).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+                CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(results.get(i));
                 List<CourseOfferingInfo> courseOfferingInfo = null;
                 boolean removed = false;
 
@@ -185,7 +187,7 @@ public class QuickAddSuggestHelperService {
 
                     /*Filtering courses that are not offered in the given term*/
                     List<String> offerings = getCourseOfferingService()
-                            .getCourseOfferingIdsByTermAndSubjectArea(atpId, splitStr[0].trim(), CourseSearchConstants.CONTEXT_INFO);
+                            .getCourseOfferingIdsByTermAndSubjectArea(atpId, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);
                     if (!offerings.contains(results.get(i))) {
                         results.remove(results.get(i));
                         resultsSize--;
@@ -193,7 +195,7 @@ public class QuickAddSuggestHelperService {
                     }
                     /*Filtering courses that are not offered for more than 10 years*/
                     if (!removed) {
-                        String values = String.format("%s, %s, %s", year, splitStr[0].trim(), splitStr[1].trim());
+                        String values = String.format("%s, %s, %s", year, courseCode.getSubject(), courseCode.getNumber());
                         courseOfferingInfo = getCourseOfferingService()
                                 .searchForCourseOfferings(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values)), CourseSearchConstants.CONTEXT_INFO);
                         if (courseOfferingInfo == null) {
