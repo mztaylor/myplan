@@ -1185,21 +1185,18 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit">
+                <bean p:id="enrl_@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
+                      parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
-                            <!--<bean parent="Uif-Message" p:messageText="@{#line.enrollOpen ? 'Open':'Closed'}">
+                            <bean parent="Uif-Message" p:style="margin:0;">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>@{#line.enrollOpen ? 'open':'closed'}</value>
+                                        <value>myplan-enrl-data</value>
                                     </list>
                                 </property>
-                            </bean>-->
-                            <bean parent="Uif-Message"
-                                  p:messageText="&lt;strong&gt;@{#line.enrollCount}&lt;/strong&gt; / @{#line.enrollMaximum}@{#line.enrollEstimate}">
-                                <property name="title"
-                                          value="@{#line.enrollCount} enrolled out of @{#line.enrollMaximum}@{#line.enrollEstimate eq 'E' ? ' estimated':''} limit."/>
+                                <property name="messageText" value="Updating..."/>
                             </bean>
                         </list>
                     </property>
