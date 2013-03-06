@@ -1264,7 +1264,7 @@ public class PlanController extends UifControllerBase {
 
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
             if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItemId)) {
-                if (isPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode)) {
+                if (isPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
                 } else if (!isPrimary) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
