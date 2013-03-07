@@ -1,7 +1,20 @@
 package edu.uw.kuali.student.service.impl;
 
-import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.jws.WebParam;
+import javax.xml.namespace.QName;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -11,7 +24,17 @@ import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.enrollment.courseoffering.dto.*;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingAdminDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingAdminDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.dto.FormatOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupInfo;
+import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupTemplateInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ScheduleComponentDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.ScheduleDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.SeatPoolDefinitionInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
@@ -20,20 +43,29 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
-import org.kuali.student.r2.common.dto.*;
-import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.TimeOfDayInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DependentObjectsExistException;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.kuali.student.r2.common.exceptions.ReadOnlyException;
+import org.kuali.student.r2.common.exceptions.VersionMismatchException;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
 import org.springframework.util.StringUtils;
 
-import javax.jws.WebParam;
-import javax.xml.namespace.QName;
-import java.io.StringReader;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 
 /**
  * UW implementation of CourseOfferingService.
@@ -328,36 +360,31 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
         String[] params = activityOfferingId.split(",");
 
+        String year = params[0];
+        String term = params[1];
+        String curric = params[2];
+        String courseNumber = params[3];
         if (params.length == 4) {
             try {
-                String allText = studentServiceClient.getTimeSchedules(params[0], params[1], params[2], params[3], null);
+                String allText = studentServiceClient.getTimeSchedules(year, term, curric, courseNumber, null);
                 Document allDoc = newDocument(allText);
 
-                List<String> hrefs = new ArrayList<String>();
-
                 DefaultXPath xpath = newXPath("//s:Sections/s:Section/s:Href");
-                List sections = xpath.selectNodes(allDoc);
-                for (Object node : sections) {
+                List sectionNodeList = xpath.selectNodes(allDoc);
+                for (Object node : sectionNodeList) {
                     Element element = (Element) node;
                     String href = element.getText();
-                    hrefs.add(href);
-                }
-
-                for (String href : hrefs) {
                     href = href.replace("/student", "").trim();
                     String hrefText = studentServiceClient.getTimeSchedules(null, null, null, null, href);
                     Document hrefDoc = newDocument(hrefText);
                     DefaultXPath xpath2 = newXPath("//s:Curriculum");
-                    List curriculum = xpath2.selectNodes(hrefDoc);
-                    for (Object node : curriculum) {
-                        Element element = (Element) node;
+                    List curricNodeList = xpath2.selectNodes(hrefDoc);
+                    for (Object curricNode : curricNodeList) {
+                        String abbrev = ((Element) curricNode).elementText("TimeScheduleLinkAbbreviation");
 
-                        AttributeInfo attributeInfo = new AttributeInfo();
-                        attributeInfo.setKey(CourseSearchConstants.TIME_SCHEDULE_KEY);
-                        String abbrev = element.elementText("TimeScheduleLinkAbbreviation");
-                        attributeInfo.setValue(abbrev);
+                        AttributeInfo attrib = new AttributeInfo(CourseSearchConstants.TIME_SCHEDULE_KEY,abbrev);
 
-                        activityOfferingInfo.getAttributes().add(attributeInfo);
+                        activityOfferingInfo.getAttributes().add(attrib);
                     }
                 }
             } catch (Exception e) {
@@ -367,7 +394,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             try {
                 /* calls https://ucswseval1.cac.washington.edu/student/v4/course/2013,winter,ECON,200/BA
                 * getting the sln for that section of the course*/
-                String xml = studentServiceClient.getSecondarySections(params[0], params[1], params[2], params[3], params[4]);
+                String xml = studentServiceClient.getSecondarySections(year, term, curric, courseNumber, params[4]);
                 Document doc = newDocument(xml);
                 DefaultXPath sectionPath = newXPath("/s:Section");
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
@@ -1096,27 +1123,5 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             institute = Integer.parseInt(ugh);
         }
         return institute;
-    }
-
-
-    // TODO: Move this to plan controller
-    void populateEnrollmentFields(ActivityOfferingDisplayInfo activity, String year, String quarter, String curric, String num, String sectionID)
-            throws Exception {
-        String xml = studentServiceClient.getSectionStatus(year, quarter, curric, num, sectionID);
-        Document doc = newDocument(xml);
-        DefaultXPath statusPath = newXPath("/s:SectionStatus");
-        Element status = (Element) statusPath.selectSingleNode(doc);
-
-        List<AttributeInfo> attributes = activity.getAttributes();
-
-        String enrollmentLimit = status.elementText("LimitEstimateEnrollment");
-        String currentEnrollment = status.elementText("CurrentEnrollment");
-        String limitEstimate = status.elementText("LimitEstimateEnrollmentIndicator");
-        limitEstimate = "estimate".equalsIgnoreCase(limitEstimate) ? "E" : "";
-
-        attributes.add(new AttributeInfo("enrollmentLimit", enrollmentLimit));
-        attributes.add(new AttributeInfo("currentEnrollment", currentEnrollment));
-        attributes.add(new AttributeInfo("limitEstimate", limitEstimate));
-
     }
 }
