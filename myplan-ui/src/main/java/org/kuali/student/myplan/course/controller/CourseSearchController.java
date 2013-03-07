@@ -15,49 +15,69 @@
  */
 package org.kuali.student.myplan.course.controller;
 
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
-import org.kuali.student.myplan.course.dataobject.FacetItem;
-import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
-import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.search.dto.*;
+import org.kuali.student.common.search.dto.SearchParam;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultCell;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
 import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.core.atp.service.AtpService;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
+import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.course.form.CourseSearchForm;
+import org.kuali.student.myplan.course.util.CampusSearch;
+import org.kuali.student.myplan.course.util.CourseLevelFacet;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.CreditsFacet;
+import org.kuali.student.myplan.course.util.CurriculumFacet;
+import org.kuali.student.myplan.course.util.GenEduReqFacet;
+import org.kuali.student.myplan.course.util.TermsFacet;
+import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -68,10 +88,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-import java.util.*;
-
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 
 @Controller
 @RequestMapping(value = "/course/**")
@@ -149,7 +166,6 @@ public class CourseSearchController extends UifControllerBase {
                             HttpServletRequest request, HttpServletResponse response) {
 
         super.start(form, result, request, response);
-        CourseSearchForm searchForm = (CourseSearchForm) form;
         form.setViewId("CourseSearch-FormView");
         form.setView(super.getViewService().getViewById("CourseSearch-FormView"));
 
@@ -284,7 +300,6 @@ public class CourseSearchController extends UifControllerBase {
                     }
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
-                    String courseId = course.getCourseId();
                     if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
                         course.setStatus(courseStatusMap.get(course.getCourseVersionIndependentId()));
                     }
@@ -304,65 +319,70 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     @RequestMapping(value = "/course/search")
-    public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-        List<CourseSearchItem> courses = new ArrayList<CourseSearchItem>();
-        boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
-        String user = UserSessionHelper.getStudentId();
-        if (!isAcademicCalenderServiceUp) {
-            AtpHelper.addServiceError("searchTerm");
-        }
+   public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
+    	
+    	boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
+    	if (!isAcademicCalenderServiceUp) {
+    		AtpHelper.addServiceError("searchTerm");
+    	}
+
         /*Params from the Url*/
         String queryText = request.getParameter("queryText");
-        if (queryText.contains("%20")) {
-            queryText = queryText.replace("%20", " ");
-        }
+        queryText = queryText.replace("%20", " ");
 
         String campusParamStr = request.getParameter("campusParam");
         List<String> campusParams = Arrays.asList(campusParamStr.split("\\s*,\\s*"));
         String termParam = request.getParameter("termParam");
+        
         /*populating the form with the params*/
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery(queryText);
         form.setCampusSelect(campusParams);
         form.setSearchTerm(termParam);
 
+
+        
         /*populating the CourseSearchItem list*/
-
-
-        courses = courseSearch(form, user, isAcademicCalenderServiceUp);
-
+        String user = UserSessionHelper.getStudentId();
+        List<CourseSearchItem> courses = courseSearch(form, user, isAcademicCalenderServiceUp);
+        
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
         jsonString = jsonString.append("{ \"aaData\":[");
-        int count = 0;
+        boolean first = true;
+        
         for (CourseSearchItem item : courses) {
             String scheduledAndOfferedTerms = null;
-            String status = "";
             try {
                 scheduledAndOfferedTerms = mapper.writeValueAsString(item.getScheduledAndOfferedTerms());
             } catch (IOException e) {
                 throw new RuntimeException("Could not write the value using mapper", e);
             }
+            
+            String status = "";
             if (item.getStatus().getLabel().length() > 0) {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\" class=\\\"" + item.getStatus().getLabel().toLowerCase() + "\\\">" + item.getStatus().getLabel() + "</span>";
             } else if (UserSessionHelper.isAdviser()) {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
                 status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + item.getCourseId() + "\\\"onclick=\\\"openMenu('" + item.getCourseId() + "_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
-
             }
+            
             String courseName = "";
             if (item.getCourseName() != null) {
                 courseName = item.getCourseName().replace("\"", "'");
             }
 
-            jsonString = jsonString.append("[\"").append(item.getCode()).
-                    append("\",\"").append(" <a href=\\").
-                    append("\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(item.getCourseId()).append("\\").append("\" target=\\").append("\"_self\\").
-                    append("\" title=\\").append("\"").append(courseName).append("\\").append("\"").
-                    append(" class=\\").append("\"myplan-text-ellipsis\\").append("\">").
-                    append(courseName).append("</a>\"").append(",\"").
+            if (first) {
+            	first = false;
+            } else {
+            	jsonString.append(", ");
+            }
+            
+            jsonString.append("[\"").append(item.getCode()).
+                    append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
+                    append(item.getCourseId()).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"myplan-text-ellipsis\\\">").
+                    append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
                     append("\",\"").append(item.getTermsFacetKeys()).
@@ -370,26 +390,20 @@ public class CourseSearchController extends UifControllerBase {
                     append("\",\"").append(item.getCreditsFacetKeys()).
                     append("\",\"").append(item.getCourseLevelFacetKeys()).
                     append("\",\"").append(item.getCurriculumFacetKeys()).
-                    append("\"]").append(", ");
+                  append("\"]");
         }
-        String jsonStr = null;
-        if (!jsonString.toString().equalsIgnoreCase("{ \"aaData\":[")) {
-            jsonStr = jsonString.substring(0, jsonString.lastIndexOf(","));
-        } else {
-            jsonStr = jsonString.toString();
-        }
-        jsonStr = jsonStr + "]" + "}";
+        jsonString.append( "]}");
         try {
             response.setHeader("content-type", "application/json");
             response.setHeader("Cache-Control", "No-cache");
             response.setHeader("Cache-Control", "No-store");
             response.setHeader("Cache-Control", "max-age=0");
-            response.getWriter().println(jsonStr);
+            response.getWriter().println(jsonString);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-
+    
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
@@ -398,7 +412,6 @@ public class CourseSearchController extends UifControllerBase {
 
     public List<String> getResults(SearchRequest request, String division, String code) {
         List<String> results = new ArrayList<String>();
-        SearchResult searchResult = null;
         try {
             if (division != null && code != null) {
                 request.addParam("division", division);
@@ -411,19 +424,17 @@ public class CourseSearchController extends UifControllerBase {
             }
             request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
 
-            searchResult = getLuService().search(request);
+            SearchResult searchResult = getLuService().search(request);
+            if (searchResult != null) {
+            	for (SearchResultRow row : searchResult.getRows()) {
+            		results.add(getCellValue(row, "courseCode"));
+            	}
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        if (searchResult != null) {
-            for (SearchResultRow row : searchResult.getRows()) {
-                results.add(getCellValue(row, "courseCode"));
-
-            }
-
-        }
         return results;
     }
 
@@ -441,7 +452,6 @@ public class CourseSearchController extends UifControllerBase {
 
     public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
         logger.info("Start of processSearchRequests of CourseSearchController:" + System.currentTimeMillis());
-        HashMap<String, Hit> courseMap = new HashMap<String, Hit>();
 
         ArrayList<Hit> hits = new ArrayList<Hit>();
         ArrayList<Hit> tempHits = new ArrayList<Hit>();
@@ -459,8 +469,6 @@ public class CourseSearchController extends UifControllerBase {
             tempHits.clear();
         }
 
-//        ArrayList<Hit> hits = new ArrayList<Hit>(courseMap.values());
-//        Collections.sort(hits, new HitComparator());
         logger.info("End of processSearchRequests of CourseSearchController:" + System.currentTimeMillis());
         return hits;
     }
