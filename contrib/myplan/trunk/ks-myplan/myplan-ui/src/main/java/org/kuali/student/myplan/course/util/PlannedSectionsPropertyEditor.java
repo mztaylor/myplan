@@ -52,7 +52,7 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
                 if (counter == 0) {
                     sb.append(String.format("Section %s", section));
                 } else if (counter == sections.size() - 1) {
-                    sb.append(String.format(" and %s ", section));
+                    sb.append(String.format(" and %s", section));
                 } else {
                     sb.append(String.format(", %s", section));
                 }
@@ -60,7 +60,7 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
             }
         }
         if (sb.length() > 0) {
-            sb.append("will be deleted as well.");
+            sb.append(" will be deleted as well.");
         }
         return sb.toString();
     }
