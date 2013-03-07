@@ -230,27 +230,19 @@ public class PlanController extends UifControllerBase {
             return doPageRefreshError(planForm, "Plan item not found.", e);
 
         }
+        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentId()));
 
-        /*Checks if the course is added as plan/backup to that term in case of sections to add only to that particular type*/
-        if (planForm.getCourseSummaryDetails() != null && planForm.getTermYear() != null) {
-            PlanItemInfo existingPlanItem = null;
-            try {
-                existingPlanItem = getPlannedOrBackupPlanItem(planForm.getCourseSummaryDetails().getVersionIndependentId(), planForm.getTermYear());
-            } catch (RuntimeException e) {
-                return doOperationFailedError(planForm, "Query for existing plan item failed.", null);
+        /*Populating the planActivities (Activity Offerings which are planned)*/
+        if (planItem != null && planItem.getPlanPeriods().size() > 0) {
+            List<String> terms = new ArrayList<String>();
+            for (String term : planItem.getPlanPeriods()) {
+                terms.add(AtpHelper.atpIdToTermName(term));
             }
-            if (existingPlanItem != null) {
-                if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                    planForm.setCourseInPlan(true);
-
-                } else if (existingPlanItem.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                    planForm.setCourseInBackup(true);
-                    planForm.setBackup(true);
-                }
+            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCourseId() != null && terms.size() > 0) {
+                planForm.setPlanActivities(getPlannedActivities(planForm.getCourseSummaryDetails().getCourseId(), terms, null));
             }
         }
 
-        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentId()));
 
         /* plan item does not exists for academic Record course  In that case acadRecAtpId is passed in through the UI
            which is used for populating the right flag*/
@@ -261,8 +253,8 @@ public class PlanController extends UifControllerBase {
             }
 
         }
-        if (planForm.getTermYear() != null) {
-            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getTermYear()));
+        if (planForm.getAtpId() != null) {
+            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
         }
         return getUIFModelAndView(planForm);
     }
@@ -875,7 +867,6 @@ public class PlanController extends UifControllerBase {
             wishlistEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(newAtpIds);
-
             try {
                 if (addCourse) {
                     planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
@@ -1186,7 +1177,6 @@ public class PlanController extends UifControllerBase {
             terms.add(AtpHelper.atpIdToTermName(term));
         }
         CourseSummaryDetails courseDetail = null;
-        List<CourseOfferingInstitution> courseOfferingInstitutions = new ArrayList<CourseOfferingInstitution>();
         if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
             courseId = courseDetail.getCourseId();
@@ -1196,13 +1186,12 @@ public class PlanController extends UifControllerBase {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             sectionCode = courseCodeAndSection.getSection();
         }
-        courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(courseId, terms);
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                planItemsToRemove = getPlannedSections(courseDetail, courseOfferingInstitutions, planItem, form.getInstituteCode(), false, null);
+                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseId, planItem, form.getInstituteCode(), false, null);
             } else if (form.isPrimary()) {
-                planItemsToRemove = getPlannedSections(courseDetail, courseOfferingInstitutions, planItem, form.getInstituteCode(), true, sectionCode);
+                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseId, planItem, form.getInstituteCode(), true, sectionCode);
             }
         }
 
@@ -1232,41 +1221,53 @@ public class PlanController extends UifControllerBase {
 
 
     /**
-     * Used to get the list of all the section that are planned for the institute code or for the term
+     * Used to get the list of planned activity offering items for the courseId, terms and institute code(if provided)
      *
-     * @param courseDetails
-     * @param planItem
+     * @param instituteCode
      * @return
      */
-    private Map<String, String> getPlannedSections(CourseSummaryDetails courseDetails, List<CourseOfferingInstitution> courseOfferingInstitutions, PlanItem planItem, String instituteCode, boolean isPrimary, String sectionCode) {
-        Map<String, String> plannedSections = new HashMap<String, String>();
-        String planItemId = planItem.getId();
-        List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
-        for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
-            for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
-                for (ActivityOfferingItem activityOfferingItem : courseOfferingTerm.getActivityOfferingItemList()) {
-                    if (null != activityOfferingItem.getPlanItemId()) {
-                        sectionsPlanned.add(activityOfferingItem);
+    private List<ActivityOfferingItem> getPlannedActivities(String courseId, List<String> terms, String instituteCode) {
+        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
+        if (courseId != null) {
+            List<CourseOfferingInstitution> courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(courseId, terms);
+            for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
+                for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
+                    for (ActivityOfferingItem activityOfferingItem : courseOfferingTerm.getActivityOfferingItemList()) {
+                        if (null != activityOfferingItem.getPlanItemId() && null == instituteCode) {
+                            activityOfferingItems.add(activityOfferingItem);
+                        } else if (null != activityOfferingItem.getPlanItemId() && null != instituteCode && activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
+                            activityOfferingItems.add(activityOfferingItem);
+                        }
                     }
                 }
             }
         }
-        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-        if (instituteCode == null) {
-            activityOfferingItems = sectionsPlanned;
-        } else {
-            for (ActivityOfferingItem activityOfferingItem : sectionsPlanned) {
-                if (activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
-                    activityOfferingItems.add(activityOfferingItem);
-                }
-            }
-        }
+        return activityOfferingItems;
+    }
 
+
+    /**
+     * Used to get the Planned sections as a map with plan item id's and section codes using following params
+     *
+     * @param courseId
+     * @param planItem
+     * @param instituteCode
+     * @param sectionPrimary
+     * @param sectionCode
+     * @return
+     */
+    private Map<String, String> getPlannedSectionsByInstCdAndSectionCd(String courseId, PlanItem planItem, String instituteCode, boolean sectionPrimary, String sectionCode) {
+        Map<String, String> plannedSections = new HashMap<String, String>();
+        List<String> terms = new ArrayList<String>();
+        for (String term : planItem.getPlanPeriods()) {
+            terms.add(AtpHelper.atpIdToTermName(term));
+        }
+        List<ActivityOfferingItem> activityOfferingItems = getPlannedActivities(courseId, terms, instituteCode);
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItemId)) {
-                if (isPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
+            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId())) {
+                if (sectionPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
-                } else if (!isPrimary) {
+                } else if (!sectionPrimary) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
                 }
             }
@@ -1274,7 +1275,6 @@ public class PlanController extends UifControllerBase {
 
         return plannedSections;
     }
-
 
     /**
      * Blow-up response for all plan item actions for the Adviser.
@@ -1732,6 +1732,18 @@ public class PlanController extends UifControllerBase {
             params.put("InstituteCode", planForm.getInstituteCode());
             params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
             params.put("PlanItemsDeleted", removedPlanItemsJson);
+            if (courseDetails.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
+                String sectionCode = null;
+                List<String> sections = new ArrayList<String>();
+                if (!planForm.isPrimary()) {
+                    sectionCode = planForm.getSectionCode().substring(0, 1);
+                    sections.add(sectionCode);
+                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    Collections.sort(sections);
+                    params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
+                }
+
+            }
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_DELETED, params);
         }
         return events;
@@ -1784,6 +1796,21 @@ public class PlanController extends UifControllerBase {
                 params.put("InstituteCode", planForm.getInstituteCode());
                 params.put("Primary", String.valueOf(planForm.isPrimary()));
                 params.put("PrimaryPlanItemId", planForm.getPrimaryPlanItemId());
+                if (planForm.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
+                    String sectionCode = null;
+                    List<String> sections = new ArrayList<String>();
+                    if (planForm.isPrimary()) {
+                        sectionCode = planForm.getSectionCode();
+                        sections.add(sectionCode);
+                    } else {
+                        sectionCode = planForm.getSectionCode().substring(0, 1);
+                        sections.add(sectionCode);
+                        sections.add(planForm.getSectionCode());
+                    }
+                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    Collections.sort(sections);
+                    params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
+                }
             }
         }
 
