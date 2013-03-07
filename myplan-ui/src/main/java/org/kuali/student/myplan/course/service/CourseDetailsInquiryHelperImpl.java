@@ -917,10 +917,12 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 activityOfferingItemList.add(activity);
             }
         }
-        for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
-            if (activityOfferingItem.isPrimary()) {
-                if (secondarySectionsCodes.containsKey(activityOfferingItem.getCode())) {
-                    activityOfferingItem.setSecondarySectionCodes(StringUtils.join(secondarySectionsCodes.get(activityOfferingItem.getCode()).toArray(), ","));
+        if (secondarySectionsCodes.size() > 0) {
+            for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
+                if (activityOfferingItem.isPrimary()) {
+                    if (secondarySectionsCodes.containsKey(activityOfferingItem.getCode())) {
+                        activityOfferingItem.setSecondarySectionCodes(StringUtils.join(secondarySectionsCodes.get(activityOfferingItem.getCode()).toArray(), ","));
+                    }
                 }
             }
         }
