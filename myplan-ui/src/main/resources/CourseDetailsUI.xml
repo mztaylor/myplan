@@ -1204,7 +1204,7 @@
 
                 <bean p:id="section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
                       parent="Uif-ImageField" p:label="Add" p:altText="Add"
-                      p:title="Add section @{#line.code} to @{#line.shortTermName} Plan"
+                      p:title="Add section @{#line.code} @{#line.primarySectionCode ne null ? 'and '+ #line.primarySectionCode+' to' : 'to'} @{#line.shortTermName} Plan"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planItemId eq null ? true : false}">
                     <property name="cssClasses">

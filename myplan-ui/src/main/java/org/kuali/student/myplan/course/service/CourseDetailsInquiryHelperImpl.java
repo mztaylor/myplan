@@ -730,6 +730,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
             boolean primary = true;
+            String primarySectionCode = null;
 
             for (ActivityOfferingDisplayInfo aodi : aodiList) {
                 ActivityOfferingItem activity = new ActivityOfferingItem();
@@ -889,7 +890,14 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
                 activity.setInstituteName(instituteName);
                 activity.setInstituteCode(instituteCode);
-
+                /*PrimarySectionCode is for the add button hover text in secondary sections
+                * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
+                if (primary && activity.getPlanItemId() == null) {
+                    primarySectionCode = activity.getCode();
+                }
+                if (!primary && primarySectionCode != null) {
+                    activity.setPrimarySectionCode(primarySectionCode);
+                }
                 activity.setPrimary(primary);
                 primary = false;
                 activityOfferingItemList.add(activity);

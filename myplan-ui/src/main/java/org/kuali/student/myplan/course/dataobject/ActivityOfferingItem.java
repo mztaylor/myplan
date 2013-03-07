@@ -55,6 +55,9 @@ public class ActivityOfferingItem {
     private String planItemId;
 
     private boolean primary = false;
+    /*this is only populated for secondary sections
+    if the primary section for that is not planned*/
+    private String primarySectionCode;
 
     private String instituteCode;
     private String instituteName;
@@ -347,6 +350,14 @@ public class ActivityOfferingItem {
 
     public void setSummerTerm(String summerTerm) {
         this.summerTerm = summerTerm;
+    }
+
+    public String getPrimarySectionCode() {
+        return primarySectionCode;
+    }
+
+    public void setPrimarySectionCode(String primarySectionCode) {
+        this.primarySectionCode = primarySectionCode;
     }
 
     /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
