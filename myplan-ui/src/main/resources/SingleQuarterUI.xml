@@ -813,7 +813,7 @@
 
                 <bean p:id="section_@{#line.planItemId}"
                       parent="Uif-ImageField" p:label="Plan" p:altText="Plan"
-                      p:title="Delete section @{#line.code}"
+                      p:title="Delete section @{#line.code} @{#line.secondarySectionCodes ne null ? ','+#line.secondarySectionCodes:''}"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planItemId ne null ? true : false}">
                     <property name="cssClasses">
@@ -830,7 +830,6 @@
                     </property>
                     <property name="onClickScript"
                               value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView', primary:@{#line.primary}}, e);"/>
-                    <property name="onMouseOverScript" value="addDeleteHoverText(jQuery(this));"/>
                 </bean>
             </list>
         </property>

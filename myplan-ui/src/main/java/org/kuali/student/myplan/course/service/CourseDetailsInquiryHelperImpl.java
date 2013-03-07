@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -715,6 +716,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
+        Map<String, List<String>> secondarySectionsCodes = new HashMap<String, List<String>>();
+
+
         for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
             // Activity offerings come back as a list, the first item is primary, the remaining are secondary
@@ -898,9 +902,26 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 if (!primary && primarySectionCode != null) {
                     activity.setPrimarySectionCode(primarySectionCode);
                 }
+                if (!primary && activity.getPlanItemId() != null) {
+                    String primaryCode = activity.getCode().substring(0, 1);
+                    if (secondarySectionsCodes.containsKey(primaryCode)) {
+                        secondarySectionsCodes.get(primaryCode).add(activity.getCode());
+                    } else {
+                        List<String> sections = new ArrayList<String>();
+                        sections.add(activity.getCode());
+                        secondarySectionsCodes.put(primaryCode, sections);
+                    }
+                }
                 activity.setPrimary(primary);
                 primary = false;
                 activityOfferingItemList.add(activity);
+            }
+        }
+        for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
+            if (activityOfferingItem.isPrimary()) {
+                if (secondarySectionsCodes.containsKey(activityOfferingItem.getCode())) {
+                    activityOfferingItem.setSecondarySectionCodes(StringUtils.join(secondarySectionsCodes.get(activityOfferingItem.getCode()).toArray(), ","));
+                }
             }
         }
 
