@@ -15,35 +15,24 @@ package org.kuali.student.myplan.course.util;
  * limitations under the License.
  */
 
-import org.apache.log4j.Logger;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-
-import java.beans.PropertyEditorSupport;
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 
 public class ScheduledTermsPropertyEditor extends CollectionListPropertyEditor {
 
-    private final static Logger logger = Logger.getLogger(ScheduledTermsPropertyEditor.class);
-
     @Override
     protected String makeHtmlList(Collection c) {
-        StringBuilder list = new StringBuilder();
-        Iterator<Object> i = c.iterator();
-        while (i.hasNext()) {
-            String term = (String) i.next();
-            String elemTxt = term;
-
+        StringBuilder sb = new StringBuilder();
+        for( Object item : c )
+        {
+        	String text = item.toString();
             // Convert Winter 2012 to WI 12
-            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(term);
+            Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(text);
             if(m.matches()) {
-                elemTxt = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
+            	text = m.group(1).substring(0,2).toUpperCase() + " " + m.group(2);
             }
-            list.append(wrapListItem(elemTxt));
+            sb.append(wrapListItem(text));
         }
-        return list.toString();
+        return sb.toString();
     }
 }
