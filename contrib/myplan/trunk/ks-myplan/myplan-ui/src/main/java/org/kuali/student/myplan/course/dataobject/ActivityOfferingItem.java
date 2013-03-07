@@ -58,6 +58,9 @@ public class ActivityOfferingItem {
     /*this is only populated for secondary sections
     if the primary section for that is not planned*/
     private String primarySectionCode;
+    /*this is only populated for primary sections
+    * if any secondary sections are planned*/
+    private String secondarySectionCodes;
 
     private String instituteCode;
     private String instituteName;
@@ -358,6 +361,14 @@ public class ActivityOfferingItem {
 
     public void setPrimarySectionCode(String primarySectionCode) {
         this.primarySectionCode = primarySectionCode;
+    }
+
+    public String getSecondarySectionCodes() {
+        return secondarySectionCodes;
+    }
+
+    public void setSecondarySectionCodes(String secondarySectionCodes) {
+        this.secondarySectionCodes = secondarySectionCodes;
     }
 
     /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
