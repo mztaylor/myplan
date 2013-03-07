@@ -91,9 +91,6 @@ public class PlanForm extends UifFormBase {
 
     private boolean other = false;
 
-    //  Additional fields needed for the Other option.
-    private String termYear;
-
     //   Form checkbox to determine plan item type (planned or backup).
     private boolean backup = false;
 
@@ -114,10 +111,6 @@ public class PlanForm extends UifFormBase {
     private int bookmarkedCount=0;
 
     private boolean newUser;
-
-    private boolean courseInPlan;
-
-    private boolean courseInBackup;
 
     public int getBookmarkedCount() {
         return bookmarkedCount;
@@ -217,14 +210,6 @@ public class PlanForm extends UifFormBase {
         this.backup = backup;
     }
 
-    public String getTermYear() {
-        return termYear;
-    }
-
-    public void setTermYear(String termYear) {
-        this.termYear = termYear;
-    }
-
     public CourseSummaryDetails getCourseSummaryDetails() {
         return this.courseSummaryDetails;
     }
@@ -295,22 +280,6 @@ public class PlanForm extends UifFormBase {
 
     public void setSectionCode(String sectionCode) {
         this.sectionCode = sectionCode;
-    }
-
-    public boolean isCourseInPlan() {
-        return courseInPlan;
-    }
-
-    public void setCourseInPlan(boolean courseInPlan) {
-        this.courseInPlan = courseInPlan;
-    }
-
-    public boolean isCourseInBackup() {
-        return courseInBackup;
-    }
-
-    public void setCourseInBackup(boolean courseInBackup) {
-        this.courseInBackup = courseInBackup;
     }
 
     public String getPrimarySectionCode() {
