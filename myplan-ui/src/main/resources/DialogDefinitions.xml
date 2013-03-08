@@ -460,7 +460,7 @@
                 <bean parent="Uif-DataField" p:propertyName="planActivities"
                       p:escapeHtmlInPropertyValue="false"
                       p:render="@{planActivities ne null ? true : false}">
-                    <property name="propertyEditor" ref="planned_sections_formatter"/>
+                    <property name="propertyEditor" ref="delete_planned_sections_formatter"/>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
                     <property name="validationMessages.render" value="false"/>
@@ -973,7 +973,6 @@
                             </bean>
 
                             <ref bean="planned_course_quarter_selection"/>
-
                             <!--  Backup checkbox -->
                             <!--<ref bean="planned_course_backup"/>-->
                             <bean id="plan_move_actions" parent="Uif-VerticalFieldGroup">
@@ -1030,6 +1029,28 @@
                                     </list>
                                 </property>
                             </bean>
+                            <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;" p:render="@{planActivities ne null AND planActivities.size() gt 0}">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-status</value>
+                                        <value>info</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanMessagingIcon"/>
+                                        <bean parent="Uif-DataField" p:propertyName="planActivities"
+                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:style="padding-left: 20px;">
+                                            <property name="fieldLabel.cssClasses"
+                                                      value="fl-text-gray myplan-text-normal"/>
+                                            <property name="propertyEditor" ref="move_planned_sections_formatter"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
                         </list>
                     </property>
                 </bean>
@@ -1155,6 +1176,27 @@
                                                     </bean>
                                                 </list>
                                             </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;" p:render="@{planActivities ne null AND planActivities.size() gt 0}">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-status</value>
+                                        <value>info</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanMessagingIcon"/>
+                                        <bean parent="Uif-DataField" p:propertyName="planActivities"
+                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:style="padding-left: 20px;">
+                                            <property name="fieldLabel.cssClasses"
+                                                      value="fl-text-gray myplan-text-normal"/>
+                                            <property name="propertyEditor" ref="copy_planned_sections_formatter"/>
                                         </bean>
                                     </list>
                                 </property>

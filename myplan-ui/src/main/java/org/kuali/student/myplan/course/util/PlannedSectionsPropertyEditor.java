@@ -20,6 +20,36 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
 
     private final static int MAX_SECTIONS = 4;
 
+    private boolean moveDialog = false;
+
+    private boolean copyDialog = false;
+
+    private boolean deleteDialog = false;
+
+    public boolean isMoveDialog() {
+        return moveDialog;
+    }
+
+    public void setMoveDialog(boolean moveDialog) {
+        this.moveDialog = moveDialog;
+    }
+
+    public boolean isCopyDialog() {
+        return copyDialog;
+    }
+
+    public void setCopyDialog(boolean copyDialog) {
+        this.copyDialog = copyDialog;
+    }
+
+    public boolean isDeleteDialog() {
+        return deleteDialog;
+    }
+
+    public void setDeleteDialog(boolean deleteDialog) {
+        this.deleteDialog = deleteDialog;
+    }
+
     @Override
     public void setValue(Object value) {
         super.setValue(value);
@@ -30,6 +60,7 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
      * if there are more than 4 sections planned then returns "All sections will be deleted as well."
      * otherwise if there are more than one section planned and less than 4 sections
      * returns "Section A, AC, B and C will be deleted as well." text.
+     *
      * @return
      */
     @Override
@@ -60,7 +91,13 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
             }
         }
         if (sb.length() > 0) {
-            sb.append(" will be deleted as well.");
+            if (isDeleteDialog()) {
+                sb.append(" will be deleted as well.");
+            } else if (isMoveDialog()) {
+                sb.append(" planned will be deleted.");
+            } else if (isCopyDialog()) {
+                 sb.append(" planned will not be copied.");
+            }
         }
         return sb.toString();
     }

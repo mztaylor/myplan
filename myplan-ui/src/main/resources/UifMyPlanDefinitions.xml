@@ -494,7 +494,18 @@
     <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
 
-    <bean id="planned_sections_formatter" class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor"/>
+    <bean id="delete_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="deleteDialog" value="true"/>
+    </bean>
+    <bean id="move_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="moveDialog" value="true"/>
+    </bean>
+    <bean id="copy_planned_sections_formatter"
+          class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
+        <property name="copyDialog" value="true"/>
+    </bean>
 
 
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
