@@ -77,11 +77,19 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
         }
         int counter = 0;
         if (sections.size() >= MAX_SECTIONS) {
-            sb.append("All sections ");
+            if (isDeleteDialog()) {
+                sb.append("All sections ");
+            }else{
+                sb.append("All your planned sections");
+            }
         } else {
             for (String section : sections) {
                 if (counter == 0) {
-                    sb.append(String.format("Section %s", section));
+                    if (isDeleteDialog()) {
+                        sb.append(String.format("Section %s", section));
+                    } else {
+                        sb.append(String.format("Your planned section %s", section));
+                    }
                 } else if (counter == sections.size() - 1) {
                     sb.append(String.format(" and %s", section));
                 } else {
@@ -94,9 +102,9 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
             if (isDeleteDialog()) {
                 sb.append(" will be deleted as well.");
             } else if (isMoveDialog()) {
-                sb.append(" planned will be deleted.");
+                sb.append(" will not be moved with the course.");
             } else if (isCopyDialog()) {
-                 sb.append(" planned will not be copied.");
+                sb.append(" will not be copied with the course.");
             }
         }
         return sb.toString();

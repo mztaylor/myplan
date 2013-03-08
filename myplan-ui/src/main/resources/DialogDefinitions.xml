@@ -208,7 +208,8 @@
                 <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="courseSummaryDetails.lastOffered"
                       p:labelPlacement="LEFT">
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                    <property name="render" value="@{courseSummaryDetails.lastOffered ne null and courseSummaryDetails.scheduledTerms.size() eq 0}"/>
+                    <property name="render"
+                              value="@{courseSummaryDetails.lastOffered ne null and courseSummaryDetails.scheduledTerms.size() eq 0}"/>
                 </bean>
                 <!-- Projected Terms -->
                 <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseSummaryDetails.termsOffered"
@@ -457,10 +458,32 @@
             <list>
                 <bean parent="Uif-Message"
                       p:messageText="Are you sure that you want to delete &lt;strong&gt;@{courseSummaryDetails.code}&lt;/strong&gt;? Once deleted, you cannot undo."/>
-                <bean parent="Uif-DataField" p:propertyName="planActivities"
-                      p:escapeHtmlInPropertyValue="false"
-                      p:render="@{planActivities ne null ? true : false}">
-                    <property name="propertyEditor" ref="delete_planned_sections_formatter"/>
+                <bean parent="Uif-HorizontalFieldGroup"
+                      p:render="@{planActivities ne null AND planActivities.size() gt 0}">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-status</value>
+                            <value>info</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="MyPlanMessagingIcon"/>
+                            <bean id="delete_sections_info" parent="Uif-DataField" p:propertyName="planActivities"
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
+                                  p:style="padding-left: 20px;">
+                                <property name="fieldLabel.cssClasses"
+                                          value="fl-text-gray myplan-text-normal"/>
+                                <property name="propertyEditor" ref="delete_planned_sections_formatter"/>
+                                <property name="onDocumentReadyScript" value="
+                                    jQuery('#delete_sections_info').subscribe('PLAN_ITEM_DELETED', function(data){
+                                        jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
+                                    });"/>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
                     <property name="validationMessages.render" value="false"/>
@@ -975,6 +998,34 @@
                             <ref bean="planned_course_quarter_selection"/>
                             <!--  Backup checkbox -->
                             <!--<ref bean="planned_course_backup"/>-->
+                            <bean parent="Uif-HorizontalFieldGroup"
+                                  p:render="@{planActivities ne null AND planActivities.size() gt 0}">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-status</value>
+                                        <value>info</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanMessagingIcon"/>
+                                        <bean id="move_sections_info" parent="Uif-DataField"
+                                              p:propertyName="planActivities"
+                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
+                                              p:style="padding-left: 20px;">
+                                            <property name="fieldLabel.cssClasses"
+                                                      value="fl-text-gray myplan-text-normal"/>
+                                            <property name="propertyEditor" ref="move_planned_sections_formatter"/>
+                                            <property name="onDocumentReadyScript" value="
+                                            jQuery('#move_sections_info').subscribe('PLAN_ITEM_ADDED', function(data){
+                                                jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
+                                            });"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean id="plan_move_actions" parent="Uif-VerticalFieldGroup">
                                 <property name="fieldLabel.render" value="false"/>
                                 <property name="group.validationMessages.render" value="false"/>
@@ -1029,28 +1080,6 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;" p:render="@{planActivities ne null AND planActivities.size() gt 0}">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="Uif-DataField" p:propertyName="planActivities"
-                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:style="padding-left: 20px;">
-                                            <property name="fieldLabel.cssClasses"
-                                                      value="fl-text-gray myplan-text-normal"/>
-                                            <property name="propertyEditor" ref="move_planned_sections_formatter"/>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-
                         </list>
                     </property>
                 </bean>
@@ -1093,6 +1122,34 @@
 
                             <!--  Backup checkbox -->
                             <!--<ref bean="planned_course_backup"/>-->
+                            <bean parent="Uif-HorizontalFieldGroup"
+                                  p:render="@{planActivities ne null AND planActivities.size() gt 0}">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-status</value>
+                                        <value>info</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanMessagingIcon"/>
+                                        <bean id="copy_sections_info" parent="Uif-DataField"
+                                              p:propertyName="planActivities"
+                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
+                                              p:style="padding-left: 20px;">
+                                            <property name="fieldLabel.cssClasses"
+                                                      value="fl-text-gray myplan-text-normal"/>
+                                            <property name="propertyEditor" ref="copy_planned_sections_formatter"/>
+                                            <property name="onDocumentReadyScript" value="
+                                            jQuery('#copy_sections_info').subscribe('PLAN_ITEM_ADDED', function(data){
+                                                jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
+                                            });"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean id="plan_copy_actions" parent="Uif-VerticalFieldGroup">
                                 <property name="fieldLabel.render" value="false"/>
                                 <property name="group.validationMessages.render" value="false"/>
@@ -1176,27 +1233,6 @@
                                                     </bean>
                                                 </list>
                                             </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;" p:render="@{planActivities ne null AND planActivities.size() gt 0}">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="Uif-DataField" p:propertyName="planActivities"
-                                              p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:style="padding-left: 20px;">
-                                            <property name="fieldLabel.cssClasses"
-                                                      value="fl-text-gray myplan-text-normal"/>
-                                            <property name="propertyEditor" ref="copy_planned_sections_formatter"/>
                                         </bean>
                                     </list>
                                 </property>
