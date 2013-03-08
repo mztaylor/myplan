@@ -53,7 +53,11 @@
                                               jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
                                               fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode, false);
                                           }
-                                      });"/>
+                                      });
+                                  jQuery(window).load(function () {
+                                      myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
+                                  })
+                              "/>
                     <property name="items">
                         <list>
                             <ref bean="course_details_section"/>
@@ -1031,7 +1035,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:messageText="PCE"
+                            <bean parent="Uif-MessageField" p:messageText="PCE" p:style="margin:0;"
                                   p:title="UW Professional &amp; Continuing Education"
                                   p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
                                 <property name="cssClasses">
@@ -1185,18 +1189,19 @@
                         </list>
                     </property>
                 </bean>
-                <bean p:id="enrl_@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
+                <bean p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"
                       parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:style="margin:0;">
+                            <bean parent="Uif-Image"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:style="margin:0;">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-enrl-data</value>
                                     </list>
                                 </property>
-                                <property name="messageText" value="Updating..."/>
                             </bean>
                         </list>
                     </property>

@@ -42,8 +42,11 @@
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
-                    <property name="onDocumentReadyScript"
-                              value="toggleButtons();"/>
+                    <property name="onDocumentReadyScript" value="
+                                  jQuery('body')
+                                      .subscribe('SECTION_ITEM_ADDED', function(data) { fnToggleSectionAction('button_' + data.atpId + '_' + data.registrationCode, 'added', data); })
+                                      .subscribe('PLAN_ITEM_DELETED', function(data) { fnToggleSectionAction('button_' + data.atpId + '_' + data.registrationCode, 'deleted', data); });
+                              "/>
                     <property name="items">
                         <list>
                             <ref bean="single_collection_data"/>
@@ -68,8 +71,13 @@
         <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
+                <value>myplan-quarter-detail</value>
                 <value>myplan-remove-margin</value>
             </list>
+        </property>
+        <property name="headerText" value="@{dataObject.qtrYear}"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree"/>
         </property>
         <property name="items">
             <list>
@@ -86,11 +94,12 @@
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
         <property name="layoutManager.id" value="course_details_section_datatable"/>
-        <property name="cssClasses">
+        <property name="layoutManager.cssClasses">
             <list merge="true">
                 <value>myplan-course-sections</value>
             </list>
         </property>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0}"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
@@ -125,9 +134,9 @@
             </map>
         </property>
         <property name="headerText"
-                  value="Registered Courses"/>
+                  value="Registered Courses (@{dataObject.academicRecord.size()})"/>
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="items">
             <list>
@@ -264,7 +273,7 @@
     <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
         <property name="validationMessages.render" value="false"/>
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
@@ -321,23 +330,31 @@
                                   p:linkText="@{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"
                                   p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
 
-                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:style="float:right;">
-                                <property name="actionScript"
-                                          value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
-                                <property name="render" value="@{!#line.showAlert}"/>
-                            </bean>
-
-                            <bean parent="Uif-ActionLink" p:actionLabel="Show all sections"
-                                  p:style="float:right; padding-right: 10px;">
-                                <property name="actionScript"
-                                          value="myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','course_details_institution_data','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});"/>
-                                <!--<property name="actionScript"
-                                          value="expandHiddenSubcollection(this, 'Show all sections', 'Hide all sections');"/>-->
-                                <property name="render" value="@{!#line.showAlert}"/>
-                            </bean>
-
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
+                                  p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
+                                <property name="render" value="@{!#line.showAlert}"/>
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
+                                              p:actionLabel="Show all sections"
+                                              p:style="display:inline-block;">
+                                            <property name="actionScript"
+                                                      value="
+                                                           jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','16px');
+                                                           myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
+                                                           switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
+                                                      "/>
+                                        </bean>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                              p:style="display:inline-block;">
+                                            <property name="actionScript"
+                                                      value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
+                                  p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
                                 <property name="render" value="@{#line.showAlert}"/>
                                 <property name="items">
                                     <list>
@@ -795,9 +812,9 @@
                         </list>
                     </property>
                 </bean>
+                <!--
                 <bean p:id="section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}"
                       parent="Uif-ImageField" p:label="Plan" p:altText="Plan"
-                      p:title="Add section @{#line.code} to @{#line.shortTermName} Plan"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                       p:render="@{#line.planItemId eq null ? true : false}">
                     <property name="cssClasses">
@@ -809,29 +826,37 @@
                     <property name="onClickScript"
                               value="myplanAjaxSubmitSectionItem(jQuery('#section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}').parents().prevAll('div.myplan-course-item').data('courseid'), 'addPlannedCourse', 'plan', {courseId:jQuery('#section_@{#line.instituteCode}_@{#line.atpId.replace('.','-')}_@{#line.code}').parents().prevAll('div.myplan-course-item').data('courseid'),sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},primary:@{#line.primary},viewId:'PlannedCourse-FormView'}, e);"/>
                 </bean>
+                -->
 
-
-                <bean p:id="section_@{#line.planItemId}"
-                      parent="Uif-ImageField" p:label="Plan" p:altText="Plan"
-                      p:title="Delete section @{#line.code}"
-                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                      p:render="@{#line.planItemId ne null ? true : false}">
+                <!-- Delete Button -->
+                <bean parent="section_button">
+                    <property name="onClickScript"
+                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView', primary:@{#line.primary}}, e);"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-delete</value>
                             <value>fl-text-align-center</value>
                         </list>
                     </property>
-                    <property name="dataAttributes">
-                        <map>
-                            <entry key="courseSection" value="@{#line.code}"/>
-                            <entry key="primary" value="@{#line.primary}"/>
-                        </map>
-                    </property>
-                    <property name="onClickScript"
-                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView', primary:@{#line.primary}}, e);"/>
                 </bean>
+
+
             </list>
+        </property>
+    </bean>
+
+    <bean id="section_button" parent="Uif-ImageField">
+        <property name="id" value="button_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
+        <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
+        <property name="label" value=""/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="planned" value="@{#line.planItemId ne null}"/>
+                <entry key="primary" value="@{#line.primary}"/>
+                <entry key="coursesection" value="@{#line.code}"/>
+                <entry key="primarysection" value="@{#line.primarySectionCode}"/>
+            </map>
         </property>
     </bean>
 
