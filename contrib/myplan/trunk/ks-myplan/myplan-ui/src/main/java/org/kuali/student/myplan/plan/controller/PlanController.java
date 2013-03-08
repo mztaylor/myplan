@@ -1423,20 +1423,24 @@ public class PlanController extends UifControllerBase {
 
     // Course ID GUID, atp key id eg "uw.kuali.atp.2001.1"
     @RequestMapping(value = "/plan/enroll")
-    public String getCourseSectionStatusAsJson(HttpServletResponse response, HttpServletRequest request) {
+    public void getCourseSectionStatusAsJson(HttpServletResponse response, HttpServletRequest request) {
         try {
             String courseId = request.getParameter("courseId");
             String atpParam = request.getParameter("atpId");
 
             CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
 
-            List<String> atpList = null;
+            List<AtpHelper.YearTerm> atpList = new ArrayList<AtpHelper.YearTerm>();
             if (atpParam == null || "".equals(atpParam.trim())) {
 
-                atpList = courseDetails.getScheduledTerms();
+                List<String> list = courseDetails.getScheduledTerms();
+                for (String item : list) {
+                    AtpHelper.YearTerm yt = AtpHelper.termToYearTerm(item);
+                    atpList.add(yt);
+                }
             } else {
-                atpList = new ArrayList<String>();
-                atpList.add(atpParam);
+                AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpParam);
+                atpList.add(yt);
             }
 
             String curric = courseDetails.getSubjectArea();
@@ -1444,18 +1448,19 @@ public class PlanController extends UifControllerBase {
 
             LinkedHashMap<String, LinkedHashMap<String, Object>> payload = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
             EnrollmentStatusHelper enrollmentStatusHelper = getEnrollmentStatusHelper();
-            for (String atpID : atpList) {
-                AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpID);
-                String year = yt.getYearAsString();
-                String quarter = yt.getTermAsID();
-                enrollmentStatusHelper.getAllSectionStatus(payload, year, quarter, curric, num);
+            for (AtpHelper.YearTerm yt : atpList) {
+                enrollmentStatusHelper.getAllSectionStatus(payload, yt, curric, num);
             }
 
-            String ugh = mapper.defaultPrettyPrintingWriter().writeValueAsString(payload);
-            System.out.println(ugh);
+//            String ugh = mapper.defaultPrettyPrintingWriter().writeValueAsString(payload);
+//            System.out.println(ugh);
 
             String json = mapper.writeValueAsString(payload);
-            return json;
+            response.setHeader("content-type", "application/json");
+            response.setHeader("Cache-Control", "No-cache");
+            response.setHeader("Cache-Control", "No-store");
+            response.setHeader("Cache-Control", "max-age=0");
+            response.getWriter().println(json);
 
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);

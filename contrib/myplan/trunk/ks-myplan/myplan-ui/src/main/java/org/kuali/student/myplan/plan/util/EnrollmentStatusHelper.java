@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 public interface EnrollmentStatusHelper {
 
 
-    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, String year, String quarter,
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                                                                     String curric, String num) throws ServiceException, DocumentException;
 
     public void populateEnrollmentFields(ActivityOfferingItem activity, String year, String quarter, String curric, String num, String sectionID) throws Exception;
