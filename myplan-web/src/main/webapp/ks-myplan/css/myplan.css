@@ -561,6 +561,7 @@ input.myplan-add,
     height: 16px;
     background: url('../images/myplan_icon_sprites.png') no-repeat 0px 0px;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 input.myplan-add:hover,
@@ -574,6 +575,7 @@ input.myplan-delete,
     height: 16px;
     background: url('../images/iconError16.png') no-repeat 0px 0px;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .myplan-stacked-list,
@@ -1798,6 +1800,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections table.uif-tableCollectionLayout {
     border: solid 1px #ccc;
     line-height: 16px;
+    font-size: 12px;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout th,
@@ -1860,28 +1863,41 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections .meetingdetails .meetingbuilding,
 .myplan-course-sections .meetingdetails .meetingroom {
     display: inline-block;
-    margin-right: 8px;
+    margin-right: 5px;
 }
 
 .myplan-course-sections .meetingdetails .meetingdays {
-    width: 56px;
+    width: 50px;
 }
 
 .myplan-course-sections .meetingdetails .meetingtime {
-    width: 127px;
+    width: 117px;
 }
 
 .myplan-course-sections .meetingdetails .meetingtba {
-    width: 191px;
+    width: 167px;
 }
 
 .myplan-course-sections .meetingdetails .meetingbuilding {
-    width: 40px;
+    width: 38px;
 }
 
 .myplan-course-sections .meetingdetails .meetingroom {
     width: 30px;
     margin: 0;
+}
+
+.myplan-course-sections img.myplan-enrl-data {
+    width: 18px;
+    height: 18px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+    float: none;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.myplan-course-sections img.myplan-enrl-data.alert {
+    background-position: -54px -115px;
 }
 
 /* MyPlan Section (right side container) ########################################################################### */
@@ -2357,7 +2373,7 @@ label.scheduled {
     background: none;
 }
 
-.myplan-quarter-detail h5 {
+.myplan-quarter-detail h4 {
     border: solid 1px #ccc;
     border-bottom: none;
     text-transform: uppercase;
@@ -2375,6 +2391,10 @@ label.scheduled {
 
 .myplan-quarter-detail .myplan-course-sections table {
     border-bottom: none;
+}
+
+.myplan-quarter-detail .myplan-course-sections table thead {
+    display: none;
 }
 
 .myplan-quarter-detail .dataTables_wrapper,
