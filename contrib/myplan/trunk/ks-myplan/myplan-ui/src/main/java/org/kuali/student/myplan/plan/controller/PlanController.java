@@ -481,6 +481,20 @@ public class PlanController extends UifControllerBase {
             String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpIds.get(0))};
             return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
         }
+        /*Remove the Planned Sections for this course before moving the course to another term*/
+        Map<String, String> planItemsToRemove = new HashMap<String, String>();
+        if (courseDetails != null && courseDetails.getCourseId() != null && planItem != null && planItem.getPlanPeriods().size() > 0) {
+            planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, form.getInstituteCode(), false, null);
+        }
+        try {
+            if (planItemsToRemove.size() > 0) {
+                for (String planItemIdToRemove : planItemsToRemove.keySet()) {
+                    getAcademicPlanService().deletePlanItem(planItemIdToRemove, UserSessionHelper.makeContextInfoInstance());
+                }
+            }
+        } catch (Exception e) {
+            return doOperationFailedError(form, "Could not delete plan item", e);
+        }
 
         //  Create events before updating the plan item.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
