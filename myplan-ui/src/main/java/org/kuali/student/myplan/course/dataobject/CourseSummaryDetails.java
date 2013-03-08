@@ -1,12 +1,9 @@
 package org.kuali.student.myplan.course.dataobject;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Course details that comes from course catalog (KS CM)
@@ -179,6 +176,9 @@ public class CourseSummaryDetails {
     }
 
     public List<String> getScheduledTerms() {
+    	if (scheduledTerms == null) {
+    		scheduledTerms = new ArrayList<String>();
+    	}
         return scheduledTerms;
     }
 
