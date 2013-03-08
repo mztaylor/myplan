@@ -15,7 +15,6 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
-import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
@@ -28,7 +27,6 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -41,13 +39,16 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
-import org.kuali.student.myplan.course.dataobject.*;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnrollmentStatusHelper;
 import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
 import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -65,10 +66,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.util.*;
-import java.util.regex.Matcher;
 
 @Controller
-@RequestMapping(value = "/plan")
+@RequestMapping(value = "/plan/**")
 public class PlanController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(PlanController.class);
@@ -76,6 +76,7 @@ public class PlanController extends UifControllerBase {
     private transient AcademicPlanService academicPlanService;
 
     private transient DegreeAuditService degreeAuditService;
+    private transient EnrollmentStatusHelper enrollmentStatusHelper;
 
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -98,6 +99,15 @@ public class PlanController extends UifControllerBase {
     public void setAcademicRecordService(AcademicRecordService academicRecordService) {
         this.academicRecordService = academicRecordService;
     }
+
+    public void setEnrollmentStatusHelper(EnrollmentStatusHelper enrollmentStatusHelper) {
+        this.enrollmentStatusHelper = enrollmentStatusHelper;
+    }
+
+    public EnrollmentStatusHelper getEnrollmentStatusHelper() {
+        return new EnrollmentStatusHelperImpl();
+    }
+
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -1398,23 +1408,59 @@ public class PlanController extends UifControllerBase {
     }
 
     private String getCourseDetailsAsJson(String courseId) {
-        //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
-        CourseSummaryDetails courseDetails = null;
         try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+            //  Also, add a full CourseDetails object so that course details properties are available to be displayed on the form.
+            CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+            //  Turn the list of javascript events into a string of JSON.
+            String courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+            return courseDetailsAsJson;
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
 
-        String courseDetailsAsJson;
+    }
+
+
+    // Course ID GUID, atp key id eg "uw.kuali.atp.2001.1"
+    @RequestMapping(value = "/plan/enroll")
+    public String getCourseSectionStatusAsJson(HttpServletResponse response, HttpServletRequest request) {
         try {
-            //  Turn the list of javascript events into a string of JSON.
-            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
+            String courseId = request.getParameter("courseId");
+            String atpParam = request.getParameter("atpId");
+
+            CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+
+            List<String> atpList = null;
+            if (atpParam == null || "".equals(atpParam.trim())) {
+
+                atpList = courseDetails.getScheduledTerms();
+            } else {
+                atpList = new ArrayList<String>();
+                atpList.add(atpParam);
+            }
+
+            String curric = courseDetails.getSubjectArea();
+            String num = courseDetails.getCourseNumber();
+
+            LinkedHashMap<String, LinkedHashMap<String, Object>> payload = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+            EnrollmentStatusHelper enrollmentStatusHelper = getEnrollmentStatusHelper();
+            for (String atpID : atpList) {
+                AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpID);
+                String year = yt.getYearAsString();
+                String quarter = yt.getTermAsID();
+                enrollmentStatusHelper.getAllSectionStatus(payload, year, quarter, curric, num);
+            }
+
+            String ugh = mapper.defaultPrettyPrintingWriter().writeValueAsString(payload);
+            System.out.println(ugh);
+
+            String json = mapper.writeValueAsString(payload);
+            return json;
+
         } catch (Exception e) {
-            throw new RuntimeException("Could not convert javascript events to JSON.", e);
+            throw new RuntimeException("Unable to retrieve Course Details.", e);
         }
 
-        return courseDetailsAsJson;
     }
 
     /**
@@ -2091,8 +2137,8 @@ public class PlanController extends UifControllerBase {
     }
 
     public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryService() {
-        if (this.courseDetailsInquiryService == null) {
-            this.courseDetailsInquiryService = new CourseDetailsInquiryHelperImpl();
+        if (courseDetailsInquiryService == null) {
+            courseDetailsInquiryService = new CourseDetailsInquiryHelperImpl();
         }
         return courseDetailsInquiryService;
     }
