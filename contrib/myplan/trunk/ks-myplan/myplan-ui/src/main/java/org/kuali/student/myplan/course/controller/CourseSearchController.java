@@ -66,7 +66,7 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -110,7 +110,7 @@ public class CourseSearchController extends UifControllerBase {
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
 
     @Autowired
-    private EnrollmentStatusHelper courseHelper;
+    private CourseHelper courseHelper;
 
     private CampusSearch campusSearch = new CampusSearch();
 
@@ -846,11 +846,11 @@ public class CourseSearchController extends UifControllerBase {
         this.atpTypeComparator = atpTypeComparator;
     }
 
-    public EnrollmentStatusHelper getCourseHelper() {
+    public CourseHelper getCourseHelper() {
         return courseHelper;
     }
 
-    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+    public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
 

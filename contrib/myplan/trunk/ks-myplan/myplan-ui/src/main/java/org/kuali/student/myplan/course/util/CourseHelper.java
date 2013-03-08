@@ -8,7 +8,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.LinkedHashMap;
 
-public interface EnrollmentStatusHelper {
+public interface CourseHelper {
 
 
     public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,

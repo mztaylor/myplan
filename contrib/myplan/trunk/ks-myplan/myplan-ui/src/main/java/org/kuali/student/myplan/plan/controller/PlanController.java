@@ -44,7 +44,7 @@ import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
@@ -78,7 +78,7 @@ public class PlanController extends UifControllerBase {
     private transient DegreeAuditService degreeAuditService;
 
     @Autowired
-    private transient EnrollmentStatusHelper courseHelper;
+    private transient CourseHelper courseHelper;
 
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -102,11 +102,11 @@ public class PlanController extends UifControllerBase {
         this.academicRecordService = academicRecordService;
     }
 
-    public EnrollmentStatusHelper getCourseHelper() {
+    public CourseHelper getCourseHelper() {
         return courseHelper;
     }
 
-    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+    public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
 
