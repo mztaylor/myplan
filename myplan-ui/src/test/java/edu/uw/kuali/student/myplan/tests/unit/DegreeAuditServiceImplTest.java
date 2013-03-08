@@ -1,6 +1,6 @@
 package edu.uw.kuali.student.myplan.tests.unit;
 
-import edu.uw.kuali.student.service.impl.DegreeAuditServiceImpl;
+import org.kuali.student.myplan.plan.util.CourseHelperImpl;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -8,8 +8,7 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
+import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -32,6 +31,9 @@ import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants
 @Transactional
 public class DegreeAuditServiceImplTest {
 
+
+    CourseHelperImpl enrollmenStatusHelper = new CourseHelperImpl();
+
     @Resource
     DegreeAuditService degreeAuditService = null;
 
@@ -46,7 +48,7 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
-        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(courseCd);
+        DeconstructedCourseCode courseCode = enrollmenStatusHelper.getCourseDivisionAndNumber(courseCd);
         System.out.println( courseCode.getSubject() );
         System.out.println( courseCode.getNumber() );
     }

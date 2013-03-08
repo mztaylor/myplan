@@ -44,18 +44,18 @@ import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelper;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -76,7 +76,9 @@ public class PlanController extends UifControllerBase {
     private transient AcademicPlanService academicPlanService;
 
     private transient DegreeAuditService degreeAuditService;
-    private transient EnrollmentStatusHelper enrollmentStatusHelper;
+
+    @Autowired
+    private transient EnrollmentStatusHelper courseHelper;
 
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -100,14 +102,13 @@ public class PlanController extends UifControllerBase {
         this.academicRecordService = academicRecordService;
     }
 
-    public void setEnrollmentStatusHelper(EnrollmentStatusHelper enrollmentStatusHelper) {
-        this.enrollmentStatusHelper = enrollmentStatusHelper;
+    public EnrollmentStatusHelper getCourseHelper() {
+        return courseHelper;
     }
 
-    public EnrollmentStatusHelper getEnrollmentStatusHelper() {
-        return new EnrollmentStatusHelperImpl();
+    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
-
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -1205,8 +1206,8 @@ public class PlanController extends UifControllerBase {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
             courseId = courseDetail.getCourseId();
         } else {
-            CourseCode courseCodeAndSection = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(planItem.getRefObjectId());
-            courseId = EnrollmentStatusHelperImpl.getCourseId(courseCodeAndSection.getSubject(), courseCodeAndSection.getNumber());
+            DeconstructedCourseCode courseCodeAndSection = courseHelper.getCourseDivisionAndNumber(planItem.getRefObjectId());
+            courseId = courseHelper.getCourseId(courseCodeAndSection.getSubject(), courseCodeAndSection.getNumber());
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             sectionCode = courseCodeAndSection.getSection();
         }
@@ -1447,9 +1448,8 @@ public class PlanController extends UifControllerBase {
             String num = courseDetails.getCourseNumber();
 
             LinkedHashMap<String, LinkedHashMap<String, Object>> payload = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
-            EnrollmentStatusHelper enrollmentStatusHelper = getEnrollmentStatusHelper();
             for (AtpHelper.YearTerm yt : atpList) {
-                enrollmentStatusHelper.getAllSectionStatus(payload, yt, curric, num);
+                courseHelper.getAllSectionStatus(payload, yt, curric, num);
             }
 
 //            String ugh = mapper.defaultPrettyPrintingWriter().writeValueAsString(payload);

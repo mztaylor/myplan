@@ -3,6 +3,7 @@ package org.kuali.student.myplan.quickAdd.controller;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
@@ -11,7 +12,6 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -25,23 +25,22 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.myplan.quickAdd.QuickAddConstants;
 import org.kuali.student.myplan.quickAdd.form.QuickAddForm;
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -49,7 +48,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,21 +69,24 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 public class QuickAddController extends UifControllerBase {
     public final Logger logger = Logger.getLogger(QuickAddController.class);
 
-    public CourseSearchController searchController = new CourseSearchController();
+    private CourseSearchController searchController = new CourseSearchController();
 
-    public transient boolean isAcademicCalendarServiceUp = true;
+    private transient boolean isAcademicCalendarServiceUp = true;
 
-    public transient boolean isAcademicRecordServiceUp = true;
+    private transient boolean isAcademicRecordServiceUp = true;
 
-    public transient boolean isCourseOfferingServiceUp = true;
+    private transient boolean isCourseOfferingServiceUp = true;
 
-    public transient CourseOfferingService courseOfferingService;
+    private transient CourseOfferingService courseOfferingService;
 
-    public transient AcademicCalendarService academicCalendarService;
+    private transient AcademicCalendarService academicCalendarService;
 
-    public transient AcademicPlanService academicPlanService;
+    private transient AcademicPlanService academicPlanService;
 
-    public transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+
+    @Autowired
+    private EnrollmentStatusHelper courseHelper;
 
     //  Java to JSON outputter.
     public transient ObjectMapper mapper = new ObjectMapper();
@@ -93,6 +94,14 @@ public class QuickAddController extends UifControllerBase {
     public transient AcademicRecordService academicRecordService;
 
     private transient LuService luService;
+
+    public EnrollmentStatusHelper getCourseHelper() {
+        return courseHelper;
+    }
+
+    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
@@ -223,7 +232,7 @@ public class QuickAddController extends UifControllerBase {
                 String subject = null;
                 String number = null;
                 String searchText = org.apache.commons.lang.StringUtils.upperCase(queryText);
-                CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(searchText);
+                DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(searchText);
                 if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
                     number = courseCode.getNumber();
                     ArrayList<String> divisions = new ArrayList<String>();
@@ -295,7 +304,7 @@ public class QuickAddController extends UifControllerBase {
 
         String courseId = null;
         HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(form.getCourseCd());
+        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(form.getCourseCd());
         if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
             String subject = courseCode.getSubject();
             String number = courseCode.getNumber();
@@ -306,7 +315,7 @@ public class QuickAddController extends UifControllerBase {
             searchController.extractDivisions(divisionMap, subject, divisions, false);
             if (divisions.size() > 0) {
                 subject = divisions.get(0);
-                form.setCourseId(EnrollmentStatusHelperImpl.getCourseId(subject, number));
+                form.setCourseId(courseHelper.getCourseId(subject, number));
                 courseId = form.getCourseId();
             } else {
                 return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
@@ -1117,7 +1126,7 @@ public class QuickAddController extends UifControllerBase {
         int resultsSize = results.size();
         if (isCourseOfferingServiceUp()) {
             for (int i = 0; i < resultsSize; i++) {
-                CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(results.get(i));
+                DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(results.get(i));
                 List<CourseOfferingInfo> courseOfferingInfo = null;
                 boolean removed = false;
 

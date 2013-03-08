@@ -14,6 +14,7 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 
 import javax.xml.namespace.QName;

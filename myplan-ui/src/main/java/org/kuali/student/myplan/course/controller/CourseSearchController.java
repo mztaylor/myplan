@@ -46,8 +46,7 @@ import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
+import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -64,15 +63,10 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.myplan.course.util.CampusSearch;
-import org.kuali.student.myplan.course.util.CourseLevelFacet;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.course.util.CreditsFacet;
-import org.kuali.student.myplan.course.util.CurriculumFacet;
-import org.kuali.student.myplan.course.util.GenEduReqFacet;
-import org.kuali.student.myplan.course.util.TermsFacet;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -106,11 +100,17 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient AcademicCalendarService academicCalendarService;
 
+    private transient AcademicPlanService academicPlanService;
+
+
     @Autowired
     private TermInfoComparator atpTypeComparator;
 
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
+
+    @Autowired
+    private EnrollmentStatusHelper courseHelper;
 
     private CampusSearch campusSearch = new CampusSearch();
 
@@ -135,7 +135,7 @@ public class CourseSearchController extends UifControllerBase {
             campus.append(k.getKey().toString());
             campus.append(",");
         }
-        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(courseCd);
+        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(courseCd);
         if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
             number = courseCode.getNumber();
             subject = courseCode.getSubject();
@@ -151,7 +151,7 @@ public class CourseSearchController extends UifControllerBase {
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
-        courseId = EnrollmentStatusHelperImpl.getCourseId(subject.trim(), number);
+        courseId = courseHelper.getCourseId(subject.trim(), number);
         if (!StringUtils.hasText(courseId)) {
             response.sendRedirect("/student/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus);
             return null;
@@ -570,8 +570,6 @@ public class CourseSearchController extends UifControllerBase {
         logger.info("End of method loadGenEduReqs of CourseSearchController:" + System.currentTimeMillis());
     }
 
-    private transient AcademicPlanService academicPlanService;
-
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
             academicPlanService = (AcademicPlanService)
@@ -848,6 +846,14 @@ public class CourseSearchController extends UifControllerBase {
         this.atpTypeComparator = atpTypeComparator;
     }
 
+    public EnrollmentStatusHelper getCourseHelper() {
+        return courseHelper;
+    }
+
+    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
+
     public CourseSearchStrategy getSearcher() {
         return searcher;
     }
@@ -863,6 +869,8 @@ public class CourseSearchController extends UifControllerBase {
     public void setCampusSearch(CampusSearch campusSearch) {
         this.campusSearch = campusSearch;
     }
+
+
 }
 
 

@@ -18,6 +18,7 @@
     <import resource="classpath:myplan-search-config.xml"/>
     <import resource="classpath:ks-services-test-context.xml"/>
 
+
     <bean id="searchController" class="org.kuali.student.myplan.course.controller.CourseSearchController">
         <property name="luService" ref="luServiceImpl"/>
         <property name="atpService" ref="atpServiceImpl"/>
@@ -119,8 +120,8 @@
         <property name="courseDetailsInquiryHelper" ref="CourseDetailsInquiryViewHelperService"/>
         <!--<property name="person" ref="personimpl"/>-->
         <property name="academicPlanService" ref="academicPlanService"/>
-
     </bean>
+
     <bean name="CourseDetailsInquiryViewHelperService" class=" org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
                   <property name="courseService" ref="CourseService" />
         <property name="atpService" ref="atpServiceImpl"/>

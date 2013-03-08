@@ -14,8 +14,8 @@ import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.myplan.plan.util.EnrollmentStatusHelperImpl.CourseCode;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 
 import javax.xml.namespace.QName;
@@ -362,7 +362,10 @@ public class AtpHelper {
 
     public static boolean isCourseOfferedInTerm(String atp, String course) {
         boolean isCourseOfferedInTerm = false;
-        CourseCode courseCode = EnrollmentStatusHelperImpl.getCourseDivisionAndNumber(course);
+
+        //TODO: This needs to be spring injected
+        CourseHelperImpl courseHelper = new CourseHelperImpl();
+        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(course);
         List<String> offerings = null;
         try {
             offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);

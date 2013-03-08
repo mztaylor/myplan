@@ -1,6 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
-import org.apache.commons.lang.StringUtils;
+import org.kuali.student.myplan.plan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -426,7 +426,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         }
 
 
-        EnrollmentStatusHelperImpl enrollmentStatusHelper = new EnrollmentStatusHelperImpl();
+        CourseHelperImpl enrollmentStatusHelper = new CourseHelperImpl();
         for (CourseOfferingInstitution institution : courseDetails.getCourseOfferingInstitutionList()) {
             for (CourseOfferingTerm term : institution.getCourseOfferingTermList()) {
                 for (ActivityOfferingItem activity : term.getActivityOfferingItemList()) {
