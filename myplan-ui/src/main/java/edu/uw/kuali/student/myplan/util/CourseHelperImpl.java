@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.plan.util;
+package edu.uw.kuali.student.myplan.util;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
@@ -14,14 +14,15 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
 
-public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
+public class CourseHelperImpl implements CourseHelper {
 
 
     private StudentServiceClient studentServiceClient;

@@ -27,7 +27,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.course.util.EnrollmentStatusHelper;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
@@ -86,7 +86,7 @@ public class QuickAddController extends UifControllerBase {
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
 
     @Autowired
-    private EnrollmentStatusHelper courseHelper;
+    private CourseHelper courseHelper;
 
     //  Java to JSON outputter.
     public transient ObjectMapper mapper = new ObjectMapper();
@@ -95,11 +95,11 @@ public class QuickAddController extends UifControllerBase {
 
     private transient LuService luService;
 
-    public EnrollmentStatusHelper getCourseHelper() {
+    public CourseHelper getCourseHelper() {
         return courseHelper;
     }
 
-    public void setCourseHelper(EnrollmentStatusHelper courseHelper) {
+    public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
 
