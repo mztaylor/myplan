@@ -716,8 +716,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
-        Map<String, List<String>> secondarySectionsCodes = new HashMap<String, List<String>>();
-
 
         for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
@@ -738,6 +736,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
             for (ActivityOfferingDisplayInfo aodi : aodiList) {
                 ActivityOfferingItem activity = new ActivityOfferingItem();
+                activity.setCourseId(course.getId());
                 String sectionId = aodi.getActivityOfferingCode();
                 activity.setCode(sectionId);
 
@@ -896,34 +895,15 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 activity.setInstituteCode(instituteCode);
                 /*PrimarySectionCode is for the add button hover text in secondary sections
                 * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
-                if (primary && activity.getPlanItemId() == null) {
+                if (primary) {
                     primarySectionCode = activity.getCode();
-                }
-                if (!primary && primarySectionCode != null) {
                     activity.setPrimarySectionCode(primarySectionCode);
-                }
-                if (!primary && activity.getPlanItemId() != null) {
-                    String primaryCode = activity.getCode().substring(0, 1);
-                    if (secondarySectionsCodes.containsKey(primaryCode)) {
-                        secondarySectionsCodes.get(primaryCode).add(activity.getCode());
-                    } else {
-                        List<String> sections = new ArrayList<String>();
-                        sections.add(activity.getCode());
-                        secondarySectionsCodes.put(primaryCode, sections);
-                    }
+                } else {
+                    activity.setPrimarySectionCode(primarySectionCode);
                 }
                 activity.setPrimary(primary);
                 primary = false;
                 activityOfferingItemList.add(activity);
-            }
-        }
-        if (secondarySectionsCodes.size() > 0) {
-            for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
-                if (activityOfferingItem.isPrimary()) {
-                    if (secondarySectionsCodes.containsKey(activityOfferingItem.getCode())) {
-                        activityOfferingItem.setSecondarySectionCodes(StringUtils.join(secondarySectionsCodes.get(activityOfferingItem.getCode()).toArray(), ","));
-                    }
-                }
             }
         }
 

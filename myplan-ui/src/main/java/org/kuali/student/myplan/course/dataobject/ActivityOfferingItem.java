@@ -53,14 +53,11 @@ public class ActivityOfferingItem {
     private String summerTerm;
 
     private String planItemId;
+    private String courseId;
 
     private boolean primary = false;
-    /*this is only populated for secondary sections
-    if the primary section for that is not planned*/
+    /*This is used for the add hover text in UI*/
     private String primarySectionCode;
-    /*this is only populated for primary sections
-    * if any secondary sections are planned*/
-    private String secondarySectionCodes;
 
     private String instituteCode;
     private String instituteName;
@@ -267,7 +264,15 @@ public class ActivityOfferingItem {
         this.primary = primary;
     }
 
-//    public List<ActivityOfferingItem> getSecondaryList() {
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    //    public List<ActivityOfferingItem> getSecondaryList() {
 //        if (secondaryList == null) {
 //            secondaryList = new ArrayList<ActivityOfferingItem>();
 //        }
@@ -363,13 +368,6 @@ public class ActivityOfferingItem {
         this.primarySectionCode = primarySectionCode;
     }
 
-    public String getSecondarySectionCodes() {
-        return secondarySectionCodes;
-    }
-
-    public void setSecondarySectionCodes(String secondarySectionCodes) {
-        this.secondarySectionCodes = secondarySectionCodes;
-    }
 
     /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
     public String getShortTermName() {
