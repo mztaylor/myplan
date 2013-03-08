@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.util;
 
+import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -16,10 +17,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
 
@@ -133,7 +131,7 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
             section = splitStr[2].trim();
-        } else if(courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
+        } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
@@ -166,6 +164,63 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
             courseId = searchResult.getRows().get(0).getCells().get(0).getValue();
         }
         return courseId;
+    }
+
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, String year, String quarter,
+                                                                                    String curric, String num) throws ServiceException, DocumentException {
+        StudentServiceClient client = getStudentServiceClient();
+
+        String xml = client.getSections(year, quarter, curric, num);
+        Document doc = newDocument(xml);
+        DefaultXPath statusPath = newXPath("/s:SearchResults/s:Sections/s:Section/s:SectionID");
+        List list = statusPath.selectNodes(doc);
+        for (Object node : list) {
+            Element element = (Element) node;
+            String section = element.getTextTrim();
+
+            Map<String, Object> child = doSectionStatus(mapmap, client, year, quarter, curric, num, section);
+
+        }
+        return mapmap;
+    }
+
+    private LinkedHashMap<String, Object> doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, String year, String quarter,
+                                                          String curric, String num, String sectionID)
+            throws ServiceException, DocumentException {
+        String xml = client.getSectionStatus(year, quarter, curric, num, sectionID);
+        Document doc = newDocument(xml);
+
+        DefaultXPath statusPath = newXPath("/s:SectionStatus");
+        Element status = (Element) statusPath.selectSingleNode(doc);
+
+        String sln = status.elementText("SLN");
+        int enrollMaximum = getAsInteger(status, "LimitEstimateEnrollment");
+        int enrollCount = getAsInteger(status, "CurrentEnrollment");
+        String yea = status.elementText("Status");
+        boolean enrollOpen = "open".equalsIgnoreCase(yea);
+        String limitEstimateEnrollmentIndicator = status.elementText("LimitEstimateEnrollmentIndicator");
+        boolean enrollEstimate = "estimate".equalsIgnoreCase(limitEstimateEnrollmentIndicator);
+
+        LinkedHashMap<String, Object> childmap = new LinkedHashMap<String, Object>();
+        childmap.put("enrollCount", enrollCount);
+        childmap.put("enrollMaximum", enrollMaximum);
+        childmap.put("enrollOpen", enrollOpen);
+        childmap.put("enrollEstimate", enrollEstimate);
+        String key = "enrl_atpId_" + sln;
+        parent.put(key, childmap);
+
+        return childmap;
+    }
+
+    private static int getAsInteger(Element element, String name) {
+        int result = 0;
+        try {
+            String enrollmentLimit = element.elementText(name);
+            result = Integer.valueOf(enrollmentLimit);
+        } catch (Exception e) {
+        }
+
+        return result;
     }
 
 
