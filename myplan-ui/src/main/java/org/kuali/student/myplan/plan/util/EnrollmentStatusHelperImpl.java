@@ -166,10 +166,12 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
         return courseId;
     }
 
-    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, String year, String quarter,
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                                                                     String curric, String num) throws ServiceException, DocumentException {
         StudentServiceClient client = getStudentServiceClient();
 
+        String year = yt.getYearAsString();
+        String quarter = yt.getTermAsID();
         String xml = client.getSections(year, quarter, curric, num);
         Document doc = newDocument(xml);
         DefaultXPath statusPath = newXPath("/s:SearchResults/s:Sections/s:Section/s:SectionID");
@@ -178,15 +180,17 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
             Element element = (Element) node;
             String section = element.getTextTrim();
 
-            Map<String, Object> child = doSectionStatus(mapmap, client, year, quarter, curric, num, section);
+            Map<String, Object> child = doSectionStatus(mapmap, client, yt, curric, num, section);
 
         }
         return mapmap;
     }
 
-    private LinkedHashMap<String, Object> doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, String year, String quarter,
+    private LinkedHashMap<String, Object> doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, AtpHelper.YearTerm yt,
                                                           String curric, String num, String sectionID)
             throws ServiceException, DocumentException {
+        String year = yt.getYearAsString();
+        String quarter = yt.getTermAsID();
         String xml = client.getSectionStatus(year, quarter, curric, num, sectionID);
         Document doc = newDocument(xml);
 
@@ -206,7 +210,8 @@ public class EnrollmentStatusHelperImpl implements EnrollmentStatusHelper {
         childmap.put("enrollMaximum", enrollMaximum);
         childmap.put("enrollOpen", enrollOpen);
         childmap.put("enrollEstimate", enrollEstimate);
-        String key = "enrl_atpId_" + sln;
+        String atpId = yt.toATP().replace('.', '-');
+        String key = "enrl_" + atpId + "_" + sln;
         parent.put(key, childmap);
 
         return childmap;
