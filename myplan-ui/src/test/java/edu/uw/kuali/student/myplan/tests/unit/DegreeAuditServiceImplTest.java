@@ -1,13 +1,12 @@
 package edu.uw.kuali.student.myplan.tests.unit;
 
-import org.kuali.student.myplan.plan.util.CourseHelperImpl;
-import org.junit.Test;
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
-
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -20,7 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +34,7 @@ import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants
 public class DegreeAuditServiceImplTest {
 
 
-    CourseHelperImpl enrollmenStatusHelper = new CourseHelperImpl();
+    CourseHelperImpl courseHelper = new CourseHelperImpl();
 
     @Resource
     DegreeAuditService degreeAuditService = null;
@@ -48,7 +50,7 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
-        DeconstructedCourseCode courseCode = enrollmenStatusHelper.getCourseDivisionAndNumber(courseCd);
+        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(courseCd);
         System.out.println( courseCode.getSubject() );
         System.out.println( courseCode.getNumber() );
     }

@@ -1,6 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
-import org.kuali.student.myplan.plan.util.CourseHelperImpl;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -53,6 +53,7 @@ import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstan
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -93,6 +94,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     private transient boolean isAcademicRecordServiceUp = true;
 
     private transient boolean isCourseOfferingServiceUp = true;
+
+    @Autowired
+    CourseHelper courseHelper;
 
 
     public boolean isAcademicCalendarServiceUp() {
@@ -164,6 +168,15 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setCourseLinkBuilder(CourseLinkBuilder courseLinkBuilder) {
         this.courseLinkBuilder = courseLinkBuilder;
+    }
+
+
+    public CourseHelper getCourseHelper() {
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
 
     @Override
@@ -426,7 +439,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         }
 
 
-        CourseHelperImpl enrollmentStatusHelper = new CourseHelperImpl();
         for (CourseOfferingInstitution institution : courseDetails.getCourseOfferingInstitutionList()) {
             for (CourseOfferingTerm term : institution.getCourseOfferingTermList()) {
                 for (ActivityOfferingItem activity : term.getActivityOfferingItemList()) {
@@ -437,7 +449,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     String num = courseSummaryDetails.getCourseNumber();
                     String sectionID = activity.getCode();
                     try {
-                        enrollmentStatusHelper.populateEnrollmentFields(activity, year, quarter, curric, num, sectionID);
+                        courseHelper.populateEnrollmentFields(activity, year, quarter, curric, num, sectionID);
                     } catch (Exception e) {
                         logger.warn("cannot populate enrollment fields", e);
                     }
