@@ -805,6 +805,8 @@ public class PlanController extends UifControllerBase {
                         }
                         addPrimaryCourse = true;
                         primarySectionCode = activityOfferingItem.getCode();
+                        form.setPrimarySectionCode(primarySectionCode);
+                        form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
                         break;
                     } else {
                         PlanItemInfo primaryPlanItem = getPlannedOrBackupPlanItem(courseDetails.getCode() + " " + activityOfferingItem.getCode().substring(0, 1), form.getAtpId());
@@ -814,6 +816,7 @@ public class PlanController extends UifControllerBase {
                             addPrimaryCourse = true;
                             primarySectionCode = activityOfferingItem.getCode().substring(0, 1);
                             form.setPrimarySectionCode(primarySectionCode);
+                            form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
                             PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
                             if (coursePlanItem != null) {
                                 addCourse = false;
@@ -1222,9 +1225,9 @@ public class PlanController extends UifControllerBase {
 
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        //  Make events ...         
+        //  Make events ...
 
-        events.putAll(makeRemoveEvent(planItem, null, courseId, form, planItemsToRemove));
+        events.putAll(makeRemoveEvent(planItem, null, courseId, form, new ArrayList<String>(planItemsToRemove.values())));
         planItemsToRemove.put(planItemId, null);
         try {
             if (planItemsToRemove.size() > 0) {
@@ -1291,9 +1294,9 @@ public class PlanController extends UifControllerBase {
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
             if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId())) {
                 if (sectionPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
-                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
+                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getRegistrationCode());
                 } else if (!sectionPrimary) {
-                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getCode());
+                    plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getRegistrationCode());
                 }
             }
         }
@@ -1762,7 +1765,7 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, Map<String, String> removedPlanItemIds) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, List<String> itemsToUpdate) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -1775,20 +1778,21 @@ public class PlanController extends UifControllerBase {
         params.put("planItemId", planItem.getId());
         //  Create Javascript events.
         String courseDetailsAsJson;
-        String removedPlanItemsJson = null;
         try {
             if (courseDetails == null) {
                 courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             }
             //  Serialize course details into a string of JSON.
             courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
-            if (removedPlanItemIds != null && removedPlanItemIds.size() > 0) {
-                removedPlanItemsJson = mapper.writeValueAsString(removedPlanItemIds);
-            }
         } catch (Exception e) {
             logger.error("Could not convert javascript events to JSON.", e);
             throw new RuntimeException("Could not convert javascript events to JSON.", e);
         }
+        String itemsToBeUpdated = null;
+        if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
+            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(),",");
+        }
+
         params.put("courseDetails", courseDetailsAsJson);
         if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
             events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
@@ -1796,7 +1800,7 @@ public class PlanController extends UifControllerBase {
             params.put("SectionCode", planForm.getSectionCode());
             params.put("InstituteCode", planForm.getInstituteCode());
             params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
-            params.put("PlanItemsDeleted", removedPlanItemsJson);
+            params.put("ItemsToUpdate", itemsToBeUpdated);
             if (courseDetails.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
                 String sectionCode = null;
                 List<String> sections = new ArrayList<String>();
@@ -1861,6 +1865,7 @@ public class PlanController extends UifControllerBase {
                 params.put("InstituteCode", planForm.getInstituteCode());
                 params.put("Primary", String.valueOf(planForm.isPrimary()));
                 params.put("PrimaryPlanItemId", planForm.getPrimaryPlanItemId());
+                params.put("ItemsToUpdate", planForm.getPrimaryRegistrationCode());
                 if (planForm.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
                     String sectionCode = null;
                     List<String> sections = new ArrayList<String>();

@@ -67,6 +67,8 @@ public class PlanForm extends UifFormBase {
     private String primarySectionCode;
 
     private String primaryPlanItemId;
+    
+    private String primaryRegistrationCode;
 
     private String instituteCode;
 
@@ -328,6 +330,14 @@ public class PlanForm extends UifFormBase {
 
     public void setPlanActivities(List<ActivityOfferingItem> planActivities) {
         this.planActivities = planActivities;
+    }
+
+    public String getPrimaryRegistrationCode() {
+        return primaryRegistrationCode;
+    }
+
+    public void setPrimaryRegistrationCode(String primaryRegistrationCode) {
+        this.primaryRegistrationCode = primaryRegistrationCode;
     }
 
     /*Only used in the Ui for getting the short Term*/
