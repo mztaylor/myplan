@@ -931,6 +931,11 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     margin-left: 5px;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .sections {
+    color: #444;
+    margin-left: 5px;
+}
+
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .grade {
     color: #777;
     font-weight: bold;

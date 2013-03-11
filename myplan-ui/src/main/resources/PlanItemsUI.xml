@@ -581,10 +581,18 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="@{#line.courseCode} @{#line.activityCode}"/>
+                                <property name="messageText" value="@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>code</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.activityCode}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
                                     </list>
                                 </property>
                             </bean>
@@ -733,6 +741,14 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>code</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.activityCode}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
                                     </list>
                                 </property>
                             </bean>
@@ -902,6 +918,14 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.sections}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
                                 <property name="messageText" value="(@{#line.courseDetails.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1007,6 +1031,14 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>code</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.sections}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1149,6 +1181,14 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.sections}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
                                 <property name="messageText" value="(@{#line.courseDetails.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1226,6 +1266,14 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>code</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField">
+                                <property name="messageText" value="@{#line.sections}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>sections</value>
                                     </list>
                                 </property>
                             </bean>

@@ -6,6 +6,7 @@ import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -52,7 +53,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
                 String courseID = planItem.getRefObjectId();
                 //  Only create a data object for the specified type.
-                if (planItem.getTypeKey().equals(planItemType)) {
+                if (planItem.getTypeKey().equals(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
 
                     plannedCourseDO.setPlanItemDataObject(PlanItemDataObject.build(planItem));
 
@@ -60,6 +61,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     try {
                         if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
                             plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
+                            plannedCourseDO.setPlanActivities(getPlannedSections(plannedCourseDO.getCourseDetails().getCourseId(), planItem.getPlanPeriods().get(0)));
                         }
                     } catch (Exception e) {
                         logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
@@ -71,6 +73,18 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
         }
         return plannedCoursesList;
+    }
+
+    /*Used to get the planned sections for a coursId and term*/
+    private List<ActivityOfferingItem> getPlannedSections(String courseId, String term) {
+        List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
+        List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryHelper().getActivityOfferingItemsById(courseId, term);
+        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+            if (activityOfferingItem.getPlanItemId() != null) {
+                sectionsPlanned.add(activityOfferingItem);
+            }
+        }
+        return sectionsPlanned;
     }
 
 
