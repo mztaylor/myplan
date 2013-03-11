@@ -11,7 +11,6 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -187,7 +186,6 @@ public class QuickAddController extends UifControllerBase {
                             HttpServletRequest request, HttpServletResponse response) {
 
         super.start(form, result, request, response);
-        QuickAddForm searchForm = (QuickAddForm) form;
         form.setViewId("QuickAdd-FormView");
         form.setView(super.getViewService().getViewById("QuickAdd-FormView"));
         return getUIFModelAndView(form);
@@ -226,7 +224,6 @@ public class QuickAddController extends UifControllerBase {
         if (queryText.length() >= 2) {
             if (StringUtils.hasText(queryText)) {
                 SearchRequest searchRequest = null;
-                SearchResult searchResult = null;
                 HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
                 /*Params from the Url*/
                 String subject = null;
@@ -912,7 +909,6 @@ public class QuickAddController extends UifControllerBase {
         }
 
         List<PlanItemInfo> planItems = null;
-        PlanItem item = null;
         try {
             planItems = getAcademicPlanService().getPlanItemsInPlanByType(plan.getId(), typeKey, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
