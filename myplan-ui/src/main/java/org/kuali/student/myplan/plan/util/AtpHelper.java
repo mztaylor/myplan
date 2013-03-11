@@ -336,7 +336,7 @@ public class AtpHelper {
     }
 
     /**
-     * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
+     * Returns true if an ATP is considered a completed term Otherwise, false.
      *
      * @param atpId
      * @return

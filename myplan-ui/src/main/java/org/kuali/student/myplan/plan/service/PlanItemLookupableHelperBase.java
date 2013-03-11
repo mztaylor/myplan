@@ -13,6 +13,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -75,13 +76,15 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         return plannedCoursesList;
     }
 
-    /*Used to get the planned sections for a coursId and term*/
+    /*Used to get the planned sections for a coursId and term excluding the completed terms*/
     private List<ActivityOfferingItem> getPlannedSections(String courseId, String term) {
         List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
-        List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryHelper().getActivityOfferingItemsById(courseId, term);
-        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (activityOfferingItem.getPlanItemId() != null) {
-                sectionsPlanned.add(activityOfferingItem);
+        if (!AtpHelper.isAtpCompletedTerm(term)) {
+            List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryHelper().getActivityOfferingItemsById(courseId, term);
+            for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+                if (activityOfferingItem.getPlanItemId() != null) {
+                    sectionsPlanned.add(activityOfferingItem);
+                }
             }
         }
         return sectionsPlanned;
