@@ -1,10 +1,12 @@
 package org.kuali.student.myplan.plan.dataobject;
 
+import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,4 +72,20 @@ public class PlannedCourseDataObject implements Comparable {
     public void setPlanActivities(List<ActivityOfferingItem> planActivities) {
         this.planActivities = planActivities;
     }
+
+    /*Added this for getting the Sections planned as a String to show in PlanView courses
+    * For eg: COM 322 "A, AA,.."*/
+    public String getSections() {
+        List<String> sections = new ArrayList<String>();
+        if (getPlanActivities() != null && getPlanActivities().size() > 0) {
+            for (ActivityOfferingItem activityOfferingItem : getPlanActivities()) {
+                if (sections.size() == 2) {
+                    return String.format("%s,..", StringUtils.join(sections.toArray(), ", "));
+                }
+                sections.add(activityOfferingItem.getCode());
+            }
+        }
+        return StringUtils.join(sections.toArray(), ", ");
+    }
+
 }
