@@ -15,22 +15,7 @@
  */
 package org.kuali.student.myplan.course.controller;
 
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
-
+import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
@@ -40,13 +25,8 @@ import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.search.dto.SearchParam;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.common.search.dto.*;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
@@ -63,10 +43,10 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
+import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -82,7 +62,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import edu.uw.kuali.student.myplan.util.TermInfoComparator;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.*;
+
+import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 @Controller
 @RequestMapping(value = "/course/**")
@@ -319,12 +305,12 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     @RequestMapping(value = "/course/search")
-   public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-    	
-    	boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
-    	if (!isAcademicCalenderServiceUp) {
-    		AtpHelper.addServiceError("searchTerm");
-    	}
+    public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
+
+        boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
+        if (!isAcademicCalenderServiceUp) {
+            AtpHelper.addServiceError("searchTerm");
+        }
 
         /*Params from the Url*/
         String queryText = request.getParameter("queryText");
@@ -333,7 +319,7 @@ public class CourseSearchController extends UifControllerBase {
         String campusParamStr = request.getParameter("campusParam");
         List<String> campusParams = Arrays.asList(campusParamStr.split("\\s*,\\s*"));
         String termParam = request.getParameter("termParam");
-        
+
         /*populating the form with the params*/
         CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery(queryText);
@@ -341,16 +327,15 @@ public class CourseSearchController extends UifControllerBase {
         form.setSearchTerm(termParam);
 
 
-        
         /*populating the CourseSearchItem list*/
         String user = UserSessionHelper.getStudentId();
         List<CourseSearchItem> courses = courseSearch(form, user, isAcademicCalenderServiceUp);
-        
+
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
         jsonString = jsonString.append("{ \"aaData\":[");
         boolean first = true;
-        
+
         for (CourseSearchItem item : courses) {
             String scheduledAndOfferedTerms = null;
             try {
@@ -358,30 +343,32 @@ public class CourseSearchController extends UifControllerBase {
             } catch (IOException e) {
                 throw new RuntimeException("Could not write the value using mapper", e);
             }
-            
+
             String status = "";
-            if (item.getStatus().getLabel().length() > 0) {
-                status = "<span id=\\\"" + item.getCourseId() + "_status\\\" class=\\\"" + item.getStatus().getLabel().toLowerCase() + "\\\">" + item.getStatus().getLabel() + "</span>";
+            String courseId = item.getCourseId();
+            String label = item.getStatus().getLabel();
+            if (label.length() > 0) {
+                status = "<span id=\\\"" + courseId + "_status\\\" class=\\\"" + label.toLowerCase() + "\\\">" + label + "</span>";
             } else if (UserSessionHelper.isAdviser()) {
-                status = "<span id=\\\"" + item.getCourseId() + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
+                status = "<span id=\\\"" + courseId + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
-                status = "<span id=\\\"" + item.getCourseId() + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + item.getCourseId() + "\\\"onclick=\\\"openMenu('" + item.getCourseId() + "_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
+                status = "<span id=\\\"" + courseId + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + courseId + "\\\"onclick=\\\"openMenu('" + courseId + "_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
             }
-            
+
             String courseName = "";
             if (item.getCourseName() != null) {
-                courseName = item.getCourseName().replace("\"", "'");
+                courseName = item.getCourseName().replace('\"', '\'');
             }
 
             if (first) {
-            	first = false;
+                first = false;
             } else {
-            	jsonString.append(", ");
+                jsonString.append(", ");
             }
-            
+
             jsonString.append("[\"").append(item.getCode()).
                     append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(item.getCourseId()).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"myplan-text-ellipsis\\\">").
+                    append(courseId).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"myplan-text-ellipsis\\\">").
                     append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
@@ -390,9 +377,9 @@ public class CourseSearchController extends UifControllerBase {
                     append("\",\"").append(item.getCreditsFacetKeys()).
                     append("\",\"").append(item.getCourseLevelFacetKeys()).
                     append("\",\"").append(item.getCurriculumFacetKeys()).
-                  append("\"]");
+                    append("\"]");
         }
-        jsonString.append( "]}");
+        jsonString.append("]}");
         try {
             response.setHeader("content-type", "application/json");
             response.setHeader("Cache-Control", "No-cache");
@@ -403,7 +390,7 @@ public class CourseSearchController extends UifControllerBase {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-    
+
     @RequestMapping(params = "methodToCall=searchForCourses")
     public ModelAndView searchForCourses(@ModelAttribute("KualiForm") CourseSearchForm form, BindingResult result,
                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
@@ -411,31 +398,33 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public List<String> getResults(SearchRequest request, String division, String code) {
-        List<String> results = new ArrayList<String>();
         try {
-            if (division != null && code != null) {
-                request.addParam("division", division);
-                request.addParam("code", code);
-
-            } else if (division != null && code == null) {
-                request.addParam("division", division);
-            } else {
+            List<String> results = new ArrayList<String>();
+            if (division == null && code == null) {
                 return results;
             }
+            if (code != null) {
+                request.addParam("code", code);
+
+            }
+            if (division != null) {
+                request.addParam("division", division);
+            }
+
             request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
 
             SearchResult searchResult = getLuService().search(request);
             if (searchResult != null) {
-            	for (SearchResultRow row : searchResult.getRows()) {
-            		results.add(getCellValue(row, "courseCode"));
-            	}
+                for (SearchResultRow row : searchResult.getRows()) {
+                    results.add(getCellValue(row, "courseCode"));
+                }
             }
 
+            return results;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return results;
     }
 
 
