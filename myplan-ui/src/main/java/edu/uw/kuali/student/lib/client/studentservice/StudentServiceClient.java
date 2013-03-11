@@ -1,10 +1,8 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
 import org.restlet.Client;
-import org.restlet.representation.Representation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface StudentServiceClient {
 
@@ -86,7 +84,7 @@ public interface StudentServiceClient {
 
     public abstract String getSecondarySections(String year, String quarter, String abbrev, String num, String section) throws ServiceException;
 
-    
+
     public abstract String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException;
 
     /**
@@ -108,7 +106,6 @@ public interface StudentServiceClient {
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException;
 
     /**
-     *
      * @param url
      * @return
      */

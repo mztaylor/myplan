@@ -1,17 +1,14 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.restlet.Client;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.restlet.Client;
 
 /**
  * Rest client for the Student Service.
@@ -21,7 +18,9 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     private static final Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     @Override
-    public Client getClient() { return null; }
+    public Client getClient() {
+        return null;
+    }
 
     public StudentServiceClientMockImpl() {
     }

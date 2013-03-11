@@ -4,10 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
-import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -20,12 +18,11 @@ import org.restlet.engine.security.DefaultSslContextFactory;
 import org.restlet.representation.Representation;
 import org.restlet.util.Series;
 
-import java.io.*;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -34,6 +31,57 @@ import java.util.*;
 public class StudentServiceClientImpl
         implements StudentServiceClient {
 
+    //	public static void main( String[] args ) throws Exception {
+//		String baseUrl = "https://ucswseval1.cac.washington.edu/student";
+//		String keyStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uwkstest.jks";
+//		String keyStorePasswd = "changeit";
+//		String trustStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uw.jts";
+//		String trustStorePasswd = "secret";
+//		StudentServiceClientImpl impl = new StudentServiceClientImpl( baseUrl, keyStoreFilename, keyStorePasswd, trustStoreFilename, trustStorePasswd );
+//		// https://ucswseval1.cac.washington.edu/student/v4/course/2013,spring,ENGL,131/Z/status.xml
+//		long quick = Long.MAX_VALUE;
+//		long slow = Long.MIN_VALUE;
+//		long zerosecond = 0;
+//		long halfsecond = 0;
+//		long onesecond = 0;
+//		long twosecond = 0;
+//		long threesecond = 0;
+//		int count = 0;;
+//		long start = System.currentTimeMillis();
+//		for( int nth = 0; nth < 10; nth++ ) 
+//		{
+//		String xml = null;
+//		for(char section = 'A'; section != 'Z'; section++ ) {
+//			count++;
+//			String gorp = Character.toString( section );
+//			long kisskiss = System.currentTimeMillis();
+//			xml = impl.getSectionStatus("2013", "spring", "ENGL", "131", gorp);
+//			long bangbang = System.currentTimeMillis() - kisskiss;
+//			quick = Math.min( bangbang, quick );
+//			slow = Math.max( bangbang, slow );
+//			if( bangbang < 500 ) zerosecond++;
+//			if( bangbang > 499 && bangbang < 1000 ) halfsecond++;
+//			if( bangbang > 999 && bangbang < 2000 ) onesecond++;
+//			if( bangbang > 1999 && bangbang < 3000 ) twosecond++;
+//			if( bangbang > 2999 ) threesecond++;
+//			
+//		}
+//		}
+//		long elapsed = System.currentTimeMillis() - start;
+//		System.out.println( "done ");
+//		System.out.println( "elapsed " + elapsed );
+//		System.out.println( "count " + count );
+//		System.out.println( "average " + ( elapsed / count ));
+//		
+//		System.out.println( "quickest " + quick );
+//		System.out.println( "slowest " + slow );
+//		
+//		System.out.println( "zerosecond " + zerosecond );
+//		System.out.println( "halfsecond " + halfsecond );
+//		System.out.println( "onesecond " + onesecond );
+//		System.out.println( "twosecond " + twosecond );
+//		System.out.println( "threesecond " + threesecond );
+//	}
     private static Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     private static final String SERVICE_VERSION = "v4";
@@ -126,36 +174,34 @@ public class StudentServiceClientImpl
         Response response = client.handle(request);
 
         Status status = response.getStatus();
-        if (!(status.equals(Status.SUCCESS_OK))) {
-            throw new ServiceException("Unable to get versions. "
-                    + status.getName() + " (" + status.getCode() + "): " + status.getDescription());
+        if (status.isError()) {
+            throw new ServiceException("Unable to get available versions: " + status);
         }
 
-        // !!! This can only be called once.
-        Representation output = response.getEntity();
-        Document document = null;
 
         try {
             SAXReader reader = new SAXReader();
-            document = reader.read(output.getStream());
+            // !!! This can only be called once.
+            Representation output = response.getEntity();
+            Document document = reader.read(output.getStream());
+            DefaultXPath xpath = new DefaultXPath("//x:a[@class='version']");
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("x", "http://www.w3.org/1999/xhtml");
+            xpath.setNamespaceURIs(namespaces);
+
+            List<?> nodes = xpath.selectNodes(document);
+
+            List<String> versions = new ArrayList<String>();
+            for (Object node : nodes) {
+                Element e = (Element) node;
+                versions.add(e.getTextTrim());
+            }
+
+            return versions;
         } catch (Exception e) {
             throw new ServiceException("Could not read the reply.", e);
         }
 
-        DefaultXPath xpath = new DefaultXPath("//x:a[@class='version']");
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("x", "http://www.w3.org/1999/xhtml");
-        xpath.setNamespaceURIs(namespaces);
-
-        List<?> nodes = xpath.selectNodes(document);
-
-        List<String> versions = new ArrayList<String>();
-        for (Object node : nodes) {
-            Element e = (Element) node;
-            versions.add(e.getTextTrim());
-        }
-
-        return versions;
     }
 
     /**
@@ -206,7 +252,7 @@ public class StudentServiceClientImpl
 
     /**
      * https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2003&quarter=&curriculum_abbreviation=ECON&course_number=299
-     * 
+     *
      * @param year
      * @param abbrev
      * @param num
@@ -235,9 +281,9 @@ public class StudentServiceClientImpl
      * @return
      * @throws ServiceException
      */
-    public String getSections(String year, String quarter, String abbrev, String num ) throws ServiceException {
-        abbrev = abbrev.replace( " ", "%20" );
-        abbrev = abbrev.replace( "&", "%26" );
+    public String getSections(String year, String quarter, String abbrev, String num) throws ServiceException {
+        abbrev = abbrev.replace(" ", "%20");
+        abbrev = abbrev.replace("&", "%26");
 
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
@@ -248,44 +294,37 @@ public class StudentServiceClientImpl
                 .append("course_number=").append(num)
 //                .append("&include_secondaries=on")
         ;
-        System.out.println(url);
-
         return sendQuery(url.toString().trim());
     }
 
     /*
         /student/v4/public/course/2012,autumn,CHEM,110/A.xml
      */
-    public String getSecondarySections( String year, String quarter, String abbrev, String num, String section )
-        throws ServiceException
-    {
+    public String getSecondarySections(String year, String quarter, String abbrev, String num, String section)
+            throws ServiceException {
         String base = getBaseUrl();
         String ver = getServiceVersion();
 
-        abbrev = abbrev.replace( " ", "%20" );
-        abbrev = abbrev.replace( "&", "%26" );
-        String url = String.format( "%s/%s/public/course/%s,%s,%s,%s/%s.xml", base, ver, year, quarter, abbrev, num, section );
-        System.out.println( url );
-        return sendQuery( url );
+        abbrev = abbrev.replace(" ", "%20");
+        abbrev = abbrev.replace("&", "%26");
+        String url = String.format("%s/%s/public/course/%s,%s,%s,%s/%s.xml", base, ver, year, quarter, abbrev, num, section);
+        return sendQuery(url);
     }
-    
-    /**
 
-		Lighter weight query used for checking just enrollment info: current #, limit #, estimate/limited, etc. 
-		
-     	/student/v4/course/2013,winter,ASTR,101/A/status.xml
-    
+    /**
+     * Lighter weight query used for checking just enrollment info: current #, limit #, estimate/limited, etc.
+     * <p/>
+     * /student/v4/course/2013,winter,ASTR,101/A/status.xml
      */
     public String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException {
         String base = getBaseUrl();
         String ver = getServiceVersion();
 
-        abbrev = abbrev.replace( " ", "%20" );
-        abbrev = abbrev.replace( "&", "%26" );
-        String url = String.format( "%s/%s/course/%s,%s,%s,%s/%s/status.xml", base, ver, year, quarter, abbrev, num, section );
-        System.out.println( url );
-        return sendQuery( url );
-    
+        abbrev = abbrev.replace(" ", "%20");
+        abbrev = abbrev.replace("&", "%26");
+        String url = String.format("%s/%s/course/%s,%s,%s,%s/%s/status.xml", base, ver, year, quarter, abbrev, num, section);
+        return sendQuery(url);
+
     }
 
     /**
@@ -326,23 +365,24 @@ public class StudentServiceClientImpl
 
     @Override
     public boolean connectionStatus(String url) {
-       boolean connectionEstablished=true;
+        boolean connectionEstablished = true;
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
         Response response = client.handle(request);
         Status status = response.getStatus();
-            if(status.getCode()!=200){
-                connectionEstablished=false;
-                logger.error(String.format("Query failed to URL [%s] - %s (%s): %s",
-                        url, status.getName(), status.getCode(), status.getDescription()));
+        if (status.isError()) {
+            connectionEstablished = false;
+            String msg = String.format("Query failed to URL [%s] - %s", url, status.toString());
+            logger.error(msg);
 
-            }
-       return connectionEstablished;
+        }
+        System.out.println("connect status: " + url + " " + connectionEstablished);
+        return connectionEstablished;
     }
 
-    public String sendQuery(String url) throws ServiceException 
-    {
+    public String sendQuery(String url) throws ServiceException {
+        System.out.println(url);
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
