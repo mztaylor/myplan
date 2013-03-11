@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.course.service;
 
-import org.kuali.student.myplan.course.util.CourseHelper;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -35,6 +34,7 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.dataobject.*;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -42,8 +42,11 @@ import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
-import org.kuali.student.myplan.plan.util.*;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -215,8 +218,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * If version identpendent Id provided, retrieve the right course version Id based on current term/date
          * else get the same id as the provided course version specific Id
          */
-        String verifiedCourseId = getVerifiedCourseId(courseId);
         try {
+            String verifiedCourseId = getVerifiedCourseId(courseId);
             CourseInfo course = getCourseService().getCourse(verifiedCourseId);
             CourseSummaryDetails courseDetails = retrieveCourseSummary(course);
 
@@ -333,8 +336,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         courseDetails.setCurriculumTitle(subjectAreaMap.get(course.getSubjectArea().trim()));
 
 
-        // -- Scheduled Terms
-        List<String> scheduledTerms = new ArrayList<String>();
         //  Fetch the available terms from the Academic Calendar Service.
         if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
             try {
@@ -349,7 +350,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                             .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
 
                     if (offerings.contains(course.getCode())) {
-                        scheduledTerms.add(term.getName());
+                        courseDetails.getScheduledTerms().add(term.getName());
                     }
                 }
             } catch (Exception e) {
@@ -357,15 +358,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
         }
 
-        courseDetails.setScheduledTerms(scheduledTerms);
-
 
         // Last Offered
         //  If course not scheduled for future terms, Check for the last term when course was offered
         if (isCourseOfferingServiceUp()) {
             CourseOfferingService cos = getCourseOfferingService();
 
-            if (scheduledTerms.isEmpty()) {
+            if (courseDetails.getScheduledTerms().isEmpty()) {
                 //TODO: The number 10 should really come from a property at the very least a static constant
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {
@@ -429,33 +428,16 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         // Course offerings
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        List<String> termList = null;
         if (request.getParameter("section_term") != null) {
             String termId = AtpHelper.atpIdToTermName(request.getParameter("section_term"));
-            List<String> termList = new ArrayList<String>();
+            termList = new ArrayList<String>();
             termList.add(termId);
-            courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, termList));
         } else {
-            courseDetails.setCourseOfferingInstitutionList(getCourseOfferingInstitutions(course, courseDetails.getCourseSummaryDetails().getScheduledTerms()));
+            termList = courseDetails.getCourseSummaryDetails().getScheduledTerms();
         }
-
-
-        for (CourseOfferingInstitution institution : courseDetails.getCourseOfferingInstitutionList()) {
-            for (CourseOfferingTerm term : institution.getCourseOfferingTermList()) {
-                for (ActivityOfferingItem activity : term.getActivityOfferingItemList()) {
-
-                    String year = term.getYearTerm().getYearAsString();
-                    String quarter = term.getYearTerm().getTermAsID();
-                    String curric = courseSummaryDetails.getSubjectArea();
-                    String num = courseSummaryDetails.getCourseNumber();
-                    String sectionID = activity.getCode();
-                    try {
-                        courseHelper.populateEnrollmentFields(activity, year, quarter, curric, num, sectionID);
-                    } catch (Exception e) {
-                        logger.warn("cannot populate enrollment fields", e);
-                    }
-                }
-            }
-        }
+        List<CourseOfferingInstitution> courseOfferingInstitutions = getCourseOfferingInstitutions(course, termList);
+        courseDetails.setCourseOfferingInstitutionList(courseOfferingInstitutions);
 
         return courseDetails;
     }
@@ -647,11 +629,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
             List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp);
             for (ActivityOfferingItem activityOfferingItem : list) {
-                String instituteCode = activityOfferingItem.getInstituteCode();
+                int instituteCode = Integer.valueOf(activityOfferingItem.getInstituteCode());
                 String instituteName = activityOfferingItem.getInstituteName();
                 CourseOfferingInstitution courseOfferingInstitution = null;
                 for (CourseOfferingInstitution temp : instituteList) {
-                    if (instituteCode.equals(temp.getCode())) {
+                    if (instituteCode == temp.getCode()) {
                         courseOfferingInstitution = temp;
                         break;
                     }
@@ -682,7 +664,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
             }
         }
-        Collections.sort(instituteList, Collections.reverseOrder());
+//        Collections.sort(instituteList  , Collections.reverseOrder());
+        Collections.sort(instituteList);
 
         return instituteList;
 
@@ -810,9 +793,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 String instituteName = null;
 
                 String campus = null;
-//                String enrollCount = null;
-//                String enrollMaximum = null;
-//                String enrollEstimate = null;
                 for (AttributeInfo attrib : aodi.getAttributes()) {
                     String key = attrib.getKey();
                     String value = attrib.getValue();
@@ -828,29 +808,14 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                         activity.setRegistrationCode(value);
                         continue;
                     }
-                    if ("instituteCode".equals(key)) {
+                    if ("InstituteCode".equals(key)) {
                         instituteCode = value;
                         continue;
                     }
-                    if ("instituteName".equals(key) && !"".equals(value)) {
+                    if ("InstituteName".equals(key) && !"".equals(value)) {
                         instituteName = value;
                         continue;
                     }
-
-//                    if ("currentEnrollment".equals(key) && !"".equals(value)) {
-//                        enrollCount = value;
-//                        continue;
-//                    }
-//
-//                    if ("enrollmentLimit".equals(key) && !"".equals(value)) {
-//                        enrollMaximum = value;
-//                        continue;
-//                    }
-//
-//                    if ("limitEstimate".equals(key) && "E".equals(value)) {
-//                        enrollEstimate = value;
-//                        continue;
-//                    }
 
                     if ("SectionComments".equalsIgnoreCase(key)) {
                         activity.setSectionComments(value);
@@ -879,10 +844,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
 
                 }
-//                activity.setEnrollOpen(true);
-//                activity.setEnrollCount(enrollCount);
-//                activity.setEnrollMaximum(enrollMaximum);
-//                activity.setEnrollEstimate(enrollEstimate);
                 activity.setInstructor(aodi.getInstructorName());
 
                 activity.setHonorsSection(aodi.getIsHonorsOffering());
@@ -980,19 +941,17 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      * @return
      */
     public String getPlanItemId(String refObjId, String atpId) {
-        String planItemId = null;
         try {
             PlanController planController = new PlanController();
             PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
             if (planItem != null) {
-                planItemId = planItem.getId();
+                String planItemId = planItem.getId();
+                return planItemId;
             }
-
         } catch (Exception e) {
             logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
-            return null;
         }
-        return planItemId;
+        return null;
     }
 
 

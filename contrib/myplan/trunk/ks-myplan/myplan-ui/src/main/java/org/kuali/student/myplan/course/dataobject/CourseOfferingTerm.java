@@ -1,9 +1,9 @@
 package org.kuali.student.myplan.course.dataobject;
 
+import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +19,7 @@ public class CourseOfferingTerm {
 
     /*NOTE: Added the institute code in this course offering term
     because in UI accessing the parent element is difficult.*/
-    private String instituteCode;
+    private int instituteCode;
     private List<ActivityOfferingItem> activityOfferingItemList;
 
 
@@ -58,11 +58,11 @@ public class CourseOfferingTerm {
         this.activityOfferingItemList = activityOfferingItemList;
     }
 
-    public String getInstituteCode() {
+    public int getInstituteCode() {
         return instituteCode;
     }
 
-    public void setInstituteCode(String instituteCode) {
+    public void setInstituteCode(int instituteCode) {
         this.instituteCode = instituteCode;
     }
 }
