@@ -12,9 +12,8 @@ import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
@@ -65,25 +64,6 @@ public class CourseHelperImpl implements CourseHelper {
         return path;
     }
 
-
-    public void populateEnrollmentFields(ActivityOfferingItem activity, String year, String quarter, String curric, String num, String sectionID)
-            throws Exception {
-        StudentServiceClient client = getStudentServiceClient();
-        String xml = client.getSectionStatus(year, quarter, curric, num, sectionID);
-        Document doc = newDocument(xml);
-        DefaultXPath statusPath = newXPath("/s:SectionStatus");
-        Element status = (Element) statusPath.selectSingleNode(doc);
-
-        String enrollmentLimit = status.elementText("LimitEstimateEnrollment");
-        String currentEnrollment = status.elementText("CurrentEnrollment");
-        String limitEstimate = status.elementText("LimitEstimateEnrollmentIndicator");
-        limitEstimate = "estimate".equalsIgnoreCase(limitEstimate) ? "E" : "";
-
-        activity.setEnrollCount(currentEnrollment);
-        activity.setEnrollMaximum(enrollmentLimit);
-        activity.setEnrollEstimate(limitEstimate);
-    }
-
     public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                                                                     String curric, String num) throws ServiceException, DocumentException {
         StudentServiceClient client = getStudentServiceClient();
@@ -98,7 +78,7 @@ public class CourseHelperImpl implements CourseHelper {
             Element element = (Element) node;
             String section = element.getTextTrim();
 
-            Map<String, Object> child = doSectionStatus(mapmap, client, yt, curric, num, section);
+            doSectionStatus(mapmap, client, yt, curric, num, section);
 
         }
         return mapmap;
@@ -175,8 +155,8 @@ public class CourseHelperImpl implements CourseHelper {
     }
 
 
-    private LinkedHashMap<String, Object> doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, AtpHelper.YearTerm yt,
-                                                          String curric, String num, String sectionID)
+    private void doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, AtpHelper.YearTerm yt,
+                                 String curric, String num, String sectionID)
             throws ServiceException, DocumentException {
         String year = yt.getYearAsString();
         String quarter = yt.getTermAsID();
@@ -202,7 +182,5 @@ public class CourseHelperImpl implements CourseHelper {
         String atpId = yt.toATP().replace('.', '-');
         String key = "enrl_" + atpId + "_" + sln;
         parent.put(key, childmap);
-
-        return childmap;
     }
 }

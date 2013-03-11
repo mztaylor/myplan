@@ -1,20 +1,7 @@
 package edu.uw.kuali.student.service.impl;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jws.WebParam;
-import javax.xml.namespace.QName;
-
+import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
+import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -24,17 +11,7 @@ import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingAdminDisplayInfo;
-import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
-import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingAdminDisplayInfo;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
-import org.kuali.student.enrollment.courseoffering.dto.FormatOfferingInfo;
-import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupInfo;
-import org.kuali.student.enrollment.courseoffering.dto.RegistrationGroupTemplateInfo;
-import org.kuali.student.enrollment.courseoffering.dto.ScheduleComponentDisplayInfo;
-import org.kuali.student.enrollment.courseoffering.dto.ScheduleDisplayInfo;
-import org.kuali.student.enrollment.courseoffering.dto.SeatPoolDefinitionInfo;
+import org.kuali.student.enrollment.courseoffering.dto.*;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
@@ -43,29 +20,19 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
-import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.StatusInfo;
-import org.kuali.student.r2.common.dto.TimeOfDayInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
-import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
-import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
-import org.kuali.student.r2.common.exceptions.DependentObjectsExistException;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
-import org.kuali.student.r2.common.exceptions.ReadOnlyException;
-import org.kuali.student.r2.common.exceptions.VersionMismatchException;
+import org.kuali.student.r2.common.dto.*;
+import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
-import org.springframework.util.StringUtils;
 
-import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
-import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import javax.jws.WebParam;
+import javax.xml.namespace.QName;
+import java.io.StringReader;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * UW implementation of CourseOfferingService.
@@ -382,7 +349,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     for (Object curricNode : curricNodeList) {
                         String abbrev = ((Element) curricNode).elementText("TimeScheduleLinkAbbreviation");
 
-                        AttributeInfo attrib = new AttributeInfo(CourseSearchConstants.TIME_SCHEDULE_KEY,abbrev);
+                        AttributeInfo attrib = new AttributeInfo(CourseSearchConstants.TIME_SCHEDULE_KEY, abbrev);
 
                         activityOfferingInfo.getAttributes().add(attrib);
                     }
@@ -873,53 +840,64 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             }
 
             for (String sectionID : sectionList) {
-                ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
-
-                String xml;
+                Document doc = null;
                 try {
                     // Skips section ID if it fails
-                    xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
-                } catch (ServiceException e) {
-
+                    String xml = studentServiceClient.getSecondarySections(year, quarter, curric, num, sectionID);
+                    doc = newDocument(xml);
+                } catch (Exception e) {
                     logger.warn(e);
                     continue;
                 }
 
-
-                Document doc = newDocument(xml);
-
-
                 DefaultXPath sectionPath = newXPath("/s:Section");
-                DefaultXPath coursePath = newXPath("/s:Section/s:Course");
-                DefaultXPath sectionCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:SectionComments/s:Lines");
-
-                Element sectionCommentsNode = (Element) sectionCommentsPath.selectSingleNode(doc);
-                StringBuffer sectionComments = new StringBuffer();
-                List comments = sectionCommentsNode.content();
-                for (Object ob : comments) {
-                    Element element = (Element) ob;
-                    sectionComments = sectionComments.append(element.elementText("Text") + " ");
-                }
-
                 Element sectionNode = (Element) sectionPath.selectSingleNode(doc);
-                List<AttributeInfo> attributes = info.getAttributes();
 
                 String instituteCode = null;
-                String instituteName = null;
+
                 {
                     DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
                     Element link = (Element) linkPath.selectSingleNode(sectionNode);
+                    instituteCode = link.getTextTrim();
 
-                    //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
-                    if(null == link || !StringUtils.hasText( link.getTextTrim()) ) {
-                        continue;
+                    // displaying main campus, PCE, and ROTC
+                    // refer to https://jira.cac.washington.edu/browse/MYPLAN-1583 for list of supported institute codes
+                    int instituteNumber = getInstituteNumber(instituteCode);
+                    switch (instituteNumber) {
+                        case 0: // Main campus
+                        case 95: // PCE
+                        case 88: // ROTC
+                        {
+                            instituteCode = Integer.toString(instituteNumber);
+                            break;
+                        }
+
+                        case -1: //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
+                        default: // Also omit all others not in above list
+                        {
+
+                            continue;
+                        }
                     }
 
-                    if (link != null) {
-                        instituteCode = link.getTextTrim();
-                        AttributeInfo whoop = new AttributeInfo("instituteCode", instituteCode);
-                        attributes.add(whoop);
+                }
+
+                String instituteName = sectionNode.elementTextTrim("InstituteName");
+
+                ActivityOfferingDisplayInfo info = new ActivityOfferingDisplayInfo();
+
+
+                String sectionComments = null;
+                {
+                    DefaultXPath sectionCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:SectionComments/s:Lines");
+                    Element sectionCommentsNode = (Element) sectionCommentsPath.selectSingleNode(doc);
+                    StringBuilder sb = new StringBuilder();
+                    List comments = sectionCommentsNode.content();
+                    for (Object ob : comments) {
+                        Element element = (Element) ob;
+                        sb.append(element.elementText("Text") + " ");
                     }
+                    sectionComments = sb.toString();
                 }
 
 
@@ -928,9 +906,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 String campus = sectionNode.elementText("CourseCampus");
 
-                Element courseNode = (Element) coursePath.selectSingleNode(doc);
-                String title = courseNode.elementText("CourseTitle");
-                String sln = sectionNode.elementText("SLN");
+                {
+                    DefaultXPath coursePath = newXPath("/s:Section/s:Course");
+                    Element courseNode = (Element) coursePath.selectSingleNode(doc);
+                    String title = courseNode.elementText("CourseTitle");
+                    info.setCourseOfferingTitle(title);
+                }
+
 
                 {
                     ScheduleDisplayInfo scheduleDisplay = new ScheduleDisplayInfo();
@@ -1003,7 +985,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                                 String roomNumber = meetingNode.elementText("RoomNumber");
                                 RoomInfo roomInfo = new RoomInfo();
                                 roomInfo.setRoomCode(roomNumber);
-//                            	roomInfo.setBuildingId(building);
                                 scdi.setRoom(roomInfo);
                             }
                         }
@@ -1029,18 +1010,24 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     }
                 }
 
-                String feeAmount = sectionNode.elementText("FeeAmount").trim();
+                String feeAmount = sectionNode.elementTextTrim("FeeAmount");
                 if (feeAmount.contains(".")) {
                     feeAmount = feeAmount.substring(0, feeAmount.indexOf("."));
                 }
 
-                String summerTerm = null;
-                if (StringUtils.hasText(sectionNode.elementText("SummerTerm"))) {
-                    summerTerm = sectionNode.elementText("SummerTerm");
-                }
+                String summerTerm = sectionNode.elementText("SummerTerm");
+                String sln = sectionNode.elementText("SLN");
+
+
+                info.setCourseOfferingCode(curric + " " + sectionID);
+                info.setActivityOfferingCode(sectionID);
+                info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
 
 
                 /*Course Flags*/
+                List<AttributeInfo> attributes = info.getAttributes();
+                attributes.add(new AttributeInfo("InstituteCode", instituteCode));
+                attributes.add(new AttributeInfo("InstituteName", instituteName));
                 attributes.add(new AttributeInfo("Campus", campus));
                 attributes.add(new AttributeInfo("Writing", String.valueOf(Boolean.valueOf(sectionNode.element("GeneralEducationRequirements").elementText("Writing")))));
                 attributes.add(new AttributeInfo("ServiceLearning", String.valueOf(Boolean.valueOf(sectionNode.elementText("ServiceLearning")))));
@@ -1052,52 +1039,14 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 attributes.add(new AttributeInfo("IndependentStudy", String.valueOf(Boolean.valueOf(sectionNode.elementText("IndependentStudy")))));
                 attributes.add(new AttributeInfo("EnrollmentRestrictions", String.valueOf(Boolean.valueOf(sectionNode.elementText("EnrollmentRestrictions")))));
                 attributes.add(new AttributeInfo("FeeAmount", feeAmount));
-                attributes.add(new AttributeInfo("SectionComments", sectionComments.toString()));
+                attributes.add(new AttributeInfo("SectionComments", sectionComments));
                 attributes.add(new AttributeInfo("SummerTerm", summerTerm));
-
-                info.setCourseOfferingTitle(title);
-//		        info.setCourseCode( curric );
-                info.setCourseOfferingCode(curric + " " + sectionID);
-                info.setActivityOfferingCode(sectionID);
-                info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
-
-                AttributeInfo attrib = new AttributeInfo("SLN", sln);
-                attributes.add(attrib);
+                attributes.add(new AttributeInfo("SLN", sln));
 
 
-
-                {
-                    DefaultXPath namePath = newXPath("s:InstituteName");
-                    Element nameNode = (Element) namePath.selectSingleNode(sectionNode);
-                    if (nameNode != null) {
-                        instituteName = nameNode.getTextTrim();
-                    }
-                }
+                result.add(info);
 
 
-                // refer to https://jira.cac.washington.edu/browse/MYPLAN-1583 for list of supported institute codes
-
-                // displaying main campus, PCE, and ROTC
-                int instituteNumber = getInstituteNumber(instituteCode);
-                switch (instituteNumber) {
-                    case 0: // Main campus
-                    case 95: // PCE
-                    case 88: // ROTC
-                    {
-                        instituteCode = Integer.toString(instituteNumber);
-                        AttributeInfo a = new AttributeInfo("instituteCode", instituteCode);
-                        attributes.add(a);
-
-                        AttributeInfo b = new AttributeInfo("instituteName", instituteName);
-                        attributes.add(b);
-
-                        result.add(info);
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1109,19 +1058,27 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     /**
      * Extracts institute number prefix from the SWS link information, which is reused as the institutecode.
+     * Blank (empty, null) returns -1.
+     * <p/>
      * <p/>
      * "123abc" -> 123
      * "abc" -> 0
-     * "" -> 0
+     * "" -> -1
+     * null -> -1
      */
 
+    //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
     private static int getInstituteNumber(String link) {
+        if (link == null) return -1;
+        if ("".equals(link.trim())) return -1;
+
         int institute = 0;
         Matcher m = regexInstituteCodePrefix.matcher(link);
         if (m.find()) {
             String ugh = m.group(1);
             institute = Integer.parseInt(ugh);
         }
+
         return institute;
     }
 }

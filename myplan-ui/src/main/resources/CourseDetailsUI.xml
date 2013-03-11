@@ -868,7 +868,7 @@
             <list>
                 <bean parent="Uif-MessageField"
                       p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
-                      p:render="@{#line.code.startsWith('95')}" p:style="margin-top:20px;"/>
+                      p:render="@{#line.code eq 95}" p:style="margin-top:20px;"/>
             </list>
         </property>
         <property name="subCollections">

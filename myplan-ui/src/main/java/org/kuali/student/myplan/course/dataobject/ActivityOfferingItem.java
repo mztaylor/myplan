@@ -272,21 +272,10 @@ public class ActivityOfferingItem {
         this.courseId = courseId;
     }
 
-    //    public List<ActivityOfferingItem> getSecondaryList() {
-//        if (secondaryList == null) {
-//            secondaryList = new ArrayList<ActivityOfferingItem>();
-//        }
-//        return secondaryList;
+//    public boolean isStandalone() {
+//        return isPrimary();
+////    	return isPrimary() && getSecondaryList().size() == 0;
 //    }
-//    
-//    public void setSecondaryList(  List<ActivityOfferingItem> secondaryList ) {
-//    	this.secondaryList = secondaryList;
-//    }
-
-    public boolean isStandalone() {
-        return isPrimary();
-//    	return isPrimary() && getSecondaryList().size() == 0;
-    }
 
     public String getPlanItemId() {
         return planItemId;

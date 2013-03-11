@@ -11,16 +11,16 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CourseOfferingInstitution implements Comparable<CourseOfferingInstitution> {
-    private String code;
+    private int code;
     private String name;
 
     private List<CourseOfferingTerm> courseOfferingTermList;
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -45,14 +45,12 @@ public class CourseOfferingInstitution implements Comparable<CourseOfferingInsti
 
     @Override
     public int compareTo(CourseOfferingInstitution that) {
-        final int BEFORE = -1;
-        final int EQUAL = 0;
-        final int AFTER = 1;
-        if (this == that) return EQUAL;
-        // I decided in this context, null > ""
-        if (this.code == null) return AFTER;
-        if (that.code == null) return BEFORE;
-        return this.code.compareTo(that.code);
+        // assume integer values won't overflow (eg > Integer.MAX )
+        // pretty good writeup http://stackoverflow.com/questions/9150446/compareto-with-primitives-integer-int
+        return this.code - that.code;
+//        final int BEFORE = -1;
+//        final int EQUAL = 0;
+//        final int AFTER = 1;
     }
 
 }
