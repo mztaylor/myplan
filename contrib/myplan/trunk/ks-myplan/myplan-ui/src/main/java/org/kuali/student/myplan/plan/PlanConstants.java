@@ -12,6 +12,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final int PLANNED_PLAN_ITEM_CAPACITY = 8;
     public static final int BACKUP_PLAN_ITEM_CAPACITY = 8;
+    public static final int MAX_FUTURE_YEARS = 6;
 
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
@@ -70,6 +71,11 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String TERM_2 = "Spring";
     public static final String TERM_3 = "Summer";
     public static final String TERM_4 = "Autumn";
+
+    public static final String ATP_TERM_1 = "1";
+    public static final String ATP_TERM_2 = "2";
+    public static final String ATP_TERM_3 = "3";
+    public static final String ATP_TERM_4 = "4";
 
 
     /*Query keys for getting the termInfos from the academic calender*/

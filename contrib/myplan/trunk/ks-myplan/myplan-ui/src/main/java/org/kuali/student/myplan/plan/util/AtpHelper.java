@@ -18,6 +18,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -25,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+import static org.kuali.rice.core.api.criteria.PredicateFactory.in;
 
 /**
  * Helper methods for dealing with ATPs.
@@ -33,11 +35,6 @@ public class AtpHelper {
 
     public static final String PRIORITY_ONE_REGISTRATION_START = "priority_one_registration_start";
     public static final String LAST_DROP_DAY = "last_drop_day";
-
-    private static String term1 = "winter";
-    private static String term2 = "spring";
-    private static String term3 = "summer";
-    private static String term4 = "autumn";
 
     private static transient AcademicCalendarService academicCalendarService;
 
@@ -163,16 +160,16 @@ public class AtpHelper {
         int month = Calendar.getInstance().get(Calendar.MONTH);
         String atp = null;
         if (month >= 1 && month <= 3) {
-            atp = getAtpIdFromTermAndYear(term1, year);
+            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_1, year);
         }
         if (month >= 4 && month <= 6) {
-            atp = getAtpIdFromTermAndYear(term2, year);
+            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_2, year);
         }
         if (month >= 7 && month <= 9) {
-            atp = getAtpIdFromTermAndYear(term3, year);
+            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_3, year);
         }
         if (month >= 10 && month <= 12) {
-            atp = getAtpIdFromTermAndYear(term4, year);
+            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_4, year);
         }
         termInfo.setId(atp);
         scheduledTerms.add(termInfo);
@@ -229,14 +226,14 @@ public class AtpHelper {
         String term = termYear[0];
         String year = termYear[1];
 
-        if (term.equals("4")) {
-            term = "Autumn";
-        } else if (term.equals("1")) {
-            term = "Winter";
-        } else if (term.equals("2")) {
-            term = "Spring";
-        } else if (term.equals("3")) {
-            term = "Summer";
+        if (term.equals(PlanConstants.ATP_TERM_4)) {
+            term = PlanConstants.TERM_4;
+        } else if (term.equals(PlanConstants.ATP_TERM_1)) {
+            term = PlanConstants.TERM_1;
+        } else if (term.equals(PlanConstants.ATP_TERM_2)) {
+            term = PlanConstants.TERM_2;
+        } else if (term.equals(PlanConstants.ATP_TERM_3)) {
+            term = PlanConstants.TERM_4;
         }
         return new String[]{term, year};
     }
@@ -244,16 +241,16 @@ public class AtpHelper {
     /*  Returns ATP ID in format kuali.uw.atp.1991.1 for term="Winter" and year = 1991*/
     public static String getAtpIdFromTermAndYear(String term, String year) {
         int termVal = 0;
-        if (term.equalsIgnoreCase(term1)) {
+        if (term.equalsIgnoreCase(PlanConstants.TERM_1)) {
             termVal = 1;
         }
-        if (term.equalsIgnoreCase(term2)) {
+        if (term.equalsIgnoreCase(PlanConstants.TERM_2)) {
             termVal = 2;
         }
-        if (term.equalsIgnoreCase(term3)) {
+        if (term.equalsIgnoreCase(PlanConstants.TERM_3)) {
             termVal = 3;
         }
-        if (term.equalsIgnoreCase(term4)) {
+        if (term.equalsIgnoreCase(PlanConstants.TERM_4)) {
             termVal = 4;
         }
         StringBuffer newAtpId = new StringBuffer();
@@ -361,6 +358,13 @@ public class AtpHelper {
         return isAtpCompletedTerm;
     }
 
+    /**
+     * Checks with the courseOffering service if the course is offered for the given term
+     *
+     * @param atp
+     * @param course
+     * @return
+     */
     public static boolean isCourseOfferedInTerm(String atp, String course) {
         boolean isCourseOfferedInTerm = false;
 
@@ -381,6 +385,11 @@ public class AtpHelper {
         return isCourseOfferedInTerm;
     }
 
+    /**
+     * returns all published terms
+     *
+     * @return
+     */
     public static List<String> getPublishedTerms() {
         List<TermInfo> termInfos = null;
         List<String> publishedTerms = new ArrayList<String>();
@@ -397,6 +406,11 @@ public class AtpHelper {
         return publishedTerms;
     }
 
+    /**
+     * Returns the first term that is published
+     *
+     * @return
+     */
     public static String getFirstPlanTerm() {
         List<TermInfo> termInfos = null;
         String publishedTerms = null;
@@ -414,6 +428,12 @@ public class AtpHelper {
         return publishedTerms;
     }
 
+    /**
+     * Checks with the atpService if the atpid exists.
+     *
+     * @param atpId
+     * @return
+     */
     public static boolean doesAtpExist(String atpId) {
         boolean doesAtpExist = false;
         try {
@@ -426,6 +446,60 @@ public class AtpHelper {
         }
         return doesAtpExist;
     }
+
+    /**
+     * returns the List of YearTerms from the startAtp to LastAtp.
+     * If lastAtp is null then the firstAtp year + MAX_FUTURE_YEARS(6) is used to get that
+     *
+     * @param startAtpId
+     * @param lastAtpId
+     * @return
+     */
+    public static List<YearTerm> getFutureYearTerms(String startAtpId, String lastAtpId) {
+        List<YearTerm> futureAtpIds = new ArrayList<YearTerm>();
+        if (StringUtils.hasText(startAtpId)) {
+            YearTerm firstTerm = atpToYearTerm(startAtpId);
+            YearTerm lastTerm = null;
+            if (!StringUtils.hasText(lastAtpId)) {
+                lastTerm = new YearTerm(firstTerm.getYear() + PlanConstants.MAX_FUTURE_YEARS, Integer.parseInt(PlanConstants.ATP_TERM_3));
+            } else {
+                lastTerm = atpToYearTerm(lastAtpId);
+            }
+            int year = firstTerm.getYear();
+            int term = firstTerm.getTerm();
+            YearTerm current = new YearTerm(0, 0);
+            while (!current.equals(lastTerm)) {
+                current = new YearTerm(year, term);
+                if (AtpHelper.doesAtpExist(current.toATP())) {
+                    futureAtpIds.add(current);
+                }
+                term++;
+                if (term > 4) {
+                    term = 1;
+                    year++;
+                }
+            }
+            if (futureAtpIds.size() > 0) {
+                int index = futureAtpIds.size() - 1;
+                while (futureAtpIds.get(index).getTerm() != Integer.parseInt(PlanConstants.ATP_TERM_3)) {
+                    futureAtpIds.remove(futureAtpIds.get(index));
+                    index--;
+                    if (index < 0) {
+                        break;
+                    }
+                }
+            }
+
+        }
+        return futureAtpIds;
+    }
+
+    /**
+     * Chedks if the atpIf format is in valid form
+     *
+     * @param atpId
+     * @return
+     */
 
     public static boolean isAtpIdFormatValid(String atpId) {
         return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
