@@ -1,20 +1,19 @@
 package org.kuali.student.myplan.plan.service;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
@@ -25,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
+import static org.kuali.student.myplan.plan.PlanConstants.LEARNING_PLAN_TYPE_PLAN;
 
 /**
  * Base lookup helper for plan items.
@@ -38,42 +38,47 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
-        List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
+        List<PlannedCourseDataObject> plannedCourseList = new ArrayList<PlannedCourseDataObject>();
 
         AcademicPlanService academicPlanService = getAcademicPlanService();
-        ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
 
-        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
-
-        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
-            List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
+            List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
 
-            for (PlanItemInfo planItem : planItemList) {
-                PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
-                String courseID = planItem.getRefObjectId();
+            for (PlanItemInfo planItemInfo : planItemInfoList) {
+                String courseID = planItemInfo.getRefObjectId();
                 //  Only create a data object for the specified type.
-                if (planItem.getTypeKey().equals(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
 
-                    plannedCourseDO.setPlanItemDataObject(PlanItemDataObject.build(planItem));
+                    PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+                    plannedCourse.setPlanItemDataObject(planItemData);
 
                     //  If the course info lookup fails just log the error and omit the item.
                     try {
                         if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
-                            plannedCourseDO.setPlanActivities(getPlannedSections(plannedCourseDO.getCourseDetails().getCourseId(), planItem.getPlanPeriods().get(0)));
+                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                            plannedCourse.setCourseDetails(courseDetails);
+                            List<String> planPeriods = planItemInfo.getPlanPeriods();
+                            if (!planPeriods.isEmpty()) {
+                                String term = planPeriods.get(0);
+                                String courseId2 = plannedCourse.getCourseDetails().getCourseId();
+                                List<ActivityOfferingItem> plannedSections = getPlannedSections(courseId2, term);
+                                plannedCourse.setPlanActivities(plannedSections);
+                            }
                         }
                     } catch (Exception e) {
-                        logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
+                        logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItemInfo.getId()), e);
                         continue;
                     }
 
-                    plannedCoursesList.add(plannedCourseDO);
+                    plannedCourseList.add(plannedCourse);
                 }
             }
         }
-        return plannedCoursesList;
+        return plannedCourseList;
     }
 
     /*Used to get the planned sections for a coursId and term excluding the completed terms*/
