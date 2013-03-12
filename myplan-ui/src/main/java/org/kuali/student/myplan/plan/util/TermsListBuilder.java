@@ -5,7 +5,10 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
+import org.kuali.student.myplan.plan.PlanConstants;
+
 import static org.kuali.student.myplan.plan.util.AtpHelper.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,14 +18,11 @@ import java.util.regex.Matcher;
  */
 public class TermsListBuilder extends KeyValuesBase {
 
-    // 5 years * 4 quarters = 20 terms
-    private static int MAX_FUTURE_TERMS = 20;
-
     private final Logger logger = Logger.getLogger(TermsListBuilder.class);
 
 
     /**
-     * Creates KeyValue list containing MAX_FUTURE_TERMS terms, beginning with the current ATP
+     * Creates KeyValue list containing MAX_FUTURE_YEARS terms, beginning with the current ATP
      *
      * @return A List of available terms as KeyValue items.
      */
@@ -31,30 +31,14 @@ public class TermsListBuilder extends KeyValuesBase {
 
     public List<KeyValue> getKeyValues() {
 
-        List<KeyValue> list = new ArrayList<KeyValue>(MAX_FUTURE_TERMS);
+        List<KeyValue> list = new ArrayList<KeyValue>();
 
         /*TODO Once First and last dates in the Atp table are added change the way of populating the future terms by Using the method AtpService.getAtpsByDates*/
         String firstPlanATP = AtpHelper.getFirstPlanTerm();
-        if (firstPlanATP != null) {
-            Matcher m = ATP_REGEX.matcher(firstPlanATP);
-            if (m.find()) {
-                int year = Integer.parseInt(m.group(1));
-                int term = Integer.parseInt(m.group(2));
-
-                for (int x = 0; x < MAX_FUTURE_TERMS; x++) {
-                    String atp = String.format(ATP_FORMAT, year, term);
-                    if (AtpHelper.doesAtpExist(atp)) {
-                        String value = AtpHelper.atpIdToTermName(atp);
-                        ConcreteKeyValue concrete = new ConcreteKeyValue(atp, value);
-                        list.add(concrete);
-                        term++;
-                        if (term > 4) {
-                            term = 1;
-                            year++;
-                        }
-                    }
-                }
-            }
+        List<YearTerm> futureAtpIds = AtpHelper.getFutureYearTerms(firstPlanATP, null);
+        for (YearTerm yearTerm : futureAtpIds) {
+            ConcreteKeyValue concreteKeyValue = new ConcreteKeyValue(yearTerm.toATP(), yearTerm.toLabel());
+            list.add(concreteKeyValue);
         }
         return list;
     }
