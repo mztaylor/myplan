@@ -16,6 +16,7 @@ public class CourseOfferingTerm {
     private YearTerm yearTerm;
     private String term;
     private String courseComments;
+    private String curriculumComments;
 
     /*NOTE: Added the institute code in this course offering term
     because in UI accessing the parent element is difficult.*/
@@ -64,5 +65,13 @@ public class CourseOfferingTerm {
 
     public void setInstituteCode(int instituteCode) {
         this.instituteCode = instituteCode;
+    }
+
+    public String getCurriculumComments() {
+        return curriculumComments;
+    }
+
+    public void setCurriculumComments(String curriculumComments) {
+        this.curriculumComments = curriculumComments;
     }
 }

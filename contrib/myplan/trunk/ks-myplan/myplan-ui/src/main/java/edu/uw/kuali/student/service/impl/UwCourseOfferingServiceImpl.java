@@ -683,13 +683,16 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
             DefaultXPath secondarySectionPath = newXPath("/s:Section");
             DefaultXPath courseCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CourseComments/s:Lines");
-            StringBuffer courseComments = new StringBuffer();
+            DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
+
 
 
             Document doc = newDocument(xml);
 
             List sections = sectionPath.selectNodes(doc);
             for (Object object : sections) {
+                StringBuffer courseComments = new StringBuffer();
+                StringBuffer curriculumComments = new StringBuffer();
                 Element primarySectionNode = (Element) object;
                 String primarySectionID = primarySectionNode.elementText("SectionID");
 
@@ -707,7 +710,9 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
                 Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
                 Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(secondaryDoc);
+                Element curriculumCommentsNode = (Element) curriculumCommentsPath.selectSingleNode(secondaryDoc);
                 List comments = courseCommentsNode.content();
+                List curricComments = curriculumCommentsNode.content();
                 for (Object ob : comments) {
                     Element element = (Element) ob;
                     String text = element.elementText("Text");
@@ -715,6 +720,15 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                         courseComments = courseComments.append("<br>" + text + "</br> ");
                     } else {
                         courseComments = courseComments.append(text + " ");
+                    }
+                }
+                for (Object ob : curricComments) {
+                    Element element = (Element) ob;
+                    String text = element.elementText("Text");
+                    if (text.startsWith("*****")) {
+                        curriculumComments = curriculumComments.append("<br>" + text + "</br> ");
+                    } else {
+                        curriculumComments = curriculumComments.append(text + " ");
                     }
                 }
 
@@ -728,6 +742,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     String courseID = join("=", year, quarter, curric, num, primarySectionID);
                     info.setCourseId(courseID);
                     info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
+                    info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
 
                     {
                         String gradingSystem = secondarySection.elementText("GradingSystem");

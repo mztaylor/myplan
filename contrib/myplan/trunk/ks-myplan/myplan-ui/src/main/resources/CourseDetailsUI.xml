@@ -932,6 +932,20 @@
                 <property name="validationMessages.render" value="false"/>
                 <property name="items">
                     <list>
+                        <bean parent="Uif-ActionLink" p:actionLabel="View a note about @{dataObject.courseSummaryDetails.subjectArea}  curriculum"
+                              p:style="float:left; padding-left: 10px;">
+                            <property name="actionScript"
+                                      value="expandCurriculumComments(this, 'View a note about @{dataObject.courseSummaryDetails.subjectArea} curriculum', 'Hide a note about @{dataObject.courseSummaryDetails.subjectArea} curriculum');"/>
+                            <property name="render" value="@{#line.curriculumComments ne null}"/>
+                        </bean>
+                        <bean parent="Uif-Message" p:messageText="@{#line.curriculumComments}"
+                              p:render="@{#line.curriculumComments ne null}" p:style="margin-top: 10px; display:none;">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>curriculum-comment</value>
+                                </list>
+                            </property>
+                        </bean>
                         <bean parent="Uif-Message" p:messageText="@{#line.courseComments}"
                               p:render="@{#line.courseComments ne null}" p:style="margin-top: 10px;"/>
                         <bean parent="Uif-HorizontalBoxGroup">

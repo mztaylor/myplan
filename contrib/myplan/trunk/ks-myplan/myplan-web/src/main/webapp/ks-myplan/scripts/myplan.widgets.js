@@ -1566,6 +1566,24 @@ function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
 
 }
 
+function expandCurriculumComments(actionComponent, expandText, collapseText){
+    var curriculumMessage = jQuery(actionComponent).parent().find('.curriculum-comment');
+    if (curriculumMessage.is(":visible")) {
+        curriculumMessage.slideUp(250, function () {
+            if (expandText) {
+                jQuery(actionComponent).text(expandText);
+            }
+        });
+    } else {
+        curriculumMessage.slideDown(250, function () {
+            if (collapseText) {
+                jQuery(actionComponent).text(collapseText);
+            }
+        });
+    }
+}
+
+
 function myplanGetSectionEnrollment(url, retrieveOptions) {
     var elementToBlock = jQuery(".myplan-enrl-data").parent();
     jQuery.ajax({
