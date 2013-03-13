@@ -686,7 +686,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
 
 
-
             Document doc = newDocument(xml);
 
             List sections = sectionPath.selectNodes(doc);
@@ -768,24 +767,25 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                             maxCreditName = maxCreditName.substring(0, maxCreditName.length() - 2);
                         }
 
-                        String creditID = null;
-                        String creditName = null;
+                        // Default values so its visually obvious when the mapping is incorrect
+                        String creditID = "X";
+                        String creditName = "X";
 
                         if ("fixed credit".equals(creditControl)) {
                             creditID = minCreditID;
                             creditName = minCreditName;
-                        }
-                        if ("variable credit - min to max credits".equals(creditControl)) {
+                        } else if ("variable credit - min to max credits".equals(creditControl)) {
                             creditID = minCreditID + "-" + maxCreditID;
                             creditName = minCreditName + "-" + maxCreditName;
-                        }
-                        if ("variable credit - min or max credits".equals(creditControl)) {
+                        } else if ("variable credit - min or max credits".equals(creditControl)) {
                             creditID = minCreditID + ", " + maxCreditID;
                             creditName = minCreditName + ", " + maxCreditName;
-                        }
-                        if ("variable credit - 1 to 25 credits".equals(creditControl)) {
+                        } else if ("variable credit - 1 to 25 credits".equals(creditControl)) {
                             creditID = "1.0-25.0";
                             creditName = "1-25";
+                        } else if ("zero credits".equals(creditControl)) {
+                            creditID = "0.0";
+                            creditName = "0";
                         }
 
                         creditID = "kuali.uw.resultcomponent.credit." + creditID;
