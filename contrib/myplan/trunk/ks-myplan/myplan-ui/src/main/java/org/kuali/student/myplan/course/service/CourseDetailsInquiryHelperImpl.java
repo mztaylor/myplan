@@ -127,7 +127,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     }
 
     //TODO: These should be changed to an ehCache spring bean
-    private HashMap<String, Map<String, String>> hashMap;
+//    private HashMap<String, Map<String, String>> hashMap;
 
     private HashMap<String, String> courseComments = new HashMap<String, String>();
 
@@ -139,16 +139,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         this.courseComments = courseComments;
     }
 
-    public HashMap<String, Map<String, String>> getHashMap() {
-        if (hashMap == null) {
-            hashMap = new HashMap<String, Map<String, String>>();
-        }
-        return hashMap;
-    }
-
-    public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
-        this.hashMap = hashMap;
-    }
 
     protected LuService getLuService() {
         if (this.luService == null) {
@@ -244,16 +234,21 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             return null;
         }
 
+        String subject = course.getSubjectArea().trim();
+
         CourseSummaryDetails courseDetails = new CourseSummaryDetails();
-
-
         courseDetails.setVersionIndependentId(course.getVersionInfo().getVersionIndId());
         courseDetails.setCourseId(course.getId());
         courseDetails.setCode(course.getCode());
         courseDetails.setCredit(CreditsFormatter.formatCredits(course));
         courseDetails.setCourseTitle(course.getCourseTitle());
-        courseDetails.setSubjectArea(course.getSubjectArea().trim());
+        courseDetails.setSubjectArea(subject);
         courseDetails.setCourseNumber(course.getCourseNumberSuffix());
+
+        // -- Curriculum  Title
+        Map<String, String> subjectAreaMap = OrgHelper.getTrimmedSubjectAreas();
+        String curriculumTitle = subjectAreaMap.get(subject);
+        courseDetails.setCurriculumTitle(curriculumTitle);
 
         // -- Course Description
         // -- Course Requisites
@@ -331,10 +326,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
         }
 
-        // -- Curriculum  Title
-        Map<String, String> subjectAreaMap = OrgHelper.getTrimmedSubjectAreas();
-        courseDetails.setCurriculumTitle(subjectAreaMap.get(course.getSubjectArea().trim()));
-
 
         //  Fetch the available terms from the Academic Calendar Service.
         if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
@@ -344,7 +335,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 CourseOfferingService cos = getCourseOfferingService();
                 for (TermInfo term : termInfos) {
                     String key = term.getId();
-                    String subject = course.getSubjectArea();
 
                     List<String> offerings = cos
                             .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
@@ -369,7 +359,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
                 try {
                     // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, course.getSubjectArea().trim(), course.getCourseNumberSuffix());
+                    String values = String.format("%s, %s, %s", year, subject, course.getCourseNumberSuffix());
                     QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
                     List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
 
@@ -395,7 +385,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return courseDetails;
 
     }
-
 
     /**
      * Method returns a courseDetails object with course summary, academic record, course offering and planned information for the course
@@ -664,7 +653,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
             }
         }
-//        Collections.sort(instituteList  , Collections.reverseOrder());
         Collections.sort(instituteList);
 
         return instituteList;
@@ -881,31 +869,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         }
 
         return activityOfferingItemList;
-    }
-
-
-    /**
-     * To get the title for the respective display name
-     *
-     * @param display
-     * @return
-     */
-    protected String getTitle(String display) {
-        String titleValue = null;
-        Map<String, String> subjects = new HashMap<String, String>();
-        if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
-            subjects = OrgHelper.getTrimmedSubjectAreas();
-            getHashMap().put(CourseSearchConstants.SUBJECT_AREA, subjects);
-
-        } else {
-            subjects = getHashMap().get(CourseSearchConstants.SUBJECT_AREA);
-        }
-
-        if (subjects != null && subjects.size() > 0) {
-            titleValue = subjects.get(display.trim());
-        }
-
-        return titleValue;
     }
 
     /**
