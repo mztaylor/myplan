@@ -26,7 +26,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
-import static org.kuali.rice.core.api.criteria.PredicateFactory.in;
 
 /**
  * Helper methods for dealing with ATPs.
@@ -517,7 +516,7 @@ public class AtpHelper {
     public static List<String> TERM_ID_LIST = Arrays.asList("winter", "spring", "summer", "autumn");
     public static List<String> TERM_LABELS_LIST = Arrays.asList("Winter", "Spring", "Summer", "Autumn");
 
-    public static class YearTerm implements Comparable<YearTerm> {
+    public static class YearTerm implements Comparable<YearTerm>, Cloneable {
         private final int year;
         private final int term;
 
@@ -588,6 +587,12 @@ public class AtpHelper {
 
         public String toString() {
             return "year: " + year + " term: " + term + " (" + getTermAsID() + ")";
+        }
+
+        protected Object clone() throws CloneNotSupportedException {
+
+            YearTerm clone = new YearTerm(year, term);
+            return clone;
         }
 
     }
