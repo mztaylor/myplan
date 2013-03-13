@@ -601,17 +601,22 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
 
             String courseComments = null;
+            String curriculumComments = null;
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
-                if (null != courseComments) break;
+                if (null != courseComments && null != curriculumComments) break;
 
                 for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     String value = attributeInfo.getValue();
                     if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0) {
                         courseComments = value;
-                        break;
+                        if (null != curriculumComments) break;
+                    } else if ("CurriculumComments".equalsIgnoreCase(key) && value.length() > 0) {
+                        curriculumComments = value;
+                        if (null != courseComments) break;
                     }
+
                 }
             }
 
@@ -646,6 +651,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     courseOfferingTerm.setYearTerm(yt);
                     courseOfferingTerm.setTerm(yt.toLabel());
                     courseOfferingTerm.setCourseComments(courseComments);
+                    courseOfferingTerm.setCurriculumComments(curriculumComments);
                     courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
                     courseOfferingTermList.add(courseOfferingTerm);
                 }
