@@ -63,6 +63,8 @@ public class PlanForm extends UifFormBase {
 
     /*properties used for section Planning*/
     private String sectionCode;
+    
+    private String registrationCode;
 
     private String primarySectionCode;
 
@@ -338,6 +340,14 @@ public class PlanForm extends UifFormBase {
 
     public void setPrimaryRegistrationCode(String primaryRegistrationCode) {
         this.primaryRegistrationCode = primaryRegistrationCode;
+    }
+
+    public String getRegistrationCode() {
+        return registrationCode;
+    }
+
+    public void setRegistrationCode(String registrationCode) {
+        this.registrationCode = registrationCode;
     }
 
     /*Only used in the Ui for getting the short Term*/
