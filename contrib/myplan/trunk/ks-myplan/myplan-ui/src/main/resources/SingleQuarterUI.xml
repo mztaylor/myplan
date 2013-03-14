@@ -45,11 +45,11 @@
                     <property name="onDocumentReadyScript" value="
                               jQuery('body')
                                   .subscribe('SECTION_ITEM_ADDED', function(data) {
-                                      fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, 'added', data);
+                                      fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
                                       if (data.ItemsToUpdate) {
                                           var items = data.ItemsToUpdate.split(',');
                                           jQuery.each(items, function (index, value) {
-                                              fnToggleSectionAction('button_' + data.atpId + '_' + items[index], 'added', data);
+                                              fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data);
                                           });
                                       }
                                   })
@@ -57,11 +57,11 @@
                                       if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
                                           alert('Remove table row');
                                       } else {
-                                          fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, 'deleted', data);
+                                          fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
                                           if (data.ItemsToUpdate) {
                                               var items = data.ItemsToUpdate.split(',');
                                               jQuery.each(items, function (index, value) {
-                                                  fnToggleSectionAction('button_' + data.atpId + '_' + items[index], 'deleted', data);
+                                                  fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
                                               });
                                           }
                                       }
@@ -352,7 +352,8 @@
 
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
                                   p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
-                                <property name="render" value="@{!#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
+                                <property name="render"
+                                          value="@{!#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
                                     <list>
                                         <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
@@ -375,7 +376,8 @@
                             </bean>
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
                                   p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
-                                <property name="render" value="@{#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
+                                <property name="render"
+                                          value="@{#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Move"
@@ -392,7 +394,8 @@
                             </bean>
 
                             <!--For Advisers only-->
-                            <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"  p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"
+                            <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
+                                  p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"
                                   p:actionLabel="Show all sections"
                                   p:style="float:right; display:inline-block; margin-right:10px;">
                                 <property name="actionScript"
@@ -859,9 +862,10 @@
                 -->
 
                 <!-- Delete Button -->
-                <bean parent="section_button" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
+                <bean parent="section_button"
+                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
                     <property name="onClickScript"
-                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
+                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-delete</value>
@@ -875,7 +879,8 @@
                     </property>
                 </bean>
                 <!--For Advisers-->
-                <bean parent="Uif-MessageField" p:messageText="--" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
+                <bean parent="Uif-MessageField" p:messageText="--"
+                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
 
 
             </list>

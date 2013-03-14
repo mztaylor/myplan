@@ -319,9 +319,9 @@
 
                                                                 <!-- Add Button -->
                                                                 <bean parent="section_button"
-                                                                      p:render="@{#line.planItemId eq null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}" >
+                                                                      p:render="@{#line.planItemId eq null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
                                                                     <property name="onClickScript"
-                                                                              value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
+                                                                              value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',primary:@{#line.primary},viewId:'PlannedCourse-FormView'}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-add</value>
@@ -339,7 +339,7 @@
                                                                 <bean parent="section_button"
                                                                       p:render="@{#line.planItemId ne null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
                                                                     <property name="onClickScript"
-                                                                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
+                                                                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',primary:@{#line.primary},viewId:'PlannedCourse-FormView'}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-delete</value>
@@ -354,7 +354,8 @@
                                                                 </bean>
 
                                                                 <!--For Advisers-->
-                                                                <bean parent="Uif-MessageField" p:messageText="--" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
+                                                                <bean parent="Uif-MessageField" p:messageText="--"
+                                                                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
 
                                                             </list>
                                                         </property>

@@ -573,9 +573,14 @@ input.myplan-delete,
 .uif-imageField.myplan-delete img.uif-image {
     width: 16px;
     height: 16px;
-    background: url('../images/iconError16.png') no-repeat 0px 0px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat 0px -146px;
     vertical-align: middle;
     cursor: pointer;
+}
+
+input.myplan-delete:hover,
+.uif-imageField.myplan-delete img.uif-image:hover {
+    background-position: -16px -146px;
 }
 
 .myplan-stacked-list,
