@@ -1797,6 +1797,7 @@ public class PlanController extends UifControllerBase {
             events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
         } else {
             params.put("SectionCode", planForm.getSectionCode());
+            params.put("RegistrationCode", planForm.getRegistrationCode());
             params.put("InstituteCode", planForm.getInstituteCode());
             params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
             params.put("ItemsToUpdate", itemsToBeUpdated);
@@ -1860,6 +1861,7 @@ public class PlanController extends UifControllerBase {
             params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
                 params.put("SectionCode", planForm.getSectionCode());
+                params.put("RegistrationCode", planForm.getRegistrationCode());
                 params.put("PrimarySectionCode", planForm.getPrimarySectionCode());
                 params.put("InstituteCode", planForm.getInstituteCode());
                 params.put("Primary", String.valueOf(planForm.isPrimary()));
