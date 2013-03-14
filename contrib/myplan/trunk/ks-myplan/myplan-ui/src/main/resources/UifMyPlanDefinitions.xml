@@ -570,7 +570,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to add or bookmark courses."/>
+                                  p:messageText="Advisers are unable to add or bookmark courses and sections."/>
                             <bean parent="Uif-Link" p:target="">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"

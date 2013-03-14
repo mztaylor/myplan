@@ -119,7 +119,7 @@
                 <value>myplan-course-sections</value>
             </list>
         </property>
-        <property name="render" value="@{dataObject.academicRecord.size() gt 0}"/>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0 ? true : false}"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
@@ -352,7 +352,7 @@
 
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
                                   p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
-                                <property name="render" value="@{!#line.showAlert}"/>
+                                <property name="render" value="@{!#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
                                     <list>
                                         <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
@@ -375,7 +375,7 @@
                             </bean>
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
                                   p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
-                                <property name="render" value="@{#line.showAlert}"/>
+                                <property name="render" value="@{#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Move"
@@ -389,6 +389,16 @@
                                         </bean>
                                     </list>
                                 </property>
+                            </bean>
+
+                            <!--For Advisers only-->
+                            <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"  p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"
+                                  p:actionLabel="Show all sections"
+                                  p:style="float:right; display:inline-block; margin-right:10px;">
+                                <property name="actionScript"
+                                          value="jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','16px');
+                                                 myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
+                                                 switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');"/>
                             </bean>
                         </list>
                     </property>
@@ -849,7 +859,7 @@
                 -->
 
                 <!-- Delete Button -->
-                <bean parent="section_button">
+                <bean parent="section_button" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
                     <property name="onClickScript"
                               value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                     <property name="cssClasses">
@@ -864,6 +874,8 @@
                         </map>
                     </property>
                 </bean>
+                <!--For Advisers-->
+                <bean parent="Uif-MessageField" p:messageText="--" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
 
 
             </list>

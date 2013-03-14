@@ -1225,7 +1225,7 @@
                       parent="Uif-ImageField" p:label="Add" p:altText="Add"
                       p:title="Add section @{#line.code} @{#line.primarySectionCode ne null ? 'and '+ #line.primarySectionCode+' to' : 'to'} @{#line.shortTermName} Plan"
                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                      p:render="@{#line.planItemId eq null ? true : false}">
+                      p:render="@{#line.planItemId eq null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false ? true : false}">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-add</value>
@@ -1235,7 +1235,7 @@
                     <property name="onClickScript"
                               value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView'}, e);"/>
                 </bean>
-                <bean parent="Uif-LinkField" p:render="@{#line.planItemId ne null ? true : false}">
+                <bean parent="Uif-LinkField" p:render="@{#line.planItemId ne null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false ? true : false}">
                     <property name="fieldLabel.render" value="false"/>
                     <property name="link">
                         <bean parent="Uif-Link" p:target="">
@@ -1252,6 +1252,9 @@
                         </bean>
                     </property>
                 </bean>
+                 <!--For Advisers-->
+                <bean parent="Uif-MessageField" p:messageText="--" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
+
             </list>
         </property>
     </bean>

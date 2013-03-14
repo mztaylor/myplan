@@ -319,7 +319,7 @@
 
                                                                 <!-- Add Button -->
                                                                 <bean parent="section_button"
-                                                                      p:render="@{#line.planItemId eq null}">
+                                                                      p:render="@{#line.planItemId eq null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}" >
                                                                     <property name="onClickScript"
                                                                               value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                                                                     <property name="cssClasses">
@@ -337,7 +337,7 @@
 
                                                                 <!-- Delete Button -->
                                                                 <bean parent="section_button"
-                                                                      p:render="@{#line.planItemId ne null}">
+                                                                      p:render="@{#line.planItemId ne null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
                                                                     <property name="onClickScript"
                                                                               value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                                                                     <property name="cssClasses">
@@ -352,6 +352,9 @@
                                                                         </map>
                                                                     </property>
                                                                 </bean>
+
+                                                                <!--For Advisers-->
+                                                                <bean parent="Uif-MessageField" p:messageText="--" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
 
                                                             </list>
                                                         </property>
