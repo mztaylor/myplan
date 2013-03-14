@@ -47,11 +47,7 @@ public class CourseSearchConstants {
 
     public static final String ORG_TYPE_PARAM = "org_queryParam_orgType";
 
-    public static final String IS_ACADEMIC_CALENDER_SERVICE_UP = "isAcademicCalenderServiceRunning";
-
-    public static final String IS_COURSE_OFFERING_SERVICE_UP = "isCourseOfferingServiceRunning";
-
-    public static final String IS_ACADEMIC_RECORD_SERVICE_UP = "isAcademicRecordServiceRunning";
+    public static final String SWS_SERVICES_STATUS = "swsServicesStatus";
 
     public static final String LINK = "<a href=\"%s/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
 
@@ -73,7 +69,7 @@ public class CourseSearchConstants {
 
     /*Regex for validating the un-formatted courses eq:com131 or com    131 */
     public static final String UNFORMATTED_COURSE_CODE_REGEX = "^[a-zA-Z]{1}[a-zA-Z &]{2,7}[0-9]{3}$";
-    
+
     public static final String COURSE_CODE_WITH_SECTION_REGEX = "^[A-Z]{1}[A-Z &]{2,6}\\s[0-9]{3}\\s[A-Z]{1}[A-Z0-9]{0,1}$";
-    
+
 }

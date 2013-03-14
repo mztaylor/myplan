@@ -37,6 +37,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -113,9 +114,7 @@ public class DegreeAuditController extends UifControllerBase {
         boolean systemKeyExists = true;
         try {
             Map<String, String> campusMap = populateCampusMap();
-
-            boolean isAuditServiceUp = Boolean.valueOf(request.getAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP).toString());
-
+            ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
             Person user = GlobalVariables.getUserSession().getPerson();
             String systemKey = UserSessionHelper.getAuditSystemKey();
             if (StringUtils.hasText(systemKey)) {
@@ -128,7 +127,7 @@ public class DegreeAuditController extends UifControllerBase {
                 String programId = null;
                 form.setCampusParam(campusMap.get("0"));
                 logger.info("audit systemkey " + systemKey);
-                if (!isAuditServiceUp) {
+                if (!servicesStatusDataObject.isDegreeAuditServiceUp()) {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
                     List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);

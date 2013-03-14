@@ -42,6 +42,7 @@ import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
@@ -191,16 +192,12 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
     public CourseSummaryDetails retrieveCourseSummaryById(String courseId) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-
-        // Check to see if all the services we depend on is up and running
-        boolean courseOfferingServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP).toString());
-        boolean academicCalendarServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
-        boolean academicRecordServiceUp = Boolean.parseBoolean(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString());
-        if (!courseOfferingServiceUp || !academicCalendarServiceUp || !academicRecordServiceUp) {
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        if (!servicesStatusDataObject.isCourseOfferingServiceUp() || !servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
             AtpHelper.addServiceError("curriculumTitle");
-            setAcademicCalendarServiceUp(academicCalendarServiceUp);
-            setAcademicRecordServiceUp(academicRecordServiceUp);
-            setCourseOfferingServiceUp(courseOfferingServiceUp);
+            setAcademicCalendarServiceUp(servicesStatusDataObject.isAcademicCalendarServiceUp());
+            setAcademicRecordServiceUp(servicesStatusDataObject.isAcademicRecordServiceUp());
+            setCourseOfferingServiceUp(servicesStatusDataObject.isCourseOfferingServiceUp());
         }
 
 

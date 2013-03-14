@@ -46,6 +46,7 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -168,7 +169,8 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=start")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())) {
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        if (!servicesStatusDataObject.isAcademicCalendarServiceUp()) {
             AtpHelper.addServiceError("searchTerm");
         }
         super.start(form, result, request, response);
@@ -306,9 +308,8 @@ public class CourseSearchController extends UifControllerBase {
 
     @RequestMapping(value = "/course/search")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-
-        boolean isAcademicCalenderServiceUp = Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString());
-        if (!isAcademicCalenderServiceUp) {
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        if (!servicesStatusDataObject.isAcademicCalendarServiceUp()) {
             AtpHelper.addServiceError("searchTerm");
         }
 
@@ -329,7 +330,7 @@ public class CourseSearchController extends UifControllerBase {
 
         /*populating the CourseSearchItem list*/
         String user = UserSessionHelper.getStudentId();
-        List<CourseSearchItem> courses = courseSearch(form, user, isAcademicCalenderServiceUp);
+        List<CourseSearchItem> courses = courseSearch(form, user, servicesStatusDataObject.isAcademicCalendarServiceUp());
 
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
