@@ -805,7 +805,7 @@ public class PlanController extends UifControllerBase {
                         addPrimaryCourse = true;
                         primarySectionCode = activityOfferingItem.getCode();
                         form.setPrimarySectionCode(primarySectionCode);
-                        form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
+                        form.setPrimaryRegistrationCode(primarySectionCode);
                         break;
                     } else {
                         PlanItemInfo primaryPlanItem = getPlannedOrBackupPlanItem(courseDetails.getCode() + " " + activityOfferingItem.getCode().substring(0, 1), form.getAtpId());
@@ -815,7 +815,7 @@ public class PlanController extends UifControllerBase {
                             addPrimaryCourse = true;
                             primarySectionCode = activityOfferingItem.getCode().substring(0, 1);
                             form.setPrimarySectionCode(primarySectionCode);
-                            form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
+                            form.setPrimaryRegistrationCode(primarySectionCode);
                             PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
                             if (coursePlanItem != null) {
                                 addCourse = false;
