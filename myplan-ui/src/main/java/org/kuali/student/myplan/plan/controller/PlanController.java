@@ -124,14 +124,14 @@ public class PlanController extends UifControllerBase {
         List<LearningPlanInfo> plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
-            plan = getAcademicPlanService().getLearningPlansForStudentByType(getUserId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             return doOperationFailedError(planForm, "Query for learning plan failed.", e);
         }
         List<MessageDataObject> messages = null;
         try {
             CommentQueryHelper commentQueryHelper = new CommentQueryHelper();
-            messages = commentQueryHelper.getMessages(getUserId());
+            messages = commentQueryHelper.getMessages(UserSessionHelper.getStudentId());
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve messages.", e);
         }
@@ -298,7 +298,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()),
                     planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -370,7 +370,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()),
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()),
                     planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -515,7 +515,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Plan Size exceeded.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(getUserId()), newAtpIds.get(0), planItem.getTypeKey());
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()), newAtpIds.get(0), planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
@@ -654,7 +654,7 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         LearningPlan learningPlan = null;
         try {
-            learningPlan = getLearningPlan(getUserId());
+            learningPlan = getLearningPlan(UserSessionHelper.getStudentId());
             hasCapacity = isAtpHasCapacity(learningPlan, newAtpIds.get(0), planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -762,7 +762,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
         }
 
-        String studentId = getUserId();
+        String studentId = UserSessionHelper.getStudentId();
 
         LearningPlan plan = null;
         try {
@@ -977,7 +977,7 @@ public class PlanController extends UifControllerBase {
         }
         List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
         try {
-            String studentId = getUserId();
+            String studentId = UserSessionHelper.getStudentId();
             plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
             if (plan.size() > 0) {
                 if (!plan.get(0).getShared().toString().equalsIgnoreCase(form.getEnableAdviserView())) {
@@ -1121,7 +1121,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
-        String studentId = getUserId();
+        String studentId = UserSessionHelper.getStudentId();
         LearningPlan plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
@@ -1633,7 +1633,7 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Course Id was empty.");
         }
 
-        String studentId = getUserId();
+        String studentId = UserSessionHelper.getStudentId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
@@ -1671,7 +1671,7 @@ public class PlanController extends UifControllerBase {
      * @throws RuntimeException on errors.
      */
     public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        String studentId = getUserId();
+        String studentId = UserSessionHelper.getStudentId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             return null;
@@ -1757,7 +1757,7 @@ public class PlanController extends UifControllerBase {
 
         //  Set the user id in the context used in the web service call.
         ContextInfo context = new ContextInfo();
-        context.setPrincipalId(getUserId());
+        context.setPrincipalId(UserSessionHelper.getStudentId());
 
         return getAcademicPlanService().createLearningPlan(plan, context);
     }
@@ -1906,11 +1906,6 @@ public class PlanController extends UifControllerBase {
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_ADDED, params);
         }
         return events;
-    }
-
-    private String getUserId() {
-        Person user = GlobalVariables.getUserSession().getPerson();
-        return user.getPrincipalId();
     }
 
     private String formatAtpIdForUI(String atpId) {
