@@ -8,6 +8,7 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,12 +56,59 @@ public class MyplanInterceptor implements HandlerInterceptor {
     private final String BROWSER_INCOMPATIBLE = "/myplan/browserIncompatible";
 
     private final String USER_UNAUTHORIZED = "/myplan/unauthorized";
-    
-    private final String STUDENT="STDNT";
 
+    private final String LAST_STATUS_CHECK_TIME = "LAST_STATUS_CHECK_TIME";
 
+    private final String HOST_NAME = "hostName";
+
+    private final String IE7_AGENT = "MSIE 7.0;";
+
+    private final String IE6_AGENT = "MSIE 6.0;";
+
+    private final int STATUS_CHECK_INTERVAL_MILLIS = 300000;
+
+    /**
+     * Adds the services status to the request session.
+     * Redirects to the Browser Incompatible page if User agents are IE7 or IE6
+     * Adds  the name of the Host to the request attribute.(eg: uwkseval01)
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        ServicesStatusDataObject lastSwsServiceStatus = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        Date currentTime = new Date(System.currentTimeMillis());
+        Long expiredTime = (Long) request.getSession().getAttribute(LAST_STATUS_CHECK_TIME);
+        if (lastSwsServiceStatus == null || (lastSwsServiceStatus != null && expiredTime != null && currentTime.after(new Date(expiredTime.longValue())))) {
+            request.getSession().setAttribute(CourseSearchConstants.SWS_SERVICES_STATUS, getServicesStatus());
+            request.getSession().setAttribute(LAST_STATUS_CHECK_TIME, System.currentTimeMillis() + STATUS_CHECK_INTERVAL_MILLIS);
+        }
+
+        String userAgent = request.getHeader(USER_AGENT);
+        if (userAgent.contains(IE6_AGENT) || userAgent.contains(IE7_AGENT)) {
+            request.getRequestDispatcher(BROWSER_INCOMPATIBLE).forward(request, response);
+            return false;
+        }
+
+        String hostName = InetAddress.getLocalHost().getHostName();
+        if (hostName.contains(".")) {
+            hostName = hostName.substring(0, hostName.indexOf("."));
+        }
+        request.setAttribute(HOST_NAME, hostName.toUpperCase());
+
+        return true;
+    }
+
+    /**
+     * Used to populate the ServicedStatusDataObject with the statuses of all the services
+     *
+     * @return
+     */
+    private ServicesStatusDataObject getServicesStatus() {
         boolean isAcademicCalenderServiceRunning = studentServiceClient.connectionStatus(ACADEMIC_CALENDER_SERVICE_URL);
         boolean isCourseOfferingServiceRunning = studentServiceClient.connectionStatus(COURSE_OFFERING_SERVICE_URL);
         boolean isAcademicRecordServiceRunning = false;
@@ -65,28 +116,21 @@ public class MyplanInterceptor implements HandlerInterceptor {
             isAcademicRecordServiceRunning = true;
         }
         boolean isAuditServiceRunning = studentServiceClient.connectionStatus(AUDIT_SERVICE_URL);
-
-        request.setAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP, isAcademicCalenderServiceRunning);
-        request.setAttribute(CourseSearchConstants.IS_COURSE_OFFERING_SERVICE_UP, isCourseOfferingServiceRunning);
-        request.setAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP, isAcademicRecordServiceRunning);
-        request.setAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP, isAuditServiceRunning);
-        String userAgent = request.getHeader(USER_AGENT);
-        if (userAgent.contains("MSIE 7.0;") || userAgent.contains("MSIE 6.0;")) {
-            request.getRequestDispatcher(BROWSER_INCOMPATIBLE).forward(request, response);
-            return false;
-        }
-        String hostName= InetAddress.getLocalHost().getHostName();
-        if(hostName.contains(".")) {
-            hostName=hostName.substring(0,hostName.indexOf("."));
-        }
-        request.setAttribute("hostName",hostName.toUpperCase());
-        return true;
+        return new ServicesStatusDataObject(isAcademicCalenderServiceRunning, isAcademicRecordServiceRunning, isCourseOfferingServiceRunning, isAuditServiceRunning);
     }
 
+    /**
+     * Redirected to UnAuthorized page if not a student or an adviser
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @param modelAndView
+     * @throws Exception
+     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-       /* If you not an adviser and  if you are not a  student then you dont have access to myplan*/
-        if (!UserSessionHelper.isAdviser())  {
+        if (!UserSessionHelper.isAdviser()) {
             try {
                 String systemKey = UserSessionHelper.getAuditSystemKey();
             } catch (DataRetrievalFailureException drfe) {

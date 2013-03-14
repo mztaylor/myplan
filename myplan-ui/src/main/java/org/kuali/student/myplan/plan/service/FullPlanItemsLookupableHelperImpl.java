@@ -49,8 +49,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         /*Setting the Warning message if isServiceStatusOK is false*/
         boolean isServiceStatusOK = true;
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
-                || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        if (!servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
             isServiceStatusOK = false;
             AtpHelper.addServiceError("qtrYear");
         }

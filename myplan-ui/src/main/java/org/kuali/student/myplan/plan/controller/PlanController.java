@@ -48,6 +48,7 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -168,18 +169,16 @@ public class PlanController extends UifControllerBase {
 
         boolean isServiceStatusOK = true;
         /*Setting the Warning message if isServiceStatusOK is false*/
-        if (!Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_CALENDER_SERVICE_UP).toString())
-                || !Boolean.valueOf(request.getAttribute(CourseSearchConstants.IS_ACADEMIC_RECORD_SERVICE_UP).toString())) {
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+        if (!servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
             isServiceStatusOK = false;
             AtpHelper.addServiceError("planItemId");
         }
-        boolean isAuditServiceUp = Boolean.valueOf(request.getAttribute(DegreeAuditConstants.IS_AUDIT_SERVICE_UP).toString());
-
         String[] params = {};
         if (!isServiceStatusOK) {
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
         }
-        if (isAuditServiceUp) {
+        if (servicesStatusDataObject.isDegreeAuditServiceUp()) {
             planForm.setNewUser(isNewUser());
         }
         return getUIFModelAndView(planForm);
@@ -1790,7 +1789,7 @@ public class PlanController extends UifControllerBase {
         }
         String itemsToBeUpdated = null;
         if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
-            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(),",");
+            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(), ",");
         }
 
         params.put("courseDetails", courseDetailsAsJson);
