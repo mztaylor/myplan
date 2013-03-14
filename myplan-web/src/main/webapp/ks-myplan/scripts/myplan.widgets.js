@@ -1566,7 +1566,7 @@ function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
 
 }
 
-function expandCurriculumComments(actionComponent, expandText, collapseText){
+function expandCurriculumComments(actionComponent, expandText, collapseText) {
     var curriculumMessage = jQuery(actionComponent).parent().find('.curriculum-comment');
     if (curriculumMessage.is(":visible")) {
         curriculumMessage.slideUp(250, function () {
@@ -1635,7 +1635,7 @@ function myplanGetSectionEnrollment(url, retrieveOptions) {
 }
 
 function updateHiddenScript(id, script) {
-    jQuery("#" + id).unbind("click");
+    jQuery("#" + id).unbind();
     var input = jQuery("input[data-for='" + id + "'][data-role='script']");
     input.removeAttr("script").attr("name", "script").val(script);
     runScriptsForId(id);
@@ -1660,21 +1660,26 @@ function toggleGroup(actionId, toggleId) {
 }
 
 function buildHoverText(obj) {
-    var message, temp;
+    var message = '';
+    var temp = '';
     // condition to check whether section is primary or secondary
     if (obj.data("primary")) {
         // Primary sections
         // condition to check if planned or not planned
         if (obj.data("planned")) {
+            var secondarySections = [];
             // Find list of secondary sections associated
-
+            jQuery("div[data-courseid='" + obj.data("courseid") + "'][data-primarysection='" + obj.data("coursesection") + "'][data-planned='true'][data-primary='false']").each(function () {
+                secondarySections.push(jQuery(this).data("coursesection"));
+            });
             // Build string of secondary sections associated
-            var secondarySections;
-            if (secondarySections.length <= 1) {
-                temp = " and " + secondarySections.join();
-            } else {
-                // commas separated string of secondary sections
-                temp = ", " + secondarySections.slice(0, -1).join(", ") + ", and " + secondarySections[secondarySections.length - 1];
+            if (secondarySections.length > 0) {
+                if (secondarySections.length == 1) {
+                    temp = " and " + secondarySections.join();
+                } else {
+                    // commas separated string of secondary sections
+                    temp = ", " + secondarySections.slice(0, -1).join(", ") + ", and " + secondarySections[secondarySections.length - 1];
+                }
             }
             // Text should give "Delete {primary section} {list of secondary sections if any exist}"
             message = "Delete " + obj.data("coursesection") + temp;

@@ -152,14 +152,14 @@ function fnToggleSectionAction(actionId, action, data) {
     component.unbind('click');
     switch (action) {
         case "added":
-            component.removeClass('myplan-add').addClass('myplan-delete').attr("data-planned", "true");
+            component.removeClass('myplan-add').addClass('myplan-delete').attr("data-planned", "true").data("planned", true);
             script = "jQuery('#" + actionId + "').click(function(e){ myplanAjaxSubmitSectionItem('" + data.planItemId + "', 'removeItem', 'plan', {planItemId:'" + data.planItemId + "',sectionCode:'" + data.SectionCode + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',viewId:'PlannedCourse-FormView', primary:'" + data.Primary + "'}, e); }); ";
             break;
         case "deleted":
-            component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false");
+            component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false").data("planned", false);
             script = "jQuery('#" + actionId + "').click(function(e){ myplanAjaxSubmitSectionItem('" + data.courseDetails.courseId + "', 'addPlannedCourse', 'plan', {courseId:'" + data.courseDetails.courseId + "',sectionCode:'" + data.SectionCode + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',primary:'" + data.Primary + "',viewId:'PlannedCourse-FormView'}, e);}); ";
             break;
     }
-    script += "jQuery('#" + actionId + "').hover(function(){ buildHoverText(this);}); ";
+    script += "jQuery('#" + actionId + "').hover(function(){ buildHoverText(jQuery(this));}); ";
     updateHiddenScript(actionId, script);
 }

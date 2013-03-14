@@ -321,12 +321,17 @@
                                                                 <bean parent="section_button"
                                                                       p:render="@{#line.planItemId eq null}">
                                                                     <property name="onClickScript"
-                                                                              value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView'}, e);"/>
+                                                                              value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-add</value>
                                                                             <value>fl-text-align-center</value>
                                                                         </list>
+                                                                    </property>
+                                                                    <property name="dataAttributes">
+                                                                        <map merge="true">
+                                                                            <entry key="initial" value="false"/>
+                                                                        </map>
                                                                     </property>
                                                                 </bean>
 
@@ -334,12 +339,17 @@
                                                                 <bean parent="section_button"
                                                                       p:render="@{#line.planItemId ne null}">
                                                                     <property name="onClickScript"
-                                                                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView', primary:@{#line.primary}}, e);"/>
+                                                                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-delete</value>
                                                                             <value>fl-text-align-center</value>
                                                                         </list>
+                                                                    </property>
+                                                                    <property name="dataAttributes">
+                                                                        <map merge="true">
+                                                                            <entry key="initial" value="false"/>
+                                                                        </map>
                                                                     </property>
                                                                 </bean>
 

@@ -43,9 +43,29 @@
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                                  jQuery('body')
-                                      .subscribe('SECTION_ITEM_ADDED', function(data) { fnToggleSectionAction('button_' + data.atpId + '_' + data.registrationCode, 'added', data); })
-                                      .subscribe('PLAN_ITEM_DELETED', function(data) { fnToggleSectionAction('button_' + data.atpId + '_' + data.registrationCode, 'deleted', data); });
+                              jQuery('body')
+                                  .subscribe('SECTION_ITEM_ADDED', function(data) {
+                                      fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, 'added', data);
+                                      if (data.ItemsToUpdate) {
+                                          var items = data.ItemsToUpdate.split(',');
+                                          jQuery.each(items, function (index, value) {
+                                              fnToggleSectionAction('button_' + data.atpId + '_' + items[index], 'added', data);
+                                          });
+                                      }
+                                  })
+                                  .subscribe('SECTION_ITEM_DELETED', function(data) {
+                                      if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
+                                          alert('Remove table row');
+                                      } else {
+                                          fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, 'deleted', data);
+                                          if (data.ItemsToUpdate) {
+                                              var items = data.ItemsToUpdate.split(',');
+                                              jQuery.each(items, function (index, value) {
+                                                  fnToggleSectionAction('button_' + data.atpId + '_' + items[index], 'deleted', data);
+                                              });
+                                          }
+                                      }
+                                  });
                               "/>
                     <property name="items">
                         <list>
@@ -831,12 +851,17 @@
                 <!-- Delete Button -->
                 <bean parent="section_button">
                     <property name="onClickScript"
-                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView', primary:@{#line.primary}}, e);"/>
+                              value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',registrationCode:'@{#line.registrationCode}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-delete</value>
                             <value>fl-text-align-center</value>
                         </list>
+                    </property>
+                    <property name="dataAttributes">
+                        <map merge="true">
+                            <entry key="initial" value="true"/>
+                        </map>
                     </property>
                 </bean>
 
@@ -848,6 +873,7 @@
     <bean id="section_button" parent="Uif-ImageField">
         <property name="id" value="button_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
         <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
+        <property name="onMouseOverScript" value="buildHoverText(jQuery(this));"/>
         <property name="label" value=""/>
         <property name="dataAttributes">
             <map>
