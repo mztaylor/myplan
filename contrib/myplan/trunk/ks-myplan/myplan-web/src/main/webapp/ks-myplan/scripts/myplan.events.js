@@ -145,15 +145,18 @@ function fnShowHideQuickAddLink(atpId, type, size) {
     }
 }
 
-
-function fnToggleSectionAction(actionId, regId, action, data) {
+function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
+    var planItemId = data.planItemId;
+    if(primaryPlan){
+        planItemId = data.PrimaryPlanItemId;
+    }
     var script;
     var component = jQuery("#" + actionId);
     component.unbind('click');
     switch (action) {
         case "added":
             component.removeClass('myplan-add').addClass('myplan-delete').attr("data-planned", "true").data("planned", true).parent("td").removeClass('myplan-add').addClass('myplan-delete');
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { myplanAjaxSubmitSectionItem('" + data.planItemId + "', 'removeItem', 'plan', {planItemId:'" + data.planItemId + "',sectionCode:'" + component.data("coursesection") + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',registrationCode:'" + regId + "',primary:" + component.data("primary") + ",viewId:'PlannedCourse-FormView'}, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { myplanAjaxSubmitSectionItem('" + planItemId + "', 'removeItem', 'plan', {planItemId:'" + planItemId + "',sectionCode:'" + component.data("coursesection") + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',registrationCode:'" + regId + "',primary:" + component.data("primary") + ",viewId:'PlannedCourse-FormView'}, e); }); ";
             break;
         case "deleted":
             component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false").data("planned", false).parent("td").removeClass('myplan-delete').addClass('myplan-add');

@@ -43,30 +43,29 @@
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                              jQuery('body')
-                                  .subscribe('SECTION_ITEM_ADDED', function(data) {
-                                      fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
-                                      if (data.ItemsToUpdate) {
-                                          var items = data.ItemsToUpdate.split(',');
-                                          jQuery.each(items, function (index, value) {
-                                              fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data);
-                                          });
-                                      }
-                                  })
-                                  .subscribe('SECTION_ITEM_DELETED', function(data) {
-                                      if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
-                                          alert('Remove table row');
-                                      } else {
-                                          fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
-                                          if (data.ItemsToUpdate) {
-                                              var items = data.ItemsToUpdate.split(',');
-                                              jQuery.each(items, function (index, value) {
-                                                  fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
-                                              });
-                                          }
-                                      }
-                                  });
-                              "/>
+                                jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
+                                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
+                                        if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
+                                            var items = data.ItemsToUpdate.split(',');
+                                            jQuery.each(items, function (index, value) {
+                                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, 'true');
+                                            });
+                                        }
+                                    })
+                                    .subscribe('SECTION_ITEM_DELETED', function(data) {
+                                        if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
+                                            alert('Remove table row');
+                                        } else {
+                                            fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
+                                            if (data.ItemsToUpdate) {
+                                                var items = data.ItemsToUpdate.split(',');
+                                                jQuery.each(items, function (index, value) {
+                                                    fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
+                                                });
+                                            }
+                                        }
+                                    });
+                                    "/>
                     <property name="items">
                         <list>
                             <ref bean="single_collection_data"/>
