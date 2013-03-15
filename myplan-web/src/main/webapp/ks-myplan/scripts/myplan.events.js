@@ -147,7 +147,7 @@ function fnShowHideQuickAddLink(atpId, type, size) {
 
 function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
     var planItemId = data.planItemId;
-    if(primaryPlan){
+    if (primaryPlan) {
         planItemId = data.PrimaryPlanItemId;
     }
     var script;
@@ -165,4 +165,11 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
     }
     script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this));}); ";
     updateHiddenScript(actionId, script);
+}
+
+function fnRemoveSectionRow(actionId) {
+    var row = jQuery("#" + actionId).parents("tr");
+    row.fadeOut(250, function () {
+        jQuery(this).remove();
+    });
 }

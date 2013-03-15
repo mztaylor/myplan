@@ -39,6 +39,8 @@
                         <list>
                             <bean p:id="@{dataObject.courseSummaryDetails.courseId}_sections_collection"
                                   parent="course_details_institution_data_single">
+                                <property name="onDocumentReadyScript"
+                                          value="myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':readUrlParam('term_atp_id')}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');"/>
                                 <property name="render" value="true"/>
                                 <property name="header.render" value="false"/>
                                 <property name="items">
@@ -60,6 +62,14 @@
                                                                 <bean parent="Uif-VerticalFieldGroup" p:label="Section">
                                                                     <property name="group.validationMessages.render"
                                                                               value="false"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>fl-text-align-center</value>
+                                                                            <value>@{#line.planItemId ne null ?
+                                                                                'myplan-section-planned':''}
+                                                                            </value>
+                                                                        </list>
+                                                                    </property>
                                                                     <property name="items">
                                                                         <list>
                                                                             <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
@@ -69,12 +79,6 @@
                                                                                   p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
                                                                                 <property name="fieldLabel.render"
                                                                                           value="false"/>
-                                                                                <property name="cssClasses">
-                                                                                    <list merge="true">
-                                                                                        <value>fl-text-align-center
-                                                                                        </value>
-                                                                                    </list>
-                                                                                </property>
                                                                             </bean>
                                                                             <bean p:id="@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}"
                                                                                   parent="Uif-ActionLink"
@@ -88,8 +92,6 @@
                                                                                 <property name="cssClasses">
                                                                                     <list merge="true">
                                                                                         <value>fl-font-size-80</value>
-                                                                                        <value>fl-text-align-center
-                                                                                        </value>
                                                                                     </list>
                                                                                 </property>
                                                                             </bean>
@@ -101,8 +103,6 @@
                                                                                 <property name="cssClasses">
                                                                                     <list merge="true">
                                                                                         <value>fl-font-size-80</value>
-                                                                                        <value>fl-text-align-center
-                                                                                        </value>
                                                                                     </list>
                                                                                 </property>
                                                                             </bean>

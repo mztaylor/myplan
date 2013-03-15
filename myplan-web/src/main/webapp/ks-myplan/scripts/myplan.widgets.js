@@ -1584,8 +1584,9 @@ function expandCurriculumComments(actionComponent, expandText, collapseText) {
 }
 
 
-function myplanGetSectionEnrollment(url, retrieveOptions) {
+function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
     var elementToBlock = jQuery(".myplan-enrl-data").parent();
+    if (componentId) elementToBlock = jQuery("#" + componentId + " .myplan-enrl-data").parent();
     jQuery.ajax({
         url:url,
         data:retrieveOptions,
