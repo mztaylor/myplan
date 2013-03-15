@@ -127,7 +127,7 @@ public class CourseHelperImpl implements CourseHelper {
         List<SearchRequest> requests = new ArrayList<SearchRequest>();
         SearchRequest request = new SearchRequest(CourseSearchConstants.COURSE_SEARCH_FOR_COURSE_ID);
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_SUBJECT_PARAM, subjectArea.trim());
-        request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, number);
+        request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, number.trim());
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_LAST_SCHEDULED_PARAM, AtpHelper.getLastScheduledAtpId());
         requests.add(request);
         SearchResult searchResult = new SearchResult();
