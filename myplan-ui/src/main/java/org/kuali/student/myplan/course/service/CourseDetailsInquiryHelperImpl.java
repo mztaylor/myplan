@@ -58,6 +58,7 @@ import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -826,6 +827,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
                     if ("SectionComments".equalsIgnoreCase(key)) {
                         activity.setSectionComments(value);
+                        continue;
+                    }
+
+                    if ("SummerTerm".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
+                        activity.setSummerTerm(value);
                         continue;
                     }
 
