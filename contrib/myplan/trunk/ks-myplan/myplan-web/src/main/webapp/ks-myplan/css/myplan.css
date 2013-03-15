@@ -1372,7 +1372,6 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
     cursor: pointer;
     opacity: 1;
     font-family: Helvetica, Arial, Verdana, sans-serif;
-
 }
 
 .myplan-facets-panel .myplan-facets-group ul li.checked {
@@ -1908,6 +1907,14 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections img.myplan-enrl-data.alert {
     background-position: -54px -115px;
+}
+
+.myplan-course-sections td.myplan-section-planned {
+    background: url('../images/myplan_planned_section_bkgrd.png') !important;
+}
+
+.myplan-backup-collection .myplan-course-sections td.myplan-section-planned {
+    background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
 /* MyPlan Section (right side container) ########################################################################### */
