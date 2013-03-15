@@ -667,6 +667,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     courseOfferingTerm.setCourseComments(courseComments);
                     courseOfferingTerm.setCurriculumComments(curriculumComments);
                     courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
+                    courseOfferingTerm.setCoursePlanType(getPlanType(getPlanItem(course.getVersionInfo().getVersionIndId(), yt.toATP())));
                     courseOfferingTermList.add(courseOfferingTerm);
                 }
 
@@ -865,7 +866,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 activity.setDetails("View more details");
 
                 // Added this flag to know if the activityoffering is planned/backup
-                activity.setPlanItemId(getPlanItemId(course.getCode() + " " + sectionId, termId));
+                activity.setPlanItemId(getPlanItem(course.getCode() + " " + sectionId, termId).getId());
                 activity.setAtpId(termId);
                 YearTerm yt = AtpHelper.atpToYearTerm(termId);
                 activity.setQtryr(yt.toQTRYRParam());
@@ -922,26 +923,40 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     /**
      * Checks if the Given refObjId for a section (eg: com 453 A or com 453 AA or can use a versionIndependentId) for the given atpId exists in Plan/backup
-     * returns planItemId if exists otherwise returns null.
+     * returns planItemInfo if exists otherwise returns empty PlanitemInfo.
      *
      * @param refObjId
      * @param atpId
      * @return
      */
-    public String getPlanItemId(String refObjId, String atpId) {
+    public PlanItemInfo getPlanItem(String refObjId, String atpId) {
         try {
             PlanController planController = new PlanController();
             PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
             if (planItem != null) {
-                String planItemId = planItem.getId();
-                return planItemId;
+                return planItem;
             }
         } catch (Exception e) {
             logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
         }
-        return null;
+        return new PlanItemInfo();
     }
 
+
+    /**
+     * used to know if the given planItemInfo is a back up or a plantype.
+     *
+     * @param planItemInfo
+     * @return
+     */
+    public String getPlanType(PlanItemInfo planItemInfo) {
+        if (planItemInfo.getTypeKey() != null && planItemInfo.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return PlanConstants.PLANNED_TYPE;
+        } else if (planItemInfo.getTypeKey() != null && planItemInfo.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            return PlanConstants.BACKUP_TYPE;
+        }
+        return null;
+    }
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
