@@ -2,8 +2,6 @@ package org.kuali.student.myplan.plan.dataobject;
 
 import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 
 import java.util.ArrayList;
@@ -28,6 +26,10 @@ public class PlannedCourseDataObject implements Comparable {
     private transient boolean timeScheduleOpen;
 
     public CourseSummaryDetails getCourseDetails() {
+        if (courseDetails == null) {
+            System.out.println("COURSE DETAILS ARE NULL!!!");
+        }
+
         return courseDetails;
     }
 
@@ -66,6 +68,9 @@ public class PlannedCourseDataObject implements Comparable {
     }
 
     public List<ActivityOfferingItem> getPlanActivities() {
+        if (planActivities == null) {
+            planActivities = new ArrayList<ActivityOfferingItem>();
+        }
         return planActivities;
     }
 
@@ -87,5 +92,24 @@ public class PlannedCourseDataObject implements Comparable {
         }
         return StringUtils.join(sections.toArray(), ", ");
     }
+
+
+    public String getCredit() {
+        String credit = null;
+        if (!getPlanActivities().isEmpty()) {
+            int count = 0;
+
+            for (ActivityOfferingItem item : getPlanActivities()) {
+                String temp = item.getCredits();
+                count += Integer.valueOf(temp);
+            }
+            credit = Integer.toString(count);
+        } else if (courseDetails != null) {
+            credit = courseDetails.getCredit();
+        }
+
+        return credit;
+    }
+
 
 }

@@ -926,7 +926,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="(@{#line.courseDetails.credit})"/>
+                                <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>credit</value>
@@ -1043,7 +1043,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="(@{#line.courseDetails.credit})"/>
+                                <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>credit</value>
@@ -1189,7 +1189,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="(@{#line.courseDetails.credit})"/>
+                                <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>credit</value>
@@ -1278,7 +1278,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-MessageField">
-                                <property name="messageText" value="(@{#line.courseDetails.credit})"/>
+                                <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>credit</value>
