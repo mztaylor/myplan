@@ -281,8 +281,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
      * @return
      */
     private List<String> getSections(CourseDetails courseDetails, String term) {
-        String[] yearAndTerm = term.split(" ");
-
+        AtpHelper.YearTerm yearTerm = AtpHelper.termToYearTerm(term);
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
         for (AcademicRecordDataObject acr : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
@@ -291,9 +290,15 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
         }
         for (String section : sections) {
-            String sln = getSLN(yearAndTerm[1].trim(), yearAndTerm[0].trim(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
+            String sln = getSLN(String.valueOf(yearTerm.getYear()), String.valueOf(yearTerm.getTerm()), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
             String sectionSln = String.format("Section %s (%s)", section, sln);
-            String sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
+            String sec = null;
+            if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP())) {
+                sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
+            } else {
+                sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId(), sectionSln);
+            }
+
             sectionAndSln.add(sec);
         }
         return sectionAndSln;
