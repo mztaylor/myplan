@@ -942,7 +942,7 @@
                             <property name="render" value="@{#line.curriculumComments ne null}"/>
                         </bean>
                         <bean parent="Uif-Message" p:messageText="@{#line.curriculumComments}"
-                              p:render="@{#line.curriculumComments ne null}" p:style="margin-top: 10px; display:none;">
+                              p:render="@{#line.curriculumComments ne null}" p:style="margin-top: 10px; padding-left: 10px; display:none;">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>curriculum-comment</value>
