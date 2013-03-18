@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.plan.dataobject;
 
+import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,35 +105,7 @@ public class PlannedTerm {
             creditList.add(credit);
         }
 
-        String credits = sumCreditList(creditList);
-        return credits;
-    }
-
-
-    public String sumCreditList(List<String> list) {
-        if (list == null || list.isEmpty()) return "";
-        float minCredits = 0;
-        float maxCredits = 0;
-        for (String item : list) {
-            String[] split = item.split("[ ,/-]");
-
-            String first = split[0];
-            float min = Float.parseFloat(first);
-            minCredits += min;
-
-            String last = split[split.length - 1];
-            float max = Float.parseFloat(last);
-            maxCredits += max;
-        }
-
-        String credits = Float.toString(minCredits);
-
-        if (minCredits != maxCredits) {
-            credits = credits + "-" + Float.toString(maxCredits);
-            ;
-
-        }
-        credits = credits.replace(".0", "");
+        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
         return credits;
     }
 
