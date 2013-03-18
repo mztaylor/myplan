@@ -57,6 +57,19 @@
                                                     <bean parent="course_details_activity_data">
                                                         <property name="style" value=""/>
                                                         <property name="header.render" value="false"/>
+                                                        <property name="layoutManager.richTable.templateOptions">
+                                                            <map merge="true">
+                                                                <entry key="aoColumns" value="[
+                                                                       {},
+                                                                       {},
+                                                                       {},
+                                                                       {'sType':'string'},
+                                                                       {},
+                                                                       {},
+                                                                       {}
+                                                                ]"/>
+                                                            </map>
+                                                        </property>
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-VerticalFieldGroup" p:label="Section">
@@ -65,6 +78,7 @@
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>fl-text-align-center</value>
+                                                                            <value>activityCode</value>
                                                                             <value>@{#line.planItemId ne null ?
                                                                                 'myplan-section-planned':''}
                                                                             </value>
@@ -79,6 +93,13 @@
                                                                                   p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
                                                                                 <property name="fieldLabel.render"
                                                                                           value="false"/>
+                                                                                <property name="onDocumentReadyScript"
+                                                                                          value="
+                                                                                    var sectionCell = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('td');
+                                                                                    if (sectionCell.hasClass('myplan-section-planned')) {
+                                                                                        sectionCell.parents('tr').addClass('myplan-section-planned');
+                                                                                    }
+                                                                                "/>
                                                                             </bean>
                                                                             <bean p:id="@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}"
                                                                                   parent="Uif-ActionLink"
@@ -121,7 +142,7 @@
                                                                                 <property name="actionScript" value=""/>
                                                                             </bean>
                                                                             <bean parent="Uif-VerticalBoxSection"
-                                                                                  p:style="margin:0 40px 0 56px; display:none;">
+                                                                                  p:style="margin:0 24px 0 56px; display:none;">
                                                                                 <property name="header.render"
                                                                                           value="false"/>
                                                                                 <property
@@ -134,19 +155,21 @@
                                                                                                     name="validationMessages.render"
                                                                                                     value="false"/>
                                                                                             <property name="style"
-                                                                                                      value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 100px 0px repeat-y;"/>
+                                                                                                      value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 351px 0px repeat-y;"/>
                                                                                             <property name="items">
                                                                                                 <list>
                                                                                                     <bean parent="Uif-DataField"
                                                                                                           p:propertyName="instructor"
                                                                                                           p:label="Instructor"
-                                                                                                          p:labelPlacement="TOP">
+                                                                                                          p:labelPlacement="TOP"
+                                                                                                          p:style="width:343px;">
                                                                                                         <property
                                                                                                                 name="fieldLabel.renderColon"
                                                                                                                 value="false"/>
                                                                                                     </bean>
                                                                                                     <bean parent="Uif-VerticalFieldGroup"
                                                                                                           p:label="Other"
+                                                                                                          p:style="width:186px;"
                                                                                                           p:labelPlacement="TOP">
                                                                                                         <property
                                                                                                                 name="fieldLabel.renderColon"
@@ -240,6 +263,11 @@
                                                                       p:label="Type (Credit)">
                                                                     <property name="group.validationMessages.render"
                                                                               value="false"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityType</value>
+                                                                        </list>
+                                                                    </property>
                                                                     <property name="items">
                                                                         <list>
                                                                             <bean parent="Uif-DataField"
@@ -261,10 +289,20 @@
                                                                       p:escapeHtmlInPropertyValue="false">
                                                                     <property name="propertyEditor"
                                                                               ref="meeting_building_link_formatter"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityMeetingData</value>
+                                                                        </list>
+                                                                    </property>
                                                                 </bean>
                                                                 <bean parent="Uif-HorizontalFieldGroup" p:label="SLN">
                                                                     <property name="group.validationMessages.render"
                                                                               value="false"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityRegCode</value>
+                                                                        </list>
+                                                                    </property>
                                                                     <property name="items">
                                                                         <list>
                                                                             <bean parent="current_section_status"
@@ -276,6 +314,11 @@
                                                                       p:label="ENRL RESTR">
                                                                     <property name="group.validationMessages.render"
                                                                               value="false"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityEnrlRestr</value>
+                                                                        </list>
+                                                                    </property>
                                                                     <property name="items">
                                                                         <list>
                                                                             <bean parent="Uif-Message"
@@ -302,6 +345,11 @@
                                                                       p:label="ENRL / Limit">
                                                                     <property name="group.validationMessages.render"
                                                                               value="false"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityEnrlData</value>
+                                                                        </list>
+                                                                    </property>
                                                                     <property name="items">
                                                                         <list>
                                                                             <bean parent="Uif-Image"
@@ -319,11 +367,12 @@
 
                                                                 <!-- Add Button -->
                                                                 <bean parent="section_button"
-                                                                      p:render="@{#line.planItemId eq null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
+                                                                      p:render="@{#line.planItemId eq null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
                                                                     <property name="onClickScript"
                                                                               value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',primary:@{#line.primary},viewId:'PlannedCourse-FormView'}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
+                                                                            <value>activityAction</value>
                                                                             <value>myplan-add</value>
                                                                             <value>fl-text-align-center</value>
                                                                         </list>
@@ -337,11 +386,12 @@
 
                                                                 <!-- Delete Button -->
                                                                 <bean parent="section_button"
-                                                                      p:render="@{#line.planItemId ne null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}">
+                                                                      p:render="@{#line.planItemId ne null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
                                                                     <property name="onClickScript"
                                                                               value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',primary:@{#line.primary},viewId:'PlannedCourse-FormView'}, e);"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
+                                                                            <value>activityAction</value>
                                                                             <value>myplan-delete</value>
                                                                             <value>fl-text-align-center</value>
                                                                         </list>
@@ -355,7 +405,13 @@
 
                                                                 <!--For Advisers-->
                                                                 <bean parent="Uif-MessageField" p:messageText="--"
-                                                                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"/>
+                                                                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>activityAction</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
 
                                                             </list>
                                                         </property>
