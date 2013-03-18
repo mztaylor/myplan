@@ -1917,6 +1917,34 @@ table.myplan-course-search-results-datatable .blockUI {
     background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
+.myplan-course-sections td.activityCode {
+    width: 48px;
+}
+
+.myplan-course-sections td.activityType {
+    width: 80px;
+}
+
+.myplan-course-sections td.activityMeetingData {
+    width: 254px;
+}
+
+.myplan-course-sections td.activityRegCode {
+    width: 38px;
+}
+
+.myplan-course-sections td.activityEnrlRestr {
+    width: 70px;
+}
+
+.myplan-course-sections td.activityEnrlData {
+    width: 60px;
+}
+
+.myplan-course-sections td.activityAction {
+    width: 16px;
+}
+
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;

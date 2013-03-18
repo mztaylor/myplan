@@ -1479,7 +1479,8 @@ function showDataTableDetail(actionComponent, tableId, useImages) {
     });
 
     if (oTable != null) {
-        var nTr = jQuery(actionComponent).parents('tr')[0];
+        var nTr = jQuery(actionComponent).parents("tr")[0];
+        var sClasses = jQuery(nTr).attr("class").replace("odd", "").replace("even", "");
         if (useImages && jQuery(actionComponent).find("img").length) {
             jQuery(actionComponent).find("img").hide();
         } else {
@@ -1496,6 +1497,7 @@ function showDataTableDetail(actionComponent, tableId, useImages) {
             jQuery(this).attr("id", linkId + "_details");
         });
         runHiddenScripts(detailsId + "_details");
+        jQuery(newRow).attr("class", sClasses);
         jQuery(newRow).find(".uif-group").first().show();
     }
 }
@@ -1513,6 +1515,7 @@ function expandDataTableDetail(actionComponent, tableId, useImages, expandText, 
 
     if (oTable != null) {
         var nTr = jQuery(actionComponent).parents('tr')[0];
+        var sClasses = jQuery(nTr).attr("class").replace("odd", "").replace("even", "");
         if (oTable.fnIsOpen(nTr)) {
             if (useImages && jQuery(actionComponent).find("img").length) {
                 jQuery(actionComponent).find("img").replaceWith(detailsOpenImage.clone());
@@ -1542,6 +1545,7 @@ function expandDataTableDetail(actionComponent, tableId, useImages, expandText, 
                 jQuery(this).attr("id", linkId + "_details");
             });
             runHiddenScripts(detailsId + "_details");
+            jQuery(newRow).attr("class", sClasses);
             jQuery(newRow).find(".uif-group").first().slideDown();
         }
     }
@@ -1643,7 +1647,7 @@ function updateHiddenScript(id, script) {
 }
 
 function switchFetchAction(actionId, toggleId) {
-    var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleGroup('" + actionId + "', '" + toggleId + "'); });";
+    var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleSections('" + actionId + "', '" + toggleId + "', 'myplan-section-planned', 'Show all sections', 'Hide all sections'); });";
     updateHiddenScript(actionId, script);
     jQuery("#" + actionId).text("Hide all sections")
 }
@@ -1657,6 +1661,18 @@ function toggleGroup(actionId, toggleId) {
     } else {
         group.slideDown();
         action.text("Hide all sections");
+    }
+}
+
+function toggleSections(actionId, toggleId, showClass, showText, hideText) {
+    var group = jQuery("#" + toggleId + " table tbody tr").not("." + showClass);
+    var action = jQuery("#" + actionId);
+    if (group.is(':visible')) {
+        group.hide();
+        action.text(showText);
+    } else {
+        group.show();
+        action.text(hideText);
     }
 }
 
