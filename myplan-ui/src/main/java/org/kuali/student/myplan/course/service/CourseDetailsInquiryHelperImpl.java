@@ -53,6 +53,10 @@ import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
@@ -140,7 +144,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     public void setCourseComments(HashMap<String, String> courseComments) {
         this.courseComments = courseComments;
     }
-
 
     protected LuService getLuService() {
         if (this.luService == null) {
@@ -601,6 +604,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         }
         Collections.sort(ytList, Collections.reverseOrder());
 
+        Map<String, Map<String, String>> planItemsByTerm = loadStudentsPlanItems();
 
         for (YearTerm yt : ytList) {
             String atp = yt.toATP();
@@ -635,7 +639,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
 
 
-            List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp);
+            List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp, planItemsByTerm.get(atp));
             for (ActivityOfferingItem activityOfferingItem : list) {
                 int instituteCode = Integer.valueOf(activityOfferingItem.getInstituteCode());
                 String instituteName = activityOfferingItem.getInstituteName();
@@ -694,8 +698,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         try {
             CourseInfo course = getCourseService().getCourse(courseId);
 
-            List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, termId, CourseSearchConstants.CONTEXT_INFO);
-            activityOfferingItems = getActivityOfferingItems(course, courseOfferingInfoList, termId);
+            List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), termId, CourseSearchConstants.CONTEXT_INFO);
+
+            Map<String, Map<String, String>> planItemsByTerm = loadStudentsPlanItems();
+            activityOfferingItems = getActivityOfferingItems(course, courseOfferingInfoList, termId, planItemsByTerm.get(termId));
 
 
         } catch (DoesNotExistException e) {
@@ -712,11 +718,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      * Returns activity Offerings for given courseId and term
      *
      * @param course
-     * @param courseOfferingInfoList
+     * @param courseOfferingInfoList List of course offerings for the given term
+     * @param termId      Term for which activity offerings are requested
+     * @param planItemMap Map of refObjectId to planItemId for the requested term
      * @return
      */
 
-    public List<ActivityOfferingItem> getActivityOfferingItems(CourseInfo course, List<CourseOfferingInfo> courseOfferingInfoList, String termId) {
+    protected List<ActivityOfferingItem> getActivityOfferingItems(CourseInfo course, List<CourseOfferingInfo> courseOfferingInfoList, String termId, Map<String, String> planItemMap) {
 
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
@@ -730,10 +738,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             try {
                 aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
             } catch (Exception e) {
-                logger.error(" Could not load activity offering for course offering: " + courseOfferingID);
-                return activityOfferingItemList;
+                logger.info("Not able to load activity offering for courseOffering: " + courseOfferingID + " Term:" + termId);
+                continue;
             }
-
 
             boolean primary = true;
             String primarySectionCode = null;
@@ -866,7 +873,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 activity.setDetails("View more details");
 
                 // Added this flag to know if the activityoffering is planned/backup
-                activity.setPlanItemId(getPlanItem(course.getCode() + " " + sectionId, termId).getId());
+                String planRefObjId = course.getCode() + " " + sectionId;
+                if (null != planItemMap) {
+                    activity.setPlanItemId(planItemMap.get(planRefObjId));
+                }
+
                 activity.setAtpId(termId);
                 YearTerm yt = AtpHelper.atpToYearTerm(termId);
                 activity.setQtryr(yt.toQTRYRParam());
@@ -921,25 +932,42 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return isCourseIdValid;
     }
 
+
     /**
-     * Checks if the Given refObjId for a section (eg: com 453 A or com 453 AA or can use a versionIndependentId) for the given atpId exists in Plan/backup
-     * returns planItemInfo if exists otherwise returns empty PlanitemInfo.
+     * Loads all plan items for the logged in user.  Returns the plan items grouped by terms
      *
-     * @param refObjId
-     * @param atpId
-     * @return
+     * @return A Map of term to a Map of refObjectId to planItemId
      */
-    public PlanItemInfo getPlanItem(String refObjId, String atpId) {
+
+    protected Map<String, Map<String, String>> loadStudentsPlanItems() {
+        String studentId = UserSessionHelper.getStudentId();
+        Map<String, Map<String, String>> planItemsByTerm = new HashMap<String, Map<String, String>>();
         try {
-            PlanController planController = new PlanController();
-            PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
-            if (planItem != null) {
-                return planItem;
+            LearningPlan learningPlan = getAcademicPlanService().getLearningPlan(studentId, CourseSearchConstants.CONTEXT_INFO);
+            List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(learningPlan.getId(), CourseSearchConstants.CONTEXT_INFO);
+
+            if (null != planItems) {
+                for (PlanItem item : planItems) {
+                    for (String planPeriod : item.getPlanPeriods()) {
+                        Map<String, String> planMap = planItemsByTerm.get(planPeriod);
+                        if (null == planMap) {
+                            planMap = new HashMap<String, String>();
+                            planItemsByTerm.put(planPeriod, planMap);
+                        }
+
+                        planMap.put(item.getRefObjectId(), item.getId());
+                    }
+                }
             }
+
+
+        } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
+            // Ignore : Student does not have any plan
         } catch (Exception e) {
-            logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
+            logger.error(" Could not load plan information for student: " + studentId);
         }
-        return new PlanItemInfo();
+
+        return planItemsByTerm;
     }
 
 
@@ -1036,6 +1064,26 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         this.academicPlanService = academicPlanService;
     }
 
+    /**
+     * Checks if the Given refObjId for a section (eg: com 453 A or com 453 AA or can use a versionIndependentId) for the given atpId exists in Plan/backup
+     * returns planItemInfo if exists otherwise returns empty PlanitemInfo.
+     *
+     * @param refObjId
+     * @param atpId
+     * @return
+     */
+    public PlanItemInfo getPlanItem(String refObjId, String atpId) {
+        try {
+            PlanController planController = new PlanController();
+            PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
+            if (planItem != null) {
+                return planItem;
+            }
+        } catch (Exception e) {
+            logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
+        }
+        return new PlanItemInfo();
+    }
 
     /**
      * Takes a courseId that can be either a version independent Id or a version dependent Id and
