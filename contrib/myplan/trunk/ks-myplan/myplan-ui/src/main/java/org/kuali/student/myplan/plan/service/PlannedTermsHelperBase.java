@@ -32,12 +32,12 @@ public class PlannedTermsHelperBase {
         } else {
             globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
         }
+        if (StringUtils.isEmpty(focusAtpId)) {
+            focusAtpId = globalCurrentAtpId;
+        }
         try {
-            if (StringUtils.isEmpty(focusAtpId)) {
-                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(globalCurrentAtpId));
-            } else {
-                focusQuarterYear = AtpHelper.atpIdToTermAndYear(AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId));
-            }
+            String firstAtpId = AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId);
+            focusQuarterYear = AtpHelper.atpIdToTermAndYear(firstAtpId);
         } catch (Exception e) {
             //  Log and set the year to the current year.
             //  TODO: This logic isn't correct, but does position the quarter view pretty close.
@@ -265,6 +265,7 @@ public class PlannedTermsHelperBase {
 
     /**
      * PlannedTermList is populated starting from the given atpId to ((year of atpId) + futureTermsCount)
+     *
      * @param atpId
      * @param plannedTermList
      * @param futureTermsCount
@@ -326,4 +327,29 @@ public class PlannedTermsHelperBase {
 
     }
 
+    public static String sumCreditList(List<String> list) {
+        if (list == null || list.isEmpty()) return "";
+        float minCredits = 0;
+        float maxCredits = 0;
+        for (String item : list) {
+            String[] split = item.split("[ ,/-]");
+
+            String first = split[0];
+            float min = Float.parseFloat(first);
+            minCredits += min;
+
+            String last = split[split.length - 1];
+            float max = Float.parseFloat(last);
+            maxCredits += max;
+        }
+
+        String credits = Float.toString(minCredits);
+
+        if (minCredits != maxCredits) {
+            credits = credits + "-" + Float.toString(maxCredits);
+        }
+
+        credits = credits.replace(".0", "");
+        return credits;
+    }
 }

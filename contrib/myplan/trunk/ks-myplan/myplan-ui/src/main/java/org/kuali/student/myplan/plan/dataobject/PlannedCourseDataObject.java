@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.dataobject;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,13 +98,14 @@ public class PlannedCourseDataObject implements Comparable {
     public String getCredit() {
         String credit = null;
         if (!getPlanActivities().isEmpty()) {
-            int count = 0;
-
+            ArrayList<String> creditList = new ArrayList<String>();
             for (ActivityOfferingItem item : getPlanActivities()) {
-                String temp = item.getCredits();
-                count += Integer.valueOf(temp);
+                if (item.isPrimary()) {
+                    String credits = item.getCredits();
+                    creditList.add(credits);
+                }
             }
-            credit = Integer.toString(count);
+            credit = PlannedTermsHelperBase.sumCreditList(creditList);
         } else if (courseDetails != null) {
             credit = courseDetails.getCredit();
         }
