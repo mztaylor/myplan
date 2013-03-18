@@ -232,7 +232,7 @@ public class AtpHelper {
         } else if (term.equals(PlanConstants.ATP_TERM_2)) {
             term = PlanConstants.TERM_2;
         } else if (term.equals(PlanConstants.ATP_TERM_3)) {
-            term = PlanConstants.TERM_4;
+            term = PlanConstants.TERM_3;
         }
         return new String[]{term, year};
     }
