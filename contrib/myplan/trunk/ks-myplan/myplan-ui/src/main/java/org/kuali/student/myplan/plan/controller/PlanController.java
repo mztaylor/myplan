@@ -78,6 +78,8 @@ public class PlanController extends UifControllerBase {
 
     private transient DegreeAuditService degreeAuditService;
 
+    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+
     @Autowired
     private transient CourseHelper courseHelper;
 
@@ -1931,19 +1933,17 @@ public class PlanController extends UifControllerBase {
 
                 for (PlanItemInfo planItem : planItemList) {
                     String luType = planItem.getRefObjectType();
-                    if (luType.equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
                         String courseID = planItem.getRefObjectId();
-                        if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
-                            for (String atp : planItem.getPlanPeriods()) {
-                                if (atp.equalsIgnoreCase(termId)) {
-                                    CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
-                                    if (courseDetails != null) {
-                                        String credit = courseDetails.getCredit();
-                                        if (credit == null) continue;
-                                        if ("".equals(credit)) continue;
-                                        creditList.add(credit);
+                        for (String atp : planItem.getPlanPeriods()) {
+                            if (atp.equalsIgnoreCase(termId)) {
+                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                                if (courseDetails != null) {
+                                    String credit = courseDetails.getCredit();
+                                    if (credit == null) continue;
+                                    if ("".equals(credit)) continue;
+                                    creditList.add(credit);
 
-                                    }
                                 }
                             }
                         }
@@ -2066,6 +2066,14 @@ public class PlanController extends UifControllerBase {
     public void setAtpHelper(AtpHelper atpHelper) {
         this.atpHelper = atpHelper;
     }
+
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
+        if (this.courseDetailsInquiryHelper == null) {
+            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+        }
+        return courseDetailsInquiryHelper;
+    }
+
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
