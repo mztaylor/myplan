@@ -689,12 +689,10 @@ public class QuickAddController extends UifControllerBase {
                 for (PlanItemInfo planItem : planItemList) {
                     String luType = planItem.getRefObjectType();
                     if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
-
                         String courseID = planItem.getRefObjectId();
                         for (String atp : planItem.getPlanPeriods()) {
                             if (atp.equalsIgnoreCase(termId)) {
                                 CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
-//                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
                                 if (courseDetails != null) {
                                     String credit = courseDetails.getCredit();
                                     if (credit == null) continue;
