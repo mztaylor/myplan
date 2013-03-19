@@ -920,7 +920,7 @@ public class QuickAddController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.");
         } else {
             for (PlanItem p : planItems) {
-                if (p.getPlanPeriods().get(0).equals(atpId)) {
+                if (p.getPlanPeriods().get(0).equals(atpId) && "kuali.lu.type.CreditCourse".equals(p.getRefObjectType())) {
                     counter++;
                 }
             }
