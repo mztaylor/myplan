@@ -1931,7 +1931,7 @@ public class PlanController extends UifControllerBase {
 
                 for (PlanItemInfo planItem : planItemList) {
                     String luType = planItem.getRefObjectType();
-                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
+                    if (luType.equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                         String courseID = planItem.getRefObjectId();
                         if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
                             for (String atp : planItem.getPlanPeriods()) {

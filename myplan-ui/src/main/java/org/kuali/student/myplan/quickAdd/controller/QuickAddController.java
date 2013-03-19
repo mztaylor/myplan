@@ -705,6 +705,7 @@ public class QuickAddController extends UifControllerBase {
                             }
                         }
                     }
+
                 }
 
                 List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
