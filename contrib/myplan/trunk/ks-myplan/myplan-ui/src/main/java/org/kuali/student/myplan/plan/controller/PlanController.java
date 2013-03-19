@@ -34,7 +34,6 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
@@ -50,6 +49,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
+import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -1917,111 +1917,46 @@ public class PlanController extends UifControllerBase {
     }
 
     private String getTotalCredits(String termId) {
-        double plannedTotalMin = 0;
-        double plannedTotalMax = 0;
-        String totalCredits = null;
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
-        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
-        List<LearningPlanInfo> learningPlanList = null;
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
+        ArrayList<String> creditList = new ArrayList<String>();
 
-        List<PlanItemInfo> planItemList = null;
         try {
-            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
-                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
-                    String courseID = planItem.getRefObjectId();
-                    if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                    String luType = planItem.getRefObjectType();
+                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
+                        String courseID = planItem.getRefObjectId();
                         if (getCourseDetailsInquiryService().isCourseIdValid(courseID)) {
                             for (String atp : planItem.getPlanPeriods()) {
                                 if (atp.equalsIgnoreCase(termId)) {
                                     CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
-                                    if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
-                                        String[] str = courseDetails.getCredit().split("\\D");
-                                        double min = Double.parseDouble(str[0]);
-                                        plannedTotalMin += min;
-                                        double max = Double.parseDouble(str[str.length - 1]);
-                                        plannedTotalMax += max;
+                                    if (courseDetails != null) {
+                                        String credit = courseDetails.getCredit();
+                                        if (credit == null) continue;
+                                        if ("".equals(credit)) continue;
+                                        creditList.add(credit);
 
-                                    } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
-                                        if (courseDetails.getCredit().contains(PlanConstants.MULTIPLE)) {
-                                            String[] str = courseDetails.getCredit().split(PlanConstants.MULTIPLE);
-                                            plannedTotalMin += Double.parseDouble(str[0]);
-                                            plannedTotalMax += Double.parseDouble(str[1]);
-                                        } else if (courseDetails.getCredit().contains(PlanConstants.RANGE)) {
-                                            String[] str = courseDetails.getCredit().split(PlanConstants.RANGE);
-                                            plannedTotalMin += Double.parseDouble(str[0]);
-                                            plannedTotalMax += Double.parseDouble(str[1]);
-                                        } else {
-                                            plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
-                                            plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
-                                        }
                                     }
                                 }
-                                totalCredits = Double.toString(plannedTotalMin);
-                                if (plannedTotalMin != plannedTotalMax) {
-                                    totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
-                                }
                             }
                         }
                     }
                 }
 
-                double academicTotalMin = 0;
-                double academicTotalMax = 0;
-                if (studentCourseRecordInfos.size() > 0) {
-                    for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
-                        if (ar.getTermName().equalsIgnoreCase(termId)) {
-                            if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && !ar.getCreditsEarned().contains(".")) {
-                                String[] str = ar.getCreditsEarned().split("\\D");
-                                double min = Double.parseDouble(str[0]);
-                                academicTotalMin += min;
-                                double max = Double.parseDouble(str[str.length - 1]);
-                                academicTotalMax += max;
-                            } else if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && ar.getCreditsEarned().contains(".")) {
-                                academicTotalMin += Double.parseDouble(ar.getCreditsEarned());
-                                academicTotalMax += Double.parseDouble(ar.getCreditsEarned());
-                            }
-                        }
-                    }
-                    totalCredits = Double.toString(academicTotalMin);
-
-                    if (academicTotalMin != academicTotalMax) {
-                        totalCredits = totalCredits + "-" + Double.toString(academicTotalMax);
-                    }
-                }
-
-                if (planItemList.size() > 0 && studentCourseRecordInfos.size() > 0) {
-                    if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = plannedTotalMin + academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
-                    }
-                    if (plannedTotalMin == plannedTotalMax && academicTotalMin == academicTotalMax) {
-                        totalCredits = String.valueOf(plannedTotalMin + academicTotalMin);
-                    }
-                    if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = plannedTotalMin + academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
-
-                    }
-                    if (plannedTotalMin == plannedTotalMax && academicTotalMin != academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
+                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
+                for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
+                    if (ar.getTermName().equalsIgnoreCase(termId)) {
+                        String credit = ar.getCreditsEarned();
+                        if (credit == null) continue;
+                        if ("".equals(credit)) continue;
+                        creditList.add(credit);
                     }
                 }
             }
@@ -2029,10 +1964,8 @@ public class PlanController extends UifControllerBase {
             logger.error("could not load total credits");
         }
 
-        if (totalCredits != null) {
-            if (totalCredits.contains(".0")) totalCredits = totalCredits.replace(".0", "");
-        }
-        return totalCredits;
+        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
+        return credits;
     }
 
     private String getPlanIdFromCourseId(String courseId, String planItemType) {

@@ -31,6 +31,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
+import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.quickAdd.QuickAddConstants;
 import org.kuali.student.myplan.quickAdd.form.QuickAddForm;
@@ -42,7 +43,6 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +55,12 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.*;
 
+import static org.apache.commons.lang.StringUtils.*;
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+import static org.kuali.student.myplan.plan.PlanConstants.*;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Created by IntelliJ IDEA.
@@ -204,7 +209,7 @@ public class QuickAddController extends UifControllerBase {
             setCourseOfferingServiceUp(servicesStatusDataObject.isCourseOfferingServiceUp());
         }
         QuickAddForm searchForm = (QuickAddForm) form;
-        if (StringUtils.hasText(searchForm.getAtpId()) && StringUtils.hasText(searchForm.getPlanType())) {
+        if (hasText(searchForm.getAtpId()) && hasText(searchForm.getPlanType())) {
             String termYear = AtpHelper.atpIdToTermName(searchForm.getAtpId());
             if (searchForm.getPlanType().equalsIgnoreCase(QuickAddConstants.PLANNED_TYPE)) {
                 termYear = termYear + QuickAddConstants.PLAN;
@@ -222,13 +227,13 @@ public class QuickAddController extends UifControllerBase {
         String atpId = request.getParameter("atpId");
         List<String> results = new ArrayList<String>();
         if (queryText.length() >= 2) {
-            if (StringUtils.hasText(queryText)) {
+            if (hasText(queryText)) {
                 SearchRequest searchRequest = null;
                 HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
                 /*Params from the Url*/
                 String subject = null;
                 String number = null;
-                String searchText = org.apache.commons.lang.StringUtils.upperCase(queryText);
+                String searchText = upperCase(queryText);
                 DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(searchText);
                 if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
                     number = courseCode.getNumber();
@@ -239,7 +244,7 @@ public class QuickAddController extends UifControllerBase {
                         searchRequest = new SearchRequest("myplan.clu.divisionAndCode");
                         results = searchController.getResults(searchRequest, subject, number);
                     }
-                } else if (courseCode.getSubject() != null && !org.apache.commons.lang.StringUtils.isNumeric(courseCode.getSubject())) {
+                } else if (courseCode.getSubject() != null && !isNumeric(courseCode.getSubject())) {
                     ArrayList<String> divisions = new ArrayList<String>();
                     subject = searchController.extractDivisions(divisionMap, courseCode.getSubject(), divisions, true);
                     if (divisions.size() > 0) {
@@ -293,7 +298,7 @@ public class QuickAddController extends UifControllerBase {
         if (UserSessionHelper.isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", QuickAddConstants.ACCESS_DENIED, null);
         }
-        if (!StringUtils.hasText(form.getCourseCd())) {
+        if (!hasText(form.getCourseCd())) {
             return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
         } else if (form.getCourseCd().length() < 2) {
             return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
@@ -321,23 +326,23 @@ public class QuickAddController extends UifControllerBase {
             return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
-        if (!StringUtils.hasText(courseId)) {
+        if (!hasText(courseId)) {
             return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
         //  Further validation of ATP IDs will happen in the service validation methods.
-        if (org.apache.commons.lang.StringUtils.isEmpty(form.getAtpId())) {
+        if (isEmpty(form.getAtpId())) {
             return doOperationFailedError(form, "Term Year value missing", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
         if (form.getPlanType() == null) {
-            return doOperationFailedError(form, "Plan Type is missing", PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
+            return doOperationFailedError(form, "Plan Type is missing", ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
         boolean backup = form.getPlanType().equalsIgnoreCase("backup");
-        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
+        String newType = LEARNING_PLAN_ITEM_TYPE_PLANNED;
         if (backup) {
-            newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
+            newType = LEARNING_PLAN_ITEM_TYPE_BACKUP;
         }
 
         //  This list can only contain one item, otherwise the backend validation will fail.
@@ -345,7 +350,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             newAtpIds = new LinkedList<String>();
             //  Create an ATP id from the values in the year and term fields.
-            if (org.apache.commons.lang.StringUtils.isEmpty(form.getAtpId())) {
+            if (isEmpty(form.getAtpId())) {
                 throw new RuntimeException("Could not construct ATP id for Given TermYear option because year was blank.");
             }
 
@@ -354,7 +359,7 @@ public class QuickAddController extends UifControllerBase {
             return doOperationFailedError(form, "Unable to process request.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
         if (!AtpHelper.isAtpIdFormatValid(newAtpIds.get(0))) {
-            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
 
         String studentId = UserSessionHelper.getStudentId();
@@ -365,7 +370,7 @@ public class QuickAddController extends UifControllerBase {
             //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
             plan = getLearningPlan(studentId);
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for default learning plan failed.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+            return doOperationFailedError(form, "Query for default learning plan failed.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         /*
@@ -377,7 +382,7 @@ public class QuickAddController extends UifControllerBase {
             try {
                 plan = createDefaultLearningPlan(studentId);
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to create learning plan.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+                return doOperationFailedError(form, "Unable to create learning plan.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         }
         //  Lookup course details as well need them in case there is an error below.
@@ -385,7 +390,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseId);
         } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", PlanConstants.ERROR_KEY_OPERATION_FAILED, null, new String[]{});
+            return doOperationFailedError(form, "Unable to retrieve Course Details.", ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
 
         /*  Do validations. */
@@ -394,7 +399,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Could not validate capacity for new plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+            return doOperationFailedError(form, "Could not validate capacity for new plan item.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         if (!hasCapacity) {
@@ -417,7 +422,7 @@ public class QuickAddController extends UifControllerBase {
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpIds.get(0), courseDetails);
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to add plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+                return doOperationFailedError(form, "Unable to add plan item.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         } else {
             //  Check for duplicates since addPlanItem isn't being called.
@@ -432,7 +437,7 @@ public class QuickAddController extends UifControllerBase {
             try {
                 planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
             }
         }
 
@@ -447,7 +452,7 @@ public class QuickAddController extends UifControllerBase {
         try {
             events.putAll(makeAddEvent(planItem, courseDetails));
         } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Unable to create add event.", PlanConstants.ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+            return doOperationFailedError(form, "Unable to create add event.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
         }
 
         events.putAll(makeUpdateTotalCreditsEvent(planItem.getPlanPeriods().get(0), PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
@@ -471,8 +476,8 @@ public class QuickAddController extends UifControllerBase {
         Map<String, String> params = new HashMap<String, String>();
 
         //  Only planned or backup items get an atpId attribute.
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (planItem.getTypeKey().equals(LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
+                planItem.getTypeKey().equals(LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         }
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
@@ -543,15 +548,15 @@ public class QuickAddController extends UifControllerBase {
      * @throws RuntimeException on errors.
      */
     private PlanItemInfo getPlanItemByAtpAndType(String planId, String courseId, String atpId, String planItemType) {
-        if (org.apache.commons.lang.StringUtils.isEmpty(planId)) {
+        if (isEmpty(planId)) {
             throw new RuntimeException("Plan Id was empty.");
         }
 
-        if (org.apache.commons.lang.StringUtils.isEmpty(courseId)) {
+        if (isEmpty(courseId)) {
             throw new RuntimeException("Course Id was empty.");
         }
 
-        if (org.apache.commons.lang.StringUtils.isEmpty(atpId)) {
+        if (isEmpty(atpId)) {
             throw new RuntimeException("ATP Id was empty.");
         }
 
@@ -616,7 +621,7 @@ public class QuickAddController extends UifControllerBase {
     protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType)
             throws DuplicateEntryException {
 
-        if (org.apache.commons.lang.StringUtils.isEmpty(courseId)) {
+        if (isEmpty(courseId)) {
             throw new RuntimeException("Empty Course ID");
         }
 
@@ -669,107 +674,46 @@ public class QuickAddController extends UifControllerBase {
     }
 
     private String getTotalCredits(String termId) {
-        double plannedTotalMin = 0;
-        double plannedTotalMax = 0;
-        String totalCredits = null;
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
 
-        String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
-        List<LearningPlanInfo> learningPlanList = null;
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
+        ArrayList<String> creditList = new ArrayList<String>();
 
-        List<PlanItemInfo> planItemList = null;
         try {
-            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
-                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
-                    String courseID = planItem.getRefObjectId();
-                    for (String atp : planItem.getPlanPeriods()) {
-                        if (atp.equalsIgnoreCase(termId)) {
-                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
-                            if (courseDetails != null && !courseDetails.getCredit().contains(".")) {
-                                String[] str = courseDetails.getCredit().split("\\D");
-                                double min = Double.parseDouble(str[0]);
-                                plannedTotalMin += min;
-                                double max = Double.parseDouble(str[str.length - 1]);
-                                plannedTotalMax += max;
+                    String luType = planItem.getRefObjectType();
+                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
 
-                            } else if (courseDetails != null && courseDetails.getCredit().contains(".")) {
-                                if (courseDetails.getCredit().contains(PlanConstants.MULTIPLE)) {
-                                    String[] str = courseDetails.getCredit().split(PlanConstants.MULTIPLE);
-                                    plannedTotalMin += Double.parseDouble(str[0]);
-                                    plannedTotalMax += Double.parseDouble(str[1]);
-                                } else if (courseDetails.getCredit().contains(PlanConstants.RANGE)) {
-                                    String[] str = courseDetails.getCredit().split(PlanConstants.RANGE);
-                                    plannedTotalMin += Double.parseDouble(str[0]);
-                                    plannedTotalMax += Double.parseDouble(str[1]);
-                                } else {
-                                    plannedTotalMin += Double.parseDouble(courseDetails.getCredit());
-                                    plannedTotalMax += Double.parseDouble(courseDetails.getCredit());
+                        String courseID = planItem.getRefObjectId();
+                        for (String atp : planItem.getPlanPeriods()) {
+                            if (atp.equalsIgnoreCase(termId)) {
+                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+//                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
+                                if (courseDetails != null) {
+                                    String credit = courseDetails.getCredit();
+                                    if (credit == null) continue;
+                                    if ("".equals(credit)) continue;
+                                    creditList.add(credit);
+
                                 }
                             }
                         }
-                        totalCredits = Double.toString(plannedTotalMin);
-                        if (plannedTotalMin != plannedTotalMax) {
-                            totalCredits = totalCredits + "-" + Double.toString(plannedTotalMax);
-                        }
                     }
                 }
 
-                double academicTotalMin = 0;
-                double academicTotalMax = 0;
-                if (studentCourseRecordInfos.size() > 0) {
-                    for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
-                        if (ar.getTermName().equalsIgnoreCase(termId)) {
-                            if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && !ar.getCreditsEarned().contains(".")) {
-                                String[] str = ar.getCreditsEarned().split("\\D");
-                                double min = Double.parseDouble(str[0]);
-                                academicTotalMin += min;
-                                double max = Double.parseDouble(str[str.length - 1]);
-                                academicTotalMax += max;
-                            } else if (ar.getCreditsEarned() != null || !ar.getCreditsEarned().isEmpty() && ar.getCreditsEarned().contains(".")) {
-                                academicTotalMin += Double.parseDouble(ar.getCreditsEarned());
-                                academicTotalMax += Double.parseDouble(ar.getCreditsEarned());
-                            }
-                        }
-                    }
-                    totalCredits = Double.toString(academicTotalMin);
-
-                    if (academicTotalMin != academicTotalMax) {
-                        totalCredits = totalCredits + "-" + Double.toString(academicTotalMax);
-                    }
-                }
-
-                if (planItemList.size() > 0 && studentCourseRecordInfos.size() > 0) {
-                    if (plannedTotalMin != plannedTotalMax && academicTotalMin != academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = plannedTotalMin + academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
-                    }
-                    if (plannedTotalMin == plannedTotalMax && academicTotalMin == academicTotalMax) {
-                        totalCredits = String.valueOf(plannedTotalMin + academicTotalMin);
-                    }
-                    if (plannedTotalMin != plannedTotalMax && academicTotalMin == academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = plannedTotalMin + academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
-
-                    }
-                    if (plannedTotalMin == plannedTotalMax && academicTotalMin != academicTotalMax) {
-                        double minVal = 0;
-                        double maxVal = 0;
-                        minVal = academicTotalMin;
-                        maxVal = plannedTotalMax + academicTotalMax;
-                        totalCredits = minVal + "-" + maxVal;
+                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
+                for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
+                    if (ar.getTermName().equalsIgnoreCase(termId)) {
+                        String credit = ar.getCreditsEarned();
+                        if (credit == null) continue;
+                        if ("".equals(credit)) continue;
+                        creditList.add(credit);
                     }
                 }
             }
@@ -777,11 +721,10 @@ public class QuickAddController extends UifControllerBase {
             logger.error("could not load total credits");
         }
 
-        if (totalCredits != null) {
-            if (totalCredits.contains(".0")) totalCredits = totalCredits.replace(".0", "");
-        }
-        return totalCredits;
+        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
+        return credits;
     }
+
 
     /**
      * Creates an update credits event.
@@ -858,7 +801,7 @@ public class QuickAddController extends UifControllerBase {
      */
     protected PlanItemInfo getWishlistPlanItem(String courseId) {
 
-        if (org.apache.commons.lang.StringUtils.isEmpty(courseId)) {
+        if (isEmpty(courseId)) {
             throw new RuntimeException("Course Id was empty.");
         }
 
@@ -904,7 +847,7 @@ public class QuickAddController extends UifControllerBase {
             throw new RuntimeException("Plan was NULL.");
         }
 
-        if (org.apache.commons.lang.StringUtils.isEmpty(atpId)) {
+        if (isEmpty(atpId)) {
             throw new RuntimeException("Course Id was empty.");
         }
 
@@ -915,24 +858,22 @@ public class QuickAddController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
-        int counter = 0;
         if (planItems == null) {
             throw new RuntimeException("Could not retrieve plan items.");
-        } else {
-            for (PlanItem p : planItems) {
-                if (p.getPlanPeriods().get(0).equals(atpId) && "kuali.lu.type.CreditCourse".equals(p.getRefObjectType())) {
-                    counter++;
-                }
+        }
+
+        int counter = 0;
+        for (PlanItem p : planItems) {
+            String plannedTerm = p.getPlanPeriods().get(0);
+            String luType = p.getRefObjectType();
+            if (plannedTerm.equals(atpId) && "kuali.lu.type.CreditCourse".equals(luType)) {
+                counter++;
             }
         }
 
-        if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            return (counter >= PlanConstants.BACKUP_PLAN_ITEM_CAPACITY) ? false : true;
-        } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-            return (counter >= PlanConstants.PLANNED_PLAN_ITEM_CAPACITY) ? false : true;
-        }
-
-        throw new RuntimeException(String.format("Unknown plan item type [%s].", typeKey));
+        int capacity = LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(typeKey) ? BACKUP_PLAN_ITEM_CAPACITY : PLANNED_PLAN_ITEM_CAPACITY;
+        boolean hasCapacity = counter < capacity;
+        return hasCapacity;
     }
 
 
@@ -1003,7 +944,7 @@ public class QuickAddController extends UifControllerBase {
     private List<String> getNewTermIds(QuickAddForm form) {
         List<String> newTermIds = new LinkedList<String>();
         //  Create an ATP id from the values in the year and term fields.
-        if (org.apache.commons.lang.StringUtils.isEmpty(form.getAtpId())) {
+        if (isEmpty(form.getAtpId())) {
             throw new RuntimeException("Could not construct ATP id for Given TermYear option because year was blank.");
         }
 
@@ -1027,9 +968,9 @@ public class QuickAddController extends UifControllerBase {
      * @return
      */
     private ModelAndView doPlanCapacityExceededError(QuickAddForm form, String type) {
-        String errorId = PlanConstants.ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED;
-        if (type.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            errorId = PlanConstants.ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
+        String errorId = ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED;
+        if (type.equals(LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            errorId = ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED;
         }
         return doErrorPage(form, errorId, new String[0]);
     }
@@ -1056,7 +997,7 @@ public class QuickAddController extends UifControllerBase {
         } else {
             logger.error(errorMessage);
         }
-        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, params, e);
+        return doErrorPage(form, errorMessage, ERROR_KEY_PAGE_RESET_REQUIRED, params, e);
     }
 
     /**
