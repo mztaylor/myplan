@@ -839,17 +839,18 @@ public class PlanController extends UifControllerBase {
 
         /*  Do validations. */
         //  Plan Size exceeded.
-        boolean hasCapacity = false;
-        try {
-            hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
-        }
+        if (addCourse) {
+            boolean hasCapacity = false;
+            try {
+                hasCapacity = isAtpHasCapacity(plan, newAtpIds.get(0), newType);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
+            }
 
-        if (!hasCapacity) {
-            return doPlanCapacityExceededError(form, newType);
+            if (!hasCapacity) {
+                return doPlanCapacityExceededError(form, newType);
+            }
         }
-
         //  Validate: Adding to historical term.
         if (!AtpHelper.isAtpSetToPlanning(newAtpIds.get(0))) {
             return doCannotChangeHistoryError(form);
