@@ -124,7 +124,8 @@
                                                         </property>
                                                         <property name="propertyReplacers">
                                                             <list>
-                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                      p:propertyName="items"
                                                                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
                                                                     <property name="replacement">
                                                                         <list>
@@ -276,7 +277,8 @@
     </bean>
 
     <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;"
-          p:render="@{getAuditHtml() eq null ? true : false}" p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
+          p:render="@{getAuditHtml() eq null ? true : false}"
+          p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
         </property>
@@ -388,6 +390,8 @@
                     <property name="onChangeScript" value="
                         jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
                         setUrlHash('modified', 'true');
+                        if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');}
+                        else {jQuery('button#degree_audit_run').removeClass('disabled');}
                     "/>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
@@ -412,7 +416,9 @@
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
                                         <property name="onChangeScript"
-                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
+                                                  if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#degree_audit_run').removeClass('disabled');} "/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -432,7 +438,9 @@
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
                                         <property name="onChangeScript"
-                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
+                                                  if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#degree_audit_run').removeClass('disabled');}"/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -452,7 +460,9 @@
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
                                         <property name="onChangeScript"
-                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());"/>
+                                                  value="jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
+                                                  if(degreeAuditButton()) {jQuery('button#degree_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#degree_audit_run').removeClass('disabled');}"/>
                                     </bean>
                                 </property>
                                 <property name="optionsFinder">
@@ -468,10 +478,11 @@
     </bean>
 
 
-    <bean id="degree_audit_run" parent="Uif-AjaxActionButton" p:methodToCall="runAudit" p:disabled="true"
+    <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit" p:disabled="true"
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit"> <!-- audit_report_section degree_audit_block-->
-        <property name="onClickScript" value="setPendingAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
+        <property name="onClickScript"
+                  value="setPendingAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
         <property name="onDocumentReadyScript" value="
             if (jQuery.cookie('myplan_audit_running')) {
                 jQuery('button#degree_audit_run').attr('disabled', true);
@@ -481,6 +492,12 @@
             jQuery('button#degree_audit_run').subscribe('AUDIT_COMPLETE', function () {
                 jQuery(this).attr('disabled', degreeAuditButton());
             });
+            if(degreeAuditButton()) {
+             jQuery('button#degree_audit_run').addClass('disabled');
+              }
+            else {
+            jQuery('button#degree_audit_run').removeClass('disabled');
+            }
         "/>
     </bean>
 

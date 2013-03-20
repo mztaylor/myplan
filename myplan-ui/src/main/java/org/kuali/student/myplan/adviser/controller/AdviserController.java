@@ -108,7 +108,7 @@ public class AdviserController extends UifControllerBase {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
         form.setView(getViewService().getViewById("PlannedCourses-FormView"));
-        form.setRequestRedirect(true);
+        form.setRequestRedirected(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
         return "redirect:/myplan/unauthorized";
@@ -119,7 +119,7 @@ public class AdviserController extends UifControllerBase {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
         form.setView(getViewService().getViewById("PlannedCourses-FormView"));
-        form.setRequestRedirect(true);
+        form.setRequestRedirected(true);
         GlobalVariables.getMessageMap().putErrorForSectionId(PlanConstants.PLAN_PAGE_ID, PlanConstants.ERROR_KEY_NO_STUDENT_PROXY_ID);
 
         return "redirect:/myplan/unauthorized";
@@ -136,7 +136,7 @@ public class AdviserController extends UifControllerBase {
     @RequestMapping(value = "/advise/{studentId}", method = RequestMethod.GET)
     public String get(@PathVariable("studentId") String studentId, @ModelAttribute("KualiForm") UifFormBase form) {
         form.setView(getViewService().getViewById("PlannedCourses-FormView"));
-        form.setRequestRedirect(true);
+        form.setRequestRedirected(true);
         List<LearningPlanInfo> plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
