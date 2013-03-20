@@ -943,22 +943,24 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         String studentId = UserSessionHelper.getStudentId();
         Map<String, Map<String, String>> planItemsByTerm = new HashMap<String, Map<String, String>>();
         try {
-            LearningPlan learningPlan = getAcademicPlanService().getLearningPlan(studentId, CourseSearchConstants.CONTEXT_INFO);
-            List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(learningPlan.getId(), CourseSearchConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(learningPlan.getId(), CourseSearchConstants.CONTEXT_INFO);
+                if (null != planItems) {
+                    for (PlanItem item : planItems) {
+                        for (String planPeriod : item.getPlanPeriods()) {
+                            Map<String, String> planMap = planItemsByTerm.get(planPeriod);
+                            if (null == planMap) {
+                                planMap = new HashMap<String, String>();
+                                planItemsByTerm.put(planPeriod, planMap);
+                            }
 
-            if (null != planItems) {
-                for (PlanItem item : planItems) {
-                    for (String planPeriod : item.getPlanPeriods()) {
-                        Map<String, String> planMap = planItemsByTerm.get(planPeriod);
-                        if (null == planMap) {
-                            planMap = new HashMap<String, String>();
-                            planItemsByTerm.put(planPeriod, planMap);
+                            planMap.put(item.getRefObjectId(), item.getId());
                         }
-
-                        planMap.put(item.getRefObjectId(), item.getId());
                     }
                 }
             }
+
 
 
         } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
