@@ -174,6 +174,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     popupBox.FreezeBubblePopup();
 
     jQuery(document).on('click', function (e) {
@@ -197,7 +198,7 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component;
-        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+        if (jQuery("span#request_status_item_key_control", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
         } else {
             eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
@@ -266,6 +267,7 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     popupBox.FreezeBubblePopup();
 
     jQuery("#" + id + "_popup a").each(function () {
@@ -339,6 +341,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     popupBox.FreezeBubblePopup();
 
     jQuery(document).on('click', function (e) {
@@ -362,7 +365,7 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component;
-        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+        if (jQuery("span#request_status_item_key_control", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
             var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
@@ -433,6 +436,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     fnPositionPopUp(popupBoxId);
     popupBox.FreezeBubblePopup();
 
@@ -457,7 +461,7 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component;
-        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+        if (jQuery("span#request_status_item_key_control", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
             var planForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
@@ -513,6 +517,7 @@ function openDialog(sText, e, close) {
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupOptionsDefault, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     popupBox.FreezeBubblePopup();
 
     if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
@@ -568,13 +573,13 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
     jQuery('#' + id + '_form input[name="viewId"]').remove();
     jQuery("#" + id + "_form").append('<input type="hidden" name="methodToCall" value="' + methodToCall + '" /><input type="hidden" name="' + type + '" value="' + id + '" /><input type="hidden" name="viewId" value="PlannedCourse-FormView" />');
     var updateRefreshableComponentCallback = function (htmlContent) {
-        var status = jQuery.trim(jQuery("span#request_status_item_key", htmlContent).text().toLowerCase());
+        var status = jQuery.trim(jQuery("span#request_status_item_key_control", htmlContent).text().toLowerCase());
         eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
         elementToBlock.unblock();
         switch (status) {
             case 'success':
                 var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
-                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
+                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
@@ -636,13 +641,13 @@ function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
     jQuery("body").append(tempForm);
 
     var updateRefreshableComponentCallback = function (htmlContent) {
-        var status = jQuery.trim(jQuery("span#request_status_item_key", htmlContent).text().toLowerCase());
+        var status = jQuery.trim(jQuery("span#request_status_item_key_control", htmlContent).text().toLowerCase());
         eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
         elementToBlock.unblock();
         switch (status) {
             case 'success':
                 var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
-                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
+                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
@@ -765,7 +770,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
         success:function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
-            var hasError = handleIncidentReport(response);
+            var hasError = checkForIncidentReport(response);
             if (!hasError) {
                 successCallback(tempDiv);
             }
@@ -1339,6 +1344,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     popupBox.CreateBubblePopup({manageMouseEvents:false});
     popupBox.ShowBubblePopup(popupSettings, false);
     var popupBoxId = popupBox.GetBubblePopupID();
+    jQuery("#" + popupBoxId).css({opacity:1});
     fnPositionPopUp(popupBoxId);
     popupBox.FreezeBubblePopup();
 
@@ -1363,7 +1369,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component;
-        if (jQuery("span#request_status_item_key", htmlContent).length <= 0) {
+        if (jQuery("span#request_status_item_key_control", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
             var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post");
         } else {
@@ -1404,13 +1410,13 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
     formInputs += '</div>';
     jQuery("#" + id + "_form").append(formInputs);
     var updateRefreshableComponentCallback = function (htmlContent) {
-        var status = jQuery.trim(jQuery("span#request_status_item_key", htmlContent).text().toLowerCase());
+        var status = jQuery.trim(jQuery("span#request_status_item_key_control", htmlContent).text().toLowerCase());
         eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
         elementToBlock.unblock();
         switch (status) {
             case 'success':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverInfo[0] + '</span>', 'cssClass':'myplan-feedback success' };
-                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key", htmlContent).text()));
+                var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');

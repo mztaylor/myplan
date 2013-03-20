@@ -337,7 +337,7 @@
 
     </bean>
 
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:style="width: 230px; margin: 0;">
+    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:style="width: 220px; margin: 0;">
         <property name="header.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">

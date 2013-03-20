@@ -23,5 +23,7 @@
     <param name="javascript.files" override="true">${javascript.files}</param>
 
     <param name="rice.struts.message.resources" override="true">${rice.struts.message.resources},org.kuali.student.myplan.KSMyPlan-ApplicationResources</param>
+
+    <param name="resourceBundleNames" override="true">org.kuali.rice.krad.KRADApplicationResources,org.kuali.rice.krad.ApplicationResources,org.kuali.student.myplan.KSMyPlan-ApplicationResources</param>
 </config>
 

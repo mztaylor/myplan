@@ -98,6 +98,13 @@
                                 jQuery('button#cancelMessage').click();
                             }
                             jQuery('button#leaveMessageButton').attr('disabled', empty);
+                            if (empty) {
++                                jQuery('button#leaveMessageButton').addClass('disabled');
+                                 jQuery('button#leaveMessageButton').attr('disabled', true);
+                             } else {
++                                jQuery('button#leaveMessageButton').removeClass('disabled');
+                                 jQuery('button#leaveMessageButton').attr('disabled', false);
+                             }
                         });
                     "/>
                     <property name="cssClasses">
