@@ -57,7 +57,7 @@ public class TermsFacet extends AbstractFacet {
         }
 
         //  Scheduled terms.
-        if (null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) {
+        if ((null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) && 0 == facetKeys.size()) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.add(key);
         } else {
