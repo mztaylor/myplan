@@ -40,6 +40,7 @@
 	"Status_IP" : "IP",
 	"Status_OK" : "OK"
 }>
+
 <html>
 <head>
 <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
@@ -51,14 +52,18 @@
 			<label>Date Prepared:</label> ${preparedDate}
 		</div>
 		<div class="prepared-for">
-			<label>Prepared For:</label> <span class="prepared-for-name">prepared-for-name</span>
+			<#assign stuno = "${studentNumber}">
+			<#if ( stuno?starts_with( "1" ) && stuno?length == 9 )>
+				<#assign stuno = stuno?substring(1)>
+			</#if>
+			<label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}">${stuno}</span>
 		</div>
 		<div class="program-entry-qtr">
 			<label>Program Entry Date:</label> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)}
 		</div>
 		<#if degreeDate?trim != "NotFound">
 		<div class="graduation-date">
-			<label>Gradutation Date:</label> ${degreeDate?replace("/", " ")}
+			<label>Graduation Date:</label> ${degreeDate?replace("/", " ")}
 		</div>
 		</#if>
 	</div>
@@ -70,10 +75,11 @@
 	</div>
 	</#if>
 	-->
-	<!-- should be this stored text instead of the hardcoded paragraph above  -->
+
 	<div class="toptext">
-	      <#list includeTopText as topTextLine>
-	        ${topTextLine?xml?replace("*", "")?trim} </#list>
+  		<#list includeTopText as topTextLine>
+	        ${ deASCII( topTextLine )?trim?xml} 
+ 		</#list>
 	</div>
 	
 	<!--
@@ -113,18 +119,29 @@ ncmess: ${ncmess}
 <![CDATA[
 rname: ${rname}
 ok: ${req.ok?string}
-category: ${req.category?xml}
+category: ${req.category}
 status: ${req.status}
 
 titleline: 
 <#list req.titleLines as titleLine> 
-	${titleLine?xml} 
+	${titleLine} 
+</#list> 
+
+reflow titleline: 
+<#list reflow( req.titleLines ) as titleLine> 
+	${titleLine} 
 </#list> 
 
 headerline: 
 <#list req.headerLines as headerLine> 
-	${headerLine?xml} 
+	${headerLine} 
 </#list> 
+
+reflow headerline:
+<#list reflow( req.headerLines ) as headerLine>
+	${headerLine} 
+</#list> 
+
 ]]>
 <#--
 -->
@@ -147,10 +164,12 @@ headerline:
 	<#assign inSection = false>
 	</#if> 
 
-    <div class="advisory ${rname} ${satisfied} linkify"> 
-	<#list req.headerLines as headerLine> 
-		${headerLine?replace("*", "")?replace("NOTE:", "<br/>NOTE:")?trim} 
-	</#list> 
+    <div class="advisory ${rname} ${satisfied}"> 
+		<#list reflow(req.headerLines) as headerLine> 
+		<div class="text linkify urlify">
+			${deASCII(headerLine)} 
+		</div>
+		</#list> 
 	</div>
 <#elseif req.category?contains("other_courses" )  ><#-- OTHER COURSES aka hungry -->
 
@@ -170,7 +189,9 @@ headerline:
 	</#if> 
 	
 	<div class="section ${rname}"> 
-		<div class="heading"><#list req.titleLines as titleLine>${titleLine?replace("*", "")?replace("_","")?trim} </#list></div>
+		<div class="heading">
+			<#list req.titleLines as titleLine> ${deASCII( titleLine?trim )} </#list>
+		</div>
         <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered" style="margin-bottom:20px; float:none; display:none;">
             <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
             <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for the full audit report.</div>
@@ -182,8 +203,12 @@ headerline:
 				<div class="toggle"> </div>
 				<div class="status Status_NONE"></div>
 				<#if subreq.showTitle >
-				<div class="title linkify">
-					<#list subreq.titleLines as titleLine>${titleLine?replace("*NOTE:", "<br/>NOTE:")?replace("*", "")?replace("_", "")?replace(". NOTE:", ".<br/>NOTE:")?trim} </#list>
+				<div class="title">
+					<#list reflow( subreq.titleLines ) as titleLine>
+					<div class="text linkify urlify">
+						${deASCII(titleLine)} 
+					</div>
+					</#list>
 				</div>
 				</#if>
 			</div>
@@ -242,16 +267,12 @@ headerline:
 	</#if> 
 
 	<div class="bigsection bignote ${rname} ${satisfied}"> 
-		<div class="heading linkify">
-		<#list req.headerLines as headerLine> 
-			<#if headerLine?trim?starts_with( "*" )> 
-				<#if ( headerLine_index > 0 ) ><br /></#if>
-				${headerLine?replace("*", "")?xml}
-				<#if ( headerLine_has_next ) ><br /></#if>
-			<#else>
-				${headerLine?xml}
-			</#if>
-		</#list>
+		<div class="heading">
+			<#list reflow(req.headerLines) as headerLine> 
+			<div class="text linkify urlify">
+				${deASCII(headerLine)} 
+			</div>
+			</#list> 
 		</div>
 	    <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered" style="margin-bottom:20px; float:none; display:none;">
 	        <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
@@ -286,11 +307,18 @@ headerline:
 		<div class="heading">
 	</#if>	
 
-			<#if sectionHeadingOpen = true><br /></#if>		
+			<#if sectionHeadingOpen = true><br /></#if>	
+			<#list reflow(req.headerLines) as headerLine> 
+			<div class="text linkify urlify">
+				${deASCII(headerLine)} 
+			</div>
+			</#list> 	
+			<#--
 			<#list req.headerLines as headerLine> 
-			${headerLine?replace("*", "")?replace("_", "")?replace(". NOTE:", ".<br/>NOTE:")?trim}
+			${headerLine?replace("*", "")?replace("_[_]+", " ", "r")?replace(". NOTE:", ".<br/>NOTE:")?trim}
 			<#if headerLine_has_next><br /> </#if>
 			</#list>
+			-->
 	<#assign sectionHeadingOpen = true>
 
 <#else> <#-- REQUIREMENT -->
@@ -328,7 +356,13 @@ headerline:
 				<div class="status ${satisfied}">${satisfiedMap[satisfied]}</div>
 				<#if req.showNumber><div class="reqNumber">${req.number?xml}</div></#if>
 				<#if req.showGroups><div class="reqGroups">${req.groups?xml}</div></#if>
-				<div class="title linkify"><#list req.titleLines as titleLine>${titleLine?replace("*NOTE:", "<br/>NOTE:")?replace("*", "")?replace("_","")?replace(". NOTE:", ".<br/>NOTE:")?trim} </#list></div>
+				<div class="title">
+					<#list reflow( req.titleLines ) as titleLine>
+					<div class="text linkify urlify">
+						${deASCII(titleLine)} 
+					</div>
+					</#list>
+				</div>
 			</div>
 	
 			<div class="body">
@@ -422,6 +456,12 @@ headerline:
 						<#if titleLine?trim != "." > not period </#if>
 						${titleLine}
 						</#list>
+					subreq reflow titleLines:
+						<#list reflow( subreq.titleLines ) as titleLine>
+						<#if titleLine?trim == "." > just period </#if>
+						<#if titleLine?trim != "." > not period </#if>
+						${titleLine}
+						</#list>
 					justTitle: ${justTitle}
 				]]>
 				<#--
@@ -441,10 +481,12 @@ headerline:
 							</#if>
 						</div>
 						<#if subreq.showTitle >
-						<div class="title linkify">
-							<#list subreq.titleLines as titleLine>
+						<div class="title">
+							<#list reflow( subreq.titleLines ) as titleLine>
 							<#if titleLine?trim != "." > 
-							${titleLine?replace("*", "")?replace("_", "")?replace("-&gt;","--")?replace("-[-]+", " ", "r")?replace(". NOTE:", ".<br/>NOTE:")?replace("*NOTE:", "<br/>NOTE:")?trim}
+							<div class="text linkify">
+								${deASCII(titleLine)}
+							</div>
 							</#if>
 							</#list>
 						</div>
@@ -576,7 +618,7 @@ headerline:
 							<td>
 								<table>
 			   						<#list subreq.notFromHtmlCourses as course>
-									<tr><td class="fromcourselist">${course}</td></tr>
+									<tr><td class="fromcourselist">${course?replace( "&", "&amp;")}</td></tr>
 			    					</#list>
 			    				</table>
 			    			</td>
@@ -647,12 +689,56 @@ headerline:
 <#if showIncludeBottomText>
     <div class="fl-text-align-center" >
     <#list includeBottomText as bottomTextLine>
-	${bottomTextLine?replace("*", "")?replace("_", "")?replace("END OF ANALYSIS", "<br/>END OF ANALYSIS")?trim }      
+	${deASCII(bottomTextLine)?xml?replace("END OF ANALYSIS", "<br/>END OF ANALYSIS")?trim }      
     </#list>
      <hr class="headerRule" />
     </div>
 </#if>    
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>    
-<div> htm.ftl updated: 2012/11/30 12:22pm</div>       
+<div> (audit template updated: 2012/12/07 3:35pm) </div>       
 </div>
 </html>
+
+<#-- 
+Input list of strings, output reflowed list of strings. Most strings are joined, some are broken up.
+-->
+<#function reflow sources>
+	<#assign targets = []>
+	<#assign target = "">
+	<#list sources as source > 
+		<#if source?contains( "NOTE" ) >
+			<#assign temp = source?substring( 0, source?index_of( "NOTE" ))?trim >
+			<#assign target = target + " " + temp > 
+			<#assign targets = targets + [target?trim] >
+			<#assign target = source?substring( source?index_of( "NOTE" ))?trim >
+		<#elseif ( source?trim == "." ) >
+			<#-- do nothing -->
+		<#elseif ( source?trim?starts_with( "*" ) && source?trim?ends_with( "*" )) >
+			<#if ( target?trim?length > 0 ) >
+				<#assign targets = targets + [target?trim] >
+			</#if>
+			<#assign targets = targets + [source?trim] >
+			<#assign target = "" >
+		<#elseif source?starts_with( " " ) >
+			<#if ( target?trim?length > 0 ) >
+				<#assign targets = targets + [target?trim] >
+			</#if>
+			<#assign target = source?trim >
+		<#else>
+			<#assign target = target + " " + source?trim > 
+		</#if>
+	</#list>
+	<#if ( target?length > 0 ) >
+		<#assign targets = targets + [target?trim]>
+	</#if>
+	<#return targets>
+	
+</#function>
+
+
+<#-- 
+Removes ASCII art from text 
+-->
+<#function deASCII text>
+	<#return text?replace("*", " ")?replace("_[_]+"," ", "r")?replace("-&gt;","--")?replace("-[-]+", " ", "r")?trim >
+</#function>
