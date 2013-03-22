@@ -17,14 +17,16 @@
 	">R":"The course is repeatable.",
 	">-":"The course has exceeded the repeatable limit and has had its credit reduced.",
 	"DP":"This course has been retaken.",
-	">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA."
+	">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
+	">P":"Planned Course"
 }>
 
 <#assign subreqStatusMap = {
 	"Status_NONE":"",
 	"Status_NO":"-",
 	"Status_OK":"+",
-	"Status_IP":"+"
+	"Status_IP":"+",
+	"Status_PL":"+"
 }>
 
 <#assign termMap = {
@@ -38,7 +40,8 @@
 	"Status_NONE" : "",
 	"Status_NO" : "NO",
 	"Status_IP" : "IP",
-	"Status_OK" : "OK"
+	"Status_OK" : "OK",
+	"Status_PL" : "PL"
 }>
 
 <html>
@@ -366,7 +369,7 @@ reflow headerline:
 			</div>
 	
 			<div class="body">
-				<#if req.showGotSummary || req.showInProgressHours || req.showNeedsSummary >
+				<#if req.showGotSummary || req.showInProgressHours || req.showPlannedHours || req.showNeedsSummary >
 		        <div class="totals">
 					<#if req.showGotSummary>
 		            <span class="earned">
@@ -403,14 +406,15 @@ reflow headerline:
 		            	<span class="value"> ${req.ipHours?replace(".0","")?xml} </span> ${req.ipHoursText?xml} 
 		            </span>
 		            </#if>
-					<#--                
+					                
 		            <#if req.showPlannedHours>
 		            <div class="whatif">
-		                ${req.wifStub?xml}
+					Planned:
+		                <#--  ${req.wifStub?xml}   -->
 		                <span class="value">${req.wifHours?replace(".0","")?xml} </span> ${req.wifHoursText?xml}
 		            </div>
 					</#if>
-					-->                
+					                 
 		            <#if req.showNeedsSummary>
 		            <span class="needs">
 		                Needs:
@@ -500,7 +504,7 @@ reflow headerline:
 					</div>
 					</#if>
 					
-					<#if subreq.showGotSummary || subreq.showInProgressHours || subreq.showNeedsSummary >
+					<#if subreq.showGotSummary || subreq.showInProgressHours || subreq.showPlannedHours || subreq.showNeedsSummary >
 					<div class="totals">
 						<#if subreq.showGotSummary>
 			            <span class="earned">
@@ -539,17 +543,18 @@ reflow headerline:
 		                	</#if>
 		                </span>
 						</#if> 
-						<#--
+						
 						<#if subreq.showPlannedHours > 
 		                <span class="subreqWhatIfDetail">
-		                    ${subreq.wifSrStub?xml} 
+						Planned:
+		                <#--    ${subreq.wifSrStub?xml} -->
 		                    ${subreq.plannedHours?xml}
 		                    ${subreq.plannedHoursText?xml}
 		                    ${subreq.plannedCount?xml} 
 							${subreq.plannedCountText?xml}
 		                </span>
 		            	</#if>
-						-->
+						
 						<#if subreq.showNeedsSummary >
 						<span class="needs">
 							Needs:
