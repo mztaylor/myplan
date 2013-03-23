@@ -146,7 +146,7 @@
     <bean id="MyPlanTheme-parentBean" parent="Uif-KradTheme">
         <property name="cssFiles">
             <list merge="true">
-                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
                 <value>ks-myplan/css/myplan.css</value>
             </list>
@@ -158,7 +158,7 @@
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
                 <value>ks-myplan/plugins/polling.js</value>
-                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.js</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.js</value>
                 <value>ks-myplan/scripts/myplan.google.js</value>
             </list>
         </property>
@@ -171,7 +171,7 @@
         <property name="cssFiles">
             <list merge="true">
                 <value>ks-myplan/css/base.css</value>
-                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.css</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
                 <value>ks-myplan/css/myplan.css</value>
             </list>
@@ -182,7 +182,7 @@
                 <value>ks-myplan/scripts/myplan.widgets.js</value>
                 <value>ks-myplan/scripts/myplan.events.js</value>
                 <value>ks-myplan/plugins/jquery.subscribe.js</value>
-                <value>ks-myplan/jquery-bubblepopup/jquery.bubblepopup.min.js</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.min.js</value>
             </list>
         </property>
     </bean>
@@ -248,7 +248,7 @@
     </bean>
 
     <bean id="MyPlan-Tooltip" parent="Uif-Tooltip">
-        <property name="onFocus" value="false"/>
+        <property name="onFocus" value="true"/>
         <property name="onMouseHover" value="true"/>
         <property name="templateOptions">
             <map merge="true">
@@ -258,7 +258,7 @@
                 <entry key="tail" value="{ align:'center', hidden: false }"/>
                 <entry key="closingDelay" value="500"/>
                 <entry key="themeMargins" value="{ total:'18px', difference:'8px' }"/>
-                <entry key="themePath" value="../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/"/>
+                <entry key="themePath" value="../ks-myplan/jquery-popover/jquerypopover-theme/"/>
                 <entry key="themeName" value="myplan-help"/>
             </map>
         </property>
@@ -278,6 +278,7 @@
             <map merge="true">
                 <entry key="align" value="left"/>
                 <entry key="tail" value="{ align:'left', hidden: false }"/>
+                <entry key="themeMargins" value="{ total:'17px', difference:'8px' }"/>
             </map>
         </property>
     </bean>
@@ -436,7 +437,7 @@
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     if (data.planItemType === 'wishlist') {
                         myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-                        jQuery('div.jquerybubblepopup.jquerybubblepopup-myplan .jquerybubblepopup-tail').fadeOut(250, function() {
+                        jQuery('div.jquerypopover.jquerypopover-myplan .jquerypopover-tail').fadeOut(250, function() {
                             jQuery(this).remove();
                         });
                     }

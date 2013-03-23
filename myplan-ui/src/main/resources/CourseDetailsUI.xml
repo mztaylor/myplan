@@ -918,9 +918,6 @@
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.ActivityOfferingItem"/>
         <property name="propertyName" value="activityOfferingItemList"/>
-        <property name="layoutManager.id" value="course_details_section_datatable"/>
-        <property name="layoutManager.numberOfColumns" value="7"/>
-        <property name="layoutManager.suppressLineWrapping" value="false"/>
         <property name="headerText" value="@{#line.term}"/>
         <property name="header">
             <bean parent="Uif-HeaderFive">
@@ -937,14 +934,16 @@
                 <property name="validationMessages.render" value="false"/>
                 <property name="items">
                     <list>
-                        <bean parent="Uif-ActionLink" p:actionLabel="View a note about @{dataObject.courseSummaryDetails.subjectArea}  curriculum"
+                        <bean parent="Uif-ActionLink"
+                              p:actionLabel="View a note about @{dataObject.courseSummaryDetails.subjectArea}  curriculum"
                               p:style="float:left; padding-left: 10px;">
                             <property name="actionScript"
                                       value="expandCurriculumComments(this, 'View a note about @{dataObject.courseSummaryDetails.subjectArea} curriculum', 'Hide a note about @{dataObject.courseSummaryDetails.subjectArea} curriculum');"/>
                             <property name="render" value="@{#line.curriculumComments ne null}"/>
                         </bean>
                         <bean parent="Uif-Message" p:messageText="@{#line.curriculumComments}"
-                              p:render="@{#line.curriculumComments ne null}" p:style="margin-top: 10px; padding-left: 10px; display:none;">
+                              p:render="@{#line.curriculumComments ne null}"
+                              p:style="margin-top: 10px; padding-left: 10px; display:none;">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>curriculum-comment</value>
@@ -967,90 +966,51 @@
                 </property>
             </bean>
         </property>
-        <!--<property name="onDocumentReadyScript" value="
-            jQuery('#course_details_section_datatable_info').after('&lt;div class=&quot;dataTables_filter&quot;&gt;&lt;label for=&quot;section_filter&quot;&gt;Show&lt;/label&gt;&lt;select id=&quot;section_filter&quot; name=&quot;section_filter&quot;&gt;&lt;option value=&quot;all&quot;&gt;All Sections&lt;/option&gt;&lt;option value=&quot;open&quot;&gt;Open Sections only&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;');
-            jQuery('.dataTables_filter select').change(function() {
-                var oTable = jQuery('#course_details_section_datatable').dataTable();
-                switch (jQuery(this).val()) {
-                    case 'all':
-                        oTable.fnFilter('', 6, true);
-                        break;
-                    case 'open':
-                        oTable.fnFilter('^((?!closed).)*$', 6, true);
-                        break;
-                    case 'closed':
-                        oTable.fnFilter('closed', 6, true);
-                        break;
-                }
-            });
-        "/>-->
+        <property name="layoutManager.id"
+                  value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP().replace('.','-')}"/>
+        <property name="layoutManager.numberOfColumns" value="7"/>
+        <property name="layoutManager.suppressLineWrapping" value="false"/>
         <property name="layoutManager.renderSequenceField" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-        <property name="layoutManager.richTable.templateOptions">
-            <map merge="true">
-                <entry key="bPaginate" value="false"/>
-                <entry key="bSort" value="false"/>
-                <entry key="bAutoWidth" value="false"/>
-                <entry key="bLengthChange" value="false"/>
-                <entry key="bFilter" value="true"/>
-                <entry key="sDom" value="it"/>
-                <entry key="aoColumns" value="[
-                            {'sWidth':'48px'},
-                            {'sWidth':'86px'},
-                            {'sWidth':'288px'},
-                            {'sWidth':'42px','sType':'string'},
-                            {'sWidth':'80px'},
-                            {'sWidth':'70px'},
-                            {'sWidth':'32px'}
-                       ]"/>
-                <entry key="oLanguage" value="{
-                            'sInfo':'',
-                            'sInfoEmpty':'',
-                            'sInfoFiltered':'',
-                            'sZeroRecords':''
-                       }"/>
-                <entry key="fnInitComplete" value="
-                    function(oSettings, json) {
-                        if ( oSettings.fnRecordsDisplay() > 0 ) jQuery.publish('DATATABLE_INITIALISED');
-                    }
-                "/>
-            </map>
-        </property>
-        <!--<property name="layoutManager.rowDetailsUseImage" value="true"/>
-        <property name="layoutManager.rowDetailsLinkName" value="View more"/>-->
+        <property name="layoutManager.richTable.render" value="false"/>
         <!-- layoutManager.rowCssClasses does not work currently, but no exception is thrown. TableLayoutManager clears any values set -->
         <!--<property name="layoutManager.rowCssClasses">
             <list merge="true">
-                <value></value>
+                <value>testing</value>
             </list>
         </property>-->
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalFieldGroup" p:label="Section" p:rowSpan="3" p:colSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
+                    <property name="onDocumentReadyScript" value="
+                        var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
+                        row.addClass('row');
+                        if (@{#line.primary}) {
+                            row.addClass('primary');
+                        } else {
+                            row.addClass('secondary');
+                        }
+                    "/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityCode</value>
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
                                   parent="Uif-DataField" p:propertyName="code" p:label="Section"
                                   p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-align-center</value>
-                                    </list>
-                                </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}"
-                                  parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;"
+                            <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;"
                                   p:render="@{!#line.primary}">
-                                <property name="actionScript" value="
-                                    if(jQuery(this).hasClass('disabled')){return false;}
-                                    expandDataTableDetail(this, 'course_details_section_datatable', false, 'View more', 'View less');
-                                "/>
+                                <property name="actionScript" value=""/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-font-size-80</value>
-                                        <value>fl-text-align-center</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1060,44 +1020,19 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-font-size-80</value>
-                                        <value>fl-text-align-center</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean p:id="@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}"
-                                  parent="Uif-ActionLink" p:actionLabel="View more" p:render="@{#line.primary}">
-                                <property name="onDocumentReadyScript" value="
-                                    jQuery('#@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}').subscribe('DATATABLE_INITIALISED', function(data) {
-                                        showDataTableDetail(this,'course_details_section_datatable',false);
-                                        jQuery(this).parents('tr').css('border-top-width','3px');
-                                        jQuery(this).parents('tr').next('tr').children('td.uif-rowDetails').parents('tr').css('border-bottom','solid 3px #ccc');
-                                    });
-                                "/>
-                                <property name="actionScript" value=""/>
-                            </bean>
-                            <!--<bean parent="Uif-VerticalBoxSection"-->
-                                  <!--p:style="margin:0 40px 0 56px; display:none; width:610px;">-->
-                                <!--<property name="header.render" value="false"/>-->
-                                <!--<property name="validationMessages.render" value="false"/>-->
-                                <!--<property name="items">-->
-                                    <!--<list>-->
-                                        <!--<bean parent="Uif-HorizontalBoxGroup">-->
-                                            <!--<property name="validationMessages.render" value="false"/>-->
-                                            <!--<property name="style"-->
-                                                      <!--value="margin:0; background:url('../ks-myplan/images/bkgrdDottedCCC.png') 391px 0px repeat-y;"/>-->
-                                            <!--<property name="items">-->
-                                                <!--<list>-->
-                                                <!--</list>-->
-                                            <!--</property>-->
-                                        <!--</bean>-->
-                                    <!--</list>-->
-                                <!--</property>-->
-                            <!--</bean>-->
                         </list>
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="Type (Credit)" p:rowSpan="1" p:colSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityType</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="activityOfferingType"
@@ -1112,9 +1047,19 @@
                 <bean parent="Uif-DataField" p:label="Meeting Time &amp; Location" p:propertyName="meetingDetailsList"
                       p:escapeHtmlInPropertyValue="false" p:rowSpan="1" p:colSpan="1">
                     <property name="propertyEditor" ref="meeting_building_link_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityMeetingData</value>
+                        </list>
+                    </property>
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="SLN" p:rowSpan="1" p:colSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityRegCode</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="current_section_status" p:actionLabel="@{#line.registrationCode}"/>
@@ -1123,6 +1068,11 @@
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup" p:label="ENRL RESTR" p:rowSpan="1" p:colSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityEnrlRestr</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="Faculty Code Required"
@@ -1141,6 +1091,11 @@
                 <bean p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"
                       parent="Uif-HorizontalFieldGroup" p:label="ENRL / Limit">
                     <property name="group.validationMessages.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityEnrlData</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Image"
@@ -1163,6 +1118,7 @@
                       p:render="@{#line.planItemId eq null ? true : false}" p:rowSpan="3" p:colSpan="1">
                     <property name="cssClasses">
                         <list merge="true">
+                            <value>activityAction</value>
                             <value>myplan-add</value>
                             <value>fl-text-align-center</value>
                         </list>
@@ -1170,8 +1126,14 @@
                     <property name="onClickScript"
                               value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView'}, e);"/>
                 </bean>
-                <bean parent="Uif-LinkField" p:render="@{#line.planItemId ne null ? true : false}" p:rowSpan="3" p:colSpan="1">
+                <bean parent="Uif-LinkField" p:render="@{#line.planItemId ne null ? true : false}" p:rowSpan="3"
+                      p:colSpan="1">
                     <property name="fieldLabel.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityAction</value>
+                        </list>
+                    </property>
                     <property name="link">
                         <bean parent="Uif-Link" p:target="">
                             <property name="linkText" value="Added"/>
@@ -1189,13 +1151,12 @@
                 </bean>
 
                 <bean parent="Uif-DataField" p:propertyName="instructor"
-                      p:label="Instructor" p:labelPlacement="TOP"
-                      p:style="width:383px;" p:rowSpan="1" p:colSpan="2">
-                    <property name="fieldLabel.renderColon" value="false"/>
+                      p:rowSpan="1" p:colSpan="2">
+                    <property name="fieldLabel.render" value="false"/>
                 </bean>
-                <bean parent="Uif-VerticalFieldGroup" p:label="Other"
-                      p:labelPlacement="TOP" p:style="width:210px;" p:rowSpan="1" p:colSpan="3">
-                    <property name="fieldLabel.renderColon" value="false"/>
+                <bean parent="Uif-VerticalFieldGroup"
+                      p:rowSpan="1" p:colSpan="3">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
@@ -1241,9 +1202,9 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:label="Section Details"
-                      p:style="margin:0;" p:rowSpan="1" p:colSpan="5">
-                    <property name="fieldLabel.renderColon" value="false"/>
+                <bean parent="Uif-HorizontalFieldGroup"
+                      p:rowSpan="1" p:colSpan="5">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="items">
                         <list>

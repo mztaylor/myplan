@@ -541,7 +541,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -705,7 +711,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -844,7 +856,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -991,7 +1009,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -1108,7 +1132,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -1227,7 +1257,13 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"/>
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-tooltip</value>
+                            </list>
+                        </property>
+                    </bean>
                 </property>
             </bean>
         </property>
