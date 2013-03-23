@@ -32,9 +32,9 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
     jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
     fnShowHideQuickAddLink(atpId, type, size);
 
-    jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide().fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500, function () {
-        runHiddenScripts(planItemId + "_div");
-    });
+    jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide();
+    runHiddenScripts(planItemId + "_div");
+    jQuery("#" + planItemId + "_div").fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
 }
 /*
  #################################################################

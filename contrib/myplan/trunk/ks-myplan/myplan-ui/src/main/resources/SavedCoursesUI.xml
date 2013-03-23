@@ -96,7 +96,7 @@
                         </list>
                     </property>
                     <property name="onClickScript"
-                              value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{tail:{align:'top'},align:'top'});"/>
+                              value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,'li',{position:'left', tail:{align:'top'},align:'top'});"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message" p:messageText="@{#line.courseDetails.code}">
@@ -365,7 +365,8 @@
                             <bean parent="Uif-DataField" p:label="Last Offered"
                                   p:propertyName="courseDetails.lastOffered" p:labelPlacement="LEFT">
                                 <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="render" value="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0}"/>
+                                <property name="render"
+                                          value="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0}"/>
                             </bean>
                             <bean parent="Uif-DataField" p:label="Projected For"
                                   p:propertyName="courseDetails.termsOffered"

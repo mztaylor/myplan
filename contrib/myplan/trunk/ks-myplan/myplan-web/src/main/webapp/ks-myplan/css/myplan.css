@@ -23,6 +23,7 @@ strong {
     z-index: 101 !important;
 }
 
+.jquerypopover,
 .jquerybubblepopup {
     z-index: 200 !important;
 }
@@ -302,6 +303,11 @@ a:focus {
     /*min-height: 450px;*/
 }
 
+.jquerypopover-innerHtml .uif-page,
+.jquerybubblepopup-innerHtml .uif-page {
+    margin: 0;
+}
+
 .backdoor,
 .adviser-banner {
     width: 930px;
@@ -353,12 +359,14 @@ a:focus {
 
 .myplan-view .uif-boxLayoutVerticalItem,
 .base-view .uif-boxLayoutVerticalItem,
+.jquerypopover .uif-boxLayoutVerticalItem,
 .jquerybubblepopup .uif-boxLayoutVerticalItem {
     margin: 0 0 10px 0;
 }
 
 .myplan-view .uif-boxLayoutHorizontalItem,
 .base-view .uif-boxLayoutHorizontalItem,
+.jquerypopover .uif-boxLayoutHorizontalItem,
 .jquerybubblepopup .uif-boxLayoutHorizontalItem {
     margin: 0 10px 0 0;
 }
@@ -1789,12 +1797,9 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 /* Reset */
-.myplan-course-sections .dataTables_wrapper,
-.myplan-course-sections .dataTables_wrapper .dataTables_info,
 .myplan-course-sections table.uif-tableCollectionLayout tr,
 .myplan-course-sections table.uif-tableCollectionLayout th,
-.myplan-course-sections table.uif-tableCollectionLayout td,
-.myplan-course-sections table.uif-tableCollectionLayout td.uif-rowDetails {
+.myplan-course-sections table.uif-tableCollectionLayout td {
     padding: 0;
     margin: 0;
     border: none;
@@ -1802,21 +1807,40 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 /* End Reset */
-.myplan-course-sections .dataTables_wrapper {
-    margin: 20px 0px;
-}
-
 .myplan-course-sections table.uif-tableCollectionLayout {
     border: solid 1px #ccc;
     line-height: 16px;
     font-size: 12px;
+    margin: 20px 0px;
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout thead tr {
+    display: none;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout thead tr:first-child {
+    display: table-row;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout tr.row td {
+    border-top: solid 1px #ccc;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout th,
 .myplan-course-sections table.uif-tableCollectionLayout td {
     padding: 4px;
-    border-left: 1px dotted #ccc;
     vertical-align: middle;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout td {
+    border-left: dotted 1px #ccc;
+    border-top: dotted 1px #ccc;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout td:first-child[rowspan='3'] {
+    border-left: none;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout label {
@@ -1827,37 +1851,12 @@ table.myplan-course-search-results-datatable .blockUI {
     white-space: nowrap;
 }
 
-.myplan-course-sections table.uif-tableCollectionLayout tbody tr.even,
-.myplan-course-sections table.uif-tableCollectionLayout tbody tr.odd {
-    border-top: 1px solid #ccc;
-}
-
-.myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group {
-    border-left: 1px dotted #ccc;
-    border-right: 1px dotted #ccc;
-}
-
 .myplan-course-sections table.uif-tableCollectionLayout tbody .closed {
     color: #b4b4b4 !important;
 }
 
-.myplan-course-sections table.uif-tableCollectionLayout tbody td.uif-rowDetails > .uif-group .uif-field {
-    border-top: 1px dotted #ccc;
-    margin: 0;
-    padding: 4px;
-}
-
-.myplan-course-sections .uif-tableCollectionLayout .uif-rowDetails .uif-verticalFieldGroup .uif-verticalBoxGroup .uif-verticalBoxLayout > span {
-    margin: 0;
-}
-
 .myplan-course-sections table.uif-tableCollectionLayout td a {
     white-space: normal;
-}
-
-.myplan-course-sections .dataTables_filter label {
-    font-weight: normal;
-    margin: 0 10px 0 0;
 }
 
 .myplan-course-sections .meetingdetails {
@@ -2143,11 +2142,13 @@ table.myplan-course-search-results-datatable .blockUI {
     float: left;
 }
 
+.jquerypopover-myplan .jquerypopover-innerHtml,
 .jquerybubblepopup-myplan .jquerybubblepopup-innerHtml {
     padding: 5px;
     overflow: hidden;
 }
 
+.jquerypopover-myplan .jquerypopover-innerHtml .uif-headerText,
 .jquerybubblepopup-myplan .jquerybubblepopup-innerHtml .uif-headerText {
     text-transform: none;
     font-weight: bold;
@@ -2157,6 +2158,7 @@ table.myplan-course-search-results-datatable .blockUI {
     font-size: 110%;
 }
 
+.jquerypopover-innerHtml div.blockElement,
 .jquerybubblepopup-innerHtml div.blockElement {
     top: 0px !important;
 }

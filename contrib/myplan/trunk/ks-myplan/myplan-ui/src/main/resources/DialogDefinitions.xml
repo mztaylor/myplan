@@ -536,6 +536,7 @@
                 <value>myplan-view</value>
             </list>
         </property>
+        <property name="style" value="margin:0;"/>
         <property name="items">
             <list>
                 <!-- This page builds the popover with the 3 sliding sections used to view course summary, add to plan and remove from courses list contextually -->

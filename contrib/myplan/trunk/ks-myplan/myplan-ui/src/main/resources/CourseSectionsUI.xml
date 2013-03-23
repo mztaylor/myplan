@@ -108,7 +108,7 @@
                                                                                   p:render="@{!#line.primary}">
                                                                                 <property name="actionScript" value="
                                                                                     if(jQuery(this).hasClass('disabled')){return false;}
-                                                                                    expandDataTableDetail(this, 'course_details_section_datatable', false, 'View more', 'View less');
+                                                                                    expandDataTableDetail(this, '@{dataObject.courseSummaryDetails.courseId}_@{#line.atpId.replace('.','-')}', false, 'View more', 'View less');
                                                                                 "/>
                                                                                 <property name="cssClasses">
                                                                                     <list merge="true">
@@ -134,7 +134,7 @@
                                                                                 <property name="onDocumentReadyScript"
                                                                                           value="
                                                                                     jQuery('#@{dataObject.courseSummaryDetails.courseId}-@{#line.code}-@{#line.registrationCode}').subscribe('DATATABLE_INITIALISED', function(data) {
-                                                                                        showDataTableDetail(this,'course_details_section_datatable',false);
+                                                                                        showDataTableDetail(this,'@{dataObject.courseSummaryDetails.courseId}_@{#line.atpId.replace('.','-')}',false);
                                                                                         jQuery(this).parents('tr').css('border-top-width','3px');
                                                                                         jQuery(this).parents('tr').next('tr').children('td.uif-rowDetails').parents('tr').css('border-bottom','solid 3px #ccc');
                                                                                     });

@@ -1,3 +1,18 @@
+var popupOptionsDefault = {
+    themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',
+    manageMouseEvents:true,
+    selectable:true,
+    tail:{align:'middle', hidden:false},
+    position:'left',
+    align:'center',
+    alwaysVisible:false,
+    themeMargins:{total:'20px', difference:'5px'},
+    themeName:'myplan',
+    distance:'0px',
+    openingSpeed:50,
+    closingSpeed:50
+};
+
 function readUrlHash(key) {
     if (window.location.href.split("#")[1]) {
         var aHash = window.location.href.split("#")[1].replace('#', '').split('&');
@@ -121,7 +136,7 @@ function stopEvent(e) {
 function openCourse(courseId, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if (jQuery(target).parents(".jquerybubblepopup.jquerybubblepopup-myplan").length > 0) {
+    if (jQuery(target).parents(".jquerypopover.jquerypopover-myplan").length > 0) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
     } else {
         openPlanItemPopUp(courseId, 'add_remove_course_popover_page', {courseId:courseId}, e, null, {tail:{align:'left'}, align:'left', position:'bottom', alwaysVisible:'false'}, true);
@@ -135,32 +150,6 @@ function openCourse(courseId, e) {
 function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close) {
     stopEvent(e);
 
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup");
-
-    if (popupStyles) {
-        jQuery.each(popupStyles, function (property, value) {
-            jQuery(popupHtml).css(property, value);
-        });
-    }
-
-    var popupOptionsDefault = {
-        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{align:'middle', hidden:false},
-        position:'left',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
-        themeName:'myplan',
-        distance:'0px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
-
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
@@ -171,19 +160,23 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupSettings, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
-    });
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup");
+    if (popupStyles) {
+        jQuery.each(popupStyles, function (property, value) {
+            jQuery(popupHtml).css(property, value);
+        });
+    }
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
+
+    popupBox.ShowPopOver(popupSettings, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    popupBox.FreezePopOver();
+
+    clickOutsidePopOver(popupBoxId, popupBox);
 
     var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;">';
@@ -207,10 +200,10 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
-                popupBox.SetBubblePopupInnerHtml(component);
-                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                popupBox.SetPopOverInnerHtml(component);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
-                    popupBox.RemoveBubblePopup();
+                    popupBox.HidePopOver();
                     fnCloseAllPopups();
                 });
             }
@@ -225,34 +218,6 @@ function openPopUp(id, getId, methodToCall, action, retrieveOptions, e, selector
 
 function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, close) {
     stopEvent(e);
-    if (atpId != null) {
-        var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val()
-
-        if (openForPlanning == "false" && getId != "completed_menu_items") {
-            getId = "completed_backup_menu_items"
-        }
-    }
-
-
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
-
-    var popupOptionsDefault = {
-        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{align:'middle', hidden:false},
-        position:'left',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
-        themeName:'myplan',
-        distance:'0px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
 
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
@@ -264,11 +229,22 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupSettings, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
+
+    if (atpId != null) {
+        var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val();
+        if (openForPlanning == "false" && getId != "completed_menu_items") {
+            getId = "completed_backup_menu_items";
+        }
+    }
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
+
+    popupBox.ShowPopOver(popupSettings, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    popupBox.FreezePopOver();
 
     jQuery("#" + id + "_popup a").each(function () {
         var linkId = jQuery(this).attr("id");
@@ -281,17 +257,9 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
         });
     });
 
-    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
-
     runHiddenScripts(id + "_popup");
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
-    });
+    clickOutsidePopOver(popupBoxId, popupBox);
 }
 
 /*
@@ -301,32 +269,6 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
  */
 function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, selector, popupStyles, popupOptions, close) {
     stopEvent(e);
-
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup");
-
-    if (popupStyles) {
-        jQuery.each(popupStyles, function (property, value) {
-            jQuery(popupHtml).css(property, value);
-        });
-    }
-
-    var popupOptionsDefault = {
-        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{align:'middle', hidden:false},
-        position:'left',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
-        themeName:'myplan',
-        distance:'10px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
 
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
@@ -338,19 +280,24 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupSettings, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
-    });
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup");
+
+    if (popupStyles) {
+        jQuery.each(popupStyles, function (property, value) {
+            jQuery(popupHtml).css(property, value);
+        });
+    }
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
+
+    popupBox.ShowPopOver(popupSettings, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    popupBox.FreezePopOver();
+
+    clickOutsidePopOver(popupBoxId, popupBox);
 
     var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;">';
@@ -375,11 +322,11 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
-                popupBox.SetBubblePopupInnerHtml(component);
-                jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
-                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                popupBox.SetPopOverInnerHtml(component);
+                jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").wrapInner(planForm);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
-                    popupBox.RemoveBubblePopup();
+                    popupBox.HidePopOver();
                     fnCloseAllPopups();
                 });
             }
@@ -400,29 +347,6 @@ function openPopUpForm(id, getId, methodToCall, action, retrieveOptions, e, sele
 function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions, close) {
     stopEvent(e);
 
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
-        width:"300px",
-        height:"16px"
-    });
-
-    var popupOptionsDefault = {
-        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{align:'middle', hidden:false},
-        position:'left',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'18px', difference:'5px'},
-        themeName:'myplan',
-        distance:'10px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
-
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
@@ -433,20 +357,22 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupSettings, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    fnPositionPopUp(popupBoxId);
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
+        width:"300px",
+        height:"16px"
     });
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
+
+    popupBox.ShowPopOver(popupSettings, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    fnPositionPopUp(popupBoxId);
+    popupBox.FreezePopOver();
+
+    clickOutsidePopOver(popupBoxId, popupBox);
 
     var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="PlannedCourse-FormView" />';
@@ -471,12 +397,12 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
-                popupBox.SetBubblePopupInnerHtml(component);
+                popupBox.SetPopOverInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
-                if (status != 'error') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(planForm);
-                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                if (status != 'error') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").wrapInner(planForm);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
-                    popupBox.RemoveBubblePopup();
+                    popupBox.HidePopOver();
                     fnCloseAllPopups();
                 });
             }
@@ -490,50 +416,30 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 function openDialog(sText, e, close) {
     stopEvent(e);
 
-    var dialogHtml = jQuery('<div />').html(sText).css({
-        width:"300px"
-    });
-
-    var popupOptionsDefault = {
-        innerHtml:dialogHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{hidden:true},
-        position:'top',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
-        themeName:'myplan',
-        distance:'0px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
     var popupBox = jQuery("body");
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupOptionsDefault, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+    var dialogHtml = jQuery('<div />').html(sText).css({
+        width:"300px"
+    });
+
+    popupOptionsDefault.innerHtml = dialogHtml.wrap("<div>").parent().clone().html();
+
+    popupBox.ShowPopOver(popupOptionsDefault, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    popupBox.FreezePopOver();
+
+    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
 
     fnPositionPopUp(popupBoxId);
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
-    });
+    clickOutsidePopOver(popupBoxId, popupBox);
 
     jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
-        popupBox.RemoveBubblePopup();
+        popupBox.HidePopOver();
         fnCloseAllPopups();
     });
 }
@@ -592,7 +498,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 if (!bDialog) {
                     var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
-                    if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
+                    if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);
                 } else {
                     eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
@@ -659,7 +565,7 @@ function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
                 var oMessage = { 'message':'<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
                 var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                 var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
-                if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
+                if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                 openDialog(sHtml.html(), e);
                 break;
         }
@@ -893,15 +799,25 @@ function fnPopoverSlider(showId, parentId, direction) {
         });
     });
 }
+
+function clickOutsidePopOver(popoverId, element) {
+    jQuery(document).on("click", function (e) {
+        var tempTarget = (e.target) ? e.target : e.srcElement;
+        if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
+            element.HidePopOver();
+            jQuery(document).off("click");
+        }
+    });
+}
 /*
  ######################################################################################
  Function:   Close all bubble popups
  ######################################################################################
  */
 function fnCloseAllPopups() {
-    if (jQuery("body").HasBubblePopup()) jQuery("body").RemoveBubblePopup();
-    jQuery("div.jquerybubblepopup.jquerybubblepopup-myplan").remove();
-    jQuery(document).off();
+    if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
+    jQuery("div.jquerypopover.jquerypopover-myplan").remove();
+    jQuery(document).off("click");
 }
 /*
  ######################################################################################
@@ -997,37 +913,29 @@ function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
     // This is built so that SpringEL can be used for generating the html. But it
     // also introduces a limitation of not allowing &quot; in the text
     if (jQuery("#" + id).data('help') && jQuery("#" + id).data('help').length > 0) {
-        options['innerHtml'] = jQuery("#" + id).data('help');
+        options.innerHtml = jQuery("#" + id).data('help');
     } else {
-        options['innerHtml'] = text;
+        options.innerHtml = text;
     }
-    options['manageMouseEvents'] = false;
+    options.manageMouseEvents = false;
     if (onFocusFlag) {
-        // Add onfocus trigger
         jQuery("#" + id).focus(function () {
-            //            if (!jQuery("#" + id).IsBubblePopupOpen()) {
-            // TODO : use data attribute to check if control
             if (!isControlWithMessages(id)) {
-                if (!jQuery("#" + id).HasBubblePopup()) jQuery("#" + id).CreateBubblePopup(options);
-                jQuery("#" + id).SetBubblePopupOptions(options, true);
-                jQuery("#" + id).SetBubblePopupInnerHtml(options.innerHTML, true);
-                jQuery("#" + id).ShowBubblePopup();
+                if (!jQuery("#" + id).HasPopOver()) jQuery("#" + id).CreatePopOver(options);
+                jQuery("#" + id).ShowPopOver(options, true);
             }
-            //            }
         });
         jQuery("#" + id).blur(function () {
-            jQuery("#" + id).HideBubblePopup();
+            jQuery("#" + id).HidePopOver();
         });
     }
     if (onMouseHoverFlag) {
         // Add mouse hover trigger
         jQuery("#" + id).hover(function () {
-            if (!jQuery("#" + id).IsBubblePopupOpen()) {
+            if (!jQuery("#" + id).IsPopOverOpen()) {
                 if (!isControlWithMessages(id)) {
-                    if (!jQuery("#" + id).HasBubblePopup()) jQuery("#" + id).CreateBubblePopup(options);
-                    jQuery("#" + id).SetBubblePopupOptions(options, true);
-                    jQuery("#" + id).SetBubblePopupInnerHtml(options.innerHTML, true);
-                    jQuery("#" + id).ShowBubblePopup();
+                    if (!jQuery("#" + id).HasPopOver()) jQuery("#" + id).CreatePopOver(options);
+                    jQuery("#" + id).ShowPopOver();
                 }
             }
         }, function (event) {
@@ -1308,29 +1216,6 @@ Array.max = function (array) {
 function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions, close) {
     stopEvent(e);
 
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
-        width:"353px",
-        height:"16px"
-    });
-
-    var popupOptionsDefault = {
-        innerHtml:popupHtml.wrap("<div>").parent().clone().html(),
-        themePath:'../ks-myplan/jquery-bubblepopup/jquerybubblepopup-theme/',
-        manageMouseEvents:true,
-        selectable:true,
-        tail:{align:'middle', hidden:false},
-        position:'left',
-        align:'center',
-        alwaysVisible:false,
-        themeMargins:{total:'20px', difference:'5px'},
-        themeName:'myplan',
-        distance:'0px',
-        openingSpeed:0,
-        closingSpeed:0
-    };
-
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
-
     var popupBox;
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (selector === null) {
@@ -1341,20 +1226,22 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     fnCloseAllPopups();
 
-    popupBox.CreateBubblePopup({manageMouseEvents:false});
-    popupBox.ShowBubblePopup(popupSettings, false);
-    var popupBoxId = popupBox.GetBubblePopupID();
-    jQuery("#" + popupBoxId).css({opacity:1});
-    fnPositionPopUp(popupBoxId);
-    popupBox.FreezeBubblePopup();
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    jQuery(document).on('click', function (e) {
-        var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("div.jquerybubblepopup.jquerybubblepopup-myplan").length === 0) {
-            popupBox.RemoveBubblePopup();
-            fnCloseAllPopups();
-        }
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
+        width:"353px",
+        height:"16px"
     });
+
+    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html()
+
+    popupBox.ShowPopOver(popupSettings, false);
+    var popupBoxId = popupBox.GetPopOverID();
+    fnPositionPopUp(popupBoxId);
+    popupBox.FreezePopOver();
+
+    clickOutsidePopOver(popupBoxId, popupBox);
 
     var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="QuickAdd-FormView" />';
@@ -1379,12 +1266,12 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         }
         elementToBlock.unblock({onUnblock:function () {
             if (jQuery("#" + id + "_popup").length) {
-                popupBox.SetBubblePopupInnerHtml(component);
+                popupBox.SetPopOverInnerHtml(component);
                 fnPositionPopUp(popupBoxId);
-                if (status != 'error') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").wrapInner(quickAddForm);
-                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerybubblepopup-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+                if (status != 'error') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").wrapInner(quickAddForm);
+                if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
                 jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
-                    popupBox.RemoveBubblePopup();
+                    popupBox.HidePopOver();
                     fnCloseAllPopups();
                 });
             }
