@@ -505,15 +505,9 @@
     </bean>
 
 
-    <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
-        <property name="applyClassOnItem" value="true"/>
-        <property name="emptyListMessage" value="Not currently scheduled"/>
-        <property name="styleClasses">
-            <list merge="true">
-                <value>scheduled</value>
-            </list>
-        </property>
-    </bean>
+    <bean id="scheduled_terms_list_formatter"
+          class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor"/>
+
 
     <!--<bean id="section_scheduled_terms_list_formatter"
           class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
