@@ -250,7 +250,7 @@
                 <property name="items">
                     <list>
                         <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.abbrGenEdRequirements"
-                              p:escapeHtmlInPropertyValue="false">
+                              p:escapeHtmlInPropertyValue="false" p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0}">
                             <property name="fieldLabel.render" value="false"/>
                             <property name="cssClasses">
                                 <list merge="true">
@@ -259,7 +259,13 @@
                                     <value>myplan-text-normal</value>
                                 </list>
                             </property>
-                            <property name="propertyEditor" ref="data_list_formatter"/>
+                        </bean>
+                        <bean parent="Uif-MessageField"
+                              p:fieldLabel.render="false"
+                              p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() eq 0}">
+                            <property name="message">
+                                <bean parent="Uif-Message" p:messageText="None"/>
+                            </property>
                         </bean>
                     </list>
                 </property>
@@ -367,13 +373,19 @@
                                                 <list>
                                                     <bean parent="Uif-DataField"
                                                           p:propertyName="courseSummaryDetails.requisites"
-                                                          p:escapeHtmlInPropertyValue="false">
+                                                          p:escapeHtmlInPropertyValue="false" p:render="@{dataObject.courseSummaryDetails.requisites.size() gt 0}">
                                                         <property name="fieldLabel.render" value="false"/>
-                                                        <property name="propertyEditor" ref="data_list_formatter"/>
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>myplan-data-list</value>
                                                             </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-MessageField"
+                                                          p:fieldLabel.render="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.requisites.size() eq 0}">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message" p:messageText="None"/>
                                                         </property>
                                                     </bean>
                                                     <bean parent="Uif-Message" p:messageText="(Source: Course Catalog)"
@@ -445,7 +457,7 @@
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-DataField" p:label="Scheduled For"
-                                                                      p:propertyName="courseSummaryDetails.scheduledTerms"
+                                                                      p:propertyName="courseSummaryDetails"
                                                                       p:escapeHtmlInPropertyValue="false"
                                                                       p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
                                                                     <property name="fieldLabel.cssClasses"
@@ -500,15 +512,22 @@
                                                                 <bean parent="Uif-DataField"
                                                                       p:label="Projected Quarter Info"
                                                                       p:propertyName="courseSummaryDetails.termsOffered"
-                                                                      p:escapeHtmlInPropertyValue="false">
+                                                                      p:escapeHtmlInPropertyValue="false" p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0}">
                                                                     <property name="fieldLabel.cssClasses"
                                                                               value="fl-text-gray myplan-text-normal"/>
-                                                                    <property name="propertyEditor"
-                                                                              ref="terms_formatter"/>
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-data-list</value>
                                                                         </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean parent="Uif-MessageField"
+                                                                      p:label="Projected Quarter Info"
+                                                                      p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
+                                                                    <property name="fieldLabel.cssClasses"
+                                                                              value="fl-text-gray myplan-text-normal"/>
+                                                                    <property name="message">
+                                                                        <bean parent="Uif-Message" p:messageText="Check with the department or your adviser for more information about this course."/>
                                                                     </property>
                                                                 </bean>
                                                                 <!--<bean parent="Uif-Message" p:messageText="quarters"
@@ -606,15 +625,20 @@
                                                 <list>
                                                     <bean parent="Uif-DataField"
                                                           p:propertyName="courseSummaryDetails.genEdRequirements"
-                                                          p:escapeHtmlInPropertyValue="false">
+                                                          p:escapeHtmlInPropertyValue="false" p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() gt 0}">
                                                         <property name="fieldLabel.renderColon" value="false"/>
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>myplan-data-list</value>
                                                             </list>
                                                         </property>
-                                                        <property name="propertyEditor"
-                                                                  ref="data_list_formatter"/>
+                                                    </bean>
+                                                    <bean parent="Uif-MessageField"
+                                                          p:fieldLabel.render="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() eq 0}">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                        </property>
                                                     </bean>
                                                 </list>
                                             </property>
@@ -670,7 +694,13 @@
                                                                 <value>myplan-data-list</value>
                                                             </list>
                                                         </property>
-                                                        <property name="propertyEditor" ref="data_list_formatter"/>
+                                                    </bean>
+                                                    <bean parent="Uif-MessageField"
+                                                          p:fieldLabel.render="false"
+                                                          p:render="@{dataObject.courseSummaryDetails.campusLocations.size() eq 0}">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                        </property>
                                                     </bean>
                                                     <bean parent="Uif-Message" p:messageText="Campus"
                                                           p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}"/>
@@ -718,7 +748,6 @@
                                                                 <value>myplan-data-list</value>
                                                             </list>
                                                         </property>
-                                                        <property name="propertyEditor" ref="data_list_formatter"/>
                                                     </bean>
                                                 </list>
                                             </property>

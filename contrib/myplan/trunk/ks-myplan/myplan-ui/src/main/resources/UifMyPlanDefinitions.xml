@@ -488,10 +488,6 @@
                   value="Select the campus and enter degree program to run audit"/>
     </bean>
 
-    <bean id="data_list_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage" value="None"/>
-    </bean>
-
     <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
 
@@ -512,11 +508,6 @@
     <bean id="scheduled_terms_list_formatter" class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListMessage" value="Not currently scheduled"/>
-        <property name="emptyListStyleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
         <property name="styleClasses">
             <list merge="true">
                 <value>scheduled</value>
@@ -524,7 +515,7 @@
         </property>
     </bean>
 
-    <bean id="section_scheduled_terms_list_formatter"
+    <!--<bean id="section_scheduled_terms_list_formatter"
           class="org.kuali.student.myplan.course.util.ScheduledTermsPropertyEditor">
         <property name="applyClassOnItem" value="true"/>
         <property name="emptyListMessage" value="Not currently scheduled"/>
@@ -539,18 +530,7 @@
                 <value>scheduled</value>
             </list>
         </property>
-    </bean>
-
-    <bean id="terms_formatter" class="org.kuali.student.myplan.course.util.CollectionListPropertyEditor">
-        <property name="emptyListMessage"
-                  value="Check with the department or your adviser for more information about this course."/>
-        <property name="applyClassOnItem" value="true"/>
-        <property name="emptyListStyleClasses">
-            <list merge="true">
-                <value>empty</value>
-            </list>
-        </property>
-    </bean>
+    </bean>-->
 
     <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
         <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
