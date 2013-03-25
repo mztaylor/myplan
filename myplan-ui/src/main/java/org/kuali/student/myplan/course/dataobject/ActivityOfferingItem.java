@@ -368,4 +368,8 @@ public class ActivityOfferingItem {
         return AtpHelper.atpIdToTermName(this.getAtpId());
     }
 
+    public ActivityOfferingItem getActivityItem(){
+        return this;
+    }
+
 }

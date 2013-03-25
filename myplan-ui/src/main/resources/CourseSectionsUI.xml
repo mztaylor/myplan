@@ -285,7 +285,7 @@
                                                                 </bean>
                                                                 <bean parent="Uif-DataField"
                                                                       p:label="Meeting Time &amp; Location"
-                                                                      p:propertyName="meetingDetailsList"
+                                                                      p:propertyName="activityItem"
                                                                       p:escapeHtmlInPropertyValue="false">
                                                                     <property name="propertyEditor"
                                                                               ref="meeting_building_link_formatter"/>

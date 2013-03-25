@@ -279,7 +279,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-DataField" p:label="Meeting Time" p:render="@{#line.activityOfferingItem ne null}"
-                      p:propertyName="activityOfferingItem.meetingDetailsList" p:escapeHtmlInPropertyValue="false">
+                      p:propertyName="activityOfferingItem.activityItem" p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="meeting_building_link_formatter"/>
                 </bean>
                 <bean parent="Uif-DataField" p:render="@{#line.activityOfferingItem ne null}"
@@ -630,7 +630,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:label="Meeting Time" p:propertyName="meetingDetailsList"
+                <bean parent="Uif-DataField" p:label="Meeting Time" p:propertyName="activityItem"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="meeting_building_link_formatter"/>
                     <property name="cssClasses">

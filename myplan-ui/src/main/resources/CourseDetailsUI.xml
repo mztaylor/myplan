@@ -1073,7 +1073,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:label="Meeting Time &amp; Location" p:propertyName="meetingDetailsList"
+                <bean parent="Uif-DataField" p:label="Meeting Time &amp; Location" p:propertyName="activityItem"
                       p:escapeHtmlInPropertyValue="false" p:rowSpan="1" p:colSpan="1">
                     <property name="propertyEditor" ref="meeting_building_link_formatter"/>
                     <property name="cssClasses">
