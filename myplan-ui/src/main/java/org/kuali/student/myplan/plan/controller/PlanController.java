@@ -68,6 +68,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.util.*;
 
+import static org.springframework.util.StringUtils.hasText;
+
 @Controller
 @RequestMapping(value = "/plan/**")
 public class PlanController extends UifControllerBase {
@@ -77,8 +79,6 @@ public class PlanController extends UifControllerBase {
     private transient AcademicPlanService academicPlanService;
 
     private transient DegreeAuditService degreeAuditService;
-
-    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
 
     @Autowired
     private transient CourseHelper courseHelper;
@@ -1919,6 +1919,9 @@ public class PlanController extends UifControllerBase {
         return typeKey.substring(typeKey.lastIndexOf(".") + 1);
     }
 
+    // TODO: Merge PlanController and QuickAddController's getTotalCredits() methods. Couldn't find suitable helper
+    // class (because of use of services). So move to base class?
+
     private String getTotalCredits(String termId) {
         Person user = GlobalVariables.getUserSession().getPerson();
         String studentID = user.getPrincipalId();
@@ -1938,12 +1941,28 @@ public class PlanController extends UifControllerBase {
                         String courseID = planItem.getRefObjectId();
                         for (String atp : planItem.getPlanPeriods()) {
                             if (atp.equalsIgnoreCase(termId)) {
-                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
                                 if (courseDetails != null) {
-                                    String credit = courseDetails.getCredit();
-                                    if (credit == null) continue;
-                                    if ("".equals(credit)) continue;
-                                    creditList.add(credit);
+                                    boolean sectionCredits = false;
+                                    List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
+                                    for (ActivityOfferingItem activityItem : activityList) {
+                                        String planItemId = activityItem.getPlanItemId();
+                                        if (hasText(planItemId) && activityItem.isPrimary()) {
+                                            String credit = activityItem.getCredits();
+                                            if (hasText(credit)) {
+                                                creditList.add(credit);
+                                                sectionCredits = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!sectionCredits) {
+                                        String credit = courseDetails.getCredit();
+                                        if (hasText(credit)) {
+                                            creditList.add(credit);
+
+                                        }
+                                    }
 
                                 }
                             }
@@ -1955,9 +1974,9 @@ public class PlanController extends UifControllerBase {
                 for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
                     if (ar.getTermName().equalsIgnoreCase(termId)) {
                         String credit = ar.getCreditsEarned();
-                        if (credit == null) continue;
-                        if ("".equals(credit)) continue;
-                        creditList.add(credit);
+                        if (hasText(credit)) {
+                            creditList.add(credit);
+                        }
                     }
                 }
             }
@@ -2067,14 +2086,6 @@ public class PlanController extends UifControllerBase {
     public void setAtpHelper(AtpHelper atpHelper) {
         this.atpHelper = atpHelper;
     }
-
-    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
-        if (this.courseDetailsInquiryHelper == null) {
-            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
-        }
-        return courseDetailsInquiryHelper;
-    }
-
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
