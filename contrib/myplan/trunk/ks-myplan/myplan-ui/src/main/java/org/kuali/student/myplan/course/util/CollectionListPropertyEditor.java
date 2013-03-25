@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.apache.log4j.Logger;
 
+@Deprecated
 public class CollectionListPropertyEditor extends PropertyEditorSupport implements Serializable {
 
     private final static Logger logger = Logger.getLogger(CollectionListPropertyEditor.class);
