@@ -1569,20 +1569,24 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
     }
 }
 
-function toggleSectionDetails(obj, sectionRow, expandText, collapseText, afterLoad) {
+function toggleSectionDetails(sectionRow, afterLoad, obj, expandText, collapseText) {
+    if (!afterLoad) {
+        sectionRow.next("tr").find("td").last().attr("colspan", "3");
+        sectionRow.next("tr").next("tr").find("td").first().attr("colspan", "5");
+        sectionRow.next("tr").next("tr").find("td").last().remove();
+    }
     if (afterLoad) var hidden = obj.data("collapsed");
     if (hidden) {
         sectionRow.find("td").first().attr("rowspan", "3");
         sectionRow.find("td").last().attr("rowspan", "3");
         sectionRow.next("tr").show().next("tr").show();
-        obj.data("collapsed", false);
+        if (afterLoad) obj.data("collapsed", false).text(collapseText);
     } else {
         sectionRow.find("td").first().attr("rowspan", "1");
         sectionRow.find("td").last().attr("rowspan", "1");
         sectionRow.next("tr").hide().next("tr").hide();
-        obj.data("collapsed", true);
+        if (afterLoad) obj.data("collapsed", true).text(expandText);
     }
-
 }
 
 function buildHoverText(obj) {
