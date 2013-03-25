@@ -1569,6 +1569,22 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
     }
 }
 
+function toggleSectionDetails(obj, sectionRow, expandText, collapseText, afterLoad) {
+    if (afterLoad) var hidden = obj.data("collapsed");
+    if (hidden) {
+        sectionRow.find("td").first().attr("rowspan", "3");
+        sectionRow.find("td").last().attr("rowspan", "3");
+        sectionRow.next("tr").show().next("tr").show();
+        obj.data("collapsed", false);
+    } else {
+        sectionRow.find("td").first().attr("rowspan", "1");
+        sectionRow.find("td").last().attr("rowspan", "1");
+        sectionRow.next("tr").hide().next("tr").hide();
+        obj.data("collapsed", true);
+    }
+
+}
+
 function buildHoverText(obj) {
     var message = '';
     var temp = '';
