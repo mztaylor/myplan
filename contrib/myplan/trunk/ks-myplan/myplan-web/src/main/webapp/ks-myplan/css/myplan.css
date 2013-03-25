@@ -1839,7 +1839,8 @@ table.myplan-course-search-results-datatable .blockUI {
     border-top: dotted 1px #ccc;
 }
 
-.myplan-course-sections table.uif-tableCollectionLayout td:first-child[rowspan='3'] {
+/* .myplan-course-sections table.uif-tableCollectionLayout td:first-child[rowspan='3'] */
+.myplan-course-sections table.uif-tableCollectionLayout tr.row td:first-child {
     border-left: none;
 }
 

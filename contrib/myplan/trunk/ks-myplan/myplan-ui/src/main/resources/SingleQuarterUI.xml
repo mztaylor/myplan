@@ -751,20 +751,5 @@
         </property>
     </bean>
 
-    <bean id="section_button" parent="Uif-ImageField">
-        <property name="id" value="button_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
-        <property name="onMouseOverScript" value="buildHoverText(jQuery(this));"/>
-        <property name="label" value=""/>
-        <property name="dataAttributes">
-            <map>
-                <entry key="courseid" value="@{#line.courseId}"/>
-                <entry key="planned" value="@{#line.planItemId ne null}"/>
-                <entry key="primary" value="@{#line.primary}"/>
-                <entry key="coursesection" value="@{#line.code}"/>
-                <entry key="primarysection" value="@{#line.primarySectionCode}"/>
-            </map>
-        </property>
-    </bean>
 
 </beans>
