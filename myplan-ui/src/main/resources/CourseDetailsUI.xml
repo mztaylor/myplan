@@ -1052,7 +1052,7 @@
     </bean>
 
 
-    <bean id="activityCode" parent="Uif-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1">
+    <bean id="activityCode" parent="Uif-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="Section"/>
         <property name="onDocumentReadyScript" value="
@@ -1062,6 +1062,7 @@
                 row.addClass('primary');
             } else {
                 row.addClass('secondary');
+                toggleSectionDetails(row, false);
             }
         "/>
         <property name="cssClasses">
@@ -1094,7 +1095,7 @@
                         </map>
                     </property>
                     <property name="actionScript"
-                              value="var row = jQuery(this).parents('tr.row'); toggleSectionDetails(this, row, 'View more', 'View less', true)"/>
+                              value="toggleSectionDetails(jQuery(this).parents('tr.row'), true, jQuery(this), 'View more', 'View less')"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-font-size-80</value>
@@ -1105,7 +1106,7 @@
         </property>
     </bean>
 
-    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="Type (Credit)"/>
         <property name="cssClasses">
@@ -1125,7 +1126,7 @@
         </property>
     </bean>
 
-    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
         <property name="label" value="Meeting Time &amp; Location"/>
         <property name="propertyName" value="activityItem"/>
         <property name="escapeHtmlInPropertyValue" value="false"/>
@@ -1137,7 +1138,7 @@
         </property>
     </bean>
 
-    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="SLN"/>
         <property name="cssClasses">
@@ -1152,7 +1153,7 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="ENRL RESTR"/>
         <property name="cssClasses">
@@ -1176,7 +1177,7 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
+    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP"
           p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="ENRL / Limit"/>
@@ -1200,13 +1201,13 @@
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="Uif-DataField" p:propertyName="instructor"
-          p:rowSpan="1" p:colSpan="2">
+    <bean id="activityInstructor" parent="Uif-DataField" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+        <property name="propertyName" value="instructor"/>
         <property name="fieldLabel.render" value="false"/>
     </bean>
 
     <bean id="activityOther" parent="Uif-VerticalFieldGroup"
-          p:rowSpan="1" p:colSpan="3">
+          p:rowSpan="1" p:colSpan="3" p:valign="TOP">
         <property name="fieldLabel.render" value="false"/>
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
@@ -1253,7 +1254,7 @@
         </property>
     </bean>
 
-    <bean id="activityAdditionalDetails" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="5">
+    <bean id="activityAdditionalDetails" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="5" p:valign="TOP">
         <property name="fieldLabel.render" value="false"/>
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
@@ -1271,7 +1272,7 @@
         </property>
     </bean>
 
-    <bean id="activityActionLink" parent="Uif-LinkField" p:rowSpan="3" p:colSpan="1">
+    <bean id="activityActionLink" parent="Uif-LinkField" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="fieldLabel.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
@@ -1294,7 +1295,7 @@
         </property>
     </bean>
 
-    <bean id="activityActionButton" parent="section_button" p:rowSpan="3" p:colSpan="1">
+    <bean id="activityActionButton" parent="section_button" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="label" value="Add"/>
         <property name="altText" value="Add"/>
         <property name="cssClasses">
