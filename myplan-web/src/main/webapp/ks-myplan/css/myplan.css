@@ -1824,8 +1824,9 @@ table.myplan-course-search-results-datatable .blockUI {
     display: table-row;
 }
 
-.myplan-course-sections table.uif-tableCollectionLayout tr.row td {
-    border-top: solid 1px #ccc;
+.myplan-course-sections table.uif-tableCollectionLayout tr.row.primary td,
+.myplan-course-sections table.uif-tableCollectionLayout tr.row.secondary.top td {
+    border-top: solid 3px #ccc;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout th,
@@ -1837,6 +1838,7 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-course-sections table.uif-tableCollectionLayout td {
     border-left: dotted 1px #ccc;
     border-top: dotted 1px #ccc;
+    height: 32px;
 }
 
 /* .myplan-course-sections table.uif-tableCollectionLayout td:first-child[rowspan='3'] */
@@ -1858,6 +1860,10 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections table.uif-tableCollectionLayout td a {
     white-space: normal;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout tfoot {
+    display: none;
 }
 
 .myplan-course-sections .meetingdetails {
@@ -1917,32 +1923,32 @@ table.myplan-course-search-results-datatable .blockUI {
     background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
-.myplan-course-sections td.activityCode {
-    width: 48px;
+.myplan-course-sections .activityCode {
+    width: 54px;
 }
 
-.myplan-course-sections td.activityType {
-    width: 80px;
+.myplan-course-sections .activityType {
+    width: 94px;
 }
 
-.myplan-course-sections td.activityMeetingData {
+.myplan-course-sections .activityMeetingData {
     width: 254px;
 }
 
-.myplan-course-sections td.activityRegCode {
-    width: 38px;
+.myplan-course-sections .activityRegCode {
+    width: 48px;
 }
 
-.myplan-course-sections td.activityEnrlRestr {
-    width: 70px;
+.myplan-course-sections .activityEnrlRestr {
+    width: 100px;
 }
 
-.myplan-course-sections td.activityEnrlData {
+.myplan-course-sections .activityEnrlData {
     width: 60px;
 }
 
-.myplan-course-sections td.activityAction {
-    width: 16px;
+.myplan-course-sections .activityAction {
+    width: 36px;
 }
 
 /* MyPlan Section (right side container) ########################################################################### */

@@ -47,11 +47,14 @@
                                   jQuery('body')
                                       .subscribe('SECTION_ITEM_ADDED', function(data){
                                           var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
-                                          jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                          fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.SectionCode, false);
-                                          if (data.PrimarySectionCode != null) {
-                                              jQuery('#section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                              fnDisplayMessage(link, 'fl-font-size-80', 'section_' + data.InstituteCode + '_' + data.atpId + '_' + data.PrimarySectionCode, false);
+                                          jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                          fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
+                                          if (data.ItemsToUpdate != null) {
+                                              var items = data.ItemsToUpdate.split(',');
+                                              jQuery.each(items, function (index, value) {
+                                                  jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                                  fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
+                                              });
                                           }
                                       });
                                   jQuery(window).load(function () {
@@ -1063,6 +1066,7 @@
             } else {
                 row.addClass('secondary');
                 toggleSectionDetails(row, false);
+                if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');
             }
         "/>
         <property name="cssClasses">
@@ -1087,7 +1091,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0 0 4px 0;"
+                <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0;"
                       p:render="@{!#line.primary}">
                     <property name="dataAttributes">
                         <map>
@@ -1106,7 +1110,7 @@
         </property>
     </bean>
 
-    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
+    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="Type (Credit)"/>
         <property name="cssClasses">
@@ -1126,7 +1130,7 @@
         </property>
     </bean>
 
-    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
+    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1">
         <property name="label" value="Meeting Time &amp; Location"/>
         <property name="propertyName" value="activityItem"/>
         <property name="escapeHtmlInPropertyValue" value="false"/>
@@ -1138,7 +1142,7 @@
         </property>
     </bean>
 
-    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
+    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="SLN"/>
         <property name="cssClasses">
@@ -1153,7 +1157,7 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP">
+    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="ENRL RESTR"/>
         <property name="cssClasses">
@@ -1177,7 +1181,7 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1" p:valign="TOP"
+    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
           p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="ENRL / Limit"/>
@@ -1201,17 +1205,25 @@
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="Uif-DataField" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
-        <property name="propertyName" value="instructor"/>
-        <property name="fieldLabel.render" value="false"/>
-    </bean>
-
-    <bean id="activityOther" parent="Uif-VerticalFieldGroup"
-          p:rowSpan="1" p:colSpan="3" p:valign="TOP">
-        <property name="fieldLabel.render" value="false"/>
+    <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
             <list>
+                <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false" p:style="margin:0;"/>
+                <bean parent="Uif-DataField" p:style="margin:0;">
+                    <property name="propertyName" value="instructor"/>
+                    <property name="fieldLabel.render" value="false"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityOther" parent="Uif-VerticalFieldGroup" p:valign="TOP"
+          p:rowSpan="1" p:colSpan="3">
+        <property name="group.validationMessages.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Label" p:labelText="Other" p:renderColon="false" p:style="margin:0;"/>
                 <bean parent="Uif-Message"
                       p:messageText="@{#line.gradingOption}"
                       p:render="@{#line.gradingOption ne null}"/>
@@ -1235,10 +1247,10 @@
                 <bean parent="Uif-Message"
                       p:messageText="May not be eligible for Financial Aid"
                       p:render="@{#line.ineligibleForFinancialAid}"/>
-                <bean parent="Uif-Message"
+                <bean parent="Uif-Message" p:style="margin:0;"
                       p:messageText="Course Fee $@{#line.feeAmount}"
                       p:render="@{#line.feeAmount ne null}"/>
-                <bean parent="Uif-Message" p:messageText="--"
+                <bean parent="Uif-Message" p:messageText="--" p:style="margin:0;"
                       p:render="@{#line.gradingOption eq null AND
                                  !#line.distanceLearning AND
                                  !#line.honorsSection AND
@@ -1254,20 +1266,27 @@
         </property>
     </bean>
 
-    <bean id="activityAdditionalDetails" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="5" p:valign="TOP">
-        <property name="fieldLabel.render" value="false"/>
+    <bean id="activityAdditionalDetails" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Message"
-                      p:messageText="@{#line.summerTerm}&lt;br/&gt;"
-                      p:style="display:inline; margin:0; float:none;"
-                      p:render="@{#line.summerTerm ne null ? true : false}"/>
-                <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}"
-                      p:style="display:inline; margin:0; float:none;"/>
-                <bean parent="current_section_status"
-                      p:actionLabel="@{#line.details}"
-                      p:style="display:inline; margin:0; float:none;"/>
+                <bean parent="Uif-Label" p:labelText="Additional Details" p:renderColon="false" p:style="margin:0;"/>
+                <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0;">
+                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="@{#line.summerTerm}&lt;br/&gt;"
+                                  p:style="display:inline; margin:0; float:none;"
+                                  p:render="@{#line.summerTerm ne null ? true : false}"/>
+                            <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}"
+                                  p:style="display:inline; margin:0; float:none;"/>
+                            <bean parent="current_section_status"
+                                  p:actionLabel="@{#line.details}"
+                                  p:style="display:inline; margin:0; float:none;"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -1277,8 +1296,10 @@
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
+        <property name="style" value="line-height:32px;"/>
         <property name="link">
             <bean parent="Uif-Link" p:target="">
                 <property name="linkText" value="Added"/>
@@ -1305,8 +1326,9 @@
                 <value>fl-text-align-center</value>
             </list>
         </property>
+        <property name="style" value="margin:8px 0 0 0;"/>
         <property name="onClickScript"
-                  value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},viewId:'PlannedCourse-FormView'}, e);"/>
+                  value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView'}, e);"/>
     </bean>
 
     <bean id="section_button" parent="Uif-ImageField">
