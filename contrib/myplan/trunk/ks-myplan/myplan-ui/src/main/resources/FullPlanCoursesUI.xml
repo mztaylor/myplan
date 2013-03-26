@@ -151,7 +151,7 @@
         <property name="style" value="padding:10px;"/>
         <property name="onDocumentReadyScript" value="
             jQuery('th, td').removeAttr('width');
-            jQuery('td.uif-subCollection').each(function() {
+            jQuery('td div.uif-subCollection').each(function() {
                 var maxHeight = 0;
                 jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
                     if (jQuery(this).height() > maxHeight) maxHeight = jQuery(this).height();
