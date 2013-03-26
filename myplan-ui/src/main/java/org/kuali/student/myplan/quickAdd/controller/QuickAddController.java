@@ -5,13 +5,11 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
@@ -24,7 +22,6 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
@@ -94,6 +91,9 @@ public class QuickAddController extends UifControllerBase {
     @Autowired
     private CourseHelper courseHelper;
 
+    private PlannedTermsHelperBase plannedTermsHelper;
+
+
     //  Java to JSON outputter.
     public transient ObjectMapper mapper = new ObjectMapper();
 
@@ -107,6 +107,13 @@ public class QuickAddController extends UifControllerBase {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public PlannedTermsHelperBase getPlannedTermsHelper() {
+        if (plannedTermsHelper == null) {
+            plannedTermsHelper = new PlannedTermsHelperBase();
+        }
+        return plannedTermsHelper;
     }
 
     public AcademicRecordService getAcademicRecordService() {
@@ -665,89 +672,6 @@ public class QuickAddController extends UifControllerBase {
         return newPlanItem;
     }
 
-    private List<StudentCourseRecordInfo> getAcadRecs(String studentID) {
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-        try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
-
-        } catch (Exception e) {
-            logger.error("Query to fetch Academic records failed with SWS");
-            return studentCourseRecordInfos;
-        }
-        return studentCourseRecordInfos;
-    }
-
-    // TODO: Merge PlanController and QuickAddController's getTotalCredits() methods. Couldn't find suitable helper
-    // class (because of use of services). So move to base class?
-
-    private String getTotalCredits(String termId) {
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String studentID = user.getPrincipalId();
-
-        ArrayList<String> creditList = new ArrayList<String>();
-
-        try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
-            for (LearningPlanInfo learningPlan : learningPlanList) {
-                String learningPlanID = learningPlan.getId();
-
-                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
-
-                for (PlanItemInfo planItem : planItemList) {
-                    String luType = planItem.getRefObjectType();
-                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
-                        String courseID = planItem.getRefObjectId();
-                        for (String atp : planItem.getPlanPeriods()) {
-                            if (atp.equalsIgnoreCase(termId)) {
-                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
-                                if (courseDetails != null) {
-                                    boolean sectionCredits = false;
-                                    List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
-                                    for (ActivityOfferingItem activityItem : activityList) {
-                                        String planItemId = activityItem.getPlanItemId();
-                                        if (hasText(planItemId) && activityItem.isPrimary()) {
-                                            String credit = activityItem.getCredits();
-                                            if (hasText(credit)) {
-                                                creditList.add(credit);
-
-                                                sectionCredits = true;
-                                            }
-                                        }
-                                    }
-
-                                    if (!sectionCredits) {
-                                        String credit = courseDetails.getCredit();
-                                        if (hasText(credit)) {
-                                            creditList.add(credit);
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
-                for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
-                    if (ar.getTermName().equalsIgnoreCase(termId)) {
-                        String credit = ar.getCreditsEarned();
-                        if (hasText(credit)) {
-                            creditList.add(credit);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("could not load total credits");
-        }
-
-        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
-        return credits;
-    }
-
-
     /**
      * Creates an update credits event.
      *
@@ -760,7 +684,7 @@ public class QuickAddController extends UifControllerBase {
         Map<String, String> params = new HashMap<String, String>();
 
         params.put("atpId", formatAtpIdForUI(atpId));
-        String totalCredits = this.getTotalCredits(atpId);
+        String totalCredits = getPlannedTermsHelper().getTotalCredits(atpId);
         params.put("totalCredits", totalCredits);
 
         events.put(eventName, params);

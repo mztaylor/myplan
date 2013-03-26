@@ -25,7 +25,6 @@ import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -68,8 +67,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.util.*;
 
-import static org.springframework.util.StringUtils.hasText;
-
 @Controller
 @RequestMapping(value = "/plan/**")
 public class PlanController extends UifControllerBase {
@@ -82,6 +79,8 @@ public class PlanController extends UifControllerBase {
 
     @Autowired
     private transient CourseHelper courseHelper;
+
+    private PlannedTermsHelperBase plannedTermsHelper;
 
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -111,6 +110,13 @@ public class PlanController extends UifControllerBase {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public PlannedTermsHelperBase getPlannedTermsHelper() {
+        if (plannedTermsHelper == null) {
+            plannedTermsHelper = new PlannedTermsHelperBase();
+        }
+        return plannedTermsHelper;
     }
 
     @Override
@@ -1837,7 +1843,7 @@ public class PlanController extends UifControllerBase {
         Map<String, String> params = new HashMap<String, String>();
 
         params.put("atpId", formatAtpIdForUI(atpId));
-        String totalCredits = this.getTotalCredits(atpId);
+        String totalCredits = getPlannedTermsHelper().getTotalCredits(atpId);
         params.put("totalCredits", totalCredits);
 
         events.put(eventName, params);
@@ -1919,74 +1925,6 @@ public class PlanController extends UifControllerBase {
         return typeKey.substring(typeKey.lastIndexOf(".") + 1);
     }
 
-    // TODO: Merge PlanController and QuickAddController's getTotalCredits() methods. Couldn't find suitable helper
-    // class (because of use of services). So move to base class?
-
-    private String getTotalCredits(String termId) {
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String studentID = user.getPrincipalId();
-
-        ArrayList<String> creditList = new ArrayList<String>();
-
-        try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
-            for (LearningPlanInfo learningPlan : learningPlanList) {
-                String learningPlanID = learningPlan.getId();
-
-                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
-
-                for (PlanItemInfo planItem : planItemList) {
-                    String luType = planItem.getRefObjectType();
-                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
-                        String courseID = planItem.getRefObjectId();
-                        for (String atp : planItem.getPlanPeriods()) {
-                            if (atp.equalsIgnoreCase(termId)) {
-                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
-                                if (courseDetails != null) {
-                                    boolean sectionCredits = false;
-                                    List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
-                                    for (ActivityOfferingItem activityItem : activityList) {
-                                        String planItemId = activityItem.getPlanItemId();
-                                        if (hasText(planItemId) && activityItem.isPrimary()) {
-                                            String credit = activityItem.getCredits();
-                                            if (hasText(credit)) {
-                                                creditList.add(credit);
-                                                sectionCredits = true;
-                                            }
-                                        }
-                                    }
-
-                                    if (!sectionCredits) {
-                                        String credit = courseDetails.getCredit();
-                                        if (hasText(credit)) {
-                                            creditList.add(credit);
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
-                for (StudentCourseRecordInfo ar : studentCourseRecordInfos) {
-                    if (ar.getTermName().equalsIgnoreCase(termId)) {
-                        String credit = ar.getCreditsEarned();
-                        if (hasText(credit)) {
-                            creditList.add(credit);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("could not load total credits");
-        }
-
-        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
-        return credits;
-    }
 
     private String getPlanIdFromCourseId(String courseId, String planItemType) {
         String planItemId = null;
@@ -1995,15 +1933,13 @@ public class PlanController extends UifControllerBase {
 
         String planTypeKey = PlanConstants.LEARNING_PLAN_TYPE_PLAN;
         List<LearningPlanInfo> learningPlanList = null;
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcadRecs(studentID);
 
-        List<PlanItemInfo> planItemList = null;
         try {
             learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, planTypeKey, CourseSearchConstants.CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
-                planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, planItemType, PlanConstants.CONTEXT_INFO);
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, planItemType, PlanConstants.CONTEXT_INFO);
 
                 for (PlanItemInfo planItem : planItemList) {
                     if (planItem.getRefObjectId().equalsIgnoreCase(courseId)) {
@@ -2018,19 +1954,6 @@ public class PlanController extends UifControllerBase {
         return planItemId;
     }
 
-
-    private List<StudentCourseRecordInfo> getAcadRecs(String studentID) {
-        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
-        try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
-
-        } catch (Exception e) {
-            logger.error("Query to fetch Academic records failed with SWS");
-            return studentCourseRecordInfos;
-        }
-        return studentCourseRecordInfos;
-    }
-
     /**
      * User who has no Learning Plan or auditInfo is considered a new User.
      *
@@ -2038,31 +1961,21 @@ public class PlanController extends UifControllerBase {
      */
     private boolean isNewUser() {
         boolean isNewUser = false;
-        String studentId = UserSessionHelper.getStudentId();
-        List<LearningPlanInfo> learningPlanList = new ArrayList<LearningPlanInfo>();
-        List<AuditReportInfo> auditReportInfoList = new ArrayList<AuditReportInfo>();
         try {
-            learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not retrieve plan items.", e);
-        }
-        /*check if any audits are ran ! if no plans found*/
-        if (learningPlanList.size() == 0) {
-            try {
+            String studentId = UserSessionHelper.getStudentId();
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            /*check if any audits are ran ! if no plans found*/
+            if (learningPlanList.isEmpty()) {
                 String systemKey = UserSessionHelper.getAuditSystemKey();
-                Date startDate = new Date();
-                Date endDate = new Date();
-                ContextInfo contextInfo = new ContextInfo();
                 if (systemKey != null) {
-                    auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                    Date startDate = new Date();
+                    Date endDate = new Date();
+                    List<AuditReportInfo> auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, DegreeAuditServiceConstants.DEGREE_AUDIT_SERVICE_CONTEXT);
+                    isNewUser = auditReportInfoList.isEmpty();
                 }
-                if (auditReportInfoList.size() == 0) {
-                    isNewUser = true;
-                }
-            } catch (Exception e) {
-                logger.error("Could not retieve Audit Info", e);
             }
-
+        } catch (Exception e) {
+            logger.error("Could not retrieve info", e);
         }
         return isNewUser;
     }
