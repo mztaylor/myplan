@@ -2,7 +2,18 @@ package org.kuali.student.myplan.plan.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
@@ -10,7 +21,10 @@ import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 
+import javax.xml.namespace.QName;
 import java.util.*;
+
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +36,13 @@ import java.util.*;
 public class PlannedTermsHelperBase {
 
     private static final Logger logger = Logger.getLogger(PlannedTermsHelperBase.class);
+
+    public transient AcademicRecordService academicRecordService;
+
+    public transient AcademicPlanService academicPlanService;
+
+    private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+
 
     public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, boolean isServiceUp, int futureTerms, boolean fullPlanView) {
 
@@ -352,4 +373,100 @@ public class PlannedTermsHelperBase {
         credits = credits.replace(".0", "");
         return credits;
     }
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return academicRecordService;
+    }
+
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryService() {
+        if (courseDetailsInquiryHelper == null) {
+            courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+        }
+        return courseDetailsInquiryHelper;
+    }
+
+    public void setCourseDetailsInquiryHelper(CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper) {
+        this.courseDetailsInquiryHelper = courseDetailsInquiryHelper;
+    }
+
+    public String getTotalCredits(String termId) {
+        Person user = GlobalVariables.getUserSession().getPerson();
+        String studentID = user.getPrincipalId();
+
+        ArrayList<String> creditList = new ArrayList<String>();
+
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                String learningPlanID = learningPlan.getId();
+
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+
+                for (PlanItemInfo planItem : planItemList) {
+                    String luType = planItem.getRefObjectType();
+                    if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
+                        String courseID = planItem.getRefObjectId();
+                        for (String atp : planItem.getPlanPeriods()) {
+                            if (atp.equalsIgnoreCase(termId)) {
+                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
+                                if (courseDetails != null) {
+                                    boolean sectionCredits = false;
+                                    // Returns list of all a course's sections. Sections which are also in student's plan have planItemId set (non-null)
+                                    List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
+                                    for (ActivityOfferingItem activityItem : activityList) {
+                                        String planItemId = activityItem.getPlanItemId();
+                                        if (hasText(planItemId) && activityItem.isPrimary()) {
+                                            String credit = activityItem.getCredits();
+                                            if (hasText(credit)) {
+                                                creditList.add(credit);
+                                                sectionCredits = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!sectionCredits) {
+                                        String credit = courseDetails.getCredit();
+                                        if (hasText(credit)) {
+                                            creditList.add(credit);
+
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+                List<StudentCourseRecordInfo> recordList = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
+                for (StudentCourseRecordInfo record : recordList) {
+                    if (record.getTermName().equalsIgnoreCase(termId)) {
+                        String credit = record.getCreditsEarned();
+                        if (hasText(credit)) {
+                            creditList.add(credit);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("could not load total credits");
+        }
+
+        String credits = sumCreditList(creditList);
+        return credits;
+    }
+
 }

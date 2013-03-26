@@ -1,7 +1,7 @@
-
 package org.kuali.student.myplan.audit.service;
 
 import org.kuali.student.r2.common.constants.CommonServiceConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
 
 /**
  * kmuthu Don't forget to add comment
@@ -18,4 +18,7 @@ public class DegreeAuditServiceConstants {
     public static final String AUDIT_TYPE_KEY_XML = "kuali.audit.type.xml";
     public static final String AUDIT_TYPE_KEY_PRINT = "kuali.audit.type.print";
     public static final String AUDIT_TYPE_KEY_SUMMARY = "kuali.audit.type.summary";
+
+
+    public static final ContextInfo DEGREE_AUDIT_SERVICE_CONTEXT = new ContextInfo();
 }
