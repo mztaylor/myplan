@@ -132,6 +132,7 @@
                 <bean parent="Uif-Page" p:id="comment_dialog_response_page"
                       p:headerText="View Message">
                     <property name="onDocumentReadyScript" value="
+                        jQuery('button#postCommentButton').removeClass('disabled');
                         jQuery('form input, form textarea').keyup(function() {
                             var empty = false;
                             jQuery('form .myplan-required').each(function() {
