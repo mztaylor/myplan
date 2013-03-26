@@ -208,6 +208,16 @@
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithGridItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup">
+                        <property name="fieldLabel.render" value="false"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionGridItem">
                         <property name="footer.render" value="false"/>
