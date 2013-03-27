@@ -340,6 +340,10 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
+        String sections = getPlannedSectionsAsString(planItem, courseDetails);
+        if (sections != null) {
+            events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+        }
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -410,10 +414,14 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new HashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events =  new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
+        String sections = getPlannedSectionsAsString(planItem, courseDetails);
+        if (sections != null) {
+            events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+        }
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -1044,6 +1052,38 @@ public class PlanController extends UifControllerBase {
 
         newTermIds.add(form.getAtpId());
         return newTermIds;
+    }
+
+    /**
+     * Gives the Sections planned as a String. For eg: COM 322 "A, AA,.."
+     *
+     * @param planItem
+     * @param courseDetails
+     * @return
+     */
+    private String getPlannedSectionsAsString(PlanItem planItem, CourseSummaryDetails courseDetails) {
+        String sections = null;
+        List<String> plannedSections = new ArrayList<String>();
+        if (planItem != null && planItem.getPlanPeriods().size() > 0) {
+            List<String> terms = new ArrayList<String>();
+            for (String term : planItem.getPlanPeriods()) {
+                terms.add(AtpHelper.atpIdToTermName(term));
+            }
+            if (courseDetails != null && courseDetails.getCourseId() != null && terms.size() > 0) {
+                List<ActivityOfferingItem> plannedActivities = getPlannedActivities(courseDetails.getCourseId(), terms, null);
+                if (plannedActivities != null && plannedActivities.size() > 0) {
+                    for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
+                        if (plannedSections.size() == 2) {
+                            return sections = String.format("%s,..", StringUtils.join(plannedSections.toArray(), ", "));
+                        }
+                        plannedSections.add(activityOfferingItem.getCode());
+                    }
+                }
+            }
+        }
+
+        return StringUtils.join(plannedSections.toArray(), ", ");
+
     }
 
     /**

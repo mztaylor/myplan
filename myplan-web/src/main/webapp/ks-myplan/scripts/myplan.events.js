@@ -3,7 +3,7 @@
  Function: add course to quarter plan view
  #################################################################
  */
-function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen) {
+function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections) {
     var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
         '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
@@ -15,9 +15,14 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
             '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '" class="uif-image">' +
             '</div>';
     }
+    var sectionsDiv = '';
+    if(sections){
+      sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem"> <span class="uif-message">'+
+          sections +'</span> </div>';
+    }
     item += '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
         '<span class="uif-message">' + courseCode + '</span>' +
-        '</div>' +
+        '</div>' + sectionsDiv +
         '<div class="uif-field uif-messageField credit uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
         '<span class="uif-message">(' + courseCredits + ')</span>' +
         '</div>' +
