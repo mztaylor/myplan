@@ -4,7 +4,7 @@
  #################################################################
  */
 function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections) {
-    var item = '<div id="' + planItemId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
+    var item = '<div id="' + planItemId + '_div_' + type + '" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
         '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
         '<fieldset>' +
@@ -38,8 +38,8 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
     fnShowHideQuickAddLink(atpId, type, size);
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide();
-    runHiddenScripts(planItemId + "_div");
-    jQuery("#" + planItemId + "_div").fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
+    runHiddenScripts(planItemId + "_div_" + type);
+    jQuery("#" + planItemId + "_div_" + type).fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
 }
 /*
  #################################################################
