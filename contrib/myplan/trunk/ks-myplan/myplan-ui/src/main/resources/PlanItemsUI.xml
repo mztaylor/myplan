@@ -493,7 +493,7 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
-                    fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen);
+                    fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen, data.sections);
                 })
                 .subscribe('PLAN_ITEM_DELETED', function(data){
                     fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
@@ -905,6 +905,7 @@
                             <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
                             <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
                             <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
+                            <entry key="plannedsections" value="@{#line.sections}"/>
                         </map>
                     </property>
                     <property name="cssClasses">
