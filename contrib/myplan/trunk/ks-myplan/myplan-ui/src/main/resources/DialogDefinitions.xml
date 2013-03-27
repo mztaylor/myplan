@@ -232,7 +232,7 @@
                     </property>
                 </bean>
                 <!-- Requisites -->
-                <bean id="course_details_popup_requisites_testing" parent="Uif-DataField" p:label="Course Requisites"
+                <bean id="course_details_popup_requisites_testing" parent="Uif-ListDataField" p:label="Course Requisites"
                       p:propertyName="courseSummaryDetails.requisites"
                       p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:render="@{courseSummaryDetails.requisites.size() gt 0}">
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>

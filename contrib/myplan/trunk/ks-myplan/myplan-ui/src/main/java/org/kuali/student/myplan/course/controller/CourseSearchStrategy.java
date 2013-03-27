@@ -261,20 +261,11 @@ public class CourseSearchStrategy {
 
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
-        logger.info("Start of method addDivisionSearches of CourseSearchStrategy:" + System.currentTimeMillis());
         // Order is important, more exact search results appear at top of list
         addDivisionSearches(divisions, codes, levels, requests);
-        logger.info("End of method addDivisionSearches of CourseSearchStrategy:" + System.currentTimeMillis());
-        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:" + System.currentTimeMillis());
         addFullTextSearches(query, requests);
-        logger.info("Start of method addFullTextSearches of CourseSearchStrategy:" + System.currentTimeMillis());
-        logger.info("Start of method addCampusParams of CourseSearchStrategy:" + System.currentTimeMillis());
         addCampusParams(requests, form);
-        logger.info("Start of method addCampusParams of CourseSearchStrategy:" + System.currentTimeMillis());
-        logger.info("Count of No of Query Tokens:" + requests.size());
         processRequests(requests, form);
-        logger.info("No of Requests after processRequest method:" + requests.size());
-        logger.info("End Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         addVersionDateParam(requests, isAcademicCalenderServiceUp);
         return requests;
     }
@@ -285,9 +276,11 @@ public class CourseSearchStrategy {
      */
     //To process the Request with search key as division or full Text
     public void processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
-        logger.info("Start of method processRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         Map<String, String> subjects = null;
         int size = requests.size();
+
+        List<SearchRequest> clonedRequests = new ArrayList<SearchRequest>();
+
         for (int i = 0; i < size; i++) {
             if (requests.get(i).getSearchKey() != null) {
                 if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
@@ -336,7 +329,7 @@ public class CourseSearchStrategy {
                 }
                 if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")) {
                     String key = (String) requests.get(i).getParams().get(0).getValue();
-                    String division = null;
+                    List<String> divisions = new ArrayList<String>();
                     if (key.length() <= 2) {
                         requests.get(i).getParams().get(0).setValue("null");
                         break;
@@ -352,44 +345,47 @@ public class CourseSearchStrategy {
                             }
 
                             if (subjects != null && subjects.size() > 0) {
-                                //  Add the individual term items.
+                                //  Look to see if the query text is present in any subject area descriptions
+                                String divKey = key.trim().toUpperCase();
                                 for (Map.Entry<String, String> entry : subjects.entrySet()) {
-                                    if (entry.getValue().trim().equalsIgnoreCase(key.trim())) {
-                                        division = entry.getKey();
-
+                                    if (entry.getValue().contains(divKey)) {
+                                        divisions.add (entry.getKey() );
                                     }
-
                                 }
                             }
-                            if (division != null) {
+                            if (divisions.size() > 0) {
+                                // Re-purpose the request for the first division
                                 requests.get(i).setSearchKey("myplan.lu.search.division");
                                 requests.get(i).getParams().get(0).setKey("division");
-                                requests.get(i).getParams().get(0).setValue(division);
+                                requests.get(i).getParams().get(0).setValue(divisions.get(0));
+
+                                // Now add the rest of the divisions
+                                for(int dItr = 1; dItr < divisions.size(); dItr++) {
+                                    SearchRequest requestD = new SearchRequest("myplan.lu.search.division");
+                                    requestD.addParam("division", divisions.get(dItr));
+                                    requests.add(requestD);
+                                }
 
                                 SearchRequest request1 = new SearchRequest("myplan.lu.search.title");
                                 request1.addParam("queryText", key.trim());
                                 addCampusParam(request1, form);
                                 requests.add(request1);
-                                SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
-                                request2.addParam("queryText", key.trim());
-                                addCampusParam(request2, form);
-                                requests.add(request2);
+
                             } else {
+                                // Re-purpose the request for title search
                                 requests.get(i).setSearchKey("myplan.lu.search.title");
-                                SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
-                                request2.addParam("queryText", key.trim());
-                                addCampusParam(request2, form);
-                                requests.add(request2);
                             }
+
+                            SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                            request2.addParam("queryText", key.trim());
+                            addCampusParam(request2, form);
+                            requests.add(request2);
                         }
 
                     }
                 }
             }
         }
-
-
-        logger.info("End of processRequests method in CourseSearchStrategy:" + System.currentTimeMillis());
     }
 
     private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {

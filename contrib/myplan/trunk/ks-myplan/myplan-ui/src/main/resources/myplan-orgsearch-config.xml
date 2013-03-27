@@ -113,7 +113,7 @@
                 </entry>
                 <entry key="org.search.orgCurriculum">
                     <value>NATIVE:
-                        SELECT DISTINCT( attr.attr_value ), org.shrt_descr
+                        SELECT DISTINCT( attr.attr_value ), upper(org.shrt_descr)
                         FROM KSOR_ORG org JOIN KSOR_ORG_ATTR attr ON attr.owner = org.id
                         where org.type = 'kuali.uw.org.type.curriculum' and attr.attr_name = 'org.abbreviation'
                     </value>
