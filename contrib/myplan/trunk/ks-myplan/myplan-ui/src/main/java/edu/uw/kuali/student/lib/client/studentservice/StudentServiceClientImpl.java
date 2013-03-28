@@ -215,6 +215,8 @@ public class StudentServiceClientImpl
      */
     @Override
     public String getSectionInfo(String year, String quarter, String curriculum) throws ServiceException {
+        curriculum = curriculum.replace(" ", "%20");
+        curriculum = curriculum.replace("&", "%26");
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -260,6 +262,8 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     public String getSections(String year, String abbrev, String num) throws ServiceException {
+        abbrev = abbrev.replace(" ", "%20");
+        abbrev = abbrev.replace("&", "%26");
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -349,6 +353,8 @@ public class StudentServiceClientImpl
 
     @Override
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
+        curriculum = curriculum.replace(" ", "%20");
+        curriculum = curriculum.replace("&", "%26");
         StringBuilder url = new StringBuilder(getBaseUrl());
         if (sectionUrl != null) {
             url.append(sectionUrl);
