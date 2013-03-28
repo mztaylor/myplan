@@ -1003,13 +1003,19 @@
                 </property>
             </bean>
         </property>
-        <property name="layoutManager.id"
-                  value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP().replace('.','-')}"/>
-        <property name="layoutManager.numberOfColumns" value="7"/>
-        <property name="layoutManager.suppressLineWrapping" value="false"/>
-        <property name="layoutManager.renderSequenceField" value="false"/>
-        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-        <property name="layoutManager.richTable.render" value="false"/>
+
+        <property name="layoutManager">
+            <bean parent="Uif-MultiRowTableCollectionLayout">
+                <property name="id"
+                          value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP().replace('.','-')}"/>
+                <property name="numberOfColumns" value="7"/>
+                <property name="suppressLineWrapping" value="false"/>
+                <property name="renderSequenceField" value="false"/>
+                <property name="applyDefaultCellWidths" value="false"/>
+                <property name="richTable.render" value="false"/>
+            </bean>
+        </property>
+
         <!-- layoutManager.rowCssClasses does not work currently, but no exception is thrown. TableLayoutManager clears any values set -->
         <!--<property name="layoutManager.rowCssClasses">
             <list merge="true">
@@ -1042,13 +1048,11 @@
                 <bean parent="activityInstructor"/>
 
                 <bean parent="activityOther" p:render="@{#line.primary}"/>
-                <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
+                <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="4"/>
 
 
                 <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
-                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="3"/>
-
-                <bean parent="Uif-MessageField" p:render="@{!#line.primary}"/>
+                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
 
             </list>
         </property>
@@ -1205,7 +1209,7 @@
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+    <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="3" p:valign="TOP">
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
             <list>
@@ -1219,7 +1223,7 @@
     </bean>
 
     <bean id="activityOther" parent="Uif-VerticalFieldGroup" p:valign="TOP"
-          p:rowSpan="1" p:colSpan="3">
+          p:rowSpan="1" p:colSpan="2">
         <property name="group.validationMessages.render" value="false"/>
         <property name="items">
             <list>
