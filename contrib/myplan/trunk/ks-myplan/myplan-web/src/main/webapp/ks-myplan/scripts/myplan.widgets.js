@@ -1566,28 +1566,34 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
         group.hide();
         action.text(showText);
     } else {
-        group.show();
+        group.not(".collapsible").show();
         action.text(hideText);
     }
 }
 
-function toggleSectionDetails(sectionRow, afterLoad, obj, expandText, collapseText) {
-    if (!afterLoad) {
-        sectionRow.next("tr").find("td").last().attr("colspan", "3");
-        sectionRow.next("tr").next("tr").find("td").first().attr("colspan", "5");
-        sectionRow.next("tr").next("tr").find("td").last().remove();
-    }
-    if (afterLoad) var hidden = obj.data("collapsed");
-    if (hidden) {
-        sectionRow.find("td").first().attr("rowspan", "3");
-        sectionRow.find("td").last().attr("rowspan", "3");
-        sectionRow.next("tr").show().next("tr").show();
-        if (afterLoad) obj.data("collapsed", false).text(collapseText);
-    } else {
+function toggleSectionDetails(sectionRow, obj, expandText, collapseText) {
+    var collapsibleRow = sectionRow.next("tr.collapsible");
+    if (collapsibleRow.is(":visible")) {
         sectionRow.find("td").first().attr("rowspan", "1");
         sectionRow.find("td").last().attr("rowspan", "1");
-        sectionRow.next("tr").hide().next("tr").hide();
-        if (afterLoad) obj.data("collapsed", true).text(expandText);
+        collapsibleRow.hide().next("tr.collapsible").hide();
+        obj.text(expandText);
+    } else {
+        sectionRow.find("td").first().attr("rowspan", "3");
+        sectionRow.find("td").last().attr("rowspan", "3");
+        collapsibleRow.show().next("tr.collapsible").show();
+        obj.text(collapseText);
+    }
+}
+
+function toggleRegisteredDetails(sectionRow, obj) {
+    var collapsibleRow = sectionRow.next("tr.collapsible");
+    if (collapsibleRow.is(":visible")) {
+        obj.parents("td").attr("rowspan", "1");
+        collapsibleRow.hide();
+    } else {
+        obj.parents("td").attr("rowspan", "2");
+        collapsibleRow.show();
     }
 }
 

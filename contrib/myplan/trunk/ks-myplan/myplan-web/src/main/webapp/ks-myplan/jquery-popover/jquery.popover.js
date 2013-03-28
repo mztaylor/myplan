@@ -964,7 +964,6 @@
                         }
                         d(this, H);
                         var z = setTimeout(function () {
-                            console.log('Test');
                             H.privateVars.is_animating = true;
                             d(w, H);
                             y.stop();
