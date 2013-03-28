@@ -1705,28 +1705,28 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
 }
 
-.myplan-course-sections .ui-tabs .ui-widget-header,
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active a,
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-default a,
-.myplan-course-sections .ui-tabs .ui-tabs-panel,
-.myplan-course-sections .ui-tabs-nav li.ui-state-default,
-.myplan-course-sections .ui-tabs-nav li.ui-state-active,
-.myplan-course-sections .ui-tabs-nav li.ui-state-hover,
-.myplan-course-sections .ui-tabs-nav li.ui-state-focus,
-.myplan-course-sections .ui-tabs-nav li.ui-state-hover a,
-.myplan-course-sections .ui-tabs-nav li.ui-state-focus a,
-.myplan-course-sections .ui-tabs-nav li.ui-state-active a,
-.myplan-course-sections .ui-tabs-nav li.ui-state-hover a:hover,
-.myplan-course-sections .ui-tabs-nav li.ui-state-focus a:hover,
-.myplan-course-sections .tab-navigation-block li,
-.myplan-course-sections .tab-navigation-block a:focus,
-.myplan-course-sections .tab-navigation-block li.ui-state-active,
-.myplan-course-sections .tab-navigation-block li a:hover,
-.myplan-course-sections .tab-navigation-block li.ui-state-active a,
-.myplan-course-sections .tab-navigation-block li.ui-state-hover a,
-.myplan-course-sections .tab-navigation-block li.ui-state-focus a,
-.myplan-course-sections .tab-navigation-block li.ui-state-hover a:hover,
-.myplan-course-sections .tab-navigation-block li.ui-state-focus a:hover {
+.myplan-course-detail .ui-tabs .ui-widget-header,
+.myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-active a,
+.myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-default a,
+.myplan-course-detail .ui-tabs .ui-tabs-panel,
+.myplan-course-detail .ui-tabs-nav li.ui-state-default,
+.myplan-course-detail .ui-tabs-nav li.ui-state-active,
+.myplan-course-detail .ui-tabs-nav li.ui-state-hover,
+.myplan-course-detail .ui-tabs-nav li.ui-state-focus,
+.myplan-course-detail .ui-tabs-nav li.ui-state-hover a,
+.myplan-course-detail .ui-tabs-nav li.ui-state-focus a,
+.myplan-course-detail .ui-tabs-nav li.ui-state-active a,
+.myplan-course-detail .ui-tabs-nav li.ui-state-hover a:hover,
+.myplan-course-detail .ui-tabs-nav li.ui-state-focus a:hover,
+.myplan-course-detail .tab-navigation-block li,
+.myplan-course-detail .tab-navigation-block a:focus,
+.myplan-course-detail .tab-navigation-block li.ui-state-active,
+.myplan-course-detail .tab-navigation-block li a:hover,
+.myplan-course-detail .tab-navigation-block li.ui-state-active a,
+.myplan-course-detail .tab-navigation-block li.ui-state-hover a,
+.myplan-course-detail .tab-navigation-block li.ui-state-focus a,
+.myplan-course-detail .tab-navigation-block li.ui-state-hover a:hover,
+.myplan-course-detail .tab-navigation-block li.ui-state-focus a:hover {
     margin: 0;
     padding: 0;
     border: none;
@@ -1824,8 +1824,8 @@ table.myplan-course-search-results-datatable .blockUI {
     display: table-row;
 }
 
-.myplan-course-sections table.uif-tableCollectionLayout tr.row.primary td,
-.myplan-course-sections table.uif-tableCollectionLayout tr.row.secondary.top td {
+.myplan-course-detail .myplan-course-sections table.uif-tableCollectionLayout tr.row.primary td,
+.myplan-course-detail .myplan-course-sections table.uif-tableCollectionLayout tr.row.secondary.top td {
     border-top: solid 3px #ccc;
 }
 
@@ -1860,6 +1860,12 @@ table.myplan-course-search-results-datatable .blockUI {
 
 .myplan-course-sections table.uif-tableCollectionLayout td a {
     white-space: normal;
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.myplan-course-sections table.uif-tableCollectionLayout td a:hover {
+    text-decoration: underline;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout tfoot {
@@ -1890,7 +1896,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .meetingdetails .meetingtba {
-    width: 167px;
+    width: 177px;
 }
 
 .myplan-course-sections .meetingdetails .meetingbuilding {
@@ -1915,42 +1921,43 @@ table.myplan-course-search-results-datatable .blockUI {
     background-position: -54px -115px;
 }
 
-.myplan-course-sections td.myplan-section-planned {
+.myplan-course-sections tr.row.myplan-section-planned td:first-child {
     background: url('../images/myplan_planned_section_bkgrd.png') !important;
 }
 
-.myplan-backup-collection .myplan-course-sections td.myplan-section-planned {
+.myplan-backup-collection .myplan-course-sections tr.row.myplan-section-planned td:first-child {
     background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
-.myplan-course-sections .activityCode {
+/*
+.myplan-course-detail .myplan-course-sections .activityCode {
     width: 54px;
 }
 
-.myplan-course-sections .activityType {
+.myplan-course-detail .myplan-course-sections .activityType {
     width: 94px;
 }
 
-.myplan-course-sections .activityMeetingData {
+.myplan-course-detail .myplan-course-sections .activityMeetingData {
     width: 254px;
 }
 
-.myplan-course-sections .activityRegCode {
+.myplan-course-detail .myplan-course-sections .activityRegCode {
     width: 48px;
 }
 
-.myplan-course-sections .activityEnrlRestr {
+.myplan-course-detail .myplan-course-sections .activityEnrlRestr {
     width: 100px;
 }
 
-.myplan-course-sections .activityEnrlData {
+.myplan-course-detail .myplan-course-sections .activityEnrlData {
     width: 60px;
 }
 
-.myplan-course-sections .activityAction {
+.myplan-course-detail .myplan-course-sections .activityAction {
     width: 36px;
 }
-
+*/
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;
@@ -2420,13 +2427,56 @@ label.scheduled {
 }
 
 /* Quarter Detail View ######################################################################################### */
-.myplan-quarter-detail .uif-stackedCollectionLayout,
-.myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem {
+.myplan-quarter-detail .myplan-course-sections table.uif-stackedCollectionLayout,
+.myplan-quarter-detail .myplan-course-sections table.uif-stackedCollectionLayout > .uif-collectionItem,
+.myplan-quarter-detail .myplan-course-sections table.uif-tableCollectionLayout {
     padding: 0;
     margin: 0;
     background: none;
 }
 
+.myplan-quarter-detail .myplan-course-sections table tr td:first-child {
+    border-left: none;
+}
+
+.myplan-quarter-detail .myplan-course-sections table tr.collapsible td:first-child {
+    border-left: dotted 1px #ccc;
+}
+
+.myplan-quarter-detail .myplan-course-sections .activityAction img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.myplan-quarter-detail .myplan-course-sections .activityCourseTitle a {
+    white-space: nowrap;
+    width: 128px;
+}
+
+/*
+.myplan-quarter-detail .myplan-course-sections .activityAction {
+    width: 16px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityCourseTitle {
+    width: 128px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityType {
+    width: 60px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityInstructor {
+    width: 126px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityAdditionalDetails {
+    width: 427px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityOther {
+    width: 90px;
+}
+.myplan-quarter-detail .myplan-course-sections .activityRegCode {
+    width: 60px;
+}
+*/
 .myplan-quarter-detail h4 {
     border: solid 1px #ccc;
     border-bottom: none;
@@ -2445,15 +2495,6 @@ label.scheduled {
 
 .myplan-quarter-detail .myplan-course-sections table {
     border-bottom: none;
-}
-
-.myplan-quarter-detail .myplan-course-sections table thead {
-    display: none;
-}
-
-.myplan-quarter-detail .dataTables_wrapper,
-.myplan-quarter-detail .dataTables_info {
-    margin: 0;
 }
 
 .myplan-quarter-detail .myplan-credit-total {
