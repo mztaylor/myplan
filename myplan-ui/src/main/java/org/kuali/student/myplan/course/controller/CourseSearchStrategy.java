@@ -279,8 +279,6 @@ public class CourseSearchStrategy {
         Map<String, String> subjects = null;
         int size = requests.size();
 
-        List<SearchRequest> clonedRequests = new ArrayList<SearchRequest>();
-
         for (int i = 0; i < size; i++) {
             if (requests.get(i).getSearchKey() != null) {
                 if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
@@ -309,7 +307,6 @@ public class CourseSearchStrategy {
                                         additionalDivisions.append(entry.getKey() + ",");
                                     }
                                 }
-
                             }
                         }
                         if (additionalDivisions.length() > 0) {
