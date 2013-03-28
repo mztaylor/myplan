@@ -16,6 +16,7 @@ public class PlannedTerm {
     private String atpId;
     private String qtrYear;
 
+
     private List<PlannedCourseDataObject> plannedList = null;
     private List<PlannedCourseDataObject> backupList = null;
     private List<AcademicRecordDataObject> academicRecord = null;
@@ -33,6 +34,9 @@ public class PlannedTerm {
     private boolean currentTermForView;
     private boolean completedTerm;
     private boolean openForPlanning;
+
+    /*This is atpId which used for navigating from the Plan page to Single Quarter view*/
+    private String singleQuarterAtp;
 
 
     /*
@@ -184,6 +188,14 @@ public class PlannedTerm {
 
     public void setDisplayRegisteredHelp(boolean displayRegisteredHelp) {
         this.displayRegisteredHelp = displayRegisteredHelp;
+    }
+
+    public String getSingleQuarterAtp() {
+        return singleQuarterAtp;
+    }
+
+    public void setSingleQuarterAtp(String singleQuarterAtp) {
+        this.singleQuarterAtp = singleQuarterAtp;
     }
 }
 

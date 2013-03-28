@@ -228,6 +228,7 @@ public class PlannedTermsHelperBase {
             }
 
             populateHelpIconFlags(perfectPlannedTerms);
+            populateSingleQuarterAtpIds(perfectPlannedTerms);
             return perfectPlannedTerms;
         }
 
@@ -252,6 +253,7 @@ public class PlannedTermsHelperBase {
                 }
             }
             populateHelpIconFlags(plannedTermList);
+            populateSingleQuarterAtpIds(plannedTermList);
             return plannedTermList;
 
 
@@ -346,6 +348,35 @@ public class PlannedTermsHelperBase {
         }
 
 
+    }
+
+    /**
+     * Populating the single Quarter Term in plannedTerms for each academic year.
+     *
+     * @param plannedTerms
+     */
+    private static void populateSingleQuarterAtpIds(List<PlannedTerm> plannedTerms) {
+        int index = 0;
+        while (index < plannedTerms.size() - 1) {
+            List<Integer> itemToUpdate = new ArrayList<Integer>();
+            String singleQuarterAtpId = plannedTerms.get(index).getAtpId();
+            boolean checkCompleted = false;
+            boolean currentTermExists = false;
+            for (int i = 0; i < 4; i++) {
+                if (!checkCompleted && plannedTerms.get(index).isCurrentTermForView()) {
+                    currentTermExists = true;
+                }
+                if (!checkCompleted && currentTermExists && plannedTerms.get(index).isOpenForPlanning()) {
+                    singleQuarterAtpId = plannedTerms.get(index).getAtpId();
+                    checkCompleted = true;
+                }
+                itemToUpdate.add(index);
+                index++;
+            }
+            for (Integer i : itemToUpdate) {
+                plannedTerms.get(i).setSingleQuarterAtp(singleQuarterAtpId);
+            }
+        }
     }
 
     public static String sumCreditList(List<String> list) {

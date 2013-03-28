@@ -411,6 +411,7 @@
                         <list>
                             <bean parent="Uif-MessageField"
                                   p:messageText="Create your plan by finding and adding courses to any quarter. &lt;a href=&quot;javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824')&quot;&gt;Learn more&lt;/a&gt;"/>
+                            <ref bean="navigationLinks"/>
                         </list>
                     </property>
                 </bean>
@@ -458,6 +459,11 @@
                       p:render="@{#line.index ge 0}" p:style="display:none;"/>
 
                 <bean id="plan_base_atpId" parent="Uif-DataField" p:propertyName="atpId" p:style="display: none;">
+                    <property name="fieldLabel.render" value="false"/>
+                </bean>
+
+                <bean id="single_quarter_atpId" parent="Uif-DataField" p:propertyName="singleQuarterAtp"
+                      p:style="display: none;">
                     <property name="fieldLabel.render" value="false"/>
                 </bean>
 
@@ -1386,6 +1392,24 @@
                     <property name="lightBox">
                         <bean parent="Uif-LightBox" p:width="90%"/>
                     </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="navigationLinks" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
+          p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
+        <property name="items">
+            <list>
+                <bean id="quarterLink" parent="Uif-LinkField" p:target="_blank">
+                    <property name="linkText" value="Quarter"/>
+                    <property name="title" value="Quarter"/>
+                    <property name="href" value="#"/>
+                </bean>
+                <bean id="oneYearLink" parent="Uif-LinkField" p:target="_blank">
+                    <property name="linkText" value="1 Year"/>
+                    <property name="title" value="1 Year"/>
+                    <property name="href" value="#"/>
                 </bean>
             </list>
         </property>
