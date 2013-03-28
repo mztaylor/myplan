@@ -1766,7 +1766,7 @@ table.myplan-course-search-results-datatable .blockUI {
     font-size: 1.15em;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active {
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active {
     border-right: solid 1px #ddd;
     border-left: solid 1px #ddd;
     background: #fff;
@@ -1777,11 +1777,11 @@ table.myplan-course-search-results-datatable .blockUI {
     border-left: solid 1px #ddd;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active:first-child {
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active:first-child {
     /*border-left: none;*/
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-tabs-selected.ui-state-active a {
+.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active a {
     font-weight: 700;
     font-size: 1.25em;
 }
