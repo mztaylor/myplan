@@ -831,7 +831,6 @@ function fnBuildTitle(aView) {
     jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
     var navigationLink = 'inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=' + jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
     jQuery("#quarterLink a").attr('href', navigationLink);
-    jQuery("#oneYearLink a").attr('href', navigationLink);
 }
 /*
  ######################################################################################
