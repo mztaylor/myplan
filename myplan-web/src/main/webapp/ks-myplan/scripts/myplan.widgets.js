@@ -829,6 +829,9 @@ function fnBuildTitle(aView) {
     var aFirst = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
+    var navigationLink = 'inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=' + jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
+    jQuery("#quarterLink a").attr('href', navigationLink);
+    jQuery("#oneYearLink a").attr('href', navigationLink);
 }
 /*
  ######################################################################################
