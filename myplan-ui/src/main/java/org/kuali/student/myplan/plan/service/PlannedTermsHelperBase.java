@@ -51,7 +51,8 @@ public class PlannedTermsHelperBase {
         if (isServiceUp) {
             globalCurrentAtpId = AtpHelper.getCurrentAtpId();
         } else {
-            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+//            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+            globalCurrentAtpId = AtpHelper.getCurrentAtpIdFromCalender();
         }
         if (StringUtils.isEmpty(focusAtpId)) {
             focusAtpId = globalCurrentAtpId;

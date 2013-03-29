@@ -84,29 +84,29 @@ public class AtpHelper {
      */
     public static String getCurrentAtpId() {
         //   The first arg here is "usageKey" which isn't used.
+        String currentAtpId = null;
         try {
             QueryByCriteria query = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.INPROGRESS));
             List<TermInfo> inProgressTerms = getAcademicCalendarService().searchForTerms(query, CourseSearchConstants.CONTEXT_INFO);
             TermInfo currentTerm = inProgressTerms.get(0);
-            return currentTerm.getId();
+            currentAtpId = currentTerm.getId();
         } catch (Exception e) {
             logger.error("Query to Academic Calendar Service failed.", e);
             // If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list
-            List<TermInfo> inProgressTerms = populateAtpIdFromCalender();
-            TermInfo currentTerm = inProgressTerms.get(0);
-            return currentTerm.getId();
+            currentAtpId = getCurrentAtpIdFromCalender();
         }
         //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
         //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
         //  is the Right thing to do.
+        return currentAtpId;
     }
 
-    public static YearTerm getCurrentYearTerm() {
-        String atp = getCurrentAtpId();
-        YearTerm yearTerm = atpToYearTerm(atp);
-        return yearTerm;
-
-    }
+//    public static YearTerm getCurrentYearTerm() {
+//        String atp = getCurrentAtpId();
+//        YearTerm yearTerm = atpToYearTerm(atp);
+//        return yearTerm;
+//
+//    }
 
     /**
      * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
@@ -118,63 +118,63 @@ public class AtpHelper {
      * @throws RuntimeException if the query fails or if the return data set doesn't make sense.
      */
     public static String getLastScheduledAtpId() {
-        List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
+        String lastAtpId;
         try {
-            scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("Query to Academic Calendar Service failed.", e);
-            /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
-            scheduledTerms = populateAtpIdFromCalender();
-        }
-        //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
-        //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
-        //  is the Right thing to do.
-        TermInfo lastTerm = scheduledTerms.get(scheduledTerms.size() - 1);
+            List<TermInfo> scheduledTerms = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
 
-        // SUMMER EXCEPTION
-        if (lastTerm.getId().endsWith(".3")) {
-            List<AttributeInfo> attrs = lastTerm.getAttributes();
-            for (AttributeInfo attr : attrs) {
-                if (attr.getKey().equals(AtpHelper.PRIORITY_ONE_REGISTRATION_START)) {
-                    // Check to see if the priority registration is still more than 3 weeks away
-                    DateTime regStart = new DateTime(attr.getValue());
-                    if (regStart.minusWeeks(3).isAfterNow()) {
-                        lastTerm = scheduledTerms.get(scheduledTerms.size() - 2);
+            //  The UW implementation of the AcademicCalendarService.getCurrentTerms() contains the "current term" logic so we can simply
+            //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
+            //  is the Right thing to do.
+            TermInfo lastTerm = scheduledTerms.get(scheduledTerms.size() - 1);
+            lastAtpId = scheduledTerms.get(scheduledTerms.size() - 1).getId();
+
+            // SUMMER EXCEPTION
+            if (lastAtpId.endsWith(".3")) {
+                List<AttributeInfo> attrs = lastTerm.getAttributes();
+                for (AttributeInfo attr : attrs) {
+                    if (attr.getKey().equals(AtpHelper.PRIORITY_ONE_REGISTRATION_START)) {
+                        // Check to see if the priority registration is still more than 3 weeks away
+                        DateTime regStart = new DateTime(attr.getValue());
+                        if (regStart.minusWeeks(3).isAfterNow()) {
+                            lastAtpId = scheduledTerms.get(scheduledTerms.size() - 2).getId();
+                        }
+                        break;
                     }
                 }
             }
+        } catch (Exception e) {
+            logger.error("Query to Academic Calendar Service failed.", e);
+            /*If SWS Fails to load up scheduled Terms then current atp Id in TermInfo is populated from the calender month and year and set to the scheduledTerms list*/
+            lastAtpId = getCurrentAtpIdFromCalender();
         }
 
 
-        return lastTerm.getId();
+        return lastAtpId;
     }
 
-
-    public static List<TermInfo> populateAtpIdFromCalender() {
-
-        List<TermInfo> scheduledTerms = new ArrayList<TermInfo>();
-
-        TermInfo termInfo = new TermInfo();
-        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-        int month = Calendar.getInstance().get(Calendar.MONTH);
-        String atp = null;
-        if (month >= 1 && month <= 3) {
-            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_1, year);
-        }
-        if (month >= 4 && month <= 6) {
-            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_2, year);
-        }
-        if (month >= 7 && month <= 9) {
-            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_3, year);
-        }
-        if (month >= 10 && month <= 12) {
-            atp = getAtpIdFromTermAndYear(PlanConstants.TERM_4, year);
-        }
-        termInfo.setId(atp);
-        scheduledTerms.add(termInfo);
-        return scheduledTerms;
+    public static YearTerm getCurrentYearTermFromCalender() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int term = monthToTerm(month);
+        YearTerm yt = new YearTerm(year, term);
+        return yt;
     }
 
+    public static String getCurrentAtpIdFromCalender() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int term = monthToTerm(month);
+        String atpId = YearTerm.toATP(year, term);
+        return atpId;
+    }
+
+    // Java months are zero-based, January = 0 thru December = 11
+    public static int monthToTerm(int month) {
+        int term = (month / 3) + 1;
+        return term;
+    }
 
     /**
      * Gets the ATP ID of the first ATP in the current academic year.
@@ -298,35 +298,20 @@ public class AtpHelper {
      * @return
      */
     public static boolean isAtpSetToPlanning(String atpId) {
-        boolean isSetToPlanning = false;
-        List<TermInfo> planningTermInfo = null;
+        YearTerm comparingYT = atpToYearTerm(atpId);
+        YearTerm planningYT = null;
         try {
-            planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> planningTermInfo = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+            String planningAtpId = planningTermInfo.get(0).getId();
+            planningYT = atpToYearTerm(planningAtpId);
         } catch (Exception e) {
             logger.error("Could not load planningTermInfo as service call failed", e);
             /*If SWS Fails to load up planningTermInfo  then current atp Id in TermInfo is populated from the calender month and year and set to the planningTermInfo list*/
-            planningTermInfo = AtpHelper.populateAtpIdFromCalender();
+            planningYT = AtpHelper.getCurrentYearTermFromCalender();
         }
 
-        String[] planningAtpYearAndTerm = atpIdToTermAndYear(planningTermInfo.get(0).getId());
-        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
+        boolean isSetToPlanning = comparingYT.getValue() >= planningYT.getValue();
 
-        /*Planning term = atpId*/
-        if (planningTermInfo.get(0).getId().equalsIgnoreCase(atpId)) {
-            isSetToPlanning = true;
-        }
-
-        /*atpId term having same year as planning year but atpId term is greater than planning term*/
-
-        if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) > Integer.parseInt(planningAtpYearAndTerm[0])) {
-            isSetToPlanning = true;
-
-        }
-
-        /*atpId term having year greater than planning year*/
-        if (!isSetToPlanning && Integer.parseInt(comparingAtpYearAndTerm[1]) > Integer.parseInt(planningAtpYearAndTerm[1])) {
-            isSetToPlanning = true;
-        }
 
         return isSetToPlanning;
     }
@@ -338,21 +323,10 @@ public class AtpHelper {
      * @return
      */
     public static boolean isAtpCompletedTerm(String atpId) {
-        boolean isAtpCompletedTerm = false;
+        YearTerm currentYT = atpToYearTerm(getCurrentAtpId());
+        YearTerm yt = atpToYearTerm(atpId);
 
-        String[] planningAtpYearAndTerm = atpIdToTermAndYear(getCurrentAtpId());
-        String[] comparingAtpYearAndTerm = atpIdToTermAndYear(atpId);
-
-        /*atpId term having same year as planning year but atpId term less than planning term*/
-
-        if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) == Integer.parseInt(planningAtpYearAndTerm[1]) && Integer.parseInt(comparingAtpYearAndTerm[0]) < Integer.parseInt(planningAtpYearAndTerm[0])) {
-            isAtpCompletedTerm = true;
-        }
-
-        /*atpId term having year less than planning year*/
-        if (!isAtpCompletedTerm && Integer.parseInt(comparingAtpYearAndTerm[1]) < Integer.parseInt(planningAtpYearAndTerm[1])) {
-            isAtpCompletedTerm = true;
-        }
+        boolean isAtpCompletedTerm = yt.getValue() < currentYT.getValue();
 
         return isAtpCompletedTerm;
     }
@@ -367,19 +341,18 @@ public class AtpHelper {
     public static boolean isCourseOfferedInTerm(String atp, String course) {
         boolean isCourseOfferedInTerm = false;
 
-        //TODO: This needs to be spring injected
-        CourseHelperImpl courseHelper = new CourseHelperImpl();
-        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(course);
-        List<String> offerings = null;
         try {
-            offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);
+            //TODO: This needs to be spring injected
+            CourseHelperImpl courseHelper = new CourseHelperImpl();
+            DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(course);
+            List<String> offerings = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(atp, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);
+            if (offerings != null && offerings.contains(course)) {
+                isCourseOfferedInTerm = true;
+            }
         } catch (Exception e) {
             logger.error("Exception loading course offering for:" + course, e);
         }
 
-        if (offerings != null && offerings.contains(course)) {
-            isCourseOfferedInTerm = true;
-        }
 
         return isCourseOfferedInTerm;
     }
@@ -390,17 +363,14 @@ public class AtpHelper {
      * @return
      */
     public static List<String> getPublishedTerms() {
-        List<TermInfo> termInfos = null;
         List<String> publishedTerms = new ArrayList<String>();
         try {
-            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+            for (TermInfo term : termInfos) {
+                publishedTerms.add(term.getId());
+            }
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
-            //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
-            termInfos = new ArrayList<TermInfo>();
-        }
-        for (TermInfo term : termInfos) {
-            publishedTerms.add(term.getId());
         }
         return publishedTerms;
     }
@@ -411,17 +381,14 @@ public class AtpHelper {
      * @return
      */
     public static String getFirstPlanTerm() {
-        List<TermInfo> termInfos = null;
         String publishedTerms = null;
         try {
-            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PLANNING)), CourseSearchConstants.CONTEXT_INFO);
+            if (termInfos != null && termInfos.size() > 0) {
+                publishedTerms = termInfos.get(0).getId();
+            }
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
-            //  Create an empty list to Avoid NPE below allowing the data object to be fully initialized.
-            termInfos = new ArrayList<TermInfo>();
-        }
-        if (termInfos != null && termInfos.size() > 0) {
-            publishedTerms = termInfos.get(0).getId();
         }
 
         return publishedTerms;
@@ -543,6 +510,10 @@ public class AtpHelper {
 
         // "kuali.uw.atp.1999.1"
         public String toATP() {
+            return toATP(year, term);
+        }
+
+        public static String toATP(int year, int term) {
             return String.format(ATP_FORMAT, year, term);
         }
 
@@ -568,11 +539,16 @@ public class AtpHelper {
             final int EQUAL = 0;
             final int AFTER = 1;
             if (this == that) return EQUAL;
-            int a = this.year * 10 + this.term;
-            int b = that.year * 10 + that.term;
+            int a = this.getValue();
+            int b = that.getValue();
             if (a < b) return BEFORE;
             if (a > b) return AFTER;
             return EQUAL;
+        }
+
+        // Returns year + term as single value, so year 2013 term 2 returns value 20132
+        public int getValue() {
+            return year * 10 + term;
         }
 
         @Override
@@ -705,18 +681,16 @@ public class AtpHelper {
      * @return
      */
     public static String getPreviousAtpId(String atpId) {
-        YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
-        String previousAtpId = null;
-        if (String.valueOf(yearTerm.getTerm()).equalsIgnoreCase(PlanConstants.ATP_TERM_1)) {
-            previousAtpId = new YearTerm(yearTerm.getYear() - 1, Integer.parseInt(PlanConstants.ATP_TERM_4)).toATP();
-            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
-                return previousAtpId;
-            }
-        } else {
-            previousAtpId = new YearTerm(yearTerm.getYear(), yearTerm.getTerm() - 1).toATP();
-            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
-                return previousAtpId;
-            }
+        YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+        int year = yt.getYear();
+        int term = yt.getTerm() - 1;
+        if (term == 0) {
+            term = 4;
+            year = year - 1;
+        }
+        String prev = YearTerm.toATP(year, term);
+        if (doesAtpExist(prev)) {
+            return prev;
         }
         return null;
     }
@@ -728,20 +702,19 @@ public class AtpHelper {
      * @return
      */
     public static String getNextAtpId(String atpId) {
-        YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
-        String previousAtpId = null;
-        if (String.valueOf(yearTerm.getTerm()).equalsIgnoreCase(PlanConstants.ATP_TERM_4)) {
-            previousAtpId = new YearTerm(yearTerm.getYear() + 1, Integer.parseInt(PlanConstants.ATP_TERM_1)).toATP();
-            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
-                return previousAtpId;
-            }
-        } else {
-            previousAtpId = new YearTerm(yearTerm.getYear(), yearTerm.getTerm() + 1).toATP();
-            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
-                return previousAtpId;
-            }
+        YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+        int year = yt.getYear();
+        int term = yt.getTerm() + 1;
+        if (term == 5) {
+            term = 1;
+            year = year + 1;
+        }
+        String next = YearTerm.toATP(year, term);
+        if (doesAtpExist(next)) {
+            return next;
         }
         return null;
+
     }
 
 }

@@ -9,7 +9,8 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +38,9 @@ public class SingleQuarterHelperBase {
         if (isServiceUp) {
             globalCurrentAtpId = AtpHelper.getCurrentAtpId();
         } else {
-            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+//            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+            globalCurrentAtpId = AtpHelper.getCurrentAtpIdFromCalender();
+
         }
 
         /*
