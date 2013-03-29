@@ -200,6 +200,11 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=runAudit")
     public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
+        if (UserSessionHelper.isAdviser()) {
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putError("audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
+            return getUIFModelAndView(form);
+        }
         String auditID = null;
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
