@@ -612,4 +612,28 @@
         </property>
     </bean>
 
+    <bean id="MyPlan-NavButton" parent="Uif-SecondaryActionButton-Small" p:actionScript=""
+          p:style="margin:0;">
+        <property name="actionImage">
+            <bean parent="Uif-Image"
+                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                  p:style="margin:0;"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-plan-nav</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="MyPlan-NavLink" parent="Uif-Link" p:target="" p:style="margin:0;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>uif-secondaryActionButton</value>
+                <value>uif-smallActionButton</value>
+                <value>myplan-plan-nav</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

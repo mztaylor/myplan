@@ -390,7 +390,9 @@ a:focus {
 
 /* BUTTONS #################################################################### */
 button.uif-primaryActionButton,
-button.uif-secondaryActionButton {
+button.uif-secondaryActionButton,
+a.uif-primaryActionButton,
+a.uif-secondaryActionButton {
     font-size: 14px;
     font-weight: bold;
     font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
@@ -411,7 +413,8 @@ button.uif-secondaryActionButton {
     display: inline-block;
 }
 
-button.uif-primaryActionButton {
+button.uif-primaryActionButton,
+a.uif-primaryActionButton {
     text-shadow: 0px 1px 0px #fddb9f;
 
     border-color: #e6ac48;
@@ -432,7 +435,11 @@ button.uif-primaryActionButton {
 }
 
 button.uif-primaryActionButton:hover,
-button.uif-primaryActionButton:focus {
+button.uif-primaryActionButton:focus,
+button.uif-primaryActionButton.active,
+a.uif-primaryActionButton:hover,
+a.uif-primaryActionButton:focus,
+a.uif-primaryActionButton.active {
     color: #39275b;
 
     border-color: #d6992f;
@@ -452,10 +459,11 @@ button.uif-primaryActionButton:focus {
     box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px -1px 0px 0px #fece7a;
 }
 
-button.uif-secondaryActionButton {
+button.uif-secondaryActionButton,
+a.uif-secondaryActionButton {
     color: #39275b;
 
-    text-shadow: 0px 1px 0px #f5e7d0;
+    text-shadow: 0px 1px 0px #f7f2e9;
 
     border-color: #d0c19d;
 
@@ -475,7 +483,11 @@ button.uif-secondaryActionButton {
 }
 
 button.uif-secondaryActionButton:hover,
-button.uif-secondaryActionButton:focus {
+button.uif-secondaryActionButton:focus,
+button.uif-secondaryActionButton.active,
+a.uif-secondaryActionButton:hover,
+a.uif-secondaryActionButton:focus,
+a.uif-secondaryActionButton.active {
     color: #39275b;
 
     border-color: #bea877;
@@ -496,7 +508,9 @@ button.uif-secondaryActionButton:focus {
 }
 
 button.uif-primaryActionButton.uif-smallActionButton,
-button.uif-secondaryActionButton.uif-smallActionButton {
+button.uif-secondaryActionButton.uif-smallActionButton,
+a.uif-primaryActionButton.uif-smallActionButton,
+a.uif-secondaryActionButton.uif-smallActionButton {
     font-size: 12px;
     font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     padding: 3px 14px;
@@ -523,7 +537,25 @@ button.uif-secondaryActionButton[disabled="true"]:focus,
 button.uif-secondaryActionButton[disabled="disabled"]:focus,
 button.uif-secondaryActionButton.disabled,
 button.uif-secondaryActionButton.disabled:hover,
-button.uif-secondaryActionButton.disabled:focus {
+button.uif-secondaryActionButton.disabled:focus,
+a.uif-primaryActionButton[disabled="true"],
+a.uif-primaryActionButton[disabled="disabled"],
+a.uif-primaryActionButton[disabled="true"]:hover,
+a.uif-primaryActionButton[disabled="disabled"]:hover,
+a.uif-primaryActionButton[disabled="true"]:focus,
+a.uif-primaryActionButton[disabled="disabled"]:focus,
+a.uif-primaryActionButton.disabled,
+a.uif-primaryActionButton.disabled:hover,
+a.uif-primaryActionButton.disabled:focus,
+a.uif-secondaryActionButton[disabled="true"],
+a.uif-secondaryActionButton[disabled="disabled"],
+a.uif-secondaryActionButton[disabled="true"]:hover,
+a.uif-secondaryActionButton[disabled="disabled"]:hover,
+a.uif-secondaryActionButton[disabled="true"]:focus,
+a.uif-secondaryActionButton[disabled="disabled"]:focus,
+a.uif-secondaryActionButton.disabled,
+a.uif-secondaryActionButton.disabled:hover,
+a.uif-secondaryActionButton.disabled:focus {
     color: #ADADAD;
 
     text-shadow: 0px 1px 0px #f2f2f2;
@@ -545,6 +577,67 @@ button.uif-secondaryActionButton.disabled:focus {
     box-shadow: 0px 1px 3px -1px rgba(000, 000, 000, .2), inset 0px 1px 0px 0px #f2f2f2;
 
     cursor: default;
+}
+
+button.uif-smallActionButton.myplan-plan-nav,
+a.uif-smallActionButton.myplan-plan-nav {
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    padding: 6px 12px;
+    line-height: 16px;
+}
+
+button.myplan-plan-nav.first,
+a.myplan-plan-nav.first {
+    -moz-border-radius: 4px 0px 0px 4px;
+    -webkit-border-radius: 4px 0px 0px 4px;
+    border-radius: 4px 0px 0px 4px;
+}
+
+button.myplan-plan-nav.first,
+a.myplan-plan-nav.first,
+button.myplan-plan-nav.first:hover,
+a.myplan-plan-nav.hover,
+button.myplan-plan-nav.first:focus,
+a.myplan-plan-nav.first:focus {
+    border-right: none;
+}
+
+button.myplan-plan-nav.last,
+a.myplan-plan-nav.last {
+    -moz-border-radius: 0px 4px 4px 0px;
+    -webkit-border-radius: 0px 4px 4px 0px;
+    border-radius: 0px 4px 4px 0px;
+}
+
+button.myplan-plan-nav.active,
+a.myplan-plan-nav.active {
+    cursor: default;
+}
+
+button.myplan-carousel-prev img,
+button.myplan-carousel-next img {
+    width: 9px;
+    height: 14px;
+    margin: 0;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+}
+
+button.myplan-carousel-prev img {
+    background-position: -1px -164px;
+}
+
+button.myplan-carousel-next img {
+    background-position: -14px -164px;
+}
+
+button.myplan-carousel-prev.disabled img {
+    background-position: -25px -164px;
+}
+
+button.myplan-carousel-next.disabled img {
+    background-position: -38px -164px;
 }
 
 button img.rightArrowLarge {
@@ -678,87 +771,24 @@ input.myplan-delete:hover,
     left: 180px !important;
     top: 20px !important;
 }
+
 .myplan-plan-loader div.activityEnrlData div.blockElement {
     left: 0px !important;
     top: 0px !important;
 }
+
 .myplan-plan-loader div.activityAction div.blockElement {
     left: 0px !important;
     top: 0px !important;
-}
-button.uif-secondaryActionButton.myplan-nav-right{
-    -moz-border-radius: 0px 15px 15px 0px;
-    -webkit-border-radius: 0px 15px 15px 0px;
-    border-radius: 0px 15px 15px 0px;
-}
-button.uif-secondaryActionButton.myplan-nav-left{
-    -moz-border-radius: 15px 0px 0px 15px;
-    -webkit-border-radius: 15px 0px 0px 15px;
-    border-radius: 15px 0px 0px 15px;
-}
-button.uif-secondaryActionButton.myplan-nav-right{
-    -moz-border-radius: 0px 15px 15px 0px;
-    -webkit-border-radius: 0px 15px 15px 0px;
-    border-radius: 0px 15px 15px 0px;
-}
-button.uif-secondaryActionButton.myplan-nav-left{
-    -moz-border-radius: 15px 0px 0px 15px;
-    -webkit-border-radius: 15px 0px 0px 15px;
-    border-radius: 15px 0px 0px 15px;
-}
-button.uif-primaryActionButton.myplan-carousel-prev,
-button.uif-primaryActionButton.myplan-carousel-next {
-    font-weight: bold;
-    padding: 6px 14px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-prev {
-    -moz-border-radius: 15px 0px 0px 15px;
-    -webkit-border-radius: 15px 0px 0px 15px;
-    border-radius: 15px 0px 0px 15px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-next {
-    -moz-border-radius: 0px 15px 15px 0px;
-    -webkit-border-radius: 0px 15px 15px 0px;
-    border-radius: 0px 15px 15px 0px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-prev img,
-button.uif-primaryActionButton.myplan-carousel-next img {
-    width: 9px;
-    height: 15px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-prev img,
-button.uif-primaryActionButton.myplan-carousel-next img {
-    width: 9px;
-    height: 15px;
-    margin: 0;
-    background: url('../images/myplan_icon_sprites.png') no-repeat;
-}
-
-button.uif-primaryActionButton.myplan-carousel-prev img {
-    background-position: 0px -100px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-next img {
-    background-position: -10px -100px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-prev.disabled img {
-    background-position: -20px -100px;
-}
-
-button.uif-primaryActionButton.myplan-carousel-next.disabled img {
-    background-position: -30px -100px;
 }
 
 .myplan-plan-header {
     text-align: center;
     width: 450px;
-    font-size: 20px;
+    font-size: 26px;
     line-height: 30px;
+    font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
+    font-weight: 500;
 }
 
 .myplan-carousel-list > .uif-headerField .uif-header {

@@ -49,28 +49,6 @@
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Courses that you registered for in a quarter that is now complete."/>
         </property>
-
-
-        <!--<property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('completed_help_icon_line@{#index}', 'Courses that you registered for in a quarter that is now complete.',{
-                distance: 20,
-                position: 'top',
-                align: 'left',
-                alwaysVisible: false,
-                tail: {
-                    align: 'left',
-                    hidden: false
-                },
-                themeMargins: {total:'18px', difference:'8px'},
-                themeName: 'myplan-help',
-                themePath: '../ks-myplan/jquery-popover/jquerypopover-theme/',
-                selectable: true,
-                width: '250px',
-                closingDelay: 500,
-                openingSpeed: 100,
-                closingSpeed: 100
-            }, true, false);
-        "/>-->
     </bean>
 
     <bean id="registered_help_icon" parent="MyPlanHelpImage"
@@ -79,29 +57,6 @@
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
         </property>
-
-
-        <!--<property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('registered_help_icon_line@{#index}', 'Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page.',{
-                distance: 20,
-                position: 'top',
-                align: 'left',
-                alwaysVisible: false,
-                tail: {
-                    align: 'left',
-                    hidden: false
-                },
-                themeMargins: {total:'18px', difference:'8px'},
-                themeName: 'myplan-help',
-                themePath: '../ks-myplan/jquery-popover/jquerypopover-theme/',
-                selectable: true,
-                width: '250px',
-                closingDelay: 500,
-                openingSpeed: 100,
-                closingSpeed: 100
-            }, true, false);
-        "/>-->
-
     </bean>
 
     <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
@@ -109,29 +64,6 @@
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
-
-        <!--
-        <property name="onDocumentReadyScript" value="
-                    myplanCreateTooltip('planned_help_icon_line@{#index}', 'MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;',{
-                        distance: 20,
-                        position: 'top',
-                        align: 'left',
-                        alwaysVisible: false,
-                        tail: {
-                            align: 'left',
-                            hidden: false
-                        },
-                        themeMargins: {total:'18px', difference:'8px'},
-                        themeName: 'myplan-help',
-                        themePath: '../ks-myplan/jquery-popover/jquerypopover-theme/',
-                        selectable: true,
-                        width: '250px',
-                        closingDelay: 500,
-                        openingSpeed: 100,
-                        closingSpeed: 100
-                    }, true, false);
-                "/>
-        -->
     </bean>
 
     <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
@@ -139,28 +71,6 @@
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Courses you are considering in case a planned course is full or unavailable."/>
         </property>
-
-
-        <!--<property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('backup_help_icon_line@{#index}', 'Courses you are considering in case a planned course is full or unavailable.',{
-                distance: 20,
-                position: 'top',
-                align: 'left',
-                alwaysVisible: false,
-                tail: {
-                    align: 'left',
-                    hidden: false
-                },
-                themeMargins: {total:'18px', difference:'8px'},
-                themeName: 'myplan-help',
-                themePath: '../ks-myplan/jquery-popover/jquerypopover-theme/',
-                selectable: true,
-                width: '250px',
-                closingDelay: 500,
-                openingSpeed: 100,
-                closingSpeed: 100
-            }, true, false);
-        "/>-->
     </bean>
 
     <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
@@ -168,35 +78,6 @@
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
         </property>
-
-
-        <!--<property name="dataAttributes">
-        <map>
-            <entry key="help"
-                   value="@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
-        </map>
-    </property>
-    <property name="onDocumentReadyScript" value="
-            myplanCreateTooltip('total_credits_help_icon_line@{#index}', '',{
-                distance: 20,
-                position: 'top',
-                align: 'left',
-                alwaysVisible: false,
-                tail: {
-                    align: 'left',
-                    hidden: false
-                },
-                themeMargins: {total:'18px', difference:'8px'},
-                themeName: 'myplan-help',
-                themePath: '../ks-myplan/jquery-popover/jquerypopover-theme/',
-                selectable: true,
-                width: '250px',
-                closingDelay: 500,
-                openingSpeed: 100,
-                closingSpeed: 100
-            }, true, false);
-        "/>-->
-
     </bean>
 
     <bean id="course_requisite_help_icon" parent="MyPlanHelpImage">
@@ -219,9 +100,9 @@
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="&lt;strong&gt;Variable Credits&lt;/strong&gt; &lt;/br&gt;
-                                                                 &lt;strong&gt;(1-5)-&lt;/strong&gt; You can enroll for any number of credits in the range that's given. These are typically independent study courses that you and the professor decide on the number of credits.&lt;/br&gt;&lt;/br&gt;
-                                                                 &lt;strong&gt;(3/5) -&lt;/strong&gt; A course you can enroll in for either 3 or 5 credits.&lt;/br&gt;
-                                                                 &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#823');&gt;Learn more about credits&lt;/a&gt;"/>
+                                    &lt;strong&gt;(1-5)-&lt;/strong&gt; You can enroll for any number of credits in the range that's given. These are typically independent study courses that you and the professor decide on the number of credits.&lt;/br&gt;&lt;/br&gt;
+                                    &lt;strong&gt;(3/5) -&lt;/strong&gt; A course you can enroll in for either 3 or 5 credits.&lt;/br&gt;
+                                    &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#823');&gt;Learn more about credits&lt;/a&gt;"/>
         </property>
     </bean>
 
