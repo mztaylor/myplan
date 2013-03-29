@@ -2,7 +2,10 @@ package org.kuali.student.myplan.course.controller;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.search.dto.*;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultCell;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
@@ -346,7 +349,7 @@ public class CourseSearchStrategy {
                                 String divKey = key.trim().toUpperCase();
                                 for (Map.Entry<String, String> entry : subjects.entrySet()) {
                                     if (entry.getValue().contains(divKey)) {
-                                        divisions.add (entry.getKey() );
+                                        divisions.add(entry.getKey());
                                     }
                                 }
                             }
@@ -357,7 +360,7 @@ public class CourseSearchStrategy {
                                 requests.get(i).getParams().get(0).setValue(divisions.get(0));
 
                                 // Now add the rest of the divisions
-                                for(int dItr = 1; dItr < divisions.size(); dItr++) {
+                                for (int dItr = 1; dItr < divisions.size(); dItr++) {
                                     SearchRequest requestD = new SearchRequest("myplan.lu.search.division");
                                     requestD.addParam("division", divisions.get(dItr));
                                     requests.add(requestD);
@@ -386,15 +389,15 @@ public class CourseSearchStrategy {
     }
 
     private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {
-        String currentTerm = null;
+//        String currentTerm = null;
         String lastScheduledTerm = null;
 
         if (isAcademicCalenderServiceUp) {
-            currentTerm = AtpHelper.getCurrentAtpId();
+//            currentTerm = AtpHelper.getCurrentAtpId();
             lastScheduledTerm = AtpHelper.getLastScheduledAtpId();
         } else {
-            currentTerm = AtpHelper.populateAtpIdFromCalender().get(0).getId();
-            lastScheduledTerm = currentTerm;
+//            currentTerm = AtpHelper.populateAtpIdFromCalender().get(0).getId();
+            lastScheduledTerm = AtpHelper.getCurrentAtpIdFromCalender();
         }
         for (SearchRequest searchRequest : searchRequests) {
             // TODO: Fix when version issue for course is addressed
