@@ -40,7 +40,7 @@
                             <bean p:id="@{dataObject.courseSummaryDetails.courseId}_sections_collection"
                                   parent="course_details_institution_data_single">
                                 <property name="onDocumentReadyScript"
-                                          value="myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':readUrlParam('term_atp_id')}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');"/>
+                                          value="myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':jQuery('#hidden_focusAtpId span.uif-readOnlyContent').text().trim()}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');"/>
                                 <property name="render" value="true"/>
                                 <property name="header.render" value="false"/>
                                 <property name="items">

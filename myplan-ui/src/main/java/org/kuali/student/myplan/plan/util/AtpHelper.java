@@ -698,4 +698,50 @@ public class AtpHelper {
         return null;
     }
 
+    /**
+     * returns the previous AtpId. If not present returns null.
+     *
+     * @param atpId
+     * @return
+     */
+    public static String getPreviousAtpId(String atpId) {
+        YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
+        String previousAtpId = null;
+        if (String.valueOf(yearTerm.getTerm()).equalsIgnoreCase(PlanConstants.ATP_TERM_1)) {
+            previousAtpId = new YearTerm(yearTerm.getYear() - 1, Integer.parseInt(PlanConstants.ATP_TERM_4)).toATP();
+            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
+                return previousAtpId;
+            }
+        } else {
+            previousAtpId = new YearTerm(yearTerm.getYear(), yearTerm.getTerm() - 1).toATP();
+            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
+                return previousAtpId;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * retunrs the next closest atpId. If not present returns null.
+     *
+     * @param atpId
+     * @return
+     */
+    public static String getNextAtpId(String atpId) {
+        YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
+        String previousAtpId = null;
+        if (String.valueOf(yearTerm.getTerm()).equalsIgnoreCase(PlanConstants.ATP_TERM_4)) {
+            previousAtpId = new YearTerm(yearTerm.getYear() + 1, Integer.parseInt(PlanConstants.ATP_TERM_1)).toATP();
+            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
+                return previousAtpId;
+            }
+        } else {
+            previousAtpId = new YearTerm(yearTerm.getYear(), yearTerm.getTerm() + 1).toATP();
+            if (previousAtpId != null && doesAtpExist(previousAtpId)) {
+                return previousAtpId;
+            }
+        }
+        return null;
+    }
+
 }

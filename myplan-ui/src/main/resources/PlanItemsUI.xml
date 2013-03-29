@@ -38,7 +38,11 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="plan-page">
-
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-plan-loader</value>
+                        </list>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
@@ -69,7 +73,7 @@
     </bean>
 
     <bean id="planned_mock_detail" parent="Uif-VerticalBoxSubSection"
-          p:style="width: 620px; min-height:400px; margin-right: 10px;">
+          p:style="width: 630px; min-height:400px; margin-right: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-plan-loader</value>
@@ -297,7 +301,7 @@
     </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
-    <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 620px; margin-right: 10px;">
+    <bean id="planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 630px; margin-right: 10px;">
         <property name="onDocumentReadyScript" value="
             jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
             	var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
@@ -370,22 +374,6 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="Uif-MessageField" p:style="margin:0;width: 440px;"
-                                  p:cssClasses="myplan-plan-header">
-                                <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="Academic Year"/>
-                                </property>
-                            </bean>
-
-                            <bean parent="Uif-VerticalBoxGroup"
-                                  p:style="margin:0; text-align:left; width:90px;">
-                                <property name="validationMessages.render" value="false"/>
-                                <property name="items">
-                                    <list>
                                         <bean id="next_year_button" parent="Uif-PrimaryActionButton" p:actionScript=""
                                               p:title="Next Academic Year" p:style="margin:0;">
                                             <property name="actionImage">
@@ -402,6 +390,58 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <bean parent="Uif-MessageField" p:style="margin:0;width: 340px;"
+                                  p:cssClasses="myplan-plan-header">
+                                <property name="message">
+                                    <bean parent="Uif-Message" p:messageText="Academic Year"/>
+                                </property>
+                            </bean>
+
+                            <bean parent="Uif-VerticalBoxGroup" p:style="margin:0; text-align:right;">
+                                <property name="validationMessages.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0; text-align:right; padding-bottom: 5px;">
+                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean id="single_quarter_button" parent="Uif-SecondaryActionButton"
+                                                          p:actionLabel="Quarter" p:title="Quarter"
+                                                          p:style="margin:0;" p:actionScript="">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image"
+                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                  p:style="margin:0;"/>
+                                                        </property>
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-nav-left</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean id="one_Year_button" parent="Uif-SecondaryActionButton"
+                                                          p:actionLabel="1 Year" p:title="1 Year"
+                                                          p:style="margin:0;" p:actionScript="">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image"
+                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                  p:style="margin:0;"/>
+                                                        </property>
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-nav-right</value>
+                                                                <value>disabled</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <ref bean="overallPlanLink"/>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -411,12 +451,10 @@
                         <list>
                             <bean parent="Uif-MessageField"
                                   p:messageText="Create your plan by finding and adding courses to any quarter. &lt;a href=&quot;javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824')&quot;&gt;Learn more&lt;/a&gt;"/>
-                            <ref bean="navigationLinks"/>
                         </list>
                     </property>
                 </bean>
                 <ref bean="planned_courses_detail_list"/>
-                <ref bean="overallPlanLink"/>
             </list>
         </property>
     </bean>
@@ -1392,24 +1430,6 @@
                     <property name="lightBox">
                         <bean parent="Uif-LightBox" p:width="90%"/>
                     </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="navigationLinks" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-          p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
-        <property name="items">
-            <list>
-                <bean id="quarterLink" parent="Uif-LinkField" p:target="_blank">
-                    <property name="linkText" value="Quarter"/>
-                    <property name="title" value="Quarter"/>
-                    <property name="href" value="#"/>
-                </bean>
-                <bean id="oneYearLink" parent="Uif-LinkField" p:target="_blank">
-                    <property name="linkText" value="1 Year"/>
-                    <property name="title" value="1 Year"/>
-                    <property name="href" value="#"/>
                 </bean>
             </list>
         </property>

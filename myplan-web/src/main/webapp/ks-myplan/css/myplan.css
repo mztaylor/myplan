@@ -678,7 +678,34 @@ input.myplan-delete:hover,
     left: 180px !important;
     top: 20px !important;
 }
-
+.myplan-plan-loader div.activityEnrlData div.blockElement {
+    left: 0px !important;
+    top: 0px !important;
+}
+.myplan-plan-loader div.activityAction div.blockElement {
+    left: 0px !important;
+    top: 0px !important;
+}
+button.uif-secondaryActionButton.myplan-nav-right{
+    -moz-border-radius: 0px 15px 15px 0px;
+    -webkit-border-radius: 0px 15px 15px 0px;
+    border-radius: 0px 15px 15px 0px;
+}
+button.uif-secondaryActionButton.myplan-nav-left{
+    -moz-border-radius: 15px 0px 0px 15px;
+    -webkit-border-radius: 15px 0px 0px 15px;
+    border-radius: 15px 0px 0px 15px;
+}
+button.uif-secondaryActionButton.myplan-nav-right{
+    -moz-border-radius: 0px 15px 15px 0px;
+    -webkit-border-radius: 0px 15px 15px 0px;
+    border-radius: 0px 15px 15px 0px;
+}
+button.uif-secondaryActionButton.myplan-nav-left{
+    -moz-border-radius: 15px 0px 0px 15px;
+    -webkit-border-radius: 15px 0px 0px 15px;
+    border-radius: 15px 0px 0px 15px;
+}
 button.uif-primaryActionButton.myplan-carousel-prev,
 button.uif-primaryActionButton.myplan-carousel-next {
     font-weight: bold;
@@ -730,7 +757,7 @@ button.uif-primaryActionButton.myplan-carousel-next.disabled img {
 .myplan-plan-header {
     text-align: center;
     width: 450px;
-    font-size: 30px;
+    font-size: 20px;
     line-height: 30px;
 }
 

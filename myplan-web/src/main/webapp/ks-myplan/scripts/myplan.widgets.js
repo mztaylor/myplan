@@ -829,8 +829,38 @@ function fnBuildTitle(aView) {
     var aFirst = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
-    var navigationLink = 'inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=' + jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
-    jQuery("#quarterLink a").attr('href', navigationLink);
+    var navigationAtpId = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
+    fnQuarterNavigation(navigationAtpId, 'single_quarter_button', 'planned_courses_detail');
+}
+
+/*
+ ######################################################################################
+ Function:   Dynamically Builds the Quarter Button Action
+ ######################################################################################
+ */
+function fnQuarterNavigation(navigationAtpId, button, targetId) {
+    if (navigationAtpId == "") {
+        jQuery("#" + button).addClass( 'disabled' );
+    } else {
+        jQuery("#" + button).unbind('click');
+        var message = "<p><img src=\"../ks-myplan/images/ajaxAuditRunning32.gif\" alt=\"loading...\"/></p><p>Please wait while we fetch your quarter...</p>";
+        var scriptValue = "jQuery('#" + button + "').click(function(e) {e.preventDefault();" +
+            "if(jQuery(this).hasClass('disabled')){ return false;}myplanRetrieveComponent('" + targetId + "'," +
+            "'single_quarter_items','start','inquiry', " +
+            "{viewId:'SingleTerm-InquiryView',term_atp_id:'" + navigationAtpId + "'}, null, " +
+            "{message:'" + message + "', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#000',opacity:0.5,cursor:'wait'}," +
+            " css:{left: '180px !important', top: '20px !important',backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px'," +
+            " width:'230px', textAlign:'center', padding:'20px'}});});"
+        jQuery("input[data-for='" + button + "'][data-role='script']").attr('value', scriptValue);
+        runHiddenScripts(button);
+    }
+
+}
+
+function fnOneYearButtonAction() {
+    var focusAtp = jQuery('#hidden_focusAtpId span.uif-readOnlyContent').text().trim();
+    var retrieveOptions = {viewId:'PlannedCourses-LookupView', focusAtpId:focusAtp};
+    myplanRetrieveComponent('single_quarter_items', 'planned_courses_detail', 'search', 'lookup', retrieveOptions, null, {message:'<p><img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="loading..." /></p><p>Please wait while we are fetching your plan...</p>', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#000', opacity:0.5, cursor:'wait'}, css:{left:'180px !important', top:'20px !important', backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px', '-webkit-border-radius':'15px', '-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
 }
 /*
  ######################################################################################
