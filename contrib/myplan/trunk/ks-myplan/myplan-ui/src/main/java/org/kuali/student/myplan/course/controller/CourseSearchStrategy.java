@@ -15,6 +15,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CourseSearchStrategy {
@@ -268,8 +269,8 @@ public class CourseSearchStrategy {
         addDivisionSearches(divisions, codes, levels, requests);
         addFullTextSearches(query, requests);
         addCampusParams(requests, form);
-        processRequests(requests, form);
-        addVersionDateParam(requests, isAcademicCalenderServiceUp);
+        ArrayList processedRequests = processRequests(requests, form);
+        addVersionDateParam(processedRequests, isAcademicCalenderServiceUp);
         return requests;
     }
 
@@ -278,7 +279,7 @@ public class CourseSearchStrategy {
      * @param form
      */
     //To process the Request with search key as division or full Text
-    public void processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
+    public ArrayList<SearchRequest> processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
         Map<String, String> subjects = null;
         int size = requests.size();
 
@@ -363,6 +364,7 @@ public class CourseSearchStrategy {
                                 for (int dItr = 1; dItr < divisions.size(); dItr++) {
                                     SearchRequest requestD = new SearchRequest("myplan.lu.search.division");
                                     requestD.addParam("division", divisions.get(dItr));
+                                    addCampusParam(requestD, form);
                                     requests.add(requestD);
                                 }
 
@@ -386,6 +388,33 @@ public class CourseSearchStrategy {
                 }
             }
         }
+        ArrayList<SearchRequest> orderedRequests = new ArrayList<SearchRequest>();
+        if (requests != null && requests.size() > 0) {
+            ArrayList<SearchRequest> divisionReq = new ArrayList<SearchRequest>();
+            ArrayList<SearchRequest> additionalDivisionReq = new ArrayList<SearchRequest>();
+            ArrayList<SearchRequest> titleReq = new ArrayList<SearchRequest>();
+            ArrayList<SearchRequest> descriptionReq = new ArrayList<SearchRequest>();
+            ArrayList<SearchRequest> fullTextReq = new ArrayList<SearchRequest>();
+            for (SearchRequest searchRequest : requests) {
+                if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
+                    divisionReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.additionalDivision")) {
+                    additionalDivisionReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.title")) {
+                    titleReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.description")) {
+                    descriptionReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")) {
+                    fullTextReq.add(searchRequest);
+                }
+            }
+            orderedRequests.addAll(divisionReq);
+            orderedRequests.addAll(additionalDivisionReq);
+            orderedRequests.addAll(titleReq);
+            orderedRequests.addAll(descriptionReq);
+            orderedRequests.addAll(fullTextReq);
+        }
+        return orderedRequests;
     }
 
     private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {
