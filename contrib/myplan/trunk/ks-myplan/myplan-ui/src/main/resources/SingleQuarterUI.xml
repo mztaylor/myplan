@@ -35,40 +35,111 @@
                 <value>myplan-view</value>
             </list>
         </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>ks-myplan/plugins/jcarousellite.js</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="single_planned_courses_detail_page"
-                      p:headerText="@{dataObject.qtrYear}">
+                <bean parent="Uif-Page" p:id="single_planned_courses_detail_page">
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
-                    <property name="onDocumentReadyScript" value="
-                                jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
-                                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
-                                        if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
-                                            var items = data.ItemsToUpdate.split(',');
-                                            jQuery.each(items, function (index, value) {
-                                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
-                                            });
-                                        }
-                                    })
-                                    .subscribe('SECTION_ITEM_DELETED', function(data) {
-                                        if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
-                                            fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
-                                        } else {
-                                            fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
-                                            if (data.ItemsToUpdate) {
-                                                var items = data.ItemsToUpdate.split(',');
-                                                jQuery.each(items, function (index, value) {
-                                                    fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
-                                                });
-                                            }
-                                        }
-                                    });
-                                    "/>
                     <property name="items">
                         <list>
-                            <ref bean="single_collection_data"/>
+                            <bean id="single_quarter_items" parent="Uif-VerticalBoxGroup" p:style="margin:0; width:630px; padding-right: 10px;">
+                                <property name="validationMessages.render" value="false"/>
+                                <property name="items">
+                                    <list>
+                                        <bean id="hidden_focusAtpId" parent="Uif-DataField" p:propertyName="atpId"
+                                              p:style="display:none;"/>
+                                        <bean parent="Uif-HorizontalBoxGroup">
+                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-VerticalBoxGroup"
+                                                          p:style="margin:0; width:90px;">
+                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <bean id="previous_quarter_button"
+                                                                      parent="Uif-PrimaryActionButton"
+                                                                      p:title="Previous Quarter"
+                                                                      p:style="margin:0;">
+                                                                    <property name="actionImage">
+                                                                        <bean parent="Uif-Image"
+                                                                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                              p:style="margin:0;"/>
+                                                                    </property>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-carousel-prev</value>
+                                                                        </list>
+                                                                    </property>
+                                                                    <property name="actionScript" value=""/>
+                                                                </bean>
+                                                                <bean id="next_quarter_button"
+                                                                      parent="Uif-PrimaryActionButton"
+                                                                      p:actionScript=""
+                                                                      p:title="Next Quarter" p:style="margin:0;">
+                                                                    <property name="actionImage">
+                                                                        <bean parent="Uif-Image"
+                                                                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                              p:style="margin:0;"/>
+                                                                    </property>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-carousel-next</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 340px;"
+                                                          p:cssClasses="myplan-plan-header">
+                                                        <property name="message">
+                                                            <bean parent="Uif-Message"
+                                                                  p:messageText="@{dataObject.qtrYear}"/>
+                                                        </property>
+                                                    </bean>
+                                                    <bean id="single_quarter_button_sqv" parent="Uif-SecondaryActionButton"
+                                                          p:actionLabel="Quarter" p:title="Quarter"
+                                                          p:style="margin:0;" p:actionScript="">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image"
+                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                  p:style="margin:0;"/>
+                                                        </property>
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-nav-left</value>
+                                                                <value>disabled</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean id="one_Year_button_sqv" parent="Uif-SecondaryActionButton"
+                                                          p:actionLabel="1 Year" p:title="1 Year"
+                                                          p:style="margin:0;" p:actionScript="fnOneYearButtonAction();">
+                                                        <property name="actionImage">
+                                                            <bean parent="Uif-Image"
+                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                                                  p:style="margin:0;"/>
+                                                        </property>
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-nav-right</value>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <ref bean="single_collection_data"/>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="myplan_section" p:style="width:300px; margin:0;">
                                 <property name="items">
                                     <list>
@@ -87,6 +158,32 @@
 
     <bean id="single_collection_data" parent="Uif-VerticalBoxGroup"
           p:style="margin:0; width:630px; margin-right:10px; border-bottom:solid 1px #ccc;">
+        <property name="onDocumentReadyScript" value="
+            jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
+                    fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
+                    if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
+                        var items = data.ItemsToUpdate.split(',');
+                        jQuery.each(items, function (index, value) {
+                            fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
+                        });
+                    }
+                })
+                .subscribe('SECTION_ITEM_DELETED', function(data) {
+                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
+                        fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
+                    } else {
+                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
+                        if (data.ItemsToUpdate) {
+                            var items = data.ItemsToUpdate.split(',');
+                            jQuery.each(items, function (index, value) {
+                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
+                            });
+                        }
+                    }
+                });
+                fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
+                fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');
+                "/>
         <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
