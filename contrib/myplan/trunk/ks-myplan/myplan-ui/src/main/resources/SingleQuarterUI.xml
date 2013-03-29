@@ -33,6 +33,7 @@
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
+                <value>myplan-plan-loader</value>
             </list>
         </property>
         <property name="additionalScriptFiles">
