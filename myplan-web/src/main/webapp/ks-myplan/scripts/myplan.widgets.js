@@ -830,7 +830,9 @@ function fnBuildTitle(aView) {
     var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
     jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
     var navigationAtpId = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
-    fnQuarterNavigation(navigationAtpId, 'single_quarter_button', 'planned_courses_detail');
+    //fnQuarterNavigation(navigationAtpId, 'single_quarter_button', 'planned_courses_detail');
+    var quarterLink = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + navigationAtpId;
+    jQuery("#single_quarter_button").attr("href", quarterLink);
 }
 
 /*
@@ -840,7 +842,7 @@ function fnBuildTitle(aView) {
  */
 function fnQuarterNavigation(navigationAtpId, button, targetId) {
     if (navigationAtpId == "") {
-        jQuery("#" + button).addClass( 'disabled' );
+        jQuery("#" + button).addClass('disabled');
     } else {
         jQuery("#" + button).unbind('click');
         var message = "<p><img src=\"../ks-myplan/images/ajaxAuditRunning32.gif\" alt=\"loading...\"/></p><p>Please wait while we fetch your quarter...</p>";
@@ -861,32 +863,6 @@ function fnOneYearButtonAction() {
     var focusAtp = jQuery('#hidden_focusAtpId span.uif-readOnlyContent').text().trim();
     var retrieveOptions = {viewId:'PlannedCourses-LookupView', focusAtpId:focusAtp};
     myplanRetrieveComponent('single_quarter_items', 'planned_courses_detail', 'search', 'lookup', retrieveOptions, null, {message:'<p><img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="loading..." /></p><p>Please wait while we are fetching your plan...</p>', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#000', opacity:0.5, cursor:'wait'}, css:{left:'180px !important', top:'20px !important', backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px', '-webkit-border-radius':'15px', '-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
-}
-/*
- ######################################################################################
- Function:   expand/collapse backup course set within plan view
- ######################################################################################
- */
-function fnToggleBackup(e) {
-    stopEvent(e);
-    var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if (!jQuery(target).hasClass("disabled")) {
-        var oBackup = jQuery(target).parents(".myplan-term-backup").find(".uif-stackedCollectionLayout");
-        var oQuarter = jQuery(target).parents("li");
-        var iSpeed = 500;
-        var iDefault = 26;
-        if (jQuery(target).hasClass("expanded")) {
-            var iAdjust = ( oBackup.height() - ( iDefault * 2 ) ) * -1;
-            jQuery(target).removeClass("expanded");
-            jQuery(target).find("span").html("Show");
-        } else {
-            var iAdjust = ( oBackup.find("span a").size() * iDefault ) - oBackup.height();
-            jQuery(target).addClass("expanded");
-            jQuery(target).find("span").html("Hide");
-        }
-        oBackup.animate({"height":oBackup.height() + iAdjust}, {duration:iSpeed});
-        oQuarter.animate({"height":oQuarter.height() + iAdjust}, {duration:iSpeed});
-    }
 }
 /*
  ######################################################################################
@@ -934,51 +910,6 @@ function myplanLightBoxLink(href, options, e) {
     options['href'] = href;
     //options['beforeClose'] = cleanupClosedLightboxForms;
     top.jQuery.fancybox(options);
-}
-
-function myplanCreateTooltip(id, text, options, onMouseHoverFlag, onFocusFlag) {
-    var elementInfo = getHoverElement(id);
-    var element = elementInfo.element;
-    if (typeof options['themePath'] === "undefined") options['themePath'] = "../krad/plugins/tooltip/jquerybubblepopup-theme/";
-
-    // Check to see if a data attribute help is defined. Use that if defined.
-    // This is built so that SpringEL can be used for generating the html. But it
-    // also introduces a limitation of not allowing &quot; in the text
-    if (jQuery("#" + id).data('help') && jQuery("#" + id).data('help').length > 0) {
-        options.innerHtml = jQuery("#" + id).data('help');
-    } else {
-        options.innerHtml = text;
-    }
-    options.manageMouseEvents = false;
-    if (onFocusFlag) {
-        jQuery("#" + id).focus(function () {
-            if (!isControlWithMessages(id)) {
-                if (!jQuery("#" + id).HasPopOver()) jQuery("#" + id).CreatePopOver(options);
-                jQuery("#" + id).ShowPopOver(options, true);
-            }
-        });
-        jQuery("#" + id).blur(function () {
-            jQuery("#" + id).HidePopOver();
-        });
-    }
-    if (onMouseHoverFlag) {
-        // Add mouse hover trigger
-        jQuery("#" + id).hover(function () {
-            if (!jQuery("#" + id).IsPopOverOpen()) {
-                if (!isControlWithMessages(id)) {
-                    if (!jQuery("#" + id).HasPopOver()) jQuery("#" + id).CreatePopOver(options);
-                    jQuery("#" + id).ShowPopOver();
-                }
-            }
-        }, function (event) {
-            if (!onFocusFlag || !jQuery("#" + id).is(":focus")) {
-                var result = mouseInTooltipCheck(event, id, element, this, elementInfo.type);
-                if (result) {
-                    mouseLeaveHideTooltip(id, jQuery("#" + id), element, elementInfo.type);
-                }
-            }
-        });
-    }
 }
 
 function degreeAuditButton() {
@@ -1393,108 +1324,6 @@ function autoCompleteText(atpId) {
 
 }
 
-function showDataTableDetail(actionComponent, tableId, useImages) {
-    var oTable = null;
-    var tables = jQuery.fn.dataTable.fnTables();
-    jQuery(tables).each(function () {
-        var dataTable = jQuery(this).dataTable();
-        if (jQuery(actionComponent).closest(dataTable).length) {
-            oTable = dataTable;
-        }
-    });
-
-    if (oTable != null) {
-        var nTr = jQuery(actionComponent).parents("tr")[0];
-        var sClasses = jQuery(nTr).attr("class").replace("odd", "").replace("even", "");
-        if (useImages && jQuery(actionComponent).find("img").length) {
-            jQuery(actionComponent).find("img").hide();
-        } else {
-            jQuery(actionComponent).hide();
-        }
-        var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
-        var detailsId = jQuery(newRow).find(".uif-group").first().attr("id");
-        jQuery(newRow).find(".uif-group").first().attr("id", detailsId + "_details")
-        jQuery(newRow).find("a").each(function () {
-            var linkId = jQuery(this).attr("id");
-            jQuery(this).siblings("input[data-for='" + linkId + "']").removeAttr("script").attr("name", "script").val(function (index, value) {
-                return value.replace("'" + linkId + "'", "'" + linkId + "_details'");
-            });
-            jQuery(this).attr("id", linkId + "_details");
-        });
-        runHiddenScripts(detailsId + "_details");
-        jQuery(newRow).attr("class", sClasses);
-        jQuery(newRow).find(".uif-group").first().show();
-    }
-}
-
-function expandDataTableDetail(actionComponent, tableId, useImages, expandText, collapseText) {
-    var oTable = null;
-    var tables = jQuery.fn.dataTable.fnTables();
-    jQuery(tables).each(function () {
-        var dataTable = jQuery(this).dataTable();
-        //ensure the dataTable is the one that contains the action that was clicked
-        if (jQuery(actionComponent).closest(dataTable).length) {
-            oTable = dataTable;
-        }
-    });
-
-    if (oTable != null) {
-        var nTr = jQuery(actionComponent).parents('tr')[0];
-        var sClasses = jQuery(nTr).attr("class").replace("odd", "").replace("even", "");
-        if (oTable.fnIsOpen(nTr)) {
-            if (useImages && jQuery(actionComponent).find("img").length) {
-                jQuery(actionComponent).find("img").replaceWith(detailsOpenImage.clone());
-            }
-            if (expandText) {
-                jQuery(actionComponent).text(expandText);
-            }
-            jQuery(nTr).next().first().find(".uif-group").first().slideUp(function () {
-                oTable.fnClose(nTr);
-            });
-        }
-        else {
-            if (useImages && jQuery(actionComponent).find("img").length) {
-                jQuery(actionComponent).find("img").replaceWith(detailsCloseImage.clone());
-            }
-            if (collapseText) {
-                jQuery(actionComponent).text(collapseText);
-            }
-            var newRow = oTable.fnOpen(nTr, fnFormatDetails(actionComponent), "uif-rowDetails");
-            var detailsId = jQuery(newRow).find(".uif-group").first().attr("id");
-            jQuery(newRow).find(".uif-group").first().attr("id", detailsId + "_details")
-            jQuery(newRow).find("a").each(function () {
-                var linkId = jQuery(this).attr("id");
-                jQuery(this).siblings("input[data-for='" + linkId + "']").removeAttr("script").attr("name", "script").val(function (index, value) {
-                    return value.replace("'" + linkId + "'", "'" + linkId + "_details'");
-                });
-                jQuery(this).attr("id", linkId + "_details");
-            });
-            runHiddenScripts(detailsId + "_details");
-            jQuery(newRow).attr("class", sClasses);
-            jQuery(newRow).find(".uif-group").first().slideDown();
-        }
-    }
-}
-
-function expandHiddenSubcollection(actionComponent, expandText, collapseText) {
-    var subcollection = jQuery(actionComponent).closest('.uif-group.uif-collectionItem').children('.uif-boxLayout').children('.uif-subCollection');
-
-    if (subcollection.is(":visible")) {
-        subcollection.slideUp(250, function () {
-            if (expandText) {
-                jQuery(actionComponent).text(expandText);
-            }
-        });
-    } else {
-        subcollection.slideDown(250, function () {
-            if (collapseText) {
-                jQuery(actionComponent).text(collapseText);
-            }
-        });
-    }
-
-}
-
 function expandCurriculumComments(actionComponent, expandText, collapseText) {
     var curriculumMessage = jQuery(actionComponent).parent().find('.curriculum-comment');
     if (curriculumMessage.is(":visible")) {
@@ -1575,18 +1404,6 @@ function switchFetchAction(actionId, toggleId) {
     var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleSections('" + actionId + "', '" + toggleId + "', 'myplan-section-planned', 'Show all sections', 'Hide all sections'); });";
     updateHiddenScript(actionId, script);
     jQuery("#" + actionId).text("Hide all sections")
-}
-
-function toggleGroup(actionId, toggleId) {
-    var group = jQuery("#" + toggleId);
-    var action = jQuery("#" + actionId);
-    if (group.is(':visible')) {
-        group.slideUp();
-        action.text("Show all sections");
-    } else {
-        group.slideDown();
-        action.text("Hide all sections");
-    }
 }
 
 function toggleSections(actionId, toggleId, showClass, showText, hideText) {

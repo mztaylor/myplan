@@ -49,94 +49,110 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean id="single_quarter_items" parent="Uif-VerticalBoxGroup" p:style="margin:0; width:630px; padding-right: 10px;">
+                            <bean id="single_quarter_items" parent="Uif-VerticalBoxGroup"
+                                  p:style="margin:0; width:630px; margin-right: 10px;">
                                 <property name="validationMessages.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean id="hidden_focusAtpId" parent="Uif-DataField" p:propertyName="atpId"
-                                              p:style="display:none;"/>
                                         <bean parent="Uif-HorizontalBoxGroup">
                                             <property name="validationMessages.render" value="false"/>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-VerticalBoxGroup"
-                                                          p:style="margin:0; width:90px;">
+                                                    <bean parent="Uif-HorizontalBoxGroup"
+                                                          p:style="margin:0; width:69px;">
                                                         <property name="validationMessages.render" value="false"/>
                                                         <property name="items">
                                                             <list>
                                                                 <bean id="previous_quarter_button"
-                                                                      parent="Uif-PrimaryActionButton"
-                                                                      p:title="Previous Quarter"
-                                                                      p:style="margin:0;">
-                                                                    <property name="actionImage">
-                                                                        <bean parent="Uif-Image"
-                                                                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                                                              p:style="margin:0;"/>
-                                                                    </property>
+                                                                      parent="MyPlan-NavButton"
+                                                                      p:title="Previous Quarter">
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-carousel-prev</value>
+                                                                            <value>first</value>
                                                                         </list>
                                                                     </property>
-                                                                    <property name="actionScript" value=""/>
                                                                 </bean>
-                                                                <bean id="next_quarter_button"
-                                                                      parent="Uif-PrimaryActionButton"
-                                                                      p:actionScript=""
-                                                                      p:title="Next Quarter" p:style="margin:0;">
-                                                                    <property name="actionImage">
-                                                                        <bean parent="Uif-Image"
-                                                                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                                                              p:style="margin:0;"/>
-                                                                    </property>
+                                                                <bean id="next_quarter_button" parent="MyPlan-NavButton"
+                                                                      p:title="Next Quarter">
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
                                                                             <value>myplan-carousel-next</value>
+                                                                            <value>last</value>
                                                                         </list>
                                                                     </property>
                                                                 </bean>
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 340px;"
+
+                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 431px;"
                                                           p:cssClasses="myplan-plan-header">
                                                         <property name="message">
                                                             <bean parent="Uif-Message"
                                                                   p:messageText="@{dataObject.qtrYear}"/>
                                                         </property>
                                                     </bean>
-                                                    <bean id="single_quarter_button_sqv" parent="Uif-SecondaryActionButton"
-                                                          p:actionLabel="Quarter" p:title="Quarter"
-                                                          p:style="margin:0;" p:actionScript="">
-                                                        <property name="actionImage">
-                                                            <bean parent="Uif-Image"
-                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                                                  p:style="margin:0;"/>
-                                                        </property>
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>myplan-nav-left</value>
-                                                                <value>disabled</value>
-                                                            </list>
-                                                        </property>
-                                                    </bean>
-                                                    <bean id="one_Year_button_sqv" parent="Uif-SecondaryActionButton"
-                                                          p:actionLabel="1 Year" p:title="1 Year"
-                                                          p:style="margin:0;" p:actionScript="fnOneYearButtonAction();">
-                                                        <property name="actionImage">
-                                                            <bean parent="Uif-Image"
-                                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                                                  p:style="margin:0;"/>
-                                                        </property>
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>myplan-nav-right</value>
+
+                                                    <bean parent="Uif-HorizontalBoxGroup"
+                                                          p:style="margin:0; width: 130px;">
+                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <bean parent="MyPlan-NavLink">
+                                                                    <property name="id" value="single_quarter_button"/>
+                                                                    <property name="linkText" value="Quarter"/>
+                                                                    <property name="title" value="Quarter"/>
+                                                                    <property name="href" value="#"/>
+                                                                    <property name="onClickScript"
+                                                                              value="e.preventDefault();"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>first</value>
+                                                                            <value>active</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean parent="MyPlan-NavLink">
+                                                                    <property name="id" value="one_year_button"/>
+                                                                    <property name="linkText" value="1 Year"/>
+                                                                    <property name="title" value="1 Year"/>
+                                                                    <property name="href"
+                                                                              value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>last</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <!--<bean id="single_quarter_button" parent="Uif-SecondaryActionButton-Small"
+                                                                      p:actionLabel="Quarter" p:title="Quarter"
+                                                                      p:style="margin:0;" p:actionScript="">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-plan-nav</value>
+                                                                            <value>first</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean id="one_year_button" parent="Uif-SecondaryActionButton-Small"
+                                                                      p:actionLabel="1 Year" p:title="1 Year"
+                                                                      p:style="margin:0;" p:actionScript="">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-plan-nav</value>
+                                                                            <value>last</value>
+                                                                            <value>active</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>-->
                                                             </list>
                                                         </property>
                                                     </bean>
                                                 </list>
                                             </property>
                                         </bean>
+                                        <ref bean="overallPlanLink"/>
                                         <ref bean="single_collection_data"/>
                                     </list>
                                 </property>
