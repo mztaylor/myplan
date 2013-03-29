@@ -296,7 +296,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP())) {
                 sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId() + "#" + AtpHelper.getAtpIdFromTermYear(term).replace(".", "-") + "-" + sln, sectionSln);
             } else {
-                sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseDetails.getCourseSummaryDetails().getCourseId(), sectionSln);
+                sec = sectionSln;
             }
 
             sectionAndSln.add(sec);
