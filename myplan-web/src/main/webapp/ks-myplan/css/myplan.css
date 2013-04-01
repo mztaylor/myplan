@@ -1794,11 +1794,11 @@ table.myplan-course-search-results-datatable .blockUI {
     border-radius: 0px;
 }
 
-.myplan-course-sections .ui-widget-content a {
+.myplan-course-detail .ui-widget-content a {
     color: #0066cc;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav {
+.myplan-course-detail .ui-tabs .ui-tabs-nav {
     border-right: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
@@ -1810,7 +1810,7 @@ table.myplan-course-search-results-datatable .blockUI {
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F5F5F5', endColorstr='#EBEBEB')"; /* IE8 */
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li {
     border-radius: 0px;
     height: 40px;
     line-height: 40px;
@@ -1819,31 +1819,31 @@ table.myplan-course-search-results-datatable .blockUI {
     margin-bottom: -1px;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li a {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li a {
     font-size: 1.15em;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-active {
     border-right: solid 1px #ddd;
     border-left: solid 1px #ddd;
     background: #fff;
     border-bottom: solid 1px #fff;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li:first-child {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li:first-child {
     border-left: solid 1px #ddd;
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active:first-child {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-active:first-child {
     /*border-left: none;*/
 }
 
-.myplan-course-sections .ui-tabs .ui-tabs-nav li.ui-state-active a {
+.myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-active a {
     font-weight: 700;
     font-size: 1.25em;
 }
 
-.myplan-course-sections h5.uif-headerText {
+.myplan-course-detail h5.uif-headerText {
     text-transform: uppercase;
     color: #666;
     font-size: 1.4em;
