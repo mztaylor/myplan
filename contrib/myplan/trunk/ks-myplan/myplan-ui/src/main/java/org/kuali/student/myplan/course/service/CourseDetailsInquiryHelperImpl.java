@@ -349,6 +349,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
         }
 
+        Collections.sort(courseDetails.getScheduledTerms(), new Comparator<String>() {
+            @Override
+            public int compare(String val1, String val2) {
+                return AtpHelper.termToYearTerm(val1).compareTo(AtpHelper.termToYearTerm(val2));
+            }
+        });
+
 
         // Last Offered
         //  If course not scheduled for future terms, Check for the last term when course was offered
@@ -428,22 +435,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         }
         List<CourseOfferingInstitution> courseOfferingInstitutions = getCourseOfferingInstitutions(course, termList);
         courseDetails.setCourseOfferingInstitutionList(courseOfferingInstitutions);
-
-        // Reduce the Scheduled Term down to just visible sections
-        List<YearTerm> scheduled = new ArrayList<YearTerm>();
-        for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
-            for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
-                YearTerm yt = courseOfferingTerm.getYearTerm();
-                scheduled.add(yt);
-            }
-        }
-        Collections.sort(scheduled);
-        List<String> scheduledTermsList = courseDetails.getCourseSummaryDetails().getScheduledTerms();
-        scheduledTermsList.clear();
-        for (YearTerm yt : scheduled) {
-            scheduledTermsList.add(yt.toLabel());
-        }
-
 
         return courseDetails;
     }
