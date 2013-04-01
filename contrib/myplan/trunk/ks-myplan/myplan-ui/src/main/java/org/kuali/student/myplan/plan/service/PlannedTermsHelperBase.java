@@ -507,7 +507,9 @@ public class PlannedTermsHelperBase {
                                             }
                                         }
                                         String credit = unionCreditList(sectionCreditRangeList);
-                                        creditList.add(credit);
+                                        if (hasText(credit)) {
+                                            creditList.add(credit);
+                                        }
                                     } else {
                                         String credit = courseDetails.getCredit();
                                         if (hasText(credit)) {
