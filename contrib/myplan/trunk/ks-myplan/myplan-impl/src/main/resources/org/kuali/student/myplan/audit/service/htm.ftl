@@ -742,33 +742,50 @@
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: 2013/04/01 10:58am)</div>
+<div> (audit template updated: 2013/04/01 3:28p)</div>
 </div>
 </html>
 
 <#-- 
 Input list of strings, output reflowed list of strings. Most strings are joined, some are broken up.
+
+The order of these tests are significant. Do not change lightly.
 -->
 <#function reflow sources>
     <#assign targets = []>
     <#assign target = "">
     <#list sources as source >
-        <#if source?contains( "NOTE" ) >
-            <#assign temp = source?substring( 0, source?index_of( "NOTE" ))?trim >
+        <#assign trimmed = source?trim>
+
+        <#if ( trimmed?starts_with( "*" ) && trimmed?ends_with( "*" )) >
+            <#assign targets = addTarget( targets, target ) >
+            <#assign targets = addTarget( targets, trimmed ) >
+            <#assign target = "" >
+
+        <#elseif trimmed?contains( "IMPORTANT NOTE" ) >
+            <#assign nth = trimmed?index_of( "IMPORTANT NOTE" ) >
+            <#assign temp = trimmed?substring( 0, nth )?trim >
             <#assign target = target + " " + temp >
             <#assign targets = addTarget( targets, target ) >
-            <#assign target = source?substring( source?index_of( "NOTE" ))?trim >
-        <#elseif ( source?trim == "." ) >
-        <#-- do nothing -->
-        <#elseif ( source?trim?starts_with( "*" ) && source?trim?ends_with( "*" )) >
+            <#assign target = trimmed?substring( nth )?trim >
+
+        <#elseif trimmed?contains( "NOTE" ) >
+            <#assign nth = trimmed?index_of( "NOTE" ) >
+            <#assign temp = trimmed?substring( 0, nth )?trim >
+            <#assign target = target + " " + temp >
             <#assign targets = addTarget( targets, target ) >
-            <#assign targets = addTarget( targets, source ) >
-            <#assign target = "" >
+            <#assign target = trimmed?substring( nth )?trim >
+
+        <#elseif ( trimmed == "." ) >
+        <#-- do nothing -->
+
         <#elseif source?starts_with( " " ) >
             <#assign targets = addTarget( targets, target ) >
-            <#assign target = source?trim >
+            <#assign target = trimmed >
+
         <#else>
-            <#assign target = target + " " + source?trim >
+            <#assign target = target + " " + trimmed >
+
         </#if>
     </#list>
     <#assign targets = addTarget( targets, target ) >
