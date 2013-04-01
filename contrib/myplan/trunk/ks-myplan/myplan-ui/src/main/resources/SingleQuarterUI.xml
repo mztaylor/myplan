@@ -174,26 +174,40 @@
     </bean>
 
     <bean id="single_collection_data" parent="Uif-VerticalBoxGroup"
-          p:style="margin:0; width:630px; margin-right:10px; border-bottom:solid 1px #ccc;">
+          p:style="margin:10px 0 0 0; width:630px;">
         <property name="onDocumentReadyScript" value="
             jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
                     fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
+                    var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
+                    row.addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned');
                     if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
                         var items = data.ItemsToUpdate.split(',');
                         jQuery.each(items, function (index, value) {
                             fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
+                            var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
+                            row.addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned');
                         });
                     }
                 })
                 .subscribe('SECTION_ITEM_DELETED', function(data) {
                     if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
                         fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
+                        if (data.ItemsToUpdate) {
+                            var items = data.ItemsToUpdate.split(',');
+                            jQuery.each(items, function (index, value) {
+                                fnRemoveSectionRow('button_' + data.atpId + '_' + items[index]);
+                            });
+                        }
                     } else {
                         fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
+                        var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
+                        row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
                         if (data.ItemsToUpdate) {
                             var items = data.ItemsToUpdate.split(',');
                             jQuery.each(items, function (index, value) {
                                 fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
+                                var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
+                                row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
                             });
                         }
                     }
@@ -254,6 +268,16 @@
                   value="Registered Courses (@{dataObject.academicRecord.size()})"/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_registered"/>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-VerticalBoxGroup">
@@ -453,10 +477,20 @@
         </property>
     </bean>
 
-    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
+    <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:headerText="Planned Courses">
         <property name="validationMessages.render" value="false"/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_planned"/>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
@@ -481,6 +515,11 @@
                     <bean parent="Uif-CollectionVerticalBoxItem">
                         <property name="footer.render" value="false"/>
                         <property name="validationMessages.render" value="false"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>myplan-course-item</value>
+                            </list>
+                        </property>
                     </bean>
                 </property>
             </bean>
@@ -499,7 +538,7 @@
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-course-item</value>
+                            <value>myplan-course-item-heading</value>
                         </list>
                     </property>
                     <property name="items">
@@ -513,11 +552,11 @@
                             </bean>
                             <bean parent="Uif-SpaceField"/>
                             <bean parent="Uif-Link"
-                                  p:linkText="@{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"
+                                  p:linkText="@{#line.courseDetails.courseTitle}"
                                   p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
 
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-                                  p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
+                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
                                 <property name="render"
                                           value="@{!#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
@@ -527,7 +566,7 @@
                                               p:style="display:inline-block;">
                                             <property name="actionScript"
                                                       value="
-                                                           jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','16px');
+                                                           jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
                                                            myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
                                                            switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                                                       "/>
@@ -609,8 +648,18 @@
         </property>
     </bean>
 
-    <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup">
+    <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup Courses">
         <property name="propertyName" value="backupList"/>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_backup"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="footer.render" value="false"/>
         <property name="render" value="@{dataObject.backupList.size() gt 0}"/>
         <property name="cssClasses">

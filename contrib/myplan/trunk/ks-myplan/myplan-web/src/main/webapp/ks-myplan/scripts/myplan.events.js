@@ -16,9 +16,9 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
             '</div>';
     }
     var sectionsDiv = '';
-    if(sections){
-      sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem"> <span class="uif-message">'+
-          sections +'</span> </div>';
+    if (sections) {
+        sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem"> <span class="uif-message">' +
+            sections + '</span> </div>';
     }
     item += '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
         '<span class="uif-message">' + courseCode + '</span>' +
@@ -173,8 +173,6 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
 }
 
 function fnRemoveSectionRow(actionId) {
-    var row = jQuery("#" + actionId).parents("tr");
-    row.fadeOut(250, function () {
-        jQuery(this).remove();
-    });
+    var row = jQuery("#" + actionId).parents("tr.row");
+    row.remove().next("tr.collapsible").remove().next("tr.collapsible").remove();
 }
