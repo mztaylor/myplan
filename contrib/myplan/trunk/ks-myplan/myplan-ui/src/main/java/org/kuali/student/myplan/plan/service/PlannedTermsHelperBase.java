@@ -380,6 +380,43 @@ public class PlannedTermsHelperBase {
         }
     }
 
+    /**
+     * Creates the union of a list of credit ranges, returning the min and max credits found.
+     * eg "1-2", "3-5" would return "1-5"
+     */
+
+    public static String unionCreditList(List<String> list) {
+        if (list == null || list.isEmpty()) return "";
+        float minCredits = Integer.MAX_VALUE;
+        float maxCredits = Integer.MIN_VALUE;
+        for (String item : list) {
+            String[] split = item.split("[ ,/-]");
+
+            String first = split[0];
+            float min = Float.parseFloat(first);
+            minCredits = Math.min(min, minCredits);
+
+            String last = split[split.length - 1];
+            float max = Float.parseFloat(last);
+            maxCredits = Math.max(max, maxCredits);
+        }
+
+        String credits = Float.toString(minCredits);
+
+        if (minCredits != maxCredits) {
+            credits = credits + "-" + Float.toString(maxCredits);
+        }
+
+        credits = credits.replace(".0", "");
+        return credits;
+    }
+
+
+    /**
+     * Creates the sum of a list of credit ranges, returning the cumulative min and max credits
+     * eg "1-2", "3-5" would return "4-7"
+     */
+
     public static String sumCreditList(List<String> list) {
         if (list == null || list.isEmpty()) return "";
         float minCredits = 0;
@@ -458,18 +495,20 @@ public class PlannedTermsHelperBase {
                                     boolean sectionCredits = false;
                                     // Returns list of all a course's sections. Sections which are also in student's plan have planItemId set (non-null)
                                     List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
-                                    for (ActivityOfferingItem activityItem : activityList) {
-                                        String planItemId = activityItem.getPlanItemId();
-                                        if (hasText(planItemId) && activityItem.isPrimary()) {
-                                            String credit = activityItem.getCredits();
-                                            if (hasText(credit)) {
-                                                creditList.add(credit);
-                                                sectionCredits = true;
+                                    if (!activityList.isEmpty()) {
+                                        ArrayList<String> sectionCreditRangeList = new ArrayList<String>();
+                                        for (ActivityOfferingItem activityItem : activityList) {
+                                            String planItemId = activityItem.getPlanItemId();
+                                            if (hasText(planItemId) && activityItem.isPrimary()) {
+                                                String sectionCreditRange = activityItem.getCredits();
+                                                if (hasText(sectionCreditRange)) {
+                                                    sectionCreditRangeList.add(sectionCreditRange);
+                                                }
                                             }
                                         }
-                                    }
-
-                                    if (!sectionCredits) {
+                                        String credit = unionCreditList(sectionCreditRangeList);
+                                        creditList.add(credit);
+                                    } else {
                                         String credit = courseDetails.getCredit();
                                         if (hasText(credit)) {
                                             creditList.add(credit);

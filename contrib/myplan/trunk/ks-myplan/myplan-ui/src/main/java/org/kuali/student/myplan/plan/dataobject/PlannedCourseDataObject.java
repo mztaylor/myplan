@@ -105,7 +105,7 @@ public class PlannedCourseDataObject implements Comparable {
                     creditList.add(credits);
                 }
             }
-            credit = PlannedTermsHelperBase.sumCreditList(creditList);
+            credit = PlannedTermsHelperBase.unionCreditList(creditList);
         } else if (courseDetails != null) {
             credit = courseDetails.getCredit();
         }
