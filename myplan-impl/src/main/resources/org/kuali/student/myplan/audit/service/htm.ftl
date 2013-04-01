@@ -73,13 +73,13 @@
     </#if>
     </div>
 
-    <!--
-	<#if showTestMessage>
-	<div id="testMessageHeader">
-	    ${testMessage?xml}
-	</div>
-	</#if>
-	-->
+<#--
+<#if showTestMessage>
+<div id="testMessageHeader">
+    ${testMessage?xml}
+</div>
+</#if>
+-->
 
     <div class="toptext">
     <#list includeTopText as topTextLine>
@@ -87,14 +87,14 @@
  		</#list>
     </div>
 
-    <!--
-	<#if showRefArtHeader>
-	<div id="refArtHeaderText">
-	    ${refArtHeaderTextLine1?xml}
-	    ${refArtHeaderTextLine2?xml}
-	</div>
-	</#if>
-	-->
+<#--
+<#if showRefArtHeader>
+<div id="refArtHeaderText">
+    ${refArtHeaderTextLine1?xml}
+    ${refArtHeaderTextLine2?xml}
+</div>
+</#if>
+-->
 
 <#if auditStatus = 0>
     <div class="audit-status-msg audit-status-ok"><label>NOTE:</label> ${auditStatusMessage?replace( "*", "")?xml}</div>
@@ -106,11 +106,11 @@
     </div>
 </#if>
 
-    <![CDATA[
-    cncflg: ${cncflg?string}
-    cmess: ${cmess}
-    ncmess: ${ncmess}
-    ]]>
+<#--
+    cncflg: ${cncflg?string?xml}
+    cmess: ${cmess?xml}
+    ncmess: ${ncmess?xml}
+-->
 
 
 <#assign inSection = false>
@@ -123,35 +123,34 @@
     <#if !req.showStatus >
         <#assign satisfied="Status_NONE">
     </#if>
-    <![CDATA[
-    rname: ${rname}
-    ok: ${req.ok?string}
-    category: ${req.category}
-    status: ${req.status}
+<#--
+    rname: ${rname?xml}
+    ok: ${req.ok?string?xml}
+    category: ${req.category?xml}
+    status: ${req.status?xml}
 
     titleline:
     <#list req.titleLines as titleLine>
-    ${titleLine}
+    ${titleLine?xml}
     </#list>
 
     reflow titleline:
     <#list reflow( req.titleLines ) as titleLine>
-    ${titleLine}
+    ${titleLine?xml}
     </#list>
 
     headerline:
     <#list req.headerLines as headerLine>
-    ${headerLine}
+    ${headerLine?xml}
     </#list>
 
     reflow headerline:
     <#list reflow( req.headerLines ) as headerLine>
-    ${headerLine}
+    ${headerLine?xml}
     </#list>
 
-    ]]>
-<#--
 -->
+
     <#if skipList?seq_contains(rname) >
     <#-- do nothing -->
     <#elseif req.category?contains("advising_note") > <#-- ADVISING NOTES -->
@@ -171,7 +170,7 @@
         </#if>
 
         <#if inSection>
-        </div> <!-- close section -->
+        </div> <#-- close section -->
             <#assign inSection = false>
         </#if>
 
@@ -199,7 +198,7 @@
         </#if>
 
         <#if inSection>
-        </div> <!-- close section -->
+        </div> <#-- close section -->
             <#assign inSection = false>
         </#if>
 
@@ -286,7 +285,7 @@
         </#if>
 
         <#if inSection>
-        </div> <!-- close section -->
+        </div> <#-- close section -->
             <#assign inSection = false>
         </#if>
 
@@ -311,7 +310,7 @@
     <#elseif ( req.headerLines?size > 0 )  > <#-- SECTION -->
 
         <#if inSection>
-        </div> <!-- close section -->
+        </div> <#-- close section -->
             <#assign inSection = false>
         </#if>
 
@@ -371,7 +370,7 @@
         </#if>
 
         <#if inSection = false>
-        <div class="section"> <!-- no section -->
+        <div class="section"> <#-- no section -->
         </#if>
 
         <#assign inSection = true>
@@ -482,30 +481,30 @@
             <#if ( !subreq.showGotSummary && !subreq.showInProgressHours && !subreq.showNeedsSummary && !subreq.showTakenCourses && !subreq.showSubreqNumber && subreq.status == "Status_NONE" ) >
                 <#assign justTitle = "justtitle" >
             </#if>
-        <![CDATA[
-        showSubreqStatus: ${subreq.showSubreqStatus?string}
-        showExcLines: ${subreq.showExcLines?string}
-        status: ${subreq.status?xml}
-        seqErr: ${subreq.seqErr?xml}
-        showTitle: ${subreq.showTitle?string}
-        required: ${subreq.required?string}
-        subreqRequired: ${subreq.subreqRequired?xml}
-        subreq titleLines:
-            <#list subreq.titleLines as titleLine>
-                <#if titleLine?trim == "." > just period </#if>
-                <#if titleLine?trim != "." > not period </#if>
-            ${titleLine}
-            </#list>
-        subreq reflow titleLines:
-            <#list reflow( subreq.titleLines ) as titleLine>
-                <#if titleLine?trim == "." > just period </#if>
-                <#if titleLine?trim != "." > not period </#if>
-            ${titleLine}
-            </#list>
-        justTitle: ${justTitle}
-        ]]>
         <#--
+                showSubreqStatus: ${subreq.showSubreqStatus?string?xml}
+                showExcLines: ${subreq.showExcLines?string?xml}
+                status: ${subreq.status?xml}
+                seqErr: ${subreq.seqErr?xml}
+                showTitle: ${subreq.showTitle?string?xml}
+                required: ${subreq.required?string?xml}
+                subreqRequired: ${subreq.subreqRequired?xml}
+                subreq titleLines:
+                    <#list subreq.titleLines as titleLine>
+                        <#if titleLine?trim == "." > just period </#if>
+                        <#if titleLine?trim != "." > not period </#if>
+                    ${titleLine?xml}
+                    </#list>
+                subreq reflow titleLines:
+                    <#list reflow( subreq.titleLines ) as titleLine>
+                        <#if titleLine?trim == "." > just period </#if>
+                        <#if titleLine?trim != "." > not period </#if>
+                    ${titleLine?xml}
+                    </#list>
+                justTitle: ${justTitle?xml}
+
         -->
+
         <div class="subrequirement ${justTitle}">
             <#if subreq.showSubreqStatus >
             <div class="header">
@@ -743,7 +742,7 @@
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: 2013/03/22 9:58am)</div>
+<div> (audit template updated: 2013/04/01 10:58am)</div>
 </div>
 </html>
 
@@ -757,30 +756,32 @@ Input list of strings, output reflowed list of strings. Most strings are joined,
         <#if source?contains( "NOTE" ) >
             <#assign temp = source?substring( 0, source?index_of( "NOTE" ))?trim >
             <#assign target = target + " " + temp >
-            <#assign targets = targets + [target?trim] >
+            <#assign targets = addTarget( targets, target ) >
             <#assign target = source?substring( source?index_of( "NOTE" ))?trim >
         <#elseif ( source?trim == "." ) >
         <#-- do nothing -->
         <#elseif ( source?trim?starts_with( "*" ) && source?trim?ends_with( "*" )) >
-            <#if ( target?trim?length > 0 ) >
-                <#assign targets = targets + [target?trim] >
-            </#if>
-            <#assign targets = targets + [source?trim] >
+            <#assign targets = addTarget( targets, target ) >
+            <#assign targets = addTarget( targets, source ) >
             <#assign target = "" >
         <#elseif source?starts_with( " " ) >
-            <#if ( target?trim?length > 0 ) >
-                <#assign targets = targets + [target?trim] >
-            </#if>
+            <#assign targets = addTarget( targets, target ) >
             <#assign target = source?trim >
         <#else>
             <#assign target = target + " " + source?trim >
         </#if>
     </#list>
-    <#if ( target?length > 0 ) >
-        <#assign targets = targets + [target?trim]>
-    </#if>
+    <#assign targets = addTarget( targets, target ) >
     <#return targets>
 
+</#function>
+
+<#-- Only add non-null items to list, prevents empty divs later -->
+<#function addTarget targets item>
+    <#if ( item?trim?length > 0 ) >
+        <#return targets + [item?trim] >
+    </#if>
+    <#return targets>
 </#function>
 
 
