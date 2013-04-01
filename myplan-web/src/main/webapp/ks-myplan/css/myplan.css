@@ -2484,6 +2484,38 @@ label.scheduled {
 }
 
 /* Quarter Detail View ######################################################################################### */
+.myplan-quarter-detail h3 {
+    border: solid 1px #432f69;
+    background-color: #5c428e;
+    background-image: -ms-linear-gradient(top, #5c428e 0%, #3b295f 100%);
+    background-image: -moz-linear-gradient(center top, #5c428e 0%, #3b295f 100%);
+    background-image: -o-linear-gradient(top, #5c428e 0%, #3b295f 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #5c428e), color-stop(1, #3b295f));
+    background-image: -webkit-linear-gradient(top, #5c428e 0%, #3b295f 100%);
+    background-image: linear-gradient(to bottom, #5c428e 0%, #3b295f 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5c428e', endColorstr = '#3b295f');
+
+    padding: 12px 10px;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+}
+
+.myplan-quarter-detail h3.uif-headerText .uif-headerText-span {
+    font-size: 22px;
+    color: #f9f7f7;
+    text-shadow: 0px 1px 0px #000;
+    text-transform: uppercase;
+}
+
+.myplan-quarter-detail > .uif-boxLayout {
+    border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+    -moz-border-radius: 0px 0px 5px 5px;
+    border: solid 1px #ddd;
+    border-top: none;
+}
+
 .myplan-quarter-detail .myplan-course-sections table.uif-stackedCollectionLayout,
 .myplan-quarter-detail .myplan-course-sections table.uif-stackedCollectionLayout > .uif-collectionItem,
 .myplan-quarter-detail .myplan-course-sections table.uif-tableCollectionLayout {
@@ -2492,12 +2524,20 @@ label.scheduled {
     background: none;
 }
 
+.myplan-quarter-detail .myplan-course-sections table tr.row td {
+    border-top: solid 1px #ddd;
+}
+
+.myplan-quarter-detail .myplan-course-sections table tbody tr.row:first-child td {
+    border-top: dotted 1px #ddd;
+}
+
 .myplan-quarter-detail .myplan-course-sections table tr td:first-child {
     border-left: none;
 }
 
 .myplan-quarter-detail .myplan-course-sections table tr.collapsible td:first-child {
-    border-left: dotted 1px #ccc;
+    border-left: dotted 1px #ddd;
 }
 
 .myplan-quarter-detail .myplan-course-sections .activityAction img {
@@ -2511,52 +2551,63 @@ label.scheduled {
     width: 128px;
 }
 
-/*
-.myplan-quarter-detail .myplan-course-sections .activityAction {
-    width: 16px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityCourseTitle {
-    width: 128px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityType {
-    width: 60px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityInstructor {
-    width: 126px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityAdditionalDetails {
-    width: 427px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityOther {
-    width: 90px;
-}
-.myplan-quarter-detail .myplan-course-sections .activityRegCode {
-    width: 60px;
-}
-*/
-.myplan-quarter-detail h4 {
-    border: solid 1px #ccc;
-    border-bottom: none;
-    text-transform: uppercase;
-    background: #e9e9e9;
-    font-weight: bold;
+.myplan-quarter-detail .uif-collectionGroup .uif-header {
+    border-bottom: solid 1px #ddd;
     line-height: 1em;
-    padding: 10px 5px;
+    padding: 7px 5px;
+
+    background-color: #e7e7e7;
+    background-image: -ms-linear-gradient(top, #e7e7e7 0%, #dfdfdf 100%);
+    background-image: -moz-linear-gradient(center top, #e7e7e7 0%, #dfdfdf 100%);
+    background-image: -o-linear-gradient(top, #e7e7e7 0%, #dfdfdf 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #e7e7e7), color-stop(1, #dfdfdf));
+    background-image: -webkit-linear-gradient(top, #e7e7e7 0%, #dfdfdf 100%);
+    background-image: linear-gradient(to bottom, #e7e7e7 0%, #dfdfdf 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#e7e7e7', endColorstr = '#dfdfdf');
 }
 
-.myplan-quarter-detail .myplan-course-item {
-    border: solid 1px #ccc;
-    border-bottom: none;
+.myplan-quarter-detail h4 {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.myplan-quarter-detail .uif-header .uif-header-rightGroup {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+}
+
+.myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem.myplan-course-item {
+    border-top: solid 3px #ddd;
+}
+
+.myplan-quarter-detail .myplan-course-item .blockUI.blockMsg.blockElement {
+    left: 1px !important;
+    top: 1px !important;
+    width: 16px;
+    height: 16px;
+}
+
+.myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem.myplan-course-item:first-child {
+    border: none;
+}
+
+.myplan-quarter-detail .myplan-course-item-heading {
     padding: 5px;
 }
 
 .myplan-quarter-detail .myplan-course-sections table {
-    border-bottom: none;
+    border: none;
 }
 
 .myplan-quarter-detail .myplan-credit-total {
-    padding: 10px 5px;
-    background: #ccc;
+    padding: 7px 5px;
+    background: #f6ebcd;
+    border-top: solid 3px #ddd;
+    border-bottom: solid 2px #ddd;
 }
 
 /* Styles for Run Audit Panel ################################################################################## */
