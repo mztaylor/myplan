@@ -271,7 +271,7 @@ public class CourseSearchStrategy {
         addCampusParams(requests, form);
         ArrayList processedRequests = processRequests(requests, form);
         addVersionDateParam(processedRequests, isAcademicCalenderServiceUp);
-        return requests;
+        return processedRequests;
     }
 
     /**
@@ -390,13 +390,19 @@ public class CourseSearchStrategy {
         }
         ArrayList<SearchRequest> orderedRequests = new ArrayList<SearchRequest>();
         if (requests != null && requests.size() > 0) {
+            ArrayList<SearchRequest> divisionAndLevelReq = new ArrayList<SearchRequest>();
+            ArrayList<SearchRequest> divisionAndCodeReq = new ArrayList<SearchRequest>();
             ArrayList<SearchRequest> divisionReq = new ArrayList<SearchRequest>();
             ArrayList<SearchRequest> additionalDivisionReq = new ArrayList<SearchRequest>();
             ArrayList<SearchRequest> titleReq = new ArrayList<SearchRequest>();
             ArrayList<SearchRequest> descriptionReq = new ArrayList<SearchRequest>();
             ArrayList<SearchRequest> fullTextReq = new ArrayList<SearchRequest>();
             for (SearchRequest searchRequest : requests) {
-                if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
+                if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.divisionAndCode")) {
+                    divisionAndCodeReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.divisionAndLevel")) {
+                    divisionAndLevelReq.add(searchRequest);
+                } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
                     divisionReq.add(searchRequest);
                 } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.additionalDivision")) {
                     additionalDivisionReq.add(searchRequest);
@@ -408,6 +414,8 @@ public class CourseSearchStrategy {
                     fullTextReq.add(searchRequest);
                 }
             }
+            orderedRequests.addAll(divisionAndCodeReq);
+            orderedRequests.addAll(divisionAndLevelReq);
             orderedRequests.addAll(divisionReq);
             orderedRequests.addAll(additionalDivisionReq);
             orderedRequests.addAll(titleReq);
