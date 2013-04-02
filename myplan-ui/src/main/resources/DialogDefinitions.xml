@@ -485,7 +485,7 @@
                     <property name="items">
                         <list>
                             <bean parent="MyPlanMessagingIcon"/>
-                            <bean id="delete_sections_info" parent="Uif-DataField" p:propertyName="planActivities"
+                            <bean id="delete_sections_info" parent="Uif-DataField" p:propertyName="this"
                                   p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
                                   p:style="padding-left: 20px;">
                                 <property name="fieldLabel.cssClasses"
@@ -1027,7 +1027,7 @@
                                     <list>
                                         <bean parent="MyPlanMessagingIcon"/>
                                         <bean id="move_sections_info" parent="Uif-DataField"
-                                              p:propertyName="planActivities"
+                                              p:propertyName="this"
                                               p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
                                               p:style="padding-left: 20px;">
                                             <property name="fieldLabel.cssClasses"
@@ -1151,7 +1151,7 @@
                                     <list>
                                         <bean parent="MyPlanMessagingIcon"/>
                                         <bean id="copy_sections_info" parent="Uif-DataField"
-                                              p:propertyName="planActivities"
+                                              p:propertyName="this"
                                               p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
                                               p:style="padding-left: 20px;">
                                             <property name="fieldLabel.cssClasses"
