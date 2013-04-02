@@ -315,7 +315,8 @@
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements"
-                                  p:style="width:131px;" p:escapeHtmlInPropertyValue="false" p:render="@{#line.courseDetails.abbrGenEdRequirements.size() gt 0}">
+                                  p:style="width:131px;" p:escapeHtmlInPropertyValue="false"
+                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() gt 0}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
@@ -324,13 +325,16 @@
                                     </list>
                                 </property>
                             </bean>
+
                             <bean parent="Uif-MessageField"
                                   p:fieldLabel.render="false"
-                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() eq 0}">
+                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() eq 0}"
+                                  p:style="width:131px;visibility:hidden;">
                                 <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="None"/>
+                                    <bean parent="Uif-Message" p:messageText="-"/>
                                 </property>
                             </bean>
+
                             <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"
                                   p:style="width:131px;" p:label="Added on">
                                 <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
@@ -373,7 +377,8 @@
                             </bean>
                             <bean parent="Uif-DataField" p:label="Projected For"
                                   p:propertyName="courseDetails.termsOffered"
-                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:render="@{#line.courseDetails.termsOffered.size() gt 0}">
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
+                                  p:render="@{#line.courseDetails.termsOffered.size() gt 0}">
                                 <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -387,7 +392,8 @@
                                 <property name="fieldLabel.cssClasses"
                                           value="fl-text-gray myplan-text-normal"/>
                                 <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="Check with the department or your adviser for more information about this course."/>
+                                    <bean parent="Uif-Message"
+                                          p:messageText="Check with the department or your adviser for more information about this course."/>
                                 </property>
                             </bean>
                         </list>
