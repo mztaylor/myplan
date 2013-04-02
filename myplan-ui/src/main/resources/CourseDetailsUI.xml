@@ -268,7 +268,7 @@
                               p:fieldLabel.render="false"
                               p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() eq 0}">
                             <property name="message">
-                                <bean parent="Uif-Message" p:messageText="None"/>
+                                <bean parent="Uif-Message" p:messageText=""/>
                             </property>
                         </bean>
                     </list>
