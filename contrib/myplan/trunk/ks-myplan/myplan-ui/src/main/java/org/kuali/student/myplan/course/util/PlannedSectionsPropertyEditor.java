@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.plan.form.PlanForm;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -65,7 +66,8 @@ public class PlannedSectionsPropertyEditor extends PropertyEditorSupport {
      */
     @Override
     public String getAsText() {
-        List<ActivityOfferingItem> plannedSections = (List<ActivityOfferingItem>) super.getValue();
+        PlanForm planForm = (PlanForm) super.getValue();
+        List<ActivityOfferingItem> plannedSections = planForm.getPlanActivities();
         String atpId = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getParameter("atpId");
         StringBuffer sb = new StringBuffer();
         List<String> sections = new ArrayList<String>();

@@ -63,13 +63,13 @@ public class PlanForm extends UifFormBase {
 
     /*properties used for section Planning*/
     private String sectionCode;
-    
+
     private String registrationCode;
 
     private String primarySectionCode;
 
     private String primaryPlanItemId;
-    
+
     private String primaryRegistrationCode;
 
     private String instituteCode;
@@ -80,7 +80,7 @@ public class PlanForm extends UifFormBase {
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
-    private String enableAdviserView=PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
+    private String enableAdviserView = PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
 
     private CourseSummaryDetails courseSummaryDetails;
 
@@ -108,11 +108,11 @@ public class PlanForm extends UifFormBase {
     private boolean showOther = false;
 
     /*Flag used for populating the exact menu items for a course in past,present, future terms */
-    private boolean setToPlanning=false;
+    private boolean setToPlanning = false;
 
-    private int messagesCount=0;
+    private int messagesCount = 0;
 
-    private int bookmarkedCount=0;
+    private int bookmarkedCount = 0;
 
     private boolean newUser;
 
@@ -388,4 +388,11 @@ public class PlanForm extends UifFormBase {
         courseDetails.setPlannedCourseSummary(this.getPlannedCourseSummary());
         return courseDetails;
     }
+
+    /*Added this because the List<?> is not accepted by the property editors.*/
+    /*TODO: KUALI-RICE: Remove this once 6286 Upgrade to list with rice 2.2.1 and replace the prop name in definition*/
+    public PlanForm getThis() {
+        return this;
+    }
+
 }
