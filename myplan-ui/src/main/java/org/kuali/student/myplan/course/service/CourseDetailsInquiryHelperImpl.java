@@ -599,74 +599,75 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         for (YearTerm yt : ytList) {
             String atp = yt.toATP();
-
-            // Load course offering comments
-            List<CourseOfferingInfo> courseOfferingInfoList = null;
-            try {
-                courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), atp, CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error(" Could not load course offerings for : " + course.getCode() + " atp : " + atp);
-                return instituteList;
-            }
-
-            String courseComments = null;
-            String curriculumComments = null;
-            for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
-
-                if (null != courseComments && null != curriculumComments) break;
-
-                for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
-                    String key = attributeInfo.getKey();
-                    String value = attributeInfo.getValue();
-                    if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0) {
-                        courseComments = value;
-                        if (null != curriculumComments) break;
-                    } else if ("CurriculumComments".equalsIgnoreCase(key) && value.length() > 0) {
-                        curriculumComments = value;
-                        if (null != courseComments) break;
-                    }
-
+            if (AtpHelper.getPublishedTerms().contains(atp)) {
+                // Load course offering comments
+                List<CourseOfferingInfo> courseOfferingInfoList = null;
+                try {
+                    courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), atp, CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error(" Could not load course offerings for : " + course.getCode() + " atp : " + atp);
+                    return instituteList;
                 }
-            }
 
+                String courseComments = null;
+                String curriculumComments = null;
+                for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
-            List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp, planItemsByTerm.get(atp));
-            for (ActivityOfferingItem activityOfferingItem : list) {
-                int instituteCode = Integer.valueOf(activityOfferingItem.getInstituteCode());
-                String instituteName = activityOfferingItem.getInstituteName();
-                CourseOfferingInstitution courseOfferingInstitution = null;
-                for (CourseOfferingInstitution temp : instituteList) {
-                    if (instituteCode == temp.getCode()) {
-                        courseOfferingInstitution = temp;
-                        break;
+                    if (null != courseComments && null != curriculumComments) break;
+
+                    for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
+                        String key = attributeInfo.getKey();
+                        String value = attributeInfo.getValue();
+                        if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0) {
+                            courseComments = value;
+                            if (null != curriculumComments) break;
+                        } else if ("CurriculumComments".equalsIgnoreCase(key) && value.length() > 0) {
+                            curriculumComments = value;
+                            if (null != courseComments) break;
+                        }
+
                     }
                 }
-                if (courseOfferingInstitution == null) {
-                    courseOfferingInstitution = new CourseOfferingInstitution();
-                    courseOfferingInstitution.setCode(instituteCode);
-                    courseOfferingInstitution.setName(instituteName);
-                    instituteList.add(courseOfferingInstitution);
-                }
 
-                List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
-                CourseOfferingTerm courseOfferingTerm = null;
-                for (CourseOfferingTerm temp : courseOfferingTermList) {
-                    if (yt.equals(temp.getYearTerm())) {
-                        courseOfferingTerm = temp;
+
+                List<ActivityOfferingItem> list = getActivityOfferingItems(course, courseOfferingInfoList, atp, planItemsByTerm.get(atp));
+                for (ActivityOfferingItem activityOfferingItem : list) {
+                    int instituteCode = Integer.valueOf(activityOfferingItem.getInstituteCode());
+                    String instituteName = activityOfferingItem.getInstituteName();
+                    CourseOfferingInstitution courseOfferingInstitution = null;
+                    for (CourseOfferingInstitution temp : instituteList) {
+                        if (instituteCode == temp.getCode()) {
+                            courseOfferingInstitution = temp;
+                            break;
+                        }
                     }
-                }
-                if (courseOfferingTerm == null) {
-                    courseOfferingTerm = new CourseOfferingTerm();
-                    courseOfferingTerm.setYearTerm(yt);
-                    courseOfferingTerm.setTerm(yt.toLabel());
-                    courseOfferingTerm.setCourseComments(courseComments);
-                    courseOfferingTerm.setCurriculumComments(curriculumComments);
-                    courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
-                    courseOfferingTerm.setCoursePlanType(getPlanType(getPlanItem(course.getVersionInfo().getVersionIndId(), yt.toATP())));
-                    courseOfferingTermList.add(courseOfferingTerm);
-                }
+                    if (courseOfferingInstitution == null) {
+                        courseOfferingInstitution = new CourseOfferingInstitution();
+                        courseOfferingInstitution.setCode(instituteCode);
+                        courseOfferingInstitution.setName(instituteName);
+                        instituteList.add(courseOfferingInstitution);
+                    }
 
-                courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+                    List<CourseOfferingTerm> courseOfferingTermList = courseOfferingInstitution.getCourseOfferingTermList();
+                    CourseOfferingTerm courseOfferingTerm = null;
+                    for (CourseOfferingTerm temp : courseOfferingTermList) {
+                        if (yt.equals(temp.getYearTerm())) {
+                            courseOfferingTerm = temp;
+                        }
+                    }
+                    if (courseOfferingTerm == null) {
+                        courseOfferingTerm = new CourseOfferingTerm();
+                        courseOfferingTerm.setYearTerm(yt);
+                        courseOfferingTerm.setTerm(yt.toLabel());
+                        courseOfferingTerm.setCourseComments(courseComments);
+                        courseOfferingTerm.setCurriculumComments(curriculumComments);
+                        courseOfferingTerm.setInstituteCode(courseOfferingInstitution.getCode());
+                        courseOfferingTerm.setCoursePlanType(getPlanType(getPlanItem(course.getVersionInfo().getVersionIndId(), yt.toATP())));
+                        courseOfferingTermList.add(courseOfferingTerm);
+                    }
+
+                    courseOfferingTerm.getActivityOfferingItemList().add(activityOfferingItem);
+                }
             }
         }
         Collections.sort(instituteList);
@@ -710,8 +711,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      *
      * @param course
      * @param courseOfferingInfoList List of course offerings for the given term
-     * @param termId      Term for which activity offerings are requested
-     * @param planItemMap Map of refObjectId to planItemId for the requested term
+     * @param termId                 Term for which activity offerings are requested
+     * @param planItemMap            Map of refObjectId to planItemId for the requested term
      * @return
      */
 
@@ -719,180 +720,181 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
+        if (AtpHelper.getPublishedTerms().contains(termId)) {
+            for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
-        for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
+                // Activity offerings come back as a list, the first item is primary, the remaining are secondary
+                String courseOfferingID = courseInfo.getCourseId();
+                List<ActivityOfferingDisplayInfo> aodiList = null;
 
-            // Activity offerings come back as a list, the first item is primary, the remaining are secondary
-            String courseOfferingID = courseInfo.getCourseId();
-            List<ActivityOfferingDisplayInfo> aodiList = null;
+                try {
+                    aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.info("Not able to load activity offering for courseOffering: " + courseOfferingID + " Term:" + termId);
+                    continue;
+                }
 
-            try {
-                aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.info("Not able to load activity offering for courseOffering: " + courseOfferingID + " Term:" + termId);
-                continue;
-            }
+                boolean primary = true;
+                String primarySectionCode = null;
 
-            boolean primary = true;
-            String primarySectionCode = null;
+                for (ActivityOfferingDisplayInfo aodi : aodiList) {
+                    ActivityOfferingItem activity = new ActivityOfferingItem();
+                    activity.setCourseId(course.getId());
+                    String sectionId = aodi.getActivityOfferingCode();
+                    activity.setCode(sectionId);
 
-            for (ActivityOfferingDisplayInfo aodi : aodiList) {
-                ActivityOfferingItem activity = new ActivityOfferingItem();
-                activity.setCourseId(course.getId());
-                String sectionId = aodi.getActivityOfferingCode();
-                activity.setCode(sectionId);
+                    String typeName = aodi.getTypeName();
+                    activity.setActivityOfferingType(typeName);
 
-                String typeName = aodi.getTypeName();
-                activity.setActivityOfferingType(typeName);
+                    activity.setCredits(courseInfo.getCreditOptionName());
+                    activity.setGradingOption(courseInfo.getGradingOptionName());
+                    List<MeetingDetails> meetingDetailsList = activity.getMeetingDetailsList();
+                    {
+                        ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+                        for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
+                            MeetingDetails meeting = new MeetingDetails();
 
-                activity.setCredits(courseInfo.getCreditOptionName());
-                activity.setGradingOption(courseInfo.getGradingOptionName());
-                List<MeetingDetails> meetingDetailsList = activity.getMeetingDetailsList();
-                {
-                    ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
-                    for (ScheduleComponentDisplayInfo scdi : sdi.getScheduleComponentDisplays()) {
-                        MeetingDetails meeting = new MeetingDetails();
+                            BuildingInfo building = scdi.getBuilding();
+                            if (building != null) {
+                                meeting.setCampus(building.getCampusKey());
+                                meeting.setBuilding(building.getBuildingCode());
+                            }
 
-                        BuildingInfo building = scdi.getBuilding();
-                        if (building != null) {
-                            meeting.setCampus(building.getCampusKey());
-                            meeting.setBuilding(building.getBuildingCode());
-                        }
+                            RoomInfo roomInfo = scdi.getRoom();
+                            if (roomInfo != null) {
+                                meeting.setRoom(roomInfo.getRoomCode());
+                            }
 
-                        RoomInfo roomInfo = scdi.getRoom();
-                        if (roomInfo != null) {
-                            meeting.setRoom(roomInfo.getRoomCode());
-                        }
+                            for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
 
-                        for (TimeSlotInfo timeSlot : scdi.getTimeSlots()) {
-
-                            String days = "";
-                            for (int weekday : timeSlot.getWeekdays()) {
-                                if (weekday > -1 && weekday < 7) {
-                                    String letter = WEEKDAYS_FIRST_LETTER[weekday];
-                                    days += letter;
+                                String days = "";
+                                for (int weekday : timeSlot.getWeekdays()) {
+                                    if (weekday > -1 && weekday < 7) {
+                                        String letter = WEEKDAYS_FIRST_LETTER[weekday];
+                                        days += letter;
+                                    }
                                 }
+                                if (!"".equals(days)) {
+                                    meeting.setDays(days);
+                                }
+
+                                TimeOfDayInfo startInfo = timeSlot.getStartTime();
+                                TimeOfDayInfo endInfo = timeSlot.getEndTime();
+                                if (startInfo != null && endInfo != null) {
+                                    long startTimeMillis = startInfo.getMilliSeconds();
+                                    String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+
+                                    long endTimeMillis = endInfo.getMilliSeconds();
+                                    String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+
+                                    String time = startTime + " - " + endTime;
+
+                                    meeting.setTime(time);
+                                }
+                                meetingDetailsList.add(meeting);
                             }
-                            if (!"".equals(days)) {
-                                meeting.setDays(days);
-                            }
-
-                            TimeOfDayInfo startInfo = timeSlot.getStartTime();
-                            TimeOfDayInfo endInfo = timeSlot.getEndTime();
-                            if (startInfo != null && endInfo != null) {
-                                long startTimeMillis = startInfo.getMilliSeconds();
-                                String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
-
-                                long endTimeMillis = endInfo.getMilliSeconds();
-                                String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
-
-                                String time = startTime + " - " + endTime;
-
-                                meeting.setTime(time);
-                            }
-                            meetingDetailsList.add(meeting);
                         }
                     }
+
+
+                    String instituteCode = null;
+                    String instituteName = null;
+
+                    String campus = null;
+                    for (AttributeInfo attrib : aodi.getAttributes()) {
+                        String key = attrib.getKey();
+                        String value = attrib.getValue();
+                        if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
+                            campus = value;
+                            continue;
+                        }
+                        if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
+                            activity.setFeeAmount(value);
+                            continue;
+                        }
+                        if ("SLN".equalsIgnoreCase(key)) {
+                            activity.setRegistrationCode(value);
+                            continue;
+                        }
+                        if ("InstituteCode".equals(key)) {
+                            instituteCode = value;
+                            continue;
+                        }
+                        if ("InstituteName".equals(key) && !"".equals(value)) {
+                            instituteName = value;
+                            continue;
+                        }
+
+                        if ("SectionComments".equalsIgnoreCase(key)) {
+                            activity.setSectionComments(value);
+                            continue;
+                        }
+
+                        if ("SummerTerm".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
+                            activity.setSummerTerm(value);
+                            continue;
+                        }
+
+                        Boolean flag = Boolean.valueOf(value);
+                        if ("ServiceLearning".equalsIgnoreCase(key)) {
+                            activity.setServiceLearning(flag);
+                        } else if ("ResearchCredit".equalsIgnoreCase(key)) {
+                            activity.setResearch(flag);
+                        } else if ("DistanceLearning".equalsIgnoreCase(key)) {
+                            activity.setDistanceLearning(flag);
+                        } else if ("JointSections".equalsIgnoreCase(key)) {
+                            activity.setJointOffering(flag);
+                        } else if ("Writing".equalsIgnoreCase(key)) {
+                            activity.setWritingSection(flag);
+                        } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
+                            activity.setIneligibleForFinancialAid(flag);
+                        } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
+                            activity.setAddCodeRequired(flag);
+                        } else if ("IndependentStudy".equalsIgnoreCase(key)) {
+                            activity.setIndependentStudy(flag);
+                        } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
+                            activity.setEnrollRestriction(flag);
+                        }
+
+                    }
+                    activity.setInstructor(aodi.getInstructorName());
+
+                    activity.setHonorsSection(aodi.getIsHonorsOffering());
+                    activity.setNewThisYear(false);
+
+                    activity.setDetails("View more details");
+
+                    // Added this flag to know if the activityoffering is planned/backup
+                    String planRefObjId = course.getCode() + " " + sectionId;
+                    if (null != planItemMap) {
+                        activity.setPlanItemId(planItemMap.get(planRefObjId));
+                    }
+
+                    activity.setAtpId(termId);
+                    YearTerm yt = AtpHelper.atpToYearTerm(termId);
+                    activity.setQtryr(yt.toQTRYRParam());
+
+                    if (instituteCode == null) {
+                        instituteCode = campus;
+                    }
+                    if (instituteName == null) {
+                        instituteName = campus;
+                    }
+
+                    activity.setInstituteName(instituteName);
+                    activity.setInstituteCode(instituteCode);
+                    /*PrimarySectionCode is for the add button hover text in secondary sections
+    * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
+                    if (primary) {
+                        primarySectionCode = activity.getCode();
+                        activity.setPrimarySectionCode(primarySectionCode);
+                    } else {
+                        activity.setPrimarySectionCode(primarySectionCode);
+                    }
+                    activity.setPrimary(primary);
+                    primary = false;
+                    activityOfferingItemList.add(activity);
                 }
-
-
-                String instituteCode = null;
-                String instituteName = null;
-
-                String campus = null;
-                for (AttributeInfo attrib : aodi.getAttributes()) {
-                    String key = attrib.getKey();
-                    String value = attrib.getValue();
-                    if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
-                        campus = value;
-                        continue;
-                    }
-                    if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
-                        activity.setFeeAmount(value);
-                        continue;
-                    }
-                    if ("SLN".equalsIgnoreCase(key)) {
-                        activity.setRegistrationCode(value);
-                        continue;
-                    }
-                    if ("InstituteCode".equals(key)) {
-                        instituteCode = value;
-                        continue;
-                    }
-                    if ("InstituteName".equals(key) && !"".equals(value)) {
-                        instituteName = value;
-                        continue;
-                    }
-
-                    if ("SectionComments".equalsIgnoreCase(key)) {
-                        activity.setSectionComments(value);
-                        continue;
-                    }
-
-                    if ("SummerTerm".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
-                        activity.setSummerTerm(value);
-                        continue;
-                    }
-
-                    Boolean flag = Boolean.valueOf(value);
-                    if ("ServiceLearning".equalsIgnoreCase(key)) {
-                        activity.setServiceLearning(flag);
-                    } else if ("ResearchCredit".equalsIgnoreCase(key)) {
-                        activity.setResearch(flag);
-                    } else if ("DistanceLearning".equalsIgnoreCase(key)) {
-                        activity.setDistanceLearning(flag);
-                    } else if ("JointSections".equalsIgnoreCase(key)) {
-                        activity.setJointOffering(flag);
-                    } else if ("Writing".equalsIgnoreCase(key)) {
-                        activity.setWritingSection(flag);
-                    } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
-                        activity.setIneligibleForFinancialAid(flag);
-                    } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
-                        activity.setAddCodeRequired(flag);
-                    } else if ("IndependentStudy".equalsIgnoreCase(key)) {
-                        activity.setIndependentStudy(flag);
-                    } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
-                        activity.setEnrollRestriction(flag);
-                    }
-
-                }
-                activity.setInstructor(aodi.getInstructorName());
-
-                activity.setHonorsSection(aodi.getIsHonorsOffering());
-                activity.setNewThisYear(false);
-
-                activity.setDetails("View more details");
-
-                // Added this flag to know if the activityoffering is planned/backup
-                String planRefObjId = course.getCode() + " " + sectionId;
-                if (null != planItemMap) {
-                    activity.setPlanItemId(planItemMap.get(planRefObjId));
-                }
-
-                activity.setAtpId(termId);
-                YearTerm yt = AtpHelper.atpToYearTerm(termId);
-                activity.setQtryr(yt.toQTRYRParam());
-
-                if (instituteCode == null) {
-                    instituteCode = campus;
-                }
-                if (instituteName == null) {
-                    instituteName = campus;
-                }
-
-                activity.setInstituteName(instituteName);
-                activity.setInstituteCode(instituteCode);
-                /*PrimarySectionCode is for the add button hover text in secondary sections
-                * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
-                if (primary) {
-                    primarySectionCode = activity.getCode();
-                    activity.setPrimarySectionCode(primarySectionCode);
-                } else {
-                    activity.setPrimarySectionCode(primarySectionCode);
-                }
-                activity.setPrimary(primary);
-                primary = false;
-                activityOfferingItemList.add(activity);
             }
         }
 
@@ -951,7 +953,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
                 }
             }
-
 
 
         } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
