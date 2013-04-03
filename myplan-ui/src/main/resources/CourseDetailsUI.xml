@@ -1055,16 +1055,19 @@
 
                 <bean parent="activityEnrlData"/>
 
-                <bean parent="activityActionButton" p:render="@{#line.primary and #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <bean parent="activityActionButton"
+                      p:render="@{#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                 <bean parent="activityActionButton" p:rowSpan="1"
-                      p:render="@{!#line.primary and #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-
-                <bean parent="empty_adviser_text" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-                <bean parent="empty_adviser_text" p:rowSpan="1" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                 <bean parent="activityActionLink" p:render="@{#line.primary and #line.planItemId NE null}"/>
                 <bean parent="activityActionLink" p:rowSpan="1"
                       p:render="@{!#line.primary and #line.planItemId NE null}"/>
+
+                <bean parent="adviserEmptyAction"
+                      p:render="@{#line.primary AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <bean parent="adviserEmptyAction" p:rowSpan="1"
+                      p:render="@{!#line.primary AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                 <bean parent="activityInstructor"/>
 
@@ -1406,16 +1409,12 @@
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
-    <bean id="empty_adviser_text" parent="Uif-MessageField" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
-        <property name="label" value=""/>
+    <bean id="adviserEmptyAction" parent="Uif-SpaceField" p:rowSpan="3" p:colSpan="1">
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
-                <value>myplan-add</value>
-                <value>fl-text-align-center</value>
             </list>
         </property>
-        <property name="style" value="margin:8px 0 0 0;"/>
     </bean>
 
 </beans>
