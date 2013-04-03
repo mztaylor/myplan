@@ -422,11 +422,8 @@ function openDialog(sText, e, close) {
 
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
-    var dialogHtml = jQuery('<div />').html(sText).css({
-        width:"300px"
-    });
-
-    popupOptionsDefault.innerHtml = dialogHtml.wrap("<div>").parent().clone().html();
+    popupOptionsDefault.tail.hidden = true;
+    popupOptionsDefault.innerHtml = '<div style="width:300px;">' + sText + '</div>';
 
     popupBox.ShowPopOver(popupOptionsDefault, false);
     var popupBoxId = popupBox.GetPopOverID();
@@ -566,7 +563,7 @@ function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
                 var sContent = jQuery("<div />").append(oMessage.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
                 var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                 if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
-                openDialog(sHtml.html(), e);
+                openDialog(sHtml.html(), e, true);
                 break;
         }
     };
@@ -815,7 +812,10 @@ function clickOutsidePopOver(popoverId, element) {
  ######################################################################################
  */
 function fnCloseAllPopups() {
-    if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
+    if (jQuery("body").HasPopOver()) {
+        jQuery("body").HidePopOver();
+        jQuery("body").RemovePopOver();
+    }
     jQuery("div.jquerypopover.jquerypopover-myplan").remove();
     jQuery(document).off("click");
 }

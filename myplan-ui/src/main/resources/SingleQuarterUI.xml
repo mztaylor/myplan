@@ -178,14 +178,10 @@
         <property name="onDocumentReadyScript" value="
             jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
                     fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
-                    var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
-                    row.addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned');
                     if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
                         var items = data.ItemsToUpdate.split(',');
                         jQuery.each(items, function (index, value) {
                             fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
-                            var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
-                            row.addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned');
                         });
                     }
                 })
@@ -200,14 +196,10 @@
                         }
                     } else {
                         fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
-                        var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
-                        row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
                         if (data.ItemsToUpdate) {
                             var items = data.ItemsToUpdate.split(',');
                             jQuery.each(items, function (index, value) {
                                 fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
-                                var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
-                                row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
                             });
                         }
                     }
@@ -290,7 +282,8 @@
         <property name="header.lowerGroup.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ImageField" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP">
+                <bean parent="Uif-ImageField" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                      p:colSpan="1" p:rowSpan="1">
                     <property name="id" value="button_@{#line.uuid}"/>
                     <property name="source"
                               value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
@@ -308,7 +301,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}">
+                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                      p:rowSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="label" value="Section"/>
                     <property name="cssClasses">
@@ -332,7 +326,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}">
+                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                      p:rowSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="label" value="Type"/>
                     <property name="cssClasses">
@@ -353,7 +348,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="activityMeetingData" p:render="@{#line.activityOfferingItem ne null}">
+                <bean parent="activityMeetingData" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                      p:rowSpan="1">
                     <property name="propertyName" value="activityOfferingItem.activityItem"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -361,7 +357,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:render="@{#line.activityOfferingItem ne null}">
+                <bean parent="Uif-DataField" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                      p:rowSpan="1">
                     <property name="propertyName" value="activityOfferingItem.instructor"/>
                     <property name="label" value="Instructor"/>
                     <property name="cssClasses">
@@ -371,7 +368,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP">
+                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                      p:colSpan="1" p:rowSpan="1">
                     <property name="id" value="details_@{#line.uuid}"/>
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="onDocumentReadyScript" value="
@@ -404,7 +402,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP">
+                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                      p:colSpan="1" p:rowSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -455,7 +454,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP">
+                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                      p:colSpan="3" p:rowSpan="1">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -580,7 +580,7 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-                                  p:linkSeparator="|" p:style="float:right; display:inline-block; margin-right:10px;">
+                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
                                 <property name="render"
                                           value="@{#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
                                 <property name="items">
