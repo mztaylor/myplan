@@ -798,11 +798,11 @@ function fnPopoverSlider(showId, parentId, direction) {
 }
 
 function clickOutsidePopOver(popoverId, element) {
-    jQuery(document).on("click", function (e) {
+    jQuery("body").on("click", function (e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
             element.HidePopOver();
-            jQuery(document).off("click");
+            jQuery("body").off("click");
         }
     });
 }
@@ -817,7 +817,7 @@ function fnCloseAllPopups() {
         jQuery("body").RemovePopOver();
     }
     jQuery("div.jquerypopover.jquerypopover-myplan").remove();
-    jQuery(document).off("click");
+    jQuery("body").off("click");
 }
 /*
  ######################################################################################
