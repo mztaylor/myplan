@@ -1059,8 +1059,8 @@
                 <bean parent="activityActionButton" p:rowSpan="1"
                       p:render="@{!#line.primary and #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
-                <bean parent="empty_advisr_text" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-                <bean parent="empty_advisr_text" p:rowSpan="1" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <bean parent="empty_adviser_text" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <bean parent="empty_adviser_text" p:rowSpan="1" p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                 <bean parent="activityActionLink" p:render="@{#line.primary and #line.planItemId NE null}"/>
                 <bean parent="activityActionLink" p:rowSpan="1"
@@ -1406,7 +1406,7 @@
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
-    <bean id="empty_advisr_text" parent="Uif-MessageField" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
+    <bean id="empty_adviser_text" parent="Uif-MessageField" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="label" value=""/>
         <property name="cssClasses">
             <list merge="true">
