@@ -325,14 +325,8 @@
                                     </list>
                                 </property>
                             </bean>
-
-                            <bean parent="Uif-MessageField"
-                                  p:fieldLabel.render="false"
-                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() eq 0}"
-                                  p:style="width:131px;visibility:hidden;">
-                                <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="-"/>
-                                </property>
+                            <bean parent="Uif-SpaceField" p:style="width:131px;"
+                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() eq 0}">
                             </bean>
 
                             <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"
@@ -356,13 +350,18 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Scheduled For"
-                                  p:propertyName="courseDetails"
-                                  p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                                  p:propertyName="courseDetails" p:labelPlacement="LEFT"
                                   p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-data-list</value>
+                                    </list>
+                                </property>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>myplan-text-normal</value>
                                     </list>
                                 </property>
                             </bean>

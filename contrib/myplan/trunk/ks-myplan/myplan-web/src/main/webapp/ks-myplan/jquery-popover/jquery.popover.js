@@ -946,11 +946,6 @@
                             position:"absolute",
                             display:"block"
                         });
-                        if (H.dropShadow == true) {
-                            if (a.browser.msie && parseInt(a.browser.version) < 9) {
-                                a("#" + H.privateVars.id + " table").addClass(H.baseClass + "-ie")
-                            }
-                        }
                         q(H);
                         var E = c(y, a(this), H);
                         y.css({
@@ -976,11 +971,6 @@
                                         H.privateVars.is_animating = false;
                                         H.privateVars.is_animation_complete = true;
                                         d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
-                                        }
                                         H.afterShown()
                                     });
                                     break;
@@ -992,11 +982,6 @@
                                         H.privateVars.is_animating = false;
                                         H.privateVars.is_animation_complete = true;
                                         d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
-                                        }
                                         H.afterShown()
                                     });
                                     break;
@@ -1008,11 +993,6 @@
                                         H.privateVars.is_animating = false;
                                         H.privateVars.is_animation_complete = true;
                                         d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
-                                        }
                                         H.afterShown()
                                     });
                                     break;
@@ -1024,11 +1004,6 @@
                                         H.privateVars.is_animating = false;
                                         H.privateVars.is_animation_complete = true;
                                         d(w, H);
-                                        if (H.dropShadow == true) {
-                                            if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                                y.addClass(H.baseClass + "-ie")
-                                            }
-                                        }
                                         H.afterShown()
                                     });
                                     break
@@ -1051,11 +1026,6 @@
                             A.privateVars.is_animating = true;
                             d(w, A);
                             y.stop();
-                            if (A.dropShadow == true) {
-                                if (a.browser.msie && parseInt(a.browser.version) > 8) {
-                                    y.removeClass(A.baseClass + "-ie")
-                                }
-                            }
                             switch (A.position) {
                                 case "left":
                                     y.animate({

@@ -4,7 +4,7 @@
  #################################################################
  */
 function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections) {
-    var item = '<div id="' + planItemId + '_div_' + type + '_' + atpId +'" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
+    var item = '<div id="' + planItemId + '_div_' + type + '_' + atpId + '" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
         '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
         '<fieldset>' +
@@ -157,14 +157,17 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
     }
     var script;
     var component = jQuery("#" + actionId);
+    var row = component.parents('tr.row');
     component.unbind('click');
     switch (action) {
         case "added":
             component.removeClass('myplan-add').addClass('myplan-delete').attr("data-planned", "true").data("planned", true).parent("td").removeClass('myplan-add').addClass('myplan-delete');
+            row.addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned').next('tr.collapsible').addClass('myplan-section-planned');
             script = "jQuery('#' + '" + actionId + "').click(function(e) { myplanAjaxSubmitSectionItem('" + planItemId + "', 'removeItem', 'plan', {planItemId:'" + planItemId + "',sectionCode:'" + component.data("coursesection") + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',registrationCode:'" + regId + "',primary:" + component.data("primary") + ",viewId:'PlannedCourse-FormView'}, e); }); ";
             break;
         case "deleted":
             component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false").data("planned", false).parent("td").removeClass('myplan-delete').addClass('myplan-add');
+            row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
             script = "jQuery('#' + '" + actionId + "').click(function(e) { myplanAjaxSubmitSectionItem('" + data.courseDetails.courseId + "', 'addPlannedCourse', 'plan', {courseId:'" + data.courseDetails.courseId + "',sectionCode:'" + component.data("coursesection") + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',registrationCode:'" + regId + "',primary:" + component.data("primary") + ",viewId:'PlannedCourse-FormView'}, e);}); ";
             break;
     }

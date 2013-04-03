@@ -15,11 +15,6 @@
     color: #1d8fd9;
 }
 
-.jquerypopover-ie {
-    filter: progid:DXImageTransform.Microsoft.Shadow(color = "#666666", Direction = 135, Strength = 3);
-}
-
-/* the plugin adds this class only if browser is IE; if IE9, it's added to main <DIV> else to <TABLE> */
 .jquerypopover table {
     width: auto;
     height: auto;
