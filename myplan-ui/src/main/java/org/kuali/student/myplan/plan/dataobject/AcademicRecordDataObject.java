@@ -99,6 +99,9 @@ public class AcademicRecordDataObject {
     }
 
     public ActivityOfferingItem getActivityOfferingItem() {
+        if(activityOfferingItem == null){
+            activityOfferingItem = new ActivityOfferingItem();
+        }
         return activityOfferingItem;
     }
 
