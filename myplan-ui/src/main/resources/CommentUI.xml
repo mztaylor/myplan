@@ -365,13 +365,10 @@
 
                 <bean id="commenting_textbox" parent="Uif-InputField" p:propertyName="commentBody"
                       p:fieldLabel.render="false" p:style="margin:0;">
-                    <!--<property name="onDocumentReadyScript" value="
-                        jQuery('textarea#commenting_textbox_control').focus();
-                    "/>-->
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="2" p:style="resize:none; padding:10px;"
-                              p:textExpand="false"
-                              p:watermarkText="Write comment... (500 characters max)">
+                              p:textExpand="false">
+                            <!--p:watermarkText="Write comment... (500 characters max)">-->
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-container-500</value>
@@ -386,13 +383,20 @@
         </property>
     </bean>
 
-    <bean id="comment_dialog_message_count" parent="Uif-HorizontalBoxSubSection" p:style="float:right;">
+    <bean id="comment_dialog_message_count" parent="Uif-HorizontalBoxSubSection">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>fl-container-500</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="" p:style="margin:0;">
+                <bean parent="Uif-MessageField" p:messageText="" p:style="margin:0; float:right;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-counter</value>
+                            <value>fl-text-gray</value>
+                            <value>myplan-text-italic</value>
                         </list>
                     </property>
                     <property name="onDocumentReadyScript"
@@ -402,13 +406,15 @@
         </property>
     </bean>
 
-    <bean id="message_dialog_message_count" parent="Uif-HorizontalBoxSubSection" p:style="float:right;">
+    <bean id="message_dialog_message_count" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="" p:style="margin:0;">
+                <bean parent="Uif-MessageField" p:messageText="" p:style="float:right; margin:0;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-counter</value>
+                            <value>myplan-text-italic</value>
+                            <value>fl-text-gray</value>
                         </list>
                     </property>
                     <property name="onDocumentReadyScript"
@@ -428,26 +434,43 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
-                      p:fieldLabel.render="false">
-                    <property name="control">
-                        <bean parent="Uif-TextControl" p:maxLength="70" p:watermarkText="Maximum characters are 70"
-                              p:disabled="@{#form.feedBackMode}">
-                            <property name="onKeyPressScript" value="
-                                var code = (e.keyCode ? e.keyCode : e.which);
-                                if (code == 13) {
-                                    e.preventDefault ? e.preventDefault() : e.returnValue = false;
-                                }
-                            "/>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-container-500</value>
-                                    <value>myplan-required</value>
-                                </list>
-                            </property>
-                        </bean>
+                <bean parent="Uif-VerticalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean id="subject_textbox" parent="Uif-InputField" p:propertyName="subject"
+                                  p:style="margin:0px;"
+                                  p:fieldLabel.render="false">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl" p:maxLength="70" p:disabled="@{#form.feedBackMode}">
+                                        <!--p:watermarkText="Maximum characters are 70">-->
+                                        <property name="onKeyPressScript" value="
+                                            var code = (e.keyCode ? e.keyCode : e.which);
+                                            if (code == 13) {
+                                                e.preventDefault ? e.preventDefault() : e.returnValue = false;
+                                            }
+                                        "/>
+                                        <property name="cssClasses">
+                                            <list merge="true">
+                                                <value>fl-container-500</value>
+                                                <value>myplan-required</value>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-MessageField" p:messageText="Maximum characters are 70"
+                                  p:style="margin:0;">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>fl-text-gray</value>
+                                        <value>myplan-text-italic</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
+
             </list>
         </property>
     </bean>
@@ -464,12 +487,10 @@
                 </bean>
                 <bean id="message_textbox" parent="Uif-InputField" p:propertyName="body"
                       p:fieldLabel.render="false">
-                    <!--<property name="onDocumentReadyScript" value="
-                        jQuery('textarea#message_textbox_control').focus();
-                    "/>-->
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="10" p:textExpand="false" p:style="resize:none;"
-                              p:watermarkText="Maximum characters are 1000" p:disabled="@{#form.feedBackMode}">
+                              p:disabled="@{#form.feedBackMode}">
+                            <!--p:watermarkText="Maximum characters are 1000">-->
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>myplan-textarea</value>
