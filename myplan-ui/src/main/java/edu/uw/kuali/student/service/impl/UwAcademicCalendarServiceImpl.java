@@ -359,8 +359,13 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
             priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
 
+            AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
+            priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
+            priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
+
             attributes.add(lastDropAttr);
             attributes.add(priorityOneRegStAttr);
+            attributes.add(priorityOneRegEndAttr);
             termInfo.setAttributes(attributes);
         }
         if (str.equalsIgnoreCase(PlanConstants.PUBLISHED) || str.equalsIgnoreCase(PlanConstants.PLANNING)) {
@@ -426,8 +431,13 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                     priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
                     priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
 
+                    AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
+                    priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
+                    priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
+
                     attributes.add(lastDropAttr);
                     attributes.add(priorityOneRegStAttr);
+                    attributes.add(priorityOneRegEndAttr);
                     ti.setAttributes(attributes);
 
                     termInfos.add(ti);
@@ -797,5 +807,32 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         }
 
         return (null == earliestStartRegistrationDateStr) ? "" : earliestStartRegistrationDateStr;
+    }
+
+    /**
+     * Calculates and returns the start date of priority 1 registration for the provided term
+     *
+     * @param termDocument
+     * @return
+     */
+    private String getPriorityOneRegistrationEndDate(Document termDocument) {
+        Element registrationPeriods = termDocument.getRootElement().element("RegistrationPeriods");
+        String endRegistrationDateStr = null;
+        DateTime endRegistrationDate = null;
+        for (Element registrationPeriod : (List<Element>) registrationPeriods.elements()) {
+            String endDateStr = registrationPeriod.element("EndDate").getTextTrim();
+            if (null == endRegistrationDateStr) {
+                endRegistrationDateStr = endDateStr;
+                endRegistrationDate = new DateTime(endRegistrationDateStr);
+            } else {
+                DateTime endDt = new DateTime(endDateStr);
+                if (endDt.isAfter(endRegistrationDate)) {
+                    endRegistrationDate = endDt;
+                    endRegistrationDateStr = endDateStr;
+                }
+            }
+        }
+
+        return (null == endRegistrationDateStr) ? "" : endRegistrationDateStr;
     }
 }

@@ -759,10 +759,10 @@
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionDelete" p:rowSpan="1"
-                      p:render="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.registrationClosed AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
-                <bean parent="Uif-MessageField" p:rowSpan="1"
-                      p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <bean parent="Uif-MessageField" p:rowSpan="1" p:messageText="--"
+                      p:render="@{#line.registrationClosed OR T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                 <bean parent="activityInstructor">
                     <property name="onDocumentReadyScript" value="

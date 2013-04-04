@@ -1056,18 +1056,18 @@
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionButton"
-                      p:render="@{#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.registrationClosed AND #line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                 <bean parent="activityActionButton" p:rowSpan="1"
-                      p:render="@{!#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
-                <bean parent="activityActionLink" p:render="@{#line.primary and #line.planItemId NE null}"/>
+                <bean parent="activityActionLink" p:render="@{!#line.registrationClosed AND #line.primary and #line.planItemId NE null}"/>
                 <bean parent="activityActionLink" p:rowSpan="1"
-                      p:render="@{!#line.primary and #line.planItemId NE null}"/>
+                      p:render="@{!#line.registrationClosed AND !#line.primary and #line.planItemId NE null}"/>
 
                 <bean parent="adviserEmptyAction"
-                      p:render="@{#line.primary AND #line.planItemId EQ null AND  T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{#line.registrationClosed OR #line.primary AND #line.planItemId EQ null AND  T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                 <bean parent="adviserEmptyAction" p:rowSpan="1"
-                      p:render="@{!#line.primary AND #line.planItemId EQ null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{#line.registrationClosed OR !#line.primary AND #line.planItemId EQ null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                 <bean parent="activityInstructor"/>
 
