@@ -95,21 +95,23 @@ public class PlannedCourseDataObject implements Comparable {
     }
 
 
-    public String getCredit() {
-        String credit = null;
-        if (!getPlanActivities().isEmpty()) {
-            ArrayList<String> creditList = new ArrayList<String>();
-            for (ActivityOfferingItem item : getPlanActivities()) {
-                if (item.isPrimary()) {
-                    String credits = item.getCredits();
-                    creditList.add(credits);
-                }
-            }
-            credit = PlannedTermsHelperBase.unionCreditList(creditList);
-        } else if (courseDetails != null) {
-            credit = courseDetails.getCredit();
-        }
+    private String credit = null;
 
+    public String getCredit() {
+        if (credit == null) {
+            if (!getPlanActivities().isEmpty()) {
+                ArrayList<String> creditList = new ArrayList<String>();
+                for (ActivityOfferingItem item : getPlanActivities()) {
+                    if (item.isPrimary()) {
+                        String credits = item.getCredits();
+                        creditList.add(credits);
+                    }
+                }
+                credit = PlannedTermsHelperBase.unionCreditList(creditList);
+            } else if (courseDetails != null) {
+                credit = courseDetails.getCredit();
+            }
+        }
         return credit;
     }
 

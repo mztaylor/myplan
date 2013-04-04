@@ -91,25 +91,29 @@ public class PlannedTerm {
         this.backupList = backupList;
     }
 
-    public String getCredits() {
+    private String credits = null;
 
-        ArrayList<String> creditList = new ArrayList<String>();
-        if (isOpenForPlanning()) {
-            for (PlannedCourseDataObject pc : getPlannedList()) {
-                String credit = pc.getCredit();
+    public String getCredits() {
+        if (credits == null) {
+
+            ArrayList<String> creditList = new ArrayList<String>();
+            if (isOpenForPlanning()) {
+                for (PlannedCourseDataObject pc : getPlannedList()) {
+                    String credit = pc.getCredit();
+                    if (credit == null) continue;
+                    if ("".equals(credit)) continue;
+                    creditList.add(credit);
+                }
+            }
+            for (AcademicRecordDataObject ar : getAcademicRecord()) {
+                String credit = ar.getCredit();
                 if (credit == null) continue;
                 if ("".equals(credit)) continue;
                 creditList.add(credit);
             }
-        }
-        for (AcademicRecordDataObject ar : getAcademicRecord()) {
-            String credit = ar.getCredit();
-            if (credit == null) continue;
-            if ("".equals(credit)) continue;
-            creditList.add(credit);
-        }
 
-        String credits = PlannedTermsHelperBase.sumCreditList(creditList);
+            String credits = PlannedTermsHelperBase.sumCreditList(creditList);
+        }
         return credits;
     }
 
