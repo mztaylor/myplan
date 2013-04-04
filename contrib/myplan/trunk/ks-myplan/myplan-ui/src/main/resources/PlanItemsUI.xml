@@ -462,6 +462,7 @@
     <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection">
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="true"/>
         <property name="layoutManager.lineGroupPrototype.headerText" value="@{#line.qtrYear}"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
@@ -480,14 +481,13 @@
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
-        <property name="propertyName" value="lookupResults"/>
+        <property name="header.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-carousel-list</value>
                 <value>myplan-remove-margin</value>
             </list>
         </property>
-        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <!-- This hidden field is only rendered for the ATP that should have focus in the UI. The value of "index" will
