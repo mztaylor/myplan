@@ -46,7 +46,14 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="@{#line.name}"
-                                              p:render="@{dataObject.courseOfferingInstitutionList.size() gt 1}"/>
+                                              p:render="@{dataObject.courseOfferingInstitutionList.size() gt 1}">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>activityInstitutionHeading</value>
+                                                    <value>fl-text-gray</value>
+                                                </list>
+                                            </property>
+                                        </bean>
                                     </list>
                                 </property>
                                 <property name="subCollections">
@@ -62,12 +69,12 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             var tableHead = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections thead');
                                                             tableHead.before('
-                                                                &lt;col style=&quot;width: 56px;&quot;&gt;
+                                                                &lt;col style=&quot;width: 60px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 84px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 263px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 48px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 79px;&quot;&gt;
-                                                                &lt;col style=&quot;width: 73px;&quot;&gt;
+                                                                &lt;col style=&quot;width: 69px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 25px;&quot;&gt;
                                                             ');
                                                             tableHead.remove();
@@ -94,7 +101,7 @@
                                                                                   p:messageText="PCE"
                                                                                   p:style="margin:0;"
                                                                                   p:title="UW Professional &amp; Continuing Education"
-                                                                                  p:render="@{#line.instituteCode.startsWith('95')}">
+                                                                                  p:render="@{#line.instituteCode.startsWith('95') AND #line.primary}">
                                                                                 <property name="cssClasses">
                                                                                     <list merge="true">
                                                                                         <value>fl-font-size-80</value>
@@ -103,7 +110,8 @@
                                                                             </bean>
                                                                             <bean parent="Uif-ActionLink"
                                                                                   p:actionLabel="View more"
-                                                                                  p:style="margin:0;">
+                                                                                  p:style="margin:0;"
+                                                                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
                                                                                 <property name="dataAttributes">
                                                                                     <map>
                                                                                         <entry key="collapsed"
@@ -138,7 +146,8 @@
                                                                 <bean parent="activityActionDelete" p:rowSpan="1"
                                                                       p:render="@{!#line.registrationClosed AND #line.planItemId NE null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
-                                                                <bean parent="Uif-MessageField" p:rowSpan="1" p:messageText="--"
+                                                                <bean parent="Uif-MessageField" p:rowSpan="1"
+                                                                      p:messageText="--"
                                                                       p:render="@{#line.registrationClosed OR T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
 
                                                                 <bean parent="activityInstructor">

@@ -19,7 +19,7 @@
      limitations under the License.
     -->
 
-    <!--Single Plan Item View-->
+    <!-- Single Plan Item View -->
 
     <bean id="SingleTerm-InquiryView" parent="MyPlanInquiryView">
         <property name="headerText" value="Single Quarter View"/>
@@ -34,11 +34,6 @@
             <list merge="true">
                 <value>myplan-view</value>
                 <value>myplan-plan-loader</value>
-            </list>
-        </property>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>ks-myplan/plugins/jcarousellite.js</value>
             </list>
         </property>
         <property name="items">
@@ -59,11 +54,38 @@
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-HorizontalBoxGroup"
-                                                          p:style="margin:0; width:69px;">
+                                                          p:style="margin:0; width:72px;">
                                                         <property name="validationMessages.render" value="false"/>
                                                         <property name="items">
                                                             <list>
                                                                 <bean id="previous_quarter_button"
+                                                                      parent="MyPlan-NavLink"
+                                                                      p:title="Previous Quarter">
+                                                                    <property name="linkText"
+                                                                              value="&lt;img src=&quot;../ks-myplan/images/pixel.gif&quot; class=&quot;actionImage leftActionImage uif-image&quot; /&gt;"/>
+                                                                    <property name="href"
+                                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-carousel-prev</value>
+                                                                            <value>first</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean id="next_quarter_button" parent="MyPlan-NavLink"
+                                                                      p:title="Next Quarter">
+                                                                    <property name="linkText"
+                                                                              value="&lt;img src=&quot;../ks-myplan/images/pixel.gif&quot; class=&quot;actionImage rightActionImage uif-image&quot; /&gt;"/>
+                                                                    <property name="href"
+                                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-carousel-next</value>
+                                                                            <value>last</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <!--<bean id="previous_quarter_button"
                                                                       parent="MyPlan-NavButton"
                                                                       p:title="Previous Quarter">
                                                                     <property name="cssClasses">
@@ -81,12 +103,12 @@
                                                                             <value>last</value>
                                                                         </list>
                                                                     </property>
-                                                                </bean>
+                                                                </bean>-->
                                                             </list>
                                                         </property>
                                                     </bean>
 
-                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 431px;"
+                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 428px;"
                                                           p:cssClasses="myplan-plan-header">
                                                         <property name="message">
                                                             <bean parent="Uif-Message"
@@ -216,18 +238,38 @@
         </property>
         <property name="headerText" value="@{dataObject.qtrYear}"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree"/>
+            <bean parent="Uif-HeaderThree">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-quarter-heading</value>
+                        <value>@{dataObject.completedTerm ? 'past-term' : (dataObject.currentTermForView ?
+                            'current-term' : 'future-term')}
+                        </value>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="items">
             <list>
-                <ref bean="single_AcademicRecord_Collection"/>
-                <ref bean="single_Planned_Collection"/>
-                <ref bean="single_Backup_Collection"/>
+                <!-- Past quarter academic record with no courses -->
+                <bean parent="single_AcademicRecord_Empty"/>
+                <!-- Past quarter academic record with at least one course -->
+                <bean parent="single_AcademicRecord_Collection_Completed"/>
+                <!-- Current and Future quarter academic record with at least one course -->
+                <bean parent="single_AcademicRecord_Collection_Open"/>
+                <!-- Plan list NOT empty-->
+                <bean parent="single_Planned_Collection"/>
+                <!-- Plan list is empty -->
+                <bean parent="single_Planned_Collection_Empty"/>
+                <!-- Backup list NOT empty-->
+                <bean parent="single_Backup_Collection"/>
+                <!-- Backup list is empty -->
+                <bean parent="single_Backup_Collection_Empty"/>
             </list>
         </property>
     </bean>
 
-    <bean id="single_AcademicRecord_Collection" parent="course_details_activity_data" p:style="">
+    <bean id="single_AcademicRecord_Collection_Completed" parent="course_details_activity_data" p:style="">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
@@ -238,6 +280,106 @@
         </property>
         <property name="onDocumentReadyScript" value="
             var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
+            tableHead.before('
+                &lt;col style=&quot;width: 498px;&quot;&gt;
+                &lt;col style=&quot;width: 65px;&quot;&gt;
+                &lt;col style=&quot;width: 65px;&quot;&gt;
+            ');
+            jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
+        "/>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND dataObject.completedTerm}"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="layoutManager.numberOfColumns" value="3"/>
+        <property name="layoutManager.id" value="@{dataObject.atpId.replace('.','-')}"/>
+        <property name="headerText"
+                  value="Completed Courses"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_registered"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="header.lowerGroup">
+            <bean parent="Uif-VerticalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list></list>
+                </property>
+            </bean>
+        </property>
+        <property name="header.lowerGroup.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="label" value="Courses"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>activityCourseTitle</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} @{#line.activityCode}"/>
+                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
+                                <property name="href"
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-ellipsis</value>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-DataField">
+                    <property name="propertyName" value="credit"/>
+                    <property name="label" value="Credits"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-DataField">
+                    <property name="propertyName" value="grade"/>
+                    <property name="label" value="Grade"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="single_Quarter_Credit_Total"/>
+        </property>
+    </bean>
+
+    <bean id="single_AcademicRecord_Collection_Open" parent="course_details_activity_data" p:style="">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
+        <property name="propertyName" value="academicRecord"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-sections</value>
+            </list>
+        </property>
+        <property name="onDocumentReadyScript" value="
+            var tableHead = jQuery('table#academicRecord_@{dataObject.atpId.replace('.','-')} thead');
             tableHead.find('tr:gt(0)').remove();
             tableHead.find('tr th').last().attr('colspan', '2').prev('th').attr('colspan', '2');
             tableHead.before('
@@ -251,13 +393,13 @@
             ');
             jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
         "/>
-        <property name="render" value="@{dataObject.academicRecord.size() gt 0}"/>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm}"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
-        <property name="layoutManager.id" value="@{dataObject.atpId.replace('.','-')}"/>
+        <property name="layoutManager.id" value="academicRecord_@{dataObject.atpId.replace('.','-')}"/>
         <property name="headerText"
-                  value="Registered Courses (@{dataObject.academicRecord.size()})"/>
+                  value="Registered Courses"/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -550,64 +692,68 @@
                                     </list>
                                 </property>
                             </bean>
+
                             <bean parent="Uif-SpaceField"/>
+
                             <bean parent="Uif-Link"
                                   p:linkText="@{#line.courseDetails.courseTitle}"
                                   p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
 
-                            <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
+                            <!-- Past quarters -->
+                            <bean parent="singleQuarterStudentActions">
                                 <property name="render"
-                                          value="@{#line.timeScheduleOpen AND !#line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND dataObject.completedTerm}"/>
                                 <property name="items">
                                     <list>
-                                        <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
-                                              p:actionLabel="Show all sections"
-                                              p:style="display:inline-block;">
-                                            <property name="actionScript"
-                                                      value="
-                                                           jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
-                                                           myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
-                                                           switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
-                                                      "/>
-                                        </bean>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                              p:style="display:inline-block;">
-                                            <property name="actionScript"
-                                                      value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
-                                        </bean>
+                                        <bean parent="singleQuarterCopyCourse"/>
+                                        <bean parent="singleQuarterDeleteCourse"/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-                                  p:linkSeparator="|" p:style="float:right; display:inline-block;">
+
+                            <!-- Time Schedule Open and Scheduled -->
+                            <bean parent="singleQuarterStudentActions">
                                 <property name="render"
-                                          value="@{!#line.timeScheduleOpen OR #line.showAlert AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq false}"/>
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.showAlert}"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Move"
-                                              p:style="display:inline-block;">
-                                            <property name="actionScript" value="alert('Moving');"/>
-                                        </bean>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                              p:style="display:inline-block;">
-                                            <property name="actionScript"
-                                                      value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
-                                        </bean>
+                                        <bean parent="singleQuarterSectionsToggle"/>
+                                        <bean parent="singleQuarterDeleteCourse"/>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- Time Schedule Open and NOT Scheduled -->
+                            <bean parent="singleQuarterStudentActions">
+                                <property name="render"
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.showAlert}"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="singleQuarterMoveCourse"/>
+                                        <bean parent="singleQuarterDeleteCourse"/>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- Future Quarters and no Time Schedule -->
+                            <bean parent="singleQuarterStudentActions">
+                                <property name="render"
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm}"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="singleQuarterCopyCourse"/>
+                                        <bean parent="singleQuarterMoveCourse"/>
+                                        <bean parent="singleQuarterDeleteCourse"/>
                                     </list>
                                 </property>
                             </bean>
 
                             <!--For Advisers only-->
-                            <bean p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
-                                  p:render="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() eq true}"
-                                  p:actionLabel="Show all sections"
-                                  p:style="float:right; display:inline-block; margin-right:10px;">
-                                <property name="actionScript"
-                                          value="jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','16px');
-                                                 myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
-                                                 switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');"/>
+                            <bean parent="singleQuarterSectionsToggle">
+                                <property name="render"
+                                          value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.showAlert}"/>
                             </bean>
+
                         </list>
                     </property>
                 </bean>
@@ -625,27 +771,9 @@
             </list>
         </property>
         <property name="footer">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>myplan-credit-total</value>
-                    </list>
-                </property>
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-MessageField" p:label="Credits" p:messageText="@{dataObject.credits}">
-                            <property name="fieldLabel.renderColon" value="false"/>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-text-bold</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
+            <bean parent="single_Quarter_Credit_Total"/>
         </property>
+        <property name="footer.render" value="@{!dataObject.completedTerm}"/>
     </bean>
 
     <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup Courses">
@@ -696,12 +824,12 @@
         <property name="onDocumentReadyScript" value="
             var tableHead = jQuery('table#@{#line.courseDetails.courseId}_@{dataObject.atpId.replace('.','-')} thead');
             tableHead.before('
-                &lt;col style=&quot;width: 56px;&quot;&gt;
+                &lt;col style=&quot;width: 60px;&quot;&gt;
                 &lt;col style=&quot;width: 84px;&quot;&gt;
                 &lt;col style=&quot;width: 263px;&quot;&gt;
                 &lt;col style=&quot;width: 48px;&quot;&gt;
                 &lt;col style=&quot;width: 79px;&quot;&gt;
-                &lt;col style=&quot;width: 73px;&quot;&gt;
+                &lt;col style=&quot;width: 69px;&quot;&gt;
                 &lt;col style=&quot;width: 25px;&quot;&gt;
             ');
             tableHead.remove();
@@ -730,7 +858,9 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0;">
+                            <bean parent="Uif-ActionLink" p:actionLabel="View more"
+                                  p:style="margin:0;"
+                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
                                 <property name="dataAttributes">
                                     <map>
                                         <entry key="collapsed" value="true"/>
@@ -806,6 +936,148 @@
             <map merge="true">
                 <entry key="initial" value="true"/>
             </map>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterStudentActions" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
+          p:linkSeparator="|" p:style="float:right; display:inline-block; font-size:11px;">
+    </bean>
+
+    <bean id="singleQuarterSectionsToggle" p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
+          p:actionLabel="Show additional sections" p:style="display:inline-block;">
+        <property name="actionScript"
+                  value="
+                       jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
+                       myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
+                       switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
+                  "/>
+    </bean>
+
+    <bean id="singleQuarterMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move"
+          p:style="display:inline-block;">
+        <property name="actionScript" value="alert('Moving');"/>
+    </bean>
+
+    <bean id="singleQuarterCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy"
+          p:style="display:inline-block;">
+        <property name="actionScript" value="alert('Moving');"/>
+    </bean>
+
+    <bean id="singleQuarterDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete"
+          p:style="display:inline-block;">
+        <property name="actionScript"
+                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+    </bean>
+
+    <bean id="single_Collection_Empty" parent="Uif-VerticalBoxSection">
+        <property name="validationMessages.render" value="false"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>uif-collectionGroup</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="You have no planned courses for this quarter."
+                      p:style="padding:12px; font-size:12px;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                            <value>myplan-text-italic</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="single_AcademicRecord_Empty" parent="single_Collection_Empty" p:headerText="Completed Courses">
+        <property name="render" value="@{dataObject.academicRecord.size() EQ 0 AND dataObject.completedTerm}"/>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_completed"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="You have no completed courses for this quarter."
+                      p:style="padding:12px; font-size:12px;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                            <value>myplan-text-italic</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="single_Quarter_Credit_Total"/>
+        </property>
+    </bean>
+
+    <bean id="single_Planned_Collection_Empty" parent="single_Collection_Empty" p:headerText="Planned Courses">
+        <property name="render" value="@{dataObject.plannedList.size() EQ 0}"/>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_planned"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="footer">
+            <bean parent="single_Quarter_Credit_Total"/>
+        </property>
+        <property name="footer.render" value="@{!dataObject.completedTerm}"/>
+    </bean>
+
+    <bean id="single_Backup_Collection_Empty" parent="single_Collection_Empty" p:headerText="Backup Courses">
+        <property name="render" value="@{dataObject.backupList.size() EQ 0}"/>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_backup"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="single_Quarter_Credit_Total" parent="Uif-HorizontalBoxGroup">
+        <property name="validationMessages.render" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-credit-total</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="Credits"/>
+                <bean parent="single_quarter_help_icon" p:id="single_quarter_help_icon_credits"
+                      p:style="margin-right: 20px;"/>
+                <bean parent="Uif-MessageField" p:label="Credits"
+                      p:messageText="@{dataObject.credits ne null ? dataObject.credits : '0'}">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-bold</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 

@@ -615,9 +615,9 @@
     <bean id="MyPlan-NavButton" parent="Uif-SecondaryActionButton-Small" p:actionScript=""
           p:style="margin:0;">
         <property name="actionImage">
-            <bean parent="Uif-Image"
-                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                  p:style="margin:0;"/>
+            <bean parent="Uif-Image" p:style="margin:0;"
+                  p:source="../ks-myplan/images/pixel.gif"/>
+            <!--p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>-->
         </property>
         <property name="cssClasses">
             <list merge="true">

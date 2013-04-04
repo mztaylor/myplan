@@ -616,27 +616,40 @@ a.myplan-plan-nav.active {
     cursor: default;
 }
 
+a.myplan-carousel-prev.uif-smallActionButton.myplan-plan-nav,
+a.myplan-carousel-next.uif-smallActionButton.myplan-plan-nav {
+    line-height: 14px;
+    height: 14px;
+    padding: 7px 12px;
+}
+
 button.myplan-carousel-prev img,
-button.myplan-carousel-next img {
+button.myplan-carousel-next img,
+a.myplan-carousel-prev img,
+a.myplan-carousel-next img {
     width: 9px;
     height: 14px;
     margin: 0;
     background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
 }
 
-button.myplan-carousel-prev img {
+button.myplan-carousel-prev img,
+a.myplan-carousel-prev img {
     background-position: -1px -164px;
 }
 
-button.myplan-carousel-next img {
+button.myplan-carousel-next img,
+a.myplan-carousel-next img {
     background-position: -14px -164px;
 }
 
-button.myplan-carousel-prev.disabled img {
+button.myplan-carousel-prev.disabled img,
+a.myplan-carousel-prev.disabled img {
     background-position: -25px -164px;
 }
 
-button.myplan-carousel-next.disabled img {
+button.myplan-carousel-next.disabled img,
+a.myplan-carousel-next.disabled img {
     background-position: -38px -164px;
 }
 
@@ -1953,7 +1966,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .meetingdetails .meetingtba {
-    width: 177px;
+    width: 172px;
 }
 
 .myplan-course-sections .meetingdetails .meetingbuilding {
@@ -2484,7 +2497,36 @@ label.scheduled {
 }
 
 /* Quarter Detail View ######################################################################################### */
-.myplan-quarter-detail h3 {
+.myplan-quarter-detail .myplan-quarter-heading {
+    padding: 12px;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+
+    border: solid 1px #dcca9d;
+    background-color: #ede1c1;
+    background-image: -ms-linear-gradient(top, #ede1c1 0%, #efd89e 100%);
+    background-image: -moz-linear-gradient(center top, #ede1c1 0%, #efd89e 100%);
+    background-image: -o-linear-gradient(top, #ede1c1 0%, #efd89e 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ede1c1), color-stop(1, #efd89e));
+    background-image: -webkit-linear-gradient(top, #ede1c1 0%, #efd89e 100%);
+    background-image: linear-gradient(to bottom, #ede1c1 0%, #efd89e 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ede1c1', endColorstr = '#efd89e');
+}
+
+.myplan-quarter-heading.past-term {
+    border: solid 1px #cccccc;
+    background-color: #dedede;
+    background-image: -ms-linear-gradient(top, #dedede 0%, #cccccc 100%);
+    background-image: -moz-linear-gradient(center top, #dedede 0%, #cccccc 100%);
+    background-image: -o-linear-gradient(top, #dedede 0%, #cccccc 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #dedede), color-stop(1, #cccccc));
+    background-image: -webkit-linear-gradient(top, #dedede 0%, #cccccc 100%);
+    background-image: linear-gradient(to bottom, #dedede 0%, #cccccc 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dedede', endColorstr = '#cccccc');
+}
+
+.myplan-quarter-heading.current-term {
     border: solid 1px #432f69;
     background-color: #5c428e;
     background-image: -ms-linear-gradient(top, #5c428e 0%, #3b295f 100%);
@@ -2494,18 +2536,18 @@ label.scheduled {
     background-image: -webkit-linear-gradient(top, #5c428e 0%, #3b295f 100%);
     background-image: linear-gradient(to bottom, #5c428e 0%, #3b295f 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#5c428e', endColorstr = '#3b295f');
-
-    padding: 12px 10px;
-    border-radius: 5px 5px 0px 0px;
-    -webkit-border-radius: 5px 5px 0px 0px;
-    -moz-border-radius: 5px 5px 0px 0px;
 }
 
-.myplan-quarter-detail h3.uif-headerText .uif-headerText-span {
-    font-size: 22px;
+.myplan-quarter-detail .myplan-quarter-heading h3.uif-headerText .uif-headerText-span {
+    font-size: 21px;
+    text-transform: uppercase;
+    color: #555;
+    text-shadow: 0px 1px 0px #fcffff;
+}
+
+.myplan-quarter-detail .myplan-quarter-heading.current-term h3.uif-headerText .uif-headerText-span {
     color: #f9f7f7;
     text-shadow: 0px 1px 0px #000;
-    text-transform: uppercase;
 }
 
 .myplan-quarter-detail > .uif-boxLayout {
@@ -2580,6 +2622,12 @@ label.scheduled {
     margin: 0 0 0 5px;
 }
 
+.myplan-quarter-detail .activityInstitutionHeading {
+    padding: 5px;
+    font-weight: bold;
+    border-top: solid 1px #ddd;
+}
+
 .myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem.myplan-course-item {
     border-top: solid 3px #ddd;
 }
@@ -2604,10 +2652,14 @@ label.scheduled {
 }
 
 .myplan-quarter-detail .myplan-credit-total {
-    padding: 7px 5px;
+    padding: 7px 10px;
     background: #f6ebcd;
     border-top: solid 3px #ddd;
     border-bottom: solid 2px #ddd;
+}
+
+.myplan-quarter-detail .myplan-credit-total .uif-boxLayoutHorizontalItem {
+    margin: 0 10px 0 0;
 }
 
 /* Styles for Run Audit Panel ################################################################################## */
