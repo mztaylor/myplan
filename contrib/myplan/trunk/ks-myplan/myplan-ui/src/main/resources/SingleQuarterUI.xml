@@ -226,9 +226,11 @@
                         }
                     }
                 });
-                fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
-                fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');
+
                 "/>
+
+        <!--fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
+                        fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');-->
         <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">

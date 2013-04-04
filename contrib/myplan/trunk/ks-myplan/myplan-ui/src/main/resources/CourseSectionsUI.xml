@@ -125,10 +125,22 @@
                                                                 <bean parent="activityEnrlData"/>
 
                                                                 <bean parent="activityActionButton" p:rowSpan="1"
-                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
+                                                                    <property name="dataAttributes">
+                                                                        <map merge="true">
+                                                                            <entry key="initial" value="false"/>
+                                                                        </map>
+                                                                    </property>
+                                                                </bean>
 
                                                                 <bean parent="activityActionDelete" p:rowSpan="1"
-                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId NE null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId NE null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
+                                                                    <property name="dataAttributes">
+                                                                        <map merge="true">
+                                                                            <entry key="initial" value="false"/>
+                                                                        </map>
+                                                                    </property>
+                                                                </bean>
 
                                                                 <bean parent="Uif-MessageField" p:rowSpan="1"
                                                                       p:messageText="--"
