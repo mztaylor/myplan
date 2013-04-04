@@ -721,6 +721,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
         if (AtpHelper.getPublishedTerms().contains(termId)) {
+            boolean registrationClosed = !AtpHelper.isRegistrationOpen(termId);
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
@@ -871,6 +872,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
 
                     activity.setAtpId(termId);
+                    activity.setRegistrationClosed(registrationClosed);
                     YearTerm yt = AtpHelper.atpToYearTerm(termId);
                     activity.setQtryr(yt.toQTRYRParam());
 

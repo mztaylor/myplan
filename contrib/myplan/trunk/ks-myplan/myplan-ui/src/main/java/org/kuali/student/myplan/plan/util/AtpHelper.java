@@ -33,6 +33,7 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 public class AtpHelper {
 
     public static final String PRIORITY_ONE_REGISTRATION_START = "priority_one_registration_start";
+    public static final String PRIORITY_ONE_REGISTRATION_END = "priority_one_registration_end";
     public static final String LAST_DROP_DAY = "last_drop_day";
 
     private static transient AcademicCalendarService academicCalendarService;
@@ -373,6 +374,35 @@ public class AtpHelper {
             logger.error("Web service call failed.", e);
         }
         return publishedTerms;
+    }
+
+    /**
+     * Returns true if the given term has the registration Open or else false.
+     *
+     * @param atpId
+     * @return
+     */
+    public static boolean isRegistrationOpen(String atpId) {
+        boolean registrationOpen = false;
+        try {
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+            for (TermInfo term : termInfos) {
+                if (term.getId().equalsIgnoreCase(atpId)) {
+                    for (AttributeInfo attributeInfo : term.getAttributes()) {
+                        if (attributeInfo.getKey().equalsIgnoreCase(PRIORITY_ONE_REGISTRATION_END) && StringUtils.hasText(attributeInfo.getValue())) {
+                            DateTime registrationEndDate = new DateTime(attributeInfo.getValue());
+                            DateTime today = new DateTime();
+                            if (today.isBefore(registrationEndDate)) {
+                                registrationOpen = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
+        }
+        return registrationOpen;
     }
 
     /**

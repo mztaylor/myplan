@@ -56,6 +56,7 @@ public class ActivityOfferingItem {
     private String courseId;
 
     private boolean primary = false;
+    private boolean registrationClosed = false;
     /*This is used for the add hover text in UI*/
     private String primarySectionCode;
 
@@ -357,6 +358,13 @@ public class ActivityOfferingItem {
         this.primarySectionCode = primarySectionCode;
     }
 
+    public boolean isRegistrationClosed() {
+        return registrationClosed;
+    }
+
+    public void setRegistrationClosed(boolean registrationClosed) {
+        this.registrationClosed = registrationClosed;
+    }
 
     /*Used to get the Short term name for atp (WI 13 for kuali.uw.atp.2013.1)*/
     public String getShortTermName() {
