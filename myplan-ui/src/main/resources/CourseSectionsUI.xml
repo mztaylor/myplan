@@ -93,38 +93,22 @@
                                                                                   parent="Uif-DataField"
                                                                                   p:propertyName="code"
                                                                                   p:label="Section"
-                                                                                  p:style="margin:4px 0; font-size:1.75em;">
+                                                                                  p:style="margin:4px 0; font-size:@{#line.primary ? '24px':'22px'};">
                                                                                 <property name="fieldLabel.render"
                                                                                           value="false"/>
                                                                             </bean>
                                                                             <bean parent="Uif-MessageField"
                                                                                   p:messageText="PCE"
-                                                                                  p:style="margin:0;"
+                                                                                  p:style="margin:0; font-size:9px;"
                                                                                   p:title="UW Professional &amp; Continuing Education"
                                                                                   p:render="@{#line.instituteCode.startsWith('95') AND #line.primary}">
-                                                                                <property name="cssClasses">
-                                                                                    <list merge="true">
-                                                                                        <value>fl-font-size-80</value>
-                                                                                    </list>
-                                                                                </property>
                                                                             </bean>
                                                                             <bean parent="Uif-ActionLink"
                                                                                   p:actionLabel="View more"
-                                                                                  p:style="margin:0;"
+                                                                                  p:style="margin:0; font-size:9px;"
                                                                                   p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
-                                                                                <property name="dataAttributes">
-                                                                                    <map>
-                                                                                        <entry key="collapsed"
-                                                                                               value="true"/>
-                                                                                    </map>
-                                                                                </property>
                                                                                 <property name="actionScript"
                                                                                           value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
-                                                                                <property name="cssClasses">
-                                                                                    <list merge="true">
-                                                                                        <value>fl-font-size-80</value>
-                                                                                    </list>
-                                                                                </property>
                                                                             </bean>
                                                                         </list>
                                                                     </property>
