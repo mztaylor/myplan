@@ -357,7 +357,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0; width:69px;">
+                            <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0; width:72px;">
                                 <property name="validationMessages.render" value="false"/>
                                 <property name="items">
                                     <list>
@@ -383,7 +383,7 @@
                                 </property>
                             </bean>
 
-                            <bean parent="Uif-MessageField" p:style="margin:0;width: 431px;"
+                            <bean parent="Uif-MessageField" p:style="margin:0; width:428px;"
                                   p:cssClasses="myplan-plan-header">
                                 <property name="message">
                                     <bean parent="Uif-Message" p:messageText="Academic Year"/>
