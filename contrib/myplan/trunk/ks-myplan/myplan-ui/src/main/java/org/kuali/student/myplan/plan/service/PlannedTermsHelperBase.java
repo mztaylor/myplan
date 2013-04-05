@@ -492,30 +492,26 @@ public class PlannedTermsHelperBase {
                             if (atp.equalsIgnoreCase(termId)) {
                                 CourseSummaryDetails courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseID);
                                 if (courseDetails != null) {
-                                    boolean sectionCredits = false;
                                     // Returns list of all a course's sections. Sections which are also in student's plan have planItemId set (non-null)
                                     List<ActivityOfferingItem> activityList = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseID, atp);
-                                    if (!activityList.isEmpty()) {
-                                        ArrayList<String> sectionCreditRangeList = new ArrayList<String>();
-                                        for (ActivityOfferingItem activityItem : activityList) {
-                                            String planItemId = activityItem.getPlanItemId();
-                                            if (hasText(planItemId) && activityItem.isPrimary()) {
-                                                String sectionCreditRange = activityItem.getCredits();
-                                                if (hasText(sectionCreditRange)) {
-                                                    sectionCreditRangeList.add(sectionCreditRange);
-                                                }
+                                    ArrayList<String> sectionCreditRangeList = new ArrayList<String>();
+                                    for (ActivityOfferingItem activityItem : activityList) {
+                                        String planItemId = activityItem.getPlanItemId();
+                                        if (hasText(planItemId) && activityItem.isPrimary()) {
+                                            String sectionCreditRange = activityItem.getCredits();
+                                            if (hasText(sectionCreditRange)) {
+                                                sectionCreditRangeList.add(sectionCreditRange);
                                             }
                                         }
-                                        String credit = unionCreditList(sectionCreditRangeList);
-                                        if (hasText(credit)) {
-                                            creditList.add(credit);
-                                        }
+                                    }
+                                    String credit = null;
+                                    if (sectionCreditRangeList.isEmpty()) {
+                                        credit = courseDetails.getCredit();
                                     } else {
-                                        String credit = courseDetails.getCredit();
-                                        if (hasText(credit)) {
-                                            creditList.add(credit);
-
-                                        }
+                                        credit = unionCreditList(sectionCreditRangeList);
+                                    }
+                                    if (hasText(credit)) {
+                                        creditList.add(credit);
                                     }
 
                                 }

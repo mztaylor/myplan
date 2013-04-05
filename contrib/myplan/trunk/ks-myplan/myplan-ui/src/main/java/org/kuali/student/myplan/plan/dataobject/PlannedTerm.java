@@ -112,7 +112,7 @@ public class PlannedTerm {
                 creditList.add(credit);
             }
 
-            String credits = PlannedTermsHelperBase.sumCreditList(creditList);
+            credits = PlannedTermsHelperBase.sumCreditList(creditList);
         }
         return credits;
     }
