@@ -71,6 +71,9 @@
                                                                             <value>first</value>
                                                                         </list>
                                                                     </property>
+                                                                    <property name="onDocumentReadyScript" value="
+                                                                        fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button');
+                                                                    "/>
                                                                 </bean>
                                                                 <bean id="next_quarter_button" parent="MyPlan-NavLink"
                                                                       p:title="Next Quarter">
@@ -84,6 +87,9 @@
                                                                             <value>last</value>
                                                                         </list>
                                                                     </property>
+                                                                    <property name="onDocumentReadyScript" value="
+                                                                        fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button');
+                                                                    "/>
                                                                 </bean>
                                                                 <!--<bean id="previous_quarter_button"
                                                                       parent="MyPlan-NavButton"
