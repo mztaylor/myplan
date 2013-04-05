@@ -231,9 +231,16 @@
                             });
                         }
                     }
+                })
+                .subscribe('PLAN_ITEM_DELETED', function(data) {
+                    if (data.planItemType != 'wishlist') {
+                        fnRemovePlannedCourseItem(data.planItemId);
+                    }
+                })
+                .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data) {
+                    fnUpdateQuarterViewCredits(data.totalCredits);
                 });
-
-                "/>
+        "/>
 
         <!--fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
                         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');-->
@@ -662,7 +669,7 @@
                     </bean>
                 </property>
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean p:id="@{#line.planItemDataObject.id}_item" parent="Uif-CollectionVerticalBoxItem">
                         <property name="footer.render" value="false"/>
                         <property name="validationMessages.render" value="false"/>
                         <property name="cssClasses">
@@ -948,18 +955,20 @@
 
     <bean id="singleQuarterMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move"
           p:style="display:inline-block;">
-        <property name="actionScript" value="alert('Moving');"/>
+        <property name="actionScript"
+                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','move_dialog_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'move_dialog_page',moveCourse:'true'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
     </bean>
 
     <bean id="singleQuarterCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy"
           p:style="display:inline-block;">
-        <property name="actionScript" value="alert('Moving');"/>
+        <property name="actionScript"
+                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','copy_dialog_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
     </bean>
 
     <bean id="singleQuarterDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete"
           p:style="display:inline-block;">
         <property name="actionScript"
-                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
     </bean>
 
     <bean id="single_Collection_Empty" parent="Uif-VerticalBoxSection">
@@ -1067,6 +1076,7 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-bold</value>
+                            <value>myplan-credit-value</value>
                         </list>
                     </property>
                 </bean>
