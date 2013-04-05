@@ -840,24 +840,32 @@ function fnBuildTitle(aView) {
  Function:   Dynamically Builds the Quarter Button Action
  ######################################################################################
  */
-function fnQuarterNavigation(navigationAtpId, button, targetId) {
-    if (navigationAtpId == "") {
-        jQuery("#" + button).addClass('disabled');
-    } else {
-        jQuery("#" + button).unbind('click');
-        var message = "<p><img src=\"../ks-myplan/images/ajaxAuditRunning32.gif\" alt=\"loading...\"/></p><p>Please wait while we fetch your quarter...</p>";
-        var scriptValue = "jQuery('#" + button + "').click(function(e) {e.preventDefault();" +
-            "if(jQuery(this).hasClass('disabled')){ return false;}myplanRetrieveComponent('" + targetId + "'," +
-            "'single_quarter_items','start','inquiry', " +
-            "{viewId:'SingleTerm-InquiryView',term_atp_id:'" + navigationAtpId + "'}, null, " +
-            "{message:'" + message + "', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#000',opacity:0.5,cursor:'wait'}," +
-            " css:{left: '180px !important', top: '20px !important',backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px'," +
-            " width:'230px', textAlign:'center', padding:'20px'}});});"
-        jQuery("input[data-for='" + button + "'][data-role='script']").attr('value', scriptValue);
-        runHiddenScripts(button);
+function fnQuarterNavigation(atpId, component) {
+    if (atpId == "") {
+        jQuery("#" + component).attr("href", "#").addClass('disabled').click(function (e) {
+            e.preventDefault();
+        });
     }
-
 }
+/*
+ function fnQuarterNavigation(navigationAtpId, button, targetId) {
+ if (navigationAtpId == "") {
+ jQuery("#" + button).addClass('disabled');
+ } else {
+ jQuery("#" + button).unbind('click');
+ var message = "<p><img src=\"../ks-myplan/images/ajaxAuditRunning32.gif\" alt=\"loading...\"/></p><p>Please wait while we fetch your quarter...</p>";
+ var scriptValue = "jQuery('#" + button + "').click(function(e) {e.preventDefault();" +
+ "if(jQuery(this).hasClass('disabled')){ return false;}myplanRetrieveComponent('" + targetId + "'," +
+ "'single_quarter_items','start','inquiry', " +
+ "{viewId:'SingleTerm-InquiryView',term_atp_id:'" + navigationAtpId + "'}, null, " +
+ "{message:'" + message + "', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#000',opacity:0.5,cursor:'wait'}," +
+ " css:{left: '180px !important', top: '20px !important',backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px'," +
+ " width:'230px', textAlign:'center', padding:'20px'}});});"
+ jQuery("input[data-for='" + button + "'][data-role='script']").attr('value', scriptValue);
+ runHiddenScripts(button);
+ }
+ }
+ */
 
 function fnOneYearButtonAction() {
     var focusAtp = jQuery('#hidden_focusAtpId span.uif-readOnlyContent').text().trim();
