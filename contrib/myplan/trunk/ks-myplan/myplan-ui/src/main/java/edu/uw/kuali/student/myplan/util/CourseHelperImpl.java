@@ -117,6 +117,7 @@ public class CourseHelperImpl implements CourseHelper {
 
     /**
      * Used to get the course Id for the given subject area and course number (CHEM, 120)
+     * Uses last scheduled term to calculate the course Id
      *
      * @param subjectArea
      * @param number
@@ -124,11 +125,24 @@ public class CourseHelperImpl implements CourseHelper {
      */
     @Override
     public String getCourseId(String subjectArea, String number) {
+        return getCourseIdForTerm(subjectArea, number, AtpHelper.getLastScheduledAtpId());
+    }
+
+
+    /**
+     * Used to get the course Id for the given subject area and course number (CHEM, 120) for a given term
+     *
+     * @param subjectArea
+     * @param number
+     * @return
+     */
+    @Override
+    public String getCourseIdForTerm(String subjectArea, String number, String termId) {
         List<SearchRequest> requests = new ArrayList<SearchRequest>();
         SearchRequest request = new SearchRequest(CourseSearchConstants.COURSE_SEARCH_FOR_COURSE_ID);
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_SUBJECT_PARAM, subjectArea.trim());
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, number.trim());
-        request.addParam(CourseSearchConstants.SEARCH_REQUEST_LAST_SCHEDULED_PARAM, AtpHelper.getLastScheduledAtpId());
+        request.addParam(CourseSearchConstants.SEARCH_REQUEST_LAST_SCHEDULED_PARAM, termId);
         requests.add(request);
         SearchResult searchResult = new SearchResult();
         try {
@@ -142,6 +156,8 @@ public class CourseHelperImpl implements CourseHelper {
         }
         return courseId;
     }
+
+
 
     private static int getAsInteger(Element element, String name) {
         int result = 0;
