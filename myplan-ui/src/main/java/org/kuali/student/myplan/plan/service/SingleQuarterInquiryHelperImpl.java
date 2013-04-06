@@ -1,11 +1,16 @@
 package org.kuali.student.myplan.plan.service;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -13,27 +18,21 @@ import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
+import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,6 +50,8 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
     private transient AcademicPlanService academicPlanService;
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
+
+    private transient CourseOfferingService courseOfferingService;
 
     public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
         if (this.courseDetailsInquiryHelper == null) {
@@ -85,6 +86,18 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setAcademicRecordService(AcademicRecordService academicRecordService) {
         this.academicRecordService = academicRecordService;
+    }
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
     }
 
 
@@ -164,9 +177,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
-
+            Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
             for (PlanItemInfo planItem : planItemList) {
-                if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItem.getTypeKey().equalsIgnoreCase(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                     PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
                     String courseID = planItem.getRefObjectId();
                     //  Only create a data object for the specified type.
@@ -178,7 +191,6 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                         try {
 
                             plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
-                            plannedCourseDO.setPlanActivities(getPlannedSections(plannedCourseDO.getCourseDetails().getCourseId(), termId));
 
                             // TODO: Add Plan activities to this view
 
@@ -189,22 +201,71 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
                         plannedCoursesList.add(plannedCourseDO);
                     }
+                } else if (planItem.getTypeKey().equals(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                    List<String> planPeriods = planItem.getPlanPeriods();
+                    String term = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
+                    if (null != term && !AtpHelper.isAtpCompletedTerm(term)) {
+                        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
+                        AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(term);
+
+
+                        CourseHelper courseHelper = new CourseHelperImpl();
+
+
+                        DeconstructedCourseCode deconstructedCourseCode = courseHelper.getCourseDivisionAndNumber(planItem.getRefObjectId());
+                        String key = String.format("%s=%s=%s", deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), term);
+                        String activityOfferingId = String.format("%s=%s=%s=%s=%s", yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
+                        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+                        try {
+                            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
+                            continue;
+                        }
+                        /*TODO: move this to Coursehelper to make it institution neutral*/
+                        String primarySectionCode = null;
+                        for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
+                                primarySectionCode = attributeInfo.getValue();
+                            }
+                        }
+                        String courseOfferingId = String.format("%s=%s=%s=%s=%s", yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
+                        CourseOfferingInfo courseOfferingInfo = null;
+                        try {
+                            courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                            continue;
+                        }
+
+                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isRegistrationOpen(termId), termId, planItem.getId());
+                        activityOfferingItems.add(activityOfferingItem);
+                        if (plannedSections.containsKey(key)) {
+                            plannedSections.get(key).add(activityOfferingItem);
+                        } else {
+                            plannedSections.put(key, activityOfferingItems);
+                        }
+
+                    }
+
+
                 }
+            }
+            for (PlannedCourseDataObject plannedCourse : plannedCoursesList) {
+                List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(String.format("%s=%s=%s", plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
+                if (activityOfferingItems!=null && activityOfferingItems.size() > 0) {
+                    Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
+                        @Override
+                        public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
+                            return item1.getCode().compareTo(item2.getCode());
+                        }
+                    });
+                }
+                plannedCourse.setPlanActivities(activityOfferingItems);
             }
         }
         return plannedCoursesList;
     }
 
-    /*Used to get the planned sections for a coursId and term*/
-    private List<ActivityOfferingItem> getPlannedSections(String courseId, String term) {
-        List<ActivityOfferingItem> sectionsPlanned = new ArrayList<ActivityOfferingItem>();
-        List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsInquiryHelper().getActivityOfferingItemsById(courseId, term);
-        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (activityOfferingItem.getPlanItemId() != null) {
-                sectionsPlanned.add(activityOfferingItem);
-            }
-        }
-        return sectionsPlanned;
-    }
 
 }

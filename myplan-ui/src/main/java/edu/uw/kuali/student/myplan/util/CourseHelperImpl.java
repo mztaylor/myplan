@@ -103,10 +103,11 @@ public class CourseHelperImpl implements CourseHelper {
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.COURSE_CODE_WITH_SECTION_REGEX)) {
+            section = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
+            courseCode = courseCode.substring(0, courseCode.lastIndexOf(" ")).trim();
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
-            section = splitStr[2].trim();
         } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
@@ -156,7 +157,6 @@ public class CourseHelperImpl implements CourseHelper {
         }
         return courseId;
     }
-
 
 
     private static int getAsInteger(Element element, String name) {
