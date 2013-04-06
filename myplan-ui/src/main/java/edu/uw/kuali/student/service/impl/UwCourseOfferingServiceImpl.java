@@ -47,7 +47,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     private transient CourseService courseService;
     private StudentServiceClient studentServiceClient;
-
+    private CourseHelper courseHelper;
     private List<String> DAY_LIST = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
     private static Pattern regexInstituteCodePrefix = Pattern.compile("([0-9]+)(.)*");
 
@@ -74,6 +74,17 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
+    }
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
 
     protected synchronized CourseService getCourseService() {
@@ -275,9 +286,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         info.setSubjectArea(curric);
         info.setCourseCode(num);
         info.setTermId(termId);
-        info.setId(join("=", year, quarter, curric, num, sectionID));
-        CourseHelper courseHelper = new CourseHelperImpl();
-        String courseID = courseHelper.getCourseIdForTerm(curric, num, termId);
+        info.setId(getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, sectionID));
+        String courseID = getCourseHelper().getCourseIdForTerm(curric, num, termId);
         info.setCourseId(courseID);
         info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
         info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
@@ -1062,9 +1072,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                     info.setSubjectArea(curric);
                     info.setCourseCode(num);
                     info.setTermId(termId);
-                    info.setId(join("=", year, quarter, curric, num, primarySectionID));
-                    CourseHelper courseHelper = new CourseHelperImpl();
-                    info.setCourseId(courseHelper.getCourseIdForTerm(curric, num, termId));
+                    info.setId(getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, primarySectionID));
+                    info.setCourseId(getCourseHelper().getCourseIdForTerm(curric, num, termId));
                     info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
                     info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
                     info.getAttributes().add(new AttributeInfo("PrimarySectionId", primarySectionID));
@@ -1128,26 +1137,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             logger.error(e);
             throw new OperationFailedException(e.getMessage());
         }
-    }
-
-    /* 
-    * Joins an array of stings using a delimiter.
-    *  
-    * eg join( "," "a", "b", "c" ) => "a,b,c"
-    * 
-    */
-    String join(String delim, String... list) {
-        StringBuilder sb = new StringBuilder();
-        boolean second = false;
-        for (String item : list) {
-            if (second) {
-                sb.append(delim);
-            } else {
-                second = true;
-            }
-            sb.append(item);
-        }
-        return sb.toString();
     }
 
     @Override
