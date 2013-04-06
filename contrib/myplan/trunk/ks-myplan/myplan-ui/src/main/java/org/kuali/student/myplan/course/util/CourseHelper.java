@@ -18,4 +18,6 @@ public interface CourseHelper {
     public String getCourseId(String subjectArea, String number);
 
     public String getCourseIdForTerm(String subjectArea, String number, String termId);
+
+    public String joinStringsByDelimiter(char delimiter, String... list);
 }

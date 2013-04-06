@@ -25,6 +25,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -40,6 +41,8 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
     private transient CourseOfferingService courseOfferingService;
+    @Autowired
+    private CourseHelper courseHelper;
 
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
@@ -80,14 +83,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
                         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
                         YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
-
-
-                        CourseHelper courseHelper = new CourseHelperImpl();
-
-
-                        DeconstructedCourseCode deconstructedCourseCode = courseHelper.getCourseDivisionAndNumber(planItemInfo.getRefObjectId());
-                        String key = String.format("%s=%s=%s", deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), termId);
-                        String activityOfferingId = String.format("%s=%s=%s=%s=%s", yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
+                        DeconstructedCourseCode deconstructedCourseCode = getCourseHelper().getCourseDivisionAndNumber(planItemInfo.getRefObjectId());
+                        String key = generateKey(deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), termId);
+                        String activityOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
                         ActivityOfferingDisplayInfo activityDisplayInfo = null;
                         try {
                             activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
@@ -102,7 +100,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                                 primarySectionCode = attributeInfo.getValue();
                             }
                         }
-                        String courseOfferingId = String.format("%s=%s=%s=%s=%s", yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
+                        String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
                         CourseOfferingInfo courseOfferingInfo = null;
                         try {
                             courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
@@ -125,7 +123,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 }
             }
             for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-                List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(String.format("%s=%s=%s", plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
+                List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
                 if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
                     Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
                         @Override
@@ -138,6 +136,17 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
         }
         return plannedCourseList;
+    }
+
+    /**
+     * returns key(eg: COM=240=kuali.uw.atp.2013.4)
+     * @param subject
+     * @param number
+     * @param atpId
+     * @return
+     */
+    private String generateKey(String subject, String number, String atpId) {
+        return getCourseHelper().joinStringsByDelimiter('=', subject, number, atpId);
     }
 
 
@@ -186,5 +195,16 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
         this.courseOfferingService = courseOfferingService;
+    }
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
 }

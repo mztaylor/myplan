@@ -2,6 +2,7 @@ package edu.uw.kuali.student.myplan.util;
 
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -198,5 +199,15 @@ public class CourseHelperImpl implements CourseHelper {
         String atpId = yt.toATP().replace('.', '-');
         String key = "enrl_" + atpId + "_" + sln;
         parent.put(key, childmap);
+    }
+
+    /**
+     *
+     * @param delimiter
+     * @param list
+     * @return
+     */
+    public String joinStringsByDelimiter(char delimiter, String... list) {
+        return StringUtils.join(list, delimiter);
     }
 }
