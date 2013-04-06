@@ -418,7 +418,7 @@ public class PlannedTermsHelperBase {
      */
 
     public static String sumCreditList(List<String> list) {
-        if (list == null || list.isEmpty()) return "";
+        if (list == null || list.isEmpty()) return "0";
         float minCredits = 0;
         float maxCredits = 0;
         for (String item : list) {
