@@ -10,12 +10,15 @@ import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.core.atp.dto.AtpInfo;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
+import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.springframework.util.StringUtils;
@@ -46,6 +49,8 @@ public class AtpHelper {
 
     private static transient AtpService atpService;
 
+    private static transient AcademicRecordService academicRecordService;
+
     private static Map<String, String> atpCache;
 
     public static AtpService getAtpService() {
@@ -65,6 +70,14 @@ public class AtpHelper {
             courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return courseOfferingService;
+    }
+
+    public static AcademicRecordService getAcademicRecordService() {
+        if (academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return academicRecordService;
     }
 
 
@@ -711,37 +724,70 @@ public class AtpHelper {
      * @return
      */
     public static String getPreviousAtpId(String atpId) {
+        YearTerm firstYearTermForStudent = getFirstAcademicPlanTermForStudent();
         YearTerm yt = AtpHelper.atpToYearTerm(atpId);
-        int year = yt.getYear();
-        int term = yt.getTerm() - 1;
-        if (term == 0) {
-            term = 4;
-            year = year - 1;
-        }
-        String prev = YearTerm.toATP(year, term);
-        if (doesAtpExist(prev)) {
-            return prev;
+        if (yt.compareTo(firstYearTermForStudent) == 1) {
+            int year = yt.getYear();
+            int term = yt.getTerm() - 1;
+            if (term == 0) {
+                term = 4;
+                year = year - 1;
+            }
+            String prev = YearTerm.toATP(year, term);
+            if (doesAtpExist(prev)) {
+                return prev;
+            }
         }
         return null;
     }
 
     /**
-     * retunrs the next closest atpId. If not present returns null.
+     * returns the YearTerm of the firstTerm in student's AcademicPlan
+     *
+     * @return YearTerm
+     */
+    public static YearTerm getFirstAcademicPlanTermForStudent() {
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = null;
+        try {
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(UserSessionHelper.getStudentId(), PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
+        }
+        return studentCourseRecordInfos != null && studentCourseRecordInfos.size() > 0 ? atpToYearTerm(studentCourseRecordInfos.get(0).getTermName()) : atpToYearTerm(getCurrentAtpId());
+    }
+
+
+    /**
+     * returns the YearTerm of the lastTerm in student's AcademicPlan
+     *
+     * @return YearTerm
+     */
+    public static YearTerm getLastAcademicPlanTerm() {
+        List<YearTerm> futureTerms = getFutureYearTerms(AtpHelper.getCurrentAtpId(), null);
+        return futureTerms.get(futureTerms.size() - 1);
+    }
+
+
+    /**
+     * returns the next closest atpId. If not present returns null.
      *
      * @param atpId
      * @return
      */
     public static String getNextAtpId(String atpId) {
+        YearTerm lastYearTermForStudent = getLastAcademicPlanTerm();
         YearTerm yt = AtpHelper.atpToYearTerm(atpId);
-        int year = yt.getYear();
-        int term = yt.getTerm() + 1;
-        if (term == 5) {
-            term = 1;
-            year = year + 1;
-        }
-        String next = YearTerm.toATP(year, term);
-        if (doesAtpExist(next)) {
-            return next;
+        if (lastYearTermForStudent != null && lastYearTermForStudent.compareTo(yt) == 1) {
+            int year = yt.getYear();
+            int term = yt.getTerm() + 1;
+            if (term == 5) {
+                term = 1;
+                year = year + 1;
+            }
+            String next = YearTerm.toATP(year, term);
+            if (doesAtpExist(next)) {
+                return next;
+            }
         }
         return null;
 
