@@ -239,9 +239,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         String num = list[3];
         String sectionID = list[4];
         DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
-        DefaultXPath secondarySectionPath = newXPath("/s:Section");
-        DefaultXPath courseCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CourseComments/s:Lines");
-        DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
 
         Document secondaryDoc = null;
         try {
@@ -254,34 +251,11 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             logger.warn(e);
         }
 
-        Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
         Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
-        Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(secondaryDoc);
-        Element curriculumCommentsNode = (Element) curriculumCommentsPath.selectSingleNode(secondaryDoc);
-        List comments = courseCommentsNode.content();
-        List curricComments = curriculumCommentsNode.content();
-        for (Object ob : comments) {
-            Element element = (Element) ob;
-            String text = element.elementText("Text");
-            if (text.startsWith("*****")) {
-                courseComments = courseComments.append("<br>" + text + "</br> ");
-            } else {
-                courseComments = courseComments.append(text + " ");
-            }
-        }
-        for (Object ob : curricComments) {
-            Element element = (Element) ob;
-            String text = element.elementText("Text");
-            if (text.startsWith("*****")) {
-                curriculumComments = curriculumComments.append("<br>" + text + "</br> ");
-            } else {
-                curriculumComments = curriculumComments.append(text + " ");
-            }
-        }
 
         String primaryID = dupeSectionElement.elementText("SectionID");
         CourseOfferingInfo info = new CourseOfferingInfo();
-        info = buildCourseOfferingInfo(courseOfferingId, primaryID, termId, courseComments.toString(), curriculumComments.toString(), secondarySection);
+        info = buildCourseOfferingInfo(courseOfferingId, primaryID, termId, secondaryDoc);
         return info;
     }
 
@@ -955,21 +929,13 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
             DefaultXPath sectionPath = newXPath("/s:SearchResults/s:Sections/s:Section");
             DefaultXPath secondaryPath = newXPath("/s:Section/s:PrimarySection");
-            DefaultXPath secondarySectionPath = newXPath("/s:Section");
-            DefaultXPath courseCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CourseComments/s:Lines");
-            DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
-
 
             Document doc = newDocument(xml);
 
             List sections = sectionPath.selectNodes(doc);
             for (Object object : sections) {
-                StringBuffer courseComments = new StringBuffer();
-                StringBuffer curriculumComments = new StringBuffer();
                 Element primarySectionNode = (Element) object;
                 String primarySectionID = primarySectionNode.elementText("SectionID");
-
-
                 Document secondaryDoc;
                 try {
                     String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
@@ -979,36 +945,11 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 // Skip this section ID if it fails
                     continue;
                 }
-
-                Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
                 Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
-                Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(secondaryDoc);
-                Element curriculumCommentsNode = (Element) curriculumCommentsPath.selectSingleNode(secondaryDoc);
-                List comments = courseCommentsNode.content();
-                List curricComments = curriculumCommentsNode.content();
-                for (Object ob : comments) {
-                    Element element = (Element) ob;
-                    String text = element.elementText("Text");
-                    if (text.startsWith("*****")) {
-                        courseComments = courseComments.append("<br>" + text + "</br> ");
-                    } else {
-                        courseComments = courseComments.append(text + " ");
-                    }
-                }
-                for (Object ob : curricComments) {
-                    Element element = (Element) ob;
-                    String text = element.elementText("Text");
-                    if (text.startsWith("*****")) {
-                        curriculumComments = curriculumComments.append("<br>" + text + "</br> ");
-                    } else {
-                        curriculumComments = curriculumComments.append(text + " ");
-                    }
-                }
-
                 String primaryID = dupeSectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
                     String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, primarySectionID);
-                    CourseOfferingInfo info = buildCourseOfferingInfo(courseOfferingId, primarySectionID, termId, courseComments.toString(), curriculumComments.toString(), secondarySection);
+                    CourseOfferingInfo info = buildCourseOfferingInfo(courseOfferingId, primarySectionID, termId, secondaryDoc);
                     list.add(info);
                 }
             }
@@ -1021,16 +962,40 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
     }
 
     /**
-     *
      * @param courseOfferingID
      * @param primarySectionId
      * @param termId
-     * @param courseComments
-     * @param curriculumComments
-     * @param secondarySection
      * @return
      */
-    private CourseOfferingInfo buildCourseOfferingInfo(String courseOfferingID, String primarySectionId, String termId, String courseComments, String curriculumComments, Element secondarySection) {
+    private CourseOfferingInfo buildCourseOfferingInfo(String courseOfferingID, String primarySectionId, String termId, Document secondaryDoc) {
+        StringBuffer courseComments = new StringBuffer();
+        StringBuffer curriculumComments = new StringBuffer();
+        DefaultXPath courseCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CourseComments/s:Lines");
+        DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
+        DefaultXPath secondarySectionPath = newXPath("/s:Section");
+        Element secondarySection = (Element) secondarySectionPath.selectSingleNode(secondaryDoc);
+        Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(secondaryDoc);
+        Element curriculumCommentsNode = (Element) curriculumCommentsPath.selectSingleNode(secondaryDoc);
+        List comments = courseCommentsNode.content();
+        List curricComments = curriculumCommentsNode.content();
+        for (Object ob : comments) {
+            Element element = (Element) ob;
+            String text = element.elementText("Text");
+            if (text.startsWith("*****")) {
+                courseComments = courseComments.append("<br>" + text + "</br> ");
+            } else {
+                courseComments = courseComments.append(text + " ");
+            }
+        }
+        for (Object ob : curricComments) {
+            Element element = (Element) ob;
+            String text = element.elementText("Text");
+            if (text.startsWith("*****")) {
+                curriculumComments = curriculumComments.append("<br>" + text + "</br> ");
+            } else {
+                curriculumComments = curriculumComments.append(text + " ");
+            }
+        }
         String[] list = courseOfferingID.split("=");
         String subject = list[2];
         String num = list[3];
@@ -1040,8 +1005,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         info.setTermId(termId);
         info.setId(courseOfferingID);
         info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, num, termId));
-        info.getAttributes().add(new AttributeInfo("CourseComments", courseComments));
-        info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments));
+        info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
+        info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
         info.getAttributes().add(new AttributeInfo("PrimarySectionId", primarySectionId));
 
         {
