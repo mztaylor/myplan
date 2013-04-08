@@ -110,12 +110,24 @@ public class MyplanInterceptor implements HandlerInterceptor {
      */
     private ServicesStatusDataObject getServicesStatus() {
         boolean isAcademicCalenderServiceRunning = studentServiceClient.connectionStatus(ACADEMIC_CALENDER_SERVICE_URL);
+        if (!isAcademicCalenderServiceRunning) {
+            logger.info("Academic Calender Service is Down");
+        }
         boolean isCourseOfferingServiceRunning = studentServiceClient.connectionStatus(COURSE_OFFERING_SERVICE_URL);
+        if (!isCourseOfferingServiceRunning) {
+            logger.info("Course Offering Service is Down");
+        }
         boolean isAcademicRecordServiceRunning = false;
         if (studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_1) && studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_2)) {
             isAcademicRecordServiceRunning = true;
         }
+        if (!isAcademicRecordServiceRunning) {
+            logger.info("Academic Record Service is Down");
+        }
         boolean isAuditServiceRunning = studentServiceClient.connectionStatus(AUDIT_SERVICE_URL);
+        if (!isAuditServiceRunning) {
+            logger.info("Audit Service is Down");
+        }
         return new ServicesStatusDataObject(isAcademicCalenderServiceRunning, isAcademicRecordServiceRunning, isCourseOfferingServiceRunning, isAuditServiceRunning);
     }
 
