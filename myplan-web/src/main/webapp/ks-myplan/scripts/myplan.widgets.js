@@ -1448,9 +1448,11 @@ function toggleRegisteredDetails(sectionRow, obj) {
     if (collapsibleRow.is(":visible")) {
         obj.parents("td").attr("rowspan", "1");
         collapsibleRow.hide();
+        obj.find("img.uif-image").toggleClass("expanded");
     } else {
         obj.parents("td").attr("rowspan", "2");
         collapsibleRow.show();
+        obj.find("img.uif-image").toggleClass("expanded");
     }
 }
 

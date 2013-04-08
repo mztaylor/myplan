@@ -2000,6 +2000,24 @@ table.myplan-course-search-results-datatable .blockUI {
     background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
+.myplan-course-sections.myplan-academic-record tr.row td.primary {
+    background: #a58dce;
+}
+
+.myplan-course-sections.myplan-academic-record tr.row td.secondary {
+    background: #c1b1dd;
+}
+
+.myplan-course-sections.myplan-academic-record tr.row td.primary img.uif-image,
+.myplan-course-sections.myplan-academic-record tr.row td.secondary img.uif-image {
+    background: url('../images/myplan_icon_sprites.png') no-repeat -32px -32px;
+}
+
+.myplan-course-sections.myplan-academic-record tr.row td.primary img.uif-image.expanded,
+.myplan-course-sections.myplan-academic-record tr.row td.secondary img.uif-image.expanded {
+    background: url('../images/myplan_icon_sprites.png') no-repeat -32px -16px;
+}
+
 /*
 .myplan-course-detail .myplan-course-sections .activityCode {
     width: 54px;

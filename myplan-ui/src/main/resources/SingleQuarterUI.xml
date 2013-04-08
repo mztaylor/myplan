@@ -442,6 +442,7 @@
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-sections</value>
+                <value>myplan-academic-record</value>
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
@@ -497,9 +498,15 @@
                               value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
                     <property name="onDocumentReadyScript" value="
                         var row = jQuery('#button_@{#line.uuid}').parents('tr');
+                        var cell = jQuery('#button_@{#line.uuid}').parents('td');
                         row.addClass('row');
                         row.find('.activityMeetingData').parents('td').attr('colspan', '2');
                         row.find('.activityInstructor').parents('td').attr('colspan', '2');
+                        if (@{#line.activityOfferingItem.primary}) {
+                            cell.addClass('primary');
+                        } else {
+                            cell.addClass('secondary');
+                        }
                     "/>
                     <property name="onClickScript"
                               value="toggleRegisteredDetails(jQuery('#button_@{#line.uuid}').parents('tr.row'), jQuery(this))"/>
