@@ -159,7 +159,7 @@
                           });"/>
         <property name="items">
             <list>
-                <!--<bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addPlannedCourse"
                       p:actionImagePlacement="RIGHT">
                     <property name="actionImage">
@@ -193,7 +193,7 @@
                                   });"/>
                     <property name="actionScript"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseSummaryDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
-                </bean>-->
+                </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseSummaryDetails.courseId}_bookmarked"
                       p:render="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"
                       p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
