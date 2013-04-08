@@ -84,7 +84,7 @@
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
             </list>
         </property>
-        <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary');"/>
+        <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary', 10);"/>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">

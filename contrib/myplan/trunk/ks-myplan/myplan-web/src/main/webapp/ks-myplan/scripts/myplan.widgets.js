@@ -739,16 +739,23 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
  fit on one line.
  ######################################################################################
  */
-function truncateField(id) {
+function truncateField(id, margin, floated) {
     jQuery("#" + id + " .uif-horizontalFieldGroup").each(function () {
-        jQuery(this).css("display", "block");
-        var fixed = 0;
-        var margin = 10;
-        jQuery(this).find(".uif-boxLayoutHorizontalItem:not(.myplan-text-ellipsis)").each(function () {
-            fixed = fixed + jQuery(this).width();
-        });
-        var ellipsis = jQuery(this).width() - ( ( fixed + 1 ) + margin );
-        jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
+        if (jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").length != 0) {
+            jQuery(this).css("display", "block");
+            var fixed = 0;
+            jQuery(this).find(".uif-boxLayoutHorizontalItem:not(.myplan-text-ellipsis)").each(function () {
+                fixed = fixed + jQuery(this).width();
+            });
+            var ellipsis = jQuery(this).width() - ( ( fixed + 1 ) + margin );
+            if (!floated) {
+                jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
+            } else {
+                if (jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width() >= ellipsis) {
+                    jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
+                }
+            }
+        }
     });
 }
 function truncateAuditTitle(id) {
