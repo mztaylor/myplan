@@ -64,10 +64,10 @@
                                                     <bean parent="activityOfferingTableCollection">
                                                         <property name="id" value=""/>
                                                         <property name="layoutManager.id"
-                                                                  value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections"/>
+                                                                  value="@{dataObject.courseSummaryDetails.courseId}_sections"/>
                                                         <property name="propertyName" value="activityOfferingItemList"/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            var tableHead = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections thead');
+                                                            var tableHead = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_sections thead');
                                                             tableHead.before('
                                                                 &lt;col style=&quot;width: 60px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 84px;&quot;&gt;
@@ -125,7 +125,7 @@
                                                                 <bean parent="activityEnrlData"/>
 
                                                                 <bean parent="activityActionButton" p:rowSpan="1"
-                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
+                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId EQ null}">
                                                                     <property name="dataAttributes">
                                                                         <map merge="true">
                                                                             <entry key="initial" value="false"/>
@@ -134,7 +134,7 @@
                                                                 </bean>
 
                                                                 <bean parent="activityActionDelete" p:rowSpan="1"
-                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId NE null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}">
+                                                                      p:render="@{!#line.registrationClosed AND #line.planItemId NE null}">
                                                                     <property name="dataAttributes">
                                                                         <map merge="true">
                                                                             <entry key="initial" value="false"/>
@@ -142,9 +142,8 @@
                                                                     </property>
                                                                 </bean>
 
-                                                                <bean parent="Uif-MessageField" p:rowSpan="1"
-                                                                      p:messageText="--"
-                                                                      p:render="@{#line.registrationClosed OR T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                                <bean parent="emptyAction" p:rowSpan="1"
+                                                                      p:render="@{#line.registrationClosed}"/>
 
                                                                 <bean parent="activityInstructor">
                                                                     <property name="onDocumentReadyScript" value="
@@ -166,6 +165,88 @@
                                                                     "/>
                                                                 </bean>
 
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list>
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                      p:propertyName="items"
+                                                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                                                                    <property name="replacement">
+                                                                        <list>
+                                                                            <bean parent="activityCode" p:rowSpan="1">
+                                                                                <property name="onDocumentReadyScript"
+                                                                                          value="
+                                                                                    var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
+                                                                                    row.addClass('row');
+                                                                                    if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+                                                                                "/>
+                                                                                <property name="items">
+                                                                                    <list>
+                                                                                        <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                                                                              parent="Uif-DataField"
+                                                                                              p:propertyName="code"
+                                                                                              p:label="Section"
+                                                                                              p:style="margin:4px 0; font-size:@{#line.primary ? '24px':'22px'};">
+                                                                                            <property
+                                                                                                    name="fieldLabel.render"
+                                                                                                    value="false"/>
+                                                                                        </bean>
+                                                                                        <bean parent="Uif-MessageField"
+                                                                                              p:messageText="PCE"
+                                                                                              p:style="margin:0; font-size:9px;"
+                                                                                              p:title="UW Professional &amp; Continuing Education"
+                                                                                              p:render="@{#line.instituteCode.startsWith('95') AND #line.primary}">
+                                                                                        </bean>
+                                                                                        <bean parent="Uif-ActionLink"
+                                                                                              p:actionLabel="View more"
+                                                                                              p:style="margin:0; font-size:9px;"
+                                                                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                                                                            <property
+                                                                                                    name="actionScript"
+                                                                                                    value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                                                                                        </bean>
+                                                                                    </list>
+                                                                                </property>
+                                                                            </bean>
+
+                                                                            <bean parent="activityType"/>
+
+                                                                            <bean parent="activityMeetingData"/>
+
+                                                                            <bean parent="activityRegCode"/>
+
+                                                                            <bean parent="activityEnrlRestr"/>
+
+                                                                            <bean parent="activityEnrlData"/>
+
+                                                                            <bean parent="emptyAction" p:rowSpan="1"/>
+
+                                                                            <bean parent="activityInstructor">
+                                                                                <property name="onDocumentReadyScript"
+                                                                                          value="
+                                                                                    var collapsibleRow = jQuery('#instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
+                                                                                    collapsibleRow.addClass('collapsible').hide();
+                                                                                    collapsibleRow.find('.activityOther').parents('td').attr('colspan', '3');
+                                                                                    if (@{#line.planItemId NE null}) collapsibleRow.addClass('myplan-section-planned');
+                                                                                "/>
+                                                                            </bean>
+
+                                                                            <bean parent="activityOther" p:colSpan="5"/>
+
+                                                                            <bean parent="activityAdditionalDetails"
+                                                                                  p:colSpan="7">
+                                                                                <property name="onDocumentReadyScript"
+                                                                                          value="
+                                                                                    var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
+                                                                                    collapsibleRow.addClass('collapsible').hide();
+                                                                                    collapsibleRow.find('.activityAdditionalDetails').parents('td').attr('colspan', '5');
+                                                                                    if (@{#line.planItemId NE null}) collapsibleRow.addClass('myplan-section-planned');
+                                                                                "/>
+                                                                            </bean>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
                                                             </list>
                                                         </property>
                                                     </bean>

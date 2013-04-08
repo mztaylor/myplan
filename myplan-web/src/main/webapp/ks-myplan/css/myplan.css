@@ -2108,6 +2108,7 @@ table.myplan-course-search-results-datatable .blockUI {
     right: 0px !important;
     border: none;
     width: 16px;
+    background: transparent;
 }
 
 .myplan-section .uif-listCollectionGroup ul li {

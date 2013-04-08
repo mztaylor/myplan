@@ -180,11 +180,6 @@ function fnRemoveSectionRow(actionId) {
     row.remove().next("tr.collapsible").remove().next("tr.collapsible").remove();
 }
 
-function fnRemovePlannedCourseItem(planItemId) {
-    var item = jQuery("#" + planItemId + "_item.myplan-course-item");
-    item.remove().next("input[data-for='" + planItemId + "_item']").remove();
-}
-
 function fnUpdateQuarterViewCredits(termCredits) {
     jQuery(".myplan-credit-total .myplan-credit-value span.uif-message").fadeOut(250, function () {
         jQuery(this).html(termCredits).fadeIn(250);
