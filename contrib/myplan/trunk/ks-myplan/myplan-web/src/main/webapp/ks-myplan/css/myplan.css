@@ -1000,6 +1000,7 @@ input.myplan-delete:hover,
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .code {
     color: #000;
+    margin-right: 4px;
 }
 
 .myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .code {
@@ -1010,13 +1011,13 @@ input.myplan-delete:hover,
     color: #666;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .credit {
-    color: #888;
-    margin-left: 5px;
-}
-
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .sections {
     color: #444;
+    margin-right: 4px;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .credit {
+    color: #888;
     margin-left: 5px;
 }
 

@@ -595,7 +595,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.uuid}_completed_@{#line.atpId.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -621,7 +622,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseTitle}"
+                <bean p:id="@{#line.uuid}_completed_@{#line.atpId.replace('.','-')}" parent="Uif-HorizontalFieldGroup"
+                      p:title="@{#line.courseTitle}"
                       p:style="padding-left:28px"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null}">
                     <property name="group.validationMessages.render" value="false"/>
@@ -653,6 +655,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
@@ -765,7 +768,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.uuid}_completed_@{#line.atpId.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -791,7 +795,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseTitle}"
+                <bean p:id="@{#line.uuid}_completed_@{#line.atpId.replace('.','-')}" parent="Uif-HorizontalFieldGroup"
+                      p:title="@{#line.courseTitle}"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
                     <property name="group.validationMessages.render" value="false"/>
@@ -815,6 +820,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
@@ -893,6 +899,9 @@
     </bean>
 
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
+        <property name="onDocumentReadyScript" value="
+            truncateField('plannedCollection_line@{#index}');
+        "/>
         <property name="validationMessages.render" value="false"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
@@ -910,7 +919,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -946,7 +956,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup"
+                <bean p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}"
+                      parent="Uif-HorizontalFieldGroup"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:title="@{#line.courseDetails.courseTitle}">
                     <property name="group.validationMessages.render" value="false"/>
@@ -995,6 +1006,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1064,7 +1076,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -1093,7 +1106,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_planned" parent="Uif-HorizontalFieldGroup"
+                <bean p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}"
+                      parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
@@ -1118,6 +1132,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1187,7 +1202,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -1222,7 +1238,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
+                <bean p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}"
+                      parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}">
                     <property name="group.validationMessages.render" value="false"/>
@@ -1270,6 +1287,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1312,7 +1330,8 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem"
+                          p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}_div">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-tooltip</value>
@@ -1340,7 +1359,8 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.planItemDataObject.id}_backup" parent="Uif-HorizontalFieldGroup"
+                <bean p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}"
+                      parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.CourseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
@@ -1365,6 +1385,7 @@
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>sections</value>
+                                        <value>myplan-text-ellipsis</value>
                                     </list>
                                 </property>
                             </bean>
