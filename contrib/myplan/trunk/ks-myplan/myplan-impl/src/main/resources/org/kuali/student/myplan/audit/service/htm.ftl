@@ -48,7 +48,7 @@
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
-<div class="myplan-audit-report">
+<div class="myplan-audit-report" dprog="${degreeProgramCode?html}">
     <h1>${dpTitle1?xml}</h1>
 
     <div class="audit-summary">
@@ -477,15 +477,24 @@
         </#if>
 
         <#list req.auditReportSubreqs as subreq>
+        <#-- Have to grab flag -->
+            <#assign showSubreqStatus = subreq.showSubreqStatus >
             <#assign justTitle = "">
             <#if ( !subreq.showGotSummary && !subreq.showInProgressHours && !subreq.showNeedsSummary && !subreq.showTakenCourses && !subreq.showSubreqNumber && subreq.status == "Status_NONE" ) >
                 <#assign justTitle = "justtitle" >
             </#if>
-        <#--
-                showSubreqStatus: ${subreq.showSubreqStatus?string?xml}
+        <!--
                 showExcLines: ${subreq.showExcLines?string?xml}
+
+                showSubreqStatus: ${showSubreqStatus?string?xml}
+
+                <#-- Because calling this method resets it to false -->
+                subreqStatus: ${subreq.subreqStatus?string?xml}
                 status: ${subreq.status?xml}
+                satisfiedCode: ${subreq.satisfiedCode?string?xml}
+                statusClassSR: ${subreq.statusClassSR?string?xml}
                 seqErr: ${subreq.seqErr?xml}
+
                 showTitle: ${subreq.showTitle?string?xml}
                 required: ${subreq.required?string?xml}
                 subreqRequired: ${subreq.subreqRequired?xml}
@@ -503,41 +512,39 @@
                     </#list>
                 justTitle: ${justTitle?xml}
 
+
         -->
 
         <div class="subrequirement ${justTitle}">
-            <#if subreq.showSubreqStatus >
-            <div class="header">
-            <#-- if subreq.showSubreqStatus && ( subreq.status != "Status_NONE" ) -->
-                <#if subreq.showSubreqStatus >
-                    <div class="status ${subreq.status?xml}">${subreq.seqErr?xml}${subreqStatusMap[subreq.status]}</div>
-                </#if>
+        <div class="header">
+            <#if showSubreqStatus >
+                <div class="status ${subreq.status?xml}">${subreq.seqErr?xml}${subreqStatusMap[subreq.status]}</div>
+            </#if>
 
-                <div class="subreqNumber required">
-                    <#if subreq.required>${subreq.subreqRequired?xml}</#if>
-                    <#if subreq.showSubreqNumber>${subreq.subreqNumber?xml}
-                        <#if subreq.showParen>)</#if>
-                    </#if>
-                </div>
-                <#if subreq.showTitle >
-                    <div class="title">
-                        <#list reflow( subreq.titleLines ) as titleLine>
-                            <#if titleLine?trim != "." >
-                                <div class="text linkify">
-                                ${deASCII(titleLine)}
-                                </div>
-                            </#if>
-                        </#list>
-                    </div>
-                </#if>
-
-                <#if subreq.showExcLines>
-                    <#list subreq.appliedExceptionText as ex>
-                        <div class="subreqCline">${ex?xml}</div>
-                    </#list>
+            <div class="subreqNumber required">
+                <#if subreq.required>${subreq.subreqRequired?xml}</#if>
+                <#if subreq.showSubreqNumber>${subreq.subreqNumber?xml}
+                    <#if subreq.showParen>)</#if>
                 </#if>
             </div>
+            <#if subreq.showTitle >
+                <div class="title">
+                    <#list reflow( subreq.titleLines ) as titleLine>
+                        <#if titleLine?trim != "." >
+                            <div class="text linkify">
+                            ${deASCII(titleLine)}
+                            </div>
+                        </#if>
+                    </#list>
+                </div>
             </#if>
+
+            <#if subreq.showExcLines>
+                <#list subreq.appliedExceptionText as ex>
+                    <div class="subreqCline">${ex?xml}</div>
+                </#list>
+            </#if>
+        </div>
 
             <#if subreq.showGotSummary || subreq.showInProgressHours || subreq.showPlannedHours || subreq.showNeedsSummary >
             <div class="totals">
