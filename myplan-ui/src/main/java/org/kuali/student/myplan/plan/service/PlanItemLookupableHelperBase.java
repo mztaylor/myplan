@@ -109,7 +109,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                             continue;
                         }
 
-                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isRegistrationOpen(termId), termId, planItemInfo.getId());
+                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItemInfo.getId());
                         activityOfferingItems.add(activityOfferingItem);
                         if (plannedSections.containsKey(key)) {
                             plannedSections.get(key).add(activityOfferingItem);
