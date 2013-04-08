@@ -280,69 +280,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         }
 
         String primaryID = dupeSectionElement.elementText("SectionID");
-
-
         CourseOfferingInfo info = new CourseOfferingInfo();
-        info.setSubjectArea(curric);
-        info.setCourseCode(num);
-        info.setTermId(termId);
-        info.setId(getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, sectionID));
-        String courseID = getCourseHelper().getCourseIdForTerm(curric, num, termId);
-        info.setCourseId(courseID);
-        info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
-        info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
-        info.getAttributes().add(new AttributeInfo("PrimarySectionId", primaryID));
-
-        {
-            String gradingSystem = secondarySection.elementText("GradingSystem");
-            if ("standard".equals(gradingSystem)) {
-                info.setGradingOptionId("kuali.uw.resultcomponent.grade.standard");
-                info.setGradingOptionName(null);
-            } else if ("credit/no credit".equals(gradingSystem)) {
-                info.setGradingOptionId("kuali.uw.resultcomponent.grade.crnc");
-                info.setGradingOptionName("Credit/No-Credit grading");
-            }
-        }
-
-        {
-            String creditControl = secondarySection.elementText("CreditControl");
-            String minCreditID = secondarySection.elementText("MinimumTermCredit");
-            String minCreditName = minCreditID;
-            if (minCreditName != null && minCreditName.endsWith(".0")) {
-                minCreditName = minCreditName.substring(0, minCreditName.length() - 2);
-            }
-            String maxCreditID = secondarySection.elementText("MaximumTermCredit");
-            String maxCreditName = maxCreditID;
-            if (maxCreditName != null && maxCreditName.endsWith(".0")) {
-                maxCreditName = maxCreditName.substring(0, maxCreditName.length() - 2);
-            }
-
-            // Default values so its visually obvious when the mapping is incorrect
-            String creditID = "X";
-            String creditName = "X";
-
-            if ("fixed credit".equals(creditControl)) {
-                creditID = minCreditID;
-                creditName = minCreditName;
-            } else if ("variable credit - min to max credits".equals(creditControl)) {
-                creditID = minCreditID + "-" + maxCreditID;
-                creditName = minCreditName + "-" + maxCreditName;
-            } else if ("variable credit - min or max credits".equals(creditControl)) {
-                creditID = minCreditID + ", " + maxCreditID;
-                creditName = minCreditName + ", " + maxCreditName;
-            } else if ("variable credit - 1 to 25 credits".equals(creditControl)) {
-                creditID = "1.0-25.0";
-                creditName = "1-25";
-            } else if ("zero credits".equals(creditControl)) {
-                creditID = "0.0";
-                creditName = "0";
-            }
-
-            creditID = "kuali.uw.resultcomponent.credit." + creditID;
-            info.setCreditOptionId(creditID);
-            info.setCreditOptionName(creditName);
-
-        }
+        info = buildCourseOfferingInfo(courseOfferingId, primaryID, termId, courseComments.toString(), curriculumComments.toString(), secondarySection);
         return info;
     }
 
@@ -1068,66 +1007,8 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
                 String primaryID = dupeSectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
-                    CourseOfferingInfo info = new CourseOfferingInfo();
-                    info.setSubjectArea(curric);
-                    info.setCourseCode(num);
-                    info.setTermId(termId);
-                    info.setId(getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, primarySectionID));
-                    info.setCourseId(getCourseHelper().getCourseIdForTerm(curric, num, termId));
-                    info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
-                    info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
-                    info.getAttributes().add(new AttributeInfo("PrimarySectionId", primarySectionID));
-
-                    {
-                        String gradingSystem = secondarySection.elementText("GradingSystem");
-                        if ("standard".equals(gradingSystem)) {
-                            info.setGradingOptionId("kuali.uw.resultcomponent.grade.standard");
-                            info.setGradingOptionName(null);
-                        } else if ("credit/no credit".equals(gradingSystem)) {
-                            info.setGradingOptionId("kuali.uw.resultcomponent.grade.crnc");
-                            info.setGradingOptionName("Credit/No-Credit grading");
-                        }
-                    }
-
-                    {
-                        String creditControl = secondarySection.elementText("CreditControl");
-                        String minCreditID = secondarySection.elementText("MinimumTermCredit");
-                        String minCreditName = minCreditID;
-                        if (minCreditName != null && minCreditName.endsWith(".0")) {
-                            minCreditName = minCreditName.substring(0, minCreditName.length() - 2);
-                        }
-                        String maxCreditID = secondarySection.elementText("MaximumTermCredit");
-                        String maxCreditName = maxCreditID;
-                        if (maxCreditName != null && maxCreditName.endsWith(".0")) {
-                            maxCreditName = maxCreditName.substring(0, maxCreditName.length() - 2);
-                        }
-
-                        // Default values so its visually obvious when the mapping is incorrect
-                        String creditID = "X";
-                        String creditName = "X";
-
-                        if ("fixed credit".equals(creditControl)) {
-                            creditID = minCreditID;
-                            creditName = minCreditName;
-                        } else if ("variable credit - min to max credits".equals(creditControl)) {
-                            creditID = minCreditID + "-" + maxCreditID;
-                            creditName = minCreditName + "-" + maxCreditName;
-                        } else if ("variable credit - min or max credits".equals(creditControl)) {
-                            creditID = minCreditID + ", " + maxCreditID;
-                            creditName = minCreditName + ", " + maxCreditName;
-                        } else if ("variable credit - 1 to 25 credits".equals(creditControl)) {
-                            creditID = "1.0-25.0";
-                            creditName = "1-25";
-                        } else if ("zero credits".equals(creditControl)) {
-                            creditID = "0.0";
-                            creditName = "0";
-                        }
-
-                        creditID = "kuali.uw.resultcomponent.credit." + creditID;
-                        info.setCreditOptionId(creditID);
-                        info.setCreditOptionName(creditName);
-
-                    }
+                    String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', year, quarter, curric, num, primarySectionID);
+                    CourseOfferingInfo info = buildCourseOfferingInfo(courseOfferingId, primarySectionID, termId, courseComments.toString(), curriculumComments.toString(), secondarySection);
                     list.add(info);
                 }
             }
@@ -1138,6 +1019,84 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             throw new OperationFailedException(e.getMessage());
         }
     }
+
+    /**
+     *
+     * @param courseOfferingID
+     * @param primarySectionId
+     * @param termId
+     * @param courseComments
+     * @param curriculumComments
+     * @param secondarySection
+     * @return
+     */
+    private CourseOfferingInfo buildCourseOfferingInfo(String courseOfferingID, String primarySectionId, String termId, String courseComments, String curriculumComments, Element secondarySection) {
+        String[] list = courseOfferingID.split("=");
+        String subject = list[2];
+        String num = list[3];
+        CourseOfferingInfo info = new CourseOfferingInfo();
+        info.setSubjectArea(subject);
+        info.setCourseCode(num);
+        info.setTermId(termId);
+        info.setId(courseOfferingID);
+        info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, num, termId));
+        info.getAttributes().add(new AttributeInfo("CourseComments", courseComments));
+        info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments));
+        info.getAttributes().add(new AttributeInfo("PrimarySectionId", primarySectionId));
+
+        {
+            String gradingSystem = secondarySection.elementText("GradingSystem");
+            if ("standard".equals(gradingSystem)) {
+                info.setGradingOptionId("kuali.uw.resultcomponent.grade.standard");
+                info.setGradingOptionName(null);
+            } else if ("credit/no credit".equals(gradingSystem)) {
+                info.setGradingOptionId("kuali.uw.resultcomponent.grade.crnc");
+                info.setGradingOptionName("Credit/No-Credit grading");
+            }
+        }
+
+        {
+            String creditControl = secondarySection.elementText("CreditControl");
+            String minCreditID = secondarySection.elementText("MinimumTermCredit");
+            String minCreditName = minCreditID;
+            if (minCreditName != null && minCreditName.endsWith(".0")) {
+                minCreditName = minCreditName.substring(0, minCreditName.length() - 2);
+            }
+            String maxCreditID = secondarySection.elementText("MaximumTermCredit");
+            String maxCreditName = maxCreditID;
+            if (maxCreditName != null && maxCreditName.endsWith(".0")) {
+                maxCreditName = maxCreditName.substring(0, maxCreditName.length() - 2);
+            }
+
+            // Default values so its visually obvious when the mapping is incorrect
+            String creditID = "X";
+            String creditName = "X";
+
+            if ("fixed credit".equals(creditControl)) {
+                creditID = minCreditID;
+                creditName = minCreditName;
+            } else if ("variable credit - min to max credits".equals(creditControl)) {
+                creditID = minCreditID + "-" + maxCreditID;
+                creditName = minCreditName + "-" + maxCreditName;
+            } else if ("variable credit - min or max credits".equals(creditControl)) {
+                creditID = minCreditID + ", " + maxCreditID;
+                creditName = minCreditName + ", " + maxCreditName;
+            } else if ("variable credit - 1 to 25 credits".equals(creditControl)) {
+                creditID = "1.0-25.0";
+                creditName = "1-25";
+            } else if ("zero credits".equals(creditControl)) {
+                creditID = "0.0";
+                creditName = "0";
+            }
+
+            creditID = "kuali.uw.resultcomponent.credit." + creditID;
+            info.setCreditOptionId(creditID);
+            info.setCreditOptionName(creditName);
+
+        }
+        return info;
+    }
+
 
     @Override
     public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysForCourseOffering(@WebParam(name = "courseOfferingId") String courseOfferingID, @WebParam(name = "contextInfo") ContextInfo contextInfo)
