@@ -4,15 +4,15 @@
  #################################################################
  */
 function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections) {
-    var item = '<div id="' + planItemId + '_div_' + type + '_' + atpId + '" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
+    var item = '<div id="' + planItemId + '_' + type + '_' + atpId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
-        '<div id="' + planItemId + '_' + type + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
+        '<div id="' + planItemId + '_' + type + '_' + atpId + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
         '<fieldset>' +
         '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">';
     if (timeScheduleOpen == "true") {
         item += '<div class="' + ((showAlert == "true") ? 'not-scheduled' : 'scheduled') + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '">' +
-            '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '" class="uif-image">' +
+            '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '" class="uif-image"/>' +
             '</div>';
     }
     var sectionsDiv = '';
@@ -30,7 +30,7 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
         '</div>' +
         '</fieldset>' +
         '</div>' +
-        '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',null,e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });">' +
+        '<input name="script" type="hidden" value="jQuery(\'#\' + \'' + planItemId + '_' + type + '_' + atpId + '\').click(function(e) { openMenu(\'' + planItemId + '\', \'' + type + '_menu_items\',null,e,\'.uif-collectionItem\',\'fl-container-150 uif-boxLayoutHorizontalItem\',{tail:{align:\'top\'},align:\'top\',position:\'right\'},false); });"/>' +
         '</div>' +
         '</div>';
     var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).attr("data-size")) + 1;
@@ -38,8 +38,8 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
     fnShowHideQuickAddLink(atpId, type, size);
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide();
-    runHiddenScripts(planItemId + "_div_" + type + "_" + atpId);
-    jQuery("#" + planItemId + "_div_" + type + "_" + atpId).fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
+    runHiddenScripts(planItemId + "_" + type + "_" + atpId + "_div");
+    jQuery("#" + planItemId + "_" + type + "_" + atpId + "_div").fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
 }
 /*
  #################################################################
@@ -47,12 +47,12 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
  #################################################################
  */
 function fnRemovePlanItem(atpId, type, planItemId) {
-    jQuery("#" + planItemId).unbind('click');
+    jQuery("#" + planItemId + "_" + type + "_" + atpId).unbind('click');
     var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).attr("data-size")) - 1;
     jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
     fnShowHideQuickAddLink(atpId, type, size);
 
-    jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type).parents(".uif-collectionItem").fadeOut(250, function () {
+    jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type + "_" + atpId).parents(".uif-collectionItem").fadeOut(250, function () {
         jQuery(this).remove();
     });
 }
