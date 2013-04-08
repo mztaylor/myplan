@@ -49,11 +49,15 @@
                                           var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
                                           jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
                                           fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
+                                          var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
+                                          row.addClass('myplan-section-planned');
                                           if (data.ItemsToUpdate != null) {
                                               var items = data.ItemsToUpdate.split(',');
                                               jQuery.each(items, function (index, value) {
                                                   jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
                                                   fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
+                                                  var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
+                                                  row.addClass('myplan-section-planned');
                                               });
                                           }
                                       });
@@ -1108,16 +1112,16 @@
                             <bean parent="emptyAction" p:rowSpan="1"
                                   p:render="@{!#line.primary AND #line.planItemId EQ null}"/>
 
-                <bean parent="activityInstructor"/>
+                            <bean parent="activityInstructor"/>
 
-                <bean parent="activityOther" p:render="@{#line.primary}"/>
-                <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
+                            <bean parent="activityOther" p:render="@{#line.primary}"/>
+                            <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
 
-                <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
-                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
-            </list>
-        </property>
-    </bean>
+                            <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
+                            <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

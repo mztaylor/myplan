@@ -361,8 +361,13 @@
                                 <property name="validationMessages.render" value="false"/>
                                 <property name="items">
                                     <list>
-                                        <bean id="previous_year_button" parent="MyPlan-NavButton"
+                                        <bean id="previous_year_button" parent="MyPlan-NavLink"
                                               p:title="Previous Academic Year">
+                                            <property name="linkText"
+                                                      value="&lt;img src=&quot;../ks-myplan/images/pixel.gif&quot; class=&quot;actionImage leftActionImage uif-image&quot; /&gt;"/>
+                                            <property name="href" value="#"/>
+                                            <property name="onClickScript" value="e.preventDefault();"/>
+                                            <property name="onMouseOutScript" value="jQuery(this).blur();"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-carousel-prev</value>
@@ -370,8 +375,13 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean id="next_year_button" parent="MyPlan-NavButton"
+                                        <bean id="next_year_button" parent="MyPlan-NavLink"
                                               p:title="Next Academic Year">
+                                            <property name="linkText"
+                                                      value="&lt;img src=&quot;../ks-myplan/images/pixel.gif&quot; class=&quot;actionImage rightActionImage uif-image&quot; /&gt;"/>
+                                            <property name="href" value="#"/>
+                                            <property name="onClickScript" value="e.preventDefault();"/>
+                                            <property name="onMouseOutScript" value="jQuery(this).blur();"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-carousel-next</value>
