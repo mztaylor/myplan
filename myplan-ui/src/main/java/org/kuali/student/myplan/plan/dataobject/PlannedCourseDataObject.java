@@ -85,9 +85,6 @@ public class PlannedCourseDataObject implements Comparable {
         List<String> sections = new ArrayList<String>();
         if (getPlanActivities() != null && getPlanActivities().size() > 0) {
             for (ActivityOfferingItem activityOfferingItem : getPlanActivities()) {
-                if (sections.size() == 2) {
-                    return String.format("%s,..", StringUtils.join(sections.toArray(), ", "));
-                }
                 sections.add(activityOfferingItem.getCode());
             }
         }
