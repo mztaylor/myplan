@@ -159,7 +159,7 @@
                           });"/>
         <property name="items">
             <list>
-                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
+                <!--<bean parent="Uif-PrimaryActionButton" p:actionLabel="Add to Plan"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addPlannedCourse"
                       p:actionImagePlacement="RIGHT">
                     <property name="actionImage">
@@ -193,7 +193,7 @@
                                   });"/>
                     <property name="actionScript"
                               value="myPlanAjaxPlanItemMove('@{dataObject.courseSummaryDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
-                </bean>
+                </bean>-->
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseSummaryDetails.courseId}_bookmarked"
                       p:render="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"
                       p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
@@ -1056,33 +1056,68 @@
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionButton"
-                      p:render="@{!#line.registrationClosed AND #line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.registrationClosed AND #line.primary AND #line.planItemId EQ null}"/>
                 <bean parent="activityActionButton" p:rowSpan="1"
-                      p:render="@{!#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null AND !T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                      p:render="@{!#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null}"/>
 
-                <bean parent="activityActionLink" p:render="@{!#line.registrationClosed AND #line.primary and #line.planItemId NE null}"/>
+                <bean parent="emptyAction"
+                      p:render="@{#line.registrationClosed AND #line.primary AND #line.planItemId EQ null}"/>
+                <bean parent="emptyAction" p:rowSpan="1"
+                      p:render="@{#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null}"/>
+
+                <bean parent="activityActionLink"
+                      p:render="@{#line.primary AND #line.planItemId NE null}"/>
                 <bean parent="activityActionLink" p:rowSpan="1"
-                      p:render="@{!#line.registrationClosed AND !#line.primary and #line.planItemId NE null}"/>
-
-                <bean parent="adviserEmptyAction"
-                      p:render="@{#line.primary AND #line.planItemId EQ null AND  T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-                <bean parent="adviserEmptyAction" p:rowSpan="1"
-                      p:render="@{!#line.primary AND #line.planItemId EQ null AND T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-
-                <bean parent="adviserEmptyAction"
-                      p:render="@{#line.registrationClosed AND #line.primary}"/>
-                <bean parent="adviserEmptyAction" p:rowSpan="1"
-                      p:render="@{#line.registrationClosed AND !#line.primary}"/>
+                      p:render="@{!#line.primary AND #line.planItemId NE null}"/>
 
                 <bean parent="activityInstructor"/>
 
                 <bean parent="activityOther" p:render="@{#line.primary}"/>
                 <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
 
+                <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
+                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="activityCode" p:render="@{#line.primary}"/>
+                            <bean parent="activityCode" p:render="@{!#line.primary}" p:rowSpan="1"/>
+
+                            <bean parent="activityType"/>
+
+                            <bean parent="activityMeetingData"/>
+
+                            <bean parent="activityRegCode"/>
+
+                            <bean parent="activityEnrlRestr"/>
+
+                            <bean parent="activityEnrlData"/>
+
+                            <bean parent="activityActionLink"
+                                  p:render="@{#line.primary AND #line.planItemId NE null}"/>
+                            <bean parent="activityActionLink" p:rowSpan="1"
+                                  p:render="@{!#line.primary AND #line.planItemId NE null}"/>
+
+                            <bean parent="emptyAction"
+                                  p:render="@{#line.primary AND #line.planItemId EQ null}"/>
+                            <bean parent="emptyAction" p:rowSpan="1"
+                                  p:render="@{!#line.primary AND #line.planItemId EQ null}"/>
+
+                <bean parent="activityInstructor"/>
+
+                <bean parent="activityOther" p:render="@{#line.primary}"/>
+                <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
 
                 <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
                 <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
-
+            </list>
+        </property>
+    </bean>
             </list>
         </property>
     </bean>
@@ -1414,7 +1449,7 @@
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
-    <bean id="adviserEmptyAction" parent="Uif-MessageField" p:messageText="--" p:rowSpan="3" p:colSpan="1">
+    <bean id="emptyAction" parent="Uif-MessageField" p:messageText="--" p:rowSpan="3" p:colSpan="1">
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
