@@ -184,9 +184,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             payload = payload.replace("$regid", studentId.replace("&", "&amp;"));
 
             String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
-            logger.info("REST HTTP POST");
-            logger.info(postAuditRequestURL);
-            logger.info(payload);
+            logger.debug("REST HTTP POST");
+            logger.debug(postAuditRequestURL);
+            logger.debug(payload);
 
             Client client = studentServiceClient.getClient();
 
@@ -284,7 +284,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         long giveup = System.currentTimeMillis() + TIMEOUT;
         while (true) {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
-            logger.info(info.getMessage());
+            logger.debug(info.getMessage());
             if (info.getIsSuccess()) {
                 return getHTMLReport(auditId, auditTypeKey);
             }
@@ -369,8 +369,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             //
             // Great explanation of this mess here: http://stackoverflow.com/a/206409
             String method = "html";
-            if( DegreeAuditServiceConstants.AUDIT_TYPE_KEY_XML.equalsIgnoreCase( auditTypeKey )){
-            	method = "xml";
+            if (DegreeAuditServiceConstants.AUDIT_TYPE_KEY_XML.equalsIgnoreCase(auditTypeKey)) {
+//            	method = "xml";
             }
             transformer.setOutputProperty(OutputKeys.METHOD, method);
             DOMSource source = new DOMSource(rootDegreeAuditHTMLContentDIV);
