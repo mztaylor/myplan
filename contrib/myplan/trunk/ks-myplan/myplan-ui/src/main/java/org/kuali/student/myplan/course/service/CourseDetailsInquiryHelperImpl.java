@@ -681,7 +681,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
         if (AtpHelper.getPublishedTerms().contains(termId)) {
-            boolean registrationClosed = !AtpHelper.isRegistrationOpen(termId);
+            boolean openForPlanning = !AtpHelper.isAtpSetToPlanning(termId);
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
@@ -701,7 +701,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     if (null != planItemMap) {
                         planItemId = planItemMap.get(planRefObjId);
                     }
-                    ActivityOfferingItem activityOfferingItem = getActivityItem(aodi, courseInfo, registrationClosed, termId, planItemId);
+                    ActivityOfferingItem activityOfferingItem = getActivityItem(aodi, courseInfo, openForPlanning, termId, planItemId);
                     activityOfferingItemList.add(activityOfferingItem);
                 }
             }
@@ -715,12 +715,12 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      *
      * @param displayInfo
      * @param courseOfferingInfo
-     * @param registrationClosed
+     * @param openForPlanning
      * @param termId
      * @param planItemId
      * @return
      */
-    public ActivityOfferingItem getActivityItem(ActivityOfferingDisplayInfo displayInfo, CourseOfferingInfo courseOfferingInfo, boolean registrationClosed, String termId, String planItemId) {
+    public ActivityOfferingItem getActivityItem(ActivityOfferingDisplayInfo displayInfo, CourseOfferingInfo courseOfferingInfo, boolean openForPlanning, String termId, String planItemId) {
         ActivityOfferingItem activity = new ActivityOfferingItem();
         /*Data from ActivityOfferingDisplayInfo*/
         activity.setCourseId(courseOfferingInfo.getCourseId());
@@ -846,7 +846,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         activity.setDetails("View more details");
         activity.setPlanItemId(planItemId);
         activity.setAtpId(termId);
-        activity.setRegistrationClosed(registrationClosed);
+        activity.setOpenForPlanning(openForPlanning);
         YearTerm yt = AtpHelper.atpToYearTerm(termId);
         activity.setQtryr(yt.toQTRYRParam());
         if (instituteCode == null) {

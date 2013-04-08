@@ -1060,14 +1060,14 @@
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionButton"
-                      p:render="@{!#line.registrationClosed AND #line.primary AND #line.planItemId EQ null}"/>
+                      p:render="@{!#line.openForPlanning AND #line.primary AND #line.planItemId EQ null}"/>
                 <bean parent="activityActionButton" p:rowSpan="1"
-                      p:render="@{!#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null}"/>
+                      p:render="@{!#line.openForPlanning AND !#line.primary AND #line.planItemId EQ null}"/>
 
                 <bean parent="emptyAction"
-                      p:render="@{#line.registrationClosed AND #line.primary AND #line.planItemId EQ null}"/>
+                      p:render="@{#line.openForPlanning AND #line.primary AND #line.planItemId EQ null}"/>
                 <bean parent="emptyAction" p:rowSpan="1"
-                      p:render="@{#line.registrationClosed AND !#line.primary AND #line.planItemId EQ null}"/>
+                      p:render="@{#line.openForPlanning AND !#line.primary AND #line.planItemId EQ null}"/>
 
                 <bean parent="activityActionLink"
                       p:render="@{#line.primary AND #line.planItemId NE null}"/>

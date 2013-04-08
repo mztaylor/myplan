@@ -944,9 +944,9 @@
 
                 <bean parent="activityEnrlData"/>
 
-                <bean parent="activityActionDelete" p:rowSpan="1" p:render="@{!#line.registrationClosed}"/>
+                <bean parent="activityActionDelete" p:rowSpan="1" p:render="@{!#line.openForPlanning}"/>
 
-                <bean parent="emptyAction" p:rowSpan="1" p:render="@{#line.registrationClosed}"/>
+                <bean parent="emptyAction" p:rowSpan="1" p:render="@{#line.openForPlanning}"/>
 
                 <bean parent="activityInstructor">
                     <property name="onDocumentReadyScript" value="

@@ -238,7 +238,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                             continue;
                         }
 
-                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isRegistrationOpen(termId), termId, planItem.getId());
+                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItem.getId());
                         activityOfferingItems.add(activityOfferingItem);
                         if (plannedSections.containsKey(key)) {
                             plannedSections.get(key).add(activityOfferingItem);
