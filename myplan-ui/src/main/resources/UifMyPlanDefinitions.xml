@@ -154,12 +154,12 @@
         <property name="scriptFiles">
             <list merge="true">
                 <value>https://use.typekit.net/jpx3dug.js</value>
-                <value>ks-myplan/scripts/myplan.widgets.js</value>
-                <value>ks-myplan/scripts/myplan.events.js</value>
-                <value>ks-myplan/plugins/jquery.subscribe.js</value>
-                <value>ks-myplan/plugins/polling.js</value>
-                <value>ks-myplan/jquery-popover/jquery.popover.js</value>
-                <value>ks-myplan/scripts/myplan.google.js</value>
+                <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/plugins/jquery.subscribe.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/plugins/polling.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/scripts/myplan.google.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
     </bean>
@@ -179,10 +179,10 @@
         <property name="scriptFiles">
             <list merge="true">
                 <value>https://use.typekit.net/jpx3dug.js</value>
-                <value>ks-myplan/scripts/myplan.widgets.js</value>
-                <value>ks-myplan/scripts/myplan.events.js</value>
-                <value>ks-myplan/plugins/jquery.subscribe.js</value>
-                <value>ks-myplan/jquery-popover/jquery.popover.min.js</value>
+                <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/plugins/jquery.subscribe.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/jquery-popover/jquery.popover.min.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
     </bean>
