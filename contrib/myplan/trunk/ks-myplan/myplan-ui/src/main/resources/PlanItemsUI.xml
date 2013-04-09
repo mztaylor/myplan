@@ -473,25 +473,38 @@
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="true"/>
-        <property name="layoutManager.lineGroupPrototype.headerText" value="@{#line.qtrYear}"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses">
-            <list merge="true">
-                <value>uif-group</value>
-                <value>uif-boxGroup</value>
-                <value>uif-verticalBoxGroup</value>
-                <value>uif-boxSection</value>
-                <value>@{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView and
-                    #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}
-                </value>
-                <value>@{#line.openForPlanning ? 'open' : 'closed'}</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
         <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-List">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-VerticalBoxSection">
+                        <property name="headerText" value="@{#line.qtrYear}"/>
+                        <property name="header">
+                            <bean parent="Uif-HeaderFour">
+                                <property name="onClickScript"
+                                          value="window.location.assign('inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}');"/>
+                            </bean>
+                        </property>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-group</value>
+                                <value>uif-boxGroup</value>
+                                <value>uif-verticalBoxGroup</value>
+                                <value>uif-boxSection</value>
+                                <value>@{#line.currentTermForView ? 'myplan-term-current' : (!#line.currentTermForView
+                                    and
+                                    #line.openForPlanning ? 'myplan-term-future' : 'myplan-term-past')}
+                                </value>
+                                <value>@{#line.openForPlanning ? 'open' : 'closed'}</value>
+                            </list>
+                        </property>
+                        <property name="validationMessages.render" value="false"/>
+                        <property name="disclosure.renderImage" value="false"/>
+                        <property name="disclosure.defaultOpen" value="true"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-carousel-list</value>

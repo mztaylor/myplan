@@ -842,6 +842,7 @@ input.myplan-delete:hover,
     border: none;
 }
 
+/* 1 Year Plan Header Future styling  */
 .myplan-carousel-list ul li > .uif-group > .uif-header h4 {
     display: block;
     white-space: nowrap;
@@ -869,6 +870,24 @@ input.myplan-delete:hover,
     text-shadow: 0px 1px 0px #fcffff;
 }
 
+/* 1 Year Plan Header Future Hover styling */
+.myplan-carousel-list ul li > .uif-group > .uif-header:hover h4 {
+    background-color: #f5d170;
+    background-image: -ms-linear-gradient(top, #f5d170 0%, #f8dd96 100%);
+    background-image: -moz-linear-gradient(center top, #f5d170 0%, #f8dd96 100%);
+    background-image: -o-linear-gradient(top, #f5d170 0%, #f8dd96 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f5d170), color-stop(1, #f8dd96));
+    background-image: -webkit-linear-gradient(top, #f5d170 0%, #f8dd96 100%);
+    background-image: linear-gradient(to bottom, #f5d170 0%, #f8dd96 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f5d170', endColorstr = '#f8dd96');
+    cursor: pointer;
+}
+
+.myplan-carousel-list ul li > .uif-group > .uif-header:hover h4 .uif-headerText-span {
+    color: #161616;
+}
+
+/* 1 Year Plan Header Past styling  */
 .myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header h4 {
     border: solid 1px #cccccc;
     background-color: #dedede;
@@ -881,6 +900,24 @@ input.myplan-delete:hover,
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dedede', endColorstr = '#cccccc');
 }
 
+/* 1 Year Plan Header Past Hover styling  */
+.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header:hover h4 {
+    background-color: #b1b1b1;
+    background-image: -ms-linear-gradient(top, #b1b1b1 0%, #cbcbcb 100%);
+    background-image: -moz-linear-gradient(center top, #b1b1b1 0%, #cbcbcb 100%);
+    background-image: -o-linear-gradient(top, #b1b1b1 0%, #cbcbcb 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #b1b1b1), color-stop(1, #cbcbcb));
+    background-image: -webkit-linear-gradient(top, #b1b1b1 0%, #cbcbcb 100%);
+    background-image: linear-gradient(to bottom, #b1b1b1 0%, #cbcbcb 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#b1b1b1', endColorstr = '#cbcbcb');
+    cursor: pointer;
+}
+
+.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header:hover h4 .uif-headerText-span {
+    color: #000;
+}
+
+/* 1 Year Plan Header Current styling  */
 .myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header h4 {
     border: solid 1px #432f69;
     background-color: #5c428e;
@@ -896,6 +933,23 @@ input.myplan-delete:hover,
 .myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header h4 .uif-headerText-span {
     color: #f9f7f7;
     text-shadow: 0px 1px 0px #000;
+}
+
+/* 1 Year Plan Header Current Hover styling  */
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header:hover h4 {
+    background-color: #7962a5;
+    background-image: -ms-linear-gradient(top, #7962a5 0%, #5d438f 100%);
+    background-image: -moz-linear-gradient(center top, #7962a5 0%, #5d438f 100%);
+    background-image: -o-linear-gradient(top, #7962a5 0%, #5d438f 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #7962a5), color-stop(1, #5d438f));
+    background-image: -webkit-linear-gradient(top, #7962a5 0%, #5d438f 100%);
+    background-image: linear-gradient(to bottom, #7962a5 0%, #5d438f 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#7962a5', endColorstr = '#5d438f');
+    cursor: pointer;
+}
+
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header:hover h4 .uif-headerText-span {
+    color: #fff;
 }
 
 .myplan-carousel-list ul li > .uif-group > .uif-boxLayout {
