@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This data object records all instances where the course has been planned,
@@ -75,5 +79,14 @@ public class CourseDetails {
         return getCourseOfferingInstitutionList();
     }
 
+    public String getSectionAtp() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String focusAtpId = request.getParameter("section_term");
+        if (focusAtpId != null) {
+            return focusAtpId;
+        }
+
+        return null;
+    }
 
 }
