@@ -55,7 +55,7 @@
           p:render="@{!#parentLine.completedTerm and (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning) and #parentLine.displayRegisteredHelp ? true : false}">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
-                  p:tooltipContent="Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the  &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
+                  p:tooltipContent="Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
         </property>
     </bean>
 
@@ -138,6 +138,27 @@
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Need content here!"/>
+        </property>
+    </bean>
+
+    <bean id="single_quarter_registered_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="The courses and sections you are enrolled in for the current or future academic quarter(s). To update this information, go to the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
+        </property>
+    </bean>
+
+    <bean id="single_quarter_planned_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="Courses and sections you are planning to enroll in for each quarter. MyPlan allows you to add courses listed in the Course Catalog and course sections listed in the published Time Schedule(s) to your plan. MyPlan will alert you when a course you've planned does not appear in that quarter's published Time Schedule."/>
+        </property>
+    </bean>
+
+    <bean id="single_quarter_backup_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="Courses and sections you are considering in case the ones you have planned are full or unavailable. To designate a course as a backup, click on &quot;add a course to plan&quot; in the backup section of your plan or search for and add a course as a backup from the Find Courses page."/>
         </property>
     </bean>
 
