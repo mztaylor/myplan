@@ -117,7 +117,7 @@
                                     &lt;strong&gt;I&amp;S&lt;/strong&gt; - Individuals and Societies&lt;/br&gt;
                                     &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
                                     &lt;strong&gt;None&lt;/strong&gt; - Does not count towards General Education Requirements&lt;/br&gt;
-                                    &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php');&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
+                                    &lt;/br&gt; &lt;a target=_blank href=&quot;http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php&quot;&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -134,10 +134,10 @@
         </property>
     </bean>
 
-    <bean id="single_quarter_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_credits_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
-                  p:tooltipContent="Need content here!"/>
+                  p:tooltipContent=""/>
         </property>
     </bean>
 
@@ -159,6 +159,13 @@
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Courses and sections you are considering in case the ones you have planned are full or unavailable. To designate a course as a backup, click on &quot;add a course to plan&quot; in the backup section of your plan or search for and add a course as a backup from the Find Courses page."/>
+        </property>
+    </bean>
+
+    <bean id="single_quarter_completed_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Left"
+                  p:tooltipContent="Courses that you registered for in a quarter that is now complete."/>
         </property>
     </bean>
 
