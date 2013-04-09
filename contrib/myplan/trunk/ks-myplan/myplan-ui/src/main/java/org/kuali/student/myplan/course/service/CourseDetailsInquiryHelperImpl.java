@@ -95,39 +95,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private transient AcademicRecordService academicRecordService;
 
-    private transient boolean isAcademicCalendarServiceUp = true;
-
-    private transient boolean isAcademicRecordServiceUp = true;
-
-    private transient boolean isCourseOfferingServiceUp = true;
 
     @Autowired
     CourseHelper courseHelper;
 
-
-    public boolean isAcademicCalendarServiceUp() {
-        return isAcademicCalendarServiceUp;
-    }
-
-    public void setAcademicCalendarServiceUp(boolean academicCalendarServiceUp) {
-        isAcademicCalendarServiceUp = academicCalendarServiceUp;
-    }
-
-    public boolean isAcademicRecordServiceUp() {
-        return isAcademicRecordServiceUp;
-    }
-
-    public void setAcademicRecordServiceUp(boolean academicRecordServiceUp) {
-        isAcademicRecordServiceUp = academicRecordServiceUp;
-    }
-
-    public boolean isCourseOfferingServiceUp() {
-        return isCourseOfferingServiceUp;
-    }
-
-    public void setCourseOfferingServiceUp(boolean courseOfferingServiceUp) {
-        isCourseOfferingServiceUp = courseOfferingServiceUp;
-    }
 
     //TODO: These should be changed to an ehCache spring bean
 //    private HashMap<String, Map<String, String>> hashMap;
@@ -196,9 +167,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
         if (!servicesStatusDataObject.isCourseOfferingServiceUp() || !servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
             AtpHelper.addServiceError("curriculumTitle");
-            setAcademicCalendarServiceUp(servicesStatusDataObject.isAcademicCalendarServiceUp());
-            setAcademicRecordServiceUp(servicesStatusDataObject.isAcademicRecordServiceUp());
-            setCourseOfferingServiceUp(servicesStatusDataObject.isCourseOfferingServiceUp());
         }
 
 
@@ -223,6 +191,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         if (null == course) {
             return null;
         }
+
+        // Check for status of the services
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
+
 
         String subject = course.getSubjectArea().trim();
 
@@ -318,7 +291,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
         //  Fetch the available terms from the Academic Calendar Service.
-        if (isAcademicCalendarServiceUp() && isCourseOfferingServiceUp()) {
+        if (servicesStatusDataObject.isAcademicCalendarServiceUp() && servicesStatusDataObject.isCourseOfferingServiceUp()) {
             try {
                 QueryByCriteria predicates = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED));
                 List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(predicates, CourseSearchConstants.CONTEXT_INFO);
@@ -336,6 +309,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             } catch (Exception e) {
                 logger.error("Web service call failed.", e);
             }
+        } else {
+            logger.info("Could not load scheduled terms. AcademicCalServiceStatus:" + servicesStatusDataObject.isAcademicCalendarServiceUp() + " CourseOfferingServiceStatus:" + servicesStatusDataObject.isCourseOfferingServiceUp());
         }
 
         Collections.sort(courseDetails.getScheduledTerms(), new Comparator<String>() {
@@ -348,7 +323,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         // Last Offered
         //  If course not scheduled for future terms, Check for the last term when course was offered
-        if (isCourseOfferingServiceUp()) {
+        if (servicesStatusDataObject.isCourseOfferingServiceUp()) {
             CourseOfferingService cos = getCourseOfferingService();
 
             if (courseDetails.getScheduledTerms().isEmpty()) {
