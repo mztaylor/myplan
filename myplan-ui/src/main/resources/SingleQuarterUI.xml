@@ -113,7 +113,7 @@
                                                         </property>
                                                     </bean>
 
-                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 428px;"
+                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 426px;"
                                                           p:cssClasses="myplan-plan-header">
                                                         <property name="message">
                                                             <bean parent="Uif-Message"
@@ -122,7 +122,7 @@
                                                     </bean>
 
                                                     <bean parent="Uif-HorizontalBoxGroup"
-                                                          p:style="margin:0; width: 130px;">
+                                                          p:style="margin:0; width: 132px;">
                                                         <property name="validationMessages.render" value="false"/>
                                                         <property name="items">
                                                             <list>
