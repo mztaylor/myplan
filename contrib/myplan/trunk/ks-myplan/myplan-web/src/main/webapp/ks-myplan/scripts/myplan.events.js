@@ -181,7 +181,10 @@ function fnRemoveSectionRow(actionId) {
 }
 
 function fnUpdateQuarterViewCredits(termCredits) {
-    jQuery(".myplan-credit-total .myplan-credit-value span.uif-message").fadeOut(250, function () {
-        jQuery(this).html(termCredits).fadeIn(250);
-    });
+    var currentCredits = jQuery(".myplan-credit-total .myplan-credit-value span.uif-message");
+    if (currentCredits.text() != termCredits) {
+        currentCredits.fadeOut(250, function () {
+            jQuery(this).text(termCredits).fadeIn(250);
+        });
+    }
 }

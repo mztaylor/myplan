@@ -1416,9 +1416,9 @@ function updateHiddenScript(id, script) {
 }
 
 function switchFetchAction(actionId, toggleId) {
-    var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleSections('" + actionId + "', '" + toggleId + "', 'myplan-section-planned', 'Show additional sections', 'Hide additional sections'); });";
+    var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleSections('" + actionId + "', '" + toggleId + "', 'myplan-section-planned', 'Show all scheduled sections', 'Hide non-selected sections'); });";
     updateHiddenScript(actionId, script);
-    jQuery("#" + actionId).text("Hide all sections")
+    jQuery("#" + actionId).text("Hide non-selected sections");
 }
 
 function toggleSections(actionId, toggleId, showClass, showText, hideText) {

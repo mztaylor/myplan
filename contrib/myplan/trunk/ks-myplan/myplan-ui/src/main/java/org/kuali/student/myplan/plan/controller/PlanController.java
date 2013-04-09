@@ -414,7 +414,7 @@ public class PlanController extends UifControllerBase {
 
         //  Make events (delete, add, update credits).
         //  Set the javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events =  new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
@@ -948,24 +948,25 @@ public class PlanController extends UifControllerBase {
         if (wishlistEvents != null) {
             events.putAll(wishlistEvents);
         }
-
+        String plannedTerm = null;
         try {
             if (planItem != null) {
+                plannedTerm = planItem.getPlanPeriods().get(0);
                 events.putAll(makeAddEvent(planItem, courseDetails, form));
             }
             if (primaryPlanItem != null) {
+                plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
                 events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
             }
             if (secondaryPlanItem != null) {
+                plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
                 events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
             }
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
         }
 
-        if (planItem != null) {
-            events.putAll(makeUpdateTotalCreditsEvent(planItem.getPlanPeriods().get(0), PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
-        }
+        events.putAll(makeUpdateTotalCreditsEvent(plannedTerm, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         //  Populate the form.
         form.setJavascriptEvents(events);
