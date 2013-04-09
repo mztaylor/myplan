@@ -79,6 +79,8 @@ public class CourseDetails {
         return getCourseOfferingInstitutionList();
     }
 
+    /*Need to refactor this to be more cleaner.
+    This is been used in the CourseSectionsUI for getting the enrollmentdata using the atpId*/
     public String getSectionAtp() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String focusAtpId = request.getParameter("section_term");
