@@ -169,6 +169,9 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
             component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false").data("planned", false).parent("td").removeClass('myplan-delete').addClass('myplan-add');
             row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
             script = "jQuery('#' + '" + actionId + "').click(function(e) { myplanAjaxSubmitSectionItem('" + data.courseDetails.courseId + "', 'addPlannedCourse', 'plan', {courseId:'" + data.courseDetails.courseId + "',sectionCode:'" + component.data("coursesection") + "',atpId:'" + data.atpId.replace(/-/g, '.') + "',instituteCode:'" + data.InstituteCode + "',registrationCode:'" + regId + "',primary:" + component.data("primary") + ",viewId:'PlannedCourse-FormView'}, e);}); ";
+            if (jQuery("#" + data.courseDetails.courseId + "_toggle").data("hidden")) {
+                row.hide().next('tr.collapsible').hide().next('tr.collapsible').hide();
+            }
             break;
     }
     script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this));}); ";
