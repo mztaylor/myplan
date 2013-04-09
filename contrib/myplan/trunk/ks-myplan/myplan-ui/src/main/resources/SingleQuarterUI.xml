@@ -382,7 +382,7 @@
                 <property name="validationMessages.render" value="false"/>
                 <property name="items">
                     <list>
-                        <bean parent="single_quarter_registered_help_icon"/>
+                        <bean parent="single_quarter_completed_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -1089,14 +1089,19 @@
         <property name="validationMessages.render" value="false"/>
     </bean>
 
-    <bean id="singleQuarterSectionsToggle" p:id="@{#line.planItemDataObject.id}_toggle" parent="Uif-ActionLink"
+    <bean id="singleQuarterSectionsToggle" p:id="@{#line.courseDetails.courseId}_toggle" parent="Uif-ActionLink"
           p:actionLabel="Show all scheduled sections" p:style="display:inline-block;">
         <property name="actionScript"
                   value="
                        jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
                        myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
-                       switchFetchAction('@{#line.planItemDataObject.id}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
+                       switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                   "/>
+        <property name="dataAttributes">
+            <map merge="true">
+                <entry key="hidden" value="true"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="singleQuarterMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move"

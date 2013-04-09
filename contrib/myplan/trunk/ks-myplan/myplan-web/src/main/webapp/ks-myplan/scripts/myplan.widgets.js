@@ -1418,20 +1418,20 @@ function updateHiddenScript(id, script) {
 function switchFetchAction(actionId, toggleId) {
     var script = "jQuery('#' + '" + actionId + "').click(function(e){ toggleSections('" + actionId + "', '" + toggleId + "', 'myplan-section-planned', 'Show all scheduled sections', 'Hide non-selected sections'); });";
     updateHiddenScript(actionId, script);
-    jQuery("#" + actionId).text("Hide non-selected sections");
+    jQuery("#" + actionId).text("Hide non-selected sections").removeAttr("data-hidden").data("hidden", false);
 }
 
 function toggleSections(actionId, toggleId, showClass, showText, hideText) {
     var group = jQuery("#" + toggleId + " table tbody tr").not("." + showClass);
     var action = jQuery("#" + actionId);
-    if (group.is(':visible')) {
-        group.hide();
-        jQuery(".myplan-quarter-detail .activityInstitutionHeading").hide();
-        action.text(showText);
-    } else {
+    if (action.data("hidden")) {
         group.not(".collapsible").show();
         jQuery(".myplan-quarter-detail .activityInstitutionHeading").show();
-        action.text(hideText);
+        action.text(hideText).data("hidden", false);
+    } else {
+        group.hide();
+        jQuery(".myplan-quarter-detail .activityInstitutionHeading").hide();
+        action.text(showText).data("hidden", true);
     }
 }
 
