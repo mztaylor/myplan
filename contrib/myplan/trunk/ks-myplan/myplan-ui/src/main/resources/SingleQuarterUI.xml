@@ -350,6 +350,7 @@
     </bean>
 
     <bean id="single_AcademicRecord_Collection_Completed" parent="course_details_activity_data" p:style="">
+        <property name="id" value="@{dataObject.atpId.replace('.','-')}_completed"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
@@ -359,6 +360,8 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
+            truncateField('@{dataObject.atpId.replace('.','-')}_completed', 5);
+
             var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
             tableHead.before('
                 &lt;col style=&quot;width: 498px;&quot;&gt;
@@ -398,18 +401,15 @@
         <property name="header.lowerGroup.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup">
+                <bean parent="Uif-HorizontalFieldGroup" p:style="width:490px;">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="label" value="Courses"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityCourseTitle</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} @{#line.activityCode}"/>
-                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
+                            <bean parent="Uif-DataField" p:propertyName="courseCode" p:style="margin:0 5px 0 0;">
+                                <property name="fieldLabel.render" value="false"/>
+                            </bean>
+                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:style="white-space:nowrap;">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
                                 <property name="cssClasses">
@@ -711,19 +711,6 @@
 
     <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:headerText="Planned Courses">
         <property name="validationMessages.render" value="false"/>
-        <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
-        <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
-                <property name="items">
-                    <list>
-                        <bean parent="single_quarter_planned_help_icon"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="render" value="@{dataObject.plannedList.size() GT 0}"/>
@@ -756,10 +743,24 @@
                 </property>
             </bean>
         </property>
+        <property name="onDocumentReadyScript"
+                  value="truncateField('@{dataObject.atpId.replace('.','-')}_planned', 35, true);"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_planned_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup"
-                      p:title="@{#line.courseDetails.courseTitle}">
+                <bean parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseDetails.courseTitle}">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="onDocumentReadyScript"
                               value=""/>
@@ -768,20 +769,34 @@
                             <value>myplan-course-item-heading</value>
                         </list>
                     </property>
+                    <property name="style" value="width:618px;"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseDetails.code}">
+                            <bean parent="Uif-DataField" p:propertyName="courseDetails.code">
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-bold</value>
                                     </list>
                                 </property>
+                                <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="Uif-SpaceField"/>
+                            <bean parent="Uif-LinkField">
+                                <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
+                                <property name="href"
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+                                <property name="style" value="margin:0 5px 0 0;"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-ellipsis</value>
+                                    </list>
+                                </property>
+                            </bean>
 
-                            <bean parent="Uif-Link" p:linkText="@{#line.courseDetails.courseTitle}"
-                                  p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+                            <bean parent="Uif-MessageField" p:messageText="(@{#line.courseDetails.credit})">
+                                <property name="style" value="margin:0 25px 0 0;"/>
+                            </bean>
 
                             <!-- Past quarters -->
                             <bean parent="singleQuarterStudentActions">
@@ -834,7 +849,8 @@
 
                             <!--For Advisers only-->
                             <bean parent="singleQuarterSectionsToggle">
-                                <property name="style" value="float:right; display:inline-block; font-size:11px;"/>
+                                <property name="style"
+                                          value="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;"/>
                                 <property name="render"
                                           value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.showAlert}"/>
                             </bean>
@@ -864,6 +880,8 @@
 
     <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup Courses">
         <property name="propertyName" value="backupList"/>
+        <property name="onDocumentReadyScript"
+                  value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', 35, true);"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
                 <property name="validationMessages.render" value="false"/>
@@ -1085,7 +1103,7 @@
     </bean>
 
     <bean id="singleQuarterStudentActions" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-          p:linkSeparator="|" p:style="float:right; display:inline-block; font-size:11px;">
+          p:linkSeparator="|" p:style="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;">
         <property name="validationMessages.render" value="false"/>
     </bean>
 
@@ -1232,7 +1250,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Message" p:messageText="Credits" p:style="font-size:15px; color:#39275B;"/>
-                <!--<bean parent="single_quarter_credits_help_icon" p:style="margin-right: 20px;"/>-->
+                <bean parent="single_quarter_credits_help_icon" p:style="margin-right: 20px;"/>
                 <bean parent="Uif-MessageField" p:label="Credits" p:style="font-size:18px; color:#39275B;"
                       p:messageText="@{dataObject.credits ne null ? dataObject.credits : '0'}">
                     <property name="fieldLabel.render" value="false"/>

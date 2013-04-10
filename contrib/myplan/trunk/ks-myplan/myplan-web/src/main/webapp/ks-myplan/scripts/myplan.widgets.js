@@ -741,18 +741,19 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
  */
 function truncateField(id, margin, floated) {
     jQuery("#" + id + " .uif-horizontalFieldGroup").each(function () {
-        if (jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").length != 0) {
+        var itemSelector = ".uif-horizontalBoxGroup > .uif-horizontalBoxLayout > .uif-boxLayoutHorizontalItem";
+        if (jQuery(this).find(itemSelector + ".myplan-text-ellipsis").length != 0) {
             jQuery(this).css("display", "block");
             var fixed = 0;
-            jQuery(this).find(".uif-boxLayoutHorizontalItem:not(.myplan-text-ellipsis)").each(function () {
+            jQuery(this).find(itemSelector + ":not(.myplan-text-ellipsis)").each(function () {
                 fixed = fixed + jQuery(this).width();
             });
             var ellipsis = jQuery(this).width() - ( ( fixed + 1 ) + margin );
             if (!floated) {
-                jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
+                jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width(ellipsis);
             } else {
-                if (jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width() >= ellipsis) {
-                    jQuery(this).find(".uif-boxLayoutHorizontalItem.myplan-text-ellipsis").width(ellipsis);
+                if (jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width() >= ellipsis) {
+                    jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width(ellipsis);
                 }
             }
         }
