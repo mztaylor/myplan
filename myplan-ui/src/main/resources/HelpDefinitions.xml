@@ -112,7 +112,7 @@
                   p:tooltipContent="&lt;strong&gt;General Education Requirements&lt;/strong&gt; &lt;/br&gt;
                                     &lt;strong&gt;C&lt;/strong&gt; - English Composition&lt;/br&gt;
                                     &lt;strong&gt;W&lt;/strong&gt; - Additional Writing&lt;/br&gt;
-                                    &lt;strong&gt;Q&lt;/strong&gt; - Quantitative and Symbolic Reasoning&lt;/br&gt;
+                                    &lt;strong&gt;QSR&lt;/strong&gt; - Quantitative and Symbolic Reasoning&lt;/br&gt;
                                     &lt;strong&gt;VLPA&lt;/strong&gt;  - Visual, Literary, and Performing Arts&lt;/br&gt;
                                     &lt;strong&gt;I&amp;S&lt;/strong&gt; - Individuals and Societies&lt;/br&gt;
                                     &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
@@ -137,7 +137,7 @@
     <bean id="single_quarter_credits_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
-                  p:tooltipContent=""/>
+                  p:tooltipContent="@{!dataObject.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (dataObject.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
         </property>
     </bean>
 
@@ -158,7 +158,7 @@
     <bean id="single_quarter_backup_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
-                  p:tooltipContent="Courses and sections you are considering in case the ones you have planned are full or unavailable. To designate a course as a backup, click on &quot;add a course to plan&quot; in the backup section of your plan or search for and add a course as a backup from the Find Courses page."/>
+                  p:tooltipContent="Courses and sections you are considering in case the ones you have planned are full or unavailable. To designate a course as a backup, search for and add a course as a backup from the Find Courses page."/>
         </property>
     </bean>
 
