@@ -18,13 +18,9 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
@@ -163,13 +159,13 @@ public class AtpHelper {
             //  use the first item in the list. Although, TODO: Not sure if the order of the list is guaranteed, so maybe putting a sort here
             //  is the Right thing to do.
             TermInfo lastTerm = scheduledTerms.get(scheduledTerms.size() - 1);
-            lastAtpId = scheduledTerms.get(scheduledTerms.size() - 1).getId();
+            lastAtpId = lastTerm.getId();
 
             // SUMMER EXCEPTION
             if (lastAtpId.endsWith(".3")) {
                 List<AttributeInfo> attrs = lastTerm.getAttributes();
                 for (AttributeInfo attr : attrs) {
-                    if (attr.getKey().equals(AtpHelper.PRIORITY_ONE_REGISTRATION_START)) {
+                    if (PRIORITY_ONE_REGISTRATION_START.equals(attr.getKey())) {
                         // Check to see if the priority registration is still more than 3 weeks away
                         DateTime regStart = new DateTime(attr.getValue());
                         if (regStart.minusWeeks(3).isAfterNow()) {
@@ -772,7 +768,7 @@ public class AtpHelper {
     public static YearTerm getFirstAcademicPlanTermForStudent() {
         List<StudentCourseRecordInfo> studentCourseRecordInfos = null;
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(UserSessionHelper.getStudentId(), PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(UserSessionHelper.getStudentRegId(), PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
@@ -793,7 +789,8 @@ public class AtpHelper {
     public static YearTerm getLastPlannedTerm() {
         YearTerm lastPlannedTerm = atpToYearTerm(getCurrentAtpId());
         try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentId(), LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+            String regId = UserSessionHelper.getStudentRegId();
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
                 List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
