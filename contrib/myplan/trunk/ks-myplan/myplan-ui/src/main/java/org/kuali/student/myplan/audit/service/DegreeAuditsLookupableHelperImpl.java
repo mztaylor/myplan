@@ -9,7 +9,6 @@ import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.springframework.dao.DataRetrievalFailureException;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -22,47 +21,35 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String regId = null;
-        try {
-            regId = UserSessionHelper.getStudentRegId();
-        } catch (DataRetrievalFailureException e) {
-            List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
-            return degreeAuditItems;
-        }
-
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
-        DegreeAuditService degreeAuditService = getDegreeAuditService();
-
-        if (degreeAuditService == null) {
-            throw new RuntimeException("Degree audit service handle was null.");
-        }
-
-        List<AuditReportInfo> audits = new ArrayList<AuditReportInfo>();
-        //  TODO: Calculate dates that make sense.
-        Date begin = new Date();
-        Date end = new Date();
         try {
-            audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+            String regId = UserSessionHelper.getStudentRegId();
+            //  TODO: Calculate dates that make sense.
+            Date begin = new Date();
+            Date end = new Date();
+
+            DegreeAuditService degreeAuditService = getDegreeAuditService();
+            List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+
+            /**
+             *  Make a list of DegreeAuditItem, but only include the most recent audit for a particular program.
+             */
+            HashSet<String> programSet = new HashSet<String>();
+            for (AuditReportInfo audit : audits) {
+                String programId = audit.getProgramId();
+                if (!programSet.contains(programId)) {
+                    programSet.add(programId);
+                    DegreeAuditItem item = DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit);
+                    degreeAuditItems.add(item);
+                }
+            }
+            if (degreeAuditItems.size() > 0) {
+                degreeAuditItems.get(0).setRecentAudit(true);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            String[] params = {};
-            /*throw new RuntimeException("Request for audit ids failed.", e);*/
+            logger.warn("cannot get list of recent audits", e);
         }
 
-        /**
-         *  Make a list of DegreeAuditItem, but only include the most recent audit for a particular program.
-         */
-        Set<String> programSet = new HashSet<String>();
-        for (AuditReportInfo audit : audits) {
-            String programId = audit.getProgramId();
-            if (!programSet.contains(programId)) {
-                programSet.add(programId);
-                degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
-            }
-        }
-        if (degreeAuditItems.size() > 0) {
-            degreeAuditItems.get(0).setRecentAudit(true);
-        }
         return degreeAuditItems;
     }
 
@@ -71,6 +58,9 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             degreeAuditService = (DegreeAuditService)
                     GlobalResourceLoader.getService(new QName(DegreeAuditServiceConstants.NAMESPACE,
                             DegreeAuditServiceConstants.SERVICE_NAME));
+            if (degreeAuditService == null) {
+                throw new RuntimeException("Degree audit service handle was null.");
+            }
         }
         return degreeAuditService;
     }
