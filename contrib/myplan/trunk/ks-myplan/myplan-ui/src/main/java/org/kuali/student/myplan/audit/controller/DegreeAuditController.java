@@ -22,7 +22,6 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.common.exceptions.DataValidationErrorException;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
@@ -30,10 +29,8 @@ import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.AuditForm;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
@@ -47,9 +44,6 @@ import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.dto.MetaInfo;
-import org.kuali.student.r2.common.dto.RichTextInfo;
-import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -65,14 +59,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
@@ -354,7 +349,7 @@ public class DegreeAuditController extends UifControllerBase {
                         learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
                         break;
                     }
-                    AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo, DegreeAuditConstants.CONTEXT_INFO);
+                    AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo.getId(), DegreeAuditConstants.CONTEXT_INFO);
 
                     /*auditID = report.getAuditId();
                     AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, planAuditform.getAuditType(), context);
