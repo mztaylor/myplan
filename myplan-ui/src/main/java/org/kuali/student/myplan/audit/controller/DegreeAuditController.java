@@ -22,14 +22,22 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.common.exceptions.DataValidationErrorException;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.service.OrganizationService;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.form.AuditForm;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
+import org.kuali.student.myplan.audit.form.PlanAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
@@ -39,6 +47,9 @@ import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.MetaInfo;
+import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -54,13 +65,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
+import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
@@ -73,6 +86,8 @@ public class DegreeAuditController extends UifControllerBase {
     private transient DegreeAuditService degreeAuditService;
 
     public static OrganizationService organizationService;
+
+    public transient AcademicPlanService academicPlanService;
 
     public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
@@ -89,7 +104,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return new DegreeAuditForm();
+        return new AuditForm();
     }
 
 
@@ -105,10 +120,24 @@ public class DegreeAuditController extends UifControllerBase {
         this.organizationService = organizationService;
     }
 
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
     @RequestMapping(params = "methodToCall=audit")
-    public ModelAndView audit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
+    public ModelAndView audit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         boolean systemKeyExists = true;
+        DegreeAuditForm form = auditForm.getDegreeAudit();
+        PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         try {
             Map<String, String> campusMap = populateCampusMap();
             ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
@@ -180,28 +209,38 @@ public class DegreeAuditController extends UifControllerBase {
                         }
                     }
                 }
+                /************End Degree Audit report*************************/
+
+
+                /************Start Plan Audit report*************************/
+                planAuditForm.setCampusParam(campusMap.get("0"));
+
+                /************End Plan Audit report*************************/
+
+
             }
         } catch (DataRetrievalFailureException e) {
             logger.error("audit failed", e);
             systemKeyExists = false;
-            form.setPageId(DegreeAuditConstants.AUDIT_NON_STUDENT_PAGE);
+            auditForm.setPageId(DegreeAuditConstants.AUDIT_NON_STUDENT_PAGE);
         } catch (Exception e) {
             logger.error("audit failed", e);
             String[] params = {};
-            GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
+            GlobalVariables.getMessageMap().putWarning("planAudit.programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
 
-        return getUIFModelAndView(form);
+        return getUIFModelAndView(auditForm);
     }
 
     @RequestMapping(params = "methodToCall=runAudit")
-    public ModelAndView runAudit(@ModelAttribute("KualiForm") DegreeAuditForm form, BindingResult result,
+    public ModelAndView runAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
         if (UserSessionHelper.isAdviser()) {
             GlobalVariables.getMessageMap().clearErrorMessages();
             GlobalVariables.getMessageMap().putError("audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
-            return getUIFModelAndView(form);
+            return getUIFModelAndView(auditForm);
         }
+        DegreeAuditForm form = auditForm.getDegreeAudit();
         String auditID = null;
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
@@ -239,7 +278,7 @@ public class DegreeAuditController extends UifControllerBase {
                     form.setAuditHtml(html);
                 } else {
                     String[] params = {};
-                    GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                    GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
                     form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
                 }
             }
@@ -247,12 +286,12 @@ public class DegreeAuditController extends UifControllerBase {
         } catch (DataRetrievalFailureException e) {
             String[] params = {};
             form.setCampusParam("306");
-            GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
+            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
 
         } catch (Exception e) {
             logger.error("Could not complete audit run");
             String[] params = {};
-            GlobalVariables.getMessageMap().putError("programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             Throwable cause = e.getCause();
             if (cause != null) {
                 String message = cause.getMessage();
@@ -263,7 +302,102 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
         }
-        return getUIFModelAndView(form);
+        return getUIFModelAndView(auditForm);
+    }
+
+    @RequestMapping(params = "methodToCall=runPlanAudit")
+    public ModelAndView runPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
+                                     HttpServletRequest request, HttpServletResponse response) {
+        if (UserSessionHelper.isAdviser()) {
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putError("plan_audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
+            return getUIFModelAndView(auditForm);
+        }
+
+        PlanAuditForm planAuditform = auditForm.getPlanAudit();
+        /*TODO: uncomment this validation once we populate the lastPlannedTerm in start Method
+        if (planAuditform.getLastPlannedTerm() == null) {
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putError("plan_audit_report_section", PlanConstants.ERROR_PLAN_AUDIT_QUARTER_EMPTY);
+            return getUIFModelAndView(auditForm);
+        } else if (AtpHelper.isAtpCompletedTerm(planAuditform.getLastPlannedTerm())) {
+            GlobalVariables.getMessageMap().clearErrorMessages();
+            GlobalVariables.getMessageMap().putError("plan_audit_report_section", PlanConstants.ERROR_PLAN_AUDIT_INVALID_QUARTER);
+            return getUIFModelAndView(auditForm);
+        }*/
+
+
+        /******Plan Audit Report Process*********/
+        String auditID = null;
+        try {
+            String regid = UserSessionHelper.getStudentRegId();
+            if (StringUtils.hasText(regid)) {
+                DegreeAuditService degreeAuditService = getDegreeAuditService();
+                String programId = null;
+                if ("306".equals(planAuditform.getCampusParam())) {
+                    programId = planAuditform.getProgramParamSeattle();
+
+                } else if ("310".equals(planAuditform.getCampusParam())) {
+                    programId = planAuditform.getProgramParamBothell();
+
+                } else if ("323".equals(planAuditform.getCampusParam())) {
+                    programId = planAuditform.getProgramParamTacoma();
+
+                }
+                if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
+                    Person user = GlobalVariables.getUserSession().getPerson();
+                    ContextInfo context = new ContextInfo();
+                    context.setPrincipalId(regid);
+                    LearningPlanInfo learningPlanInfo = null;
+                    List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+                    for (LearningPlanInfo learningPlan : learningPlanList) {
+                        learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
+                        break;
+                    }
+                    AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo, DegreeAuditConstants.CONTEXT_INFO);
+
+                    /*auditID = report.getAuditId();
+                    AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, planAuditform.getAuditType(), context);
+                    InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+                    StringWriter sw = new StringWriter();
+
+                    int c = 0;
+                    while ((c = in.read()) != -1) {
+                        sw.append((char) c);
+                    }
+
+                    String html = sw.toString();
+                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
+                    html = html.replace("$$PreparedFor$$", preparedFor);
+                    planAuditform.setAuditHtml(html);*/
+
+                } else {
+                    String[] params = {};
+                    GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                    planAuditform.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
+                }
+            }
+
+        } catch (DataRetrievalFailureException e) {
+            String[] params = {};
+            planAuditform.setCampusParam("306");
+            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
+
+        } catch (Exception e) {
+            logger.error("Could not complete audit run");
+            String[] params = {};
+            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                String message = cause.getMessage();
+                if (message != null) {
+                    String errorMessage = getErrorMessageFromXml(message);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
+                    planAuditform.setAuditHtml(html);
+                }
+            }
+        }
+        return getUIFModelAndView(auditForm);
     }
 
     @RequestMapping(value = "/status")
@@ -335,7 +469,7 @@ public class DegreeAuditController extends UifControllerBase {
     /**
      * Initializes the error page.
      */
-    private ModelAndView doErrorPage(DegreeAuditForm form, String errorKey, String[] params, String page, String section) {
+    private ModelAndView doErrorPage(AuditForm form, String errorKey, String[] params, String page, String section) {
         GlobalVariables.getMessageMap().putErrorForSectionId(section, errorKey, params);
         return getUIFModelAndView(form, page);
     }
@@ -343,7 +477,7 @@ public class DegreeAuditController extends UifControllerBase {
     /**
      * Initializes the warning page.
      */
-    private ModelAndView doWarningPage(DegreeAuditForm form, String errorKey, String[] params, String page, String section) {
+    private ModelAndView doWarningPage(AuditForm form, String errorKey, String[] params, String page, String section) {
         GlobalVariables.getMessageMap().clearErrorMessages();
         GlobalVariables.getMessageMap().putWarningForSectionId(section, errorKey, params);
         return getUIFModelAndView(form, page);

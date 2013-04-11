@@ -73,31 +73,17 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean id="degree_audit_block" parent="Uif-VerticalBoxSection"
+                            <bean id="degree_audit_tab_group" parent="Uif-TabSection"
                                   p:style="width: 700px; margin-right: 10px; float: left;">
-                                <property name="layoutManager">
-                                    <bean parent="Uif-VerticalBoxLayout"/>
-                                </property>
-                                <property name="onDocumentReadyScript" value="
-                                    blockPendingAudit('audit_section');
-                                "/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="run_degree_audits"/>
-                                        <ref bean="audit_section"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-audit-tabs</value>
                                     </list>
                                 </property>
-                                <property name="propertyReplacers">
+                                <property name="items">
                                     <list>
-                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                                            <property name="replacement">
-                                                <list>
-                                                    <ref bean="audit_adviser_actions_message"/>
-                                                    <ref bean="audit_section"/>
-                                                </list>
-                                            </property>
-                                        </bean>
+                                        <ref bean="plan_audit_block"/>
+                                        <ref bean="degree_audit_block"/>
                                     </list>
                                 </property>
                             </bean>
@@ -220,34 +206,225 @@
             </list>
         </property>
         <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.audit.form.DegreeAuditForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
     </bean>
 
-    <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-audit-report</value>
-            </list>
+    <!--******************************Start of Plan Audit Report****************************************-->
+    <bean id="plan_audit_block" parent="degree_audit_block" p:headerText="Plan Audit Report">
+        <property name="header">
+            <bean parent="Uif-HeaderThree" p:style="display:none;"/>
         </property>
         <property name="items">
             <list>
-                <ref bean="empty_degree_audits"/>
-                <ref bean="audit_report_section"/>
+                <ref bean="run_plan_audits"/>
+                <bean parent="audit_section">
+                    <property name="items">
+                        <list>
+                            <ref bean="empty_plan_audits"/>
+                            <ref bean="plan_audit_report_section"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection">
-        <property name="onDocumentReadyScript" value="
-            initAuditActions();
-        "/>
+    <bean id="run_plan_audits" parent="Uif-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-run-audit-panel</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderFive"/>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="select_instruction"/>
+                <ref bean="plan_campus_params"/>
+                <ref bean="plan_program_params"/>
+                <ref bean="audit_instruction"/>
+                <bean parent="Uif-InputField" p:propertyName="planAudit.lastPlannedTerm">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="plan_audit_report_section" parent="Uif-VerticalBoxSubSection" p:headerText="Plan Audit Report" p:render="@{planAudit.auditHtml ne null}">
+        <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean id="txtaudit" parent="Uif-Message" p:messageText="@{getAuditHtml()}"
+                            <bean id="txtplanAudit" parent="Uif-Message" p:messageText="@{planAudit.auditHtml}"
                                   p:style="display:block;"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="empty_plan_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;"
+          p:headerText="How to Use Plan Audit for Academic Planning" p:render="@{planAudit.auditHtml eq null}">
+        <property name="header">
+            <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
+        </property>
+    </bean>
+
+    <bean id="plan_campus_params" parent="Uif-HorizontalFieldGroup">
+        <property name="items">
+            <list>
+                <bean id="plan_radio_campusParam" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
+                    <property name="onChangeScript" value="
+                        jQuery('button#plan_audit_run').attr('disabled', planAuditButton());
+                        setUrlHash('modified', 'true');
+                        if(planAuditButton()) {jQuery('button#plan_audit_run').addClass('disabled');}
+                        else {jQuery('button#plan_audit_run').removeClass('disabled');}
+                    "/>
+                    <property name="control">
+                        <bean parent="Uif-HorizontalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="plan_program_params" parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRender="planAudit.campusParam eq '306'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="plan_programParam_seattle" parent="Uif-InputField"
+                                  p:propertyName="planAudit.programParamSeattle" p:validationMessages.render="false">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript"
+                                                  value="jQuery('button#plan_audit_run').attr('disabled', planAuditButton());
+                                                  if(planAuditButton()) {jQuery('button#plan_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#plan_audit_run').removeClass('disabled');} "/>
+                                    </bean>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditSeattlePrograms"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRender="planAudit.campusParam eq '310'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="plan_programParam_bothell" parent="Uif-InputField"
+                                  p:propertyName="planAudit.programParamBothell" p:validationMessages.render="false"
+                                  p:width="auto">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript"
+                                                  value="jQuery('button#plan_audit_run').attr('disabled', planAuditButton());
+                                                  if(planAuditButton()) {jQuery('button#plan_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#plan_audit_run').removeClass('disabled');}"/>
+                                    </bean>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditBothellPrograms"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalBoxSection"
+                      p:progressiveRender="planAudit.campusParam eq '323'" p:disclosure.render="false">
+                    <property name="items">
+                        <list>
+                            <bean id="plan_programParam_tacoma" parent="Uif-InputField"
+                                  p:propertyName="planAudit.programParamTacoma" p:validationMessages.render="false"
+                                  p:width="auto">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl">
+                                        <property name="onChangeScript"
+                                                  value="jQuery('button#plan_audit_run').attr('disabled', planAuditButton());
+                                                  if(planAuditButton()) {jQuery('button#plan_audit_run').addClass('disabled');}
+                                                  else {jQuery('button#plan_audit_run').removeClass('disabled');}"/>
+                                    </bean>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="plan_audit_run"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="plan_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runPlanAudit" p:disabled="true"
+          p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
+          p:actionLabel="Run Plan Audit">
+        <property name="onClickScript"
+                  value="setPendingAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
+        <property name="onDocumentReadyScript" value="
+            if (jQuery.cookie('myplan_audit_running')) {
+                jQuery('button#plan_audit_run').attr('disabled', true);
+            } else {
+                jQuery('button#plan_audit_run').attr('disabled', planAuditButton());
+            }
+            jQuery('button#plan_audit_run').subscribe('AUDIT_COMPLETE', function () {
+                jQuery(this).attr('disabled', planAuditButton());
+            });
+            if(planAuditButton()) {
+             jQuery('button#plan_audit_run').addClass('disabled');
+              }
+            else {
+            jQuery('button#plan_audit_run').removeClass('disabled');
+            }
+        "/>
+    </bean>
+
+
+    <!--****************************** End of Plan Audit Report****************************************-->
+
+
+    <!--******************************Start of Degree Audit Report****************************************-->
+
+    <bean id="degree_audit_block" parent="Uif-VerticalBoxSection"
+          p:style="width: 700px; margin-right: 10px; float: left;" p:headerText="Degree Aduit Report">
+        <property name="header">
+            <bean parent="Uif-HeaderThree" p:style="display:none;"/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-VerticalBoxLayout"/>
+        </property>
+        <property name="onDocumentReadyScript" value="blockPendingAudit('audit_section');"/>
+        <property name="items">
+            <list>
+                <ref bean="run_degree_audits"/>
+                <ref bean="audit_section"/>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                    <property name="replacement">
+                        <list>
+                            <ref bean="audit_adviser_actions_message"/>
+                            <ref bean="audit_section"/>
                         </list>
                     </property>
                 </bean>
@@ -276,8 +453,44 @@
         </property>
     </bean>
 
+    <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-audit-report</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="empty_degree_audits"/>
+                <ref bean="audit_report_section"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection">
+        <property name="onDocumentReadyScript" value="
+            initAuditActions();
+        "/>
+        <property name="header">
+            <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
+        </property>
+        <property name="headerText" value="Degree Audit Report"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-VerticalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <bean id="txtaudit" parent="Uif-Message" p:messageText="@{degreeAudit.auditHtml}"
+                                  p:style="display:block;"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
     <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;"
-          p:render="@{getAuditHtml() eq null ? true : false}"
+          p:render="@{degreeAudit.auditHtml eq null ? true : false}"
           p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
@@ -289,6 +502,7 @@
             </list>
         </property>
     </bean>
+
 
     <bean id="non_student_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;">
         <property name="header">
@@ -386,7 +600,7 @@
     <bean id="campus_params" parent="Uif-HorizontalFieldGroup">
         <property name="items">
             <list>
-                <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="campusParam">
+                <bean id="radio_campusParam" parent="Uif-InputField" p:propertyName="degreeAudit.campusParam">
                     <property name="onChangeScript" value="
                         jQuery('button#degree_audit_run').attr('disabled', degreeAuditButton());
                         setUrlHash('modified', 'true');
@@ -403,16 +617,18 @@
             </list>
         </property>
     </bean>
+
+
     <bean id="program_params" parent="Uif-HorizontalBoxSection" p:layoutManager.orientation="HORIZONTAL">
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRender="campusParam eq '306'" p:disclosure.render="false">
+                      p:progressiveRender="degreeAudit.campusParam eq '306'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_seattle" parent="Uif-InputField"
-                                  p:propertyName="programParamSeattle" p:validationMessages.render="false">
+                                  p:propertyName="degreeAudit.programParamSeattle" p:validationMessages.render="false">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
                                         <property name="onChangeScript"
@@ -429,11 +645,11 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRender="campusParam eq '310'" p:disclosure.render="false">
+                      p:progressiveRender="degreeAudit.campusParam eq '310'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_bothell" parent="Uif-InputField"
-                                  p:propertyName="programParamBothell" p:validationMessages.render="false"
+                                  p:propertyName="degreeAudit.programParamBothell" p:validationMessages.render="false"
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
@@ -451,11 +667,11 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxSection"
-                      p:progressiveRender="campusParam eq '323'" p:disclosure.render="false">
+                      p:progressiveRender="degreeAudit.campusParam eq '323'" p:disclosure.render="false">
                     <property name="items">
                         <list>
                             <bean id="select_programParam_tacoma" parent="Uif-InputField"
-                                  p:propertyName="programParamTacoma" p:validationMessages.render="false"
+                                  p:propertyName="degreeAudit.programParamTacoma" p:validationMessages.render="false"
                                   p:width="auto">
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl">
@@ -517,6 +733,8 @@
             </list>
         </property>
     </bean>
+
+    <!--****************************** End of Degree Audit Report****************************************-->
 
 
 </beans>

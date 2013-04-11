@@ -942,6 +942,20 @@ function degreeAuditButton() {
     }
 }
 
+function planAuditButton() {
+    if (jQuery.cookie('myplan_audit_running')) {
+        return true;
+    } else {
+        var id = getPlanAuditProgram("id");
+
+        if (id) {
+            return (id == 'default');
+        } else {
+            return true;
+        }
+    }
+}
+
 var blockPendingAuditStyle = {
     message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
     fadeIn:400,
@@ -992,7 +1006,7 @@ function removeCookie() {
 
 function getAuditProgram(param) {
     var id;
-    switch (parseFloat(jQuery("input[name='campusParam']:checked").val())) {
+    switch (parseFloat(jQuery("input[name='degreeAudit.campusParam']:checked").val())) {
         case 306:
             id = 'select_programParam_seattle_control';
             break;
@@ -1001,6 +1015,28 @@ function getAuditProgram(param) {
             break;
         case 323:
             id = 'select_programParam_tacoma_control';
+            break;
+        default:
+            id = null;
+    }
+    if (param == 'id') {
+        return jQuery('select#' + id).val();
+    } else {
+        return jQuery('select#' + id + ' option:selected').text();
+    }
+}
+
+function getPlanAuditProgram(param) {
+    var id;
+    switch (parseFloat(jQuery("input[name='planAudit.campusParam']:checked").val())) {
+        case 306:
+            id = 'plan_programParam_seattle_control';
+            break;
+        case 310:
+            id = 'plan_programParam_bothell_control';
+            break;
+        case 323:
+            id = 'plan_programParam_tacoma_control';
             break;
         default:
             id = null;

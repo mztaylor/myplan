@@ -1164,6 +1164,15 @@ input.myplan-delete:hover,
     overflow: hidden;
 }
 
+.myplan-audit-tabs .ui-tabs-panel {
+    padding: 0px;
+}
+
+.myplan-audit-tabs .ui-widget-header {
+    border: 0px;
+}
+
+
 .myplan-remove-margin .uif-boxLayoutVerticalItem,
 .myplan-remove-margin .uif-boxLayoutHorizontalItem {
     margin: 0;
