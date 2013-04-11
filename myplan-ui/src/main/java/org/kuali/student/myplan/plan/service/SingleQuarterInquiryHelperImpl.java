@@ -10,13 +10,10 @@ import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
-import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
@@ -26,7 +23,10 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -105,7 +105,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
     public PlannedTerm retrieveDataObject(Map fieldValues) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String termAtpId = request.getParameter("term_atp_id");
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         boolean isServiceStatusOK = true;
         /*Setting the Warning message if isServiceStatusOK is false*/
         ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
@@ -253,7 +253,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
             }
             for (PlannedCourseDataObject plannedCourse : plannedCoursesList) {
                 List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(String.format("%s=%s=%s", plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
-                if (activityOfferingItems!=null && activityOfferingItems.size() > 0) {
+                if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
                     Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
                         @Override
                         public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {

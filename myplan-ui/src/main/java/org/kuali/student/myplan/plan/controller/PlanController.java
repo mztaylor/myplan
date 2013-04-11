@@ -132,14 +132,14 @@ public class PlanController extends UifControllerBase {
         List<LearningPlanInfo> plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
-            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             return doOperationFailedError(planForm, "Query for learning plan failed.", e);
         }
         List<MessageDataObject> messages = null;
         try {
             CommentQueryHelper commentQueryHelper = new CommentQueryHelper();
-            messages = commentQueryHelper.getMessages(UserSessionHelper.getStudentId());
+            messages = commentQueryHelper.getMessages(UserSessionHelper.getStudentRegId());
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve messages.", e);
         }
@@ -248,7 +248,7 @@ public class PlanController extends UifControllerBase {
             return doPageRefreshError(planForm, "Plan item not found.", e);
 
         }
-        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentId()));
+        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentRegId()));
 
         /*Populating the planActivities (Activity Offerings which are planned)*/
         if (planItem != null && planItem.getPlanPeriods().size() > 0) {
@@ -306,7 +306,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()),
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()),
                     planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -382,7 +382,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()),
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()),
                     planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -531,7 +531,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Plan Size exceeded.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentId()), newAtpIds.get(0), planItem.getTypeKey());
+            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()), newAtpIds.get(0), planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
@@ -670,7 +670,7 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         LearningPlan learningPlan = null;
         try {
-            learningPlan = getLearningPlan(UserSessionHelper.getStudentId());
+            learningPlan = getLearningPlan(UserSessionHelper.getStudentRegId());
             hasCapacity = isAtpHasCapacity(learningPlan, newAtpIds.get(0), planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -778,7 +778,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), null);
         }
 
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
 
         LearningPlan plan = null;
         try {
@@ -995,7 +995,7 @@ public class PlanController extends UifControllerBase {
         }
         List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
         try {
-            String studentId = UserSessionHelper.getStudentId();
+            String studentId = UserSessionHelper.getStudentRegId();
             plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
             if (plan.size() > 0) {
                 if (!plan.get(0).getShared().toString().equalsIgnoreCase(form.getEnableAdviserView())) {
@@ -1171,7 +1171,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan plan = null;
         try {
             //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
@@ -1683,7 +1683,7 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Course Id was empty.");
         }
 
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
@@ -1721,7 +1721,7 @@ public class PlanController extends UifControllerBase {
      * @throws RuntimeException on errors.
      */
     public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             return null;
@@ -1807,7 +1807,7 @@ public class PlanController extends UifControllerBase {
 
         //  Set the user id in the context used in the web service call.
         ContextInfo context = new ContextInfo();
-        context.setPrincipalId(UserSessionHelper.getStudentId());
+        context.setPrincipalId(UserSessionHelper.getStudentRegId());
 
         return getAcademicPlanService().createLearningPlan(plan, context);
     }
@@ -2003,15 +2003,14 @@ public class PlanController extends UifControllerBase {
     private boolean isNewUser() {
         boolean isNewUser = false;
         try {
-            String studentId = UserSessionHelper.getStudentId();
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            String regId = UserSessionHelper.getStudentRegId();
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             /*check if any audits are ran ! if no plans found*/
             if (learningPlanList.isEmpty()) {
-                String systemKey = UserSessionHelper.getAuditSystemKey();
-                if (systemKey != null) {
+                if (regId != null) {
                     Date startDate = new Date();
                     Date endDate = new Date();
-                    List<AuditReportInfo> auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(systemKey, startDate, endDate, DegreeAuditServiceConstants.DEGREE_AUDIT_SERVICE_CONTEXT);
+                    List<AuditReportInfo> auditReportInfoList = getDegreeAuditService().getAuditsForStudentInDateRange(regId, startDate, endDate, DegreeAuditServiceConstants.DEGREE_AUDIT_SERVICE_CONTEXT);
                     isNewUser = auditReportInfoList.isEmpty();
                 }
             }

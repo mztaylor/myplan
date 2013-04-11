@@ -28,22 +28,17 @@ import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.service.OrganizationService;
-import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
-import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -59,11 +54,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
@@ -116,21 +113,21 @@ public class DegreeAuditController extends UifControllerBase {
             Map<String, String> campusMap = populateCampusMap();
             ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
             Person user = GlobalVariables.getUserSession().getPerson();
-            String systemKey = UserSessionHelper.getAuditSystemKey();
-            if (StringUtils.hasText(systemKey)) {
+            String regId = UserSessionHelper.getStudentRegId();
+            if (StringUtils.hasText(regId)) {
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
                 String auditId = form.getAuditId();
                 ContextInfo contextInfo = new ContextInfo();
-                Date startDate = new Date();
-                Date endDate = new Date();
-                String programParam = null;
-                String programId = null;
                 form.setCampusParam(campusMap.get("0"));
-                logger.info("audit systemkey " + systemKey);
+                logger.info("audit regId " + regId);
                 if (!servicesStatusDataObject.isDegreeAuditServiceUp()) {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
-                    List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(systemKey, startDate, endDate, contextInfo);
+                    Date startDate = new Date();
+                    Date endDate = new Date();
+                    String programParam = null;
+                    String programId = null;
+                    List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, contextInfo);
                     if (auditId == null && auditReportInfoList.size() > 0) {
                         auditId = auditReportInfoList.get(0).getAuditId();
                         programParam = auditReportInfoList.get(0).getProgramTitle();
@@ -185,11 +182,11 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
         } catch (DataRetrievalFailureException e) {
-            e.printStackTrace();
+            logger.error("audit failed", e);
             systemKeyExists = false;
             form.setPageId(DegreeAuditConstants.AUDIT_NON_STUDENT_PAGE);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("audit failed", e);
             String[] params = {};
             GlobalVariables.getMessageMap().putWarning("programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
@@ -208,7 +205,7 @@ public class DegreeAuditController extends UifControllerBase {
         String auditID = null;
         try {
             Person user = GlobalVariables.getUserSession().getPerson();
-            String regid = UserSessionHelper.getStudentId();
+            String regid = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regid)) {
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
                 String programId = null;
@@ -273,24 +270,13 @@ public class DegreeAuditController extends UifControllerBase {
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
         String programId = request.getParameter("programId").replace("$", " ");
         String auditId = request.getParameter("auditId");
-        String systemKey = UserSessionHelper.getAuditSystemKey();
-        String status = null;
-        ContextInfo contextInfo = new ContextInfo();
-        Date startDate = new Date();
-        Date endDate = new Date();
+        String regId = UserSessionHelper.getStudentRegId();
 
         try {
-            status = getDegreeAuditService().getAuditStatus(systemKey, programId, auditId);
+            String status = getDegreeAuditService().getAuditStatus(regId, programId, auditId);
+            response.getWriter().printf("{\"status\":\"%s\"}", status);
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        /*Building the Json String*/
-        StringBuilder jsonString = new StringBuilder();
-        jsonString = jsonString.append("{\"status\":").append("\"" + status + "\"}");
-        try {
-            response.getWriter().println(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.warn("cannot retrieve audit status", e);
         }
     }
 

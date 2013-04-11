@@ -2,8 +2,9 @@ package org.kuali.student.myplan.audit.service.mock;
 
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
 import uachieve.apis.audit.jobqueueloader.JobQueueRunLoader;
+import uachieve.apis.requirement.dao.DprogDao;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
@@ -29,29 +31,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import uachieve.apis.requirement.dao.DprogDao;
-
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DegreeAuditServiceMockImpl implements DegreeAuditService {
 
     private static final Log logger = LogFactory.getLog(DegreeAuditServiceMockImpl.class);
 
     //  These keep the spring bean definitions consistent between mock and real impls.
-    public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {}
-    public void setJobQueueRunLoader(JobQueueRunLoader loader) {}
-    public void setJobQueueListDao(JobQueueListDao jobQueueListDao) {}
-    public void setDprogDao(DprogDao dprogDao){}
+    public void setJobQueueRunDao(JobQueueRunDao jobQueueRunDao) {
+    }
+
+    public void setJobQueueRunLoader(JobQueueRunLoader loader) {
+    }
+
+    public void setJobQueueListDao(JobQueueListDao jobQueueListDao) {
+    }
+
+    public void setDprogDao(DprogDao dprogDao) {
+    }
 
 
     @Override
-    public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public AuditReportInfo runAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String runAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public String runAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -136,18 +141,19 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
     public String runEmptyAuditAsync(@WebParam(name = "programId") String programId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
     @Override
-    public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException{
+    public List<AuditProgramInfo> getAuditPrograms(@WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
 
         try {
-            AuditProgramInfo api0= new AuditProgramInfo();
+            AuditProgramInfo api0 = new AuditProgramInfo();
             api0.setProgramId("0api0");
             api0.setProgramTitle("Select a degree program or minor");
-            AuditProgramInfo api1= new AuditProgramInfo();
+            AuditProgramInfo api1 = new AuditProgramInfo();
             api1.setProgramId("1api1");
             api1.setProgramTitle("Select a degree program or minor");
-            AuditProgramInfo api2= new AuditProgramInfo();
+            AuditProgramInfo api2 = new AuditProgramInfo();
             api2.setProgramId("2api2");
             api2.setProgramTitle("Select a degree program or minor");
             auditProgramInfoList.add(api0);
@@ -160,7 +166,7 @@ public class DegreeAuditServiceMockImpl implements DegreeAuditService {
         return auditProgramInfoList;
     }
 
-    public String getAuditStatus(String studentId, String programId, String recentAuditId) throws InvalidParameterException, MissingParameterException, OperationFailedException{
+    public String getAuditStatus(String studentId, String programId, String recentAuditId) throws InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

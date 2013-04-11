@@ -329,7 +329,7 @@ public class CourseSearchController extends UifControllerBase {
 
 
         /*populating the CourseSearchItem list*/
-        String user = UserSessionHelper.getStudentId();
+        String user = UserSessionHelper.getStudentRegId();
         List<CourseSearchItem> courses = courseSearch(form, user, servicesStatusDataObject.isAcademicCalendarServiceUp());
 
         /*Building the Json String*/

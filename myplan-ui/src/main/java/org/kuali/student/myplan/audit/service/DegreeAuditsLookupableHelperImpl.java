@@ -1,12 +1,11 @@
 package org.kuali.student.myplan.audit.service;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
-
-import org.apache.log4j.Logger;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -23,9 +22,9 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId = null;
+        String regId = null;
         try {
-            studentId = UserSessionHelper.getAuditSystemKey();
+            regId = UserSessionHelper.getStudentRegId();
         } catch (DataRetrievalFailureException e) {
             List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
             return degreeAuditItems;
@@ -43,7 +42,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         Date begin = new Date();
         Date end = new Date();
         try {
-            audits = degreeAuditService.getAuditsForStudentInDateRange(studentId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+            audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             String[] params = {};
@@ -61,7 +60,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
                 degreeAuditItems.add(DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit));
             }
         }
-        if(degreeAuditItems.size()>0){
+        if (degreeAuditItems.size() > 0) {
             degreeAuditItems.get(0).setRecentAudit(true);
         }
         return degreeAuditItems;

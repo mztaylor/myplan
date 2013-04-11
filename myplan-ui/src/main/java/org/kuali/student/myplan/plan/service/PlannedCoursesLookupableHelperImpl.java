@@ -2,7 +2,6 @@ package org.kuali.student.myplan.plan.service;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-//import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
@@ -19,8 +18,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+//import org.kuali.rice.kim.api.identity.Person;
 
 /**
  * Produce a list of planned course items.
@@ -59,7 +61,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String focusAtpId = request.getParameter(PlanConstants.FOCUS_ATP_ID_KEY);
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         boolean isServiceStatusOK = true;
         /*Setting the Warning message if isServiceStatusOK is false*/
         ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);

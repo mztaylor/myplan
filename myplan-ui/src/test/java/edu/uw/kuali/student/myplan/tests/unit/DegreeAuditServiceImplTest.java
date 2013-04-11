@@ -43,7 +43,7 @@ public class DegreeAuditServiceImplTest {
         return degreeAuditService;
     }
 
-    public void setDegreeAuditService( DegreeAuditService degreeAuditService ) {
+    public void setDegreeAuditService(DegreeAuditService degreeAuditService) {
         this.degreeAuditService = degreeAuditService;
     }
 
@@ -51,16 +51,16 @@ public class DegreeAuditServiceImplTest {
     public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
         DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(courseCd);
-        System.out.println( courseCode.getSubject() );
-        System.out.println( courseCode.getNumber() );
+        System.out.println(courseCode.getSubject());
+        System.out.println(courseCode.getNumber());
     }
+
     @Test
     public void requestDegreeAudit() {
         if (true) return;
-        try
-        {
+        try {
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-            String studentId = "0";
+            String regid = "0";
             String programId = "0CHEM  0011";
 //            String programId = "0HIST  0011";
             String auditTypeKey = "blah";
@@ -68,28 +68,24 @@ public class DegreeAuditServiceImplTest {
 
             long start = System.currentTimeMillis();
             System.out.println("ugh");
-            AuditReportInfo report = degreeAuditService.runAudit( studentId, programId, auditTypeKey, context );
+            AuditReportInfo report = degreeAuditService.runAudit(regid, programId, auditTypeKey, context);
             String auditID = report.getAuditId();
 
             // TODO: service only returns audittext field for new requests, pending requests don't have this field
             // asked Susan Archdeacon to add that field to all responses.
 
             String message = null;
-            while( true )
-            {
+            while (true) {
                 StatusInfo info = degreeAuditService.getAuditRunStatus(auditID, context);
                 String temp = info.getMessage();
-                if( !temp.equals( message ))
-                {
+                if (!temp.equals(message)) {
                     message = temp;
                     long elapsed = System.currentTimeMillis() - start;
-                    System.out.println( message + " " + elapsed );
+                    System.out.println(message + " " + elapsed);
                 }
-                if( info.getIsSuccess() ) break;
+                if (info.getIsSuccess()) break;
             }
-        }
-        catch( Exception e )
-        {
+        } catch (Exception e) {
             System.out.println("ugh");
 
         }
@@ -99,24 +95,18 @@ public class DegreeAuditServiceImplTest {
     public void runRecentAuditList() {
 //        if( true ) return;
 
-        try
-        {
-//        String studentId = "100190981";
-//        String studentId = "100190977";
-        String studentId = "101360188";
-        Date startDate = new Date();
-        Date endDate = new Date();
-        ContextInfo context = new ContextInfo();
-        DegreeAuditService degreeAuditService = getDegreeAuditService();
-        List<AuditReportInfo> list = degreeAuditService.getAuditsForStudentInDateRange( studentId,  startDate, endDate, null);
+        try {
+            String regId = "730FA4DCAE3411D689DA0004AC494FFE";
+            Date startDate = new Date();
+            Date endDate = new Date();
+            ContextInfo context = new ContextInfo();
+            DegreeAuditService degreeAuditService = getDegreeAuditService();
+            List<AuditReportInfo> list = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, null);
 
-            for(AuditReportInfo info : list)
-            {
-                      System.out.println( info.getProgramTitle());
+            for (AuditReportInfo info : list) {
+                System.out.println(info.getProgramTitle());
             }
-        }
-        catch( Exception e )
-        {
+        } catch (Exception e) {
             Assert.fail("ugh");
         }
     }
@@ -133,18 +123,17 @@ public class DegreeAuditServiceImplTest {
             AuditReport report = degreeAuditService.getAuditReport(auditID, AUDIT_TYPE_KEY_HTML, zero);
             InputStream in = report.getReport().getDataSource().getInputStream();
 
-            File target = new File( "auditreport.html" );
-            FileOutputStream out = new FileOutputStream( target );
+            File target = new File("auditreport.html");
+            FileOutputStream out = new FileOutputStream(target);
 
             int c = 0;
-            while( ( c = in.read() ) != -1 )
-            {
-                out.write( (char) c );
+            while ((c = in.read()) != -1) {
+                out.write((char) c);
             }
             in.close();
             out.close();
 
-            System.out.println( "argh" );
+            System.out.println("argh");
 
         } catch (DoesNotExistException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
