@@ -19,7 +19,7 @@ import java.util.List;
  * Date: 2/13/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "programTitle", "runDate"})
+@XmlType(name = "AuditReportInfo", propOrder = {"auditId", "reportType", "reportContentTypeKey", "report" , "typeKey", "stateKey", "meta", "attributes", "_futureElements", "requirementsSatisfied", "studentId", "programId", "programTitle", "runDate", "whatIfAudit" })
 public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport {
 
     @XmlAttribute
@@ -53,7 +53,7 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     private Date runDate;
 
     @XmlElement
-    private boolean isWhatIfAudit;
+    private boolean whatIfAudit;
 
     public AuditReportInfo() {
         this.auditId = null;
@@ -151,10 +151,10 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
 
     @Override
     public boolean isWhatIfAudit() {
-        return isWhatIfAudit;
+        return whatIfAudit;
     }
 
     public void setWhatIfAudit(boolean whatIfAudit) {
-        isWhatIfAudit = whatIfAudit;
+        this.whatIfAudit = whatIfAudit;
     }
 }

@@ -64,6 +64,7 @@ AuditReport message structure
                 <ref bean="AuditReportInfo.programId"/>
                 <ref bean="AuditReportInfo.programTitle"/>
                 <ref bean="AuditReportInfo.runDate"/>
+                <ref bean="AuditReportInfo.whatIfAudit"/>
 			</list>
 		</property>
 
@@ -208,5 +209,22 @@ Run Date
 		</property>
 		<property name="required" value="false"/>
 	</bean>
+    
+    <bean id="AuditReportInfo.whatIfAudit-generated"  abstract="true"  parent="BaseKuali.boolean">
+        <property name="name" value="whatIfAudit"/>
+        <property name="shortLabel" value="WhatIf"/>
+        <property name="summary">
+            <value>
+                What If
+            </value>
+        </property>
+        <property name="label" value="WhatIf"/>
+        <property name="description">
+            <value>
+                What If
+            </value>
+        </property>
+        <property name="required" value="false"/>
+    </bean>
 
 </beans>
