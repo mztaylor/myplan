@@ -3,7 +3,7 @@ package org.kuali.student.myplan.audit.form;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 
-public class DegreeAuditForm extends UifFormBase {
+public class DegreeAuditForm {
 
     private String auditHtml;
     private String programParamSeattle;
@@ -12,6 +12,7 @@ public class DegreeAuditForm extends UifFormBase {
     private String campusParam;
     private String auditId;
     private String auditType = DegreeAuditServiceConstants.AUDIT_TYPE_KEY_DEFAULT;
+
 
     public String getAuditId() {
         return auditId;
@@ -68,5 +69,6 @@ public class DegreeAuditForm extends UifFormBase {
     public void setAuditType(String auditType) {
         this.auditType = auditType;
     }
+
 
 }

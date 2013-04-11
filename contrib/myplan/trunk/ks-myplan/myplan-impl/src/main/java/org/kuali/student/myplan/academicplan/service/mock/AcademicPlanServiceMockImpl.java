@@ -36,94 +36,94 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         List<PlanItemInfo> list = new ArrayList<PlanItemInfo>();
         {
             PlanItemInfo plan = new PlanItemInfo();
-            plan.setId( "planItem1" );
+            plan.setId("planItem1");
             RichTextInfo richText = new RichTextInfo();
-            plan.setDescr( richText );
-            plan.setLearningPlanId( learningPlanId );
+            plan.setDescr(richText);
+            plan.setLearningPlanId(learningPlanId);
             // ENGL 101
             String cluID = "059881be-4168-4f99-9e64-310c8c50ae7b";
-            plan.setRefObjectId( cluID );
+            plan.setRefObjectId(cluID);
             String type = "";
-            plan.setRefObjectType( type );
+            plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.autumn2011");
-            plan.setPlanPeriods( atps );
+            plan.setPlanPeriods(atps);
 
-            plan.setId( "1" );
-            list.add( plan );
+            plan.setId("1");
+            list.add(plan);
         }
         {
             PlanItemInfo plan = new PlanItemInfo();
-            plan.setId( "planItem2" );
+            plan.setId("planItem2");
             RichTextInfo richText = new RichTextInfo();
-            plan.setDescr( richText );
-            plan.setLearningPlanId( learningPlanId );
+            plan.setDescr(richText);
+            plan.setLearningPlanId(learningPlanId);
             // ENGL 101
             String cluID = "059b348d-8547-46ca-86ab-8240576b46ac";
-            plan.setRefObjectId( cluID );
+            plan.setRefObjectId(cluID);
             String type = "";
-            plan.setRefObjectType( type );
+            plan.setRefObjectType(type);
             List<String> atpList = new ArrayList<String>();
             String atp = "atp2";
-            atpList.add( atp );
-            plan.setPlanPeriods( atpList );
+            atpList.add(atp);
+            plan.setPlanPeriods(atpList);
 
-            plan.setId( "2" );
-            list.add( plan );
+            plan.setId("2");
+            list.add(plan);
         }
         {
             PlanItemInfo plan = new PlanItemInfo();
-            plan.setId( "planItem1" );
+            plan.setId("planItem1");
             RichTextInfo richText = new RichTextInfo();
-            plan.setDescr( richText );
-            plan.setLearningPlanId( learningPlanId );
+            plan.setDescr(richText);
+            plan.setLearningPlanId(learningPlanId);
             // ENGL 101
             String cluID = "05a2ec10-4c83-4f17-b3d1-938ffdab6ac6";
-            plan.setRefObjectId( cluID );
+            plan.setRefObjectId(cluID);
             String type = "";
-            plan.setRefObjectType( type );
+            plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.autumn2011");
-            plan.setPlanPeriods( atps );
+            plan.setPlanPeriods(atps);
 
-            plan.setId( "1" );
-            list.add( plan );
+            plan.setId("1");
+            list.add(plan);
         }
         {
             PlanItemInfo plan = new PlanItemInfo();
-            plan.setId( "planItem1" );
+            plan.setId("planItem1");
             RichTextInfo richText = new RichTextInfo();
-            plan.setDescr( richText );
-            plan.setLearningPlanId( learningPlanId );
+            plan.setDescr(richText);
+            plan.setLearningPlanId(learningPlanId);
             // CHEM 101
             String cluID = "05a9d09d-1d65-4c8b-a6d1-095baba5d7fe";
-            plan.setRefObjectId( cluID );
+            plan.setRefObjectId(cluID);
             String type = "";
-            plan.setRefObjectType( type );
+            plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.spring2011");
-            plan.setPlanPeriods( atps );
+            plan.setPlanPeriods(atps);
 
-            plan.setId( "1" );
-            list.add( plan );
+            plan.setId("1");
+            list.add(plan);
         }
         {
             PlanItemInfo plan = new PlanItemInfo();
-            plan.setId( "planItem1" );
+            plan.setId("planItem1");
             RichTextInfo richText = new RichTextInfo();
-            plan.setDescr( richText );
-            plan.setLearningPlanId( learningPlanId );
+            plan.setDescr(richText);
+            plan.setLearningPlanId(learningPlanId);
             // HIST 101
             String cluID = "05a9d09d-1d65-4c8b-a6d1-095baba5d7fe";
-            plan.setRefObjectId( cluID );
+            plan.setRefObjectId(cluID);
             String type = "";
-            plan.setRefObjectType( type );
+            plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
             atps.add("kuali.uw.atp.winter2011");
-            plan.setPlanPeriods( atps );
+            plan.setPlanPeriods(atps);
 
-            plan.setId( "1" );
-            list.add( plan );
+            plan.setId("1");
+            list.add(plan);
         }
 
         // UnComment next line if testing for empty list and comment out 'return list';
@@ -138,7 +138,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<PlanItemInfo> planItemInfos=new ArrayList<PlanItemInfo>();
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
         return planItemInfos;
     }
 
@@ -156,9 +156,9 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     public List<LearningPlanInfo> getLearningPlansForStudentByType(@WebParam(name = "studentId") String studentId, @WebParam(name = "planTypeKey") String planTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<LearningPlanInfo> list = new ArrayList<LearningPlanInfo>();
         LearningPlanInfo plan = new LearningPlanInfo();
-        plan.setStudentId( studentId );
-        plan.setId( "learningPlan1" );
-        list.add( plan );
+        plan.setStudentId(studentId);
+        plan.setId("learningPlan1");
+        list.add(plan);
         return list;
     }
 
@@ -167,22 +167,27 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId, @WebParam(name = "planTypeKey") String planTypeKey, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null; //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
     @Override
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         PlanItemInfo plan = new PlanItemInfo();
-        plan.setId( "planItem1" );
+        plan.setId("planItem1");
         RichTextInfo richText = new RichTextInfo();
-        plan.setDescr( richText );
+        plan.setDescr(richText);
         // ENGL 101
         String cluID = "05a2ec10-4c83-4f17-b3d1-938ffdab6ac6";
-        plan.setRefObjectId( cluID );
+        plan.setRefObjectId(cluID);
         String type = "";
-        plan.setRefObjectType( type );
+        plan.setRefObjectType(type);
         List<String> atps = new ArrayList<String>();
         atps.add("kuali.uw.atp.autumn2011");
-        plan.setPlanPeriods( atps );
+        plan.setPlanPeriods(atps);
 
-        plan.setId( "1" );
+        plan.setId("1");
 
 
         return plan;

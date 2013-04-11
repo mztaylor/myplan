@@ -176,7 +176,7 @@
                         </list>
                     </property>
                     <property name="onClickScript"
-                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;auditId=@{#line.report.auditId}';"/>
+                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}';"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View"

@@ -53,6 +53,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_MISSING_PARAM = "myplan.text.error.missingParameter";
     public static final String ERROR_KEY_PERMISSION_DENIED = "myplan.text.error.permissionDenied";
     public static final String ERROR_TECHNICAL_PROBLEMS = "myplan.text.error.technicalProblems";
+    public static final String ERROR_PLAN_AUDIT_QUARTER_EMPTY = "myplan.text.error.planAuditQuarterEmpty";
+    public static final String ERROR_PLAN_AUDIT_INVALID_QUARTER = "myplan.text.error.planAuditInvalidQuarter";
 
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";

@@ -54,9 +54,10 @@ public interface AcademicPlanService {
 
     /**
      * Gets plan items for a
+     *
      * @param learningPlanId The id of the plan.
-     * @param refObjectId The id of the referenced object.
-     * @param refObjectType The type of the referenced object.
+     * @param refObjectId    The id of the referenced object.
+     * @param refObjectType  The type of the referenced object.
      * @param context
      * @return A list of plan items related to a particular course (refObjectId).
      */
@@ -77,6 +78,9 @@ public interface AcademicPlanService {
 
 
     public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;
+
+
+    public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId, @WebParam(name = "planTypeKey") String planTypeKey, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
 
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException;

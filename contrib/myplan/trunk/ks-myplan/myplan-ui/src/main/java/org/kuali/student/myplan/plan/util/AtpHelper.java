@@ -15,9 +15,16 @@ import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
@@ -29,6 +36,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 /**
  * Helper methods for dealing with ATPs.
@@ -40,6 +49,8 @@ public class AtpHelper {
     public static final String LAST_DROP_DAY = "last_drop_day";
 
     private static transient AcademicCalendarService academicCalendarService;
+
+    private static transient AcademicPlanService academicPlanService;
 
     public static int TERM_COUNT = 4;
 
@@ -88,6 +99,18 @@ public class AtpHelper {
                             AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
         }
         return academicCalendarService;
+    }
+
+    public static AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public static void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        AtpHelper.academicPlanService = academicPlanService;
     }
 
     /**
@@ -767,6 +790,30 @@ public class AtpHelper {
         return futureTerms.get(futureTerms.size() - 1);
     }
 
+    public static YearTerm getLastPlannedTerm() {
+        YearTerm lastPlannedTerm = atpToYearTerm(getCurrentAtpId());
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentId(), LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                String learningPlanID = learningPlan.getId();
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+                for (PlanItemInfo planItemInfo : planItemInfoList) {
+                    if ((planItemInfo.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) || planItemInfo.getTypeKey().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP))
+                            && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                        if (planItemInfo.getPlanPeriods() != null && planItemInfo.getPlanPeriods().size() > 0) {
+                            YearTerm yearTerm = atpToYearTerm(planItemInfo.getPlanPeriods().get(0));
+                            if (yearTerm.compareTo(lastPlannedTerm) == 1) {
+                                lastPlannedTerm = yearTerm;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Could not load the last Planned YearTerm");
+        }
+        return lastPlannedTerm;
+    }
 
     /**
      * returns the next closest atpId. If not present returns null.

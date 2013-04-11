@@ -13,6 +13,7 @@ public class AcademicPlanServiceConstants {
     public static final String SERVICE_NAME = "AcademicPlanService";
 
     public static final String LEARNING_PLAN_TYPE_PLAN = "kuali.academicplan.type.plan";
+    public static final String LEARNING_PLAN_TYPE_PLAN_AUDIT = "kuali.academicplan.type.plan.audit";
     public static final String LEARNING_PLAN_TYPE_PLAN_TEMPLATE = "kuali.academicplan.type.plan.template";
 
     public static final String LEARNING_PLAN_ITEM_TYPE_PLANNED = "kuali.academicplan.item.planned";
