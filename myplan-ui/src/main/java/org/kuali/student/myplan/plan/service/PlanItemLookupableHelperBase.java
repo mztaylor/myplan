@@ -77,7 +77,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     }
 
                     plannedCourseList.add(plannedCourse);
-                } else if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                } else if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
                     List<String> planPeriods = planItemInfo.getPlanPeriods();
                     String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
                     if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
@@ -140,6 +140,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     /**
      * returns key(eg: COM=240=kuali.uw.atp.2013.4)
+     *
      * @param subject
      * @param number
      * @param atpId

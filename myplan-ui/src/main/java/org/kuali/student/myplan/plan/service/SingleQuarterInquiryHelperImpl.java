@@ -201,7 +201,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
                         plannedCoursesList.add(plannedCourseDO);
                     }
-                } else if (planItem.getTypeKey().equals(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
                     List<String> planPeriods = planItem.getPlanPeriods();
                     String term = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
                     if (null != term && !AtpHelper.isAtpCompletedTerm(term)) {
