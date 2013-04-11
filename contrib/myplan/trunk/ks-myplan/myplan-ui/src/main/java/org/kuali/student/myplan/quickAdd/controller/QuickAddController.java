@@ -373,7 +373,7 @@ public class QuickAddController extends UifControllerBase {
             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpIds.get(0)), ERROR_KEY_OPERATION_FAILED, null, new String[]{});
         }
 
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
 
         LearningPlan plan = null;
         try {
@@ -520,7 +520,7 @@ public class QuickAddController extends UifControllerBase {
      */
 
     protected PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
@@ -751,7 +751,7 @@ public class QuickAddController extends UifControllerBase {
             throw new RuntimeException("Course Id was empty.");
         }
 
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
@@ -845,7 +845,7 @@ public class QuickAddController extends UifControllerBase {
 
         //  Set the user id in the context used in the web service call.
         ContextInfo context = new ContextInfo();
-        context.setPrincipalId(UserSessionHelper.getStudentId());
+        context.setPrincipalId(UserSessionHelper.getStudentRegId());
 
         return getAcademicPlanService().createLearningPlan(plan, context);
     }

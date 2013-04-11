@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.comment.service;
 
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.core.comment.service.CommentService;
@@ -11,8 +12,6 @@ import org.kuali.student.r2.common.util.constants.CommentServiceConstants;
 import javax.xml.namespace.QName;
 import java.util.*;
 
-import org.apache.log4j.Logger;
-
 public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private final Logger logger = Logger.getLogger(MessagesLookupableHelperImpl.class);
@@ -22,7 +21,7 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     @Override
     protected List<MessageDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         List<MessageDataObject> messages;
         try {
             messages = getCommentQueryHelper().getMessages(studentId);

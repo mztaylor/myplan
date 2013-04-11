@@ -67,16 +67,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
     private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
-//    public static void main(String[] args)
-//            throws Exception {
-//        DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
-//        String studentId = "D8D636BEB4CC482884420724BF152709";
-//        String programId = "1BISMCS0011";
+    public static void main(String[] args)
+            throws Exception {
+        DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
+        String studentId = "D8D636BEB4CC482884420724BF152709";
+        String programId = "1BISMCS0011";
 //        AuditReportInfo info = impl.runAudit(studentId, programId, null, null);
 //        AuditReportInfo info = impl.getAuditReport("2012100110472750", "kauli.audit.type.default", CourseSearchConstants.CONTEXT_INFO);
-//        AuditReportInfo info = impl.getHTMLReport("2012100110472750");
+        AuditReportInfo info = impl.getHTMLReport("2013040915213037", null);
 //        System.out.println(DegreeAuditServiceImpl.padfront("  1 2 "));
-//    }
+    }
 
 
     private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
@@ -143,6 +143,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public AuditReportInfo runAudit(
+            @WebParam(name = "studentId") String studentId,
+            @WebParam(name = "programId") String programId,
+            @WebParam(name = "auditTypeKey") String auditTypeKey,
+            @WebParam(name = "context") ContextInfo useless
+    )
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        String auditId = runAuditAsync(studentId, programId, auditTypeKey, useless);
+        AuditReportInfo auditReportInfo = getAuditReport(auditId, auditTypeKey, useless);
+        return auditReportInfo;
+
+    }
+
+    @Override
+    public String runAuditAsync(
             @WebParam(name = "studentId") String studentId,
             @WebParam(name = "programId") String programId,
             @WebParam(name = "auditTypeKey") String auditTypeKey,
@@ -219,10 +233,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 } else if (jobid2Node != null) {
                     jobid = jobid2Node.getText();
                 }
-                AuditReportInfo auditReportInfo = new AuditReportInfo();
-
-                auditReportInfo.setAuditId(jobid);
-                return auditReportInfo;
+                return jobid;
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("HTTP Status: " + status.getCode());
@@ -242,11 +253,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             logger.error(e);
             throw new OperationFailedException("cannot request audit", e);
         }
-    }
-
-    @Override
-    public String runAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -317,8 +323,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             List list = dao.find(sql, new Object[]{auditId});
             Object[] item = (Object[]) list.get(0);
             byte[] report = (byte[]) item[0];
-            String stuno = (String) item[1];
-            stuno = convertMyPlanStunoToSDBSyskey(stuno);
+//            String stuno = (String) item[1];
+//            stuno = convertMyPlanStunoToSDBSyskey(stuno);
             String garbage = new String(report);
             InputStream in = new ByteArrayInputStream(garbage.getBytes());
 
@@ -351,8 +357,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 NodeList godotList = (NodeList) godotSet;
                 for (int nth = 0; nth < godotList.getLength(); nth++) {
                     Node child = godotList.item(nth);
-                    String studentId = UserSessionHelper.getStudentId();
-                    String preparedFor = UserSessionHelper.getNameCapitalized(studentId);
+                    String regId = UserSessionHelper.getStudentRegId();
+                    String preparedFor = UserSessionHelper.getNameCapitalized(regId);
                     child.setTextContent(preparedFor);
                 }
             }
@@ -433,21 +439,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         NodeList godotList = (NodeList) godotSet;
         for (int nth = 0; nth < godotList.getLength(); nth++) {
             Node child = godotList.item(nth);
-//            String scurge = child.getTextContent();
-//            scurge = scurge.replace('\n', ' ');
-//            scurge = scurge.replace('\t', ' ');
-//            scurge = scurge.replace("&", "&amp;");
-//            scurge = scurge.replace("<", "&lt;");
-//            scurge = scurge.replace(">", "&gt;");
-//            scurge = scurge.trim();
-
             String victim = "";
             try {
                 StringWriter stringWriter = new StringWriter();
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.transform(new DOMSource(child), new StreamResult(stringWriter));
                 String scurge = stringWriter.toString(); //This is string data of xml file
-                System.out.println(scurge);
+//                System.out.println(scurge);
                 victim = linkifyCourseSubjAndNum(scurge);
                 if (!scurge.equals(victim)) {
 
@@ -533,17 +531,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                                                                 @WebParam(name = "endDate") Date endDate,
                                                                 @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
-        String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
-        logger.info("getAuditsForStudentInDateRange studentid " + studentId + "  stuno " + stuno);
 
-        // TODO: configurable constant for UW
-        String instid = "4854";
-        // TODO: configurable constant for UW
-        String instidq = "72";
-        // I have no idea what 'instcd' list does
-        List<String> instcd = Arrays.asList("");
+        List<AuditReportInfo> list = new ArrayList<AuditReportInfo>();
         try {
+            // TODO: configurable constant for UW
+            String instid = "4854";
+            // TODO: configurable constant for UW
+            String instidq = "72";
+            // I have no idea what 'instcd' list does
+            List<String> instcd = Arrays.asList("");
+
+            String syskey = UserSessionHelper.getStudentSystemKey(studentId);
+            String stuno = convertSDBSyskeyToMyPlanStuno(syskey);
+
+            logger.info("getAuditsForStudentInDateRange syskey " + syskey + "  stuno " + stuno);
+
             JobQueueRunDao runrun = getJobQueueRunDao();
             List<JobQueueRun> load = runrun.load(instid, instidq, instcd, stuno);
 
@@ -612,7 +614,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public String getAuditStatus(String studentId, String programId, String recentAuditId) {
-        String stuno = convertSDBSyskeyToMyPlanStuno(studentId);
+        String syskey = UserSessionHelper.getStudentSystemKey();
+        String stuno = convertSDBSyskeyToMyPlanStuno(syskey);
 
         String hql = null;
         Object[] params = null;

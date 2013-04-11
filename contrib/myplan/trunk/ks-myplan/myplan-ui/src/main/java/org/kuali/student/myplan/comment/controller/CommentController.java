@@ -15,11 +15,11 @@
  */
 package org.kuali.student.myplan.comment.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.core.api.config.property.ConfigContext;
-import org.kuali.rice.core.api.mail.*;
+import org.kuali.rice.core.api.mail.MailMessage;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.exception.InvalidAddressException;
@@ -29,12 +29,12 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.dto.RichTextInfo;
 import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
-import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
-import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.comment.CommentConstants;
+import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
+import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -46,9 +46,11 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
-import java.io.File;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Controller
 @RequestMapping(value = "/comment")
@@ -174,7 +176,7 @@ public class CommentController extends UifControllerBase {
         fromId = principleId;
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
         if (UserSessionHelper.isAdviser()) {
-            toId = UserSessionHelper.getStudentId();
+            toId = UserSessionHelper.getStudentRegId();
             toName = UserSessionHelper.getStudentName();
             toName = toName.substring(0, toName.indexOf(" ")).trim();
 
@@ -199,7 +201,7 @@ public class CommentController extends UifControllerBase {
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, fromName);
         String emailSubject = "";
-        String body = String.format(emailBody, toName, fromName,emailSubject, messageText, messageLink);
+        String body = String.format(emailBody, toName, fromName, emailSubject, messageText, messageLink);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
@@ -224,7 +226,7 @@ public class CommentController extends UifControllerBase {
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         /* Add this int the if condition to check if the user in session and the user for which the message is added are equal.
-         !form.getStudentId().equalsIgnoreCase(UserSessionHelper.getStudentId())*/
+         !form.getStudentRegId().equalsIgnoreCase(UserSessionHelper.getStudentRegId())*/
         if (!UserSessionHelper.isAdviser()) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
@@ -263,7 +265,7 @@ public class CommentController extends UifControllerBase {
         ci.setCommentText(rtiBody);
         ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
-        String studentPrincipleId = UserSessionHelper.getStudentId();
+        String studentPrincipleId = UserSessionHelper.getStudentRegId();
 
         try {
             getCommentService().addComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, ci);
@@ -301,8 +303,8 @@ public class CommentController extends UifControllerBase {
         String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
         String emailBody = pro.getProperty(CommentConstants.EMAIL_BODY);
         String subject = String.format(subjectProp, adviserName);
-        String emailSubject =String.format(pro.getProperty(CommentConstants.EMAIL_SUBJECT),form.getSubject());
-        String body = String.format(emailBody, studentName, adviserName,emailSubject, messageText, messageLink);
+        String emailSubject = String.format(pro.getProperty(CommentConstants.EMAIL_SUBJECT), form.getSubject());
+        String body = String.format(emailBody, studentName, adviserName, emailSubject, messageText, messageLink);
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
                 sendMessage(fromAddress, toAddress, subject, body);

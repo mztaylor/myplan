@@ -72,18 +72,18 @@ public class UserSessionHelper {
      *
      * @return The Id
      */
-    public synchronized static String getStudentId() {
+    public synchronized static String getStudentRegId() {
         UserSession session = GlobalVariables.getUserSession();
-        String studentId;
+        String regId;
         if (isAdviser()) {
-            studentId = (String) session.retrieveObject(PlanConstants.SESSION_KEY_STUDENT_ID);
-            if (studentId == null) {
+            regId = (String) session.retrieveObject(PlanConstants.SESSION_KEY_STUDENT_ID);
+            if (regId == null) {
                 throw new RuntimeException("User is in adviser mode, but no student id was set in the session. (This shouldn't happen and should be reported).");
             }
         } else {
-            studentId = session.getPerson().getPrincipalId();
+            regId = session.getPerson().getPrincipalId();
         }
-        return studentId;
+        return regId;
     }
 
     /**
@@ -200,29 +200,32 @@ public class UserSessionHelper {
         }
     }
 
-    public synchronized static String getAuditSystemKey() {
-        String systemKey = null;
-        String studentId = getStudentId();
-        Person person = null;
+    public synchronized static String getStudentSystemKey() {
+        String regId = getStudentRegId();
+        return getStudentSystemKey(regId);
+    }
+
+    public synchronized static String getStudentSystemKey(String regId) {
         try {
-            person = getPersonService().getPerson(studentId);
+            Person person = getPersonService().getPerson(regId);
+            if (person != null) {
+                Map<String, String> idmap = person.getExternalIdentifiers();
+                for (String key : idmap.keySet()) {
+                    String value = idmap.get(key);
+                    logger.info("identifier : " + key + " = " + value);
+
+                }
+                // Rice KIM's equivalent to systemKey is /Person/StudentSystemKey from SWS
+                String systemKey = idmap.get("systemKey");
+                if (StringUtils.hasText(systemKey)) {
+                    return systemKey;
+                }
+            }
         } catch (Exception e) {
             logger.error("Could not load the Person Information", e);
         }
-        if (person != null) {
-            Map<String, String> idmap = person.getExternalIdentifiers();
-            for (String key : idmap.keySet()) {
-                String value = idmap.get(key);
-                logger.info("identifier : " + key + " = " + value);
 
-            }
-            // Rice KIM's equivalent to systemKey is /Person/StudentSystemKey from SWS
-            systemKey = idmap.get("systemKey");
-        }
-        if (!StringUtils.hasText(systemKey)) {
-            throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
-        }
-        return systemKey;
+        throw new DataRetrievalFailureException("Could not find the SystemKey for the Student");
     }
 
     /**
@@ -232,8 +235,8 @@ public class UserSessionHelper {
      */
     public synchronized static String getStudentNumber() {
         try {
-            String studentId = getStudentId();
-            Person person = getPersonService().getPerson(studentId);
+            String regId = getStudentRegId();
+            Person person = getPersonService().getPerson(regId);
             Map<String, String> map = person.getExternalIdentifiers();
 
             // Rice KIM's equivalent to studentID is /Person/StudentNumber from SWS
@@ -241,24 +244,20 @@ public class UserSessionHelper {
             return systemNumber;
         } catch (Exception e) {
             logger.error("Could not load the Person Information", e);
-            throw new DataRetrievalFailureException("Could not find the SystemNumber for the Student", e);
         }
+        throw new DataRetrievalFailureException("Could not find the SystemNumber for the Student");
     }
 
     public synchronized static boolean isStudent() {
-        Person person = null;
-        boolean isStudent = false;
         try {
-            person = getPersonService().getPerson(getStudentId());
+            String regId = getStudentRegId();
+            Person person = getPersonService().getPerson(regId);
+            Map<String, String> map = person.getExternalIdentifiers();
+            return map.containsKey("systemKey");
         } catch (Exception e) {
             logger.error("Could not load the Person Information", e);
         }
-        if (person != null) {
-            if (person.getExternalIdentifiers().containsKey("systemKey")) {
-                isStudent = true;
-            }
-        }
-        return isStudent;
+        return false;
     }
 
 }

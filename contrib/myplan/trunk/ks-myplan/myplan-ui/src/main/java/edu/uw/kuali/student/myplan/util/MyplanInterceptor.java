@@ -3,10 +3,7 @@ package edu.uw.kuali.student.myplan.util;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
-import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
-import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -16,11 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -144,7 +138,7 @@ public class MyplanInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         if (!UserSessionHelper.isAdviser()) {
             try {
-                String systemKey = UserSessionHelper.getAuditSystemKey();
+                String systemKey = UserSessionHelper.getStudentSystemKey();
             } catch (DataRetrievalFailureException drfe) {
                 logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
                 request.getRequestDispatcher(USER_UNAUTHORIZED).forward(request, response);

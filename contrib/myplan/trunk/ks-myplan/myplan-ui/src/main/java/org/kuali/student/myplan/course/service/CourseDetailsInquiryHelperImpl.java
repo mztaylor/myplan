@@ -39,7 +39,10 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.controller.PlanController;
-import org.kuali.student.myplan.plan.dataobject.*;
+import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
+import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
@@ -50,10 +53,6 @@ import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
@@ -147,7 +146,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         return retrieveCourseDetails((String) fieldValues.get(PlanConstants.PARAM_COURSE_ID), studentId);
     }
 
@@ -867,7 +866,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
 
     protected Map<String, Map<String, String>> loadStudentsPlanItems() {
-        String studentId = UserSessionHelper.getStudentId();
+        String studentId = UserSessionHelper.getStudentRegId();
         Map<String, Map<String, String>> planItemsByTerm = new HashMap<String, Map<String, String>>();
         try {
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
