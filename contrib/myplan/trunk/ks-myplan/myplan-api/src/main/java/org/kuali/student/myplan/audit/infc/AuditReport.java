@@ -42,4 +42,6 @@ public interface AuditReport extends TypeStateEntity {
     public String getProgramTitle();
 
     public Date getRunDate();
+
+    public boolean isWhatIfAudit();
 }

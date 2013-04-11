@@ -52,6 +52,9 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
     @XmlElement
     private Date runDate;
 
+    @XmlElement
+    private boolean isWhatIfAudit;
+
     public AuditReportInfo() {
         this.auditId = null;
         this._futureElements = null;
@@ -144,5 +147,14 @@ public class AuditReportInfo extends TypeStateEntityInfo implements AuditReport 
 
     public void setReportType( String reportType ) {
         this.reportType = reportType;
+    }
+
+    @Override
+    public boolean isWhatIfAudit() {
+        return isWhatIfAudit;
+    }
+
+    public void setWhatIfAudit(boolean whatIfAudit) {
+        isWhatIfAudit = whatIfAudit;
     }
 }

@@ -557,6 +557,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 audit.setProgramTitle(jqr.getWebtitle());
                 audit.setRunDate(jqr.getRundate());
                 audit.setRequirementsSatisfied("Unknown");
+                audit.setWhatIfAudit( "W".equals(jqr.getIp() ) );
+
                 list.add(audit);
             }
         } catch (DataRetrievalFailureException e) {
