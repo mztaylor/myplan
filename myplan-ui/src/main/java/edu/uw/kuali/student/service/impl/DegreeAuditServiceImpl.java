@@ -8,6 +8,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
@@ -15,10 +16,13 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -213,30 +217,39 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
 
     @Override
-    public AuditReportInfo runWhatIfAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo useless) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        String auditId = runWhatIfAuditAsync(studentId, programId, auditTypeKey, academicPlanId, useless);
-        AuditReportInfo auditReportInfo = getAuditReport(auditId, auditTypeKey, useless);
+    public AuditReportInfo runWhatIfAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+       
+        String auditId = runWhatIfAuditAsync(studentId, programId, auditTypeKey, academicPlanId, context);
+        AuditReportInfo auditReportInfo = getAuditReport(auditId, auditTypeKey, context);
+        
         return auditReportInfo;
     }
 
     @Override
-    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo useless) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        LearningPlanInfo learningPlanInfo = new LearningPlanInfo();
+        YearTerm upToQuarter = AtpHelper.getLastPlannedTerm();
+        int credits = 0;
         List<Course> courses = new ArrayList<Course>();
         try {
-//            LearningPlanInfo lpi = getAcademicPlanService().getLearningPlan(academicPlanId, useless);
+            // getting the learning plan for given academicPlanId
+            learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
 
             CourseService courseService = getCourseService();
-            List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, useless);
+            List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
             for (PlanItemInfo planItem : planItems) {
                 if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType())) {
-                    String courseId = planItem.getRefObjectId();
+                    String versionIndependentId = planItem.getRefObjectId();
+                    CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
                     try {
-                        CourseInfo courseInfo = courseService.getCourse(courseId);
+                        CourseInfo courseInfo = courseDetailsInquiryHelper.getCourseInfo(versionIndependentId);
                         Course course = new Course();
                         course.curric = courseInfo.getSubjectArea();
+                        if(courseInfo.getCampusLocations().size()>0){
                         course.campus = courseInfo.getCampusLocations().get(0);
+                        }
                         course.year = planItem.getPlanPeriods().get(0);
-
                     } catch (Exception e) {
                         logger.warn("whatever", e);
                     }
@@ -247,9 +260,28 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         } catch (Exception e) {
             logger.warn("error retrieving plan items", e);
         }
+        String auditId = requestAudit(studentId, programId, courses);
+        
+        //updating the learning plan with new attribute values.
+        for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+            if ("forCourses".equalsIgnoreCase(attributeInfo.getKey())) {
+                attributeInfo.setValue(String.valueOf(courses.size()));
+            } else if ("forCredits".equalsIgnoreCase(attributeInfo.getKey())) {
+                attributeInfo.setValue(String.valueOf(credits));
+            } else if ("forQuarter".equalsIgnoreCase(attributeInfo.getKey())) {
+                attributeInfo.setValue(AtpHelper.atpIdToShortTermName(upToQuarter.toATP()));
+            } else if ("auditId".equalsIgnoreCase(attributeInfo.getKey())) {
+                attributeInfo.setValue(auditId);
+            }
+        }
+        try {
+            learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+            getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
+        } catch (Exception e) {
+            logger.error("Could not update the learningPlanInfo");
+        }
 
-
-        return requestAudit(studentId, programId, courses);
+        return auditId;
     }
 
     public String requestAudit(String studentId, String programId, List<Course> courses) throws OperationFailedException {

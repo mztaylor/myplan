@@ -29,11 +29,15 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
 
     private final static Logger logger = Logger.getLogger(TimestampPropertyEditor.class);
 
+    protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
+
     private List<String> styleClasses;
 
     private String simpleDateFormat = "";
 
     private String emptyDateText = "";
+
+    private boolean planAuditSummaryFormat;
 
     public TimestampPropertyEditor() {
         styleClasses = new ArrayList<String>();
@@ -41,12 +45,12 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
 
     @Override
     public void setValue(Object value) {
-	    if (value == null) {
+        if (value == null) {
             logger.error("Date was null.");
             return;
         }
 
-        if ( ! (value instanceof Date)) {
+        if (!(value instanceof Date)) {
             logger.error(String.format("Value was type [%s] instead of Date.", value.getClass()));
             return;
         }
@@ -58,16 +62,32 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
     public String getAsText() {
         Date date = (Date) super.getValue();
 
-        if(null == date) {
+        if (null == date) {
             return this.emptyDateText;
         }
 
         if (this.simpleDateFormat.length() == 0) {
             return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
+        } else if (isPlanAuditSummaryFormat()) {
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm aa");
+            return wrapInHtml(monthFormat.format(date).substring(0, 3), dateFormat.format(date), timeFormat.format(date));
         } else {
             SimpleDateFormat format = new SimpleDateFormat(simpleDateFormat);
             return format.format(date);
         }
+
+    }
+
+    private String wrapInHtml(String month, String date, String time) {
+        StringBuffer sb = new StringBuffer();
+        sb = sb.append(String.format("<%s class=\"planAudit\">", listType.getListElementName()));
+        sb = sb.append(String.format("<%s class=\"month\">%s</%s>", listType.getListItemElementName(), month, listType.getListItemElementName()));
+        sb = sb.append(String.format("<%s class=\"date\">%s</%s>", listType.getListItemElementName(), date, listType.getListItemElementName()));
+        sb = sb.append(String.format("<%s class=\"time\">%s</%s>", listType.getListItemElementName(), time, listType.getListItemElementName()));
+        sb = sb.append(String.format("</%s>", listType.getListElementName()));
+        return sb.toString();
     }
 
     public void setSimpleDateFormat(String simpleDateFormat) {
@@ -99,5 +119,13 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
 
     public void setEmptyDateText(String emptyDateText) {
         this.emptyDateText = emptyDateText;
+    }
+
+    public boolean isPlanAuditSummaryFormat() {
+        return planAuditSummaryFormat;
+    }
+
+    public void setPlanAuditSummaryFormat(boolean planAuditSummaryFormat) {
+        this.planAuditSummaryFormat = planAuditSummaryFormat;
     }
 }

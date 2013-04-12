@@ -1164,6 +1164,40 @@ input.myplan-delete:hover,
     overflow: hidden;
 }
 
+.plan-audit-hide{
+    display:none;
+}
+.plan-audit-first .planAudit{
+    width:50px;
+    background-color: #fcf3d5;
+    border-radius: 5px;
+}
+
+.planAudit {
+    width:50px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+.planAudit .month{
+    padding-top: 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+}
+.planAudit .date{
+    padding-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+.planAudit .time{
+    padding-top: 10px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+}
+
 .myplan-audit-tabs .ui-tabs-panel {
     padding: 0px;
 }

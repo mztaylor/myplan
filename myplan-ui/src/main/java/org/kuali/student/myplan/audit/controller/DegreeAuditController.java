@@ -43,6 +43,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
@@ -62,12 +63,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
@@ -131,7 +130,7 @@ public class DegreeAuditController extends UifControllerBase {
     public ModelAndView audit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         boolean systemKeyExists = true;
-        DegreeAuditForm form = auditForm.getDegreeAudit();
+        DegreeAuditForm degreeAuditForm = auditForm.getDegreeAudit();
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         try {
             Map<String, String> campusMap = populateCampusMap();
@@ -140,31 +139,50 @@ public class DegreeAuditController extends UifControllerBase {
             String regId = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regId)) {
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
-                String auditId = form.getAuditId();
+                String auditId = degreeAuditForm.getAuditId();
                 ContextInfo contextInfo = new ContextInfo();
-                form.setCampusParam(campusMap.get("0"));
+                degreeAuditForm.setCampusParam(campusMap.get("0"));
+                planAuditForm.setCampusParam(campusMap.get("0"));
                 logger.info("audit regId " + regId);
+                String planAuditId = planAuditForm.getAuditId();
                 if (!servicesStatusDataObject.isDegreeAuditServiceUp()) {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
                     Date startDate = new Date();
                     Date endDate = new Date();
-                    String programParam = null;
-                    String programId = null;
+                    String degreeProgramParam = null;
+                    String degreeProgramId = null;
+                    String planProgramParam = null;
+                    String planProgramId = null;
                     List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, contextInfo);
                     if (auditId == null && auditReportInfoList.size() > 0) {
-                        auditId = auditReportInfoList.get(0).getAuditId();
-                        programParam = auditReportInfoList.get(0).getProgramTitle();
-                    }
+                        for (AuditReportInfo auditReportInfo : auditReportInfoList) {
+                            if (!auditReportInfo.isWhatIfAudit()) {
+                                auditId = auditReportInfo.getAuditId();
+                                degreeProgramParam = auditReportInfo.getProgramTitle();
+                                break;
+                            }
+                        }
 
+                    }
+                    if (planAuditId == null && auditReportInfoList.size() > 0) {
+                        for (AuditReportInfo auditReportInfo : auditReportInfoList) {
+                            if (auditReportInfo.isWhatIfAudit()) {
+                                planAuditId = auditReportInfo.getAuditId();
+                                planProgramParam = auditReportInfo.getProgramTitle();
+                                break;
+                            }
+                        }
+
+                    }
                     // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
                     if (auditId != null) {
-                        AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, form.getAuditType(), contextInfo);
+                        AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), contextInfo);
                         if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
                             for (AuditReportInfo report : auditReportInfoList) {
                                 if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
-                                    programParam = report.getProgramTitle();
-                                    programId = report.getProgramId();
+                                    degreeProgramParam = report.getProgramTitle();
+                                    degreeProgramId = report.getProgramId();
                                 }
                             }
                         }
@@ -180,37 +198,77 @@ public class DegreeAuditController extends UifControllerBase {
 
                         String preparedFor = user.getLastName() + ", " + user.getFirstName();
                         html = html.replace("$$PreparedFor$$", preparedFor);
-                        form.setAuditHtml(html);
+                        degreeAuditForm.setAuditHtml(html);
 
 
                         /*Impl to set the default values for campusParam and programParam properties*/
-                        if (programId != null && programParam != null) {
-                            int campusPrefix = Integer.parseInt(programId.substring(0, 1));
-                            programId = programId.replaceAll(" ", "$");
-                            form.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
+                        if (degreeProgramId != null && degreeProgramParam != null) {
+                            int campusPrefix = Integer.parseInt(degreeProgramId.substring(0, 1));
+                            degreeProgramId = degreeProgramId.replaceAll(" ", "$");
+                            degreeAuditForm.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
                             switch (campusPrefix) {
                                 case 0:
-                                    form.setProgramParamSeattle(programId);
+                                    degreeAuditForm.setProgramParamSeattle(degreeProgramId);
                                     break;
                                 case 1:
-                                    form.setProgramParamBothell(programId);
+                                    degreeAuditForm.setProgramParamBothell(degreeProgramId);
                                     break;
                                 case 2:
-                                    form.setProgramParamTacoma(programId);
+                                    degreeAuditForm.setProgramParamTacoma(degreeProgramId);
                                     break;
                                 default:
                                     break;
                             }
                         }
                     }
+                    /*Plan Audit Report*/
+                    if (planAuditId != null) {
+                        AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), contextInfo);
+                        if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
+                            for (AuditReportInfo report : auditReportInfoList) {
+                                if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
+                                    planProgramParam = report.getProgramTitle();
+                                    planProgramId = report.getProgramId();
+                                }
+                            }
+                        }
+                        InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+                        StringWriter sw = new StringWriter();
+
+                        int c = 0;
+                        while ((c = in.read()) != -1) {
+                            sw.append((char) c);
+                        }
+
+                        String html = sw.toString();
+
+                        String preparedFor = user.getLastName() + ", " + user.getFirstName();
+                        html = html.replace("$$PreparedFor$$", preparedFor);
+                        planAuditForm.setAuditHtml(html);
+
+
+                        /*Impl to set the default values for campusParam and programParam properties*/
+                        if (planProgramId != null && planProgramParam != null) {
+                            int campusPrefix = Integer.parseInt(planProgramId.substring(0, 1));
+                            planProgramId = planProgramId.replaceAll(" ", "$");
+                            planAuditForm.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
+                            switch (campusPrefix) {
+                                case 0:
+                                    planAuditForm.setProgramParamSeattle(planProgramId);
+                                    break;
+                                case 1:
+                                    planAuditForm.setProgramParamBothell(planProgramId);
+                                    break;
+                                case 2:
+                                    planAuditForm.setProgramParamTacoma(planProgramId);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+
                 }
-                /************End Degree Audit report*************************/
-
-
-                /************Start Plan Audit report*************************/
-                planAuditForm.setCampusParam(campusMap.get("0"));
-
-                /************End Plan Audit report*************************/
 
 
             }
@@ -323,7 +381,6 @@ public class DegreeAuditController extends UifControllerBase {
 
 
         /******Plan Audit Report Process*********/
-        String auditID = null;
         try {
             String regid = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regid)) {
@@ -349,11 +406,8 @@ public class DegreeAuditController extends UifControllerBase {
                         learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
                         break;
                     }
-                    AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo.getId(), DegreeAuditConstants.CONTEXT_INFO);
-
-                    /*auditID = report.getAuditId();
-                    AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, planAuditform.getAuditType(), context);
-                    InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
+                    AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo.getId(), context);
+                    InputStream in = report.getReport().getDataSource().getInputStream();
                     StringWriter sw = new StringWriter();
 
                     int c = 0;
@@ -364,7 +418,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String html = sw.toString();
                     String preparedFor = user.getLastName() + ", " + user.getFirstName();
                     html = html.replace("$$PreparedFor$$", preparedFor);
-                    planAuditform.setAuditHtml(html);*/
+                    planAuditform.setAuditHtml(html);
 
                 } else {
                     String[] params = {};

@@ -105,6 +105,27 @@
                                                         <property name="header.render" value="false"/>
                                                         <property name="items">
                                                             <list>
+                                                                <ref bean="non_student_plan_audits_list"/>
+                                                            </list>
+                                                        </property>
+                                                        <property name="propertyReplacers">
+                                                            <list>
+                                                                <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                      p:propertyName="items"
+                                                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
+                                                                    <property name="replacement">
+                                                                        <list>
+                                                                            <ref bean="plan_audits_list"/>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                    <bean parent="your_stuff_widget" p:headerText="">
+                                                        <property name="header.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
                                                                 <ref bean="non_student_degree_audits_list"/>
                                                             </list>
                                                         </property>
@@ -217,7 +238,7 @@
         <property name="items">
             <list>
                 <ref bean="run_plan_audits"/>
-                <bean parent="audit_section">
+                <bean id="plan_audit_section" parent="audit_section">
                     <property name="items">
                         <list>
                             <ref bean="empty_plan_audits"/>
@@ -374,10 +395,10 @@
 
 
     <bean id="plan_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runPlanAudit" p:disabled="true"
-          p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
+          p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
           p:actionLabel="Run Plan Audit">
         <property name="onClickScript"
-                  value="setPendingAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
+                  value="setPendingPlanAudit(5); setUrlHash('modified','true'); changeLoadingMessage('.myplan-audit-report');"/>
         <property name="onDocumentReadyScript" value="
             if (jQuery.cookie('myplan_audit_running')) {
                 jQuery('button#plan_audit_run').attr('disabled', true);
