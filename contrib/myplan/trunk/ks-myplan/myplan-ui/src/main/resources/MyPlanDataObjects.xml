@@ -426,7 +426,7 @@
             </list>
         </property>
 
-       <property name="collections">
+        <property name="collections">
             <list>
                 <ref bean="CourseSummaryDetails.termsOffered"/>
                 <ref bean="CourseSummaryDetails.campusLocations"/>
@@ -664,7 +664,8 @@
     </bean>
 
 
-    <bean id="CourseSummaryDetails.abbrGenEdRequirements" parent="CourseSummaryDetails.abbrGenEdRequirements-parentBean"/>
+    <bean id="CourseSummaryDetails.abbrGenEdRequirements"
+          parent="CourseSummaryDetails.abbrGenEdRequirements-parentBean"/>
     <bean id="CourseSummaryDetails.abbrGenEdRequirements-parentBean" abstract="true" parent="CollectionDefinition">
         <property name="name" value="abbrGenEdRequirements"/>
         <property name="shortLabel" value="Abbr Gen Edu. Requirements"/>
@@ -828,6 +829,98 @@
 
 
     <!--*********************** End Course Details Data Object ********************-->
+
+    <!--*********************** Start Plan Audit Item Data Object ********************-->
+
+    <bean id="PlanAuditItem" parent="PlanAuditItem-parentBean"/>
+    <bean id="PlanAuditItem-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Recent Audits"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="PlanAuditItem.programTitle"/>
+                <ref bean="PlanAuditItem.programType"/>
+                <ref bean="PlanAuditItem.reportAsHtml"/>
+                <ref bean="PlanAuditItem.auditedCoursesCount"/>
+                <ref bean="PlanAuditItem.totalAuditedCredit"/>
+                <ref bean="PlanAuditItem.auditedQuarterUpTo"/>
+            </list>
+        </property>
+        <property name="complexAttributes">
+            <list>
+                <ref bean="PlanAuditItem.report"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PlanAuditItem.auditedCoursesCount" parent="PlanAuditItem.auditedCoursesCount-parentBean"/>
+    <bean id="PlanAuditItem.auditedCoursesCount-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="auditedCoursesCount"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Audited Course Count"/>
+        <property name="description" value="Courses Audited."/>
+        <property name="shortLabel" value="Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="5"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="5"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="5"/>
+        </property>
+    </bean>
+
+    <bean id="PlanAuditItem.totalAuditedCredit" parent="PlanAuditItem.totalAuditedCredit-parentBean"/>
+    <bean id="PlanAuditItem.totalAuditedCredit-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="totalAuditedCredit"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Total Credits Audited"/>
+        <property name="description" value="Credits Audited."/>
+        <property name="shortLabel" value="Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="5"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="5"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="5"/>
+        </property>
+    </bean>
+
+    <bean id="PlanAuditItem.auditedQuarterUpTo" parent="PlanAuditItem.auditedQuarterUpTo-parentBean"/>
+    <bean id="PlanAuditItem.auditedQuarterUpTo-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="auditedQuarterUpTo"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Audited Quarters"/>
+        <property name="description" value="Audited Quarters."/>
+        <property name="shortLabel" value="Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+
+    <bean id="PlanAuditItem.programTitle" parent="DegreeAuditItem.programTitle-parentBean"/>
+    <bean id="PlanAuditItem.programType" parent="DegreeAuditItem.programType-parentBean"/>
+    <bean id="PlanAuditItem.reportAsHtml" parent="DegreeAuditItem.reportAsHtml-parentBean"/>
+    <bean id="PlanAuditItem.report" parent="DegreeAuditItem.report"/>
+
+    <!--*********************** End Plan Audit Item Data Object ********************-->
 
     <!--*********************** DegreeAuditItem Data Object. ********************-->
     <bean id="DegreeAuditItem" parent="DegreeAuditItem-parentBean"/>

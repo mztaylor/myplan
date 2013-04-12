@@ -760,27 +760,34 @@ function truncateField(id, margin, floated) {
         }
     });
 }
-function truncateAuditTitle(id) {
+function truncateAuditTitle(id,auditName) {
     jQuery("#" + id + " .myplan-audit-title").each(function () {
         if (readUrlParam("viewId") == "DegreeAudit-FormView") {
             if (
-                (readUrlParam("auditId") == false && jQuery(this).siblings("div[id^='hidden_recentAuditId']").length > 0) ||
-                    (readUrlParam("auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
+                (readUrlParam(auditName+".auditId") == false && jQuery(this).siblings("div[id^='"+auditName+"_hidden_recentAuditId']").length > 0) ||
+                    (readUrlParam(auditName+".auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
                 ) {
                 jQuery(this).find(".uif-label label").html("Viewing");
             }
         }
+        if(auditName == 'planAudit'){
+        jQuery(this).find('span.uif-readOnlyContent').width(120).css({"text-overflow":"ellipsis",
+        "white-space":"nowrap",
+        "overflow":"hidden",
+        "display":"block",
+        "float":"left"});
+        }else{
+            var width = jQuery(this).width();
+            var label = parseFloat(jQuery(this).find(".uif-label label").css({"color":"#777777"}).width()) + parseFloat(jQuery(this).find(".uif-label label").css("padding-right"));
 
-        var width = jQuery(this).width();
-        var label = parseFloat(jQuery(this).find(".uif-label label").css({"color":"#777777"}).width()) + parseFloat(jQuery(this).find(".uif-label label").css("padding-right"));
-
-        jQuery(this).find(".uif-label").next("span").width(width - label - 1).css({
-            "text-overflow":"ellipsis",
-            "white-space":"nowrap",
-            "overflow":"hidden",
-            "display":"block",
-            "float":"left"
-        });
+            jQuery(this).find(".uif-label").next("span").width(width - label - 1).css({
+                "text-overflow":"ellipsis",
+                "white-space":"nowrap",
+                "overflow":"hidden",
+                "display":"block",
+                "float":"left"
+            });
+        }
     });
 }
 /*
@@ -1049,6 +1056,28 @@ function getPlanAuditProgram(param) {
     }
 }
 
+function getPlanAuditProgram(param) {
+    var id;
+    switch (parseFloat(jQuery("input[name='planAudit.campusParam']:checked").val())) {
+        case 306:
+            id = 'plan_programParam_seattle_control';
+            break;
+        case 310:
+            id = 'plan_programParam_bothell_control';
+            break;
+        case 323:
+            id = 'plan_programParam_tacoma_control';
+            break;
+        default:
+            id = null;
+    }
+    if (param == 'id') {
+        return jQuery('select#' + id).val();
+    } else {
+        return jQuery('select#' + id + ' option:selected').text();
+    }
+}
+
 function setPendingAudit(minutes) {
     if (jQuery.cookie('myplan_audit_running') == null) {
         var data = {};
@@ -1057,7 +1086,7 @@ function setPendingAudit(minutes) {
         data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
         data.programId = getAuditProgram('id');
         data.programName = getAuditProgram('name');
-        data.recentAuditId = jQuery("input[id^='hidden_recentAuditId']").val();
+        data.recentAuditId = jQuery("input[id^='degreeAudit_hidden_recentAuditId']").val();
 
         if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
 
@@ -1071,6 +1100,43 @@ function setPendingAudit(minutes) {
                     if (response.status == "PENDING") {
                         jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
                         jQuery("button#degree_audit_run").attr("disabled", true);
+                        jQuery.publish('REFRESH_AUDITS');
+                    }
+                },
+                statusCode:{
+                    500:function () {
+                        sessionExpired();
+                    }
+                }
+            });
+        }
+    } else {
+        showGrowl("Another audit is currently pending.", "Degree Audit Error", "errorGrowl");
+    }
+}
+
+function setPendingPlanAudit(minutes) {
+    if (jQuery.cookie('myplan_audit_running') == null) {
+        var data = {};
+
+        data.expires = new Date();
+        data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
+        data.programId = getPlanAuditProgram('id');
+        data.programName = getPlanAuditProgram('name');
+        data.recentAuditId = jQuery("input[id^='planAudit_hidden_recentAuditId']").val();
+
+        if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
+
+        if (data.programId != 'default') {
+            jQuery.ajax({
+                url:"/student/myplan/audit/status",
+                data:{"programId":data.programId, "auditId":data.recentAuditId},
+                dataType:"json",
+                beforeSend:null,
+                success:function (response) {
+                    if (response.status == "PENDING") {
+                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
+                        jQuery("button#plan_audit_run").attr("disabled", true);
                         jQuery.publish('REFRESH_AUDITS');
                     }
                 },
@@ -1394,6 +1460,20 @@ function expandCurriculumComments(actionComponent, expandText, collapseText) {
     }
 }
 
+function expandPlanAuditSummary(selector, expandText, collapseText) {
+    if(jQuery(selector).is(":visible")){
+        jQuery(selector).each(function(){jQuery(this).attr('style','display:none').slideUp(250)});
+        if (expandText) {
+            jQuery('#plan_audit_toggle_link').text(expandText);
+        }
+    } else{
+        jQuery(selector).each(function(){jQuery(this).attr('style','display:block').slideDown(250)});
+        if (collapseText) {
+            jQuery('#plan_audit_toggle_link').text(collapseText);
+        }
+    }
+
+}
 
 function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
     var elementToBlock = jQuery(".myplan-enrl-data").parent();

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!--
+     Copyright 2007-2009 The Kuali Foundation
+
+     Licensed under the Educational Community License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.opensource.org/licenses/ecl2.php
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    -->
+
+    <!-- Lookup View -->
+    <bean id="PlanAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
+        <property name="headerText" value="Recent Audit Reports"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.audit.service.PlanAuditsLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+
+        <!-- Not Displaying any criteria -->
+        <property name="criteriaGroup">
+            <bean parent="Uif-VerticalBoxGroup"/>
+        </property>
+        <property name="resultsGroup">
+            <bean id="plan_audits_summary" parent="plan_audits_summary_list"/>
+        </property>
+    </bean>
+
+    <bean id="plan_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Plan Audit Reports">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+                <property name="items">
+                    <list>
+                        <ref bean="recent_audits_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+            </list>
+        </property>
+        <property name="onDocumentReadyScript" value="
+            getPendingAudit('plan_audits_summary');
+            truncateAuditTitle('plan_audits_summary', 'planAudit');
+
+        "/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
+        <property name="propertyName" value="lookupResults"/>
+        <property name="filters">
+            <list>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}"
+                      p:title="@{#line.programTitle}" p:style="@{#index gt 2 ? 'display:none' : 'display:block'}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>@{#index eq 0 ? 'plan-audit-first' : ''}</value>
+                            <value>@{#index gt 2 ? 'plan-audit-hide' : ''}</value>
+                            <value>myplan-click</value>
+                        </list>
+                    </property>
+                    <property name="onClickScript"
+                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}';"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
+                                  p:fieldLabel.renderColon="false"
+                                  p:fieldLabel.cssClasses="myplan-text-normal"
+                                  p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false">
+                                <property name="propertyEditor" ref="plan_Audit_timestamp_formatter"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-gray</value>
+                                        <value>fl-font-size-90</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-VerticalBoxGroup" p:style="padding-left: 10px;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-MessageField">
+                                            <property name="message">
+                                                <bean parent="Uif-Message" p:messageText="PLAN INCLUDES"/>
+                                            </property>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>myplan-text-gray</value>
+                                                    <value>fl-text-bold</value>
+                                                    <value>fl-font-size-80</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-HorizontalBoxGroup"
+                                              p:style="margin:0; width: 132px; padding-bottom: 10px; padding-top: 10px;">
+                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="Uif-VerticalBoxGroup"
+                                                          p:style="margin:0; width: 44px;">
+                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <bean parent="Uif-DataField"
+                                                                      p:propertyName="auditedCoursesCount" p:label=""
+                                                                      p:fieldLabel.renderColon="false"
+                                                                      p:fieldLabel.cssClasses="myplan-text-normal"
+                                                                      p:fieldLabel.render="false"
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:style="font-size: 15px;text-align:center;">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-90</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean parent="Uif-MessageField">
+                                                                    <property name="message">
+                                                                        <bean parent="Uif-Message"
+                                                                              p:messageText="Courses"
+                                                                              p:style="text-align:center;"/>
+                                                                    </property>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-80</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+
+                                                    <bean parent="Uif-VerticalBoxGroup"
+                                                          p:style="margin:0; width: 44px;">
+                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <bean parent="Uif-DataField"
+                                                                      p:propertyName="totalAuditedCredit" p:label=""
+                                                                      p:fieldLabel.renderColon="false"
+                                                                      p:fieldLabel.cssClasses="myplan-text-normal"
+                                                                      p:fieldLabel.render="false"
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:style="font-size: 15px;text-align:center;">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-90</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean parent="Uif-MessageField">
+                                                                    <property name="message">
+                                                                        <bean parent="Uif-Message"
+                                                                              p:messageText="Credits"
+                                                                              p:style="text-align:center;"/>
+                                                                    </property>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-80</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+
+                                                    <bean parent="Uif-VerticalBoxGroup"
+                                                          p:style="margin:0; width: 44px;">
+                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="items">
+                                                            <list>
+                                                                <bean parent="Uif-DataField"
+                                                                      p:propertyName="auditedQuarterUpTo" p:label=""
+                                                                      p:fieldLabel.renderColon="false"
+                                                                      p:fieldLabel.cssClasses="myplan-text-normal"
+                                                                      p:fieldLabel.render="false"
+                                                                      p:escapeHtmlInPropertyValue="false"
+                                                                      p:style="font-size: 15px;text-align:center;">
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-90</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                                <bean parent="Uif-MessageField">
+                                                                    <property name="message">
+                                                                        <bean parent="Uif-Message"
+                                                                              p:messageText="Quarters"
+                                                                              p:style="text-align:center;"/>
+                                                                    </property>
+                                                                    <property name="cssClasses">
+                                                                        <list merge="true">
+                                                                            <value>myplan-text-gray</value>
+                                                                            <value>fl-text-bold</value>
+                                                                            <value>fl-font-size-80</value>
+                                                                        </list>
+                                                                    </property>
+                                                                </bean>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-DataField" p:propertyName="programTitle" p:label=""
+                                              p:fieldLabel.renderColon="false"
+                                              p:fieldLabel.cssClasses="myplan-text-normal"
+                                              p:fieldLabel.render="false" p:escapeHtmlInPropertyValue="false"
+                                              p:style="">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>fl-text-bold</value>
+                                                    <value>myplan-audit-title</value>
+                                                    <value>fl-font-size-90</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean id="planAudit_hidden_recentAuditId" parent="Uif-InputField"
+                                  p:propertyName="report.auditId"
+                                  p:fieldLabel.render="false" p:render="@{#line.recentAudit eq true ? true : false}"
+                                  p:defaultValue="@{#line.report.auditId}">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="plan_audit_summary_footer"/>
+        </property>
+    </bean>
+
+    <bean id="test_limnk" parent="Uif-HorizontalBoxGroup" p:style="">
+        <property name="render"
+                  value="@{lookupResults ne null and lookupResults.size() gt 2 ? true : false}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>fl-text-align-center</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-ActionLink"
+                      p:actionLabel="Show @{lookupResults.size()-2} more plan audit reports"
+                      p:style="float:left; padding-left: 10px;">
+                    <property name="actionScript"
+                              value="expandPlanAuditSummary('.plan-audit-hide');"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="plan_audit_summary_footer" parent="Uif-HorizontalBoxGroup"
+         p:style="padding: 6px 10px">
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
+                    <property name="render"
+                              value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="No recent audits found."/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-HorizontalBoxGroup" p:style="">
+                    <property name="render"
+                              value="@{lookupResults ne null and lookupResults.size() gt 3 ? true : false}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-align-center</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean id="plan_audit_toggle_link" parent="Uif-ActionLink"
+                                  p:actionLabel="Show @{lookupResults.size() lt 7 ? lookupResults.size()-3 : 4} more plan audit reports"
+                                  p:style="float:left; padding-left: 10px;">
+                                <property name="actionScript"
+                                          value="expandPlanAuditSummary('.plan-audit-hide', 'Show @{lookupResults.size() lt 7 ? lookupResults.size()-3 : 4} more Plan audit reports', 'Hide @{lookupResults.size() lt 7 ? lookupResults.size()-3 : 4} old Plan audit reports ');"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

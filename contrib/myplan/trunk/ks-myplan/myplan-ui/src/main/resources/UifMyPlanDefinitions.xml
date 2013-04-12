@@ -375,6 +375,7 @@
         <property name="items">
             <list>
                 <ref bean="watch_list"/>
+                <ref bean="non_student_plan_audits_list"/>
                 <ref bean="non_student_degree_audits_list"/>
             </list>
         </property>
@@ -385,6 +386,7 @@
                     <property name="replacement">
                         <list>
                             <ref bean="watch_list"/>
+                            <ref bean="plan_audits_list"/>
                             <ref bean="degree_audits_list"/>
                         </list>
                     </property>
@@ -475,6 +477,26 @@
         "/>
     </bean>
 
+    <bean id="plan_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Plan Audit Reports">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="onDocumentReadyScript" value="
+            myplanRetrieveComponent('plan_audits_list','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            jQuery('#plan_audits_summary').subscribe('REFRESH_AUDITS', function(data){
+                myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            }).subscribe('AUDIT_COMPLETE', function(data){
+                myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            });
+        "/>
+    </bean>
+
     <bean id="non_student_degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
         <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
@@ -487,6 +509,19 @@
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="instructionalText" value="No recent audits found."/>
+    </bean>
+
+    <bean id="non_student_plan_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recent-audit</value>
+                <value>myplan-stacked-list</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="instructionalText" value="No recent plan audits found."/>
     </bean>
 
     <bean id="text1">
@@ -534,6 +569,11 @@
 
     <bean id="timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
         <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
+    </bean>
+
+    <bean id="plan_Audit_timestamp_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
+        <property name="simpleDateFormat" value="M/d/yyyy h:mm aa"/>
+        <property name="planAuditSummaryFormat" value="true"/>
     </bean>
 
     <!--  Message to use when an adviser can't perform a particular action. -->

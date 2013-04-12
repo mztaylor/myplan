@@ -160,7 +160,7 @@
         </property>
         <property name="onDocumentReadyScript" value="
             getPendingAudit('degree_audits_summary');
-            truncateAuditTitle('degree_audits_summary');
+            truncateAuditTitle('degree_audits_summary','degreeAudit');
         "/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
@@ -212,8 +212,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId"
-                                  p:render="@{#line.recentAudit eq true ? true : false}"
+                            <bean id="degreeAudit_hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId" p:render="@{#line.recentAudit eq true ? true : false}"
                                   p:defaultValue="@{#line.report.auditId}">
                                 <property name="validationMessages.render" value="false"/>
                                 <property name="fieldLabel.render" value="false"/>
