@@ -291,6 +291,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         Person user = GlobalVariables.getUserSession().getPerson();
         List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
         attributeInfos.add(new AttributeInfo("auditId", ""));
+        attributeInfos.add(new AttributeInfo("forCourses", ""));
+        attributeInfos.add(new AttributeInfo("forCredits", ""));
+        attributeInfos.add(new AttributeInfo("forQuarter", ""));
         attributeInfos.add(new AttributeInfo("requestedBy", user.getFirstName() + " " + user.getLastName()));
         dto.setAttributes(attributeInfos);
 
@@ -698,13 +701,19 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         lpe.setStudentId(learningPlan.getStudentId());
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
-
         //  Item meta
         lpe.setCreateId(context.getPrincipalId());
         lpe.setCreateTime(new Date());
         lpe.setUpdateId(context.getPrincipalId());
         lpe.setUpdateTime(new Date());
         lpe.setShared(learningPlan.getShared());
+        lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
+        if (learningPlan.getAttributes() != null) {
+            for (Attribute att : learningPlan.getAttributes()) {
+                LearningPlanAttributeEntity attEntity = new LearningPlanAttributeEntity(att, lpe);
+                lpe.getAttributes().add(attEntity);
+            }
+        }
         return lpe;
     }
 
