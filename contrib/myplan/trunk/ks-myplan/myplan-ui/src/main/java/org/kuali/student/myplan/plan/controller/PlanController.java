@@ -1074,9 +1074,6 @@ public class PlanController extends UifControllerBase {
                 List<ActivityOfferingItem> plannedActivities = getPlannedActivities(courseDetails.getCourseId(), terms, null);
                 if (plannedActivities != null && plannedActivities.size() > 0) {
                     for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
-                        if (plannedSections.size() == 2) {
-                            return sections = String.format("%s,..", StringUtils.join(plannedSections.toArray(), ", "));
-                        }
                         plannedSections.add(activityOfferingItem.getCode());
                     }
                 }

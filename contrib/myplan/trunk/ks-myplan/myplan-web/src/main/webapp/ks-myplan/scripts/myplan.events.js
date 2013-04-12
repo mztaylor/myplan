@@ -17,8 +17,8 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
     }
     var sectionsDiv = '';
     if (sections) {
-        sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem"> <span class="uif-message">' +
-            sections + '</span> </div>';
+        sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem myplan-text-ellipsis"> <span class="uif-message">' +
+            sections + '</span></div>';
     }
     item += '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
         '<span class="uif-message">' + courseCode + '</span>' +
@@ -39,7 +39,9 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
 
     jQuery(item).prependTo("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide();
     runHiddenScripts(planItemId + "_" + type + "_" + atpId + "_div");
-    jQuery("#" + planItemId + "_" + type + "_" + atpId + "_div").fadeIn(250).animate({backgroundColor:"#ffffff"}, 1500);
+
+    jQuery("#" + planItemId + "_" + type + "_" + atpId + "_div").show().animate({backgroundColor:"#ffffff"}, 3000);
+    truncateField(planItemId + "_" + type + "_" + atpId + "_div", 12, true);
 }
 /*
  #################################################################

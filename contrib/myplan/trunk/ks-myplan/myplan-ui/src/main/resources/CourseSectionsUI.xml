@@ -64,10 +64,10 @@
                                                     <bean parent="activityOfferingTableCollection">
                                                         <property name="id" value=""/>
                                                         <property name="layoutManager.id"
-                                                                  value="@{dataObject.courseSummaryDetails.courseId}_sections"/>
+                                                                  value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections"/>
                                                         <property name="propertyName" value="activityOfferingItemList"/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            var tableHead = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_sections thead');
+                                                            var tableHead = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections thead');
                                                             tableHead.before('
                                                                 &lt;col style=&quot;width: 60px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 84px;&quot;&gt;

@@ -54,6 +54,7 @@
     </bean>
 
     <bean id="saved_courses_summary_list" parent="Uif-ListCollectionSection" p:headerText="Bookmarked Courses">
+        <property name="validationMessages.render" value="false"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -79,6 +80,7 @@
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
@@ -132,6 +134,7 @@
 
     <bean id="saved_courses_summary_footer" parent="Uif-VerticalBoxSection"
           p:style="padding: 7px 10px;">
+        <property name="validationMessages.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="items">
             <list>
@@ -244,6 +247,7 @@
     </bean>
 
     <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 700px; margin-right: 10px;">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-detail</value>
@@ -272,6 +276,7 @@
     </bean>
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection" p:style="clear:both;">
+        <property name="validationMessages.render" value="false"/>
         <property name="headerText"
                   value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"/>
         <property name="collectionObjectClass"
@@ -522,6 +527,7 @@
     </bean>
 
     <bean id="empty_bookmarked_section" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
+        <property name="group.validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-650</value>
@@ -548,8 +554,8 @@
 
     <!-- ####################### The Right panel for Saved Courses Full View #################### -->
     <!-- For saved courses view, we do not want to show the saved course summary list -->
-    <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF"
-            >
+    <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-200</value>

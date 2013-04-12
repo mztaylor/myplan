@@ -339,6 +339,7 @@
     </bean>
 
     <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:style="width: 220px; margin: 0;">
+        <property name="validationMessages.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
@@ -356,6 +357,7 @@
 
     <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF"
           p:style="margin-bottom:10px;">
+        <property name="validationMessages.render" value="false"/>
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
@@ -392,6 +394,7 @@
     </bean>
 
     <bean id="messages_widget" parent="Uif-VerticalBoxGroup" p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-widget</value>
@@ -422,6 +425,7 @@
 
 
     <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-summary</value>
@@ -451,6 +455,7 @@
     </bean>
 
     <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-recent-audit</value>
@@ -471,6 +476,7 @@
     </bean>
 
     <bean id="non_student_degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-recent-audit</value>
@@ -532,6 +538,7 @@
 
     <!--  Message to use when an adviser can't perform a particular action. -->
     <bean id="course_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-status</value>
@@ -541,6 +548,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
+                    <property name="group.validationMessages.render" value="false"/>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
@@ -559,6 +567,7 @@
     </bean>
 
     <bean id="audit_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-status</value>
@@ -568,6 +577,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages.render" value="false"/>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
@@ -586,6 +596,7 @@
     </bean>
 
     <bean id="bookmark_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-status</value>
@@ -595,6 +606,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages.render" value="false"/>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
