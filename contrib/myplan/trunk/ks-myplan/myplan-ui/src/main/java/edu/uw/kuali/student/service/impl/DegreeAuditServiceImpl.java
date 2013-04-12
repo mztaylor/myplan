@@ -228,16 +228,18 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             CourseService courseService = getCourseService();
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, useless);
             for (PlanItemInfo planItem : planItems) {
-                String courseId = planItem.getRefObjectId();
-                try {
-                    CourseInfo courseInfo = courseService.getCourse(courseId);
-                    Course course = new Course();
-                    course.curric = courseInfo.getSubjectArea();
-                    course.campus = courseInfo.getCampusLocations().get(0);
-                    course.year = planItem.getPlanPeriods().get(0);
+                if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType())) {
+                    String courseId = planItem.getRefObjectId();
+                    try {
+                        CourseInfo courseInfo = courseService.getCourse(courseId);
+                        Course course = new Course();
+                        course.curric = courseInfo.getSubjectArea();
+                        course.campus = courseInfo.getCampusLocations().get(0);
+                        course.year = planItem.getPlanPeriods().get(0);
 
-                } catch (Exception e) {
-                    logger.warn("whatever", e);
+                    } catch (Exception e) {
+                        logger.warn("whatever", e);
+                    }
                 }
 
             }
