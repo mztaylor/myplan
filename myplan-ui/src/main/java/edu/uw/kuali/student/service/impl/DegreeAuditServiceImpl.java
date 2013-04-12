@@ -4,11 +4,18 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.student.lum.course.service.CourseServiceConstants;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -44,6 +51,7 @@ import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -93,6 +101,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private StudentServiceClient studentServiceClient;
 
+    public transient AcademicPlanService academicPlanService;
+
+    private CourseService courseService;
+
 
     public DprogDao getDprogDao() {
         return dprogDao;
@@ -139,6 +151,40 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     "<Pathway>$pathway</Pathway>" +
                     "<RegID>$regid</RegID>" +
                     "</DegreeAudit>";
+//
+//    public final static String requestCourse =
+//        "<Course>" +
+//        "<CurriculumAbbreviation>$curric</CurriculumAbbreviation>" +
+//        "<MinimumTermCredit>$credit</MinimumTermCredit>" +
+//        "<CourseCampus>$campus</CourseCampus>" +
+//        "<CourseNumber>$number</CourseNumber>" +
+//        "<Quarter>$quarter</Quarter>" +
+//        "<Year>$year</Year>" +
+//        "</Course>";
+
+    static public class Course {
+        String curric;
+        String credit;
+        String campus;
+        String number;
+        String quarter;
+        String year;
+
+        public String toString() {
+            return
+                    "<Course>" +
+                            "<CurriculumAbbreviation>" + curric.replace("&", "&amp;") + "</CurriculumAbbreviation>" +
+                            "<MinimumTermCredit>" + credit.replace("&", "&amp;") + "</MinimumTermCredit>" +
+                            "<CourseCampus>" + campus.replace("&", "&amp;") + "</CourseCampus>" +
+                            "<CourseNumber>" + number.replace("&", "&amp;") + "</CourseNumber>" +
+                            "<Quarter>" + quarter.replace("&", "&amp;") + "</Quarter>" +
+                            "<Year>" + year.replace("&", "&amp;") + "</Year>" +
+                            "</Course>";
+
+
+        }
+
+    }
 
     @Override
     public AuditReportInfo runAudit(
@@ -161,10 +207,50 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             @WebParam(name = "auditTypeKey") String auditTypeKey,
             @WebParam(name = "context") ContextInfo useless
     )
-            throws InvalidParameterException, MissingParameterException, OperationFailedException
+            throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        return requestAudit(studentId, programId, null);
+    }
 
-    {
 
+    @Override
+    public AuditReportInfo runWhatIfAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo useless) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        String auditId = runWhatIfAuditAsync(studentId, programId, auditTypeKey, academicPlanId, useless);
+        AuditReportInfo auditReportInfo = getAuditReport(auditId, auditTypeKey, useless);
+        return auditReportInfo;
+    }
+
+    @Override
+    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo useless) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<Course> courses = new ArrayList<Course>();
+        try {
+//            LearningPlanInfo lpi = getAcademicPlanService().getLearningPlan(academicPlanId, useless);
+
+            CourseService courseService = getCourseService();
+            List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, useless);
+            for (PlanItemInfo planItem : planItems) {
+                String courseId = planItem.getRefObjectId();
+                try {
+                    CourseInfo courseInfo = courseService.getCourse(courseId);
+                    Course course = new Course();
+                    course.curric = courseInfo.getSubjectArea();
+                    course.campus = courseInfo.getCampusLocations().get(0);
+                    course.year = planItem.getPlanPeriods().get(0);
+
+                } catch (Exception e) {
+                    logger.warn("whatever", e);
+                }
+
+            }
+
+        } catch (Exception e) {
+            logger.warn("error retrieving plan items", e);
+        }
+
+
+        return requestAudit(studentId, programId, courses);
+    }
+
+    public String requestAudit(String studentId, String programId, List<Course> courses) throws OperationFailedException {
         try {
             programId = programId.replace('$', ' ');
             // padding, because sometimes degree program ids are not 12 chars long
@@ -557,7 +643,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 audit.setProgramTitle(jqr.getWebtitle());
                 audit.setRunDate(jqr.getRundate());
                 audit.setRequirementsSatisfied("Unknown");
-                audit.setWhatIfAudit( "W".equals(jqr.getIp() ) );
+                audit.setWhatIfAudit("W".equals(jqr.getIp()));
 
                 list.add(audit);
             }
@@ -568,15 +654,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return list;
     }
 
-    @Override
-    public AuditReportInfo runWhatIfAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return runAudit(studentId, programId, auditTypeKey, context);
-    }
-
-    @Override
-    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return runAuditAsync(studentId, programId, auditTypeKey, context);
-    }
 
     @Override
     public AuditReportInfo runEmptyAudit(@WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -658,4 +735,22 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
+
+    public synchronized AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
+        return this.courseService;
+    }
+
+
 }
