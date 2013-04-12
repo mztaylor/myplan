@@ -444,6 +444,9 @@
 
             </list>
         </property>
+        <property name="propertyReplacers">
+            <list></list>
+        </property>
         <property name="footer">
             <bean parent="single_Quarter_Credit_Total"/>
         </property>
