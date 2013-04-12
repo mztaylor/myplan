@@ -532,6 +532,7 @@ function myPlanAjaxPlanItemMove(id, type, methodToCall, e) {
 
 function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
     stopEvent(e);
+    fnCloseAllPopups();
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var targetText = ( jQuery.trim(jQuery(target).text()) != '') ? jQuery.trim(jQuery(target).text()) : "Error";
     var elementToBlock = (target.nodeName != 'INPUT') ? jQuery(target) : jQuery(target).parent();

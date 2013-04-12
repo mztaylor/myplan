@@ -558,7 +558,7 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            truncateField('planned_courses_detail_list', 8, true);
+            truncateField('planned_courses_detail_list', 12, true);
             jQuery('#planned_courses_detail_list')
                 .subscribe('PLAN_ITEM_ADDED', function(data){
                     fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen, data.sections);
@@ -990,7 +990,7 @@
                             <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:114px;"/>
+                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField"
@@ -1129,7 +1129,7 @@
                             <value>myplan-course-valid</value>
                         </list>
                     </property>
-                    <property name="style" value="width:114px;"/>
+                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">
@@ -1273,7 +1273,7 @@
                             <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:114px;"/>
+                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField"
@@ -1384,7 +1384,7 @@
                             <value>myplan-course-valid</value>
                         </list>
                     </property>
-                    <property name="style" value="width:114px;"/>
+                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField">

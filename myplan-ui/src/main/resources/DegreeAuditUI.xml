@@ -75,9 +75,11 @@
 
     <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection"
           p:style="width: 710px; margin-right: 10px;">
+        <property name="validationMessages.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
+                    <property name="validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
                             <bean id="txtaudit2" parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}"
@@ -137,11 +139,13 @@
     </bean>
 
     <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
+        <property name="validationMessages.render" value="false"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup" p:validationMessages.render="false">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="validationMessages.render" value="false"/>
                 <property name="items">
                     <list>
                         <ref bean="recent_audits_help_icon"/>
@@ -160,6 +164,7 @@
         "/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="filters">
@@ -169,7 +174,9 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalFieldGroup" p:fieldLabel.render="false" p:id="@{#line.report.auditId}" p:title="@{#line.programTitle}">
+                <bean parent="Uif-VerticalFieldGroup" p:id="@{#line.report.auditId}" p:title="@{#line.programTitle}">
+                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-click</value>
@@ -179,8 +186,9 @@
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}';"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View"
-                                  p:fieldLabel.render="true" p:fieldLabel.renderColon="false">
+                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View">
+                                <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.renderColon" value="false"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-audit-title</value>
@@ -188,8 +196,14 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
-                                  p:fieldLabel.renderColon="false" p:fieldLabel.cssClasses="myplan-text-normal"
-                                  p:fieldLabel.render="true" p:escapeHtmlInPropertyValue="false">
+                                  p:escapeHtmlInPropertyValue="false">
+                                <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.renderColon" value="false"/>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-text-normal</value>
+                                    </list>
+                                </property>
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -198,8 +212,11 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId" p:fieldLabel.render="false" p:render="@{#line.recentAudit eq true ? true : false}"
+                            <bean id="hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId"
+                                  p:render="@{#line.recentAudit eq true ? true : false}"
                                   p:defaultValue="@{#line.report.auditId}">
+                                <property name="validationMessages.render" value="false"/>
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
@@ -215,8 +232,9 @@
         </property>
     </bean>
 
-    <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection"
-          p:header.render="false" p:style="padding: 6px 10px">
+    <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection" p:style="padding: 6px 10px">
+        <property name="validationMessages.render" value="false"/>
+        <property name="header.render" value="false"/>
         <property name="render"
                   value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
         <property name="items">
