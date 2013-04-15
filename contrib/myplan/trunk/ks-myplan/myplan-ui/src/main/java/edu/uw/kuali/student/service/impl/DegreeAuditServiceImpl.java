@@ -1,6 +1,7 @@
 package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
@@ -16,7 +17,7 @@ import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
@@ -36,6 +37,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,6 +111,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private CourseService courseService;
 
+    @Autowired
+    CourseHelper courseHelper;
+
 
     public DprogDao getDprogDao() {
         return dprogDao;
@@ -145,28 +150,64 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public DegreeAuditServiceImpl() {
     }
 
-    public final static String requestTemplate =
-            "<DegreeAudit>" +
-                    "<Campus>$campus</Campus>" +
-                    "<PlanningAudit/>" +
-                    "<DegreeLevel>$level</DegreeLevel>" +
-                    "<DegreeType>$type</DegreeType>" +
-                    "<MajorAbbreviation>$major</MajorAbbreviation>" +
-                    "<Pathway>$pathway</Pathway>" +
-                    "<RegID>$regid</RegID>" +
-                    "</DegreeAudit>";
-//
-//    public final static String requestCourse =
-//        "<Course>" +
-//        "<CurriculumAbbreviation>$curric</CurriculumAbbreviation>" +
-//        "<MinimumTermCredit>$credit</MinimumTermCredit>" +
-//        "<CourseCampus>$campus</CourseCampus>" +
-//        "<CourseNumber>$number</CourseNumber>" +
-//        "<Quarter>$quarter</Quarter>" +
-//        "<Year>$year</Year>" +
-//        "</Course>";
+    static public class DegreeAuditRequest {
+        String campus;
+        String level;
+        String type;
+        String major;
+        String pathway;
+        String regid;
 
-    static public class Course {
+        ArrayList<DegreeAuditCourseRequest> courses = new ArrayList<DegreeAuditCourseRequest>();
+
+        public DegreeAuditRequest(String regid, String programId) {
+            this.regid = regid;
+
+            programId = programId.replace('$', ' ');
+            // padding, because sometimes degree program ids are not 12 chars long
+            programId = programId + "              ";
+
+            campus = "SEATTLE";
+            char oof = programId.charAt(0);
+            switch (oof) {
+                case '1':
+                    campus = "BOTHELL";
+                    break;
+                case '2':
+                    campus = "TACOMA";
+                    break;
+                default:
+                    break;
+            }
+
+            major = programId.substring(1, 7).trim();
+            pathway = programId.substring(7, 9);
+            level = programId.substring(9, 10);
+            type = programId.substring(10, 11);
+
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("<DegreeAudit>\n");
+            sb.append("<Campus>").append(campus.replace("&", "&amp;")).append("</Campus>\n");
+            sb.append("<DegreeLevel>").append(level.replace("&", "&amp;")).append("</DegreeLevel>\n");
+            sb.append("<DegreeType>").append(type.replace("&", "&amp;")).append("</DegreeType>\n");
+            sb.append("<MajorAbbreviation>").append(major.replace("&", "&amp;")).append("</MajorAbbreviation>\n");
+            sb.append("<Pathway>").append(pathway.replace("&", "&amp;")).append("</Pathway>\n");
+            sb.append("<RegID>").append(regid.replace("&", "&amp;")).append("</RegID>\n");
+            sb.append("<PlanningAudit>\n");
+            for (DegreeAuditCourseRequest course : courses) {
+                sb.append(course.toString());
+            }
+            sb.append("</PlanningAudit>\n");
+            sb.append("</DegreeAudit>");
+            return sb.toString();
+        }
+    }
+
+    static public class DegreeAuditCourseRequest {
         String curric;
         String credit;
         String campus;
@@ -176,18 +217,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         public String toString() {
             return
-                    "<Course>" +
-                            "<CurriculumAbbreviation>" + curric.replace("&", "&amp;") + "</CurriculumAbbreviation>" +
-                            "<MinimumTermCredit>" + credit.replace("&", "&amp;") + "</MinimumTermCredit>" +
-                            "<CourseCampus>" + campus.replace("&", "&amp;") + "</CourseCampus>" +
-                            "<CourseNumber>" + number.replace("&", "&amp;") + "</CourseNumber>" +
-                            "<Quarter>" + quarter.replace("&", "&amp;") + "</Quarter>" +
-                            "<Year>" + year.replace("&", "&amp;") + "</Year>" +
-                            "</Course>";
-
-
+                    "<Course>\n" +
+                            "<CurriculumAbbreviation>" + curric.replace("&", "&amp;") + "</CurriculumAbbreviation>\n" +
+                            "<MinimumTermCredit>" + credit.replace("&", "&amp;") + "</MinimumTermCredit>\n" +
+                            "<CourseCampus>" + campus.replace("&", "&amp;") + "</CourseCampus>\n" +
+                            "<CourseNumber>" + number.replace("&", "&amp;") + "</CourseNumber>\n" +
+                            "<Quarter>" + quarter.replace("&", "&amp;") + "</Quarter>\n" +
+                            "<Year>" + year.replace("&", "&amp;") + "</Year>\n" +
+                            "</Course>\n";
         }
-
     }
 
     @Override
@@ -212,44 +250,56 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             @WebParam(name = "context") ContextInfo useless
     )
             throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return requestAudit(studentId, programId, null);
+        DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
+        return requestAudit(req);
     }
 
 
     @Override
     public AuditReportInfo runWhatIfAudit(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-       
+
         String auditId = runWhatIfAuditAsync(studentId, programId, auditTypeKey, academicPlanId, context);
         AuditReportInfo auditReportInfo = getAuditReport(auditId, auditTypeKey, context);
-        
+
         return auditReportInfo;
     }
 
     @Override
     public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
-        LearningPlanInfo learningPlanInfo = new LearningPlanInfo();
-        YearTerm upToQuarter = AtpHelper.getLastPlannedTerm();
-        int credits = 0;
-        List<Course> courses = new ArrayList<Course>();
+        String auditId = null;
+        DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
         try {
-            // getting the learning plan for given academicPlanId
-            learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
 
-            CourseService courseService = getCourseService();
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
             for (PlanItemInfo planItem : planItems) {
                 if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType())) {
                     String versionIndependentId = planItem.getRefObjectId();
-                    CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+
                     try {
-                        CourseInfo courseInfo = courseDetailsInquiryHelper.getCourseInfo(versionIndependentId);
-                        Course course = new Course();
-                        course.curric = courseInfo.getSubjectArea();
-                        if(courseInfo.getCampusLocations().size()>0){
-                        course.campus = courseInfo.getCampusLocations().get(0);
+                        String latestCourseId = getCourseHelper().getVerifiedCourseId(versionIndependentId);
+                        CourseInfo courseInfo = getCourseService().getCourse(latestCourseId);
+
+                        DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
+                        course.curric = courseInfo.getSubjectArea().trim();
+                        course.number = courseInfo.getCourseNumberSuffix().trim();
+                        course.credit = "5";
+                        course.campus = "Seattle";
+                        if (!courseInfo.getCampusLocations().isEmpty()) {
+                            course.campus = courseInfo.getCampusLocations().get(0);
+                        } else if (course.curric.startsWith("T")) {
+                            course.campus = "Tacoma";
+                        } else if (course.curric.startsWith("B")) {
+                            course.campus = "Bothell";
                         }
-                        course.year = planItem.getPlanPeriods().get(0);
+
+
+                        String atpId = planItem.getPlanPeriods().get(0);
+                        AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+                        course.quarter = yt.getTermAsID();
+                        course.year = yt.getYearAsString();
+                        req.courses.add(course);
+
                     } catch (Exception e) {
                         logger.warn("whatever", e);
                     }
@@ -257,24 +307,31 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             }
 
+            auditId = requestAudit(req);
+
         } catch (Exception e) {
             logger.warn("error retrieving plan items", e);
         }
-        String auditId = requestAudit(studentId, programId, courses);
-        
-        //updating the learning plan with new attribute values.
-        for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-            if ("forCourses".equalsIgnoreCase(attributeInfo.getKey())) {
-                attributeInfo.setValue(String.valueOf(courses.size()));
-            } else if ("forCredits".equalsIgnoreCase(attributeInfo.getKey())) {
-                attributeInfo.setValue(String.valueOf(credits));
-            } else if ("forQuarter".equalsIgnoreCase(attributeInfo.getKey())) {
-                attributeInfo.setValue(AtpHelper.atpIdToShortTermName(upToQuarter.toATP()));
-            } else if ("auditId".equalsIgnoreCase(attributeInfo.getKey())) {
-                attributeInfo.setValue(auditId);
-            }
-        }
+
         try {
+            // getting the learning plan for given academicPlanId
+            LearningPlanInfo learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
+            YearTerm lastYT = AtpHelper.getLastPlannedTerm();
+            int credits = 99;
+
+
+            //updating the learning plan with new attribute values.
+            for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                if ("forCourses".equalsIgnoreCase(attributeInfo.getKey())) {
+                    attributeInfo.setValue(String.valueOf(req.courses.size()));
+                } else if ("forCredits".equalsIgnoreCase(attributeInfo.getKey())) {
+                    attributeInfo.setValue(String.valueOf(credits));
+                } else if ("forQuarter".equalsIgnoreCase(attributeInfo.getKey())) {
+                    attributeInfo.setValue(lastYT.toShortTermName());
+                } else if ("auditId".equalsIgnoreCase(attributeInfo.getKey())) {
+                    attributeInfo.setValue(auditId);
+                }
+            }
             learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
             getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
         } catch (Exception e) {
@@ -284,37 +341,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditId;
     }
 
-    public String requestAudit(String studentId, String programId, List<Course> courses) throws OperationFailedException {
+    public String requestAudit(DegreeAuditRequest req) throws OperationFailedException {
         try {
-            programId = programId.replace('$', ' ');
-            // padding, because sometimes degree program ids are not 12 chars long
-            programId = programId + "              ";
 
-            String campus = "SEATTLE";
-            char oof = programId.charAt(0);
-            switch (oof) {
-                case '1':
-                    campus = "BOTHELL";
-                    break;
-                case '2':
-                    campus = "TACOMA";
-                    break;
-                default:
-                    break;
-            }
-
-            String major = programId.substring(1, 7).trim();
-            String pathway = programId.substring(7, 9);
-            String level = programId.substring(9, 10);
-            String type = programId.substring(10, 11);
-
-            String payload = new String(requestTemplate);
-            payload = payload.replace("$campus", campus.replace("&", "&amp;"));
-            payload = payload.replace("$level", level.replace("&", "&amp;"));
-            payload = payload.replace("$type", type.replace("&", "&amp;"));
-            payload = payload.replace("$major", major.replace("&", "&amp;"));
-            payload = payload.replace("$pathway", pathway.replace("&", "&amp;"));
-            payload = payload.replace("$regid", studentId.replace("&", "&amp;"));
+            String payload = req.toString();
 
             String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
             logger.debug("REST HTTP POST");
@@ -784,6 +814,18 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
         }
         return this.courseService;
+    }
+
+    // TODO: Springify this
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
 
 
