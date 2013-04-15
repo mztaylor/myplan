@@ -20,4 +20,6 @@ public interface CourseHelper {
     public String getCourseIdForTerm(String subjectArea, String number, String termId);
 
     public String joinStringsByDelimiter(char delimiter, String... list);
+
+    public String getVerifiedCourseId(String courseId);
 }

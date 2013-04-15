@@ -589,10 +589,17 @@ public class AtpHelper {
             return TERM_ID_LIST.get(getTerm() - 1).substring(0, 3).toUpperCase() + "+" + getYearAsString();
         }
 
+        // 19911
         public String toUAchieveValue() {
             int value = year * 10 + term;
             String result = Integer.toString(value);
             return result;
+        }
+
+        public String toShortTermName() {
+            String a = TERM_ID_LIST.get(getTerm() - 1).substring(0, 2).toUpperCase();
+            String b = getYearAsString().substring(2);
+            return a + " " + b;
         }
 
         @Override

@@ -6,10 +6,6 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.DoesNotExistException;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -923,7 +919,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         CourseInfo courseInfo = null;
         try {
-            courseInfo = getCourseService().getCourse(getVerifiedCourseId(courseId));
+            String latestCourseId = getCourseHelper().getVerifiedCourseId(courseId);
+            courseInfo = getCourseService().getCourse(latestCourseId);
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
@@ -1029,34 +1026,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             logger.error(" Exception loading plan item :" + refObjId + " for atp: " + atpId + " " + e.getMessage());
         }
         return new PlanItemInfo();
-    }
-
-    /**
-     * Takes a courseId that can be either a version independent Id or a version dependent Id and
-     * returns a version dependent Id. In case of being passed in a version depend
-     *
-     * @param courseId
-     * @return
-     */
-    private String getVerifiedCourseId(String courseId) {
-        String verifiedCourseId = null;
-        try {
-            SearchRequest req = new SearchRequest("myplan.course.version.id");
-            req.addParam("courseId", courseId);
-            req.addParam("courseId", courseId);
-            req.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
-            SearchResult result = getLuService().search(req);
-            for (SearchResultRow row : result.getRows()) {
-                for (SearchResultCell cell : row.getCells()) {
-                    if ("lu.resultColumn.cluId".equals(cell.getKey())) {
-                        verifiedCourseId = cell.getValue();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.error("version verified Id retrieval failed", e);
-        }
-        return verifiedCourseId;
     }
 
 
