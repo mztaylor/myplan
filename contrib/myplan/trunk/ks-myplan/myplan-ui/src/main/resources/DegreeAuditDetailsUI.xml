@@ -275,7 +275,8 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_report_section" parent="Uif-VerticalBoxSubSection" p:headerText="Plan Audit Report" p:render="@{planAudit.auditHtml ne null}">
+    <bean id="plan_audit_report_section" parent="Uif-VerticalBoxSubSection" p:headerText="Plan Audit Report"
+          p:render="@{planAudit.auditHtml ne null}">
         <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="items">
             <list>
@@ -424,7 +425,7 @@
     <!--******************************Start of Degree Audit Report****************************************-->
 
     <bean id="degree_audit_block" parent="Uif-VerticalBoxSection"
-          p:style="width: 700px; margin-right: 10px; float: left;" p:headerText="Degree Aduit Report">
+          p:style="width: 700px; margin-right: 10px; float: left;" p:headerText="Degree Audit Report">
         <property name="header">
             <bean parent="Uif-HeaderThree" p:style="display:none;"/>
         </property>
