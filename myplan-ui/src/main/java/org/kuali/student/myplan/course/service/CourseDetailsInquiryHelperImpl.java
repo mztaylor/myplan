@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -133,6 +134,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
     public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
         return courseHelper;
     }
 
