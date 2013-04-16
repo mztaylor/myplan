@@ -760,23 +760,23 @@ function truncateField(id, margin, floated) {
         }
     });
 }
-function truncateAuditTitle(id,auditName) {
+function truncateAuditTitle(id, auditName) {
     jQuery("#" + id + " .myplan-audit-title").each(function () {
         if (readUrlParam("viewId") == "DegreeAudit-FormView") {
             if (
-                (readUrlParam(auditName+".auditId") == false && jQuery(this).siblings("div[id^='"+auditName+"_hidden_recentAuditId']").length > 0) ||
-                    (readUrlParam(auditName+".auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
+                (readUrlParam(auditName + ".auditId") == false && jQuery(this).siblings("div[id^='" + auditName + "_hidden_recentAuditId']").length > 0) ||
+                    (readUrlParam(auditName + ".auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
                 ) {
                 jQuery(this).find(".uif-label label").html("Viewing");
             }
         }
-        if(auditName == 'planAudit'){
-        jQuery(this).find('span.uif-readOnlyContent').width(120).css({"text-overflow":"ellipsis",
-        "white-space":"nowrap",
-        "overflow":"hidden",
-        "display":"block",
-        "float":"left"});
-        }else{
+        if (auditName == 'planAudit') {
+            jQuery(this).find('span.uif-readOnlyContent').width(120).css({"text-overflow":"ellipsis",
+                "white-space":"nowrap",
+                "overflow":"hidden",
+                "display":"block",
+                "float":"left"});
+        } else {
             var width = jQuery(this).width();
             var label = parseFloat(jQuery(this).find(".uif-label label").css({"color":"#777777"}).width()) + parseFloat(jQuery(this).find(".uif-label label").css("padding-right"));
 
@@ -1461,13 +1461,17 @@ function expandCurriculumComments(actionComponent, expandText, collapseText) {
 }
 
 function expandPlanAuditSummary(selector, expandText, collapseText) {
-    if(jQuery(selector).is(":visible")){
-        jQuery(selector).each(function(){jQuery(this).attr('style','display:none').slideUp(250)});
+    if (jQuery(selector).is(":visible")) {
+        jQuery(selector).each(function () {
+            jQuery(this).attr('style', 'display:none').slideUp(250)
+        });
         if (expandText) {
             jQuery('#plan_audit_toggle_link').text(expandText);
         }
-    } else{
-        jQuery(selector).each(function(){jQuery(this).attr('style','display:block').slideDown(250)});
+    } else {
+        jQuery(selector).each(function () {
+            jQuery(this).attr('style', 'display:block').slideDown(250)
+        });
         if (collapseText) {
             jQuery('#plan_audit_toggle_link').text(collapseText);
         }
@@ -1540,31 +1544,48 @@ function switchFetchAction(actionId, toggleId) {
 }
 
 function toggleSections(actionId, toggleId, showClass, showText, hideText) {
-    var group = jQuery("#" + toggleId + " table tbody tr").not("." + showClass);
+    var group = jQuery("#" + toggleId + " table tbody tr.row").not("." + showClass);
     var action = jQuery("#" + actionId);
     if (action.data("hidden")) {
-        group.not(".collapsible").show();
+        group.each(function () {
+            var toggle = jQuery(this).find("a[id^='toggle_']");
+            if (toggle.data("hidden") || typeof toggle.data("hidden") == "undefined") {
+                jQuery(this).show();
+            } else {
+                jQuery(this).show().next("tr.collapsible").show().next("tr.collapsible").show();
+            }
+        });
         jQuery(".myplan-quarter-detail .activityInstitutionHeading").show();
         action.text(hideText).data("hidden", false);
     } else {
-        group.hide();
+        group.each(function () {
+            var toggle = jQuery(this).find("a[id^='toggle_']");
+            if (toggle.data("hidden") || typeof toggle.data("hidden") == "undefined") {
+                jQuery(this).hide();
+            } else {
+                jQuery(this).hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
+            }
+        });
         jQuery(".myplan-quarter-detail .activityInstitutionHeading").hide();
         action.text(showText).data("hidden", true);
     }
 }
 
 function toggleSectionDetails(sectionRow, obj, expandText, collapseText) {
+    if (typeof obj.data("hidden") == "undefined") {
+        obj.data("hidden", true);
+    }
     var collapsibleRow = sectionRow.next("tr.collapsible");
-    if (collapsibleRow.is(":visible")) {
-        sectionRow.find("td").first().attr("rowspan", "1");
-        sectionRow.find("td").last().attr("rowspan", "1");
-        collapsibleRow.hide().next("tr.collapsible").hide();
-        obj.text(expandText);
-    } else {
+    if (obj.data("hidden")) {
         sectionRow.find("td").first().attr("rowspan", "3");
         sectionRow.find("td").last().attr("rowspan", "3");
         collapsibleRow.show().next("tr.collapsible").show();
-        obj.text(collapseText);
+        obj.text(collapseText).data("hidden", false);
+    } else {
+        sectionRow.find("td").first().attr("rowspan", "1");
+        sectionRow.find("td").last().attr("rowspan", "1");
+        collapsibleRow.hide().next("tr.collapsible").hide();
+        obj.text(expandText).data("hidden", true);
     }
 }
 
