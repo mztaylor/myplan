@@ -70,7 +70,7 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            getPendingAudit('plan_audits_summary');
+            getPendingAudit('plan_audits_summary', 'plan');
             truncateAuditTitle('plan_audits_summary', 'planAudit');
 
         "/>
@@ -94,6 +94,9 @@
                             <value>myplan-click</value>
                         </list>
                     </property>
+                    <property name="onDocumentReadyScript" value="
+                        if (@{#line.recentAudit}) jQuery('button#plan_audit_run').data('recentauditid', '@{#line.report.auditId}');
+                    "/>
                     <property name="onClickScript"
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}';"/>
                     <property name="items">
@@ -262,14 +265,6 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean id="planAudit_hidden_recentAuditId" parent="Uif-InputField"
-                                  p:propertyName="report.auditId"
-                                  p:fieldLabel.render="false" p:render="@{#line.recentAudit eq true ? true : false}"
-                                  p:defaultValue="@{#line.report.auditId}">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -300,7 +295,7 @@
         </property>
     </bean>
     <bean id="plan_audit_summary_footer" parent="Uif-HorizontalBoxGroup"
-         p:style="padding: 6px 10px">
+          p:style="padding: 6px 10px">
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">

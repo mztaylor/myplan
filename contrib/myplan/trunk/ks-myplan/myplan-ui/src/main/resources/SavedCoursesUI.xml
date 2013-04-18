@@ -210,7 +210,7 @@
                                         <bean parent="your_stuff_widget">
                                             <property name="items">
                                                 <list>
-                                                    <ref bean="non_student_degree_audits_list"/>
+                                                    <ref bean="non_student_audits_list"/>
                                                 </list>
                                             </property>
                                             <property name="propertyReplacers">

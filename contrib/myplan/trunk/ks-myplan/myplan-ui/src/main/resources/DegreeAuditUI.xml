@@ -159,7 +159,7 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            getPendingAudit('degree_audits_summary');
+            getPendingAudit('degree_audits_summary', 'degree');
             truncateAuditTitle('degree_audits_summary','degreeAudit');
         "/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
@@ -182,6 +182,9 @@
                             <value>myplan-click</value>
                         </list>
                     </property>
+                    <property name="onDocumentReadyScript" value="
+                        if (@{#line.recentAudit}) jQuery('button#degree_audit_run').data('recentauditid', '@{#line.report.auditId}');
+                    "/>
                     <property name="onClickScript"
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}';"/>
                     <property name="items">
@@ -210,14 +213,6 @@
                                         <value>myplan-text-gray</value>
                                         <value>fl-font-size-90</value>
                                     </list>
-                                </property>
-                            </bean>
-                            <bean id="degreeAudit_hidden_recentAuditId" parent="Uif-InputField" p:propertyName="report.auditId" p:render="@{#line.recentAudit eq true ? true : false}"
-                                  p:defaultValue="@{#line.report.auditId}">
-                                <property name="validationMessages.render" value="false"/>
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
                         </list>

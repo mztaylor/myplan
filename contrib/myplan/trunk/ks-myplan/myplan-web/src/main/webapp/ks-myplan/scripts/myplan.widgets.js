@@ -936,31 +936,46 @@ function myplanLightBoxLink(href, options, e) {
     top.jQuery.fancybox(options);
 }
 
-function degreeAuditButton() {
-    if (jQuery.cookie('myplan_audit_running')) {
-        return true;
+function auditButtonState(buttonId) {
+    var button = jQuery("button#" + buttonId);
+    var type = button.data("audittype");
+    var disabled;
+    if (jQuery.cookie("myplan_audit_running")) {
+        disabled = true;
     } else {
-        var id = getAuditProgram("id");
-
+        var id = getAuditProgram("id", type);
         if (id) {
-            return (id == 'default');
+            disabled = (id == "default");
         } else {
-            return true;
+            disabled = true;
         }
+    }
+    if (disabled) {
+        button.addClass("disabled").attr("disabled", true);
+    } else {
+        button.removeClass("disabled").attr("disabled", false);
     }
 }
 
-function planAuditButton() {
-    if (jQuery.cookie('myplan_audit_running')) {
-        return true;
+function getAuditProgram(param, type) {
+    var campus;
+    switch (parseFloat(jQuery("#" + type + "_param_campus input:checked").val())) {
+        case 306:
+            campus = "seattle";
+            break;
+        case 310:
+            campus = "bothell";
+            break;
+        case 323:
+            campus = "tacoma";
+            break;
+        default:
+            campus = null;
+    }
+    if (param == 'id') {
+        return jQuery("#" + type + "_param_program select#" + type + "_programs_" + campus + "_control").val();
     } else {
-        var id = getPlanAuditProgram("id");
-
-        if (id) {
-            return (id == 'default');
-        } else {
-            return true;
-        }
+        return jQuery("#" + type + "_param_program select#" + type + "_programs_" + campus + "_control option:selected").text();
     }
 }
 
@@ -989,108 +1004,43 @@ var blockPendingAuditStyle = {
 
 var blockPendingAudit;
 
-function changeLoadingMessage(selector) {
+function changeLoadingMessage(selector, programName) {
     blockPendingAudit = setInterval(function () {
-        setLoadingMessage(selector)
+        setLoadingMessage(selector, programName)
     }, 100);
 }
 
-function setLoadingMessage(selector) {
-    if (jQuery('.myplan-audit-report div.blockUI.blockMsg.blockElement').length > 0) {
-        fnAddLoadingText(selector);
+function setLoadingMessage(selector, programName) {
+    if (jQuery(selector + ' div.blockUI.blockMsg.blockElement').length > 0) {
+        fnAddLoadingText(selector, programName);
     }
 }
 
-function fnAddLoadingText(selector) {
+function fnAddLoadingText(selector, programName) {
     clearInterval(blockPendingAudit);
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
     jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
-    jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(getAuditProgram("name"));
+    jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(programName);
 }
 
 function removeCookie() {
     jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
 }
 
-function getAuditProgram(param) {
-    var id;
-    switch (parseFloat(jQuery("input[name='degreeAudit.campusParam']:checked").val())) {
-        case 306:
-            id = 'select_programParam_seattle_control';
-            break;
-        case 310:
-            id = 'select_programParam_bothell_control';
-            break;
-        case 323:
-            id = 'select_programParam_tacoma_control';
-            break;
-        default:
-            id = null;
-    }
-    if (param == 'id') {
-        return jQuery('select#' + id).val();
-    } else {
-        return jQuery('select#' + id + ' option:selected').text();
-    }
-}
-
-function getPlanAuditProgram(param) {
-    var id;
-    switch (parseFloat(jQuery("input[name='planAudit.campusParam']:checked").val())) {
-        case 306:
-            id = 'plan_programParam_seattle_control';
-            break;
-        case 310:
-            id = 'plan_programParam_bothell_control';
-            break;
-        case 323:
-            id = 'plan_programParam_tacoma_control';
-            break;
-        default:
-            id = null;
-    }
-    if (param == 'id') {
-        return jQuery('select#' + id).val();
-    } else {
-        return jQuery('select#' + id + ' option:selected').text();
-    }
-}
-
-function getPlanAuditProgram(param) {
-    var id;
-    switch (parseFloat(jQuery("input[name='planAudit.campusParam']:checked").val())) {
-        case 306:
-            id = 'plan_programParam_seattle_control';
-            break;
-        case 310:
-            id = 'plan_programParam_bothell_control';
-            break;
-        case 323:
-            id = 'plan_programParam_tacoma_control';
-            break;
-        default:
-            id = null;
-    }
-    if (param == 'id') {
-        return jQuery('select#' + id).val();
-    } else {
-        return jQuery('select#' + id + ' option:selected').text();
-    }
-}
-
-function setPendingAudit(minutes) {
+function setPendingAudit(obj, minutes) {
     if (jQuery.cookie('myplan_audit_running') == null) {
         var data = {};
 
         data.expires = new Date();
         data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
-        data.programId = getAuditProgram('id');
-        data.programName = getAuditProgram('name');
-        data.recentAuditId = jQuery("input[id^='degreeAudit_hidden_recentAuditId']").val();
-
+        data.programId = getAuditProgram('id', obj.data("audittype"));
+        data.programName = getAuditProgram('name', obj.data("audittype"));
+        data.recentAuditId = obj.data("recentauditid");
+        data.auditType = obj.data("audittype");
         if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
 
         if (data.programId != 'default') {
+            changeLoadingMessage('.myplan-audit-report', data.programName);
             jQuery.ajax({
                 url:"/student/myplan/audit/status",
                 data:{"programId":data.programId, "auditId":data.recentAuditId},
@@ -1099,70 +1049,33 @@ function setPendingAudit(minutes) {
                 success:function (response) {
                     if (response.status == "PENDING") {
                         jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
-                        jQuery("button#degree_audit_run").attr("disabled", true);
+                        auditButtonState(obj.attr("id"));
                         jQuery.publish('REFRESH_AUDITS');
                     }
                 },
-                statusCode:{
-                    500:function () {
-                        sessionExpired();
-                    }
-                }
+                statusCode:{ 500:function () {
+                    sessionExpired();
+                } }
             });
         }
     } else {
-        showGrowl("Another audit is currently pending.", "Degree Audit Error", "errorGrowl");
+        showGrowl("Another audit is currently pending. Please allow audit to complete.", "Running Audit Error", "errorGrowl");
     }
 }
 
-function setPendingPlanAudit(minutes) {
-    if (jQuery.cookie('myplan_audit_running') == null) {
-        var data = {};
-
-        data.expires = new Date();
-        data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
-        data.programId = getPlanAuditProgram('id');
-        data.programName = getPlanAuditProgram('name');
-        data.recentAuditId = jQuery("input[id^='planAudit_hidden_recentAuditId']").val();
-
-        if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
-
-        if (data.programId != 'default') {
-            jQuery.ajax({
-                url:"/student/myplan/audit/status",
-                data:{"programId":data.programId, "auditId":data.recentAuditId},
-                dataType:"json",
-                beforeSend:null,
-                success:function (response) {
-                    if (response.status == "PENDING") {
-                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
-                        jQuery("button#plan_audit_run").attr("disabled", true);
-                        jQuery.publish('REFRESH_AUDITS');
-                    }
-                },
-                statusCode:{
-                    500:function () {
-                        sessionExpired();
-                    }
-                }
-            });
-        }
-    } else {
-        showGrowl("Another audit is currently pending.", "Degree Audit Error", "errorGrowl");
-    }
-}
-
-function getPendingAudit(id) {
+function getPendingAudit(id, type) {
     if (jQuery.cookie('myplan_audit_running')) {
-        var component = jQuery("#" + id + " ul");
         var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
-        if (data) {
-            var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
-            component.prepend(item);
-            pollPendingAudit(data.programId, data.recentAuditId);
-        }
-        if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
-            component.next("div.uif-boxGroup").remove();
+        if (type == data.auditType) {
+            var component = jQuery("#" + id + " ul");
+            if (data) {
+                var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+                component.prepend(item);
+                pollPendingAudit(data.programId, data.recentAuditId);
+            }
+            if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
+                component.next("div.uif-boxGroup").remove();
+            }
         }
     }
 }
