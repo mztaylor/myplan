@@ -464,10 +464,7 @@ public class DegreeAuditController extends UifControllerBase {
                         String creditType = getCreditType(credit);
                         // Check Credits if Valid : NO ; Students needs to select Credits
                         if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                            String[] cr = credit.split(",");
-                            for (String c : cr) {
-                                credits.add(c.trim());
-                            }
+                            Collections.addAll(credits, credit.replace(" ","").split(","));
                             MessyItem messyItem = new MessyItem();
                             messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
                             messyItem.setCredits(credits);
@@ -630,10 +627,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String creditType = getCreditType(credit);
                     // Is course Offered in Single value : NO
                     if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                        String[] cr = credit.split(",");
-                        for (String c : cr) {
-                            credits.add(c.trim());
-                        }
+                        Collections.addAll(credits, credit.replace(" ","").split(","));
                         MessyItem messyItem = new MessyItem();
                         messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
                         messyItem.setCredits(credits);
