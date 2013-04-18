@@ -44,6 +44,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl;
+import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -448,6 +449,7 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         List<CourseItem> courseItems = new ArrayList<CourseItem>();
         List<MessyItem> messyItems = new ArrayList<MessyItem>();
+        PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
         PlannedCoursesLookupableHelperImpl plannedCoursesLookupableHelper = new PlannedCoursesLookupableHelperImpl();
         List<PlannedTerm> plannedTermList = plannedCoursesLookupableHelper.getPlannedTerms();
         List<String> scheduledTerms = AtpHelper.getPublishedTerms();
@@ -464,7 +466,7 @@ public class DegreeAuditController extends UifControllerBase {
                         String creditType = getCreditType(credit);
                         // Check Credits if Valid : NO ; Students needs to select Credits
                         if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                            Collections.addAll(credits, credit.replace(" ","").split(","));
+                            Collections.addAll(credits, credit.replace(" ", "").split(","));
                             MessyItem messyItem = new MessyItem();
                             messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
                             messyItem.setCredits(credits);
@@ -500,15 +502,15 @@ public class DegreeAuditController extends UifControllerBase {
                             if (activityOfferingItem.isPrimary()) {
                                 sections.add(activityOfferingItem.getCode());
                                 credits.add(activityOfferingItem.getCredits());
-                                if (commonCredit == null) {
-                                    commonCredit = activityOfferingItem.getCredits();
-                                } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
-                                    allSectionsHaveSameCredit = false;
-                                }
                                 if (allHaveWritingAndHonorFlag && !activityOfferingItem.isHonorsSection() && !activityOfferingItem.isWritingSection()) {
                                     allHaveWritingAndHonorFlag = false;
                                 }
                             }
+                        }
+                        commonCredit = plannedTermsHelperBase.unionCreditList(new ArrayList<String>(credits));
+                        String commonCreditType = getCreditType(commonCredit);
+                        if ("MULTIPLE".equalsIgnoreCase(commonCreditType)) {
+                            allSectionsHaveSameCredit = false;
                         }
                         // Writing and honor Flag for all the sections : NO
                         if (!allHaveWritingAndHonorFlag) {
@@ -543,32 +545,38 @@ public class DegreeAuditController extends UifControllerBase {
                         List<ActivityOfferingItem> sectionsOffered = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourseDataObject.getCourseDetails().getCourseId(), plannedTerm.getAtpId());
                         // Multiple Offered Sections : NO 
                         if (sectionsOffered.size() == 1) {
-                            boolean allSectionsHaveSameCredit = true;
-                            String commonCredit = null;
-                            for (ActivityOfferingItem activityOfferingItem : plannedCourseDataObject.getPlanActivities()) {
-                                if (activityOfferingItem.isPrimary()) {
-                                    credits.add(activityOfferingItem.getCredits());
-                                    if (commonCredit == null) {
-                                        commonCredit = activityOfferingItem.getCredits();
-                                    } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
-                                        allSectionsHaveSameCredit = false;
-                                    }
-                                }
-                            }
-                            if (allSectionsHaveSameCredit) {
-                                CourseItem courseItem = new CourseItem();
-                                courseItem.setAtpId(plannedTerm.getAtpId());
-                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                                courseItem.setSectionCode(null);
-                                courseItems.add(courseItem);
-                            } else {
+                            String section = sectionsOffered.get(0).getCode();
+                            String credit = sectionsOffered.get(0).getCredits();
+                            String creditType = getCreditType(credit);
+                            // Is course Offered in Single value : NO
+                            if ("MULTIPLE".equalsIgnoreCase(creditType)) {
+                                Collections.addAll(credits, credit.replace(" ", "").split(","));
                                 MessyItem messyItem = new MessyItem();
                                 messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
                                 messyItem.setCredits(credits);
                                 messyItem.setAtpId(plannedTerm.getAtpId());
                                 messyItems.add(messyItem);
                             }
+                            // Is course Offered in Single value : NO
+                            else if ("RANGE".equalsIgnoreCase(creditType)) {
+                                credits.addAll(getCreditsForRange(credit));
+                                MessyItem messyItem = new MessyItem();
+                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                messyItem.setCredits(credits);
+                                messyItem.setAtpId(plannedTerm.getAtpId());
+                                messyItems.add(messyItem);
+                            }
+                            // Is course Offered in Single value : YES
+                            else {
+                                CourseItem courseItem = new CourseItem();
+                                courseItem.setAtpId(plannedTerm.getAtpId());
+                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                                courseItem.setSectionCode(section);
+                                courseItems.add(courseItem);
+
+                            } 
+
                         }
                         // Multiple Offered Sections : YES
                         else if (sectionsOffered.size() > 1) {
@@ -627,7 +635,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String creditType = getCreditType(credit);
                     // Is course Offered in Single value : NO
                     if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                        Collections.addAll(credits, credit.replace(" ","").split(","));
+                        Collections.addAll(credits, credit.replace(" ", "").split(","));
                         MessyItem messyItem = new MessyItem();
                         messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
                         messyItem.setCredits(credits);
