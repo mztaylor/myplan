@@ -32,15 +32,18 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.form.AuditForm;
-import org.kuali.student.myplan.audit.form.DegreeAuditForm;
-import org.kuali.student.myplan.audit.form.PlanAuditForm;
+import org.kuali.student.myplan.audit.form.*;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
+import org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -288,11 +291,6 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=runAudit")
     public ModelAndView runAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
-        if (UserSessionHelper.isAdviser()) {
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putError("audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
-            return getUIFModelAndView(auditForm);
-        }
         DegreeAuditForm form = auditForm.getDegreeAudit();
         String auditID = null;
         try {
@@ -361,12 +359,6 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=runPlanAudit")
     public ModelAndView runPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                      HttpServletRequest request, HttpServletResponse response) {
-        if (UserSessionHelper.isAdviser()) {
-            GlobalVariables.getMessageMap().clearErrorMessages();
-            GlobalVariables.getMessageMap().putError("plan_audit_report_section", PlanConstants.ERROR_KEY_ADVISER_ACCESS);
-            return getUIFModelAndView(auditForm);
-        }
-
         PlanAuditForm planAuditform = auditForm.getPlanAudit();
         /*TODO: uncomment this validation once we populate the lastPlannedTerm in start Method
         if (planAuditform.getLastPlannedTerm() == null) {
@@ -448,6 +440,289 @@ public class DegreeAuditController extends UifControllerBase {
         }
         return getUIFModelAndView(auditForm);
     }
+
+    @RequestMapping(params = "methodToCall=reviewPlanAudit")
+    public ModelAndView reviewPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
+                                        HttpServletRequest request, HttpServletResponse response) {
+
+        PlanAuditForm planAuditForm = auditForm.getPlanAudit();
+        List<CourseItem> courseItems = new ArrayList<CourseItem>();
+        List<MessyItem> messyItems = new ArrayList<MessyItem>();
+        PlannedCoursesLookupableHelperImpl plannedCoursesLookupableHelper = new PlannedCoursesLookupableHelperImpl();
+        List<PlannedTerm> plannedTermList = plannedCoursesLookupableHelper.getPlannedTerms();
+        List<String> scheduledTerms = AtpHelper.getPublishedTerms();
+        for (PlannedTerm plannedTerm : plannedTermList) {
+            // TS Published : YES
+            if (scheduledTerms.contains(plannedTerm.getAtpId())) {
+                for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
+                    List<String> sections = new ArrayList<String>();
+                    Set<String> credits = new HashSet<String>();
+                    // Planned Sections : YES ; Multiple planned sections : NO
+                    if (plannedCourseDataObject.getPlanActivities().size() == 1 && plannedCourseDataObject.getPlanActivities().get(0).isPrimary()) {
+                        String section = plannedCourseDataObject.getPlanActivities().get(0).getCode();
+                        String credit = plannedCourseDataObject.getPlanActivities().get(0).getCredits();
+                        String creditType = getCreditType(credit);
+                        // Check Credits if Valid : NO ; Students needs to select Credits
+                        if ("MULTIPLE".equalsIgnoreCase(creditType)) {
+                            String[] cr = credit.split(",");
+                            for (String c : cr) {
+                                credits.add(c.trim());
+                            }
+                            MessyItem messyItem = new MessyItem();
+                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                            messyItem.setCredits(credits);
+                            messyItem.setAtpId(plannedTerm.getAtpId());
+                            messyItems.add(messyItem);
+                        }
+                        // Check Credits if Valid : NO ; Students needs to select Credits 
+                        else if ("RANGE".equalsIgnoreCase(creditType)) {
+                            credits.addAll(getCreditsForRange(credit));
+                            MessyItem messyItem = new MessyItem();
+                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                            messyItem.setCredits(credits);
+                            messyItem.setAtpId(plannedTerm.getAtpId());
+                            messyItems.add(messyItem);
+                        }
+                        // Check Credits if Valid : YES
+                        else {
+                            CourseItem courseItem = new CourseItem();
+                            courseItem.setAtpId(plannedTerm.getAtpId());
+                            courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                            courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                            courseItem.setSectionCode(section);
+                            courseItems.add(courseItem);
+
+                        }
+                    }
+                    // Planned Sections : YES ; Multiple planned sections : YES
+                    else if (plannedCourseDataObject.getPlanActivities().size() > 1) {
+                        boolean allHaveWritingAndHonorFlag = true;
+                        boolean allSectionsHaveSameCredit = true;
+                        String commonCredit = null;
+                        for (ActivityOfferingItem activityOfferingItem : plannedCourseDataObject.getPlanActivities()) {
+                            if (activityOfferingItem.isPrimary()) {
+                                sections.add(activityOfferingItem.getCode());
+                                credits.add(activityOfferingItem.getCredits());
+                                if (commonCredit == null) {
+                                    commonCredit = activityOfferingItem.getCredits();
+                                } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
+                                    allSectionsHaveSameCredit = false;
+                                }
+                                if (allHaveWritingAndHonorFlag && !activityOfferingItem.isHonorsSection() && !activityOfferingItem.isWritingSection()) {
+                                    allHaveWritingAndHonorFlag = false;
+                                }
+                            }
+                        }
+                        // Writing and honor Flag for all the sections : NO
+                        if (!allHaveWritingAndHonorFlag) {
+                            MessyItem messyItem = new MessyItem();
+                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                            messyItem.setSections(sections);
+                            messyItem.setAtpId(plannedTerm.getAtpId());
+                            messyItems.add(messyItem);
+
+                        }
+                        //  Writing and honor Flag for all the sections : YES
+                        else {
+                            if (allSectionsHaveSameCredit) {
+                                CourseItem courseItem = new CourseItem();
+                                courseItem.setAtpId(plannedTerm.getAtpId());
+                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                                courseItem.setSectionCode(null);
+                                courseItems.add(courseItem);
+                            } else {
+                                MessyItem messyItem = new MessyItem();
+                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                messyItem.setCredits(credits);
+                                messyItem.setAtpId(plannedTerm.getAtpId());
+                                messyItems.add(messyItem);
+                            }
+                        }
+                    }
+                    // Planned Sections : NO 
+                    else {
+                        CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+                        List<ActivityOfferingItem> sectionsOffered = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourseDataObject.getCourseDetails().getCourseId(), plannedTerm.getAtpId());
+                        // Multiple Offered Sections : NO 
+                        if (sectionsOffered.size() == 1) {
+                            boolean allSectionsHaveSameCredit = true;
+                            String commonCredit = null;
+                            for (ActivityOfferingItem activityOfferingItem : plannedCourseDataObject.getPlanActivities()) {
+                                if (activityOfferingItem.isPrimary()) {
+                                    credits.add(activityOfferingItem.getCredits());
+                                    if (commonCredit == null) {
+                                        commonCredit = activityOfferingItem.getCredits();
+                                    } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
+                                        allSectionsHaveSameCredit = false;
+                                    }
+                                }
+                            }
+                            if (allSectionsHaveSameCredit) {
+                                CourseItem courseItem = new CourseItem();
+                                courseItem.setAtpId(plannedTerm.getAtpId());
+                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                                courseItem.setSectionCode(null);
+                                courseItems.add(courseItem);
+                            } else {
+                                MessyItem messyItem = new MessyItem();
+                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                messyItem.setCredits(credits);
+                                messyItem.setAtpId(plannedTerm.getAtpId());
+                                messyItems.add(messyItem);
+                            }
+                        }
+                        // Multiple Offered Sections : YES
+                        else if (sectionsOffered.size() > 1) {
+                            boolean allHaveWritingAndHonorFlag = true;
+                            boolean allSectionsHaveSameCredit = true;
+                            String commonCredit = null;
+                            for (ActivityOfferingItem activityOfferingItem : sectionsOffered) {
+                                if (activityOfferingItem.isPrimary()) {
+                                    sections.add(activityOfferingItem.getCode());
+                                    credits.add(activityOfferingItem.getCredits());
+                                    if (commonCredit == null) {
+                                        commonCredit = activityOfferingItem.getCredits();
+                                    } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
+                                        allSectionsHaveSameCredit = false;
+                                    }
+                                    if (allHaveWritingAndHonorFlag && !activityOfferingItem.isHonorsSection() && !activityOfferingItem.isWritingSection()) {
+                                        allHaveWritingAndHonorFlag = false;
+                                    }
+                                }
+                            }
+                            // Writing and honor Flag for all the sections : NO
+                            if (!allHaveWritingAndHonorFlag) {
+                                MessyItem messyItem = new MessyItem();
+                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                messyItem.setSections(sections);
+                                messyItem.setAtpId(plannedTerm.getAtpId());
+                                messyItems.add(messyItem);
+                            }
+                            //  Writing and honor Flag for all the sections : YES
+                            else {
+                                if (allSectionsHaveSameCredit) {
+                                    CourseItem courseItem = new CourseItem();
+                                    courseItem.setAtpId(plannedTerm.getAtpId());
+                                    courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                    courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                                    courseItem.setSectionCode(null);
+                                    courseItems.add(courseItem);
+                                } else {
+                                    MessyItem messyItem = new MessyItem();
+                                    messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                                    messyItem.setCredits(credits);
+                                    messyItem.setAtpId(plannedTerm.getAtpId());
+                                    messyItems.add(messyItem);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            // TS Published : NO
+            else {
+                Set<String> credits = new HashSet<String>();
+                for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
+                    String credit = plannedCourseDataObject.getCourseDetails().getCredit();
+                    String creditType = getCreditType(credit);
+                    // Is course Offered in Single value : NO
+                    if ("MULTIPLE".equalsIgnoreCase(creditType)) {
+                        String[] cr = credit.split(",");
+                        for (String c : cr) {
+                            credits.add(c.trim());
+                        }
+                        MessyItem messyItem = new MessyItem();
+                        messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                        messyItem.setCredits(credits);
+                        messyItem.setAtpId(plannedTerm.getAtpId());
+                        messyItems.add(messyItem);
+                    }
+                    // Is course Offered in Single value : NO
+                    else if ("RANGE".equalsIgnoreCase(creditType)) {
+                        credits.addAll(getCreditsForRange(credit));
+                        MessyItem messyItem = new MessyItem();
+                        messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                        messyItem.setCredits(credits);
+                        messyItem.setAtpId(plannedTerm.getAtpId());
+                        messyItems.add(messyItem);
+                    }
+                    // Is course Offered in Single value : YES
+                    else {
+                        CourseItem courseItem = new CourseItem();
+                        courseItem.setAtpId(plannedTerm.getAtpId());
+                        courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+                        courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+                        courseItem.setSectionCode(null);
+                        courseItems.add(courseItem);
+
+                    }
+
+                }
+
+            }
+        }
+
+        if (courseItems.size() > 0) {
+            planAuditForm.setCleanList(courseItems);
+        }
+        if (messyItems.size() > 0) {
+            planAuditForm.setStudentChoiceRequired(true);
+            planAuditForm.setMessyItems(messyItems);
+        }
+        return getUIFModelAndView(auditForm);
+    }
+
+    private String getCreditType(String credit) {
+        if (credit.matches("^\\d*.\\d*-\\d*.\\d*$")) {
+            return "RANGE";
+        } else if (credit.matches("^\\d*.\\d*,\\d*.\\d*$")) {
+            return "MULTIPLE";
+        } else {
+            return "NORMAL";
+        }
+    }
+
+    private List<String> getCreditsForRange(String credit) {
+        String[] str = credit.split("-");
+        int min = 0;
+        int minDecimal = 0;
+        int max = 0;
+        int maxDecimal = 0;
+        List<String> credits = new ArrayList<String>();
+        if (str[0].contains(".")) {
+            String[] str2 = str[0].split(".");
+            min = Integer.valueOf(str2[0].trim());
+            minDecimal = Integer.valueOf(str2[1].trim());
+
+        } else {
+            min = Integer.valueOf(str[0]);
+        }
+        if (str[1].contains(".")) {
+            String[] str2 = str[1].split(".");
+            max = Integer.valueOf(str2[0].trim());
+            maxDecimal = Integer.valueOf(str2[1].trim());
+
+        } else {
+            max = Integer.parseInt(str[1].trim());
+        }
+        while (min <= max) {
+            credits.add(String.valueOf(min));
+            min++;
+        }
+        if (minDecimal != 0 && credits.size() > 0) {
+            String val = credits.get(0);
+            credits.add(0, val + String.valueOf(minDecimal));
+        }
+        if (maxDecimal != 0 && credits.size() > 0) {
+            String val = credits.get(credits.size() - 1);
+            credits.add(credits.size() - 1, val + String.valueOf(maxDecimal));
+        }
+        return credits;
+    }
+
 
     @RequestMapping(value = "/status")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {

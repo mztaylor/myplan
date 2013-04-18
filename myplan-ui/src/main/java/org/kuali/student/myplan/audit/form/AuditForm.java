@@ -13,7 +13,6 @@ public class AuditForm extends UifFormBase {
 
     private DegreeAuditForm degreeAudit;
     private PlanAuditForm planAudit;
-    private boolean planAuditReport;
 
     public DegreeAuditForm getDegreeAudit() {
         if (degreeAudit == null) {
@@ -37,11 +36,4 @@ public class AuditForm extends UifFormBase {
         this.planAudit = planAudit;
     }
 
-    public boolean isPlanAuditReport() {
-        return planAuditReport;
-    }
-
-    public void setPlanAuditReport(boolean planAuditReport) {
-        this.planAuditReport = planAuditReport;
-    }
 }
