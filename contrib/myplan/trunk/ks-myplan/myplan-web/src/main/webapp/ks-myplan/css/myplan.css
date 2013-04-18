@@ -2813,6 +2813,22 @@ label.scheduled {
     padding: 5px 10px;
 }
 
+.messy-selections select {
+    font-size: 13px;
+    border: solid 1px #dddddd;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    vertical-align: middle;
+    background: #fff;
+    overflow: hidden;
+    width: auto;
+    height: auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 5px 10px;
+}
+
 .myplan-audit-report iframe.blockUI {
     display: none !important;
 }

@@ -19,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +118,10 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, focusAtpId, isServiceStatusOK, 6, false);
         return perfectPlannedTerms;
+    }
+
+    public List<PlannedTerm> getPlannedTerms() {
+        return getSearchResults(new LookupForm(), new HashMap<String, String>(), false);
     }
 
 

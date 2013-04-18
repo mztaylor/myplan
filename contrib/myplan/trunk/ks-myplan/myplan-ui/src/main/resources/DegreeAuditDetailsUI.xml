@@ -179,19 +179,6 @@
                                         <ref bean="non_student_degree_audits"/>
                                     </list>
                                 </property>
-                                <property name="propertyReplacers">
-                                    <list>
-                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                                            <property name="replacement">
-                                                <list>
-                                                    <ref bean="audit_adviser_actions_message"/>
-                                                    <ref bean="non_student_degree_audits"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection" p:style="width: 230px; margin: 0;">
                                 <property name="layoutManager">
@@ -243,6 +230,7 @@
                         <list>
                             <ref bean="empty_plan_audits"/>
                             <ref bean="plan_audit_report_section"/>
+
                         </list>
                     </property>
                 </bean>
@@ -390,6 +378,7 @@
                     </property>
                 </bean>
                 <ref bean="plan_audit_run"/>
+                <ref bean="plan_audit_messy_block"/>
             </list>
         </property>
     </bean>
@@ -417,6 +406,70 @@
             }
         "/>
     </bean>
+    <bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup"
+          p:headerText="Choose Options" p:render="@{planAudit.studentChoiceRequired}" >
+        <property name="validationMessages.render" value="false"/>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem" p:style="padding:10px;">
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>messy-selections</value>
+            </list>
+        </property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.audit.form.MessyItem"/>
+        <property name="propertyName" value="planAudit.messyItems"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="disclosure.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean  id="messy_quarter" parent="Uif-MessageField">
+                <property name="messageText" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
+                </bean>
+                <bean id="messy_code" parent="Uif-DataField" p:propertyName="courseCode"/>
+                <bean id="messy_sections" parent="Uif-InputField"
+                      p:propertyName="selectedSection" p:validationMessages.render="false"
+                      p:width="80px;" p:render="@{#line.sections.size() gt 0}">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems">
+                            <property name="type" value="SECTIONS"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="messy_credits" parent="Uif-InputField"
+                      p:propertyName="selectedCredit" p:validationMessages.render="false"
+                      p:width="80px;" p:render="@{#line.credits.size() gt 0}">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems">
+                            <property name="type" value="CREDITS"/>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="collectionLookup.render" value="false"/>
+        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+    </bean>
+
 
 
     <!--****************************** End of Plan Audit Report****************************************-->
@@ -437,19 +490,6 @@
             <list>
                 <ref bean="run_degree_audits"/>
                 <ref bean="audit_section"/>
-            </list>
-        </property>
-        <property name="propertyReplacers">
-            <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                    <property name="replacement">
-                        <list>
-                            <ref bean="audit_adviser_actions_message"/>
-                            <ref bean="audit_section"/>
-                        </list>
-                    </property>
-                </bean>
             </list>
         </property>
     </bean>
