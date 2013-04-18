@@ -378,7 +378,6 @@
                     </property>
                 </bean>
                 <ref bean="plan_audit_run"/>
-                <ref bean="plan_audit_messy_block"/>
             </list>
         </property>
     </bean>
