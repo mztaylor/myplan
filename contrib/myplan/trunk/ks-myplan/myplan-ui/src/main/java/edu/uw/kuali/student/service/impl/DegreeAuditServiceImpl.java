@@ -6,21 +6,25 @@ import org.apache.log4j.Logger;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
 import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -87,7 +91,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String programId = "1BISMCS0011";
 //        AuditReportInfo info = impl.runAudit(studentId, programId, null, null);
 //        AuditReportInfo info = impl.getAuditReport("2012100110472750", "kauli.audit.type.default", CourseSearchConstants.CONTEXT_INFO);
-        AuditReportInfo info = impl.getHTMLReport("2013040915213037", null);
+        AuditReportInfo info = impl.getHTMLReport("2013041811291367", null);
 //        System.out.println(DegreeAuditServiceImpl.padfront("  1 2 "));
     }
 
@@ -273,7 +277,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
             for (PlanItemInfo planItem : planItems) {
-                if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType())) {
+                //
+                boolean isCourse = PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType());
+                boolean isPlanned = AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(planItem.getTypeKey());
+                if (isCourse && isPlanned) {
                     String versionIndependentId = planItem.getRefObjectId();
 
                     try {
@@ -284,15 +291,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.curric = courseInfo.getSubjectArea().trim();
                         course.number = courseInfo.getCourseNumberSuffix().trim();
                         course.credit = "5";
-                        course.campus = "Seattle";
-                        if (!courseInfo.getCampusLocations().isEmpty()) {
-                            course.campus = courseInfo.getCampusLocations().get(0);
-                        } else if (course.curric.startsWith("T")) {
-                            course.campus = "Tacoma";
-                        } else if (course.curric.startsWith("B")) {
-                            course.campus = "Bothell";
-                        }
+                        {
+                            course.campus = "Seattle";
+                            List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
 
+                            Map<String, String> map = courseInfo.getAttributes();
+                            if (map.containsKey(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE)) {
+                                String campusId = map.get(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE);
+                                for (OrgInfo campusOrg : campusList) {
+                                    if (campusOrg.getId().equals(campusId)) {
+                                        course.campus = campusOrg.getLongName();
+                                    }
+                                }
+                            }
+
+                        }
 
                         String atpId = planItem.getPlanPeriods().get(0);
                         AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
