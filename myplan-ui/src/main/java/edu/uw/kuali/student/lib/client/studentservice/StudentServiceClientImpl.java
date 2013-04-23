@@ -253,7 +253,7 @@ public class StudentServiceClientImpl
     }
 
     /**
-     * https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2003&quarter=&curriculum_abbreviation=ECON&course_number=299
+     * https://ucswseval1.cac.washington.edu/student/v4/public/section.xml?year=2003&quarter=&curriculum_abbreviation=ECON&course_number=299&delete_flag=active
      *
      * @param year
      * @param abbrev
@@ -270,7 +270,7 @@ public class StudentServiceClientImpl
                 .append("year=").append(year).append("&")
                 .append("quarter=").append("&")
                 .append("curriculum_abbreviation=").append(abbrev).append("&")
-                .append("course_number=").append(num);
+                .append("course_number=").append(num).append("&delete_flag=active");
         return sendQuery(url.toString().trim());
 
     }
