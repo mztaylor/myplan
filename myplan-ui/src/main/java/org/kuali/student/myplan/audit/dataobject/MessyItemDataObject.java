@@ -1,0 +1,33 @@
+package org.kuali.student.myplan.audit.dataobject;
+
+import java.util.List;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: hemanthg
+ * Date: 4/22/13
+ * Time: 10:08 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class MessyItemDataObject {
+    
+    private List<MessyItem> messyItemList;
+    
+    private String atpId;
+
+    public List<MessyItem> getMessyItemList() {
+        return messyItemList;
+    }
+
+    public void setMessyItemList(List<MessyItem> messyItemList) {
+        this.messyItemList = messyItemList;
+    }
+
+    public String getAtpId() {
+        return atpId;
+    }
+
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
+    }
+}

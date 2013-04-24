@@ -57,85 +57,134 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-                String courseID = planItemInfo.getRefObjectId();
-                //  Only create a data object for the specified type.
-                if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-
-                    PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
-                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
-                    plannedCourse.setPlanItemDataObject(planItemData);
-
-                    //  If the course info lookup fails just log the error and omit the item.
-                    try {
-                        if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
-                            CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
-                            plannedCourse.setCourseDetails(courseDetails);
-                        }
-                    } catch (Exception e) {
-                        logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItemInfo.getId()), e);
-                        continue;
-                    }
-
-                    plannedCourseList.add(plannedCourse);
-                } else if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
-                    List<String> planPeriods = planItemInfo.getPlanPeriods();
-                    String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
-                    if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
-                        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-                        YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
-                        DeconstructedCourseCode deconstructedCourseCode = getCourseHelper().getCourseDivisionAndNumber(planItemInfo.getRefObjectId());
-                        String key = generateKey(deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), termId);
-                        String activityOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
-                        ActivityOfferingDisplayInfo activityDisplayInfo = null;
-                        try {
-                            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
-                        } catch (Exception e) {
-                            logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
-                            continue;
-                        }
-                        /*TODO: move this to Coursehelper to make it institution neutral*/
-                        String primarySectionCode = null;
-                        for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
-                                primarySectionCode = attributeInfo.getValue();
-                            }
-                        }
-                        String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
-                        CourseOfferingInfo courseOfferingInfo = null;
-                        try {
-                            courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
-                        } catch (Exception e) {
-                            logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
-                            continue;
-                        }
-
-                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItemInfo.getId());
-                        activityOfferingItems.add(activityOfferingItem);
-                        if (plannedSections.containsKey(key)) {
-                            plannedSections.get(key).add(activityOfferingItem);
-                        } else {
-                            plannedSections.put(key, activityOfferingItems);
-                        }
-
-                    }
-
-
-                }
+                populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections);
             }
-            for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-                List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
-                if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
-                    Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
-                        @Override
-                        public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
-                            return item1.getCode().compareTo(item2.getCode());
-                        }
-                    });
-                }
-                plannedCourse.setPlanActivities(activityOfferingItems);
-            }
+            addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
         }
         return plannedCourseList;
+    }
+
+    /**
+     * returns the list of plannedCoursesDataObjects starting from the given atp
+     *
+     * @param planItemType
+     * @param studentId
+     * @param startAtp
+     * @return
+     * @throws InvalidParameterException
+     * @throws MissingParameterException
+     * @throws DoesNotExistException
+     * @throws OperationFailedException
+     */
+    public List<PlannedCourseDataObject> getPlannedCoursesFromAtp(String planItemType, String studentId, String startAtp) throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+        List<PlannedCourseDataObject> plannedCourseList = new ArrayList<PlannedCourseDataObject>();
+        AcademicPlanService academicPlanService = getAcademicPlanService();
+        List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+        for (LearningPlanInfo learningPlan : learningPlanList) {
+            String learningPlanID = learningPlan.getId();
+            List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+            Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
+            for (PlanItemInfo planItemInfo : planItemInfoList) {
+                if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
+                    populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections);
+                }
+            }
+            addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
+        }
+        return plannedCourseList;
+    }
+
+    /**
+     * Adds activities for each plannedCourseDataObject if present
+     *
+     * @param plannedCourseList
+     * @param plannedSections
+     */
+    private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections) {
+        for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
+            List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
+            if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
+                Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
+                    @Override
+                    public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
+                        return item1.getCode().compareTo(item2.getCode());
+                    }
+                });
+            }
+            plannedCourse.setPlanActivities(activityOfferingItems);
+        }
+    }
+
+    /**
+     * populates the plannedCoursesLit for given params
+     *
+     * @param planItemInfo
+     * @param planItemType
+     * @param plannedCourseList
+     * @param plannedSections
+     */
+    private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections) {
+        String courseID = planItemInfo.getRefObjectId();
+        //  Only create a data object for the specified type.
+        if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+
+            PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+            PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+            plannedCourse.setPlanItemDataObject(planItemData);
+
+            //  If the course info lookup fails just log the error and omit the item.
+            try {
+                if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
+                    CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                    plannedCourse.setCourseDetails(courseDetails);
+                }
+            } catch (Exception e) {
+                logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItemInfo.getId()), e);
+            }
+
+            plannedCourseList.add(plannedCourse);
+        } else if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+            List<String> planPeriods = planItemInfo.getPlanPeriods();
+            String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
+            if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
+                List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
+                YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
+                DeconstructedCourseCode deconstructedCourseCode = getCourseHelper().getCourseDivisionAndNumber(planItemInfo.getRefObjectId());
+                String key = generateKey(deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), termId);
+                String activityOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
+                ActivityOfferingDisplayInfo activityDisplayInfo = null;
+                try {
+                    activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
+                }
+                /*TODO: move this to Coursehelper to make it institution neutral*/
+                String primarySectionCode = null;
+                for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                    if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
+                        primarySectionCode = attributeInfo.getValue();
+                    }
+                }
+                String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
+                CourseOfferingInfo courseOfferingInfo = null;
+                try {
+                    courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                }
+
+                ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItemInfo.getId());
+                activityOfferingItems.add(activityOfferingItem);
+                if (plannedSections.containsKey(key)) {
+                    plannedSections.get(key).add(activityOfferingItem);
+                } else {
+                    plannedSections.put(key, activityOfferingItems);
+                }
+
+            }
+
+
+        }
     }
 
     /**

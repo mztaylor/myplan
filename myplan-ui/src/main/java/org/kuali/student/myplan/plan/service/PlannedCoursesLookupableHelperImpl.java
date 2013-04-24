@@ -120,9 +120,4 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         return perfectPlannedTerms;
     }
 
-    public List<PlannedTerm> getPlannedTerms() {
-        return getSearchResults(new LookupForm(), new HashMap<String, String>(), false);
-    }
-
-
 }
