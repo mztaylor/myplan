@@ -1,3 +1,8 @@
+<#-- using svn's keyword substition -->
+<#assign svnRev    = "$Rev::                      $:  Revision of last commit" >
+<#assign svnAuthor = "$Author::                   $:  Author of last commit">
+<#assign svnDate   = "$Date::                     $:  Date of last commit">
+
 <#-- list of rnames to skip (not show) -->
 <#assign skipList = [
 "LINE1WHAT", "LINE1"
@@ -796,7 +801,7 @@
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: 2013/04/08 5:04p)</div>
+<div> (audit template updated: ${svnDate?substring( 8 )})</div>
 </div>
 </html>
 
