@@ -20,6 +20,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -73,32 +74,33 @@ public class PlannedTermsHelperBase {
         *  Populating the PlannedTerm List.
         */
         List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
-        for (PlannedCourseDataObject plan : plannedCoursesList) {
-            String atp = plan.getPlanItemDataObject().getAtp();
-            boolean exists = false;
-            for (PlannedTerm term : plannedTerms) {
-                if (term.getAtpId().equalsIgnoreCase(atp)) {
+        if (plannedCoursesList != null && plannedCoursesList.size() > 0) {
+            for (PlannedCourseDataObject plan : plannedCoursesList) {
+                String atp = plan.getPlanItemDataObject().getAtp();
+                boolean exists = false;
+                for (PlannedTerm term : plannedTerms) {
+                    if (term.getAtpId().equalsIgnoreCase(atp)) {
+                        term.getPlannedList().add(plan);
+                        exists = true;
+                    }
+                }
+                if (!exists) {
+                    PlannedTerm term = new PlannedTerm();
+                    term.setAtpId(atp);
+                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
+                    term.setQtrYear(QtrYear);
                     term.getPlannedList().add(plan);
-                    exists = true;
+                    plannedTerms.add(term);
                 }
             }
-            if (!exists) {
-                PlannedTerm term = new PlannedTerm();
-                term.setAtpId(atp);
-                String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
-                StringBuilder sb = new StringBuilder();
-                sb.append(splitStr[0]).append(" ").append(splitStr[1]);
-                String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
-                term.setQtrYear(QtrYear);
-                term.getPlannedList().add(plan);
-                plannedTerms.add(term);
-            }
         }
-
         /*
          * Populating the backup list for the Plans
         */
-        if (backupCoursesList != null) {
+        if (backupCoursesList != null && backupCoursesList.size() > 0) {
             int count = plannedTerms.size();
             for (PlannedCourseDataObject bl : backupCoursesList) {
                 String atp = bl.getPlanItemDataObject().getAtp();
@@ -138,10 +140,10 @@ public class PlannedTermsHelperBase {
         });
 
         /*********** Implementation to populate the plannedTerm list with academic record and planned terms ******************/
-        if (studentCourseRecordInfos.size() > 0 || plannedTerms.size() > 0) {
+        if ((studentCourseRecordInfos != null && studentCourseRecordInfos.size() > 0) || plannedTerms.size() > 0) {
             Map<String, PlannedTerm> termsList = new HashMap<String, PlannedTerm>();
             String minTerm = null;
-            if (studentCourseRecordInfos.size() > 0) {
+            if (studentCourseRecordInfos != null && studentCourseRecordInfos.size() > 0) {
                 minTerm = studentCourseRecordInfos.get(0).getTermName();
             } else {
                 minTerm = globalCurrentAtpId;
@@ -163,7 +165,7 @@ public class PlannedTermsHelperBase {
                     }
                 }
             }
-            if (studentCourseRecordInfos.size() > 0) {
+            if (studentCourseRecordInfos != null && studentCourseRecordInfos.size() > 0) {
                 for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
                     if (termsList.containsKey(studentInfo.getTermName())) {
                         AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
@@ -409,6 +411,30 @@ public class PlannedTermsHelperBase {
 
         credits = credits.replace(".0", "");
         return credits;
+    }
+
+    /**
+     * returns a list of planned terms with Planned sections starting
+     * from the current Atp which is open for planning.
+     *
+     * @return
+     */
+    public static List<PlannedTerm> getPlannedTermsFromStartAtp() {
+        PlanItemLookupableHelperBase planItemLookupableHelperBase = new PlanItemLookupableHelperBase();
+        List<PlannedCourseDataObject> plannedCourseDataObjects = new ArrayList<PlannedCourseDataObject>();
+        String startAtp = null;
+        for (String term : AtpHelper.getPublishedTerms()) {
+            if (AtpHelper.isAtpSetToPlanning(term)) {
+                startAtp = term;
+                break;
+            }
+        }
+        try {
+            plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp);
+        } catch (Exception e) {
+            logger.error("Could not retrieve the planItems" + e);
+        }
+        return populatePlannedTerms(plannedCourseDataObjects, null, null, null, true, 6, false);
     }
 
 

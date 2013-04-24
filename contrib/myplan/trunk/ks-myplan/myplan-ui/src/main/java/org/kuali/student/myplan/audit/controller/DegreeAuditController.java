@@ -31,6 +31,9 @@ import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.audit.dataobject.CourseItem;
+import org.kuali.student.myplan.audit.dataobject.MessyItem;
+import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.*;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
@@ -47,7 +50,6 @@ import org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
@@ -70,7 +72,6 @@ import java.io.StringWriter;
 import java.util.*;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
@@ -371,6 +372,20 @@ public class DegreeAuditController extends UifControllerBase {
             GlobalVariables.getMessageMap().putError("plan_audit_report_section", PlanConstants.ERROR_PLAN_AUDIT_INVALID_QUARTER);
             return getUIFModelAndView(auditForm);
         }*/
+        /*TODO: uncomment once the hand-off screen is completed*/
+        /*List<CourseItem> courseItems = planAuditform.getCleanList();
+        for (MessyItemDataObject messyItemDataObject : planAuditform.getMessyItems()) {
+            for (MessyItem messyItem : messyItemDataObject.getMessyItemList()) {
+                String[] str = messyItem.getSelectedCredit().split(":");
+                CourseItem courseItem = new CourseItem();
+                courseItem.setAtpId(messyItemDataObject.getAtpId());
+                courseItem.setCourseCode(messyItem.getCourseCode());
+                courseItem.setCredit(str[1]);
+                courseItem.setSectionCode(str[0].isEmpty() ? null : str[0]);
+                courseItem.setCourseId(messyItem.getCourseId());
+                courseItems.add(courseItem);
+            }
+        }*/
 
 
         /******Plan Audit Report Process*********/
@@ -448,235 +463,227 @@ public class DegreeAuditController extends UifControllerBase {
 
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         List<CourseItem> courseItems = new ArrayList<CourseItem>();
-        List<MessyItem> messyItems = new ArrayList<MessyItem>();
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
-        PlannedCoursesLookupableHelperImpl plannedCoursesLookupableHelper = new PlannedCoursesLookupableHelperImpl();
-        List<PlannedTerm> plannedTermList = plannedCoursesLookupableHelper.getPlannedTerms();
+        List<PlannedTerm> plannedTermList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
         List<String> scheduledTerms = AtpHelper.getPublishedTerms();
+        Map<String, List<MessyItem>> messyItemMap = new HashMap<String, List<MessyItem>>();
         for (PlannedTerm plannedTerm : plannedTermList) {
-            // TS Published : YES
-            if (scheduledTerms.contains(plannedTerm.getAtpId())) {
+            //TS PUBLISHED: YES
+            if (!AtpHelper.isAtpCompletedTerm(plannedTerm.getAtpId()) && scheduledTerms.contains(plannedTerm.getAtpId())) {
                 for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
-                    List<String> sections = new ArrayList<String>();
                     Set<String> credits = new HashSet<String>();
                     // Planned Sections : YES ; Multiple planned sections : NO
                     if (plannedCourseDataObject.getPlanActivities().size() == 1 && plannedCourseDataObject.getPlanActivities().get(0).isPrimary()) {
                         String section = plannedCourseDataObject.getPlanActivities().get(0).getCode();
                         String credit = plannedCourseDataObject.getPlanActivities().get(0).getCredits();
                         String creditType = getCreditType(credit);
-                        // Check Credits if Valid : NO ; Students needs to select Credits
+                        // Is section Offered in Single value : NO
                         if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                            Collections.addAll(credits, credit.replace(" ", "").split(","));
-                            MessyItem messyItem = new MessyItem();
-                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                            messyItem.setCredits(credits);
-                            messyItem.setAtpId(plannedTerm.getAtpId());
-                            messyItems.add(messyItem);
+                            String[] crs = credit.replace(" ", "").split(",");
+                            for (String cr : crs) {
+                                credits.add(String.format("%s:%s:%s", section, cr, cr));
+                            }
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                         }
-                        // Check Credits if Valid : NO ; Students needs to select Credits 
+                        // Is section Offered in Single value : NO
                         else if ("RANGE".equalsIgnoreCase(creditType)) {
-                            credits.addAll(getCreditsForRange(credit));
-                            MessyItem messyItem = new MessyItem();
-                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                            messyItem.setCredits(credits);
-                            messyItem.setAtpId(plannedTerm.getAtpId());
-                            messyItems.add(messyItem);
+                            List<String> crs = getCreditsForRange(credit);
+                            for (String cr : crs) {
+                                credits.add(String.format("%s:%s:%s", section, cr, cr));
+                            }
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                         }
-                        // Check Credits if Valid : YES
+                        // Is course Offered in Single value : YES
                         else {
-                            CourseItem courseItem = new CourseItem();
-                            courseItem.setAtpId(plannedTerm.getAtpId());
-                            courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                            courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                            courseItem.setSectionCode(section);
-                            courseItems.add(courseItem);
-
+                            buildCourseItemAndAddToList(plannedCourseDataObject, credit, section, courseItems);
                         }
+
                     }
                     // Planned Sections : YES ; Multiple planned sections : YES
                     else if (plannedCourseDataObject.getPlanActivities().size() > 1) {
-                        boolean allHaveWritingAndHonorFlag = true;
-                        boolean allSectionsHaveSameCredit = true;
-                        String commonCredit = null;
-                        for (ActivityOfferingItem activityOfferingItem : plannedCourseDataObject.getPlanActivities()) {
-                            if (activityOfferingItem.isPrimary()) {
-                                sections.add(activityOfferingItem.getCode());
-                                credits.add(activityOfferingItem.getCredits());
-                                if (allHaveWritingAndHonorFlag && !activityOfferingItem.isHonorsSection() && !activityOfferingItem.isWritingSection()) {
-                                    allHaveWritingAndHonorFlag = false;
-                                }
-                            }
+                        Set<String> choicesList = processSectionProfile(plannedCourseDataObject.getPlanActivities());
+                        if (choicesList.size() > 1) {
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap);
+                        } else if (choicesList.size() == 1) {
+                            buildCourseItemAndAddToList(plannedCourseDataObject, (String) choicesList.toArray()[0], null, courseItems);
                         }
-                        commonCredit = plannedTermsHelperBase.unionCreditList(new ArrayList<String>(credits));
-                        String commonCreditType = getCreditType(commonCredit);
-                        if ("MULTIPLE".equalsIgnoreCase(commonCreditType)) {
-                            allSectionsHaveSameCredit = false;
-                        }
-                        // Writing and honor Flag for all the sections : NO
-                        if (!allHaveWritingAndHonorFlag) {
-                            MessyItem messyItem = new MessyItem();
-                            messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                            messyItem.setSections(sections);
-                            messyItem.setAtpId(plannedTerm.getAtpId());
-                            messyItems.add(messyItem);
 
-                        }
-                        //  Writing and honor Flag for all the sections : YES
-                        else {
-                            if (allSectionsHaveSameCredit) {
-                                CourseItem courseItem = new CourseItem();
-                                courseItem.setAtpId(plannedTerm.getAtpId());
-                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                                courseItem.setSectionCode(null);
-                                courseItems.add(courseItem);
-                            } else {
-                                MessyItem messyItem = new MessyItem();
-                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                messyItem.setCredits(credits);
-                                messyItem.setAtpId(plannedTerm.getAtpId());
-                                messyItems.add(messyItem);
-                            }
-                        }
                     }
-                    // Planned Sections : NO 
+                    // Planned Sections : NO
                     else {
                         CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
-                        List<ActivityOfferingItem> sectionsOffered = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourseDataObject.getCourseDetails().getCourseId(), plannedTerm.getAtpId());
-                        // Multiple Offered Sections : NO 
-                        if (sectionsOffered.size() == 1) {
-                            String section = sectionsOffered.get(0).getCode();
-                            String credit = sectionsOffered.get(0).getCredits();
-                            String creditType = getCreditType(credit);
-                            // Is course Offered in Single value : NO
-                            if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                                Collections.addAll(credits, credit.replace(" ", "").split(","));
-                                MessyItem messyItem = new MessyItem();
-                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                messyItem.setCredits(credits);
-                                messyItem.setAtpId(plannedTerm.getAtpId());
-                                messyItems.add(messyItem);
-                            }
-                            // Is course Offered in Single value : NO
-                            else if ("RANGE".equalsIgnoreCase(creditType)) {
-                                credits.addAll(getCreditsForRange(credit));
-                                MessyItem messyItem = new MessyItem();
-                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                messyItem.setCredits(credits);
-                                messyItem.setAtpId(plannedTerm.getAtpId());
-                                messyItems.add(messyItem);
-                            }
-                            // Is course Offered in Single value : YES
-                            else {
-                                CourseItem courseItem = new CourseItem();
-                                courseItem.setAtpId(plannedTerm.getAtpId());
-                                courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                                courseItem.setSectionCode(section);
-                                courseItems.add(courseItem);
-
-                            } 
-
+                        List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourseDataObject.getCourseDetails().getCourseId(), plannedCourseDataObject.getPlanItemDataObject().getAtp());
+                        Set<String> choicesList = processSectionProfile(activityOfferingItems);
+                        if (choicesList.size() > 1) {
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap);
+                        } else if (choicesList.size() == 1) {
+                            buildCourseItemAndAddToList(plannedCourseDataObject, (String) choicesList.toArray()[0], null, courseItems);
+                        } else {
+                            String credit = plannedCourseDataObject.getCourseDetails().getCredit();
+                            buildCourseItemAndAddToList(plannedCourseDataObject, String.format("%s:%s:%s", "", credit, credit), null, courseItems);
                         }
-                        // Multiple Offered Sections : YES
-                        else if (sectionsOffered.size() > 1) {
-                            boolean allHaveWritingAndHonorFlag = true;
-                            boolean allSectionsHaveSameCredit = true;
-                            String commonCredit = null;
-                            for (ActivityOfferingItem activityOfferingItem : sectionsOffered) {
-                                if (activityOfferingItem.isPrimary()) {
-                                    sections.add(activityOfferingItem.getCode());
-                                    credits.add(activityOfferingItem.getCredits());
-                                    if (commonCredit == null) {
-                                        commonCredit = activityOfferingItem.getCredits();
-                                    } else if (allSectionsHaveSameCredit && !commonCredit.equalsIgnoreCase(activityOfferingItem.getCredits())) {
-                                        allSectionsHaveSameCredit = false;
-                                    }
-                                    if (allHaveWritingAndHonorFlag && !activityOfferingItem.isHonorsSection() && !activityOfferingItem.isWritingSection()) {
-                                        allHaveWritingAndHonorFlag = false;
-                                    }
-                                }
-                            }
-                            // Writing and honor Flag for all the sections : NO
-                            if (!allHaveWritingAndHonorFlag) {
-                                MessyItem messyItem = new MessyItem();
-                                messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                messyItem.setSections(sections);
-                                messyItem.setAtpId(plannedTerm.getAtpId());
-                                messyItems.add(messyItem);
-                            }
-                            //  Writing and honor Flag for all the sections : YES
-                            else {
-                                if (allSectionsHaveSameCredit) {
-                                    CourseItem courseItem = new CourseItem();
-                                    courseItem.setAtpId(plannedTerm.getAtpId());
-                                    courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                    courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                                    courseItem.setSectionCode(null);
-                                    courseItems.add(courseItem);
-                                } else {
-                                    MessyItem messyItem = new MessyItem();
-                                    messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                                    messyItem.setCredits(credits);
-                                    messyItem.setAtpId(plannedTerm.getAtpId());
-                                    messyItems.add(messyItem);
-                                }
-                            }
-                        }
-
                     }
                 }
+
             }
-            // TS Published : NO
-            else {
+            //TS PUBLISHED: NO
+            else if (!AtpHelper.isAtpCompletedTerm(plannedTerm.getAtpId())) {
                 Set<String> credits = new HashSet<String>();
                 for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
                     String credit = plannedCourseDataObject.getCourseDetails().getCredit();
                     String creditType = getCreditType(credit);
                     // Is course Offered in Single value : NO
                     if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                        Collections.addAll(credits, credit.replace(" ", "").split(","));
-                        MessyItem messyItem = new MessyItem();
-                        messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                        messyItem.setCredits(credits);
-                        messyItem.setAtpId(plannedTerm.getAtpId());
-                        messyItems.add(messyItem);
+                        String[] crs = credit.replace(" ", "").split(",");
+                        for (String cr : crs) {
+                            credits.add(String.format("%s:%s:%s", "", cr, cr));
+                        }
+                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                     }
                     // Is course Offered in Single value : NO
                     else if ("RANGE".equalsIgnoreCase(creditType)) {
-                        credits.addAll(getCreditsForRange(credit));
-                        MessyItem messyItem = new MessyItem();
-                        messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                        messyItem.setCredits(credits);
-                        messyItem.setAtpId(plannedTerm.getAtpId());
-                        messyItems.add(messyItem);
+                        List<String> crs = getCreditsForRange(credit);
+                        for (String cr : crs) {
+                            credits.add(String.format("%s:%s:%s", "", cr, cr));
+                        }
+                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                     }
                     // Is course Offered in Single value : YES
                     else {
-                        CourseItem courseItem = new CourseItem();
-                        courseItem.setAtpId(plannedTerm.getAtpId());
-                        courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
-                        courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
-                        courseItem.setSectionCode(null);
-                        courseItems.add(courseItem);
+                        buildCourseItemAndAddToList(plannedCourseDataObject, credit, null, courseItems);
 
                     }
 
                 }
 
+
             }
         }
-
         if (courseItems.size() > 0) {
             planAuditForm.setCleanList(courseItems);
         }
-        if (messyItems.size() > 0) {
+        if (messyItemMap.size() > 0) {
+            List<MessyItemDataObject> messyItemDataObjects = new ArrayList<MessyItemDataObject>();
+            for (Map.Entry<String, List<MessyItem>> entry : messyItemMap.entrySet()) {
+                MessyItemDataObject messyItemDataObject = new MessyItemDataObject();
+                messyItemDataObject.setAtpId(entry.getKey());
+                messyItemDataObject.setMessyItemList(entry.getValue());
+                messyItemDataObjects.add(messyItemDataObject);
+            }
+            Collections.sort(messyItemDataObjects, new Comparator<MessyItemDataObject>() {
+                @Override
+                public int compare(MessyItemDataObject val1, MessyItemDataObject val2) {
+                    return val1.getAtpId().compareTo(val2.getAtpId());
+                }
+            });
             planAuditForm.setStudentChoiceRequired(true);
-            planAuditForm.setMessyItems(messyItems);
+            planAuditForm.setMessyItems(messyItemDataObjects);
         }
         return getUIFModelAndView(auditForm);
     }
 
+    /**
+     * processes the section profiling logic
+     *
+     * @param activityOfferingItems
+     * @return
+     */
+    private Set<String> processSectionProfile(List<ActivityOfferingItem> activityOfferingItems) {
+        Set<String> stringSet = new HashSet<String>();
+        Set<String> choicesList = new HashSet<String>();
+        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+            if (activityOfferingItem.isPrimary()) {
+
+                String section = activityOfferingItem.getCode();
+                boolean isHonorSection = activityOfferingItem.isHonorsSection();
+                boolean isWritingSection = activityOfferingItem.isWritingSection();
+                String credit = activityOfferingItem.getCredits();
+                String creditType = getCreditType(credit);
+                // Is section Offered in Single value : NO
+                if ("MULTIPLE".equalsIgnoreCase(creditType)) {
+                    String[] crs = credit.replace(" ", "").split(",");
+                    for (String cr : crs) {
+                        String display = cr + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                        if (!stringSet.contains(display)) {
+                            stringSet.add(display);
+                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
+                        }
+                    }
+
+                }
+                // Is section Offered in Single value : NO
+                else if ("RANGE".equalsIgnoreCase(creditType)) {
+                    List<String> crs = getCreditsForRange(credit);
+                    for (String cr : crs) {
+                        String display = cr + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                        if (!stringSet.contains(display)) {
+                            stringSet.add(display);
+                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
+                        }
+                    }
+                } else {
+                    String display = credit + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                    if (!stringSet.contains(display)) {
+                        stringSet.add(display);
+                        choicesList.add(String.format("%s:%s:%s", section, credit, display));
+                    }
+                }
+
+            }
+        }
+        return choicesList;
+    }
+
+    /**
+     * Builds the course item and adds to the list
+     *
+     * @param plannedCourseDataObject
+     * @param credit
+     * @param section
+     * @param courseItems
+     */
+    private void buildCourseItemAndAddToList(PlannedCourseDataObject plannedCourseDataObject, String credit, String section, List<CourseItem> courseItems) {
+        CourseItem courseItem = new CourseItem();
+        courseItem.setAtpId(plannedCourseDataObject.getPlanItemDataObject().getAtp());
+        courseItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+        courseItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+        courseItem.setCredit(credit);
+        courseItem.setSectionCode(section);
+        courseItems.add(courseItem);
+    }
+
+    /**
+     * Builds the messy item and adds to the Map
+     *
+     * @param plannedCourseDataObject
+     * @param credits
+     * @param messyItemMap
+     */
+    private void buildMessyItemAndAddToMap(PlannedCourseDataObject plannedCourseDataObject, Set<String> credits, Map<String, List<MessyItem>> messyItemMap) {
+        MessyItem messyItem = new MessyItem();
+        messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
+        messyItem.setCourseTitle(plannedCourseDataObject.getCourseDetails().getCourseTitle());
+        messyItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+        messyItem.setCredits(credits);
+        messyItem.setAtpId(plannedCourseDataObject.getPlanItemDataObject().getAtp());
+        if (messyItemMap.containsKey(plannedCourseDataObject.getPlanItemDataObject().getAtp())) {
+            messyItemMap.get(plannedCourseDataObject.getPlanItemDataObject().getAtp()).add(messyItem);
+        } else {
+            List<MessyItem> items = new ArrayList<MessyItem>();
+            items.add(messyItem);
+            messyItemMap.put(plannedCourseDataObject.getPlanItemDataObject().getAtp(), items);
+        }
+    }
+
+    /**
+     * returns type of credit
+     * eg: credit 1-4 RANGE
+     * credit 1,4 MULTIPLE
+     * credit 1 NORMAL
+     *
+     * @param credit
+     * @return
+     */
     private String getCreditType(String credit) {
         if (credit.matches("^\\d*.\\d*-\\d*.\\d*$")) {
             return "RANGE";
@@ -687,6 +694,12 @@ public class DegreeAuditController extends UifControllerBase {
         }
     }
 
+    /**
+     * returns credits for given range (eg:for credit='1-4' gives 1,2,3,4)
+     *
+     * @param credit
+     * @return
+     */
     private List<String> getCreditsForRange(String credit) {
         String[] str = credit.split("-");
         int min = 0;

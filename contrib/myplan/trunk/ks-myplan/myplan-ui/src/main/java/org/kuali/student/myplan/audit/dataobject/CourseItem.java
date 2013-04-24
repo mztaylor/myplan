@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.audit.form;
+package org.kuali.student.myplan.audit.dataobject;
 
 /**
  * Created by IntelliJ IDEA.

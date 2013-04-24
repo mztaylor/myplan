@@ -1,5 +1,8 @@
 package org.kuali.student.myplan.audit.form;
 
+import org.kuali.student.myplan.audit.dataobject.CourseItem;
+import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
+
 import java.util.List;
 
 /**
@@ -11,12 +14,12 @@ import java.util.List;
  */
 public class PlanAuditForm extends DegreeAuditForm {
     private String lastPlannedTerm;
-    
+
     private boolean studentChoiceRequired;
 
     private List<CourseItem> cleanList;
 
-    private List<MessyItem> messyItems;
+    private List<MessyItemDataObject> messyItems;
 
     public String getLastPlannedTerm() {
         return lastPlannedTerm;
@@ -34,11 +37,11 @@ public class PlanAuditForm extends DegreeAuditForm {
         this.cleanList = cleanList;
     }
 
-    public List<MessyItem> getMessyItems() {
+    public List<MessyItemDataObject> getMessyItems() {
         return messyItems;
     }
 
-    public void setMessyItems(List<MessyItem> messyItems) {
+    public void setMessyItems(List<MessyItemDataObject> messyItems) {
         this.messyItems = messyItems;
     }
 

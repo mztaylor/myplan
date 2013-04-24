@@ -3,8 +3,7 @@ package org.kuali.student.myplan.course.util;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.rice.krad.uif.element.Message;
-import org.kuali.student.myplan.audit.form.MessyItem;
+import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -23,38 +22,23 @@ import java.util.List;
  */
 public class PlanAuditMessyItems extends KeyValuesBase {
 
-    private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MessyItem messyItem = (MessyItem) request.getSession().getAttribute("studentMessyItem");
         if (messyItem != null) {
-            if (type.equalsIgnoreCase("SECTIONS")) {
-                for (String section : messyItem.getSections()) {
-                    keyValues.add(new ConcreteKeyValue(section, section));
-                }
-            } else if (type.equalsIgnoreCase("CREDITS")) {
-
-                for (String section : messyItem.getCredits()) {
-                    keyValues.add(new ConcreteKeyValue(section, section));
-                }
-                Collections.sort(keyValues, new Comparator<KeyValue>() {
-                    @Override
-                    public int compare(KeyValue val1, KeyValue val2) {
-                        return Integer.valueOf(val1.getValue()).compareTo(Integer.valueOf(val2.getValue()));
-                    }
-                });
+            for (String credit : messyItem.getCredits()) {
+                keyValues.add(new ConcreteKeyValue(credit, credit.split(":")[2]));
             }
+            Collections.sort(keyValues, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue val1, KeyValue val2) {
+                    String compVal1 = val1.getKey().split(":")[1].trim();
+                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    return Integer.valueOf(compVal1).compareTo(Integer.valueOf(compVal2));
+                }
+            });
         }
 
         return keyValues;

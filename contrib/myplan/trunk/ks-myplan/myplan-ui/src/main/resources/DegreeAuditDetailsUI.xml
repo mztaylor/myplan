@@ -14,6 +14,93 @@
          and limitations under the License. -->
 
     <!-- Not used to view audit reports. -->
+    <bean id="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
+        <property name="headerText" value="Specify Your Plan"/>
+
+        <!-- To Support progressive disclosure of campus select -->
+        <property name="persistFormToSession" value="true"/>
+        <property name="viewName" value="PlanAuditHandOff-FormView"/>
+        <property name="id" value="PlanAuditHandOff-FormView"/>
+        <property name="entryPageId" value="plan_audit_hand_off"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-view</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderTwo"/>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.version']}</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>ks-myplan/css/audit.css</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="plan_audit_hand_off">
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean p:id="hidden_messy_items_flag" parent="Uif-InputField" p:propertyName="planAudit.studentChoiceRequired">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <!--<bean p:id="hidden_clean_items" parent="Uif-InputField" p:propertyName="planAudit.cleanList">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>-->
+                            <bean id="hidden_clean_items" parent="Uif-DataField" p:propertyName="planAudit.cleanList"
+                                  p:style="display:none;"/>
+                            <bean p:id="hidden_campus_selected" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_seattle_program" parent="Uif-InputField" p:propertyName="planAudit.programParamSeattle">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_bothell_program" parent="Uif-InputField" p:propertyName="planAudit.programParamBothell">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_tacoma_program" parent="Uif-InputField" p:propertyName="planAudit.programParamTacoma">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <ref bean="plan_audit_messy_items"/>
+                            <bean id="testing_button" p:id="testing_button" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Submit" p:methodToCall="testingPlanAudit"
+                                  p:style="margin:0 0 0 100px;">
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
+    </bean>
+
+
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="headerText" value="Audit Degree"/>
 
@@ -201,7 +288,6 @@
                         </list>
                     </property>
                 </bean>
-
             </list>
         </property>
         <property name="footer.render" value="false"/>
@@ -465,7 +551,13 @@
                     </property>
                 </bean>
                 <ref bean="plan_audit_run"/>
-                <!--<ref bean="plan_audit_messy_block"/>-->
+                <!--<bean id="plan_audit_review" parent="Uif-PrimaryActionButton-Small"
+                      p:actionLabel="Review Audit" p:style="margin:5px;">
+                    <property name="actionScript" value=""/>
+                    <property name="onDocumentReadyScript"
+                              value="myplanCreateLightBoxLink('plan_audit_review', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',
+                              href:'audit?methodToCall=reviewPlanAudit&amp;viewId=PlanAuditHandOff-FormView&amp;pageId=plan_audit_hand_off&amp;planAudit.campusParam=@{planAudit.campusParam}&amp;planAudit.programParamSeattle=@{planAudit.programParamSeattle}&amp;planAudit.programParamBothell=@{planAudit.programParamBothell}&amp;planAudit.programParamTacoma=@{planAudit.programParamTacoma}&amp;renderedInLightBox=true'});"/>
+                </bean>-->
             </list>
         </property>
     </bean>
@@ -585,18 +677,49 @@
         </property>
     </bean>
 
-    <!--<bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup"
-          p:headerText="Choose Options" p:render="@{planAudit.studentChoiceRequired}" >
+    <bean id="plan_audit_messy_items" parent="Uif-ListCollectionSection">
         <property name="validationMessages.render" value="false"/>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.audit.dataobject.MessyItemDataObject"/>
+        <property name="propertyName" value="planAudit.messyItems"/>
+        <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-List">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-VerticalBoxSection"/>
+                </property>
+            </bean>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField">
+                    <property name="messageText"
+                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpId)}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-text-bold</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="plan_audit_messy_block"/>
+            </list>
+        </property>
+
+    </bean>
+
+
+    <bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup">
+        <property name="validationMessages.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionHorizontalBoxItem" p:style="padding:10px;">
+                    <bean parent="Uif-CollectionVerticalBoxItem" p:style="padding:10px;">
                     </bean>
                 </property>
             </bean>
@@ -607,46 +730,47 @@
             </list>
         </property>
         <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.audit.form.MessyItem"/>
-        <property name="propertyName" value="planAudit.messyItems"/>
+                  value="org.kuali.student.myplan.audit.dataobject.MessyItem"/>
+        <property name="propertyName" value="messyItemList"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean  id="messy_quarter" parent="Uif-MessageField">
-                <property name="messageText" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
+                <bean id="messy_quarter" parent="Uif-MessageField" p:style="display:none;">
+                    <property name="messageText"
+                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
                 </bean>
-                <bean id="messy_code" parent="Uif-DataField" p:propertyName="courseCode"/>
-                <bean id="messy_sections" parent="Uif-InputField" p:propertyName="selectedSection"
-                      p:width="80px;" p:render="@{#line.sections.size() gt 0}">
-                    <property name="validationMessages.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems">
-                            <property name="type" value="SECTIONS"/>
-                        </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:style="padding-left:28px">
+                    <property name="items">
+                        <list>
+                            <bean id="messy_course_code" parent="Uif-DataField" p:propertyName="courseCode"/>
+                            <bean id="messy_course_title" parent="Uif-DataField" p:propertyName="courseTitle"/>
+                        </list>
                     </property>
                 </bean>
-                <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit"
-                      p:width="80px;" p:render="@{#line.credits.size() gt 0}">
-                    <property name="validationMessages.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems">
-                            <property name="type" value="CREDITS"/>
-                        </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:style="padding-left:28px">
+                    <property name="items">
+                        <list>
+                            <bean id="messy_credits" parent="Uif-InputField"  p:propertyName="selectedCredit"
+                                  p:width="80px;" p:render="@{#line.credits.size() gt 0}">
+                                <property name="validationMessages.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
+
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
             </list>
         </property>
         <property name="collectionLookup.render" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
-    </bean>-->
+    </bean>
 
 </beans>
