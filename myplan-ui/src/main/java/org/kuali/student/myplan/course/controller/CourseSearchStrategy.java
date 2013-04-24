@@ -248,26 +248,32 @@ public class CourseSearchStrategy {
             throws Exception {
         logger.info("Start Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
-
-        List<String> levels = QueryTokenizer.extractCourseLevels(query);
-        for (String level : levels) {
-            query = query.replace(level, "");
-        }
-        List<String> codes = QueryTokenizer.extractCourseCodes(query);
-        for (String code : codes) {
-            query = query.replace(code, "");
-        }
-
-        HashMap<String, String> divisionMap = fetchCourseDivisions();
-
         ArrayList<String> divisions = new ArrayList<String>();
-        query = extractDivisions(divisionMap, query, divisions);
-
-
-        ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
         // Order is important, more exact search results appear at top of list
-        addDivisionSearches(divisions, codes, levels, requests);
-        addFullTextSearches(query, requests);
+        ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
+        //If a query is in between quotes like "THE BIBLE AS LITERATURE" then don't tokenize
+        if (!query.matches("\"(?:[^\\\\\"]+|\\\\.)*\"")) {
+            List<String> levels = QueryTokenizer.extractCourseLevels(query);
+            for (String level : levels) {
+                query = query.replace(level, "");
+            }
+            List<String> codes = QueryTokenizer.extractCourseCodes(query);
+            for (String code : codes) {
+                query = query.replace(code, "");
+            }
+
+            HashMap<String, String> divisionMap = fetchCourseDivisions();
+
+            query = extractDivisions(divisionMap, query, divisions);
+
+            addDivisionSearches(divisions, codes, levels, requests);
+            addFullTextSearches(query, requests);
+        } else {
+            query = query.replace("\"", "");
+            SearchRequest request = new SearchRequest("myplan.lu.search.title");
+            request.addParam("queryText", query);
+            requests.add(request);
+        }
         addCampusParams(requests, form);
         ArrayList processedRequests = processRequests(requests, form);
         addVersionDateParam(processedRequests, isAcademicCalenderServiceUp);
