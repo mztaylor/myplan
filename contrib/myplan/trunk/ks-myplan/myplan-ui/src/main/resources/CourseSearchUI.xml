@@ -103,7 +103,11 @@
                             <property name="onDocumentReadyScript" value="
                                 if (readUrlHash('searchQuery')) {
                                     jQuery('#text_searchQuery_control').val(readUrlHash('searchQuery'));
-                                }"/>
+                                }
+                                if(jQuery('#text_searchQuery_control').val().length > 0){
+                                    jQuery('button.course-search-submit').attr('disabled', false).removeClass('disabled');
+                                }
+                                "/>
                             <property name="onLoadScript" value="jQuery(this).blur();"/>
                             <property name="onKeyUpScript" value="
                                 if (jQuery(this).val().length > 0) {
