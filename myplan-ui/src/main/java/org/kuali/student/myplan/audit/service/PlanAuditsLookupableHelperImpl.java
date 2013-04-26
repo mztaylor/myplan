@@ -67,7 +67,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
              */
             HashSet<String> programSet = new HashSet<String>();
             for (AuditReportInfo audit : audits) {
-                //if (audit.isWhatIfAudit()) {
+                if (audit.isWhatIfAudit()) {
                     String programId = audit.getProgramId();
                     PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
                     if (!programSet.contains(programId) && planAuditItem != null) {
@@ -77,7 +77,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
                         planAuditItem.setProgramType("ProgramType");
                         planAuditItems.add(planAuditItem);
                     }
-               // }
+                }
             }
             if (planAuditItems.size() > 0) {
                 planAuditItems.get(0).setRecentAudit(true);

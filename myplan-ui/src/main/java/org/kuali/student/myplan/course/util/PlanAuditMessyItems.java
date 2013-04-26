@@ -25,20 +25,65 @@ public class PlanAuditMessyItems extends KeyValuesBase {
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
+        List<KeyValue> normalCredits = new ArrayList<KeyValue>();
+        List<KeyValue> honorCredits = new ArrayList<KeyValue>();
+        List<KeyValue> writingCredits = new ArrayList<KeyValue>();
+        List<KeyValue> bothHWCredits = new ArrayList<KeyValue>();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MessyItem messyItem = (MessyItem) request.getSession().getAttribute("studentMessyItem");
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
-                keyValues.add(new ConcreteKeyValue(credit, credit.split(":")[2]));
+                String display = credit.split(":")[2];
+                if (display.contains(" -- writings -- Honors")) {
+                    bothHWCredits.add(new ConcreteKeyValue(credit, display));
+                } else if (display.contains(" -- Honors")) {
+                    honorCredits.add(new ConcreteKeyValue(credit, display));
+                } else if (display.contains(" -- Writings")) {
+                    writingCredits.add(new ConcreteKeyValue(credit, display));
+                } else {
+                    normalCredits.add(new ConcreteKeyValue(credit, display));
+                }
             }
-            Collections.sort(keyValues, new Comparator<KeyValue>() {
+            //Sorting and adding normal credits to keyValues
+            Collections.sort(normalCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
                     String compVal1 = val1.getKey().split(":")[1].trim();
                     String compVal2 = val2.getKey().split(":")[1].trim();
-                    return Integer.valueOf(compVal1).compareTo(Integer.valueOf(compVal2));
+                    return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });
+            keyValues.addAll(normalCredits);
+            //Sorting and adding writing credits to keyValues
+            Collections.sort(writingCredits, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue val1, KeyValue val2) {
+                    String compVal1 = val1.getKey().split(":")[1].trim();
+                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
+                }
+            });
+            keyValues.addAll(writingCredits);
+            //Sorting and adding honor credits to keyValues
+            Collections.sort(honorCredits, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue val1, KeyValue val2) {
+                    String compVal1 = val1.getKey().split(":")[1].trim();
+                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
+                }
+            });
+            keyValues.addAll(honorCredits);
+            //Sorting and adding bothHW credits to keyValues
+            Collections.sort(bothHWCredits, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue val1, KeyValue val2) {
+                    String compVal1 = val1.getKey().split(":")[1].trim();
+                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
+                }
+            });
+            keyValues.addAll(bothHWCredits);
         }
 
         return keyValues;
