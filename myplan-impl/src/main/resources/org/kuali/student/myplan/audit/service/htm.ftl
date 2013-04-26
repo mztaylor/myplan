@@ -53,7 +53,7 @@
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
-<div class="myplan-audit-report" dprog="${degreeProgramCode?html}">
+<div class="myplan-audit-report" dprog="${degreeProgramCode?html}" auditid="0">
     <h1>${dpTitle1?xml}</h1>
 
     <div class="audit-summary">
@@ -660,7 +660,7 @@
                                 <table>
                                     <#list subreq.notFromHtmlCourses as course>
                                         <tr>
-                                            <td class="fromcourselist">${course?replace( "&", "&amp;")}</td>
+                                            <td class="fromcourselist linkify">${course?replace( "&", "&amp;")}</td>
                                         </tr>
                                     </#list>
                                 </table>
@@ -675,7 +675,7 @@
                                 <table>
                                     <#list subreq.selectFromHtmlCourses as course>
                                         <tr>
-                                            <td class="fromcourselist">${course?replace( "&", "&amp;")}</td>
+                                            <td class="fromcourselist linkify">${course?replace( "&", "&amp;")}</td>
                                         </tr>
                                     </#list>
                                 </table>
