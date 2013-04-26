@@ -3,7 +3,10 @@ package edu.uw.kuali.student.service.impl;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
+import org.dom4j.*;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -46,11 +49,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import uachieve.apis.audit.JobQueueRun;
 import uachieve.apis.audit.dao.JobQueueListDao;
 import uachieve.apis.audit.dao.JobQueueRunDao;
@@ -62,15 +60,10 @@ import uachieve.apis.requirement.dao.hibernate.DprogHibernateDao;
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -359,12 +352,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             String payload = req.toString();
 
-            String postAuditRequestURL = studentServiceClient.getBaseUrl() + "/v5/degreeaudit.xml";
+            String postAuditRequestURL = getStudentServiceClient().getBaseUrl() + "/v5/degreeaudit.xml";
             logger.debug("REST HTTP POST");
             logger.debug(postAuditRequestURL);
             logger.debug(payload);
 
-            Client client = studentServiceClient.getClient();
+            Client client = getStudentServiceClient().getClient();
 
             Request request = new Request(Method.POST, postAuditRequestURL);
 
@@ -485,68 +478,33 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             List list = dao.find(sql, new Object[]{auditId});
             Object[] item = (Object[]) list.get(0);
             byte[] report = (byte[]) item[0];
-//            String stuno = (String) item[1];
-//            stuno = convertMyPlanStunoToSDBSyskey(stuno);
             String garbage = new String(report);
             InputStream in = new ByteArrayInputStream(garbage.getBytes());
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            factory.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            SAXReader sax = new SAXReader();
+            Document doc = sax.read(in);
 
-            Document doc = builder.parse(in);
+            findClassLinkifyTextAndConvertCoursesToLinks(doc);
 
-            XPathFactory newInstanceXPathFactory = XPathFactory.newInstance();
-            XPath xpath = newInstanceXPathFactory.newXPath();
-            XPathExpression expr = xpath.compile("/html/div");
-            Object untypedRootDegreeAuditHTMLContentDIVNodeList = expr.evaluate(doc, XPathConstants.NODESET);
-            NodeList rootDegreeAuditHTMLContentDIVNodeList = (NodeList) untypedRootDegreeAuditHTMLContentDIVNodeList;
-
-            Node rootDegreeAuditHTMLContentDIV = rootDegreeAuditHTMLContentDIVNodeList.item(0);
-
-            findClassLinkifyTextAndConvertCoursesToLinks(doc, builder);
-
-            String path = "//*[contains(@class,'urlify')]";
-            linkifyURLs(doc, xpath, path, builder);
+            String name = null;
+            Text preparedFor = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-for-name')]/text()");
             boolean isUserSession = UserSessionHelper.isUserSession();
             if (isUserSession) {
-                path = "//span[contains(@class,'prepared-for-name')]/text()";
-                XPathExpression godot = xpath.compile(path);
-                Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
-                NodeList godotList = (NodeList) godotSet;
-                for (int nth = 0; nth < godotList.getLength(); nth++) {
-                    Node child = godotList.item(nth);
-                    String regId = UserSessionHelper.getStudentRegId();
-                    String preparedFor = UserSessionHelper.getNameCapitalized(regId);
-                    child.setTextContent(preparedFor);
-                }
+                String regId = UserSessionHelper.getStudentRegId();
+                name = UserSessionHelper.getNameCapitalized(regId);
+            } else {
+                String stuno = preparedFor.getText();
+                name = getStudentName(stuno);
             }
+            preparedFor.setText(name);
 
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
-            // Changed so that logged in users (via KRAD) receive HTML and webservices clients get XML
-            //
-            // Quickfix until KRAD/MyPlan has its MIME-Type changed from "text/html" to "application/xhtml+xml", which
-            // forces all current web browsers to recognizes self-closing tags eg <br/> and <div/>. Otherwise they treat
-            // content has HTML 4, failing or incorrectly rendering self-closing tags.
-            //
-            // Great explanation of this mess here: http://stackoverflow.com/a/206409
-            String method = "html";
-            if (DegreeAuditServiceConstants.AUDIT_TYPE_KEY_XML.equalsIgnoreCase(auditTypeKey)) {
-//            	method = "xml";
+            Element root = (Element) doc.selectSingleNode("/html/div");
+            // Replace the placeholder text for auditid
+            Attribute a = root.attribute("auditid");
+            if (a != null) {
+                a.setValue(auditId);
             }
-            transformer.setOutputProperty(OutputKeys.METHOD, method);
-            DOMSource source = new DOMSource(rootDegreeAuditHTMLContentDIV);
-            StringWriter sw = new StringWriter();
-            StreamResult result = new StreamResult(sw);
-
-            transformer.transform(source, result);
-            answer = sw.toString();
+            answer = writeXML(root);
 
         } catch (Exception e) {
             String msg = "getHTMLReport failed auditId: " + auditId;
@@ -559,75 +517,72 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditReportInfo;
     }
 
-    public void findClassLinkifyTextAndConvertCoursesToLinks(Document doc, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath xpath = xpathFactory.newXPath();
-        String path = "//*[contains(@class,'linkify')]/text()";
-        XPathExpression xpathExpression = xpath.compile(path);
-        Object untypedClassLinkifyNodeList = xpathExpression.evaluate(doc, XPathConstants.NODESET);
-        NodeList classLinkifyNodeList = (NodeList) untypedClassLinkifyNodeList;
-        for (int nth = 0; nth < classLinkifyNodeList.getLength(); nth++) {
-            Node child = classLinkifyNodeList.item(nth);
-            String textContent = child.getTextContent();
-            textContent = textContent.replace('\n', ' ');
-            textContent = textContent.replace('\t', ' ');
-            textContent = textContent.replace("&", "&amp;");
-            textContent = textContent.replace("<", "&lt;");
-            textContent = textContent.replace(">", "&gt;");
-            textContent = textContent.trim();
-            String linkifiedTextContent = CourseLinkBuilder.makeLinks(textContent, courseLinkTemplateStyle);
-            if (!textContent.equals(linkifiedTextContent)) {
+    public static String writeXML(Node doc) throws Exception {
+        OutputFormat format = new OutputFormat();
+        format.setExpandEmptyElements(true);
+        StringWriter sw = new StringWriter();
+        XMLWriter writer = new XMLWriter(sw, format);
 
-                linkifiedTextContent = "<span>" + linkifiedTextContent + "</span>";
+        writer.write(doc);
+        return sw.toString();
+    }
 
-                builder.reset();
+
+    public void findClassLinkifyTextAndConvertCoursesToLinks(Document doc) {
+        List list = doc.selectNodes("//*[contains(@class,'linkify')]");
+        for (Object o : list) {
+            Element element = (Element) o;
+            String original = extractJustText(element);
+            String modified = urlify(original);
+            modified = CourseLinkBuilder.makeLinks(modified, courseLinkTemplateStyle);
+            if (!original.equals(modified)) {
+
                 try {
-                    Document document = builder.parse(new InputSource(new StringReader(linkifiedTextContent)));
-                    Node root = document.getDocumentElement();
-
-                    Node parent = child.getParentNode();
-                    Node newRoot = doc.importNode(root, true);
-                    parent.replaceChild(newRoot, child);
-                } catch (Exception e) {
-                    logger.error("findClassLinkifyTextAndConvertCoursesToLinks failed on '" + linkifiedTextContent + "'", e);
+                    modified = "<span>" + modified + "</span>";
+                    Document sub = DocumentHelper.parseText(modified);
+                    Element root = sub.getRootElement();
+                    element.clearContent();
+                    element.add(root);
+                } catch (DocumentException e1) {
+                    logger.error(e1);
                 }
             }
         }
     }
 
-    public void linkifyURLs(Document doc, XPath xpath, String path, DocumentBuilder builder) throws XPathExpressionException, IOException, SAXException {
-        XPathExpression godot = xpath.compile(path);
-        Object godotSet = godot.evaluate(doc, XPathConstants.NODESET);
-        NodeList godotList = (NodeList) godotSet;
-        for (int nth = 0; nth < godotList.getLength(); nth++) {
-            Node child = godotList.item(nth);
-            String victim = "";
-            try {
-                StringWriter stringWriter = new StringWriter();
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.transform(new DOMSource(child), new StreamResult(stringWriter));
-                String scurge = stringWriter.toString(); //This is string data of xml file
-//                System.out.println(scurge);
-                victim = linkifyCourseSubjAndNum(scurge);
-                if (!scurge.equals(victim)) {
+    public String extractJustText(Element parent) {
+        ArrayList<String> list = new ArrayList<String>();
+        extractJustText(parent, list);
+        StringBuilder sb = new StringBuilder();
+        for (String gosh : list) {
+            sb.append(gosh);
+            sb.append(' ');
+        }
+        String result = sb.toString();
+        result = result.replace('\n', ' ');
+        result = result.replace('\t', ' ');
+        result = result.replace("&", "&amp;");
+        result = result.replace("<", "&lt;");
+        result = result.replace(">", "&gt;");
+        result = result.trim().replaceAll("\\s+", " ");
 
-//                    victim = "<span>" + victim + "</span>";
-                    builder.reset();
-                    Document whoopie = builder.parse(new InputSource(new StringReader(victim)));
-                    Node fake = whoopie.getDocumentElement();
+        return result;
+    }
 
-                    Node parent = child.getParentNode();
-                    Node crank = doc.importNode(fake, true);
-                    parent.replaceChild(crank, child);
-                }
-            } catch (Exception e) {
-                logger.error("linkifyURLs failed on '" + victim + "'", e);
+    public void extractJustText(Element parent, List<String> list) {
+        for (Object child : parent.content()) {
+            if (child instanceof Element) {
+                extractJustText((Element) child, list);
+            } else if (child instanceof Text) {
+                Text t = (Text) child;
+                String u = t.getText();
+                list.add(u);
             }
         }
     }
 
 
-    public static String linkifyCourseSubjAndNum(String initialText) {
+    public static String urlify(String initialText) {
         StringBuffer result = new StringBuffer(initialText.length());
         Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\-=?\\+\\%/\\.\\w]+)?");
 
@@ -683,6 +638,31 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public String convertMyPlanStunoToSDBSyskey(String stuno) {
         if (stuno.length() == 9 && stuno.startsWith("1")) {
             stuno = stuno.substring(1);
+        }
+        return stuno;
+    }
+
+    public String getStudentName(String stuno) {
+        try {
+            String syskey = convertMyPlanStunoToSDBSyskey(stuno);
+            String xml = getStudentServiceClient().getPersonBySysKey(syskey);
+            SAXReader sax = new SAXReader();
+            StringReader sr = new StringReader(xml);
+            Document doc = sax.read(sr);
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("x", "http://webservices.washington.edu/student/");
+            DefaultXPath firstNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:FirstName/text()");
+            firstNamePath.setNamespaceURIs(namespaces);
+            DefaultXPath lastNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:LastName/text()");
+            lastNamePath.setNamespaceURIs(namespaces);
+
+            Text firstNameText = (Text) firstNamePath.selectSingleNode(doc);
+            Text lastNameText = (Text) lastNamePath.selectSingleNode(doc);
+            String firstName = firstNameText.getText();
+            String lastName = lastNameText.getText();
+            return firstName + " " + lastName;
+        } catch (Exception e) {
+            logger.error(e);
         }
         return stuno;
     }

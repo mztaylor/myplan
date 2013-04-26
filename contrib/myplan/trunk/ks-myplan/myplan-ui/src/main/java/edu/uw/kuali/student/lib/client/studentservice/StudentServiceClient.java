@@ -106,6 +106,20 @@ public interface StudentServiceClient {
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException;
 
     /**
+     * @param syskey
+     * @return
+     * @throws ServiceException
+     */
+    public String getPersonBySysKey(String syskey) throws ServiceException;
+
+//    /**
+//     * @param regId
+//     * @return
+//     * @throws ServiceException
+//     */
+//    public String getPersonByRegID(String regId) throws ServiceException;
+
+    /**
      * @param url
      * @return
      */

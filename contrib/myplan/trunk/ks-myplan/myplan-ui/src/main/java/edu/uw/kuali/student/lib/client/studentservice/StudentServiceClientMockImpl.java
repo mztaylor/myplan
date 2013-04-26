@@ -168,6 +168,22 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
         return curriculum;
     }
 
+//    /**
+//     * @param regId
+//     * @return
+//     * @throws edu.uw.kuali.student.lib.client.studentservice.ServiceException
+//     *
+//     */
+//    @Override
+//    public String getPersonByRegID(String regId) throws ServiceException {
+//        return null;  //To change body of implemented methods use File | Settings | File Templates.
+//    }
+
+    @Override
+    public String getPersonBySysKey(String syskey) throws ServiceException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     @Override
     public boolean connectionStatus(String url) {
         return false;
