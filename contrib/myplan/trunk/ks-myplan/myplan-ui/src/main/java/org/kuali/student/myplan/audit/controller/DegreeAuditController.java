@@ -481,7 +481,8 @@ public class DegreeAuditController extends UifControllerBase {
                         if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                             String[] crs = credit.replace(" ", "").split(",");
                             for (String cr : crs) {
-                                credits.add(String.format("%s:%s:%s", section, cr, cr));
+                                String decCr = String.valueOf(Double.valueOf(cr));
+                                credits.add(String.format("%s:%s:%s", section, decCr, decCr));
                             }
                             buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                         }
@@ -536,7 +537,8 @@ public class DegreeAuditController extends UifControllerBase {
                     if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                         String[] crs = credit.replace(" ", "").split(",");
                         for (String cr : crs) {
-                            credits.add(String.format("%s:%s:%s", "", cr, cr));
+                            String decCr = String.valueOf(Double.valueOf(cr));
+                            credits.add(String.format("%s:%s:%s", "", decCr, decCr));
                         }
                         buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
                     }
@@ -603,10 +605,11 @@ public class DegreeAuditController extends UifControllerBase {
                 if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                     String[] crs = credit.replace(" ", "").split(",");
                     for (String cr : crs) {
-                        String display = cr + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                        String decCr = String.valueOf(Double.valueOf(cr));
+                        String display = decCr + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
                         if (!stringSet.contains(display)) {
                             stringSet.add(display);
-                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
+                            choicesList.add(String.format("%s:%s:%s", section, decCr, display));
                         }
                     }
 
@@ -615,14 +618,14 @@ public class DegreeAuditController extends UifControllerBase {
                 else if ("RANGE".equalsIgnoreCase(creditType)) {
                     List<String> crs = getCreditsForRange(credit);
                     for (String cr : crs) {
-                        String display = cr + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                        String display = cr + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
                         if (!stringSet.contains(display)) {
                             stringSet.add(display);
                             choicesList.add(String.format("%s:%s:%s", section, cr, display));
                         }
                     }
                 } else {
-                    String display = credit + (isHonorSection ? " -- Honors" : "") + (isWritingSection ? " -- Writing" : "");
+                    String display = credit + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
                     if (!stringSet.contains(display)) {
                         stringSet.add(display);
                         choicesList.add(String.format("%s:%s:%s", section, credit, display));
@@ -702,38 +705,38 @@ public class DegreeAuditController extends UifControllerBase {
      */
     private List<String> getCreditsForRange(String credit) {
         String[] str = credit.split("-");
-        int min = 0;
-        int minDecimal = 0;
-        int max = 0;
-        int maxDecimal = 0;
+        double min = 0;
+        double minDecimal = 0;
+        double max = 0;
+        double maxDecimal = 0;
         List<String> credits = new ArrayList<String>();
         if (str[0].contains(".")) {
-            String[] str2 = str[0].split(".");
-            min = Integer.valueOf(str2[0].trim());
-            minDecimal = Integer.valueOf(str2[1].trim());
+            min = Double.valueOf(str[0].substring(0, str[0].indexOf(".")));
+            minDecimal = Double.valueOf(str[0].substring(str[0].indexOf("."), str[0].length()));
 
         } else {
-            min = Integer.valueOf(str[0]);
+            min = Double.valueOf(str[0]);
         }
         if (str[1].contains(".")) {
-            String[] str2 = str[1].split(".");
-            max = Integer.valueOf(str2[0].trim());
-            maxDecimal = Integer.valueOf(str2[1].trim());
+            max = Double.valueOf(str[1].substring(0, str[1].indexOf(".")));
+            maxDecimal = Double.valueOf(str[1].substring(str[1].indexOf("."), str[1].length()));
 
         } else {
-            max = Integer.parseInt(str[1].trim());
+            max = Double.valueOf(str[1].trim());
         }
+        boolean first = true;
         while (min <= max) {
-            credits.add(String.valueOf(min));
+            double val = min;
+            if (first) {
+                val = min + minDecimal;
+                first = false;
+            }
+            credits.add(String.valueOf(val));
             min++;
         }
-        if (minDecimal != 0 && credits.size() > 0) {
-            String val = credits.get(0);
-            credits.add(0, val + String.valueOf(minDecimal));
-        }
         if (maxDecimal != 0 && credits.size() > 0) {
-            String val = credits.get(credits.size() - 1);
-            credits.add(credits.size() - 1, val + String.valueOf(maxDecimal));
+            double val = Double.valueOf(credits.get(credits.size() - 1));
+            credits.add(String.valueOf(val + maxDecimal));
         }
         return credits;
     }
