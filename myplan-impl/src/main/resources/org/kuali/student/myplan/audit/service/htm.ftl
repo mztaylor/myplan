@@ -181,7 +181,7 @@
 
     <div class="advisory ${rname} ${satisfied}">
         <#list reflow(req.headerLines) as headerLine>
-            <div class="text linkify urlify">
+            <div class="text linkify">
             ${deASCII(headerLine)}
             </div>
         </#list>
@@ -228,7 +228,7 @@
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
-                                <div class="text linkify urlify">
+                                <div class="text linkify">
                                 ${deASCII(titleLine)}
                                 </div>
                             </#list>
@@ -297,7 +297,7 @@
     <div class="bigsection bignote ${rname} ${satisfied}">
         <div class="heading">
             <#list reflow(req.headerLines) as headerLine>
-                <div class="text linkify urlify">
+                <div class="text linkify">
                 ${deASCII(headerLine)}
                 </div>
             </#list>
@@ -345,7 +345,7 @@
 
         <#if sectionHeadingOpen = true><br/></#if>
         <#list reflow(req.headerLines) as headerLine>
-            <div class="text linkify urlify">
+            <div class="text linkify">
             ${deASCII(headerLine)}
             </div>
         </#list>
@@ -400,7 +400,7 @@
             <div class="reqGroups">${req.groups?xml}</div></#if>
         <div class="title">
             <#list reflow( req.titleLines ) as titleLine>
-                <div class="text linkify urlify">
+                <div class="text linkify">
                 ${deASCII(titleLine)}
                 </div>
             </#list>
