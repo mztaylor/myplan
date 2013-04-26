@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Text;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.restlet.Client;
@@ -19,6 +20,7 @@ import org.restlet.representation.Representation;
 import org.restlet.util.Series;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,32 @@ import java.util.Map;
  */
 public class StudentServiceClientImpl
         implements StudentServiceClient {
+
+    public static void main(String[] args) throws Exception {
+        String baseUrl = "https://ucswseval1.cac.washington.edu/student";
+        String keyStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uwkstest.jks";
+        String keyStorePasswd = "changeit";
+        String trustStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uw.jts";
+        String trustStorePasswd = "secret";
+        StudentServiceClientImpl impl = new StudentServiceClientImpl(baseUrl, keyStoreFilename, keyStorePasswd, trustStoreFilename, trustStorePasswd);
+//		String xml = impl.getPersonByRegID("90B11A00C52A4852A1FB82A30AF9E0EE" );
+        String xml = impl.getPersonBySysKey("00723033");
+        SAXReader sax = new SAXReader();
+        StringReader sr = new StringReader(xml);
+        Document doc = sax.read(sr);
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("x", "http://webservices.washington.edu/student/");
+        DefaultXPath firstNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:FirstName/text()");
+        firstNamePath.setNamespaceURIs(namespaces);
+        DefaultXPath lastNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:LastName/text()");
+        lastNamePath.setNamespaceURIs(namespaces);
+
+        Text firstNameText = (Text) firstNamePath.selectSingleNode(doc);
+        Text lastNameText = (Text) lastNamePath.selectSingleNode(doc);
+        String firstName = firstNameText.getText();
+        String lastName = lastNameText.getText();
+        System.out.println(firstName + " " + lastName);
+    }
 
     //	public static void main( String[] args ) throws Exception {
 //		String baseUrl = "https://ucswseval1.cac.washington.edu/student";
@@ -336,6 +364,7 @@ public class StudentServiceClientImpl
      * @return
      * @throws ServiceException
      */
+    @Override
     public String getAcademicRecords(String regId, String year, String term, String registrationUrl) throws ServiceException {
         StringBuilder url = new StringBuilder(getBaseUrl());
         if (registrationUrl != null) {
@@ -350,6 +379,7 @@ public class StudentServiceClientImpl
         return sendQuery(url.toString().trim());
 
     }
+
 
     @Override
     public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
@@ -367,6 +397,41 @@ public class StudentServiceClientImpl
         }
         return sendQuery(url.toString().trim());
 
+    }
+
+//    /**
+//     * https://ucswseval1.cac.washington.edu/student/v4/person/{regid}.xml
+//     *
+//     * @param regId
+//     * @return
+//     * @throws ServiceException
+//     */
+//    @Override
+//    public String getPersonByRegID(String regId) throws ServiceException {
+//
+//        String base = getBaseUrl();
+//        String ver = getServiceVersion();
+//
+//        String url = String.format("%s/%s/person/%s.xml", base, ver, regId);
+//        return sendQuery(url);
+//    }
+
+
+    /**
+     * https://ucswseval1.cac.washington.edu/student/v4/person.xml?student_system_key=01234567
+     *
+     * @param syskey
+     * @return
+     * @throws ServiceException
+     */
+    @Override
+    public String getPersonBySysKey(String syskey) throws ServiceException {
+
+        String base = getBaseUrl();
+        String ver = getServiceVersion();
+
+        String url = String.format("%s/%s/person.xml?student_system_key=%s", base, ver, syskey);
+        return sendQuery(url);
     }
 
     @Override
