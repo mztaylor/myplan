@@ -533,7 +533,7 @@
                 justTitle: ${justTitle?xml}
 
 
-        -->
+            -->
 
         <#-- Gather taken course list -->
             <#if subreq.showTakenCourses>
@@ -554,7 +554,9 @@
                 </#list>
             </#if>
 
-            <#assign showHeader = showSubreqStatus || subreq.required || subreq.showSubreqNumber || subreq.showTitle || subreq.showExcLines >
+            <#assign showSubreqStatusX = showSubreqStatus && !( subreq.status == "Status_NONE" && subreq.seqErr?trim == "" ) >
+            <#assign showExcLine = ( subreq.showExcLines && subreq.appliedExceptionText?size > 0 ) >
+            <#assign showHeader = showSubreqStatusX || subreq.required || subreq.showSubreqNumber || subreq.showTitle || showExcLines >
             <#assign showTotals = subreq.showGotSummary || subreq.showInProgressHours || subreq.showPlannedHours || subreq.showNeedsSummary >
 
             <#if showHeader || showTotals || subreq.showSelectNotFrom >
@@ -582,7 +584,7 @@
                         </div>
                     </#if>
 
-                    <#if subreq.showExcLines>
+                    <#if showExcLines >
                         <#list subreq.appliedExceptionText as ex>
                             <div class="subreqCline">${ex?xml}</div>
                         </#list>
