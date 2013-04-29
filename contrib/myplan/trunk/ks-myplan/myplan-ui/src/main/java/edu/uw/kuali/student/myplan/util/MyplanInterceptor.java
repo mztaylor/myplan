@@ -8,13 +8,17 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,8 +29,6 @@ import java.util.Date;
  */
 public class MyplanInterceptor implements HandlerInterceptor {
 
-    private static final String SWS_URL_PARAM = "uw.studentservice.url";
-
     private final Logger logger = Logger.getLogger(HandlerInterceptor.class);
 
     private StudentServiceClient studentServiceClient;
@@ -35,7 +37,11 @@ public class MyplanInterceptor implements HandlerInterceptor {
         this.studentServiceClient = studentServiceClient;
     }
 
+    private static final String SWS_URL_PARAM = "uw.studentservice.url";
+
     private final String USER_AGENT = "User-Agent";
+
+    private static final String MESSAGE_BANNER_PARAM = "ksap.application.banner.message";
 
     private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/public/term/current";
 
@@ -47,11 +53,15 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v5/degreeaudit";
 
+    private final String BANNER_MESSAGE_LOCATION = ConfigContext.getCurrentContextConfig().getProperty(MESSAGE_BANNER_PARAM);
+
     private final String BROWSER_INCOMPATIBLE = "/myplan/browserIncompatible";
 
     private final String USER_UNAUTHORIZED = "/myplan/unauthorized";
 
     private final String LAST_STATUS_CHECK_TIME = "LAST_STATUS_CHECK_TIME";
+
+    private final String MESSAGE_BANNER_TEXT = "messageBannerText";
 
     private final String HOST_NAME = "hostName";
 
@@ -94,7 +104,38 @@ public class MyplanInterceptor implements HandlerInterceptor {
         }
         request.setAttribute(HOST_NAME, hostName.toUpperCase());
 
+        //Set Banner Message if exists
+        setBannerMessage(request);
+
+
         return true;
+    }
+
+    /**
+     * sets the Banner message if one exists
+     *
+     * @param request
+     * @return
+     */
+    private void setBannerMessage(HttpServletRequest request) {
+        if (StringUtils.hasText(BANNER_MESSAGE_LOCATION) && request.getSession().getAttribute(MESSAGE_BANNER_TEXT) == null) {
+            StringBuffer sb = new StringBuffer();
+            try {
+                FileInputStream fileInputStream = new FileInputStream(BANNER_MESSAGE_LOCATION);
+                DataInputStream in = new DataInputStream(fileInputStream);
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+                while ((strLine = br.readLine()) != null) {
+                    sb = sb.append(strLine);
+                }
+                in.close();
+            } catch (Exception e) {
+                logger.error("Could not write the Banner Message" + e.getMessage());
+            }
+            if (StringUtils.hasText(sb)) {
+                request.getSession().setAttribute(MESSAGE_BANNER_TEXT, sb.toString());
+            }
+        }
     }
 
     /**

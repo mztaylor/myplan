@@ -75,5 +75,13 @@
             </div>
         </#if>
     </#if>
+    <#if Session.messageBannerText??>
+        <div class="adviser-banner myplan-status info" style="float: none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+            <div class="message">
+                ${Session.messageBannerText}
+            </div>
+        </div>
+    </#if>
 </div>
 </#macro>
