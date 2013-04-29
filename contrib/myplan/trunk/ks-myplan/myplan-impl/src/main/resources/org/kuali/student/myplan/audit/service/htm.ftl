@@ -555,7 +555,7 @@
             </#if>
 
             <#assign showSubreqStatusX = showSubreqStatus && !( subreq.status == "Status_NONE" && subreq.seqErr?trim == "" ) >
-            <#assign showExcLine = ( subreq.showExcLines && subreq.appliedExceptionText?size > 0 ) >
+            <#assign showExcLines = ( subreq.showExcLines && subreq.appliedExceptionText?size > 0 ) >
             <#assign showHeader = showSubreqStatusX || subreq.required || subreq.showSubreqNumber || subreq.showTitle || showExcLines >
             <#assign showTotals = subreq.showGotSummary || subreq.showInProgressHours || subreq.showPlannedHours || subreq.showNeedsSummary >
 
