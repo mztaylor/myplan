@@ -13,7 +13,13 @@ public class LearningPlanDao extends GenericEntityDao<LearningPlanEntity> {
     }
 
     public List<LearningPlanEntity> getLearningPlansByType(String studentId, String typeId) {
-        return em.createQuery("select lp from LearningPlanEntity lp where lp.studentId =:studentId and lp.learningPlanType.id =:typeId")
+        Long stTime = System.currentTimeMillis();
+        List<LearningPlanEntity> lpList = em.createQuery("select lp from LearningPlanEntity lp where lp.studentId =:studentId and lp.learningPlanType.id =:typeId")
                 .setParameter("studentId", studentId).setParameter("typeId", typeId).getResultList();
+        Long enTime = System.currentTimeMillis();
+        Long difTime = enTime - stTime;
+        if(difTime > 50)
+        System.out.println("LP Student END  : " + studentId + ": Time:" + (enTime - stTime) );
+        return lpList;
     }
 }
