@@ -823,7 +823,7 @@
         </property>
     </bean>-->
 
-    <bean id="course_details_institution_data_single" parent="Uif-StackedCollectionGroup">
+    <bean id="course_details_institution_data_single" parent="KSAP-StackedCollectionGroup">
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution"/>
@@ -866,9 +866,9 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField" p:messageText="@{#line.name}"
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.name}"
                       p:style="margin-top:20px; font-weight:700; font-size: 1.25em;"/>
-                <bean parent="Uif-MessageField"
+                <bean parent="KSAP-MessageField"
                       p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
                       p:render="@{#line.code eq 95}" p:style="margin-top:20px;"/>
             </list>
@@ -910,7 +910,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-MessageField"
+                <bean parent="KSAP-MessageField"
                       p:messageText="For more information about the courses outlined below, visit &lt;a href=&quot;http://pce.uw.edu&quot;&gt;pce.uw.edu&lt;/a&gt;."
                       p:render="@{#line.code eq 95}" p:style="margin-top:20px;"/>
             </list>
@@ -922,7 +922,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_term_data" parent="Uif-StackedCollectionGroup">
+    <bean id="course_details_term_data" parent="KSAP-StackedCollectionGroup">
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.course.dataobject.CourseOfferingTerm"/>
         <property name="propertyName" value="courseOfferingTermList"/>
@@ -1150,11 +1150,10 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                      parent="Uif-DataField" p:propertyName="code" p:label="Section"
+                      parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
                       p:style="margin:4px 0; font-size:@{!#line.primary ? '1.75em;':'2.6em; line-height:25px;'}">
-                    <property name="fieldLabel.render" value="false"/>
                 </bean>
-                <bean parent="Uif-MessageField" p:messageText="PCE" p:style="margin:0;"
+                <bean parent="KSAP-MessageField" p:messageText="PCE" p:style="margin:0;"
                       p:title="UW Professional &amp; Continuing Education"
                       p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
                     <property name="cssClasses">
@@ -1192,11 +1191,10 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="activityOfferingType"
+                <bean parent="KSAP-SimpleDataField" p:propertyName="activityOfferingType"
                       p:style="margin-right:0.33em; text-transform:capitalize;">
-                    <property name="fieldLabel.render" value="false"/>
                 </bean>
-                <bean parent="Uif-Message" p:messageText="(@{#line.credits})" p:render="@{#line.primary}"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="(@{#line.credits})" p:render="@{#line.primary}"
                       p:style="margin:0;"/>
             </list>
         </property>
@@ -1239,14 +1237,14 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="Faculty Code Required"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Faculty Code Required"
                       p:render="@{#line.independentStudy}" p:style="margin:0;"/>
-                <bean parent="Uif-Message" p:messageText="Add Code Required"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Add Code Required"
                       p:render="@{#line.addCodeRequired AND !#line.independentStudy}" p:style="margin:0;"/>
                 <bean parent="current_section_status" p:actionLabel="View restrictions"
                       p:render="@{#line.enrollRestriction AND !#line.independentStudy AND !#line.addCodeRequired}"
                       p:style="margin:0;"/>
-                <bean parent="Uif-Message" p:messageText="--"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="--"
                       p:render="@{!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy}"
                       p:style="margin:0;"/>
             </list>
@@ -1283,9 +1281,8 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false" p:style="margin:0;"/>
-                <bean parent="Uif-DataField" p:style="margin:0;">
-                    <property name="propertyName" value="instructor"/>
-                    <property name="fieldLabel.render" value="false"/>
+                <bean parent="KSAP-SimpleDataField" p:style="margin:0;">
+                  <property name="propertyName" value="instructor"/>
                 </bean>
             </list>
         </property>
@@ -1310,33 +1307,33 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Label" p:labelText="Other" p:renderColon="false" p:style="margin:0;"/>
-                <bean parent="Uif-Message"
+                <bean parent="KSAP-NoSpanMessage"
                       p:messageText="@{#line.gradingOption}"
                       p:render="@{#line.gradingOption ne null}"/>
-                <bean parent="Uif-Message"
+                <bean parent="KSAP-NoSpanMessage"
                       p:messageText="Distance learning"
                       p:render="@{#line.distanceLearning}"/>
-                <bean parent="Uif-Message" p:messageText="Honors"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Honors"
                       p:render="@{#line.honorsSection}"/>
-                <bean parent="Uif-Message"
+                <bean parent="KSAP-NoSpanMessage"
                       p:messageText="Jointly offered"
                       p:render="@{#line.jointOffering}"/>
-                <bean parent="Uif-Message" p:messageText="Research"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Research"
                       p:render="@{#line.research}"/>
-                <bean parent="Uif-Message" p:messageText="Writing"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Writing"
                       p:render="@{#line.writingSection}"/>
-                <bean parent="Uif-Message"
+                <bean parent="KSAP-NoSpanMessage"
                       p:messageText="Service learning"
                       p:render="@{#line.serviceLearning}"/>
-                <bean parent="Uif-Message" p:messageText="New course"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="New course"
                       p:render="@{#line.newThisYear}"/>
-                <bean parent="Uif-Message"
+                <bean parent="KSAP-NoSpanMessage"
                       p:messageText="May not be eligible for Financial Aid"
                       p:render="@{#line.ineligibleForFinancialAid}"/>
-                <bean parent="Uif-Message" p:style="margin:0;"
+                <bean parent="KSAP-NoSpanMessage" p:style="margin:0;"
                       p:messageText="Course Fee $@{#line.feeAmount}"
                       p:render="@{#line.feeAmount ne null}"/>
-                <bean parent="Uif-Message" p:messageText="--" p:style="margin:0;"
+                <bean parent="KSAP-NoSpanMessage" p:messageText="--" p:style="margin:0;"
                       p:render="@{#line.gradingOption eq null AND
                                  !#line.distanceLearning AND
                                  !#line.honorsSection AND
@@ -1376,11 +1373,11 @@
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
+                            <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="@{#line.summerTerm}&lt;br/&gt;"
                                   p:style="display:inline; margin:0; float:none;"
                                   p:render="@{#line.summerTerm ne null}"/>
-                            <bean parent="Uif-Message" p:messageText="@{#line.sectionComments}"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.sectionComments}"
                                   p:style="display:inline; margin:0; float:none;"/>
                             <bean parent="current_section_status"
                                   p:actionLabel="@{#line.details}"
@@ -1453,7 +1450,7 @@
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
-    <bean id="emptyAction" parent="Uif-MessageField" p:messageText="--" p:rowSpan="3" p:colSpan="1">
+    <bean id="emptyAction" parent="KSAP-MessageField" p:messageText="--" p:rowSpan="3" p:colSpan="1">
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>

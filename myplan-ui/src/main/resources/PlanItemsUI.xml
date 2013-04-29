@@ -656,7 +656,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -664,7 +664,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.activityCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -673,7 +673,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -681,7 +681,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.grade ne null}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.grade ne null}">
                                 <property name="messageText" value="@{#line.grade}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -703,7 +703,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -711,7 +711,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -719,7 +719,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.grade ne null}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.grade ne null}">
                                 <property name="messageText" value="@{#line.grade}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -821,7 +821,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -829,7 +829,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.activityCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -838,7 +838,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -846,7 +846,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.grade ne null}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.grade ne null}">
                                 <property name="messageText" value="@{#line.grade}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -867,7 +867,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -875,7 +875,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -883,7 +883,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.grade ne null}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.grade ne null}">
                                 <property name="messageText" value="@{#line.grade}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1005,7 +1005,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1013,7 +1013,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.sections NE ''}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
                                 <property name="messageText" value="@{#line.sections}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1022,7 +1022,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1132,7 +1132,7 @@
                     <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1140,7 +1140,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.sections NE ''}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
                                 <property name="messageText" value="@{#line.sections}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1149,7 +1149,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1288,7 +1288,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1296,7 +1296,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.sections NE ''}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
                                 <property name="messageText" value="@{#line.sections}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1305,7 +1305,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1387,7 +1387,7 @@
                     <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1395,7 +1395,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.sections NE ''}">
+                            <bean parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
                                 <property name="messageText" value="@{#line.sections}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1404,7 +1404,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField">
+                            <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="(@{#line.credit})"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -1454,9 +1454,9 @@
         </property>
     </bean>
 
-    <bean id="term_total_credits_label" parent="Uif-MessageField" p:messageText="Credits"/>
+    <bean id="term_total_credits_label" parent="KSAP-MessageField" p:messageText="Credits"/>
 
-    <bean id="term_total_credits_text" parent="Uif-MessageField"
+    <bean id="term_total_credits_text" parent="KSAP-MessageField"
           p:messageText="@{#line.credits ne null ? #line.credits : '0'}">
         <property name="cssClasses">
             <list merge="true">
