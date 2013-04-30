@@ -2,20 +2,20 @@ function collapseReq(obj, onload) {
     var height = 23;
     if (onload) {
         obj.removeClass("expanded").addClass("collapsed").css({
-            height: height + "px"
+            height:height + "px"
         }).children(".header").find(".title").css({
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            height: height + "px"
-        });
+                whiteSpace:"nowrap",
+                overflow:"hidden",
+                height:height + "px"
+            });
     } else {
         obj.removeClass("expanded").addClass("collapsed").animate({
-            height: height + "px"
-        }, 300, function() {
+            height:height + "px"
+        }, 300, function () {
             jQuery(this).children(".header").find(".title").css({
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                height: height + "px"
+                whiteSpace:"nowrap",
+                overflow:"hidden",
+                height:height + "px"
             });
         });
     }
@@ -25,27 +25,27 @@ function expandReq(obj, onload) {
     var height = obj.data("height");
     if (onload) {
         obj.removeClass("collapsed").addClass("expanded").css({
-            height: "auto"
+            height:"auto"
         }).children(".header").find(".title").css({
-            whiteSpace: "normal",
-            overflow: "auto",
-            height: "auto"
-        });
+                whiteSpace:"normal",
+                overflow:"auto",
+                height:"auto"
+            });
     } else {
         obj.removeClass("collapsed").addClass("expanded").animate({
-            height: height
-        }, 300
+                height:height
+            }, 300
         ).children(".header").find(".title").css({
-            whiteSpace: "normal",
-            overflow: "auto",
-            height: "auto"
-        });
+                whiteSpace:"normal",
+                overflow:"auto",
+                height:"auto"
+            });
     }
 }
 
 function initAuditActions() {
 
-    jQuery(".requirement").each(function() {
+    jQuery(".requirement").each(function () {
         jQuery(this).data("height", jQuery(this).height());
         if (jQuery(this).is(".Status_OK")) {
             collapseReq(jQuery(this), true);
@@ -53,7 +53,7 @@ function initAuditActions() {
             expandReq(jQuery(this), true);
         }
     });
-    jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function(e) {
+    jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function (e) {
         var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
         if (target != "a") {
             var jRequirement = jQuery(this).parents(".requirement");
@@ -64,11 +64,11 @@ function initAuditActions() {
             }
         }
     });
-    jQuery(".control-toolbar #requirement-status").change(function() {
+    jQuery(".control-toolbar #requirement-status").change(function () {
         var data = jQuery(this).val();
 
         //jQuery(".requirement").each(function() {
-        jQuery(".myplan-audit-report .requirement[class*='Status']").not(".Status_NONE").each(function() {
+        jQuery(".myplan-audit-report .requirement[class*='Status']").not(".Status_NONE").each(function () {
 
             //if (jQuery(this).hasClass(data) || data == 'all' || jQuery(this).hasClass("Status_NONE") || !jQuery(this).is("div[class*='Status']")) {
             if (data == 'unmet' && jQuery(this).hasClass("Status_OK")) {
@@ -85,7 +85,7 @@ function initAuditActions() {
             jAuditMessage.show();
         }
 
-        jQuery(".section").each(function(){
+        jQuery(".section").each(function () {
             var jSectionMessage = jQuery(this).find(".myplan-status.all-reqs-filtered");
             if (jQuery(this).find(".requirement:visible").length > 0) {
                 jSectionMessage.hide();
@@ -94,4 +94,58 @@ function initAuditActions() {
             }
         });
     });
+}
+
+function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
+    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">'; //jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
+    jQuery.each(retrieveOptions, function (name, value) {
+        tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
+    });
+    tempForm += '</form>';
+    jQuery("body").append(tempForm);
+
+    var elementToBlock = jQuery("#" + id);
+
+    var updateRefreshableComponentCallback = function (htmlContent) {
+        var inputRequired = (jQuery("input#hidden_messy_items_flag_control", htmlContent).val() == "true");
+
+        if (inputRequired) {
+            var component = jQuery("#" + getId, htmlContent);
+            elementToBlock.unblock({onUnblock:function () {
+                if (jQuery("#" + id).length) {
+                    if (jQuery("#" + getId).length == 0) {
+                        jQuery("#" + id).append(component);
+                    } else {
+                        jQuery("#" + getId).replaceWith(component);
+                    }
+                }
+
+                runHiddenScripts(getId);
+
+                if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
+                    eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
+                }
+
+                jQuery.fancybox({
+                    helpers:{
+                        overlay:null
+                    },
+                    parent:"form:first",
+                    href:'#' + getId
+                });
+
+            }});
+        } else {
+            jQuery("button#plan_audit_run").click();
+        }
+
+    };
+
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
+    jQuery("form#" + id + "_form").remove();
+}
+
+function runPlanAudit(id) {
+    jQuery("button#" + id).click();
+    jQuery.fancybox.close(true);
 }

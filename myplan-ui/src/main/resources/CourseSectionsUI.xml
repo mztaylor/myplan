@@ -20,6 +20,10 @@
     -->
 
     <bean id="CourseSections-InquiryView" parent="MyPlanBaseInquiryView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
         <property name="headerText" value="Course Sections"/>
         <property name="viewName" value="CourseSections-InquiryView"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>

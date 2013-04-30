@@ -72,7 +72,7 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
             SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd");
             SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm aa");
-            return wrapInHtml(monthFormat.format(date).substring(0, 3), dateFormat.format(date), timeFormat.format(date));
+            return wrapInHtml(monthFormat.format(date), dateFormat.format(date), timeFormat.format(date));
         } else {
             SimpleDateFormat format = new SimpleDateFormat(simpleDateFormat);
             return format.format(date);
@@ -82,7 +82,7 @@ public class TimestampPropertyEditor extends PropertyEditorSupport implements Se
 
     private String wrapInHtml(String month, String date, String time) {
         StringBuffer sb = new StringBuffer();
-        sb = sb.append(String.format("<%s class=\"planAudit\">", listType.getListElementName()));
+        sb = sb.append(String.format("<%s>", listType.getListElementName()));
         sb = sb.append(String.format("<%s class=\"month\">%s</%s>", listType.getListItemElementName(), month, listType.getListItemElementName()));
         sb = sb.append(String.format("<%s class=\"date\">%s</%s>", listType.getListItemElementName(), date, listType.getListItemElementName()));
         sb = sb.append(String.format("<%s class=\"time\">%s</%s>", listType.getListItemElementName(), time, listType.getListItemElementName()));

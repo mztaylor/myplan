@@ -228,13 +228,16 @@
                     <property name="fieldLabel.cssClasses"
                               value="fl-text-gray myplan-text-normal"/>
                     <property name="message">
-                        <bean parent="Uif-Message" p:messageText="Check with the department or your adviser for more information about this course."/>
+                        <bean parent="Uif-Message"
+                              p:messageText="Check with the department or your adviser for more information about this course."/>
                     </property>
                 </bean>
                 <!-- Requisites -->
-                <bean id="course_details_popup_requisites_testing" parent="Uif-ListDataField" p:label="Course Requisites"
+                <bean id="course_details_popup_requisites_testing" parent="Uif-ListDataField"
+                      p:label="Course Requisites"
                       p:propertyName="courseSummaryDetails.requisites"
-                      p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false" p:render="@{courseSummaryDetails.requisites.size() gt 0}">
+                      p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
+                      p:render="@{courseSummaryDetails.requisites.size() gt 0}">
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -540,6 +543,10 @@
       This provides the pop-over panels (not the "dialog" ones) for CRUD actions on Course items.
     -->
     <bean id="PlannedCourse-FormView" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
         <property name="id" value="PlannedCourse-FormView"/>
         <property name="entryPageId" value="add_remove_course_popover_page"/>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
@@ -1262,6 +1269,10 @@
 
     <!--****************************Academic Planned Form View**********************-->
     <bean id="StudentAcademicPlanner-FormView" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
         <property name="id" value="StudentAcademicPlanner-FormView"/>
         <property name="footer.render" value="false"/>
         <property name="header.render" value="false"/>
