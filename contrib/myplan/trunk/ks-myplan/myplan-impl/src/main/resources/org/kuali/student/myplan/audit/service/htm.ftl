@@ -67,21 +67,23 @@
         </#if>
             <label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}">${stuno}</span>
         </div>
-        <div>
-            <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
-        </div>
+    <#--
+    <div>
+        <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
+    </div>
+    -->
         <div class="program-entry-qtr">
             <label>Program Entry
                 Date:</label> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)}
         </div>
         <div>
-            <label>Credits:</label> <span class="plan-credits"> PLAN-CREDITS </span>
+            <label>Credits:</label> <span class="for-credits"> FOR-CREDITS </span>
         </div>
         <div>
-            <label>Courses:</label> <span class="plan-courses"> PLAN-COURSES </span>
+            <label>Courses:</label> <span class="for-courses"> FOR-COURSES </span>
         </div>
         <div>
-            <label>Quarter:</label> <span class="plan-quarter"> PLAN-QUARTER </span>
+            <label>Quarter:</label> <span class="for-quarter"> FOR-QUARTER </span>
         </div>
     <#if degreeDate?trim != "NotFound">
         <div class="graduation-date">
