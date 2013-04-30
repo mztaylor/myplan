@@ -7,6 +7,8 @@ import org.dom4j.Element;
 import org.dom4j.Text;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -33,31 +35,6 @@ import java.util.Map;
 public class StudentServiceClientImpl
         implements StudentServiceClient {
 
-    public static void main(String[] args) throws Exception {
-        String baseUrl = "https://ucswseval1.cac.washington.edu/student";
-        String keyStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uwkstest.jks";
-        String keyStorePasswd = "changeit";
-        String trustStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uw.jts";
-        String trustStorePasswd = "secret";
-        StudentServiceClientImpl impl = new StudentServiceClientImpl(baseUrl, keyStoreFilename, keyStorePasswd, trustStoreFilename, trustStorePasswd);
-//		String xml = impl.getPersonByRegID("90B11A00C52A4852A1FB82A30AF9E0EE" );
-        String xml = impl.getPersonBySysKey("00723033");
-        SAXReader sax = new SAXReader();
-        StringReader sr = new StringReader(xml);
-        Document doc = sax.read(sr);
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("x", "http://webservices.washington.edu/student/");
-        DefaultXPath firstNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:FirstName/text()");
-        firstNamePath.setNamespaceURIs(namespaces);
-        DefaultXPath lastNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:LastName/text()");
-        lastNamePath.setNamespaceURIs(namespaces);
-
-        Text firstNameText = (Text) firstNamePath.selectSingleNode(doc);
-        Text lastNameText = (Text) lastNamePath.selectSingleNode(doc);
-        String firstName = firstNameText.getText();
-        String lastName = lastNameText.getText();
-        System.out.println(firstName + " " + lastName);
-    }
 
     //	public static void main( String[] args ) throws Exception {
 //		String baseUrl = "https://ucswseval1.cac.washington.edu/student";
@@ -417,6 +394,16 @@ public class StudentServiceClientImpl
 //    }
 
 
+    static class MyPerson extends PersonImpl {
+        public MyPerson(String regid, String first, String last) {
+            principalId = regid;
+            firstName = first;
+            lastName = last;
+        }
+    }
+
+    ;
+
     /**
      * https://ucswseval1.cac.washington.edu/student/v4/person.xml?student_system_key=01234567
      *
@@ -425,13 +412,39 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     @Override
-    public String getPersonBySysKey(String syskey) throws ServiceException {
+    public Person getPersonBySysKey(String syskey) throws ServiceException {
 
-        String base = getBaseUrl();
-        String ver = getServiceVersion();
+        try {
+            String base = getBaseUrl();
+            String ver = getServiceVersion();
 
-        String url = String.format("%s/%s/person.xml?student_system_key=%s", base, ver, syskey);
-        return sendQuery(url);
+            String url = String.format("%s/%s/person.xml?student_system_key=%s", base, ver, syskey);
+            String xml = sendQuery(url);
+            SAXReader sax = new SAXReader();
+            StringReader sr = new StringReader(xml);
+            Document doc = sax.read(sr);
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("x", "http://webservices.washington.edu/student/");
+            DefaultXPath firstNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:FirstName/text()");
+            firstNamePath.setNamespaceURIs(namespaces);
+            DefaultXPath lastNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:LastName/text()");
+            lastNamePath.setNamespaceURIs(namespaces);
+            DefaultXPath regidPath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:RegID/text()");
+            regidPath.setNamespaceURIs(namespaces);
+
+            Text firstNameText = (Text) firstNamePath.selectSingleNode(doc);
+            Text lastNameText = (Text) lastNamePath.selectSingleNode(doc);
+            Text regidText = (Text) regidPath.selectSingleNode(doc);
+            String firstName = firstNameText.getText();
+            String lastName = lastNameText.getText();
+            String regid = lastNameText.getText();
+            MyPerson person = new MyPerson(regid, firstName, lastName);
+            return person;
+        } catch (Exception e) {
+            throw new ServiceException("cannot get person", e);
+        }
+
+
     }
 
     @Override
