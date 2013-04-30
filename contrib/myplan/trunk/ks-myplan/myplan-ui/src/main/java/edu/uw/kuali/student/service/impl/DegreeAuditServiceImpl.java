@@ -9,6 +9,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
@@ -17,6 +18,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -62,11 +64,12 @@ import javax.jws.WebParam;
 import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -77,16 +80,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     // default is to create real links, unit tests should change to LINK_TEMPLATE.TEST
     private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
-    public static void main(String[] args)
-            throws Exception {
-        DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
-        String studentId = "D8D636BEB4CC482884420724BF152709";
-        String programId = "1BISMCS0011";
-//        AuditReportInfo info = impl.runAudit(studentId, programId, null, null);
-//        AuditReportInfo info = impl.getAuditReport("2012100110472750", "kauli.audit.type.default", CourseSearchConstants.CONTEXT_INFO);
-        AuditReportInfo info = impl.getHTMLReport("2013041811291367", null);
-//        System.out.println(DegreeAuditServiceImpl.padfront("  1 2 "));
-    }
+//    public static void main(String[] args)
+//            throws Exception {
+//        DegreeAuditServiceImpl impl = new DegreeAuditServiceImpl();
+//        String studentId = "D8D636BEB4CC482884420724BF152709";
+//        String programId = "1BISMCS0011";
+////        AuditReportInfo info = impl.runAudit(studentId, programId, null, null);
+////        AuditReportInfo info = impl.getAuditReport("2012100110472750", "kauli.audit.type.default", CourseSearchConstants.CONTEXT_INFO);
+//        AuditReportInfo info = impl.getHTMLReport("2013041811291367", null);
+////        System.out.println(DegreeAuditServiceImpl.padfront("  1 2 "));
+//    }
 
 
     private final Logger logger = Logger.getLogger(DegreeAuditServiceImpl.class);
@@ -370,7 +373,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Status status = response.getStatus();
             if (Status.isSuccess(status.getCode())) {
                 SAXReader reader = new SAXReader();
-                org.dom4j.Document document = reader.read(rep.getStream());
+                Document document = reader.read(rep.getStream());
 
                 Map<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("x", "http://webservices.washington.edu/student/");
@@ -379,8 +382,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 jobid1Path.setNamespaceURIs(namespaces);
                 jobid2Path.setNamespaceURIs(namespaces);
 
-                org.dom4j.Node jobid1Node = jobid1Path.selectSingleNode(document);
-                org.dom4j.Node jobid2Node = jobid2Path.selectSingleNode(document);
+                Node jobid1Node = jobid1Path.selectSingleNode(document);
+                Node jobid2Node = jobid2Path.selectSingleNode(document);
 
                 String jobid = "missing jobid";
                 if (jobid1Node != null) {
@@ -443,6 +446,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         long giveup = System.currentTimeMillis() + TIMEOUT;
+
         while (true) {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
             logger.debug(info.getMessage());
@@ -468,6 +472,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public AuditReportInfo getHTMLReport(String auditId, String auditTypeKey) throws OperationFailedException {
+
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
         String answer = "Audit ID " + auditId + " not available";
@@ -489,14 +494,75 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String name = null;
             Text preparedFor = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-for-name')]/text()");
             boolean isUserSession = UserSessionHelper.isUserSession();
+            String regId = null;
             if (isUserSession) {
-                String regId = UserSessionHelper.getStudentRegId();
+                regId = UserSessionHelper.getStudentRegId();
                 name = UserSessionHelper.getNameCapitalized(regId);
             } else {
                 String stuno = preparedFor.getText();
-                name = getStudentName(stuno);
+                String syskey = convertMyPlanStunoToSDBSyskey(stuno);
+                Person person = getStudentServiceClient().getPersonBySysKey(syskey);
+                name = person.getFirstName() + " " + person.getLastName();
+                regId = person.getPrincipalId();
             }
             preparedFor.setText(name);
+
+
+            boolean planAudit = false;
+            String forCourses = "";
+            String forCredits = "";
+            String forQuarter = "";
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
+            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                PlanAuditItem planAuditItem = new PlanAuditItem();
+                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("forCourses".equalsIgnoreCase(key)) {
+                        forCourses = value;
+                    } else if ("forCredits".equalsIgnoreCase(key)) {
+                        forCredits = value;
+                    } else if ("forQuarter".equalsIgnoreCase(key)) {
+                        forQuarter = value;
+                    } else if ("auditId".equalsIgnoreCase(key)) {
+                        if (auditId.equals(value)) {
+                            planAudit = true;
+                        }
+                    }
+                }
+                if (planAudit) break;
+            }
+
+//            if( preparedBy != null )
+//            {
+//                Text node = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-by')]/text()");
+//                if(node != null ) {
+//                    node.setText( preparedBy );
+//                }
+//            }
+
+            if (planAudit) {
+                {
+                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-credits')]/text()");
+                    if (node != null) {
+                        node.setText(forCredits);
+                    }
+                }
+
+                {
+                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-courses')]/text()");
+                    if (node != null) {
+                        node.setText(forCourses);
+                    }
+                }
+
+                {
+                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-quarter')]/text()");
+                    if (node != null) {
+                        node.setText(forQuarter);
+                    }
+                }
+            }
 
             Element root = (Element) doc.selectSingleNode("/html/div");
             // Replace the placeholder text for auditid
@@ -638,31 +704,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     public String convertMyPlanStunoToSDBSyskey(String stuno) {
         if (stuno.length() == 9 && stuno.startsWith("1")) {
             stuno = stuno.substring(1);
-        }
-        return stuno;
-    }
-
-    public String getStudentName(String stuno) {
-        try {
-            String syskey = convertMyPlanStunoToSDBSyskey(stuno);
-            String xml = getStudentServiceClient().getPersonBySysKey(syskey);
-            SAXReader sax = new SAXReader();
-            StringReader sr = new StringReader(xml);
-            Document doc = sax.read(sr);
-            Map<String, String> namespaces = new HashMap<String, String>();
-            namespaces.put("x", "http://webservices.washington.edu/student/");
-            DefaultXPath firstNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:FirstName/text()");
-            firstNamePath.setNamespaceURIs(namespaces);
-            DefaultXPath lastNamePath = new DefaultXPath("/x:SearchResults/x:Persons/x:Person/x:LastName/text()");
-            lastNamePath.setNamespaceURIs(namespaces);
-
-            Text firstNameText = (Text) firstNamePath.selectSingleNode(doc);
-            Text lastNameText = (Text) lastNamePath.selectSingleNode(doc);
-            String firstName = firstNameText.getText();
-            String lastName = lastNameText.getText();
-            return firstName + " " + lastName;
-        } catch (Exception e) {
-            logger.error(e);
         }
         return stuno;
     }

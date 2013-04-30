@@ -3,6 +3,7 @@ package edu.uw.kuali.student.lib.client.studentservice;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.kuali.rice.kim.api.identity.Person;
 import org.restlet.Client;
 
 import java.io.IOException;
@@ -180,7 +181,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
 //    }
 
     @Override
-    public String getPersonBySysKey(String syskey) throws ServiceException {
+    public Person getPersonBySysKey(String syskey) throws ServiceException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

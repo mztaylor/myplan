@@ -35,7 +35,9 @@ import org.kuali.student.myplan.audit.dataobject.CourseItem;
 import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.form.*;
+import org.kuali.student.myplan.audit.form.AuditForm;
+import org.kuali.student.myplan.audit.form.DegreeAuditForm;
+import org.kuali.student.myplan.audit.form.PlanAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
@@ -46,7 +48,6 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
-import org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -201,8 +202,8 @@ public class DegreeAuditController extends UifControllerBase {
 
                         String html = sw.toString();
 
-                        String preparedFor = user.getLastName() + ", " + user.getFirstName();
-                        html = html.replace("$$PreparedFor$$", preparedFor);
+//                        String preparedFor = user.getLastName() + ", " + user.getFirstName();
+//                        html = html.replace("$$PreparedFor$$", preparedFor);
                         degreeAuditForm.setAuditHtml(html);
 
 
@@ -247,8 +248,8 @@ public class DegreeAuditController extends UifControllerBase {
 
                         String html = sw.toString();
 
-                        String preparedFor = user.getLastName() + ", " + user.getFirstName();
-                        html = html.replace("$$PreparedFor$$", preparedFor);
+//                        String preparedFor = user.getLastName() + ", " + user.getFirstName();
+//                        html = html.replace("$$PreparedFor$$", preparedFor);
                         planAuditForm.setAuditHtml(html);
 
 
@@ -326,8 +327,8 @@ public class DegreeAuditController extends UifControllerBase {
                     }
 
                     String html = sw.toString();
-                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
-                    html = html.replace("$$PreparedFor$$", preparedFor);
+//                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
+//                    html = html.replace("$$PreparedFor$$", preparedFor);
                     form.setAuditHtml(html);
                 } else {
                     String[] params = {};
@@ -424,8 +425,8 @@ public class DegreeAuditController extends UifControllerBase {
                     }
 
                     String html = sw.toString();
-                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
-                    html = html.replace("$$PreparedFor$$", preparedFor);
+//                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
+//                    html = html.replace("$$PreparedFor$$", preparedFor);
                     planAuditform.setAuditHtml(html);
 
                 } else {
@@ -441,7 +442,7 @@ public class DegreeAuditController extends UifControllerBase {
             GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
 
         } catch (Exception e) {
-            logger.error("Could not complete audit run");
+            logger.error("Could not complete audit run", e);
             String[] params = {};
             GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             Throwable cause = e.getCause();

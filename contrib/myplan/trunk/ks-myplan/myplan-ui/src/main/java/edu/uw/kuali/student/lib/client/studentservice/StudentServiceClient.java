@@ -1,5 +1,6 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
+import org.kuali.rice.kim.api.identity.Person;
 import org.restlet.Client;
 
 import java.util.List;
@@ -110,7 +111,7 @@ public interface StudentServiceClient {
      * @return
      * @throws ServiceException
      */
-    public String getPersonBySysKey(String syskey) throws ServiceException;
+    public Person getPersonBySysKey(String syskey) throws ServiceException;
 
 //    /**
 //     * @param regId
