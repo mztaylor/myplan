@@ -22,6 +22,10 @@
     <!--  Saved Courses (wishlist) components -->
 
     <bean id="SavedCoursesSummary-LookupView" parent="MyPlanBaseLookupView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
         <property name="headerText" value="Saved Courses Summary"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>

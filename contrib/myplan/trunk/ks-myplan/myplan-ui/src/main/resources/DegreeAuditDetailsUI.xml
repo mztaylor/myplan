@@ -13,93 +13,6 @@
          express or implied. See the License for the specific language governing permissions
          and limitations under the License. -->
 
-    <!-- Not used to view audit reports. -->
-    <bean id="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
-        <property name="headerText" value="Specify Your Plan"/>
-
-        <!-- To Support progressive disclosure of campus select -->
-        <property name="persistFormToSession" value="true"/>
-        <property name="viewName" value="PlanAuditHandOff-FormView"/>
-        <property name="id" value="PlanAuditHandOff-FormView"/>
-        <property name="entryPageId" value="plan_audit_hand_off"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderTwo"/>
-        </property>
-        <property name="additionalScriptFiles">
-            <list>
-                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.version']}</value>
-            </list>
-        </property>
-        <property name="additionalCssFiles">
-            <list>
-                <value>ks-myplan/css/audit.css</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Page" p:id="plan_audit_hand_off">
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean p:id="hidden_messy_items_flag" parent="Uif-InputField" p:propertyName="planAudit.studentChoiceRequired">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <!--<bean p:id="hidden_clean_items" parent="Uif-InputField" p:propertyName="planAudit.cleanList">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>-->
-                            <bean id="hidden_clean_items" parent="Uif-DataField" p:propertyName="planAudit.cleanList"
-                                  p:style="display:none;"/>
-                            <bean p:id="hidden_campus_selected" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <bean p:id="hidden_seattle_program" parent="Uif-InputField" p:propertyName="planAudit.programParamSeattle">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <bean p:id="hidden_bothell_program" parent="Uif-InputField" p:propertyName="planAudit.programParamBothell">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <bean p:id="hidden_tacoma_program" parent="Uif-InputField" p:propertyName="planAudit.programParamTacoma">
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <ref bean="plan_audit_messy_items"/>
-                            <bean id="testing_button" p:id="testing_button" parent="Uif-PrimaryActionButton"
-                                  p:actionLabel="Submit" p:methodToCall="testingPlanAudit"
-                                  p:style="margin:0 0 0 100px;">
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
-    </bean>
-
 
     <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="headerText" value="Audit Degree"/>
@@ -121,6 +34,8 @@
         <property name="additionalScriptFiles">
             <list>
                 <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.version']}</value>
+                <!-- TODO: remove fancybox linkage after https://jira.kuali.org/browse/KULRICE-9396 is resolved -->
+                <value>ks-myplan/plugins/jquery.fancybox.pack.js?2.1.4</value>
             </list>
         </property>
         <property name="additionalCssFiles">
@@ -361,6 +276,7 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
+                <ref bean="plan_hand_off_container"/>
             </list>
         </property>
     </bean>
@@ -388,8 +304,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="@{degreeAudit.auditHtml}"
-                      p:style="display:block;"/>
+                <bean p:id="@{degreeAudit.auditId}" parent="Uif-Message" p:messageText="@{degreeAudit.auditHtml}"
+                      p:style="display:block;" p:cssClasses="degreeAudit auditHtml"/>
             </list>
         </property>
     </bean>
@@ -402,8 +318,8 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="@{planAudit.auditHtml}"
-                      p:style="display:block;"/>
+                <bean p:id="@{planAudit.auditId}" parent="Uif-Message" p:messageText="@{planAudit.auditHtml}"
+                      p:style="display:block;" p:cssClasses="planAudit auditHtml"/>
             </list>
         </property>
     </bean>
@@ -550,6 +466,7 @@
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
                     </property>
                 </bean>
+                <ref bean="plan_audit_validate"/>
                 <ref bean="plan_audit_run"/>
                 <!--<bean id="plan_audit_review" parent="Uif-PrimaryActionButton-Small"
                       p:actionLabel="Review Audit" p:style="margin:5px;">
@@ -580,17 +497,30 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_run" parent="degree_audit_run" p:methodToCall="runPlanAudit"
+    <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:disabled="false"
+          p:actionLabel="Run Plan Audit">
+        <property name="actionScript"
+                  value="validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});"/>
+        <!--<property name="onDocumentReadyScript" value="
+            auditButtonState('plan_audit_validate');
+            jQuery('button#plan_audit_validate').subscribe('AUDIT_COMPLETE', function () {
+                auditButtonState(jQuery(this).attr('id'));
+            });
+        "/>-->
+    </bean>
+
+
+    <bean id="plan_audit_run" parent="degree_audit_run" p:methodToCall="runPlanAudit" p:hidden="true" p:disabled="false"
           p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
           p:actionLabel="Run Plan Audit">
-        <property name="onClickScript"
+        <!--<property name="onClickScript"
                   value="setPendingAudit(jQuery(this), 5); setUrlHash('modified','true');"/>
         <property name="onDocumentReadyScript" value="
             auditButtonState('plan_audit_run');
             jQuery('button#plan_audit_run').subscribe('AUDIT_COMPLETE', function () {
                 auditButtonState(jQuery(this).attr('id'));
             });
-        "/>
+        "/>-->
         <property name="dataAttributes">
             <map>
                 <entry key="audittype" value="plan"/>
@@ -677,6 +607,11 @@
         </property>
     </bean>
 
+    <bean id="plan_hand_off_container" parent="Uif-VerticalBoxGroup" p:hidden="true">
+        <property name="validationMessages.render" value="false"/>
+        <property name="items" value=""/>
+    </bean>
+
     <bean id="plan_audit_messy_items" parent="Uif-ListCollectionSection">
         <property name="validationMessages.render" value="false"/>
         <property name="collectionObjectClass"
@@ -753,7 +688,7 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:style="padding-left:28px">
                     <property name="items">
                         <list>
-                            <bean id="messy_credits" parent="Uif-InputField"  p:propertyName="selectedCredit"
+                            <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit"
                                   p:width="80px;" p:render="@{#line.credits.size() gt 0}">
                                 <property name="validationMessages.render" value="false"/>
                                 <property name="control">
@@ -771,6 +706,83 @@
         </property>
         <property name="collectionLookup.render" value="false"/>
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
+    </bean>
+
+
+    <!-- Not used to view audit reports. -->
+    <bean id="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
+        <!-- To Support progressive disclosure of campus select -->
+        <property name="persistFormToSession" value="true"/>
+        <property name="viewName" value="PlanAuditHandOff-FormView"/>
+        <property name="id" value="PlanAuditHandOff-FormView"/>
+        <property name="entryPageId" value="plan_audit_hand_off"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:hidden="true">
+                    <property name="header">
+                        <bean parent="Uif-HeaderTwo"/>
+                    </property>
+                    <property name="headerText" value="Specify Your Plan"/>
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean p:id="hidden_messy_items_flag" parent="Uif-InputField"
+                                  p:propertyName="planAudit.studentChoiceRequired">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <!--<bean p:id="hidden_clean_items" parent="Uif-InputField" p:propertyName="planAudit.cleanList">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>-->
+                            <bean id="hidden_clean_items" parent="Uif-DataField" p:propertyName="planAudit.cleanList"
+                                  p:style="display:none;"/>
+                            <!--<bean p:id="hidden_campus_selected" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_seattle_program" parent="Uif-InputField" p:propertyName="planAudit.programParamSeattle">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_bothell_program" parent="Uif-InputField" p:propertyName="planAudit.programParamBothell">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_tacoma_program" parent="Uif-InputField" p:propertyName="planAudit.programParamTacoma">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>-->
+                            <ref bean="plan_audit_messy_items"/>
+                            <bean id="hand_off_submit" parent="Uif-PrimaryActionButton"
+                                  p:actionLabel="Submit">
+                                <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
     </bean>
 
 </beans>

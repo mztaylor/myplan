@@ -5,6 +5,10 @@
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="QuickAdd-FormView" parent="MyPlanBaseFormView">
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
         <property name="id" value="QuickAdd-FormView"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
@@ -85,7 +89,8 @@
             <list>
                 <ref bean="quick_add_title"/>
                 <ref bean="quick_add_items"/>
-                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId" p:fieldLabel.render="false" p:style="width: 300px;">
+                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId"
+                      p:fieldLabel.render="false" p:style="width: 300px;">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -173,7 +178,8 @@
 
                                         });"/>
     </bean>
-    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small" p:actionLabel="Cancel">
+    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
+          p:actionLabel="Cancel">
         <property name="actionScript" value="fnCloseAllPopups();"/>
     </bean>
 

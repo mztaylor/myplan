@@ -761,34 +761,23 @@ function truncateField(id, margin, floated) {
     });
 }
 function truncateAuditTitle(id, auditName) {
-    jQuery("#" + id + " .myplan-audit-title").each(function () {
+    var open = false;
+    jQuery("#" + id + " .myplan-audit-item .myplan-audit-title").each(function (index) {
         if (readUrlParam("viewId") == "DegreeAudit-FormView") {
-            if (
-                (readUrlParam(auditName + ".auditId") == false && jQuery(this).siblings("div[id^='" + auditName + "_hidden_recentAuditId']").length > 0) ||
-                    (readUrlParam(auditName + ".auditId") == jQuery(this).parents(".uif-verticalFieldGroup").attr("id"))
-                ) {
-                jQuery(this).find(".uif-label label").html("Viewing");
+            if (jQuery("." + auditName + ".auditHtml .myplan-audit-report").attr("auditid") == jQuery(this).parents(".myplan-audit-item").attr("id")) {
+                if (auditName == 'degreeAudit') {
+                    jQuery(this).find(".uif-label label").html("Viewing");
+                }
+                if (auditName == 'planAudit') {
+                    if (index > 1) open = true;
+                    jQuery(this).parents(".myplan-audit-item").addClass("viewing").find(".view-title").show();
+                }
             }
         }
-        if (auditName == 'planAudit') {
-            jQuery(this).find('span.uif-readOnlyContent').width(120).css({"text-overflow":"ellipsis",
-                "white-space":"nowrap",
-                "overflow":"hidden",
-                "display":"block",
-                "float":"left"});
-        } else {
-            var width = jQuery(this).width();
-            var label = parseFloat(jQuery(this).find(".uif-label label").css({"color":"#777777"}).width()) + parseFloat(jQuery(this).find(".uif-label label").css("padding-right"));
-
-            jQuery(this).find(".uif-label").next("span").width(width - label - 1).css({
-                "text-overflow":"ellipsis",
-                "white-space":"nowrap",
-                "overflow":"hidden",
-                "display":"block",
-                "float":"left"
-            });
-        }
     });
+    if (open) {
+        jQuery("#plan_audit_toggle_link").click();
+    }
 }
 /*
  ######################################################################################
@@ -1071,7 +1060,7 @@ function getPendingAudit(id, type) {
             if (data) {
                 var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
                 component.prepend(item);
-                pollPendingAudit(data.programId, data.recentAuditId);
+                pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
             }
             if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
                 component.next("div.uif-boxGroup").remove();
@@ -1093,7 +1082,7 @@ function blockPendingAudit(id) {
     }
 }
 
-function pollPendingAudit(programId, recentAuditId) {
+function pollPendingAudit(programId, recentAuditId, auditType) {
     jQuery.ajaxPollSettings.pollingType = "interval";
     jQuery.ajaxPollSettings.interval = 250; // polling interval in milliseconds
 
@@ -1109,8 +1098,8 @@ function pollPendingAudit(programId, recentAuditId) {
             var growl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
-                if (readUrlParam("auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function () {
-                    setUrlParam("auditId", "");
+                if (readUrlParam(auditType + "Audit.auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function () {
+                    setUrlParam(auditType + "Audit.auditId", "");
                 });
             }
 
@@ -1355,6 +1344,21 @@ function autoCompleteText(atpId) {
     jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
 
 }
+
+function toggleComponentContent(obj, sectionId, selector, expandText, collapseText) {
+    var action = jQuery(obj);
+    if (typeof action.data("hidden") == "undefined") {
+        action.data("hidden", true);
+    }
+    if (action.data("hidden")) {
+        jQuery("#" + sectionId).find(selector).show();
+        action.text(collapseText).data("hidden", false);
+    } else {
+        jQuery("#" + sectionId).find(selector).hide();
+        action.text(expandText).data("hidden", true);
+    }
+}
+
 
 function expandCurriculumComments(actionComponent, expandText, collapseText) {
     var curriculumMessage = jQuery(actionComponent).parent().find('.curriculum-comment');
