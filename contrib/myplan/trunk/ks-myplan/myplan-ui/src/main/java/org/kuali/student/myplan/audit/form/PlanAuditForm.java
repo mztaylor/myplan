@@ -3,6 +3,7 @@ package org.kuali.student.myplan.audit.form;
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
 import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,9 @@ public class PlanAuditForm extends DegreeAuditForm {
     }
 
     public List<CourseItem> getCleanList() {
+        if (cleanList == null) {
+            cleanList = new ArrayList<CourseItem>();
+        }
         return cleanList;
     }
 

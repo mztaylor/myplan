@@ -29,6 +29,7 @@ import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
@@ -51,7 +52,9 @@ import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.exceptions.*;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -359,6 +362,44 @@ public class DegreeAuditController extends UifControllerBase {
         return getUIFModelAndView(auditForm);
     }
 
+    /**
+     * @param planAuditForm
+     * @return
+     */
+    private List<CourseItem> getCleanCourseItems(PlanAuditForm planAuditForm, String learningPlanId) {
+        List<CourseItem> courseItems = planAuditForm.getCleanList();
+        Map<String, PlanItemInfo> planItemInfoMap = getPlanItemsMapByRefObjId(learningPlanId);
+        for (MessyItemDataObject messyItemDataObject : planAuditForm.getMessyItems()) {
+            for (MessyItem messyItem : messyItemDataObject.getMessyItemList()) {
+                String[] str = messyItem.getSelectedCredit().split(":");
+                CourseItem courseItem = new CourseItem();
+                courseItem.setAtpId(messyItemDataObject.getAtpId());
+                courseItem.setCourseCode(messyItem.getCourseCode());
+                courseItem.setCredit(str[1]);
+                courseItem.setSectionCode(str[0].isEmpty() ? null : str[0]);
+                courseItem.setCourseId(messyItem.getCourseId());
+                courseItems.add(courseItem);
+                PlanItemInfo planItemInfo = planItemInfoMap.get(messyItem.getVersionIndependentId());
+                if (planItemInfo != null) {
+                    List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.CREDIT, str[1]));
+                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.HONORS_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.HONORS_CREDIT))));
+                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.WRITING_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.WRITING_CREDIT))));
+                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.SECTION_SELECTED, str[0].isEmpty() ? null : str[0]));
+                    planItemInfo.setAttributes(attributeInfos);
+                    try {
+                        getAcademicPlanService().updatePlanItem(planItemInfo.getId(), planItemInfo, CONTEXT_INFO);
+                    } catch (Exception e) {
+                        logger.error("Could not update the PlanitemInfo for PlanId:" + planItemInfo.getId() + e);
+                    }
+                }
+
+            }
+
+        }
+        return courseItems;
+    }
+
     @RequestMapping(params = "methodToCall=runPlanAudit")
     public ModelAndView runPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                      HttpServletRequest request, HttpServletResponse response) {
@@ -374,19 +415,6 @@ public class DegreeAuditController extends UifControllerBase {
             return getUIFModelAndView(auditForm);
         }*/
         /*TODO: uncomment once the hand-off screen is completed*/
-        /*List<CourseItem> courseItems = planAuditform.getCleanList();
-        for (MessyItemDataObject messyItemDataObject : planAuditform.getMessyItems()) {
-            for (MessyItem messyItem : messyItemDataObject.getMessyItemList()) {
-                String[] str = messyItem.getSelectedCredit().split(":");
-                CourseItem courseItem = new CourseItem();
-                courseItem.setAtpId(messyItemDataObject.getAtpId());
-                courseItem.setCourseCode(messyItem.getCourseCode());
-                courseItem.setCredit(str[1]);
-                courseItem.setSectionCode(str[0].isEmpty() ? null : str[0]);
-                courseItem.setCourseId(messyItem.getCourseId());
-                courseItems.add(courseItem);
-            }
-        }*/
 
 
         /******Plan Audit Report Process*********/
@@ -415,6 +443,7 @@ public class DegreeAuditController extends UifControllerBase {
                         learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
                         break;
                     }
+                    List<CourseItem> courseItems = getCleanCourseItems(planAuditform, learningPlanInfo.getId());
                     AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, planAuditform.getAuditType(), learningPlanInfo.getId(), context);
                     InputStream in = report.getReport().getDataSource().getInputStream();
                     StringWriter sw = new StringWriter();
@@ -465,6 +494,7 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         List<CourseItem> courseItems = new ArrayList<CourseItem>();
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
+        Map<String, String> planItemSnapShots = getPlanItemSnapShots();
         List<PlannedTerm> plannedTermList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
         List<String> scheduledTerms = AtpHelper.getPublishedTerms();
         Map<String, List<MessyItem>> messyItemMap = new HashMap<String, List<MessyItem>>();
@@ -485,7 +515,7 @@ public class DegreeAuditController extends UifControllerBase {
                                 String decCr = String.valueOf(Double.valueOf(cr));
                                 credits.add(String.format("%s:%s:%s", section, decCr, decCr));
                             }
-                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                         }
                         // Is section Offered in Single value : NO
                         else if ("RANGE".equalsIgnoreCase(creditType)) {
@@ -493,7 +523,7 @@ public class DegreeAuditController extends UifControllerBase {
                             for (String cr : crs) {
                                 credits.add(String.format("%s:%s:%s", section, cr, cr));
                             }
-                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                         }
                         // Is course Offered in Single value : YES
                         else {
@@ -505,7 +535,7 @@ public class DegreeAuditController extends UifControllerBase {
                     else if (plannedCourseDataObject.getPlanActivities().size() > 1) {
                         Set<String> choicesList = processSectionProfile(plannedCourseDataObject.getPlanActivities());
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap);
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap, planItemSnapShots);
                         } else if (choicesList.size() == 1) {
                             buildCourseItemAndAddToList(plannedCourseDataObject, (String) choicesList.toArray()[0], null, courseItems);
                         }
@@ -517,7 +547,7 @@ public class DegreeAuditController extends UifControllerBase {
                         List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourseDataObject.getCourseDetails().getCourseId(), plannedCourseDataObject.getPlanItemDataObject().getAtp());
                         Set<String> choicesList = processSectionProfile(activityOfferingItems);
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap);
+                            buildMessyItemAndAddToMap(plannedCourseDataObject, choicesList, messyItemMap, planItemSnapShots);
                         } else if (choicesList.size() == 1) {
                             buildCourseItemAndAddToList(plannedCourseDataObject, (String) choicesList.toArray()[0], null, courseItems);
                         } else {
@@ -541,7 +571,7 @@ public class DegreeAuditController extends UifControllerBase {
                             String decCr = String.valueOf(Double.valueOf(cr));
                             credits.add(String.format("%s:%s:%s", "", decCr, decCr));
                         }
-                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
+                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                     }
                     // Is course Offered in Single value : NO
                     else if ("RANGE".equalsIgnoreCase(creditType)) {
@@ -549,7 +579,7 @@ public class DegreeAuditController extends UifControllerBase {
                         for (String cr : crs) {
                             credits.add(String.format("%s:%s:%s", "", cr, cr));
                         }
-                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap);
+                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                     }
                     // Is course Offered in Single value : YES
                     else {
@@ -586,6 +616,54 @@ public class DegreeAuditController extends UifControllerBase {
     }
 
     /**
+     * A map of Credit snapshots that student chose previously are returned back with course version independentId as key
+     *
+     * @return
+     */
+    private Map<String, String> getPlanItemSnapShots() {
+        Map<String, String> planItemSnapShots = new HashMap<String, String>();
+        PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
+        List<PlanItemInfo> planItemInfos = plannedTermsHelperBase.getLatestSnapShotPlanItemsByRefObjType(PlanConstants.COURSE_TYPE, UserSessionHelper.getStudentRegId());
+        for (PlanItemInfo planItemInfo : planItemInfos) {
+            String snapShotCredit = null;
+            boolean writing = false;
+            boolean honors = false;
+            String section = null;
+            for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                if (DegreeAuditConstants.CREDIT.equals(attributeInfo.getKey()) && attributeInfo.getValue() != null) {
+                    snapShotCredit = attributeInfo.getValue();
+                } else if (DegreeAuditConstants.WRITING_CREDIT.equals(attributeInfo.getKey()) && attributeInfo.getValue() != null) {
+                    writing = Boolean.valueOf(attributeInfo.getValue());
+                } else if (DegreeAuditConstants.HONORS_CREDIT.equals(attributeInfo.getKey()) && attributeInfo.getValue() != null) {
+                    honors = Boolean.valueOf(attributeInfo.getValue());
+                } else if (DegreeAuditConstants.SECTION_SELECTED.equalsIgnoreCase(attributeInfo.getKey()) && attributeInfo.getValue() != null) {
+                    section = attributeInfo.getValue();
+                }
+            }
+            if (planItemSnapShots.get(planItemInfo.getRefObjectId()) == null && snapShotCredit != null) {
+                planItemSnapShots.put(planItemInfo.getRefObjectId(), String.format("%s:%s:%s", section, snapShotCredit, snapShotCredit + (writing ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (honors ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "")));
+            }
+        }
+        return planItemSnapShots;
+    }
+
+    /**
+     * @return
+     */
+    private Map<String, PlanItemInfo> getPlanItemsMapByRefObjId(String learningPlanId) {
+        Map<String, PlanItemInfo> planItemsMap = new HashMap<String, PlanItemInfo>();
+        try {
+            List<PlanItemInfo> planItemInfos = getAcademicPlanService().getPlanItemsInPlan(learningPlanId, CONTEXT_INFO);
+            for (PlanItemInfo planItemInfo : planItemInfos) {
+                planItemsMap.put(planItemInfo.getRefObjectId(), planItemInfo);
+            }
+        } catch (Exception e) {
+            logger.error("Couldnot retrieve planitems for learningPlanId:" + learningPlanId, e);
+        }
+        return planItemsMap;
+    }
+
+    /**
      * processes the section profiling logic
      *
      * @param activityOfferingItems
@@ -607,7 +685,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String[] crs = credit.replace(" ", "").split(",");
                     for (String cr : crs) {
                         String decCr = String.valueOf(Double.valueOf(cr));
-                        String display = decCr + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
+                        String display = decCr + (isWritingSection ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (isHonorSection ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "");
                         if (!stringSet.contains(display)) {
                             stringSet.add(display);
                             choicesList.add(String.format("%s:%s:%s", section, decCr, display));
@@ -619,14 +697,14 @@ public class DegreeAuditController extends UifControllerBase {
                 else if ("RANGE".equalsIgnoreCase(creditType)) {
                     List<String> crs = getCreditsForRange(credit);
                     for (String cr : crs) {
-                        String display = cr + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
+                        String display = cr + (isWritingSection ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (isHonorSection ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "");
                         if (!stringSet.contains(display)) {
                             stringSet.add(display);
                             choicesList.add(String.format("%s:%s:%s", section, cr, display));
                         }
                     }
                 } else {
-                    String display = credit + (isWritingSection ? " -- Writing" : "") + (isHonorSection ? " -- Honors" : "");
+                    String display = credit + (isWritingSection ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (isHonorSection ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "");
                     if (!stringSet.contains(display)) {
                         stringSet.add(display);
                         choicesList.add(String.format("%s:%s:%s", section, credit, display));
@@ -646,6 +724,7 @@ public class DegreeAuditController extends UifControllerBase {
      * @param section
      * @param courseItems
      */
+
     private void buildCourseItemAndAddToList(PlannedCourseDataObject plannedCourseDataObject, String credit, String section, List<CourseItem> courseItems) {
         CourseItem courseItem = new CourseItem();
         courseItem.setAtpId(plannedCourseDataObject.getPlanItemDataObject().getAtp());
@@ -663,12 +742,17 @@ public class DegreeAuditController extends UifControllerBase {
      * @param credits
      * @param messyItemMap
      */
-    private void buildMessyItemAndAddToMap(PlannedCourseDataObject plannedCourseDataObject, Set<String> credits, Map<String, List<MessyItem>> messyItemMap) {
+    private void buildMessyItemAndAddToMap(PlannedCourseDataObject plannedCourseDataObject, Set<String> credits, Map<String, List<MessyItem>> messyItemMap, Map<String, String> planItemSnapShots) {
+        String versionIndependentId = plannedCourseDataObject.getCourseDetails().getVersionIndependentId();
         MessyItem messyItem = new MessyItem();
         messyItem.setCourseCode(plannedCourseDataObject.getCourseDetails().getCode());
         messyItem.setCourseTitle(plannedCourseDataObject.getCourseDetails().getCourseTitle());
         messyItem.setCourseId(plannedCourseDataObject.getCourseDetails().getCourseId());
+        messyItem.setVersionIndependentId(plannedCourseDataObject.getCourseDetails().getVersionIndependentId());
         messyItem.setCredits(credits);
+        if (planItemSnapShots != null && planItemSnapShots.containsKey(versionIndependentId) && StringUtils.hasText(planItemSnapShots.get(versionIndependentId))) {
+            messyItem.setSelectedCredit(planItemSnapShots.get(versionIndependentId));
+        }
         messyItem.setAtpId(plannedCourseDataObject.getPlanItemDataObject().getAtp());
         if (messyItemMap.containsKey(plannedCourseDataObject.getPlanItemDataObject().getAtp())) {
             messyItemMap.get(plannedCourseDataObject.getPlanItemDataObject().getAtp()).add(messyItem);

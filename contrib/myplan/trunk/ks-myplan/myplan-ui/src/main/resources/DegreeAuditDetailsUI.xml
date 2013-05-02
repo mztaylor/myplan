@@ -646,6 +646,53 @@
 
     </bean>
 
+    <bean id="plan_audit_clean_items" parent="Uif-ListCollectionSection" p:style="display:none;">
+        <property name="validationMessages.render" value="false"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.audit.dataobject.CourseItem"/>
+        <property name="propertyName" value="planAudit.cleanList"/>
+        <property name="header.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean p:id="hidden_courseItem_course_id" parent="Uif-InputField"
+                      p:propertyName="courseId">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_course_code" parent="Uif-InputField"
+                      p:propertyName="courseCode">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_section_code" parent="Uif-InputField"
+                      p:propertyName="sectionCode">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_atp_id" parent="Uif-InputField"
+                      p:propertyName="atpId">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_credit" parent="Uif-InputField"
+                      p:propertyName="credit">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup">
         <property name="validationMessages.render" value="false"/>
@@ -696,7 +743,37 @@
                                 </property>
                                 <property name="optionsFinder">
                                     <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
-
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_version_independent_id" parent="Uif-InputField"
+                                  p:propertyName="versionIndependentId">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_course_id" parent="Uif-InputField" p:propertyName="courseId">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_course_code" parent="Uif-InputField" p:propertyName="courseCode">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_atp_id" parent="Uif-InputField" p:propertyName="atpId">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean p:id="hidden_course_title" parent="Uif-InputField" p:propertyName="courseTitle">
+                                <property name="fieldLabel.render" value="false"/>
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
                         </list>
@@ -745,8 +822,9 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>-->
-                            <bean id="hidden_clean_items" parent="Uif-DataField" p:propertyName="planAudit.cleanList"
-                                  p:style="display:none;"/>
+                            <ref bean="plan_audit_clean_items"/>
+                            <!--<bean id="hidden_clean_items" parent="Uif-DataField" p:propertyName="planAudit.cleanList"
+                                  p:style="display:none;"/>-->
                             <!--<bean p:id="hidden_campus_selected" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
                                 <property name="fieldLabel.render" value="false"/>
                                 <property name="control">
