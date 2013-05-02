@@ -19,6 +19,7 @@ public class MessyItem {
     private String atpId;
     private String courseCode;
     private String courseId;
+    private String versionIndependentId;
     private String courseTitle;
     private Set<String> credits;
     private String selectedCredit;
@@ -72,6 +73,14 @@ public class MessyItem {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getVersionIndependentId() {
+        return versionIndependentId;
+    }
+
+    public void setVersionIndependentId(String versionIndependentId) {
+        this.versionIndependentId = versionIndependentId;
     }
 
     /*Used to set the MessyItem to request and return back a AtpId. Used in the planAuditMessyItems to build the drop downs*/

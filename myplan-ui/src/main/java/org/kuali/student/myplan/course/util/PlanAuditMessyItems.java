@@ -4,6 +4,7 @@ import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.myplan.audit.dataobject.MessyItem;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -34,11 +35,11 @@ public class PlanAuditMessyItems extends KeyValuesBase {
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
                 String display = credit.split(":")[2];
-                if (display.contains(" -- writings -- Honors")) {
+                if (display.contains(" -- " + DegreeAuditConstants.WRITING_CREDIT + " -- " + DegreeAuditConstants.HONORS_CREDIT)) {
                     bothHWCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" -- Honors")) {
+                } else if (display.contains(" -- " + DegreeAuditConstants.HONORS_CREDIT)) {
                     honorCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" -- Writings")) {
+                } else if (display.contains(" -- " + DegreeAuditConstants.WRITING_CREDIT)) {
                     writingCredits.add(new ConcreteKeyValue(credit, display));
                 } else {
                     normalCredits.add(new ConcreteKeyValue(credit, display));

@@ -25,6 +25,7 @@ import org.kuali.student.myplan.utils.UserSessionHelper;
 import javax.xml.namespace.QName;
 import java.util.*;
 
+import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -467,6 +468,33 @@ public class PlannedTermsHelperBase {
 
         credits = credits.replace(".0", "");
         return credits;
+    }
+
+    /**
+     * used to get the PlanItems for Audit learning plan type and for given refObjType
+     *
+     * @param refObjType
+     * @param studentId
+     * @return
+     */
+    public List<PlanItemInfo> getLatestSnapShotPlanItemsByRefObjType(String refObjType, String studentId) {
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
+            if (learningPlanList.size() > 0) {
+                LearningPlanInfo learningPlan = learningPlanList.get(learningPlanList.size() - 1);
+                String learningPlanID = learningPlan.getId();
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+                for (PlanItemInfo planItemInfo : planItemInfoList) {
+                    if (planItemInfo.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) && planItemInfo.getRefObjectType().equalsIgnoreCase(refObjType)) {
+                        planItemInfos.add(planItemInfo);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Cold not retrieve PlanItems", e);
+        }
+        return planItemInfos;
     }
 
     public AcademicRecordService getAcademicRecordService() {
