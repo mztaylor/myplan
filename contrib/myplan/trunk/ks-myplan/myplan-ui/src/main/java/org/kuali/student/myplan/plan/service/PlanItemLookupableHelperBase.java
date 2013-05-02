@@ -7,7 +7,6 @@ import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -59,7 +58,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             for (PlanItemInfo planItemInfo : planItemInfoList) {
                 populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections);
             }
-            addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
+            if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+                addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
+            }
         }
         return plannedCourseList;
     }
@@ -143,7 +144,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
 
             plannedCourseList.add(plannedCourse);
-        } else if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+        } else if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
             List<String> planPeriods = planItemInfo.getPlanPeriods();
             String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
             if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {

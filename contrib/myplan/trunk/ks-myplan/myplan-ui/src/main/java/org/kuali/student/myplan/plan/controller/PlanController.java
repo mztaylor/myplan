@@ -743,13 +743,10 @@ public class PlanController extends UifControllerBase {
         List<ActivityOfferingItem> activityOfferings = new ArrayList<ActivityOfferingItem>();
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-
             // Now switch the courseDetails based on the versionIndependent Id
             if (!courseId.equals(courseDetails.getVersionIndependentId())) {
                 courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
             }
-
-            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
         }
@@ -811,6 +808,7 @@ public class PlanController extends UifControllerBase {
         String secondarySectionCode = null;
         String primaryRegistrationCode = null;
         if (form.getSectionCode() != null) {
+            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
             /*Populate the primary and secondary flags*/
             for (ActivityOfferingItem activityOfferingItem : activityOfferings) {
                 if (activityOfferingItem.isPrimary() && !form.isPrimary() && form.getSectionCode().startsWith(activityOfferingItem.getCode())) {
