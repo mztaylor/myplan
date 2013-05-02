@@ -862,6 +862,20 @@ The order of these tests are significant. Do not change lightly.
             <#assign targets = addTarget( targets, target ) >
             <#assign target = trimmed?substring( nth )?trim >
 
+        <#elseif trimmed?contains( "EQUAL TO:" ) >
+            <#assign nth = trimmed?index_of( "EQUAL TO:" ) >
+            <#assign temp = trimmed?substring( 0, nth )?trim >
+            <#assign target = target + " " + temp >
+            <#assign targets = addTarget( targets, target ) >
+            <#assign target = trimmed?substring( nth )?trim >
+
+        <#elseif trimmed?contains( ">>MATCHED AS:" ) >
+            <#assign nth = trimmed?index_of( ">>MATCHED AS:" ) >
+            <#assign temp = trimmed?substring( 0, nth )?trim >
+            <#assign target = target + " " + temp >
+            <#assign targets = addTarget( targets, target ) >
+            <#assign target = trimmed?substring( nth )?trim >
+
         <#elseif ( trimmed == "." ) >
         <#-- do nothing -->
 
