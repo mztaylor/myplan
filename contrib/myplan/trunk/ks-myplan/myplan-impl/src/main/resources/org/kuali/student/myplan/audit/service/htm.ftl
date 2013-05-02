@@ -267,7 +267,7 @@
                                     <td class="term">${takenCourse.yt?xml}</td>
                                     <td class="course linkify">${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml}</td>
                                     <td class="description">
-                                        <#list takenCourse.descriptiveLines as descriptiveLine>
+                                        <#list reflow(takenCourse.descriptiveLines) as descriptiveLine>
                                         ${descriptiveLine?xml} <br/>
                                         </#list>
                                     </td>
@@ -544,10 +544,7 @@
                     <#assign takenRow = takenRow + [takenCourse.courseType] >
                     <#assign takenRow = takenRow + [takenCourse.yt] >
                     <#assign takenRow = takenRow + [takenCourse.displayCourse] >
-                    <#assign takenDesc = "" >
-                    <#list takenCourse.descriptiveLines as descriptiveLine>
-                        <#assign takenDesc = takenDesc + descriptiveLine >
-                    </#list>
+                    <#assign takenDesc = takenCourse.descriptiveLines >
                     <#assign takenRow = takenRow + [takenDesc] >
                     <#assign takenRow = takenRow + [takenCourse.credit] >
                     <#assign takenRow = takenRow + [takenCourse.grade] >
@@ -577,11 +574,9 @@
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
-                                <#if titleLine?trim != "." >
-                                    <div class="text linkify">
-                                    ${deASCII(titleLine)}
-                                    </div>
-                                </#if>
+                                <div class="text linkify">
+                                ${deASCII(titleLine)}
+                                </div>
                             </#list>
                         </div>
                     </#if>
@@ -763,7 +758,7 @@
                         <#assign courseType = takenRow[0] >
                         <#assign yt = takenRow[1] >
                         <#assign displayCourse = takenRow[2] >
-                        <#assign desc = takenRow[3] >
+                        <#assign lines = takenRow[3] >
                         <#assign credit = takenRow[4] >
                         <#assign grade = takenRow[5] >
                         <#assign condCode = takenRow[6] >
@@ -782,7 +777,11 @@
                     <tr class="${courseType}">
                         <td class="term">${yt?xml}</td>
                         <td class="course linkify">${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml}</td>
-                        <td class="description"> ${desc?xml} </td>
+                        <td class="description">
+                            <#list reflow(lines) as line>
+                            ${line} <br/>
+                            </#list>
+                        </td>
                         <td class="credit"> ${credit?string?replace(".0","")?xml} </td>
                         <td class="grade"> ${grade?xml} </td>
                         <#if toolTipsMap[condCode]?exists >
