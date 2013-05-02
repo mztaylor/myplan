@@ -779,7 +779,7 @@
                         <td class="course linkify">${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml}</td>
                         <td class="description">
                             <#list reflow(lines) as line>
-                            ${line} <br/>
+                            ${line?xml} <br/>
                             </#list>
                         </td>
                         <td class="credit"> ${credit?string?replace(".0","")?xml} </td>
