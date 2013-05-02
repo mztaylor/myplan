@@ -348,7 +348,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-plan-heading</value>
@@ -357,7 +359,9 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0; width:72px;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean id="previous_year_button" parent="MyPlan-NavLink"
@@ -400,7 +404,9 @@
                             </bean>
 
                             <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0; width: 132px;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean id="single_quarter_button" parent="MyPlan-NavLink">
@@ -455,7 +461,9 @@
                 </bean>
                 <ref bean="overallPlanLink"/>
                 <bean parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField"
@@ -469,7 +477,9 @@
     </bean>
 
     <bean id="planned_courses_detail_list" parent="Uif-ListCollectionSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header.render" value="false"/>
@@ -497,7 +507,9 @@
                                 <value>@{#line.openForPlanning ? 'open' : 'closed'}</value>
                             </list>
                         </property>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                         <property name="disclosure.renderImage" value="false"/>
                         <property name="disclosure.defaultOpen" value="true"/>
                     </bean>
@@ -576,7 +588,9 @@
 
     <bean id="academicRecordCollection" parent="Uif-StackedCollectionGroup"
           p:headerText="@{#parentLine.completedTerm ? 'Completed': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'Registered' : ''}">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -584,7 +598,9 @@
                   value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning}"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="completed_help_icon"/>
@@ -595,7 +611,9 @@
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="MyPlanRegistrationStatusIcon"/>
@@ -604,7 +622,9 @@
             </bean>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -639,7 +659,9 @@
                       p:title="@{#line.courseTitle}"
                       p:style="padding-left:28px"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onClickScript"
                               value="openMenu('@{#line.uuid}_completed','completed_menu_items','@{#line.atpId}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <property name="dataAttributes">
@@ -694,7 +716,9 @@
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseTitle}"
                       p:style="padding-left:28px"
                       p:render="@{#line.courseCode ne null and #line.courseId eq null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-invalid</value>
@@ -749,7 +773,9 @@
 
     <bean id="advisorAcademicRecordCollection" parent="Uif-StackedCollectionGroup"
           p:headerText="@{#parentLine.completedTerm ? 'Completed': (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning)? 'Registered' : ''}">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -757,7 +783,9 @@
                   value="@{#line.completedTerm or #line.academicRecord.size() gt 0 or !#line.openForPlanning}"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="completed_help_icon"/>
@@ -768,7 +796,9 @@
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="MyPlanRegistrationStatusIcon"/>
@@ -777,7 +807,9 @@
             </bean>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -812,7 +844,9 @@
                       p:title="@{#line.courseTitle}"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.uuid}','course_summary_dialog_page',{courseId:'@{#line.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -858,7 +892,9 @@
                 </bean>
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseTitle}"
                       p:render="@{#line.courseCode ne null and #line.courseId eq null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-invalid</value>
@@ -912,13 +948,17 @@
     </bean>
 
     <bean id="plannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="planned_help_icon"/>
@@ -956,7 +996,9 @@
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
@@ -970,7 +1012,9 @@
                       parent="Uif-HorizontalFieldGroup"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:title="@{#line.courseDetails.courseTitle}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onClickScript"
                               value="openMenu('@{#line.planItemDataObject.id}_planned','planned_menu_items','@{#line.planItemDataObject.atp}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
@@ -1038,7 +1082,9 @@
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="footer">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
@@ -1070,13 +1116,17 @@
     </bean>
 
     <bean id="advisorPlannedCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="planned_help_icon"/>
@@ -1107,7 +1157,9 @@
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
@@ -1122,7 +1174,9 @@
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1165,7 +1219,9 @@
         <property name="collectionLookup.quickfinderAction.render" value="false"/>
         <property name="footer">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="term_total_credits" p:cssClasses="myplan-carousel-term-total"
@@ -1197,13 +1253,17 @@
     </bean>
 
     <bean id="backupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="backup_help_icon"/>
@@ -1240,7 +1300,9 @@
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="backupList"/>
@@ -1254,7 +1316,9 @@
                       parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onClickScript"
                               value="openMenu('@{#line.planItemDataObject.id}_backup','backup_menu_items','@{#line.planItemDataObject.atp}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                     <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to switch menu -->
@@ -1326,13 +1390,17 @@
     </bean>
 
     <bean id="advisorBackupCollection" parent="Uif-StackedCollectionGroup" p:headerText="Backup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="backup_help_icon"/>
@@ -1362,7 +1430,9 @@
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="backupList"/>
@@ -1377,7 +1447,9 @@
                       p:title="@{#line.courseDetails.courseTitle}"
                       p:render="@{#line.courseDetails.code ne null}"
                       p:onClickScript="openPlanItemPopUp('@{#line.planItemDataObject.id}','course_summary_dialog_page',{courseId:'@{#line.CourseDetails.courseId}',pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top',position:'right'});">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
@@ -1425,7 +1497,9 @@
     </bean>
 
     <bean id="term_no_courses" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Message" p:messageText="No courses planned">
@@ -1443,7 +1517,9 @@
     </bean>
 
     <bean id="term_total_credits" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <ref bean="term_total_credits_label"/>
