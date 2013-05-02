@@ -268,7 +268,7 @@
                                     <td class="course linkify">${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml}</td>
                                     <td class="description">
                                         <#list reflow(takenCourse.descriptiveLines) as descriptiveLine>
-                                        ${descriptiveLine?xml} <br/>
+                                        ${descriptiveLine?xml}  <#if line_has_next > <br/> </#if>
                                         </#list>
                                     </td>
                                     <td class="credit">${takenCourse.credit?string?replace(".0","")?xml}</td>
@@ -574,9 +574,11 @@
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
-                                <div class="text linkify">
-                                ${deASCII(titleLine)}
-                                </div>
+                                <#if titleLine?trim != "." >
+                                    <div class="text linkify">
+                                    ${deASCII(titleLine)}
+                                    </div>
+                                </#if>
                             </#list>
                         </div>
                     </#if>
@@ -779,7 +781,7 @@
                         <td class="course linkify">${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml}</td>
                         <td class="description">
                             <#list reflow(lines) as line>
-                            ${line?xml} <br/>
+                            ${line?xml} <#if line_has_next > <br/> </#if>
                             </#list>
                         </td>
                         <td class="credit"> ${credit?string?replace(".0","")?xml} </td>
