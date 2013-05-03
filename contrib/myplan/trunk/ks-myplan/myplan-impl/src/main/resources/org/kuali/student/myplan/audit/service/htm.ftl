@@ -267,8 +267,8 @@
                                     <td class="term">${takenCourse.yt?xml}</td>
                                     <td class="course linkify">${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml}</td>
                                     <td class="description">
-                                        <#list reflow(takenCourse.descriptiveLines) as descriptiveLine>
-                                        ${descriptiveLine?xml}  <#if line_has_next > <br/> </#if>
+                                        <#list reflow(takenCourse.descriptiveLines) as line>
+                                        ${line?xml}  <#if line_has_next > <br/> </#if>
                                         </#list>
                                     </td>
                                     <td class="credit">${takenCourse.credit?string?replace(".0","")?xml}</td>
