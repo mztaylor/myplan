@@ -629,7 +629,7 @@ public class DegreeAuditController extends UifControllerBase {
             String snapShotCredit = null;
             boolean writing = false;
             boolean honors = false;
-            String section = null;
+            String section = "";
             for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
                 if (DegreeAuditConstants.CREDIT.equals(attributeInfo.getKey()) && attributeInfo.getValue() != null) {
                     snapShotCredit = attributeInfo.getValue();

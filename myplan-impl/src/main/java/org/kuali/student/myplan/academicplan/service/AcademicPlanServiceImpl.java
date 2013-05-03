@@ -252,6 +252,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         for (LearningPlanEntity lpe : lpeList) {
             learningPlanDtos.add(lpe.toDto());
         }
+        Collections.sort(learningPlanDtos, new Comparator<LearningPlanInfo>() {
+            public int compare(LearningPlanInfo l1, LearningPlanInfo l2) {
+                return l1.getMeta().getUpdateTime().compareTo(l2.getMeta().getUpdateTime());
+            }
+        });
         return learningPlanDtos;
     }
 
