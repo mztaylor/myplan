@@ -85,7 +85,7 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-List">
                 <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
+                    <bean parent="Uif-CollectionVerticalBoxItem" p:hidden="@{#index gt 2}">
                         <property name="id" value="@{#line.report.auditId}"/>
                         <property name="validationMessages.render" value="false"/>
                         <property name="cssClasses">
@@ -105,7 +105,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:hidden="@{#index gt 2}">
+                <bean parent="Uif-HorizontalFieldGroup">
                     <property name="group.validationMessages.render" value="false"/>
                     <property name="group.instructionalMessage">
                         <bean parent="Uif-Message" p:messageText="You are viewing"/>
@@ -124,9 +124,8 @@
                             <value>myplan-click</value>
                         </list>
                     </property>
-                    <property name="onDocumentReadyScript" value="
-                        if (@{#line.recentAudit}) jQuery('button#plan_audit_run').data('recentauditid', '@{#line.report.auditId}');
-                    "/>
+                    <property name="onDocumentReadyScript"
+                              value="if (@{#line.recentAudit}) jQuery('button#plan_audit_run').data('recentauditid', '@{#line.report.auditId}');"/>
                     <property name="onClickScript"
                               value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}#plan_audit_block_tab';"/>
                     <property name="items">

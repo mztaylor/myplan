@@ -26,8 +26,14 @@
         <property name="header">
             <bean parent="Uif-HeaderTwo"/>
         </property>
+        <!--<property name="additionalCssFiles">
+            <list>
+                <value>krad/plugins/rice/datatables/jquery.dataTables.css</value>
+            </list>
+        </property>-->
         <property name="additionalScriptFiles">
             <list>
+                <value>krad/plugins/rice/datatables/jquery.dataTables.js</value>
                 <value>ks-myplan/scripts/myplan.search.js</value>
             </list>
         </property>
