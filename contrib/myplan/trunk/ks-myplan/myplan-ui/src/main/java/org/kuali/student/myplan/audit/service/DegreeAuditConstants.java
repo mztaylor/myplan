@@ -7,6 +7,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
     public static final String DEFAULT_KEY="default";
+    public static final String DEFAULT_SELECT = "Select";
     public static final String DEFAULT_VALUE="Select a degree program or minor";
     public static final String AUDIT_PARAM_ID = "auditId";
     public static final String AUDIT_PARAM_TYPE = "auditType";

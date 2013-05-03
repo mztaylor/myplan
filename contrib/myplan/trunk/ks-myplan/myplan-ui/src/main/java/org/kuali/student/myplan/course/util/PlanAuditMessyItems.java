@@ -26,6 +26,7 @@ public class PlanAuditMessyItems extends KeyValuesBase {
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
+        keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_SELECT));
         List<KeyValue> normalCredits = new ArrayList<KeyValue>();
         List<KeyValue> honorCredits = new ArrayList<KeyValue>();
         List<KeyValue> writingCredits = new ArrayList<KeyValue>();

@@ -371,28 +371,31 @@ public class DegreeAuditController extends UifControllerBase {
         Map<String, PlanItemInfo> planItemInfoMap = getPlanItemsMapByRefObjId(learningPlanId);
         for (MessyItemDataObject messyItemDataObject : planAuditForm.getMessyItems()) {
             for (MessyItem messyItem : messyItemDataObject.getMessyItemList()) {
-                String[] str = messyItem.getSelectedCredit().split(":");
-                CourseItem courseItem = new CourseItem();
-                courseItem.setAtpId(messyItemDataObject.getAtpId());
-                courseItem.setCourseCode(messyItem.getCourseCode());
-                courseItem.setCredit(str[1]);
-                courseItem.setSectionCode(str[0].isEmpty() ? null : str[0]);
-                courseItem.setCourseId(messyItem.getCourseId());
-                courseItems.add(courseItem);
-                PlanItemInfo planItemInfo = planItemInfoMap.get(messyItem.getVersionIndependentId());
-                if (planItemInfo != null) {
-                    List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
-                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.CREDIT, str[1]));
-                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.HONORS_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.HONORS_CREDIT))));
-                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.WRITING_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.WRITING_CREDIT))));
-                    attributeInfos.add(new AttributeInfo(DegreeAuditConstants.SECTION_SELECTED, str[0].isEmpty() ? null : str[0]));
-                    planItemInfo.setAttributes(attributeInfos);
-                    try {
-                        getAcademicPlanService().updatePlanItem(planItemInfo.getId(), planItemInfo, CONTEXT_INFO);
-                    } catch (Exception e) {
-                        logger.error("Could not update the PlanitemInfo for PlanId:" + planItemInfo.getId() + e);
+                if (!DegreeAuditConstants.DEFAULT_KEY.equalsIgnoreCase(messyItem.getSelectedCredit())) {
+                    String[] str = messyItem.getSelectedCredit().split(":");
+                    CourseItem courseItem = new CourseItem();
+                    courseItem.setAtpId(messyItemDataObject.getAtpId());
+                    courseItem.setCourseCode(messyItem.getCourseCode());
+                    courseItem.setCredit(str[1]);
+                    courseItem.setSectionCode(str[0].isEmpty() ? null : str[0]);
+                    courseItem.setCourseId(messyItem.getCourseId());
+                    courseItems.add(courseItem);
+                    PlanItemInfo planItemInfo = planItemInfoMap.get(messyItem.getVersionIndependentId());
+                    if (planItemInfo != null) {
+                        List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+                        attributeInfos.add(new AttributeInfo(DegreeAuditConstants.CREDIT, str[1]));
+                        attributeInfos.add(new AttributeInfo(DegreeAuditConstants.HONORS_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.HONORS_CREDIT))));
+                        attributeInfos.add(new AttributeInfo(DegreeAuditConstants.WRITING_CREDIT, String.valueOf(str[2].contains(DegreeAuditConstants.WRITING_CREDIT))));
+                        attributeInfos.add(new AttributeInfo(DegreeAuditConstants.SECTION_SELECTED, str[0].isEmpty() ? null : str[0]));
+                        planItemInfo.setAttributes(attributeInfos);
+                        try {
+                            getAcademicPlanService().updatePlanItem(planItemInfo.getId(), planItemInfo, CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not update the PlanitemInfo for PlanId:" + planItemInfo.getId() + e);
+                        }
                     }
                 }
+
 
             }
 
@@ -512,8 +515,7 @@ public class DegreeAuditController extends UifControllerBase {
                         if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                             String[] crs = credit.replace(" ", "").split(",");
                             for (String cr : crs) {
-                                String decCr = String.valueOf(Double.valueOf(cr));
-                                credits.add(String.format("%s:%s:%s", section, decCr, decCr));
+                                credits.add(String.format("%s:%s:%s", section, cr, cr));
                             }
                             buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                         }
@@ -568,8 +570,7 @@ public class DegreeAuditController extends UifControllerBase {
                     if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                         String[] crs = credit.replace(" ", "").split(",");
                         for (String cr : crs) {
-                            String decCr = String.valueOf(Double.valueOf(cr));
-                            credits.add(String.format("%s:%s:%s", "", decCr, decCr));
+                            credits.add(String.format("%s:%s:%s", "", cr, cr));
                         }
                         buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
                     }
@@ -684,11 +685,10 @@ public class DegreeAuditController extends UifControllerBase {
                 if ("MULTIPLE".equalsIgnoreCase(creditType)) {
                     String[] crs = credit.replace(" ", "").split(",");
                     for (String cr : crs) {
-                        String decCr = String.valueOf(Double.valueOf(cr));
-                        String display = decCr + (isWritingSection ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (isHonorSection ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "");
+                        String display = cr + (isWritingSection ? " -- " + DegreeAuditConstants.WRITING_CREDIT : "") + (isHonorSection ? " -- " + DegreeAuditConstants.HONORS_CREDIT : "");
                         if (!stringSet.contains(display)) {
                             stringSet.add(display);
-                            choicesList.add(String.format("%s:%s:%s", section, decCr, display));
+                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
                         }
                     }
 
@@ -790,38 +790,38 @@ public class DegreeAuditController extends UifControllerBase {
      */
     private List<String> getCreditsForRange(String credit) {
         String[] str = credit.split("-");
-        double min = 0;
-        double minDecimal = 0;
-        double max = 0;
-        double maxDecimal = 0;
+        int min = 0;
+        int minDecimal = 0;
+        int max = 0;
+        int maxDecimal = 0;
         List<String> credits = new ArrayList<String>();
         if (str[0].contains(".")) {
-            min = Double.valueOf(str[0].substring(0, str[0].indexOf(".")));
-            minDecimal = Double.valueOf(str[0].substring(str[0].indexOf("."), str[0].length()));
+            String[] str2 = str[0].split(".");
+            min = Integer.valueOf(str2[0].trim());
+            minDecimal = Integer.valueOf(str2[1].trim());
 
         } else {
-            min = Double.valueOf(str[0]);
+            min = Integer.valueOf(str[0]);
         }
         if (str[1].contains(".")) {
-            max = Double.valueOf(str[1].substring(0, str[1].indexOf(".")));
-            maxDecimal = Double.valueOf(str[1].substring(str[1].indexOf("."), str[1].length()));
+            String[] str2 = str[1].split(".");
+            max = Integer.valueOf(str2[0].trim());
+            maxDecimal = Integer.valueOf(str2[1].trim());
 
         } else {
-            max = Double.valueOf(str[1].trim());
+            max = Integer.parseInt(str[1].trim());
         }
-        boolean first = true;
         while (min <= max) {
-            double val = min;
-            if (first) {
-                val = min + minDecimal;
-                first = false;
-            }
-            credits.add(String.valueOf(val));
+            credits.add(String.valueOf(min));
             min++;
         }
+        if (minDecimal != 0 && credits.size() > 0) {
+            String val = credits.get(0);
+            credits.add(0, val + String.valueOf(minDecimal));
+        }
         if (maxDecimal != 0 && credits.size() > 0) {
-            double val = Double.valueOf(credits.get(credits.size() - 1));
-            credits.add(String.valueOf(val + maxDecimal));
+            String val = credits.get(credits.size() - 1);
+            credits.add(credits.size() - 1, val + String.valueOf(maxDecimal));
         }
         return credits;
     }
