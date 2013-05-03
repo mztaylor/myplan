@@ -325,6 +325,21 @@ a:focus {
     position: relative;
 }
 
+.announcement-banner {
+    width: 930px;
+    margin: 20px auto;
+    color: #333;
+    background-color: #cddff2;
+    padding: 8px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    display: block;
+    border: solid 1px #9DC7FF;
+    line-height: 18px;
+    position: relative;
+}
+
 .backdoor a,
 .adviser-banner a {
     text-decoration: underline;
