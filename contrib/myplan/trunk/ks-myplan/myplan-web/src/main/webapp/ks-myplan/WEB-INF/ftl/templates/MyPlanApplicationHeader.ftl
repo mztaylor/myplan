@@ -75,11 +75,11 @@
             </div>
         </#if>
     </#if>
-    <#if Session.messageBannerText??>
+    <#if Request.messageBannerText??>
         <div class="announcement-banner" style="float: none;">
             <div class="message">
                 <span class="myplan-text-gray">[ ANNOUNCEMENT ]</span>
-                <span>${Session.messageBannerText}</span>
+                <span>${Request.messageBannerText}</span>
             </div>
         </div>
     </#if>

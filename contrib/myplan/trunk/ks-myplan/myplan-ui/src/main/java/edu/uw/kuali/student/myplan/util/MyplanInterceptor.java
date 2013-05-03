@@ -133,7 +133,7 @@ public class MyplanInterceptor implements HandlerInterceptor {
                 logger.error("Could not write the Banner Message" + e.getMessage());
             }
             if (StringUtils.hasText(sb)) {
-                request.getSession().setAttribute(MESSAGE_BANNER_TEXT, sb.toString());
+                request.setAttribute(MESSAGE_BANNER_TEXT, sb.toString());
             }
         }
     }
