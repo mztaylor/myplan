@@ -142,7 +142,7 @@
     <#if !req.showStatus >
         <#assign satisfied="Status_NONE">
     </#if>
-<#--
+    <!--
     rname: ${rname?xml}
     ok: ${req.ok?string?xml}
     category: ${req.category?xml}
