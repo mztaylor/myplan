@@ -26,6 +26,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -548,9 +549,10 @@ public class PlannedTermsHelperBase {
         String studentID = user.getPrincipalId();
         YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
         ArrayList<String> creditList = new ArrayList<String>();
-        PlanItemLookupableHelperBase planItemLookupableHelperBase = new PlanItemLookupableHelperBase();
         try {
+
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            //This should be looping only once as student has only one learning plan of plan type
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
@@ -565,15 +567,15 @@ public class PlannedTermsHelperBase {
                         String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
                         try {
                             courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
-                        } catch (Exception e) {
-                            logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                        } catch (DoesNotExistException e) {
+                            //secondary section will return does not exist exceptions
                             continue;
                         }
                         if (courseOfferingInfo != null) {
                             if (courseSectionCreditsMap.containsKey(courseOfferingInfo.getCourseCode())) {
-                                courseSectionCreditsMap.get(courseOfferingInfo.getCourseId()).add(courseOfferingInfo.getCreditOptionName());
+                                courseSectionCreditsMap.get(courseOfferingInfo.getCourseCode()).add(courseOfferingInfo.getCreditOptionName());
                             } else {
-                                courseSectionCreditsMap.put(courseOfferingInfo.getCourseId(), Arrays.asList(courseOfferingInfo.getCreditOptionName()));
+                                courseSectionCreditsMap.put(courseOfferingInfo.getCourseCode(), Arrays.asList(courseOfferingInfo.getCreditOptionName()));
                             }
                         }
                     } else if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
@@ -581,11 +583,10 @@ public class PlannedTermsHelperBase {
                     }
                 }
                 for (PlanItemInfo planItemInfo : plannedCourses) {
-                    CourseDetailsInquiryHelperImpl courseDetailsInquiry = new CourseDetailsInquiryHelperImpl();
-                    CourseInfo courseInfo = courseDetailsInquiry.getCourseInfo(planItemInfo.getRefObjectId());
-                    List<String> sectionCreditRangeList = courseSectionCreditsMap.get(courseInfo.getId());
+                    CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
+                    List<String> sectionCreditRangeList = courseSectionCreditsMap.get(courseInfo.getCode());
                     String credit = null;
-                    if (sectionCreditRangeList != null && sectionCreditRangeList.size() >= 0) {
+                    if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
                         credit = unionCreditList(sectionCreditRangeList);
                     } else {
                         credit = CreditsFormatter.formatCredits(courseInfo);

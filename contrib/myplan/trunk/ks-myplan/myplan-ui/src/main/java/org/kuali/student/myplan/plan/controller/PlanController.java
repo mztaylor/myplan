@@ -26,6 +26,9 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -51,6 +54,7 @@ import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
@@ -82,8 +86,9 @@ public class PlanController extends UifControllerBase {
 
     private PlannedTermsHelperBase plannedTermsHelper;
 
-
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
+
+    private transient CourseOfferingService courseOfferingService;
 
     //  Java to JSON outputter.
     private transient ObjectMapper mapper = new ObjectMapper();
@@ -249,15 +254,12 @@ public class PlanController extends UifControllerBase {
 
         }
         planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(courseId, UserSessionHelper.getStudentRegId()));
-
-        /*Populating the planActivities (Activity Offerings which are planned)*/
-        if (planItem != null && planItem.getPlanPeriods().size() > 0) {
-            List<String> terms = new ArrayList<String>();
-            for (String term : planItem.getPlanPeriods()) {
-                terms.add(AtpHelper.atpIdToTermName(term));
-            }
-            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCourseId() != null && terms.size() > 0) {
-                planForm.setPlanActivities(getPlannedActivities(planForm.getCourseSummaryDetails().getCourseId(), terms, null));
+        //Plan activities are needed only for move, copy, delete functionality
+        List<String> activitiesRequiredPages = Arrays.asList(PlanConstants.MOVE_DIALOG_PAGE, PlanConstants.COPY_DIALOG_PAGE, PlanConstants.DELETE_DIALOG_PAGE);
+        //Populating the planActivities (Activity Offerings which are planned)
+        if (activitiesRequiredPages.contains(form.getPageId()) && planItem != null && planItem.getPlanPeriods().size() > 0) {
+            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCode() != null) {
+                planForm.setPlanActivities(getPlannedActivitiesByCourseAndTerm(planForm.getCourseSummaryDetails().getCode(), planItem.getPlanPeriods().get(0)));
             }
         }
 
@@ -510,7 +512,7 @@ public class PlanController extends UifControllerBase {
         /*Remove the Planned Sections for this course before moving the course to another term*/
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (courseDetails != null && courseDetails.getCourseId() != null && planItem != null && planItem.getPlanPeriods().size() > 0) {
-            planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, form.getInstituteCode(), false, null);
+            planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, form.getInstituteCode(), false, null);
         }
         try {
             if (planItemsToRemove.size() > 0) {
@@ -1064,12 +1066,8 @@ public class PlanController extends UifControllerBase {
         String sections = null;
         List<String> plannedSections = new ArrayList<String>();
         if (planItem != null && planItem.getPlanPeriods().size() > 0) {
-            List<String> terms = new ArrayList<String>();
-            for (String term : planItem.getPlanPeriods()) {
-                terms.add(AtpHelper.atpIdToTermName(term));
-            }
-            if (courseDetails != null && courseDetails.getCourseId() != null && terms.size() > 0) {
-                List<ActivityOfferingItem> plannedActivities = getPlannedActivities(courseDetails.getCourseId(), terms, null);
+            if (courseDetails != null && courseDetails.getCourseId() != null) {
+                List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItem.getPlanPeriods().get(0));
                 if (plannedActivities != null && plannedActivities.size() > 0) {
                     for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
                         plannedSections.add(activityOfferingItem.getCode());
@@ -1265,9 +1263,9 @@ public class PlanController extends UifControllerBase {
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseId, planItem, form.getInstituteCode(), false, null);
+                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetail.getCode(), planItem, form.getInstituteCode(), false, null);
             } else if (form.isPrimary()) {
-                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseId, planItem, form.getInstituteCode(), true, sectionCode);
+                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetail.getCode(), planItem, form.getInstituteCode(), true, sectionCode);
             }
         }
 
@@ -1295,28 +1293,56 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_ITEM_DELETED, new String[0]);
     }
 
-
     /**
-     * Used to get the list of planned activity offering items for the courseId, terms and institute code(if provided)
-     *
-     * @param instituteCode
+     * @param courseCode
+     * @param termId
      * @return
      */
-    private List<ActivityOfferingItem> getPlannedActivities(String courseId, List<String> terms, String instituteCode) {
+    private List<ActivityOfferingItem> getPlannedActivitiesByCourseAndTerm(String courseCode, String termId) {
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-        if (courseId != null) {
-            List<CourseOfferingInstitution> courseOfferingInstitutions = getCourseDetailsInquiryService().getCourseOfferingInstitutionsById(courseId, terms);
-            for (CourseOfferingInstitution courseOfferingInstitution : courseOfferingInstitutions) {
-                for (CourseOfferingTerm courseOfferingTerm : courseOfferingInstitution.getCourseOfferingTermList()) {
-                    for (ActivityOfferingItem activityOfferingItem : courseOfferingTerm.getActivityOfferingItemList()) {
-                        if (null != activityOfferingItem.getPlanItemId() && null == instituteCode) {
-                            activityOfferingItems.add(activityOfferingItem);
-                        } else if (null != activityOfferingItem.getPlanItemId() && null != instituteCode && activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
-                            activityOfferingItems.add(activityOfferingItem);
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            //This should be looping only once as student has only one learning plan of plan type
+            for (LearningPlanInfo learningPlan : learningPlanList) {
+                String learningPlanID = learningPlan.getId();
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanID, termId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+                for (PlanItemInfo planItem : planItemList) {
+                    String luType = planItem.getRefObjectType();
+                    //TODO: if condition assumes refObjId for activities contains course codes
+                    if (PlanConstants.SECTION_TYPE.equalsIgnoreCase(luType) && planItem.getRefObjectId().contains(courseCode)) {
+                        AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
+                        DeconstructedCourseCode deconstructedCourseCode = getCourseHelper().getCourseDivisionAndNumber(planItem.getRefObjectId());
+                        String activityOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
+                        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+                        try {
+                            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
                         }
+                        /*TODO: move this to Coursehelper to make it institution neutral*/
+                        String primarySectionCode = null;
+                        for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
+                                primarySectionCode = attributeInfo.getValue();
+                                break;
+                            }
+                        }
+                        String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
+                        CourseOfferingInfo courseOfferingInfo = null;
+                        try {
+                            courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                        }
+
+                        ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryService().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItem.getId());
+                        activityOfferingItems.add(activityOfferingItem);
                     }
                 }
+
             }
+        } catch (Exception e) {
+            logger.error("Could not retrieve activities for course:" + courseCode + "for term:" + termId, e);
         }
         return activityOfferingItems;
     }
@@ -1325,22 +1351,19 @@ public class PlanController extends UifControllerBase {
     /**
      * Used to get the Planned sections as a map with plan item id's and section codes using following params
      *
-     * @param courseId
+     * @param courseCd
      * @param planItem
      * @param instituteCode
      * @param sectionPrimary
      * @param sectionCode
      * @return
      */
-    private Map<String, String> getPlannedSectionsByInstCdAndSectionCd(String courseId, PlanItem planItem, String instituteCode, boolean sectionPrimary, String sectionCode) {
+    private Map<String, String> getPlannedSectionsByInstCdAndSectionCd(String courseCd, PlanItem planItem, String
+            instituteCode, boolean sectionPrimary, String sectionCode) {
         Map<String, String> plannedSections = new HashMap<String, String>();
-        List<String> terms = new ArrayList<String>();
-        for (String term : planItem.getPlanPeriods()) {
-            terms.add(AtpHelper.atpIdToTermName(term));
-        }
-        List<ActivityOfferingItem> activityOfferingItems = getPlannedActivities(courseId, terms, instituteCode);
+        List<ActivityOfferingItem> activityOfferingItems = getPlannedActivitiesByCourseAndTerm(courseCd, planItem.getPlanPeriods().get(0));
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId())) {
+            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId()) && activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
                 if (sectionPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getRegistrationCode());
                 } else if (!sectionPrimary) {
@@ -1355,6 +1378,7 @@ public class PlanController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions for the Adviser.
      */
+
     private ModelAndView doAdviserAccessError(PlanForm form, String errorMessage, Exception e) {
         String[] params = {};
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params, e);
@@ -1416,7 +1440,8 @@ public class PlanController extends UifControllerBase {
     /**
      * Logs errors and passes the request on to the error page.
      */
-    private ModelAndView doErrorPage(PlanForm form, String errorMessage, String errorKey, String[] params, Exception e) {
+    private ModelAndView doErrorPage(PlanForm form, String errorMessage, String errorKey, String[] params, Exception
+            e) {
         if (e != null) {
             logger.error(errorMessage, e);
         } else {
@@ -1440,12 +1465,12 @@ public class PlanController extends UifControllerBase {
      */
     private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseSummaryDetails courseDetails) {
         /*String[] t = {"?", "?"};
-        try {
-            t = AtpHelper.atpIdToTermNameAndYear(atpId);
-        } catch (RuntimeException e) {
-            logger.error("Could not convert ATP ID to a term and year.", e);
-        }
-        String term = t[0] + " " + t[1];*/
+try {
+    t = AtpHelper.atpIdToTermNameAndYear(atpId);
+} catch (RuntimeException e) {
+    logger.error("Could not convert ATP ID to a term and year.", e);
+}
+String term = t[0] + " " + t[1];*/
         String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(atpId)};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
@@ -1529,7 +1554,8 @@ public class PlanController extends UifControllerBase {
      * @return The newly created plan item or the existing plan item where a plan item already exists for the given course.
      * @throws RuntimeException on errors.
      */
-    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String planItemType)
+    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, List<String> termIds, String
+            planItemType)
             throws DuplicateEntryException {
 
         if (StringUtils.isEmpty(courseId)) {
@@ -1580,7 +1606,8 @@ public class PlanController extends UifControllerBase {
      * @return
      * @throws DuplicateEntryException
      */
-    protected PlanItemInfo addActivityOfferingPlanItem(LearningPlan plan, String refObjId, List<String> termIds, String planItemType)
+    protected PlanItemInfo addActivityOfferingPlanItem(LearningPlan plan, String
+            refObjId, List<String> termIds, String planItemType)
             throws DuplicateEntryException {
 
         if (StringUtils.isEmpty(refObjId)) {
@@ -1753,8 +1780,8 @@ public class PlanController extends UifControllerBase {
      */
     private LearningPlan getLearningPlan(String studentId) {
         /*
-         *  First fetch the student's learning plan.
-         */
+        *  First fetch the student's learning plan.
+        */
         List<LearningPlanInfo> learningPlans = null;
         try {
             learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(studentId,
@@ -1786,7 +1813,8 @@ public class PlanController extends UifControllerBase {
      * @param studentId
      * @return The plan.
      */
-    private LearningPlan createDefaultLearningPlan(String studentId) throws InvalidParameterException, DataValidationErrorException,
+    private LearningPlan createDefaultLearningPlan(String studentId) throws
+            InvalidParameterException, DataValidationErrorException,
             MissingParameterException, AlreadyExistsException, PermissionDeniedException, OperationFailedException {
 
         LearningPlanInfo plan = new LearningPlanInfo();
@@ -1813,7 +1841,8 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, List<String> itemsToUpdate) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo
+                                                                                          planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, List<String> itemsToUpdate) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
@@ -1856,7 +1885,7 @@ public class PlanController extends UifControllerBase {
                 if (!planForm.isPrimary()) {
                     sectionCode = planForm.getSectionCode().substring(0, 1);
                     sections.add(sectionCode);
-                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
                     Collections.sort(sections);
                     params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
                 }
@@ -1873,7 +1902,8 @@ public class PlanController extends UifControllerBase {
      * @param atpId The id of the term.
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(String atpId, PlanConstants.JS_EVENT_NAME eventName) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(String
+                                                                                                      atpId, PlanConstants.JS_EVENT_NAME eventName) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -1894,7 +1924,8 @@ public class PlanController extends UifControllerBase {
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo
+                                                                                       planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
@@ -1927,7 +1958,7 @@ public class PlanController extends UifControllerBase {
                         sections.add(sectionCode);
                         sections.add(planForm.getSectionCode());
                     }
-                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCourseId(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
                     Collections.sort(sections);
                     params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
                 }
@@ -2056,5 +2087,17 @@ public class PlanController extends UifControllerBase {
 
     public void setCourseDetailsInquiryService(CourseDetailsInquiryHelperImpl courseDetailsInquiryService) {
         this.courseDetailsInquiryService = courseDetailsInquiryService;
+    }
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
     }
 }

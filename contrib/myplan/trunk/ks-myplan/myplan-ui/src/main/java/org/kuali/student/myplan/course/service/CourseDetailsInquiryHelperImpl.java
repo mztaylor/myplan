@@ -173,7 +173,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * If version identpendent Id provided, retrieve the right course version Id based on current term/date
          * else get the same id as the provided course version specific Id
          */
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
         CourseSummaryDetails courseDetails = retrieveCourseSummary(course);
         return courseDetails;
     }
@@ -368,7 +368,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         CourseDetails courseDetails = new CourseDetails();
 
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
 
         // Get Course Summary first
         CourseSummaryDetails courseSummaryDetails = retrieveCourseSummary(course);
@@ -409,7 +409,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * If version identpendent Id provided, retrieve the right course version Id based on current term/date
          * else get the same id as the provided course version specific Id
          */
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
         return getPlannedCourseSummary(course, studentId);
     }
 
@@ -511,7 +511,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * If version identpendent Id provided, retrieve the right course version Id based on current term/date
          * else get the same id as the provided course version specific Id
          */
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
         return getCourseOfferingInstitutions(course, terms);
     }
 
@@ -624,7 +624,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
 
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
         try {
 
             List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), termId, CourseSearchConstants.CONTEXT_INFO);
@@ -851,7 +851,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
     public boolean isCourseIdValid(String courseId) {
         boolean isCourseIdValid = false;
-        CourseInfo course = getCourseInfo(courseId);
+        CourseInfo course = getCourseHelper().getCourseInfo(courseId);
         if (course != null) {
             isCourseIdValid = true;
         }
@@ -911,26 +911,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             return PlanConstants.BACKUP_TYPE;
         }
         return null;
-    }
-
-    /**
-     * returns the courseInfo for the given courseId by verifying the courId to be a verifiedcourseId
-     *
-     * @param courseId
-     * @return
-     */
-    public CourseInfo getCourseInfo(String courseId) {
-
-        CourseInfo courseInfo = null;
-        try {
-            String latestCourseId = getCourseHelper().getVerifiedCourseId(courseId);
-            courseInfo = getCourseService().getCourse(latestCourseId);
-        } catch (DoesNotExistException e) {
-            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
-        } catch (Exception e) {
-            throw new RuntimeException("Query failed.", e);
-        }
-        return courseInfo;
     }
 
     public AcademicRecordService getAcademicRecordService() {
