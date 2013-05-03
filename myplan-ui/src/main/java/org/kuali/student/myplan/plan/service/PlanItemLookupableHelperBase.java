@@ -23,7 +23,10 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
@@ -164,6 +167,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
                     if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
                         primarySectionCode = attributeInfo.getValue();
+                        break;
                     }
                 }
                 String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
