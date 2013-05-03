@@ -76,10 +76,10 @@
         </#if>
     </#if>
     <#if Session.messageBannerText??>
-        <div class="adviser-banner myplan-status info" style="float: none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+        <div class="announcement-banner" style="float: none;">
             <div class="message">
-                ${Session.messageBannerText}
+                <span class="myplan-text-gray">[ ANNOUNCEMENT ]</span>
+                <span>${Session.messageBannerText}</span>
             </div>
         </div>
     </#if>
