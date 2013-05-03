@@ -1090,7 +1090,7 @@
         <property name="altText" value="Delete"/>
         <property name="style" value="margin:8px 0 0 0;"/>
         <property name="onClickScript"
-                  value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
+                  value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:'@{#line.instituteCode}',registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>

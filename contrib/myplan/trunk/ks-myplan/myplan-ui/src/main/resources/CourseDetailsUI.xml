@@ -42,29 +42,6 @@
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
-                    <property name="onDocumentReadyScript"
-                              value="
-                                  jQuery('body')
-                                      .subscribe('SECTION_ITEM_ADDED', function(data){
-                                          var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
-                                          jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                          fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
-                                          var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
-                                          row.addClass('myplan-section-planned');
-                                          if (data.ItemsToUpdate != null) {
-                                              var items = data.ItemsToUpdate.split(',');
-                                              jQuery.each(items, function (index, value) {
-                                                  jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                                  fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
-                                                  var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
-                                                  row.addClass('myplan-section-planned');
-                                              });
-                                          }
-                                      });
-                                  jQuery(window).load(function () {
-                                      myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
-                                  })
-                              "/>
                     <property name="items">
                         <list>
                             <ref bean="course_details_section"/>
@@ -142,10 +119,7 @@
                             </bean>
                             <ref bean="course_details_overview"/>
                             <!--<ref bean="course_details_links"/>-->
-
-                            <ref bean="course_details_institution_data_single"/>
-                            <ref bean="course_details_institution_data_multi"/>
-                            <!-- <ref bean="course_details_sections"/> -->
+                            <ref bean="course_details_sections"/>
                         </list>
                     </property>
                 </bean>
@@ -433,25 +407,6 @@
                                                 </list>
                                             </property>
                                         </bean>
-
-
-                                        <!--<bean parent="Uif-LinkGroup"
-                                              p:groupBeginDelimiter="(Source:" p:groupEndDelimiter=")" p:linkSeparator="">
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-font-size-90</value>
-                                                    <value>fl-text-gray</value>
-                                                </list>
-                                            </property>
-                                            <property name="items">
-                                            <list>
-                                                <bean parent="Uif-Link" p:linkText="Course Catalog" p:href="http://www.washington.edu/students/crscat/"
-                                                      p:headerText="Course Catalog" p:target="">
-                                                    <property name="fieldLabel.render" value="false"/>
-                                                </bean>
-                                            </list>
-                                          </property>
-                                        </bean>-->
                                     </list>
                                 </property>
                             </bean>
@@ -550,10 +505,6 @@
                                                         </property>
                                                         <property name="items">
                                                             <list>
-                                                                <!--<bean parent="Uif-Message"
-                                                                      p:messageText="Projected to be offered in "
-                                                                      p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0 ? true : false}"
-                                                                      p:style="margin: 0 0.33em 0 0;"/>-->
                                                                 <bean parent="Uif-DataField"
                                                                       p:label="Projected Quarter Info"
                                                                       p:propertyName="courseSummaryDetails.termsOffered"
@@ -577,8 +528,6 @@
                                                                               p:messageText="Check with the department or your adviser for more information about this course."/>
                                                                     </property>
                                                                 </bean>
-                                                                <!--<bean parent="Uif-Message" p:messageText="quarters"
-                                                                      p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0 ? true : false}"/>-->
                                                                 <bean parent="Uif-Message" p:style="line-height: 20px;"
                                                                       p:messageText="(Source: Course Catalog)">
                                                                     <property name="cssClasses">
@@ -597,48 +546,6 @@
                                     </list>
                                 </property>
                             </bean>
-
-                            <!--Credits-->
-                            <!--<bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                        <property name="group.validationMessages">             <null/>         </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                                    <property name="validationMessages">             <null/>         </property>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-course-detail-label</value>
-                                                </list>
-                                            </property>
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="Uif-Label" p:labelText="Credits"
-                                                          p:renderColon="false"/>
-                                                    <ref bean="course_credits_help_icon"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                                    <property name="validationMessages">             <null/>         </property>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-course-detail-field</value>
-                                                </list>
-                                            </property>
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.credit">
-                                                        <property name="fieldLabel.renderColon" value="false"/>
-                                                        <property name="fieldLabel.render" value="false"/>
-                                                    </bean>
-                                                </list>
-                                            </property>
-                                        </bean>
-
-                                    </list>
-                                </property>
-                            </bean>-->
 
                             <!--Genedu-->
                             <bean parent="Uif-HorizontalFieldGroup">
@@ -770,51 +677,6 @@
                                     </list>
                                 </property>
                             </bean>
-
-                            <!--Campus-->
-                            <!--<bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                        <property name="group.validationMessages">             <null/>         </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                                    <property name="validationMessages">             <null/>         </property>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-course-detail-label</value>
-                                                </list>
-                                            </property>
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="Uif-Label" p:labelText="Campus"
-                                                          p:renderColon="false"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                                    <property name="validationMessages">             <null/>         </property>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-course-detail-field</value>
-                                                </list>
-                                            </property>
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.campusLocations"
-                                                          p:escapeHtmlInPropertyValue="false">
-                                                        <property name="fieldLabel.renderColon" value="false"/>
-                                                        <property name="cssClasses">
-                                                            <list merge="true">
-                                                                <value>myplan-data-list</value>
-                                                            </list>
-                                                        </property>
-                                                    </bean>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -871,6 +733,41 @@
         </property>
     </bean>-->
 
+    <bean id="course_details_sections" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="render" value="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}"/>
+        <property name="header">
+            <bean parent="Uif-HeaderThree" p:style="margin:0;">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>myplan-underline-header</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-details-sections</value>
+            </list>
+        </property>
+        <property name="headerText" value="@{dataObject.courseSummaryDetails.code} Course Sections"/>
+        <property name="items">
+            <list>
+                <bean id="course_details_sections_list_container" parent="Uif-VerticalBoxGroup"
+                      p:style="min-height: 150px;">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="onDocumentReadyScript" value="
+                        myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+                    "/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
     <bean id="course_details_institution_data_single" parent="KSAP-StackedCollectionGroup">
         <property name="validationMessages">
             <null/>
@@ -906,16 +803,10 @@
                 </property>
             </bean>
         </property>
-        <property name="headerText" value="@{dataObject.courseSummaryDetails.code} Course Sections"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree" p:style="margin:0;">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>myplan-underline-header</value>
-                    </list>
-                </property>
-            </bean>
+            <bean parent="Uif-HeaderFour"/>
         </property>
+        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="@{#line.name}"
@@ -952,16 +843,10 @@
                 <value>myplan-course-detail</value>
             </list>
         </property>
-        <property name="headerText" value="@{dataObject.courseSummaryDetails.code} Sections"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree" p:style="margin:0;">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>myplan-underline-header</value>
-                    </list>
-                </property>
-            </bean>
+            <bean parent="Uif-HeaderFour"/>
         </property>
+        <property name="header.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField"
@@ -1529,6 +1414,69 @@
                 <value>fl-text-align-center</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="CourseDetailsSections-InquiryView" parent="MyPlanBaseInquiryView">
+        <property name="dataObjectClassName" value="org.kuali.student.myplan.course.dataobject.CourseDetails"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="singlePageView" value="true"/>
+        <property name="viewName" value="CourseDetailsSections-InquiryView"/>
+        <property name="theme">
+            <bean parent="MyPlanRetrievedTheme"/>
+        </property>
+        <property name="onLoadScript" value=""/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Page" p:id="course_details_sections_page">
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean id="course_details_sections_list" parent="Uif-VerticalBoxGroup">
+                                <property name="onDocumentReadyScript"
+                                          value="
+                                              jQuery('body')
+                                                  .subscribe('SECTION_ITEM_ADDED', function(data){
+                                                      var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
+                                                      jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                                      fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
+                                                      var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
+                                                      row.addClass('myplan-section-planned');
+                                                      if (data.ItemsToUpdate != null) {
+                                                          var items = data.ItemsToUpdate.split(',');
+                                                          jQuery.each(items, function (index, value) {
+                                                              jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
+                                                              fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
+                                                              var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
+                                                              row.addClass('myplan-section-planned');
+                                                          });
+                                                      }
+                                                  });
+                                              jQuery(window).load(function () {
+                                                  myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
+                                              })
+                                          "/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <ref bean="course_details_institution_data_single"/>
+                                        <ref bean="course_details_institution_data_multi"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
     </bean>
 
 

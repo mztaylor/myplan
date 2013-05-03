@@ -1916,6 +1916,11 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 0;
 }
 
+.myplan-course-details-sections div.blockElement {
+    left: 219px !important;
+    top: 20px !important;
+}
+
 .myplan-course-detail .ui-tabs .ui-widget-header,
 .myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-active a,
 .myplan-course-detail .ui-tabs .ui-tabs-nav li.ui-state-default a,
