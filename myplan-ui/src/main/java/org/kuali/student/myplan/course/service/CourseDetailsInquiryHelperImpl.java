@@ -6,7 +6,6 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.common.exceptions.DoesNotExistException;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -117,9 +116,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     }
 
     private transient CourseLinkBuilder courseLinkBuilder;
-
-    // default is to create real links
-    private CourseLinkBuilder.LINK_TEMPLATE courseLinkTemplateStyle = CourseLinkBuilder.LINK_TEMPLATE.COURSE_DETAILS;
 
     public CourseLinkBuilder getCourseLinkBuilder() {
         if (courseLinkBuilder == null) {
