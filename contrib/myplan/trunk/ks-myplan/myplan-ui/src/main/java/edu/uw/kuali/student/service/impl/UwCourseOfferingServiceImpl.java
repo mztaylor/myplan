@@ -254,6 +254,10 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         Element dupeSectionElement = (Element) secondaryPath.selectSingleNode(secondaryDoc);
 
         String primaryID = dupeSectionElement.elementText("SectionID");
+        //If passed in section Id is not a primary section
+        if (!primaryID.equalsIgnoreCase(sectionID)) {
+            throw new DoesNotExistException();
+        }
         CourseOfferingInfo info = new CourseOfferingInfo();
         info = buildCourseOfferingInfo(courseOfferingId, primaryID, termId, secondaryDoc);
         return info;
