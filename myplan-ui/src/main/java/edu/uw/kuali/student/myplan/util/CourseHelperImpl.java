@@ -10,10 +10,14 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.common.exceptions.DoesNotExistException;
 import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
@@ -29,6 +33,20 @@ public class CourseHelperImpl implements CourseHelper {
     private final Logger logger = Logger.getLogger(CourseHelperImpl.class);
 
     private StudentServiceClient studentServiceClient;
+    
+    private CourseService courseService;
+
+    protected synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
+        return this.courseService;
+    }
+
+    public synchronized void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
@@ -160,6 +178,26 @@ public class CourseHelperImpl implements CourseHelper {
             courseId = searchResult.getRows().get(0).getCells().get(0).getValue();
         }
         return courseId;
+    }
+
+    /**
+     * returns the courseInfo for the given courseId by verifying the courId to be a verifiedcourseId
+     *
+     * @param courseId
+     * @return
+     */
+    public CourseInfo getCourseInfo(String courseId) {
+
+        CourseInfo courseInfo = null;
+        try {
+            String latestCourseId = getVerifiedCourseId(courseId);
+            courseInfo = getCourseService().getCourse(latestCourseId);
+        } catch (DoesNotExistException e) {
+            throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Query failed.", e);
+        }
+        return courseInfo;
     }
 
 

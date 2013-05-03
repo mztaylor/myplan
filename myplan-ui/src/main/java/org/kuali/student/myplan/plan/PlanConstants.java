@@ -67,9 +67,13 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     //  {atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
     public static final String QUARTER_LINK = "<a href=\"/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId={atpId}\">{label}</a>";
-    
+
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
+
+    public static final String MOVE_DIALOG_PAGE = "move_dialog_page";
+    public static final String COPY_DIALOG_PAGE = "copy_dialog_page";
+    public static final String DELETE_DIALOG_PAGE = "plan_item_delete_page";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
     public static final String TERM_1 = "Winter";
