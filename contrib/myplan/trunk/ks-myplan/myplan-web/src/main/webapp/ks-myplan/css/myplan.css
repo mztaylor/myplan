@@ -86,11 +86,8 @@ pre {
     word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-a,
-a:hover,
-a:active,
-a:visited,
-a:focus {
+a, a:hover, a:active, a:visited, a:focus,
+.myplan-view a, .myplan-view a:hover, .myplan-view a:active, .myplan-view a:visited, .myplan-view a:focus {
     outline: 0;
     border: none;
     color: #0066cc;
