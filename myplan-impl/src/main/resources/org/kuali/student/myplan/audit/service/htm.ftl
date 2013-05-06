@@ -49,6 +49,17 @@
 "Status_PL" : "PL"
 }>
 
+<#macro myplan-status>
+<div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+     style="margin-bottom:20px; float:none; display:none;">
+    <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+    <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+        the full audit report.
+    </div>
+</div>
+</#macro>
+
 <html>
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
@@ -57,37 +68,35 @@
     <h1>${dpTitle1?xml}</h1>
 
     <div class="audit-summary">
-        <div class="date-prepared">
-            <label>Date Prepared:</label> ${preparedDate}
+        <div class="audit-summary-data ">
+            <label>Date Prepared:</label> <span class="date-prepared"> ${preparedDate} </span>
         </div>
-        <div class="prepared-for">
+        <div class="audit-summary-data">
         <#assign stuno = "${studentNumber}">
         <#if ( stuno?starts_with( "1" ) && stuno?length == 9 )>
             <#assign stuno = stuno?substring(1)>
         </#if>
             <label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}">${stuno}</span>
         </div>
-    <#--
-    <div>
-        <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
-    </div>
-    -->
-        <div class="program-entry-qtr">
-            <label>Program Entry
-                Date:</label> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)}
+        <div class="audit-summary-data plan-audit-data">
+            <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
         </div>
-        <div>
+        <div class="audit-summary-data plan-audit-data">
+            <label>Program Entry Date:</label> <span
+                class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
+        </div>
+        <div class="audit-summary-data plan-audit-data">
             <label>Credits:</label> <span class="for-credits"> FOR-CREDITS </span>
         </div>
-        <div>
+        <div class="audit-summary-data plan-audit-data">
             <label>Courses:</label> <span class="for-courses"> FOR-COURSES </span>
         </div>
-        <div>
+        <div class="audit-summary-data plan-audit-data">
             <label>Quarter:</label> <span class="for-quarter"> FOR-QUARTER </span>
         </div>
     <#if degreeDate?trim != "NotFound">
-        <div class="graduation-date">
-            <label>Graduation Date:</label> ${degreeDate?replace("/", " ")}
+        <div class="audit-summary-data ">
+            <label>Graduation Date:</label> <span class="graduation-date"> ${degreeDate?replace("/", " ")} </span>
         </div>
     </#if>
     </div>
@@ -142,31 +151,31 @@
     <#if !req.showStatus >
         <#assign satisfied="Status_NONE">
     </#if>
-    <!--
-    rname: ${rname?xml}
-    ok: ${req.ok?string?xml}
-    category: ${req.category?xml}
-    status: ${req.status?xml}
+<#--
+rname: ${rname?xml}
+ok: ${req.ok?string?xml}
+category: ${req.category?xml}
+status: ${req.status?xml}
 
-    titleline:
-    <#list req.titleLines as titleLine>
-    ${titleLine?xml}
-    </#list>
+titleline:
+<#list req.titleLines as titleLine>
+${titleLine?xml}
+</#list>
 
-    reflow titleline:
-    <#list reflow( req.titleLines ) as titleLine>
-    ${titleLine?xml}
-    </#list>
+reflow titleline:
+<#list reflow( req.titleLines ) as titleLine>
+${titleLine?xml}
+</#list>
 
-    headerline:
-    <#list req.headerLines as headerLine>
-    ${headerLine?xml}
-    </#list>
+headerline:
+<#list req.headerLines as headerLine>
+${headerLine?xml}
+</#list>
 
-    reflow headerline:
-    <#list reflow( req.headerLines ) as headerLine>
-    ${headerLine?xml}
-    </#list>
+reflow headerline:
+<#list reflow( req.headerLines ) as headerLine>
+${headerLine?xml}
+</#list>
 
 -->
 
@@ -176,14 +185,7 @@
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplan-status/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -204,14 +206,7 @@
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplan-status/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -225,14 +220,7 @@
         <div class="heading">
             <#list req.titleLines as titleLine> ${deASCII( titleLine?trim )} </#list>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+        <@myplan-status/>
 
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
@@ -291,14 +279,7 @@
     <#elseif ( req.headerLines?size > 2 )  > <#-- temporary fix for overly large headers, treat it as a requirement -->
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplan-status/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -316,14 +297,7 @@
                 </div>
             </#list>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+        <@myplan-status/>
         <#assign inSection = true>
 
     <#elseif ( req.headerLines?size > 0 )  > <#-- SECTION -->
@@ -344,14 +318,7 @@
                     <option value="unmet">Unmet Requirements Only</option>
                 </select>
             </div>
-            <div class="myplan-status alert uif-boxLayoutVerticalItem audit-filtered"
-                 style="margin-bottom:20px; float:none; display:none;">
-                <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-                <div class="message">You are viewing a partial degree audit report. See &quot;All Requirements&quot; for
-                    the full audit report.
-                </div>
-            </div>
+                <@myplan-status/>
             </#if>
 
         <div class="heading">
@@ -375,14 +342,7 @@
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplan-status/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
 
