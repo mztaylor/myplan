@@ -1115,7 +1115,7 @@
         <property name="actionScript"
                   value="
                        jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
-                       myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}'});
+                       myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',offeringsFlag:'true'});
                        switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                   "/>
         <property name="dataAttributes">
