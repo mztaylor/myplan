@@ -1457,9 +1457,7 @@
                                                           });
                                                       }
                                                   });
-                                              jQuery(window).load(function () {
-                                                  myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
-                                              })
+                                              myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
                                           "/>
                                 <property name="validationMessages">
                                     <null/>
