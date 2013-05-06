@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PARAM_COURSE_ID = "courseId";
+    public static final String PARAM_OFFERINGS_FLAG = "offeringsFlag";
 
     public static final int PLANNED_PLAN_ITEM_CAPACITY = 8;
     public static final int BACKUP_PLAN_ITEM_CAPACITY = 8;
