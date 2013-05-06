@@ -1,3 +1,4 @@
+<html>
 <#-- using svn's keyword substition -->
 <#assign svnRev    = "$Rev::                      $:  Revision of last commit" >
 <#assign svnAuthor = "$Author::                   $:  Author of last commit">
@@ -49,6 +50,8 @@
 "Status_PL" : "PL"
 }>
 
+
+
 <#macro myplan-status>
 <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
      style="margin-bottom:20px; float:none; display:none;">
@@ -60,7 +63,6 @@
 </div>
 </#macro>
 
-<html>
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
