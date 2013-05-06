@@ -797,12 +797,17 @@ input.myplan-delete:hover,
     top: 20px !important;
 }
 
-.myplan-plan-loader div.activityEnrlData div.blockElement {
+.myplan-course-details-sections div.blockElement {
+    left: 219px !important;
+    top: 20px !important;
+}
+
+div.activityEnrlData div.blockElement {
     left: 0px !important;
     top: 0px !important;
 }
 
-.myplan-plan-loader div.activityAction div.blockElement {
+div.activityAction div.blockElement {
     left: 0px !important;
     top: 0px !important;
 }
@@ -1910,11 +1915,6 @@ table.myplan-course-search-results-datatable .blockUI {
 .myplan-view .myplan-course-detail-field {
     width: 515px;
     margin: 0;
-}
-
-.myplan-course-details-sections div.blockElement {
-    left: 219px !important;
-    top: 20px !important;
 }
 
 .myplan-course-detail .ui-tabs .ui-widget-header,
