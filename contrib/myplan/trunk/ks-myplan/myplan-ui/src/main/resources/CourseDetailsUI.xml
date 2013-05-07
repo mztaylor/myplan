@@ -1100,6 +1100,7 @@
             <list merge="true">
                 <value>activityCode</value>
                 <value>fl-text-align-center</value>
+                <value>@{#line.stateKey EQ 'active'?'':'fl-text-gray'}</value>
             </list>
         </property>
         <property name="items">

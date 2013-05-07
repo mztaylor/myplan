@@ -207,7 +207,7 @@
                                                                                         <bean parent="Uif-ActionLink"
                                                                                               p:actionLabel="View more"
                                                                                               p:style="margin:0; font-size:9px;"
-                                                                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                                                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}" p:render="@{#line.stateKey EQ 'active'}">
                                                                                             <property
                                                                                                     name="actionScript"
                                                                                                     value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
