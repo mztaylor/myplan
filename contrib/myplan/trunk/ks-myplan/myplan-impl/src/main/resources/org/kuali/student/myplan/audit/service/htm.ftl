@@ -1,4 +1,3 @@
-<html>
 <#-- using svn's keyword substition -->
 <#assign svnRev    = "$Rev::                      $:  Revision of last commit" >
 <#assign svnAuthor = "$Author::                   $:  Author of last commit">
@@ -49,20 +48,10 @@
 "Status_OK" : "OK",
 "Status_PL" : "PL"
 }>
-
-
-
-<#macro myplan-status>
-<div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-     style="margin-bottom:20px; float:none; display:none;">
-    <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-    <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-        the full audit report.
-    </div>
-</div>
+<#macro testmacro>
+<div>test</div>
 </#macro>
-
+<html>
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -187,7 +176,14 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-            <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -208,7 +204,14 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-            <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -222,7 +225,14 @@ ${headerLine?xml}
         <div class="heading">
             <#list req.titleLines as titleLine> ${deASCII( titleLine?trim )} </#list>
         </div>
-        <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
 
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
@@ -281,7 +291,14 @@ ${headerLine?xml}
     <#elseif ( req.headerLines?size > 2 )  > <#-- temporary fix for overly large headers, treat it as a requirement -->
         <#if sectionHeadingOpen = true>
         </div>
-            <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -299,7 +316,14 @@ ${headerLine?xml}
                 </div>
             </#list>
         </div>
-        <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
         <#assign inSection = true>
 
     <#elseif ( req.headerLines?size > 0 )  > <#-- SECTION -->
@@ -320,7 +344,14 @@ ${headerLine?xml}
                     <option value="unmet">Unmet Requirements Only</option>
                 </select>
             </div>
-                <@myplan-status/>
+            <div class="myplan-status alert uif-boxLayoutVerticalItem audit-filtered"
+                 style="margin-bottom:20px; float:none; display:none;">
+                <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+                <div class="message">You are viewing a partial degree audit report. See &quot;All Requirements&quot; for
+                    the full audit report.
+                </div>
+            </div>
             </#if>
 
         <div class="heading">
@@ -344,7 +375,14 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-            <@myplan-status/>
+        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+             style="margin-bottom:20px; float:none; display:none;">
+            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+                the full audit report.
+            </div>
+        </div>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
 
