@@ -131,7 +131,7 @@
                                                                 <bean parent="activityEnrlData"/>
 
                                                                 <bean parent="activityActionButton" p:rowSpan="1"
-                                                                      p:render="@{!#line.openForPlanning AND #line.planItemId EQ null}">
+                                                                      p:render="@{#line.openForPlanning AND #line.planItemId EQ null}">
                                                                     <property name="dataAttributes">
                                                                         <map merge="true">
                                                                             <entry key="initial" value="false"/>
@@ -140,7 +140,7 @@
                                                                 </bean>
 
                                                                 <bean parent="activityActionDelete" p:rowSpan="1"
-                                                                      p:render="@{!#line.openForPlanning AND #line.planItemId NE null}">
+                                                                      p:render="@{#line.openForPlanning AND #line.planItemId NE null}">
                                                                     <property name="dataAttributes">
                                                                         <map merge="true">
                                                                             <entry key="initial" value="false"/>
@@ -149,7 +149,7 @@
                                                                 </bean>
 
                                                                 <bean parent="emptyAction" p:rowSpan="1"
-                                                                      p:render="@{#line.openForPlanning}"/>
+                                                                      p:render="@{!#line.openForPlanning}"/>
 
                                                                 <bean parent="activityInstructor">
                                                                     <property name="onDocumentReadyScript" value="

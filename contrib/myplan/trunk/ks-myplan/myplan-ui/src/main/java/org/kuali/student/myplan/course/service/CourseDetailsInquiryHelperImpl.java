@@ -659,7 +659,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         List<ActivityOfferingItem> activityOfferingItemList = new ArrayList<ActivityOfferingItem>();
 
         if (AtpHelper.getPublishedTerms().contains(termId)) {
-            boolean openForPlanning = !AtpHelper.isAtpSetToPlanning(termId);
+            boolean openForPlanning = AtpHelper.isAtpSetToPlanning(termId);
             for (CourseOfferingInfo courseInfo : courseOfferingInfoList) {
 
                 // Activity offerings come back as a list, the first item is primary, the remaining are secondary
