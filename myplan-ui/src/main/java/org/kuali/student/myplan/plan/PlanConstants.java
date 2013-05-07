@@ -87,6 +87,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ATP_TERM_3 = "3";
     public static final String ATP_TERM_4 = "4";
 
+    public static final String WITHDRAWN_ALERT = "Section(s) %s has been withdrawn.";
+    public static final String SUSPENDED_ALERT = "Section(s) %s has been suspended.";
+
 
     /*Query keys for getting the termInfos from the academic calender*/
     public static final String PLANNING = "PLANNING";

@@ -37,6 +37,7 @@ public class ActivityOfferingItem {
     private String enrollEstimate;
     private String instructor;
     private String details;
+    private String stateKey;
 
     private boolean distanceLearning;
     private boolean honorsSection;
@@ -273,7 +274,15 @@ public class ActivityOfferingItem {
         this.courseId = courseId;
     }
 
-//    public boolean isStandalone() {
+    public String getStateKey() {
+        return stateKey;
+    }
+
+    public void setStateKey(String stateKey) {
+        this.stateKey = stateKey;
+    }
+
+    //    public boolean isStandalone() {
 //        return isPrimary();
 ////    	return isPrimary() && getSecondaryList().size() == 0;
 //    }

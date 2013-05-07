@@ -605,7 +605,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         info.setCourseOfferingCode(curric + " " + sectionID);
         info.setActivityOfferingCode(sectionID);
         info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
-
+        info.setStateKey(sectionNode.elementText("DeleteFlag"));
 
 /*Course Flags*/
         List<AttributeInfo> attributes = info.getAttributes();
@@ -1012,6 +1012,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
         info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
         info.getAttributes().add(new AttributeInfo("PrimarySectionId", primarySectionId));
+        info.setStateKey(secondarySection.elementText("DeleteFlag"));
 
         {
             String gradingSystem = secondarySection.elementText("GradingSystem");
@@ -1280,7 +1281,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 info.setCourseOfferingCode(curric + " " + sectionID);
                 info.setActivityOfferingCode(sectionID);
                 info.setIsHonorsOffering(Boolean.valueOf(sectionNode.elementText("HonorsCourse")));
-
+                info.setStateKey(sectionNode.elementText("DeleteFlag"));
 
 /*Course Flags*/
                 List<AttributeInfo> attributes = info.getAttributes();
@@ -1301,7 +1302,6 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 attributes.add(new AttributeInfo("SummerTerm", summerTerm));
                 attributes.add(new AttributeInfo("SLN", sln));
                 attributes.add(new AttributeInfo("PrimaryActivityOfferingCode", sectionNode.element("PrimarySection").elementText("SectionID")));
-
 
                 result.add(info);
 

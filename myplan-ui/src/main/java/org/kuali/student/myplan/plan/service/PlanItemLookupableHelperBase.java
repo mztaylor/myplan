@@ -28,6 +28,7 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -58,11 +59,13 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
+            Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
+            Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-                populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections);
+                populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
             }
             if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-                addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
+                addActivitiesToPlannedCourseList(plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
             }
         }
         return plannedCourseList;
@@ -88,12 +91,14 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
+            Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
+            Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
                 if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
-                    populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections);
+                    populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
                 }
             }
-            addActivitiesToPlannedCourseList(plannedCourseList, plannedSections);
+            addActivitiesToPlannedCourseList(plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
         }
         return plannedCourseList;
     }
@@ -104,9 +109,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @param plannedCourseList
      * @param plannedSections
      */
-    private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections) {
+    private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-            List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp()));
+            String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
+            List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
             if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
                 Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
                     @Override
@@ -114,6 +120,16 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                         return item1.getCode().compareTo(item2.getCode());
                     }
                 });
+            }
+            StringBuffer statusAlert = new StringBuffer();
+            if (sectionsWithdrawn.containsKey(key)) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsWithdrawn.get(key).toArray())));
+            }
+            if (sectionsSuspended.containsKey(key)) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsSuspended.get(key).toArray())));
+            }
+            if (StringUtils.hasText(statusAlert)) {
+                plannedCourse.setActivityStatusAlert(statusAlert.toString());
             }
             plannedCourse.setPlanActivities(activityOfferingItems);
         }
@@ -127,7 +143,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @param plannedCourseList
      * @param plannedSections
      */
-    private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections) {
+    private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
         String courseID = planItemInfo.getRefObjectId();
         //  Only create a data object for the specified type.
         if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
@@ -184,6 +200,20 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     plannedSections.get(key).add(activityOfferingItem);
                 } else {
                     plannedSections.put(key, activityOfferingItems);
+                }
+
+                if ("suspended".equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    if (sectionsSuspended.containsKey(key)) {
+                        sectionsSuspended.get(key).add(activityOfferingItem.getCode());
+                    } else {
+                        sectionsSuspended.put(key, Arrays.asList(activityOfferingItem.getCode()));
+                    }
+                } else if ("withdrawn".equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    if (sectionsWithdrawn.containsKey(key)) {
+                        sectionsWithdrawn.get(key).add(activityOfferingItem.getCode());
+                    } else {
+                        sectionsWithdrawn.put(key, Arrays.asList(activityOfferingItem.getCode()));
+                    }
                 }
 
             }
