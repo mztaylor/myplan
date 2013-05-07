@@ -3,16 +3,16 @@
  Function: add course to quarter plan view
  #################################################################
  */
-function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections) {
+function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections, statusAlert) {
     var item = '<div id="' + planItemId + '_' + type + '_' + atpId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
         '<div id="' + planItemId + '_' + type + '_' + atpId + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid' + ((timeScheduleOpen == "true") ? ' schedule' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
         '<fieldset>' +
         '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
         '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">';
-    if (timeScheduleOpen == "true") {
-        item += '<div class="' + ((showAlert == "true") ? 'not-scheduled' : 'scheduled') + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '">' +
-            '<img src="/student/ks-myplan/images/pixel.gif" alt="' + courseCode + ' is' + ((showAlert == "true") ? ' not' : '') + ' scheduled for ' + termName + '" class="uif-image"/>' +
+    if (statusAlert.length > 0) {
+        item += '<div class="' + ((showAlert == "true") ? 'not-scheduled' : 'scheduled') + ' schedule-status uif-imageField uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem" title="' + statusAlert + '">' +
+            '<img src="/student/ks-myplan/images/pixel.gif" alt="' + statusAlert + '" class="uif-image"/>' +
             '</div>';
     }
     var sectionsDiv = '';

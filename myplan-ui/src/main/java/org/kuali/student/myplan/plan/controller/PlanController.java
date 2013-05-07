@@ -41,8 +41,6 @@ import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
@@ -342,9 +340,37 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
-        String sections = getPlannedSectionsAsString(planItem, courseDetails);
-        if (sections != null) {
-            events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+        //Add additional add events for section data if present
+        List<ActivityOfferingItem> plannedSections = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItem.getPlanPeriods().get(0));
+        if (plannedSections != null && plannedSections.size() > 0) {
+            List<String> plannedActivities = new ArrayList<String>();
+            List<String> suspendedActivities = new ArrayList<String>();
+            List<String> withdrawnActivities = new ArrayList<String>();
+            for (ActivityOfferingItem activityOfferingItem : plannedSections) {
+                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    suspendedActivities.add(activityOfferingItem.getCode());
+                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    withdrawnActivities.add(activityOfferingItem.getCode());
+                }
+                plannedActivities.add(activityOfferingItem.getCode());
+            }
+            String sections = StringUtils.join(plannedActivities.toArray(), ", ");
+            if (sections != null) {
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+            }
+            if (withdrawnActivities.size() > 0 || suspendedActivities.size() > 0) {
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
+                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
+                StringBuffer sb = new StringBuffer();
+                sb = sb.append(statusAlert);
+                if (withdrawnActivities.size() > 0) {
+                    sb = sb.append(String.format(PlanConstants.WITHDRAWN_ALERT, StringUtils.join(withdrawnActivities.toArray(), ", ")));
+                }
+                if (suspendedActivities.size() > 0) {
+                    sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivities.toArray(), ", ")));
+                }
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
+            }
         }
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
@@ -420,9 +446,36 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
-        String sections = getPlannedSectionsAsString(planItem, courseDetails);
-        if (sections != null) {
-            events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+        List<ActivityOfferingItem> plannedSections = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItem.getPlanPeriods().get(0));
+        if (plannedSections != null && plannedSections.size() > 0) {
+            List<String> plannedActivities = new ArrayList<String>();
+            List<String> suspendedActivities = new ArrayList<String>();
+            List<String> withdrawnActivities = new ArrayList<String>();
+            for (ActivityOfferingItem activityOfferingItem : plannedSections) {
+                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    suspendedActivities.add(activityOfferingItem.getCode());
+                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                    withdrawnActivities.add(activityOfferingItem.getCode());
+                }
+                plannedActivities.add(activityOfferingItem.getCode());
+            }
+            String sections = StringUtils.join(plannedActivities.toArray(), ", ");
+            if (sections != null) {
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+            }
+            if (withdrawnActivities.size() > 0 || suspendedActivities.size() > 0) {
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
+                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
+                StringBuffer sb = new StringBuffer();
+                sb = sb.append(statusAlert);
+                if (withdrawnActivities.size() > 0) {
+                    sb = sb.append(String.format(PlanConstants.WITHDRAWN_ALERT, StringUtils.join(withdrawnActivities.toArray(), ", ")));
+                }
+                if (suspendedActivities.size() > 0) {
+                    sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivities.toArray(), ", ")));
+                }
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
+            }
         }
         String atpId = planItem.getPlanPeriods().get(0);
         events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
@@ -1053,31 +1106,6 @@ public class PlanController extends UifControllerBase {
 
         newTermIds.add(form.getAtpId());
         return newTermIds;
-    }
-
-    /**
-     * Gives the Sections planned as a String. For eg: COM 322 "A, AA,.."
-     *
-     * @param planItem
-     * @param courseDetails
-     * @return
-     */
-    private String getPlannedSectionsAsString(PlanItem planItem, CourseSummaryDetails courseDetails) {
-        String sections = null;
-        List<String> plannedSections = new ArrayList<String>();
-        if (planItem != null && planItem.getPlanPeriods().size() > 0) {
-            if (courseDetails != null && courseDetails.getCourseId() != null) {
-                List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItem.getPlanPeriods().get(0));
-                if (plannedActivities != null && plannedActivities.size() > 0) {
-                    for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
-                        plannedSections.add(activityOfferingItem.getCode());
-                    }
-                }
-            }
-        }
-
-        return StringUtils.join(plannedSections.toArray(), ", ");
-
     }
 
     /**
@@ -1929,17 +1957,32 @@ String term = t[0] + " " + t[1];*/
                                                                                        planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
+        String atpId = planItem.getPlanPeriods().get(0);
+        String termName = AtpHelper.atpIdToTermName(atpId);
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+            params.put("atpId", formatAtpIdForUI(atpId));
             // event for aler Icon
             List<String> publishedTerms = AtpHelper.getPublishedTerms();
-            params.put("showAlert", String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0), courseDetails.getCode())));
-            params.put("termName", AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
-            params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
+            boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
+            boolean timeScheduleOpen = publishedTerms.contains(atpId);
+            boolean showAlert = false;
+            if (timeScheduleOpen) {
+                showAlert = !scheduled;
+            }
+            StringBuffer statusAlert = new StringBuffer();
+            if (timeScheduleOpen && scheduled) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+            } else if (timeScheduleOpen && !scheduled) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+            }
+            params.put("showAlert", String.valueOf(showAlert));
+            params.put("termName", termName);
+            params.put("timeScheduleOpen", String.valueOf(timeScheduleOpen));
+            params.put("statusAlert", statusAlert.toString());
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
                 params.put("SectionCode", planForm.getSectionCode());
                 params.put("RegistrationCode", planForm.getRegistrationCode());

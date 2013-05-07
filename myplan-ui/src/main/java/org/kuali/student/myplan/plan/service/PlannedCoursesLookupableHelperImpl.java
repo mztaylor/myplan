@@ -74,8 +74,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         if (!isServiceStatusOK) {
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
         }
-        List<String> publishedTerms = AtpHelper.getPublishedTerms();
-
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         if (isServiceStatusOK) {
@@ -84,10 +82,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             } catch (Exception e) {
                 logger.error("Could not load plannedCourseslist", e);
 
-            }
-            for (PlannedCourseDataObject pl : plannedCoursesList) {
-                pl.setShowAlert(!AtpHelper.isCourseOfferedInTerm(pl.getPlanItemDataObject().getAtp(), pl.getCourseDetails().getCode()));
-                pl.setTimeScheduleOpen(publishedTerms.contains(pl.getPlanItemDataObject().getAtp()));
             }
         }
         /****academic record SWS call to get the studentCourseRecordInfo list *****/
@@ -109,10 +103,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
             } catch (Exception e) {
                 logger.error("Could not load backupCourseList", e);
 
-            }
-            for (PlannedCourseDataObject pl : backupCoursesList) {
-                pl.setShowAlert(!AtpHelper.isCourseOfferedInTerm(pl.getPlanItemDataObject().getAtp(), pl.getCourseDetails().getCode()));
-                pl.setTimeScheduleOpen(publishedTerms.contains(pl.getPlanItemDataObject().getAtp()));
             }
         }
 
