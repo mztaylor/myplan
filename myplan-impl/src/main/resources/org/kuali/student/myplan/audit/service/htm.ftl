@@ -1,3 +1,4 @@
+<html>
 <#-- using svn's keyword substition -->
 <#assign svnRev    = "$Rev::                      $:  Revision of last commit" >
 <#assign svnAuthor = "$Author::                   $:  Author of last commit">
@@ -48,10 +49,17 @@
 "Status_OK" : "OK",
 "Status_PL" : "PL"
 }>
-<#macro testmacro>
-<div>test</div>
+<#macro myplanstatus>
+<div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
+     style="margin-bottom:20px; float:none; display:none;">
+    <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
+
+    <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+        the full audit report.
+    </div>
+</div>
 </#macro>
-<html>
+
 <head>
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -176,14 +184,7 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplanstatus/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -681,7 +682,7 @@ ${headerLine?xml}
                                     <table>
                                         <#list subreq.notFromHtmlCourses as course>
                                             <tr>
-                                                <td class="fromcourselist linkify">${course?replace( "&", "&amp;")}</td>
+                                                <td class="fromcourselist linkify flatten">${course?replace( "&", "&amp;")}</td>
                                             </tr>
                                         </#list>
                                     </table>
@@ -696,7 +697,7 @@ ${headerLine?xml}
                                     <table>
                                         <#list subreq.selectFromHtmlCourses as course>
                                             <tr>
-                                                <td class="fromcourselist linkify">${course?replace( "&", "&amp;")}</td>
+                                                <td class="fromcourselist linkify flatten">${course?replace( "&", "&amp;")}</td>
                                             </tr>
                                         </#list>
                                     </table>
