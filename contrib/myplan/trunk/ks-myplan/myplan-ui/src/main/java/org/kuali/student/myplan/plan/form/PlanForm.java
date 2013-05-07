@@ -77,6 +77,8 @@ public class PlanForm extends UifFormBase {
     private boolean primary;
 
     private List<String> sectionsToDelete;
+    
+    private String activityStateKey;
 
     //Flag Used for student to hide or un hide
     // plan view to adviser
@@ -348,6 +350,14 @@ public class PlanForm extends UifFormBase {
 
     public void setRegistrationCode(String registrationCode) {
         this.registrationCode = registrationCode;
+    }
+
+    public String getActivityStateKey() {
+        return activityStateKey;
+    }
+
+    public void setActivityStateKey(String activityStateKey) {
+        this.activityStateKey = activityStateKey;
     }
 
     /*Only used in the Ui for getting the short Term*/

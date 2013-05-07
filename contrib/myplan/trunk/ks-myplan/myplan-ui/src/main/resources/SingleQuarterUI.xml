@@ -984,6 +984,8 @@
 
                 <bean parent="activityEnrlRestr"/>
 
+                <bean parent="activityEnrlStatus"/>
+
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionDelete" p:rowSpan="1" p:render="@{!#line.openForPlanning}"/>
@@ -1054,6 +1056,8 @@
 
                             <bean parent="activityEnrlRestr"/>
 
+                            <bean parent="activityEnrlStatus"/>
+
                             <bean parent="activityEnrlData"/>
 
                             <bean parent="emptyAction" p:rowSpan="1"/>
@@ -1090,7 +1094,7 @@
         <property name="altText" value="Delete"/>
         <property name="style" value="margin:8px 0 0 0;"/>
         <property name="onClickScript"
-                  value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:'@{#line.instituteCode}',registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary}}, e);"/>
+                  value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:'@{#line.instituteCode}',registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary},activityStateKey:'@{#line.stateKey}'}, e);"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>

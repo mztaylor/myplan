@@ -1006,6 +1006,8 @@
 
                 <bean parent="activityEnrlRestr"/>
 
+                <bean parent="activityEnrlStatus"/>
+
                 <bean parent="activityEnrlData"/>
 
                 <bean parent="activityActionButton"
@@ -1048,6 +1050,8 @@
                             <bean parent="activityRegCode"/>
 
                             <bean parent="activityEnrlRestr"/>
+
+                            <bean parent="activityEnrlStatus"/>
 
                             <bean parent="activityEnrlData"/>
 
@@ -1208,8 +1212,25 @@
         </property>
     </bean>
 
+    <bean id="activityEnrlStatus" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
+          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}" p:render="@{#line.stateKey ne 'active'}">
+        <property name="group.validationMessages.render" value="false"/>
+        <property name="label" value="ENRL / Limit"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>activityEnrlStatus</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage"
+                      p:messageText="@{#line.stateKey}" />
+            </list>
+        </property>
+    </bean>
+
     <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
-          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}">
+          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}" p:render="@{#line.stateKey eq 'active'}">
         <property name="group.validationMessages.render" value="false"/>
         <property name="label" value="ENRL / Limit"/>
         <property name="cssClasses">

@@ -506,6 +506,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String forCourses = "";
             String forCredits = "";
             String forQuarter = "";
+            String preparedBy = "";
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 PlanAuditItem planAuditItem = new PlanAuditItem();
@@ -522,18 +523,19 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         if (auditId.equals(value)) {
                             planAudit = true;
                         }
+                    } else if ("requestedBy".equalsIgnoreCase(key)) {
+                        preparedBy = value;
                     }
                 }
                 if (planAudit) break;
             }
 
-//            if( preparedBy != null )
-//            {
-//                Text node = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-by')]/text()");
-//                if(node != null ) {
-//                    node.setText( preparedBy );
-//                }
-//            }
+            if (preparedBy != null) {
+                Text node = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-by')]/text()");
+                if (node != null) {
+                    node.setText(preparedBy);
+                }
+            }
 
             if (planAudit) {
                 {

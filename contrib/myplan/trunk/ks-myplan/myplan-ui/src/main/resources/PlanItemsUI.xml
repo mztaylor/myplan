@@ -1040,11 +1040,23 @@
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
                                   p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
-                                  p:render="@{#line.timeScheduleOpen}">
+                                  p:render="@{#line.timeScheduleOpen AND #line.activityStatusAlert EQ null}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>schedule-status</value>
                                         <value>@{#line.showAlert ? 'not-scheduled' : 'scheduled'}</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-ImageField"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:title="@{#line.activityStatusAlert}"
+                                  p:altText="@{#line.activityStatusAlert}"
+                                  p:render="@{#line.activityStatusAlert NE null}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>schedule-status</value>
+                                        <value>not-scheduled</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1343,11 +1355,23 @@
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
                                   p:altText="@{#line.showAlert ? #line.courseDetails.code + ' is not scheduled for '+ #line.planItemDataObject.termName : #line.courseDetails.code + ' is scheduled for '+ #line.planItemDataObject.termName}"
-                                  p:render="@{#line.timeScheduleOpen}">
+                                  p:render="@{#line.timeScheduleOpen AND #line.activityStatusAlert EQ null}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>schedule-status</value>
                                         <value>@{#line.showAlert ? 'not-scheduled' : 'scheduled'}</value>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-ImageField"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:title="@{#line.activityStatusAlert}"
+                                  p:altText="@{#line.activityStatusAlert}"
+                                  p:render="@{#line.activityStatusAlert NE null}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>schedule-status</value>
+                                        <value>not-scheduled</value>
                                     </list>
                                 </property>
                             </bean>
