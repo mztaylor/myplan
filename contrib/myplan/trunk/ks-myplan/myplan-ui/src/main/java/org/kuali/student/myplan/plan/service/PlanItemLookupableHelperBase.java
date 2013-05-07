@@ -110,6 +110,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @param plannedSections
      */
     private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
+        List<String> publishedTerms = AtpHelper.getPublishedTerms();
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
             String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
             List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
@@ -121,15 +122,28 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     }
                 });
             }
-            StringBuffer statusAlert = new StringBuffer();
+            boolean scheduled = AtpHelper.isCourseOfferedInTerm(plannedCourse.getPlanItemDataObject().getAtp(), plannedCourse.getCourseDetails().getCode());
+            boolean timeScheduleOpen = publishedTerms.contains(plannedCourse.getPlanItemDataObject().getAtp());
+            if (timeScheduleOpen) {
+                plannedCourse.setShowAlert(!scheduled);
+            }
+            plannedCourse.setTimeScheduleOpen(timeScheduleOpen);
+            List<String> statusAlerts = new ArrayList<String>();
+            if (timeScheduleOpen && scheduled) {
+                statusAlerts.add(String.format(PlanConstants.COURSE_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
+            } else if (timeScheduleOpen && !scheduled) {
+                statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
+            }
             if (sectionsWithdrawn.containsKey(key)) {
-                statusAlert = statusAlert.append(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsWithdrawn.get(key).toArray())));
+                statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsWithdrawn.get(key).toArray())));
+                plannedCourse.setShowAlert(true);
             }
             if (sectionsSuspended.containsKey(key)) {
-                statusAlert = statusAlert.append(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsSuspended.get(key).toArray())));
+                statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsSuspended.get(key).toArray())));
+                plannedCourse.setShowAlert(true);
             }
-            if (StringUtils.hasText(statusAlert)) {
-                plannedCourse.setActivityStatusAlert(statusAlert.toString());
+            if (!statusAlerts.isEmpty()) {
+                plannedCourse.setStatusAlerts(statusAlerts);
             }
             plannedCourse.setPlanActivities(activityOfferingItems);
         }
@@ -202,13 +216,13 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     plannedSections.put(key, activityOfferingItems);
                 }
 
-                if ("suspended".equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
                     if (sectionsSuspended.containsKey(key)) {
                         sectionsSuspended.get(key).add(activityOfferingItem.getCode());
                     } else {
                         sectionsSuspended.put(key, Arrays.asList(activityOfferingItem.getCode()));
                     }
-                } else if ("withdrawn".equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
                     if (sectionsWithdrawn.containsKey(key)) {
                         sectionsWithdrawn.get(key).add(activityOfferingItem.getCode());
                     } else {
