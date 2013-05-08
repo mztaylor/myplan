@@ -131,6 +131,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             List<String> statusAlerts = new ArrayList<String>();
             if (timeScheduleOpen && !scheduled) {
                 statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
+                plannedCourse.setSectionsAvailable(false);
             }
             if (sectionsWithdrawn.containsKey(key)) {
                 statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsWithdrawn.get(key).toArray())));
