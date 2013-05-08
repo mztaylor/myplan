@@ -287,9 +287,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                 }
                 plannedCourse.setTimeScheduleOpen(timeScheduleOpen);
                 List<String> statusAlerts = new ArrayList<String>();
-                if (timeScheduleOpen && scheduled) {
-                    statusAlerts.add(String.format(PlanConstants.COURSE_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
-                } else if (timeScheduleOpen && !scheduled) {
+                if (timeScheduleOpen && !scheduled) {
                     statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
                 }
                 if (sectionsWithdrawn.containsKey(key)) {

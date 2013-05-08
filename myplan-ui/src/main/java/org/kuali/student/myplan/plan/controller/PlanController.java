@@ -1974,9 +1974,7 @@ String term = t[0] + " " + t[1];*/
                 showAlert = !scheduled;
             }
             StringBuffer statusAlert = new StringBuffer();
-            if (timeScheduleOpen && scheduled) {
-                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_SCHEDULE_ALERT, courseDetails.getCode(), termName));
-            } else if (timeScheduleOpen && !scheduled) {
+            if (timeScheduleOpen && !scheduled) {
                 statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, courseDetails.getCode(), termName));
             }
             params.put("showAlert", String.valueOf(showAlert));
