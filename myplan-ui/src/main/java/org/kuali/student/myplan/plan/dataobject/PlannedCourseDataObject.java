@@ -23,6 +23,8 @@ public class PlannedCourseDataObject implements Comparable {
 
     private transient boolean showAlert;
 
+    private transient boolean sectionsAvailable = true;
+
     private transient List<String> statusAlerts;
 
     // TODO: KULRICE-9003. This should be on plannedTerm once the jira is resolved
@@ -34,6 +36,14 @@ public class PlannedCourseDataObject implements Comparable {
         }
 
         return courseDetails;
+    }
+
+    public boolean isSectionsAvailable() {
+        return sectionsAvailable;
+    }
+
+    public void setSectionsAvailable(boolean sectionsAvailable) {
+        this.sectionsAvailable = sectionsAvailable;
     }
 
     public void setCourseDetails(CourseSummaryDetails courseDetails) {
