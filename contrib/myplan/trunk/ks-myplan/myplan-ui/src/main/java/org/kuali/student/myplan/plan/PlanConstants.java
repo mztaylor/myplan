@@ -90,10 +90,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ACTIVE_STATE = "active";
     public static final String WITHDRAWN_STATE = "withdrawn";
     public static final String SUSPENDED_STATE = "suspended";
-    public static final String WITHDRAWN_ALERT = "Section(s) %s has been withdrawn. ";
-    public static final String SUSPENDED_ALERT = "Section(s) %s has been suspended. ";
+    public static final String WITHDRAWN_ALERT = "Section %s has been withdrawn. ";
+    public static final String SUSPENDED_ALERT = "Section %s has been suspended. ";
     public static final String COURSE_NOT_SCHEDULE_ALERT = "%s is not scheduled for %s. ";
-    public static final String COURSE_SCHEDULE_ALERT = "%s is scheduled for %s. ";
 
 
     /*Query keys for getting the termInfos from the academic calender*/
