@@ -716,12 +716,28 @@ public class QuickAddController extends UifControllerBase {
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
-            // event for aler Icon
+            String atpId = planItem.getPlanPeriods().get(0);
+            String termName = AtpHelper.atpIdToTermName(atpId);
+            params.put("atpId", formatAtpIdForUI(atpId));
+
+            // event for alert Icon
             List<String> publishedTerms = AtpHelper.getPublishedTerms();
-            params.put("showAlert", String.valueOf(!AtpHelper.isCourseOfferedInTerm(planItem.getPlanPeriods().get(0), courseDetails.getCode())));
-            params.put("termName", AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0)));
-            params.put("timeScheduleOpen", String.valueOf(publishedTerms.contains(planItem.getPlanPeriods().get(0))));
+            boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
+            boolean timeScheduleOpen = publishedTerms.contains(atpId);
+            boolean showAlert = false;
+            if (timeScheduleOpen) {
+                showAlert = !scheduled;
+            }
+            StringBuffer statusAlert = new StringBuffer();
+            if (timeScheduleOpen && scheduled) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+            } else if (timeScheduleOpen && !scheduled) {
+                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+            }
+            params.put("showAlert", String.valueOf(showAlert));
+            params.put("termName", termName);
+            params.put("timeScheduleOpen", String.valueOf(timeScheduleOpen));
+            params.put("statusAlert", statusAlert.toString());
         }
 
         //  Create Javascript events.
