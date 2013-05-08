@@ -674,67 +674,61 @@ ${headerLine?xml}
 
             -->
                 <#if subreq.showSelectNotFrom>
-                    <table class="fromcourses">
+                    <div class="fromcourses">
+
                         <#if subreq.showReject>
-                            <tr class="notfromcourses">
-                                <td class="fromlabel">${subreq.notText?xml}</td>
-                                <td>
-                                    <table>
-                                        <#list subreq.notFromHtmlCourses as course>
-                                            <tr>
-                                                <td class="fromcourselist linkify flatten">${course?replace( "&", "&amp;")}</td>
-                                            </tr>
-                                        </#list>
-                                    </table>
-                                </td>
-                            </tr>
+                            <div class="notfromcourses">
+                                <label class="fromlabel">${subreq.notText?xml}</label>
+
+                                <div class="fromcourselist linkify flatten">
+                                    <#list subreq.notFromHtmlCourses as course>
+                                    ${course?replace( "&", "&amp;")}
+                                </#list>
+                                </div>
+                            </div>
                         </#if>
 
                         <#if subreq.showAccept>
-                            <tr class="selectfromcourses">
-                                <td class="fromlabel">${subreq.selectText?xml}</td>
-                                <td>
-                                    <table>
-                                        <#list subreq.selectFromHtmlCourses as course>
-                                            <tr>
-                                                <td class="fromcourselist linkify flatten">${course?replace( "&", "&amp;")}</td>
-                                            </tr>
-                                        </#list>
-                                    </table>
-                                </td>
-                            </tr>
+                            <div class="selectfromcourses">
+                                <label class="fromlabel">${subreq.selectText?xml}</label>
 
+                                <div class="fromcourselist linkify flatten">
+                                    <#list subreq.selectFromHtmlCourses as course>
+                                    ${course?replace( "&", "&amp;")}
+                                </#list>
+                                </div>
+                            </div>
                         </#if>
-                    </table>
-                    <#if subreq.showAccept>
-                    <#--
-                        show accept:
-                           <#list subreq.acceptListElements as accept>
-                            ${accept.useCourse?string}
-                            ${accept.course}
-                            ${accept.useFullCourse?string}
-                            ${accept.shortCourse}
-                            ${accept.courseLink}
-                            followedByANumber: ${accept.followedByANumber?string}
-                            followingANumber: ${accept.followingANumber?string}
-                            padDept: ${accept.padDept?string}
-                            dept: ${accept.dept}
+                    </div>
+                <#--
+                <#if subreq.showAccept>
+                    show accept:
+                    <#list subreq.acceptListElements as accept>
+                    ${accept.useCourse?string}
+                    ${accept.course}
+                    ${accept.useFullCourse?string}
+                    ${accept.shortCourse}
+                    ${accept.courseLink}
+                    followedByANumber: ${accept.followedByANumber?string}
+                    followingANumber: ${accept.followingANumber?string}
+                    padDept: ${accept.padDept?string}
+                    dept: ${accept.dept}
 
-                            hasRefCourse: ${accept.hasRefCourse?string}
-                            refCourse: ${accept.refCourse}
+                    hasRefCourse: ${accept.hasRefCourse?string}
+                    refCourse: ${accept.refCourse}
 
-                            noteElement: ${accept.noteElement?string}
-                            note: ${accept.note}
+                    noteElement: ${accept.noteElement?string}
+                    note: ${accept.note}
 
-                            symbolElement: ${accept.symbolElement?string}
-                            connector: ${accept.connector}
+                    symbolElement: ${accept.symbolElement?string}
+                    connector: ${accept.connector}
 
-                            spanCourse: ${accept.spanCourse}
+                    spanCourse: ${accept.spanCourse}
 
-                            forceNewLine: ${accept.forceNewLine?string}
-                        </#list>
-                    -->
-                    </#if>
+                    forceNewLine: ${accept.forceNewLine?string}
+                    </#list>
+                </#if>
+                -->
 
                     <#if subreq.showNoRefCoursesFoundMessage>
                     ${noRefCourseMessage?xml}
