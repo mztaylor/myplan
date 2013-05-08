@@ -7,6 +7,7 @@ import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.dom4j.tree.DefaultText;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
@@ -594,14 +595,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         List list = doc.selectNodes("//*[contains(@class,'linkify')]");
         for (Object o : list) {
             Element element = (Element) o;
-            String original = extractJustText(element);
-            String modified = urlify(original);
-            modified = new CourseLinkBuilder().makeLinks(modified);
-            if (!original.equals(modified)) {
+            String original = element.getText();
+            String attribs = element.attributeValue("class");
+            if (attribs.contains("flatten")) {
+                original = extractJustText(element);
+                element.clearContent();
+                element.add(new DefaultText(original));
+            }
+            String linkified = urlify(original);
+            linkified = new CourseLinkBuilder().makeLinks(linkified);
+            if (!original.equals(linkified)) {
 
                 try {
-                    modified = "<span>" + modified + "</span>";
-                    Document sub = DocumentHelper.parseText(modified);
+                    linkified = "<span>" + linkified + "</span>";
+                    Document sub = DocumentHelper.parseText(linkified);
                     Element root = sub.getRootElement();
                     element.clearContent();
                     element.add(root);
@@ -626,8 +633,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         result = result.replace("&", "&amp;");
         result = result.replace("<", "&lt;");
         result = result.replace(">", "&gt;");
+        result = result.trim().replaceAll(" ,", ",");
+        result = result.trim().replaceAll(",", ", ");
         result = result.trim().replaceAll("\\s+", " ");
-
         return result;
     }
 
