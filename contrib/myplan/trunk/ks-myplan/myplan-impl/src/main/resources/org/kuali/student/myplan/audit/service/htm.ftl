@@ -205,14 +205,7 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplanstatus/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -226,14 +219,7 @@ ${headerLine?xml}
         <div class="heading">
             <#list req.titleLines as titleLine> ${deASCII( titleLine?trim )} </#list>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+        <@myplanstatus/>
 
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
@@ -292,14 +278,7 @@ ${headerLine?xml}
     <#elseif ( req.headerLines?size > 2 )  > <#-- temporary fix for overly large headers, treat it as a requirement -->
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplanstatus/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
         </#if>
@@ -317,14 +296,7 @@ ${headerLine?xml}
                 </div>
             </#list>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+        <@myplanstatus/>
         <#assign inSection = true>
 
     <#elseif ( req.headerLines?size > 0 )  > <#-- SECTION -->
@@ -376,14 +348,7 @@ ${headerLine?xml}
 
         <#if sectionHeadingOpen = true>
         </div>
-        <div class="myplan-status info uif-boxLayoutVerticalItem all-reqs-filtered"
-             style="margin-bottom:20px; float:none; display:none;">
-            <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
-
-            <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
-                the full audit report.
-            </div>
-        </div>
+            <@myplanstatus/>
             <#assign sectionHeadingOpen = false>
             <#assign inSection = true>
 
@@ -546,6 +511,10 @@ ${headerLine?xml}
                     <#assign takenRow = takenRow + [takenCourse.yt] >
                     <#assign takenRow = takenRow + [takenCourse.displayCourse] >
                     <#assign takenDesc = takenCourse.descriptiveLines >
+                pre description lines:
+                    <#list takenCourse.descriptiveLines as line>
+                    "${line?xml}"
+                    </#list>
                     <#assign takenRow = takenRow + [takenDesc] >
                     <#assign takenRow = takenRow + [takenCourse.credit] >
                     <#assign takenRow = takenRow + [takenCourse.grade] >
@@ -770,6 +739,11 @@ ${headerLine?xml}
                         exists: toolTipsMap[condCode]?exists?string
                         toolTipsMap: toolTipsMap[condCode]
                     -->
+
+                    description lines:
+                        <#list lines as line>
+                        "${line?xml}"
+                        </#list>
 
                     <tr class="${courseType}">
                         <td class="term">${yt?xml}</td>
