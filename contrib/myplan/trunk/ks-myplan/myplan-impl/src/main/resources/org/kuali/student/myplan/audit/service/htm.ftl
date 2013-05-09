@@ -80,8 +80,8 @@
         <div class="audit-summary-data plan-audit-data">
             <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
         </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Program Entry Date:</label> <span
+        <div class="audit-summary-data">
+            <label>Program Entry Qtr:</label> <span
                 class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
         </div>
         <div class="audit-summary-data plan-audit-data">
