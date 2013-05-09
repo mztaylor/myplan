@@ -44,7 +44,9 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Back to Plan page">
@@ -75,7 +77,9 @@
     </bean>
 
     <bean id="full_planned_courses" parent="Uif-VerticalBoxSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="style" value="border:solid 1px #ddd; border-radius:5px; margin-top:20px;"/>
         <property name="items">
             <list>
@@ -83,7 +87,9 @@
                     <property name="headerText" value="Student Academic Plan (MyPlan)"/>
                 </bean>
                 <bean parent="Uif-VerticalBoxGroup" p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:label="Prepared for"
@@ -118,7 +124,9 @@
                     </property>
                 </bean>
                 <bean parent="Uif-VerticalBoxGroup" p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-Message"
@@ -173,7 +181,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-HeaderThree" p:headerText="Year" p:cssClasses=""
@@ -200,7 +210,9 @@
 
     <!--Collection list of the Full Plan Items-->
     <bean id="academicYearCollection" parent="Uif-StackedCollectionGroup" p:style="margin:0;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses" value=""/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
@@ -222,7 +234,9 @@
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionGridItem">
                         <property name="footer.render" value="false"/>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                     </bean>
                 </property>
             </bean>
@@ -247,7 +261,9 @@
     </bean>
 
     <bean id="termsCollection" parent="UifMyPlan-HorizontalStackedSubCollection-WithinSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses" value="myplan-remove-margin"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
@@ -257,7 +273,9 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager">
             <bean parent="UifMyPlan-HorizontalStackedCollectionLayout">
                 <property name="subCollectionFieldGroupPrototype">
@@ -283,7 +301,9 @@
         </property>
         <property name="layoutManager.lineGroupPrototype.footer">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="cssClasses">
                     <list>
                         <value>@{#line.credits ne null ? 'myplan-term-footer':'myplan-term-footer-blank'}</value>
@@ -321,7 +341,9 @@
     </bean>
 
     <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Registered">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -331,7 +353,9 @@
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionVerticalBoxItem">
                         <property name="footer.render" value="false"/>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                     </bean>
                 </property>
             </bean>
@@ -346,7 +370,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} (@{#line.credit})"/>
@@ -362,7 +388,9 @@
     </bean>
 
     <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -374,7 +402,9 @@
                           p:id="@{#line.planItemDataObject.id}_@{#line.planItemDataObject.atp.replace('.','-')}"
                           p:style="width:120px;">
                         <property name="footer.render" value="false"/>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                     </bean>
                 </property>
             </bean>
@@ -389,7 +419,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails ne null}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.CourseDetails.code}"

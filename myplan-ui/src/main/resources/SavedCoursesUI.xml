@@ -49,7 +49,9 @@
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
             </bean>
         </property>
         <property name="resultsGroup">
@@ -58,13 +60,17 @@
     </bean>
 
     <bean id="saved_courses_summary_list" parent="Uif-ListCollectionSection" p:headerText="Bookmarked Courses">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="bookmarks_help_icon"/>
@@ -84,7 +90,9 @@
         <property name="renderLineActions" value="false"/>
         <property name="disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
@@ -95,7 +103,9 @@
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:id="@{#line.planItemDataObject.id}" p:style="cursor:pointer;">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-click</value>
@@ -138,7 +148,9 @@
 
     <bean id="saved_courses_summary_footer" parent="Uif-VerticalBoxSection"
           p:style="padding: 7px 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header.render" value="false"/>
         <property name="items">
             <list>
@@ -159,7 +171,9 @@
                     <property name="target" value=""/>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="render"
                               value="@{lookupResults ne null and lookupResults.size() gt 0 ? false : true}"/>
                     <property name="cssClasses">
@@ -251,7 +265,9 @@
     </bean>
 
     <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 700px; margin-right: 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-saved-courses-detail</value>
@@ -280,7 +296,9 @@
     </bean>
 
     <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection" p:style="clear:both;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="headerText"
                   value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"/>
         <property name="collectionObjectClass"
@@ -305,7 +323,9 @@
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:id="@{#line.planItemDataObject.id}" p:style="display:block;">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-remove-margin</value>
@@ -355,7 +375,9 @@
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Scheduled For"
@@ -410,7 +432,9 @@
 
                 <bean parent="Uif-HorizontalFieldGroup">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-DataField" p:label="Course Requisites"
@@ -436,7 +460,9 @@
                 </bean>
                 <bean parent="Uif-HorizontalFieldGroup">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>uif-boxLayoutVerticalItem</value>
@@ -472,7 +498,9 @@
 
                 <bean parent="Uif-HorizontalFieldGroup">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>uif-boxLayoutVerticalItem</value>
@@ -510,7 +538,9 @@
 
     <!-- Group for Empty Result Set -->
     <bean id="saved_courses_detail_list_empty" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="headerText"
                   value="You have &lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; courses bookmarked"/>
         <property name="render" value="@{lookupResults.size() gt 0 ? false : true}"/>
@@ -531,7 +561,9 @@
     </bean>
 
     <bean id="empty_bookmarked_section" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-650</value>
@@ -559,7 +591,9 @@
     <!-- ####################### The Right panel for Saved Courses Full View #################### -->
     <!-- For saved courses view, we do not want to show the saved course summary list -->
     <bean id="saved_course_myplan_section" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-200</value>

@@ -165,7 +165,9 @@
 
     <!-- Course details summary component used in both the popover and dialog box -->
     <bean id="course_details_summary_info" parent="Uif-VerticalBoxGroup" p:style="margin:0px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_details_summary_data"/>
@@ -175,7 +177,9 @@
     </bean>
 
     <bean id="course_details_summary_data" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-details</value>
@@ -184,10 +188,11 @@
         <property name="items">
             <list>
                 <!-- Scheduled Terms -->
-                <bean parent="Uif-DataField" p:label="Scheduled for"
-                      p:propertyName="courseSummaryDetails"
-                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal" p:labelPlacement="LEFT"
+                <bean parent="KSAP-SimpleDataField" p:label="Scheduled for"
+                      p:propertyName="courseSummaryDetails" p:labelPlacement="LEFT"
                       p:escapeHtmlInPropertyValue="false">
+                    <property name="fieldLabel.render" value="true"/>
+                    <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -197,23 +202,27 @@
                     <property name="render"
                               value="@{courseSummaryDetails.scheduledTerms.size() gt 0}"/>
                 </bean>
-                <bean parent="Uif-MessageField" p:label="Scheduled for"
-                      p:fieldLabel.cssClasses="fl-text-gray myplan-text-normal"
+                <bean parent="KSAP-MessageField" p:label="Scheduled for"
                       p:render="@{courseSummaryDetails.scheduledTerms.size() eq 0}">
+                    <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="message">
                         <bean parent="Uif-Message" p:messageText="Not currently scheduled"/>
                     </property>
                 </bean>
                 <!-- Last Offered -->
-                <bean parent="Uif-DataField" p:label="Last Offered" p:propertyName="courseSummaryDetails.lastOffered"
+                <bean parent="KSAP-SimpleDataField" p:label="Last Offered"
+                      p:propertyName="courseSummaryDetails.lastOffered"
                       p:labelPlacement="LEFT">
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="render"
                               value="@{courseSummaryDetails.lastOffered ne null and courseSummaryDetails.scheduledTerms.size() eq 0}"/>
                 </bean>
                 <!-- Projected Terms -->
-                <bean parent="Uif-DataField" p:label="Projected for" p:propertyName="courseSummaryDetails.termsOffered"
+                <bean parent="KSAP-SimpleDataField" p:label="Projected for"
+                      p:propertyName="courseSummaryDetails.termsOffered"
                       p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -223,7 +232,7 @@
                     <property name="render"
                               value="@{courseSummaryDetails.termsOffered.size() gt 0 ? true : false}"/>
                 </bean>
-                <bean parent="Uif-MessageField" p:label="Projected for"
+                <bean parent="KSAP-MessageField" p:label="Projected for"
                       p:render="@{courseSummaryDetails.termsOffered.size() eq 0 ? true : false}">
                     <property name="fieldLabel.cssClasses"
                               value="fl-text-gray myplan-text-normal"/>
@@ -246,7 +255,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-MessageField" p:label="Course Requisites"
+                <bean parent="KSAP-MessageField" p:label="Course Requisites"
                       p:render="@{courseSummaryDetails.requisites.size() eq 0}">
                     <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                     <property name="message">
@@ -277,18 +286,24 @@
     </bean>
 
     <bean id="course_details_summary_messages" parent="Uif-VerticalBoxGroup" p:style="margin:0px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="course_details_popup_buttons" parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <!-- If not in plan and not in saved courses and not in academic record list -->
                             <bean parent="Uif-HorizontalFieldGroup"
                                   p:render="@{(plannedCourseSummary.backupList.size() eq 0 and plannedCourseSummary.plannedList.size() eq 0 and plannedCourseSummary.savedItemId eq null and plannedCourseSummary.academicTerms.size() eq 0)}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -301,7 +316,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <bean parent="Uif-Message" p:messageText=""/>
+                                                    <bean parent="KSAP-NoSpanMessage" p:messageText=""/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -312,7 +327,9 @@
                             <bean parent="Uif-HorizontalFieldGroup"
                                   p:render="@{(plannedCourseSummary.backupList.size() eq 0 and plannedCourseSummary.plannedList.size() eq 0 and plannedCourseSummary.savedItemId ne null and plannedCourseSummary.academicTerms.size() eq 0)}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -325,7 +342,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <bean parent="Uif-Message" p:messageText=""/>
+                                                    <bean parent="KSAP-NoSpanMessage" p:messageText=""/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -337,7 +354,9 @@
                             <bean parent="Uif-HorizontalFieldGroup"
                                   p:render="@{((plannedCourseSummary.backupList.size() gt 0 or plannedCourseSummary.plannedList.size() gt 0) and plannedCourseSummary.savedItemId ne null and plannedCourseSummary.academicTerms.size() eq 0)}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -350,7 +369,7 @@
                                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                             <property name="replacement">
                                                 <list>
-                                                    <bean parent="Uif-Message" p:messageText=""/>
+                                                    <bean parent="KSAP-NoSpanMessage" p:messageText=""/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -362,7 +381,9 @@
                 </bean>
                 <bean id="course_details_popup_messaging" parent="Uif-VerticalBoxGroup" p:style="margin:0px"
                       p:render="@{(plannedCourseSummary.backupList.size() gt 0 or plannedCourseSummary.plannedList.size() gt 0 or plannedCourseSummary.savedItemId ne null or plannedCourseSummary.academicTerms.size() gt 0)}">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-status</value>
@@ -373,11 +394,13 @@
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="Uif-DataField"
+                                        <bean parent="KSAP-SimpleDataField"
                                               p:propertyName="courseAndPlanSummary"
                                               p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
                                             <property name="fieldLabel.cssClasses"
@@ -478,7 +501,9 @@
                 <bean parent="Uif-HorizontalFieldGroup"
                       p:render="@{planActivities ne null AND planActivities.size() gt 0}">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-status</value>
@@ -503,7 +528,9 @@
                     </property>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton-Small"
@@ -650,7 +677,9 @@
 
     <!-- Course details 3 box group  -->
     <bean id="course_popover_group" parent="Uif-HorizontalBoxGroup" p:style="margin:0px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -669,7 +698,9 @@
     </bean>
 
     <bean id="course_details_info" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -684,7 +715,9 @@
 
     <!-- Group for "Add Plan Item" inputs -->
     <bean id="add_planned_course_fields" parent="Uif-VerticalBoxGroup" p:style="display:none;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -714,12 +747,16 @@
 
                 <bean id="plan_add_action_items" parent="Uif-VerticalFieldGroup" p:style="margin:0px;">
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="Uif-HorizontalFieldGroup">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
@@ -769,7 +806,9 @@
                             </bean>
                             <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean id="hidden_add_error_block_item" p:id="hidden_add_error_block_item"
@@ -795,7 +834,9 @@
           p:label="Quarter &amp; Year" p:labelPlacement="TOP">
         <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
         <property name="fieldLabel.renderColon" value="false"/>
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="select_quarter" parent="Uif-InputField" p:propertyName="atpId"
@@ -824,7 +865,9 @@
     <!--  Backup checkbox -->
     <bean id="planned_course_backup" parent="Uif-HorizontalFieldGroup" p:style="padding-top: 1em;">
         <property name="fieldLabel.render" value="false"/>
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="checkbox_backup" parent="Uif-InputField" p:propertyName="backup" p:defaultValue="false"
@@ -843,7 +886,9 @@
     <!-- Delete from courses list confirmation -->
     <bean id="delete_from_list_confirmation" parent="Uif-VerticalBoxGroup"
           p:style="display:none;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -863,7 +908,9 @@
 
                 <!-- Container for buttons -->
                 <bean parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton-Small"
@@ -898,7 +945,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup" p:style="display:block; margin:0;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-container-300</value>
@@ -927,12 +976,16 @@
                             <ref bean="planned_course_backup"/>
                             <bean id="plan_add_actions" parent="Uif-VerticalFieldGroup" p:style="margin:0;">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalFieldGroup">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
@@ -961,7 +1014,9 @@
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0;">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean id="hidden_add_error_block" p:id="hidden_add_error_block"
@@ -994,7 +1049,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup" p:style="display:block;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-container-300</value>
@@ -1023,7 +1080,9 @@
                             <bean parent="Uif-HorizontalFieldGroup"
                                   p:render="@{planActivities ne null AND planActivities.size() gt 0}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-status</value>
@@ -1050,12 +1109,16 @@
                             </bean>
                             <bean id="plan_move_actions" parent="Uif-VerticalFieldGroup">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalFieldGroup">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean p:id="movePlannedCourse"
@@ -1084,7 +1147,9 @@
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean id="hidden_move_error_block" p:id="hidden_move_error_block"
@@ -1117,7 +1182,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup" p:style="display:block;">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-container-300</value>
@@ -1147,7 +1214,9 @@
                             <bean parent="Uif-HorizontalFieldGroup"
                                   p:render="@{planActivities ne null AND planActivities.size() gt 0}">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-status</value>
@@ -1174,12 +1243,16 @@
                             </bean>
                             <bean id="plan_copy_actions" parent="Uif-VerticalFieldGroup">
                                 <property name="fieldLabel.render" value="false"/>
-                                <property name="group.validationMessages.render" value="false"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalFieldGroup">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean p:id="copyPlannedCourse"
@@ -1241,7 +1314,9 @@
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup">
                                             <property name="fieldLabel.render" value="false"/>
-                                            <property name="group.validationMessages.render" value="false"/>
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean id="hidden_copy_error_block" p:id="hidden_copy_error_block"
@@ -1300,7 +1375,9 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-VerticalBoxGroup" p:style="margin:0;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>fl-text-align-left</value>

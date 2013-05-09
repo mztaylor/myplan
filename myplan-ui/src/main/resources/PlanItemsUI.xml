@@ -61,7 +61,7 @@
                             <ref bean="backup_menu_items"/>
                             <ref bean="completed_menu_items"/>
                             <ref bean="completed_backup_menu_items"/>
-                            <bean id="hidden_new_user_flag" parent="Uif-DataField" p:propertyName="newUser"
+                            <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
                                   p:style="display:none;"/>
                         </list>
                     </property>
@@ -79,7 +79,9 @@
                 <value>myplan-plan-loader</value>
             </list>
         </property>
-        <property name="validationMessages.displayMessages" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onDocumentReadyScript" value="
             var user = jQuery.trim(jQuery('#hidden_new_user_flag').text());
             if (user == 'true' &amp;&amp; !jQuery.cookie('new_user_cookie')) {
@@ -344,7 +346,9 @@
                 });
             }
         "/>
-        <property name="validationMessages.displayMessages" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalBoxGroup">
@@ -527,20 +531,20 @@
                 <!-- This hidden field is only rendered for the ATP that should have focus in the UI. The value of "index" will
                      be used to initialize the javascript "carousellite" component. It should only be displayed for the PlanTerm
                      that should get focus -->
-                <bean id="atp_start_index" parent="Uif-DataField" p:propertyName="index"
+                <bean id="atp_start_index" parent="KSAP-SimpleDataField" p:propertyName="index"
                       p:render="@{#line.index ge 0}" p:style="display:none;"/>
 
-                <bean id="plan_base_atpId" parent="Uif-DataField" p:propertyName="atpId" p:style="display: none;">
-                    <property name="fieldLabel.render" value="false"/>
-                </bean>
-
-                <bean id="single_quarter_atpId" parent="Uif-DataField" p:propertyName="singleQuarterAtp"
+                <bean id="plan_base_atpId" parent="KSAP-SimpleDataField" p:propertyName="atpId"
                       p:style="display: none;">
                     <property name="fieldLabel.render" value="false"/>
                 </bean>
 
-                <bean p:id="@{#line.atpId}_plan_status" parent="Uif-InputField" p:propertyName="openForPlanning">
+                <bean id="single_quarter_atpId" parent="KSAP-SimpleDataField" p:propertyName="singleQuarterAtp"
+                      p:style="display: none;">
                     <property name="fieldLabel.render" value="false"/>
+                </bean>
+
+                <bean p:id="@{#line.atpId}_plan_status" parent="KSAP-SimpleInputField" p:propertyName="openForPlanning">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -657,7 +661,6 @@
             <list>
                 <bean p:id="@{#line.uuid}_completed_@{#line.atpId.replace('.','-')}" parent="Uif-HorizontalFieldGroup"
                       p:title="@{#line.courseTitle}"
-                      p:style="padding-left:28px"
                       p:render="@{#line.courseCode ne null and #line.courseId ne null}">
                     <property name="group.validationMessages">
                         <null/>
@@ -714,7 +717,6 @@
                     </property>
                 </bean>
                 <bean p:id="@{#line.uuid}_completed" parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseTitle}"
-                      p:style="padding-left:28px"
                       p:render="@{#line.courseCode ne null and #line.courseId eq null}">
                     <property name="group.validationMessages">
                         <null/>
@@ -1030,21 +1032,19 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
-                            <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
+                            <value>@{#line.showAlert ? 'alert':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField"
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.alertsAsString}"
                                   p:altText="@{#line.alertsAsString}"
-                                  p:render="@{#line.statusAlerts ne null}">
+                                  p:render="@{#line.showAlert}">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>schedule-status</value>
-                                        <value>@{#line.showAlert ? 'not-scheduled' : 'scheduled'}</value>
+                                        <value>alert-icon</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1180,11 +1180,22 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
+                            <value>@{#line.showAlert ? 'alert':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
+                            <bean parent="Uif-ImageField"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:title="@{#line.alertsAsString}"
+                                  p:altText="@{#line.alertsAsString}"
+                                  p:render="@{#line.showAlert}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>alert-icon</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">
@@ -1333,21 +1344,19 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
-                            <value>@{#line.timeScheduleOpen ? 'schedule':''}</value>
+                            <value>@{#line.showAlert ? 'alert':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
                             <bean parent="Uif-ImageField"
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.alertsAsString}"
                                   p:altText="@{#line.alertsAsString}"
-                                  p:render="@{#line.statusAlerts ne null}">
+                                  p:render="@{#line.showAlert}">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>schedule-status</value>
-                                        <value>@{#line.showAlert ? 'not-scheduled' : 'scheduled'}</value>
+                                        <value>alert-icon</value>
                                     </list>
                                 </property>
                             </bean>
@@ -1453,11 +1462,22 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>myplan-course-valid</value>
+                            <value>@{#line.showAlert ? 'alert':''}</value>
                         </list>
                     </property>
-                    <property name="style" value="width:@{#line.timeScheduleOpen ? '136':'114'}px;"/>
                     <property name="items">
                         <list>
+                            <bean parent="Uif-ImageField"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:title="@{#line.alertsAsString}"
+                                  p:altText="@{#line.alertsAsString}"
+                                  p:render="@{#line.showAlert}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>alert-icon</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="KSAP-MessageField">
                                 <property name="messageText" value="@{#line.courseDetails.code}"/>
                                 <property name="cssClasses">

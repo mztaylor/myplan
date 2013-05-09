@@ -96,6 +96,10 @@ a, a:hover, a:active, a:visited, a:focus {
     color: #777 !important;
 }
 
+.fl-text-lightgray {
+    color: #999 !important;
+}
+
 .fl-text-silver {
     color: #b4b4b4 !important;
 }
@@ -1104,22 +1108,31 @@ div.activityAction div.blockElement {
     padding: 0 5px 0 26px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule {
-    padding: 0 5px 0 4px;
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
+    width: 114px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule .schedule-status {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.alert {
+    padding: 0 5px 0 4px;
+    width: 136px;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .alert-icon {
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status img {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert-icon img,
+.activityEnrlStatus .alert-icon img {
+    border: none;
     width: 18px;
     height: 18px;
     vertical-align: middle;
     background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .schedule-status.not-scheduled img {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert-icon img,
+.activityEnrlStatus .alert-icon img {
     background-position: -54px -115px;
 }
 
@@ -1127,7 +1140,7 @@ div.activityAction div.blockElement {
     font-size: 0.8462em;
     font-style: italic;
     color: #117bdf;
-    padding: 0px 5px;
+    padding: 0px;
     text-align: center;
     margin: 1px 0 0 0;
     background: none;
