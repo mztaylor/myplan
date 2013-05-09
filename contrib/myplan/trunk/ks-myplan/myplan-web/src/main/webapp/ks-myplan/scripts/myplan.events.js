@@ -175,8 +175,16 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
                 row.hide().next('tr.collapsible').hide().next('tr.collapsible').hide();
             }
             break;
+        case "suspended":
+            component.removeClass('myplan-delete').attr("data-planned", "false").data("planned", false).html("--").parent("td").removeClass('myplan-delete');
+            row.removeClass('myplan-section-planned');
+            script = "jQuery('#' + '" + actionId + "').off('click'); ";
+            if (jQuery("#" + data.courseDetails.courseId + "_toggle").data("hidden")) {
+                row.hide();
+            }
+            break;
     }
-    script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this));}); ";
+    if (action != "suspended") script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this));}); ";
     updateHiddenScript(actionId, script);
 }
 

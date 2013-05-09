@@ -232,7 +232,7 @@
                     }
                 })
                 .subscribe('SECTION_ITEM_DELETED', function(data) {
-                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey != 'active') {
+                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey == 'withdrawn') {
                         fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
                         if (data.ItemsToUpdate) {
                             var items = data.ItemsToUpdate.split(',');
@@ -241,11 +241,13 @@
                             });
                         }
                     } else {
-                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'deleted', data);
+                        var action = 'deleted';
+                        if (data.ActivityStateKey == 'suspended') action = data.ActivityStateKey;
+                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, action, data);
                         if (data.ItemsToUpdate) {
                             var items = data.ItemsToUpdate.split(',');
                             jQuery.each(items, function (index, value) {
-                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'deleted', data);
+                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], action, data);
                             });
                         }
                     }
