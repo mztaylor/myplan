@@ -77,19 +77,21 @@
                                                                 &lt;col style=&quot;width: 84px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 263px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 48px;&quot;&gt;
-                                                                &lt;col style=&quot;width: 79px;&quot;&gt;
-                                                                &lt;col style=&quot;width: 69px;&quot;&gt;
+                                                                &lt;col style=&quot;width: 74px;&quot;&gt;
+                                                                &lt;col style=&quot;width: 74px;&quot;&gt;
                                                                 &lt;col style=&quot;width: 25px;&quot;&gt;
                                                             ');
                                                             tableHead.remove();
                                                         "/>
                                                         <property name="items">
                                                             <list>
-                                                                <bean parent="activityCode" p:rowSpan="1">
+                                                                <bean parent="activityCode" p:rowSpan="1"
+                                                                      p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                                                                     <property name="onDocumentReadyScript" value="
                                                                         var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
                                                                         row.addClass('row');
                                                                         if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+                                                                        if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
                                                                     "/>
                                                                     <property name="items">
                                                                         <list>
@@ -110,7 +112,8 @@
                                                                             <bean parent="Uif-ActionLink"
                                                                                   p:actionLabel="View more"
                                                                                   p:style="margin:0; font-size:9px;"
-                                                                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                                                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                                                                  p:render="@{#line.stateKey EQ 'active'}">
                                                                                 <property name="actionScript"
                                                                                           value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
                                                                             </bean>
@@ -126,32 +129,47 @@
 
                                                                 <bean parent="activityEnrlRestr"/>
 
-                                                                <bean parent="activityEnrlStatus"/>
+                                                                <bean parent="activityEnrlData"
+                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
+                                                                <bean parent="activityEnrlStatus"
+                                                                      p:render="@{#line.stateKey NE 'active'}"/>
 
-                                                                <bean parent="activityEnrlData"/>
-
-                                                                <bean parent="activityActionButton" p:rowSpan="1"
-                                                                      p:render="@{#line.openForPlanning AND #line.planItemId EQ null}">
-                                                                    <property name="dataAttributes">
-                                                                        <map merge="true">
-                                                                            <entry key="initial" value="false"/>
-                                                                        </map>
+                                                                <bean parent="Uif-VerticalFieldGroup" p:valign="TOP"
+                                                                      p:rowSpan="1" p:colSpan="1">
+                                                                    <property name="group.validationMessages">
+                                                                        <null/>
+                                                                    </property>
+                                                                    <property name="items">
+                                                                        <list>
+                                                                            <!-- Add button when active, unplanned, open for planning -->
+                                                                            <bean parent="activityActionButton"
+                                                                                  p:render="@{#line.openForPlanning AND #line.planItemId EQ null AND #line.stateKey EQ 'active'}">
+                                                                                <property name="dataAttributes">
+                                                                                    <map merge="true">
+                                                                                        <entry key="initial"
+                                                                                               value="false"/>
+                                                                                    </map>
+                                                                                </property>
+                                                                            </bean>
+                                                                            <!-- Delete button when planned -->
+                                                                            <bean parent="activityActionDelete"
+                                                                                  p:render="@{#line.planItemId NE null}">
+                                                                                <property name="dataAttributes">
+                                                                                    <map merge="true">
+                                                                                        <entry key="initial"
+                                                                                               value="false"/>
+                                                                                    </map>
+                                                                                </property>
+                                                                            </bean>
+                                                                            <!-- Empty when unplanned and not active or uplanned and closed for planning and active-->
+                                                                            <bean parent="emptyAction"
+                                                                                  p:render="@{(#line.planItemId EQ null AND #line.stateKey NE 'active') OR (#line.planItemId EQ null AND !#line.openForPlanning AND #line.stateKey EQ 'active')}"/>
+                                                                        </list>
                                                                     </property>
                                                                 </bean>
 
-                                                                <bean parent="activityActionDelete" p:rowSpan="1"
-                                                                      p:render="@{#line.openForPlanning AND #line.planItemId NE null}">
-                                                                    <property name="dataAttributes">
-                                                                        <map merge="true">
-                                                                            <entry key="initial" value="false"/>
-                                                                        </map>
-                                                                    </property>
-                                                                </bean>
-
-                                                                <bean parent="emptyAction" p:rowSpan="1"
-                                                                      p:render="@{!#line.openForPlanning}"/>
-
-                                                                <bean parent="activityInstructor">
+                                                                <bean parent="activityInstructor"
+                                                                      p:render="@{#line.stateKey EQ 'active'}">
                                                                     <property name="onDocumentReadyScript" value="
                                                                         var collapsibleRow = jQuery('#instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                                                                         collapsibleRow.addClass('collapsible').hide();
@@ -160,9 +178,11 @@
                                                                     "/>
                                                                 </bean>
 
-                                                                <bean parent="activityOther" p:colSpan="5"/>
+                                                                <bean parent="activityOther" p:colSpan="5"
+                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
 
-                                                                <bean parent="activityAdditionalDetails" p:colSpan="7">
+                                                                <bean parent="activityAdditionalDetails" p:colSpan="7"
+                                                                      p:render="@{#line.stateKey EQ 'active'}">
                                                                     <property name="onDocumentReadyScript" value="
                                                                         var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                                                                         collapsibleRow.addClass('collapsible').hide();
@@ -180,12 +200,14 @@
                                                                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                                                                     <property name="replacement">
                                                                         <list>
-                                                                            <bean parent="activityCode" p:rowSpan="1">
+                                                                            <bean parent="activityCode" p:rowSpan="1"
+                                                                                  p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                                                                                 <property name="onDocumentReadyScript"
                                                                                           value="
                                                                                     var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
                                                                                     row.addClass('row');
                                                                                     if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+                                                                                    if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
                                                                                 "/>
                                                                                 <property name="items">
                                                                                     <list>
@@ -207,7 +229,8 @@
                                                                                         <bean parent="Uif-ActionLink"
                                                                                               p:actionLabel="View more"
                                                                                               p:style="margin:0; font-size:9px;"
-                                                                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}" p:render="@{#line.stateKey EQ 'active'}">
+                                                                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                                                                              p:render="@{#line.stateKey EQ 'active'}">
                                                                                             <property
                                                                                                     name="actionScript"
                                                                                                     value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
@@ -224,13 +247,27 @@
 
                                                                             <bean parent="activityEnrlRestr"/>
 
-                                                                            <bean parent="activityEnrlStatus"/>
+                                                                            <bean parent="activityEnrlData"
+                                                                                  p:render="@{#line.stateKey EQ 'active'}"/>
+                                                                            <bean parent="activityEnrlStatus"
+                                                                                  p:render="@{#line.stateKey NE 'active'}"/>
 
-                                                                            <bean parent="activityEnrlData"/>
+                                                                            <bean parent="Uif-VerticalFieldGroup"
+                                                                                  p:valign="TOP" p:rowSpan="1"
+                                                                                  p:colSpan="1">
+                                                                                <property
+                                                                                        name="group.validationMessages">
+                                                                                    <null/>
+                                                                                </property>
+                                                                                <property name="items">
+                                                                                    <list>
+                                                                                        <bean parent="emptyAction"/>
+                                                                                    </list>
+                                                                                </property>
+                                                                            </bean>
 
-                                                                            <bean parent="emptyAction" p:rowSpan="1"/>
-
-                                                                            <bean parent="activityInstructor">
+                                                                            <bean parent="activityInstructor"
+                                                                                  p:render="@{#line.stateKey EQ 'active'}">
                                                                                 <property name="onDocumentReadyScript"
                                                                                           value="
                                                                                     var collapsibleRow = jQuery('#instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
@@ -240,10 +277,12 @@
                                                                                 "/>
                                                                             </bean>
 
-                                                                            <bean parent="activityOther" p:colSpan="5"/>
+                                                                            <bean parent="activityOther" p:colSpan="5"
+                                                                                  p:render="@{#line.stateKey EQ 'active'}"/>
 
                                                                             <bean parent="activityAdditionalDetails"
-                                                                                  p:colSpan="7">
+                                                                                  p:colSpan="7"
+                                                                                  p:render="@{#line.stateKey EQ 'active'}">
                                                                                 <property name="onDocumentReadyScript"
                                                                                           value="
                                                                                     var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');

@@ -75,11 +75,15 @@
 
     <bean id="degree_audit_details_section" parent="Uif-VerticalBoxSubSection"
           p:style="width: 710px; margin-right: 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalBoxGroup">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean id="txtaudit2" parent="Uif-Message" p:messageText="@{dataObject.reportAsHtml}"
@@ -143,13 +147,17 @@
     </bean>
 
     <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="recent_audits_help_icon"/>
@@ -168,7 +176,9 @@
         "/>
         <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="filters">
@@ -179,7 +189,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-VerticalFieldGroup" p:id="@{#line.report.auditId}" p:title="@{#line.programTitle}">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -232,7 +244,9 @@
     </bean>
 
     <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection" p:style="padding: 6px 10px">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header.render" value="false"/>
         <property name="render"
                   value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>

@@ -45,16 +45,22 @@
                         <list>
                             <bean id="single_quarter_items" parent="Uif-VerticalBoxGroup"
                                   p:style="margin:0; width:630px; margin-right: 10px;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-HorizontalBoxGroup"
                                                           p:style="margin:0; width:72px;">
-                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="validationMessages">
+                                                            <null/>
+                                                        </property>
                                                         <property name="items">
                                                             <list>
                                                                 <bean id="previous_quarter_button"
@@ -123,7 +129,9 @@
 
                                                     <bean parent="Uif-HorizontalBoxGroup"
                                                           p:style="margin:0; width: 132px;">
-                                                        <property name="validationMessages.render" value="false"/>
+                                                        <property name="validationMessages">
+                                                            <null/>
+                                                        </property>
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="MyPlan-NavLink">
@@ -181,7 +189,9 @@
                                         </bean>
                                         <ref bean="overallPlanLink"/>
                                         <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-MessageField"
@@ -222,7 +232,7 @@
                     }
                 })
                 .subscribe('SECTION_ITEM_DELETED', function(data) {
-                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial')) {
+                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey != 'active') {
                         fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
                         if (data.ItemsToUpdate) {
                             var items = data.ItemsToUpdate.split(',');
@@ -266,7 +276,9 @@
 
         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
                         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');-->
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-quarter-detail</value>
@@ -303,7 +315,9 @@
 
     <bean id="plannedCoursesList" parent="Uif-VerticalBoxGroup">
         <property name="id" value="@{dataObject.atpId.replace('.','-')}_planned"/>
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <!-- Plan list NOT empty-->
@@ -327,7 +341,9 @@
 
     <bean id="backupCoursesList" parent="Uif-VerticalBoxGroup">
         <property name="id" value="@{dataObject.atpId.replace('.','-')}_backup"/>
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <!-- Backup list NOT empty-->
@@ -382,7 +398,9 @@
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_completed_help_icon"/>
@@ -392,7 +410,9 @@
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list></list>
                 </property>
@@ -402,7 +422,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:style="width:490px;">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="label" value="Courses"/>
                     <property name="items">
                         <list>
@@ -489,7 +511,9 @@
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_registered_help_icon"/>
@@ -499,7 +523,9 @@
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list></list>
                 </property>
@@ -535,7 +561,9 @@
                 </bean>
                 <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
                       p:rowSpan="1">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="label" value="Section"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -560,7 +588,9 @@
                 </bean>
                 <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
                       p:rowSpan="1">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="label" value="Type"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -603,7 +633,9 @@
                 <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="1" p:rowSpan="1">
                     <property name="id" value="details_@{#line.uuid}"/>
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript" value="
                         var collapsibleRow = jQuery('#details_@{#line.uuid}').parents('tr');
                         collapsibleRow.addClass('collapsible').hide();
@@ -636,7 +668,9 @@
 
                 <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="1" p:rowSpan="1">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>activityOther</value>
@@ -688,7 +722,9 @@
 
                 <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="3" p:rowSpan="1">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>activityRegCode</value>
@@ -713,7 +749,9 @@
     </bean>
 
     <bean id="single_Planned_Collection" parent="Uif-StackedCollectionGroup" p:headerText="Planned Courses">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="render" value="@{dataObject.plannedList.size() GT 0}"/>
@@ -736,7 +774,9 @@
                 <property name="lineGroupPrototype">
                     <bean p:id="@{#line.planItemDataObject.id}" parent="Uif-CollectionVerticalBoxItem">
                         <property name="footer.render" value="false"/>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>myplan-course-item</value>
@@ -753,7 +793,9 @@
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_planned_help_icon"/>
@@ -763,8 +805,10 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:title="@{#line.courseDetails.courseTitle}">
-                    <property name="group.validationMessages.render" value="false"/>
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript"
                               value=""/>
                     <property name="cssClasses">
@@ -787,6 +831,11 @@
 
                             <bean parent="Uif-LinkField">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
+                                <!--<property name="title" value="@{#line.courseDetails.courseTitle} "/>-->
+                                <property name="title" value="time schedule open: @{#line.timeScheduleOpen};&#013;
+                                                              completed term: @{dataObject.completedTerm};&#013;
+                                                              show alert: @{#line.showAlert}&#013;
+                                                              planActivities size: @{#line.planActivities.size()}"/>
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="style" value="margin:0 5px 0 0;"/>
@@ -816,7 +865,7 @@
                             <!-- Time Schedule Open and Scheduled -->
                             <bean parent="singleQuarterStudentActions">
                                 <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.showAlert}"/>
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="singleQuarterSectionsToggle"/>
@@ -828,7 +877,7 @@
                             <!-- Time Schedule Open and NOT Scheduled -->
                             <bean parent="singleQuarterStudentActions">
                                 <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.showAlert}"/>
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="singleQuarterMoveCourse"/>
@@ -887,7 +936,9 @@
                   value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', 35, true);"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_backup_help_icon"/>
@@ -913,7 +964,9 @@
         </property>
         <property name="header.lowerGroup">
             <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list></list>
                 </property>
@@ -940,8 +993,8 @@
                     &lt;col style=&quot;width: 84px;&quot;&gt;
                     &lt;col style=&quot;width: 263px;&quot;&gt;
                     &lt;col style=&quot;width: 48px;&quot;&gt;
-                    &lt;col style=&quot;width: 79px;&quot;&gt;
-                    &lt;col style=&quot;width: 69px;&quot;&gt;
+                    &lt;col style=&quot;width: 74px;&quot;&gt;
+                    &lt;col style=&quot;width: 74px;&quot;&gt;
                     &lt;col style=&quot;width: 25px;&quot;&gt;
                 ');
                 tableHead.remove();
@@ -949,11 +1002,12 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="activityCode" p:rowSpan="1">
+                <bean parent="activityCode" p:rowSpan="1" p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                     <property name="onDocumentReadyScript" value="
                         var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
                         row.addClass('row');
                         if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+                        if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
                     "/>
                     <property name="items">
                         <list>
@@ -968,7 +1022,8 @@
                             </bean>
                             <bean parent="Uif-ActionLink" p:actionLabel="View more"
                                   p:style="margin:0; font-size:9px;"
-                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}" p:render="@{#line.stateKey EQ 'active'}">
+                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                  p:render="@{#line.stateKey EQ 'active'}">
                                 <property name="actionScript"
                                           value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
                             </bean>
@@ -984,15 +1039,21 @@
 
                 <bean parent="activityEnrlRestr"/>
 
-                <bean parent="activityEnrlStatus"/>
+                <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                <bean parent="activityEnrlData"/>
+                <bean parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="activityActionDelete"/>
+                        </list>
+                    </property>
+                </bean>
 
-                <bean parent="activityActionDelete" p:rowSpan="1" p:render="@{#line.openForPlanning}"/>
-
-                <bean parent="emptyAction" p:rowSpan="1" p:render="@{!#line.openForPlanning}"/>
-
-                <bean parent="activityInstructor">
+                <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}">
                     <property name="onDocumentReadyScript" value="
                         var collapsibleRow = jQuery('#instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                         collapsibleRow.addClass('collapsible').hide();
@@ -1001,9 +1062,9 @@
                     "/>
                 </bean>
 
-                <bean parent="activityOther" p:colSpan="5"/>
+                <bean parent="activityOther" p:colSpan="5" p:render="@{#line.stateKey EQ 'active'}"/>
 
-                <bean parent="activityAdditionalDetails" p:colSpan="7">
+                <bean parent="activityAdditionalDetails" p:colSpan="7" p:render="@{#line.stateKey EQ 'active'}">
                     <property name="onDocumentReadyScript" value="
                         var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                         collapsibleRow.addClass('collapsible').hide();
@@ -1020,11 +1081,13 @@
                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                     <property name="replacement">
                         <list>
-                            <bean parent="activityCode" p:rowSpan="1">
+                            <bean parent="activityCode" p:rowSpan="1"
+                                  p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                                 <property name="onDocumentReadyScript" value="
                                     var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
                                     row.addClass('row');
                                     if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+                                    if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
                                 "/>
                                 <property name="items">
                                     <list>
@@ -1040,7 +1103,8 @@
                                         </bean>
                                         <bean parent="Uif-ActionLink" p:actionLabel="View more"
                                               p:style="margin:0; font-size:9px;"
-                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                              p:render="@{#line.stateKey EQ 'active'}">
                                             <property name="actionScript"
                                                       value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
                                         </bean>
@@ -1056,13 +1120,21 @@
 
                             <bean parent="activityEnrlRestr"/>
 
-                            <bean parent="activityEnrlStatus"/>
+                            <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                            <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                            <bean parent="activityEnrlData"/>
+                            <bean parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="emptyAction"/>
+                                    </list>
+                                </property>
+                            </bean>
 
-                            <bean parent="emptyAction" p:rowSpan="1"/>
-
-                            <bean parent="activityInstructor">
+                            <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}">
                                 <property name="onDocumentReadyScript" value="
                                     var collapsibleRow = jQuery('#instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                                     collapsibleRow.addClass('collapsible').hide();
@@ -1071,9 +1143,10 @@
                                 "/>
                             </bean>
 
-                            <bean parent="activityOther" p:colSpan="5"/>
+                            <bean parent="activityOther" p:colSpan="5" p:render="@{#line.stateKey EQ 'active'}"/>
 
-                            <bean parent="activityAdditionalDetails" p:colSpan="7">
+                            <bean parent="activityAdditionalDetails" p:colSpan="7"
+                                  p:render="@{#line.stateKey EQ 'active'}">
                                 <property name="onDocumentReadyScript" value="
                                     var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
                                     collapsibleRow.addClass('collapsible').hide();
@@ -1089,7 +1162,7 @@
     </bean>
 
     <!-- Delete Button -->
-    <bean id="activityActionDelete" parent="section_button" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
+    <bean id="activityActionDelete" parent="section_button">
         <property name="label" value=""/>
         <property name="altText" value="Delete"/>
         <property name="style" value="margin:8px 0 0 0;"/>
@@ -1111,7 +1184,9 @@
 
     <bean id="singleQuarterStudentActions" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
           p:linkSeparator="|" p:style="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
     </bean>
 
     <bean id="singleQuarterSectionsToggle" p:id="@{#line.courseDetails.courseId}_toggle" parent="Uif-ActionLink"
@@ -1148,7 +1223,9 @@
     </bean>
 
     <bean id="single_Collection_Empty" parent="Uif-VerticalBoxSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -1163,7 +1240,9 @@
         <property name="render" value="@{dataObject.academicRecord.size() EQ 0 AND dataObject.completedTerm}"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_completed_help_icon"/>
@@ -1193,7 +1272,9 @@
         <property name="render" value="@{dataObject.plannedList.size() EQ 0}"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_planned_help_icon"/>
@@ -1224,7 +1305,9 @@
         <property name="render" value="@{dataObject.backupList.size() EQ 0}"/>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_backup_help_icon"/>
@@ -1248,7 +1331,9 @@
     </bean>
 
     <bean id="single_Quarter_Credit_Total" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-credit-total</value>

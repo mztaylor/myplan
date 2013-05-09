@@ -761,7 +761,7 @@
                         <null/>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                        myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}',loadActivityOffering:'true'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+                        myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}', loadActivityOffering:'true'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
                     "/>
                 </bean>
             </list>
@@ -918,8 +918,8 @@
                 &lt;col style=&quot;width: 103px;&quot;&gt;
                 &lt;col style=&quot;width: 263px;&quot;&gt;
                 &lt;col style=&quot;width: 57px;&quot;&gt;
-                &lt;col style=&quot;width: 105px;&quot;&gt;
-                &lt;col style=&quot;width: 73px;&quot;&gt;
+                &lt;col style=&quot;width: 103px;&quot;&gt;
+                &lt;col style=&quot;width: 75px;&quot;&gt;
                 &lt;col style=&quot;width: 45px;&quot;&gt;
             ');
         "/>
@@ -995,8 +995,8 @@
         </property>-->
         <property name="items">
             <list>
-                <bean parent="activityCode" p:render="@{#line.primary}"/>
-                <bean parent="activityCode" p:render="@{!#line.primary}" p:rowSpan="1"/>
+                <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
 
                 <bean parent="activityType"/>
 
@@ -1006,32 +1006,40 @@
 
                 <bean parent="activityEnrlRestr"/>
 
-                <bean parent="activityEnrlStatus"/>
+                <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                <bean parent="activityEnrlData"/>
+                <bean id="activityActionGroup" parent="Uif-VerticalFieldGroup" p:valign="TOP"
+                      p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3" p:colSpan="1">
+                    <property name="label" value="Add"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <!-- Add button when active, unplanned, open for planning -->
+                            <bean parent="activityActionButton"
+                                  p:render="@{#line.openForPlanning AND #line.planItemId EQ null AND #line.stateKey EQ 'active'}"/>
+                            <!-- Empty when closed for planning and unplanned or open for planning and not active-->
+                            <bean parent="emptyAction"
+                                  p:render="@{(!#line.openForPlanning AND #line.planItemId EQ null) OR (#line.openForPlanning AND #line.stateKey NE 'active' AND #line.planItemId EQ null)}"/>
+                            <!-- Added link when planned -->
+                            <bean parent="activityActionLink"
+                                  p:render="@{#line.planItemId NE null}"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="activityActionGroup" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
+                      p:rowSpan="1"/>
 
-                <bean parent="activityActionButton"
-                      p:render="@{#line.openForPlanning AND #line.primary AND #line.planItemId EQ null}"/>
-                <bean parent="activityActionButton" p:rowSpan="1"
-                      p:render="@{#line.openForPlanning AND !#line.primary AND #line.planItemId EQ null}"/>
+                <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
 
-                <bean parent="emptyAction"
-                      p:render="@{!#line.openForPlanning AND #line.primary AND #line.planItemId EQ null}"/>
-                <bean parent="emptyAction" p:rowSpan="1"
-                      p:render="@{!#line.openForPlanning AND !#line.primary AND #line.planItemId EQ null}"/>
+                <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="5"/>
 
-                <bean parent="activityActionLink"
-                      p:render="@{#line.primary AND #line.planItemId NE null}"/>
-                <bean parent="activityActionLink" p:rowSpan="1"
-                      p:render="@{!#line.primary AND #line.planItemId NE null}"/>
-
-                <bean parent="activityInstructor"/>
-
-                <bean parent="activityOther" p:render="@{#line.primary}"/>
-                <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
-
-                <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
-                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
+                <bean parent="activityAdditionalDetails" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
+                      p:colSpan="7"/>
             </list>
         </property>
         <property name="propertyReplacers">
@@ -1040,8 +1048,9 @@
                       p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
                     <property name="replacement">
                         <list>
-                            <bean parent="activityCode" p:render="@{#line.primary}"/>
-                            <bean parent="activityCode" p:render="@{!#line.primary}" p:rowSpan="1"/>
+                            <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
+                                  p:rowSpan="1"/>
 
                             <bean parent="activityType"/>
 
@@ -1051,27 +1060,38 @@
 
                             <bean parent="activityEnrlRestr"/>
 
-                            <bean parent="activityEnrlStatus"/>
+                            <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                            <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                            <bean parent="activityEnrlData"/>
+                            <bean id="activityActionsCDPAdvisor" parent="Uif-VerticalFieldGroup" p:valign="TOP"
+                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3"
+                                  p:colSpan="1">
+                                <property name="label" value="Add"/>
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="emptyAction"
+                                              p:render="@{#line.planItemId EQ null}"/>
+                                        <bean parent="activityActionLink"
+                                              p:render="@{#line.planItemId NE null}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="activityActionsCDPAdvisor"
+                                  p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
 
-                            <bean parent="activityActionLink"
-                                  p:render="@{#line.primary AND #line.planItemId NE null}"/>
-                            <bean parent="activityActionLink" p:rowSpan="1"
-                                  p:render="@{!#line.primary AND #line.planItemId NE null}"/>
+                            <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
 
-                            <bean parent="emptyAction"
-                                  p:render="@{#line.primary AND #line.planItemId EQ null}"/>
-                            <bean parent="emptyAction" p:rowSpan="1"
-                                  p:render="@{!#line.primary AND #line.planItemId EQ null}"/>
+                            <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
+                                  p:colSpan="5"/>
 
-                            <bean parent="activityInstructor"/>
-
-                            <bean parent="activityOther" p:render="@{#line.primary}"/>
-                            <bean parent="activityOther" p:render="@{!#line.primary}" p:colSpan="5"/>
-
-                            <bean parent="activityAdditionalDetails" p:render="@{#line.primary}"/>
-                            <bean parent="activityAdditionalDetails" p:render="@{!#line.primary}" p:colSpan="7"/>
+                            <bean parent="activityAdditionalDetails"
+                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
+                            <bean parent="activityAdditionalDetails"
+                                  p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="7"/>
                         </list>
                     </property>
                 </bean>
@@ -1095,6 +1115,7 @@
                 if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');
             }
             if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+            if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
         "/>
         <property name="cssClasses">
             <list merge="true">
@@ -1182,7 +1203,11 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="current_section_status" p:actionLabel="@{#line.registrationCode}"/>
+                <bean parent="current_section_status" p:actionLabel="@{#line.registrationCode}"
+                      p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.registrationCode}"
+                      p:render="@{#line.stateKey EQ 'suspended'}"/>
+                <bean parent="emptyField" p:render="@{#line.stateKey EQ 'withdrawn'}"/>
             </list>
         </property>
     </bean>
@@ -1200,39 +1225,58 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="Faculty Code Required"
-                      p:render="@{#line.independentStudy}" p:style="margin:0;"/>
+                      p:render="@{#line.independentStudy AND #line.stateKey EQ 'active'}" p:style="margin:0;"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="Add Code Required"
-                      p:render="@{#line.addCodeRequired AND !#line.independentStudy}" p:style="margin:0;"/>
+                      p:render="@{#line.addCodeRequired AND !#line.independentStudy AND #line.stateKey EQ 'active'}"
+                      p:style="margin:0;"/>
                 <bean parent="current_section_status" p:actionLabel="View restrictions"
-                      p:render="@{#line.enrollRestriction AND !#line.independentStudy AND !#line.addCodeRequired}"
+                      p:render="@{#line.enrollRestriction AND !#line.independentStudy AND !#line.addCodeRequired AND #line.stateKey EQ 'active'}"
                       p:style="margin:0;"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="--"
-                      p:render="@{!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy}"
+                      p:render="@{(!#line.enrollRestriction AND !#line.addCodeRequired  AND !#line.independentStudy) OR #line.stateKey NE 'active'}"
                       p:style="margin:0;"/>
             </list>
         </property>
     </bean>
 
-    <bean id="activityEnrlStatus" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
-          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}" p:render="@{#line.stateKey ne 'active'}">
-        <property name="group.validationMessages.render" value="false"/>
+    <bean id="activityEnrlStatus" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
+          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"
+          p:title="Section @{#line.code} is @{#line.stateKey}">
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="label" value="ENRL / Limit"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityEnrlStatus</value>
+                <value>fl-text-bold</value>
+                <value>fl-text-align-center</value>
             </list>
         </property>
+        <property name="style" value="text-transform:capitalize;"/>
         <property name="items">
             <list>
+                <bean parent="Uif-ImageField" p:style="margin: 0 0 2px 0;"
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                      p:altText="Section @{#line.code} is @{#line.stateKey}"
+                      p:render="@{#line.stateKey NE 'active'}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>alert-icon</value>
+                        </list>
+                    </property>
+                </bean>
                 <bean parent="KSAP-NoSpanMessage"
-                      p:messageText="@{#line.stateKey}" />
+                      p:messageText="@{#line.stateKey}"/>
             </list>
         </property>
     </bean>
 
     <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
-          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}" p:render="@{#line.stateKey eq 'active'}">
-        <property name="group.validationMessages.render" value="false"/>
+          p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}">
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="label" value="ENRL / Limit"/>
         <property name="cssClasses">
             <list merge="true">
@@ -1256,7 +1300,9 @@
 
     <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
         <property name="id" value="instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false" p:style="margin:0;"/>
@@ -1277,7 +1323,9 @@
     </bean>
 
     <bean id="activityOther" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityOther</value>
@@ -1330,7 +1378,9 @@
 
     <bean id="activityAdditionalDetails" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
         <property name="id" value="details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="onDocumentReadyScript" value="
             var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
             var secondary = @{!#line.primary};
@@ -1349,7 +1399,9 @@
             <list>
                 <bean parent="Uif-Label" p:labelText="Additional Details" p:renderColon="false" p:style="margin:0;"/>
                 <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0;">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-NoSpanMessage"
@@ -1368,7 +1420,7 @@
         </property>
     </bean>
 
-    <bean id="activityActionLink" parent="Uif-LinkField" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
+    <bean id="activityActionLink" parent="Uif-LinkField">
         <property name="fieldLabel.render" value="false"/>
         <property name="cssClasses">
             <list merge="true">
@@ -1393,8 +1445,8 @@
         </property>
     </bean>
 
-    <bean id="activityActionButton" parent="section_button" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
-        <property name="label" value="Add"/>
+    <bean id="activityActionButton" parent="section_button">
+        <property name="fieldLabel.render" value="false"/>
         <property name="altText" value="Add"/>
         <property name="cssClasses">
             <list merge="true">
@@ -1429,7 +1481,9 @@
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>
 
-    <bean id="emptyAction" parent="KSAP-MessageField" p:messageText="--" p:rowSpan="3" p:colSpan="1">
+    <bean id="emptyField" parent="KSAP-MessageField" p:messageText="--"/>
+
+    <bean id="emptyAction" parent="emptyField">
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>

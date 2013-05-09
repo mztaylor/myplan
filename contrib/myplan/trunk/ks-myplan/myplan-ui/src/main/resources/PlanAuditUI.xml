@@ -58,13 +58,17 @@
     <bean id="plan_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Plan Audit Reports">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="recent_audits_help_icon"/>
@@ -87,7 +91,9 @@
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionVerticalBoxItem" p:hidden="@{#index gt 2}">
                         <property name="id" value="@{#line.report.auditId}"/>
-                        <property name="validationMessages.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>myplan-audit-item</value>
@@ -106,7 +112,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="group.instructionalMessage">
                         <bean parent="Uif-Message" p:messageText="You are viewing"/>
                     </property>
@@ -141,7 +149,9 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-HorizontalBoxGroup" p:width="147px">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="instructionalText" value="Plan Includes"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -150,7 +160,9 @@
                                 </property>
                                 <property name="footer">
                                     <bean parent="Uif-VerticalBoxGroup">
-                                        <property name="validationMessages.render" value="false"/>
+                                        <property name="validationMessages">
+                                            <null/>
+                                        </property>
                                         <property name="items">
                                             <list>
                                                 <bean parent="Uif-DataField" p:propertyName="programTitle"

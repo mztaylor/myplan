@@ -90,7 +90,8 @@
                 <ref bean="quick_add_title"/>
                 <ref bean="quick_add_items"/>
                 <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId"
-                      p:fieldLabel.render="false" p:style="width: 300px;">
+                      p:style="width: 300px;">
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -148,12 +149,17 @@
         </property>
     </bean>
 
-    <bean id="quick_Add_actions" parent="Uif-VerticalBoxGroup"
-          p:validationMessages.render="false">
+    <bean id="quick_Add_actions" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
-                <bean id="quick_Add_buttons" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false"
-                      p:group.validationMessages.render="false">
+                <bean id="quick_Add_buttons" parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
                     <property name="items">
                         <list>
                             <ref bean="quickAddCourse"/>

@@ -54,7 +54,9 @@
                         <list>
                             <bean id="degree_audit_tab_group" parent="Uif-TabSection"
                                   p:style="width: 700px; margin-right: 10px;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="header.render" value="false"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -69,7 +71,9 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection" p:style="width: 230px; margin: 0;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="layoutManager">
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
@@ -153,19 +157,25 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-VerticalBoxSection" p:style="width: 700px; margin-right: 10px;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="layoutManager">
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;">
-                                            <property name="validationMessages.render" value="false"/>
+                                            <property name="validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-VerticalFieldGroup"
                                                           p:style="padding:10px; border-color:#DAEAFF;">
-                                                        <property name="group.validationMessages.render" value="false"/>
+                                                        <property name="group.validationMessages">
+                                                            <null/>
+                                                        </property>
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>fl-container-600</value>
@@ -190,7 +200,9 @@
                                 </property>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection" p:style="width: 230px; margin: 0;">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="layoutManager">
                                     <bean parent="Uif-VerticalBoxLayout"/>
                                 </property>
@@ -213,7 +225,9 @@
 
     <bean id="degree_audit_block" parent="Uif-VerticalBoxSection" p:headerText="Degree Audit Report">
         <property name="header.render" value="false"/>
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-VerticalBoxLayout"/>
         </property>
@@ -243,7 +257,9 @@
     </bean>
 
     <bean id="run_degree_audits" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-run-audit-panel</value>
@@ -270,7 +286,9 @@
                 <ref bean="plan_param_program"/>
                 <ref bean="audit_instruction"/>
                 <bean parent="Uif-InputField" p:propertyName="planAudit.lastPlannedTerm">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -282,7 +300,9 @@
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-audit-report</value>
@@ -297,7 +317,9 @@
     </bean>
 
     <bean id="audit_report_section" parent="Uif-VerticalBoxSubSection" p:headerText="Degree Audit Report">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
@@ -311,7 +333,9 @@
     </bean>
 
     <bean id="plan_audit_report_section" parent="Uif-VerticalBoxSubSection" p:headerText="Plan Audit Report">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
@@ -326,7 +350,9 @@
 
     <bean id="empty_degree_audits" parent="Uif-HorizontalBoxGroup" p:style="padding: 10px;">
         <property name="render" value="@{#form.degreeAudit.auditHtml eq null}"/>
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="headerText" value="How to Use Degree Audit (DARS) for Academic Planning"/>
         <property name="header">
             <bean parent="Uif-HeaderFour" p:style="padding: 5px;"/>
@@ -348,7 +374,9 @@
     </bean>
 
     <bean id="degree_param_campus" parent="Uif-InputField" p:propertyName="degreeAudit.campusParam">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onChangeScript" value="
             auditButtonState('degree_audit_run');
             setUrlHash('modified', 'true');
@@ -362,7 +390,9 @@
     </bean>
 
     <bean id="plan_param_campus" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onChangeScript" value="
             auditButtonState('plan_audit_run');
             setUrlHash('modified', 'true');
@@ -376,13 +406,17 @@
     </bean>
 
     <bean id="degree_param_program" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="degree_programs_seattle" parent="Uif-InputField"
                       p:progressiveRender="degreeAudit.campusParam eq '306'"
                       p:propertyName="degreeAudit.programParamSeattle">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('degree_audit_run');"/>
@@ -395,7 +429,9 @@
                 <bean id="degree_programs_bothell" parent="Uif-InputField"
                       p:progressiveRender="degreeAudit.campusParam eq '310'"
                       p:propertyName="degreeAudit.programParamBothell" p:width="auto">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('degree_audit_run');"/>
@@ -408,7 +444,9 @@
                 <bean id="degree_programs_tacoma" parent="Uif-InputField"
                       p:progressiveRender="degreeAudit.campusParam eq '323'"
                       p:propertyName="degreeAudit.programParamTacoma" p:width="auto">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('degree_audit_run');"/>
@@ -424,13 +462,17 @@
     </bean>
 
     <bean id="plan_param_program" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="plan_programs_seattle" parent="Uif-InputField"
                       p:progressiveRender="planAudit.campusParam eq '306'"
                       p:propertyName="planAudit.programParamSeattle">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
@@ -443,7 +485,9 @@
                 <bean id="plan_programs_bothell" parent="Uif-InputField"
                       p:progressiveRender="planAudit.campusParam eq '310'"
                       p:propertyName="planAudit.programParamBothell" p:width="auto">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
@@ -456,7 +500,9 @@
                 <bean id="plan_programs_tacoma" parent="Uif-InputField"
                       p:progressiveRender="planAudit.campusParam eq '323'"
                       p:propertyName="planAudit.programParamTacoma" p:width="auto">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
                             <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
@@ -534,7 +580,9 @@
     </bean>
 
     <bean id="audit_instruction" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Link" p:cssClasses="fl-font-size-90"
@@ -551,7 +599,9 @@
     </bean>
 
     <bean id="degree_audit_info_1" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -579,7 +629,9 @@
     </bean>
 
     <bean id="degree_audit_info_2" parent="Uif-VerticalFieldGroup" p:style="padding: 10px; height: 185px;">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>fl-container-300</value>
@@ -608,12 +660,16 @@
     </bean>
 
     <bean id="plan_hand_off_container" parent="Uif-VerticalBoxGroup" p:hidden="true">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items" value=""/>
     </bean>
 
     <bean id="plan_audit_messy_items" parent="Uif-ListCollectionSection">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.audit.dataobject.MessyItemDataObject"/>
         <property name="propertyName" value="planAudit.messyItems"/>
@@ -647,7 +703,9 @@
     </bean>
 
     <bean id="plan_audit_clean_items" parent="Uif-ListCollectionSection" p:style="display:none;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.audit.dataobject.CourseItem"/>
         <property name="propertyName" value="planAudit.cleanList"/>
@@ -695,9 +753,13 @@
 
 
     <bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager.lineGroupPrototype.footer.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -737,7 +799,9 @@
                         <list>
                             <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit"
                                   p:width="80px;" p:render="@{#line.credits.size() gt 0}">
-                                <property name="validationMessages.render" value="false"/>
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="control">
                                     <bean parent="Uif-DropdownControl"/>
                                 </property>

@@ -61,7 +61,9 @@
 
     <!-- Layout for Empty Course Search Form Page  -->
     <bean id="course_search_section" parent="Uif-VerticalBoxSubSection" p:style="width: 710px; margin-right: 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_search_panel"/>
@@ -72,7 +74,9 @@
     <!-- Layout for Course Search Result Page -->
     <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection"
           p:style="width: 710px; margin-right: 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <ref bean="course_search_panel"/>
@@ -83,7 +87,9 @@
 
     <!-- Group for Search Fields Container -->
     <bean id="course_search_panel" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-panel</value>
@@ -99,7 +105,9 @@
 
     <!-- Group for Search Input Fields -->
     <bean id="course_search_fields" parent="Uif-HorizontalFieldGroup" p:style="margin:0 0 20px 0;">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean id="text_searchQuery" parent="Uif-InputField" p:propertyName="searchQuery" p:label="Search for">
@@ -132,7 +140,9 @@
                     </property>
                 </bean>
                 <bean id="select_searchTerm" parent="Uif-InputField" p:propertyName="searchTerm" p:label="in">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="fieldLabel.renderColon" value="false"/>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
@@ -171,7 +181,9 @@
 
     <!-- Group for Search Input Parameters -->
     <bean id="course_search_params" parent="Uif-HorizontalFieldGroup">
-        <property name="group.validationMessages.render" value="false"/>
+        <property name="group.validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-search-params</value>
@@ -180,7 +192,9 @@
         <property name="items">
             <list>
                 <bean id="radio_campusSelect" parent="Uif-InputField" p:propertyName="campusSelect" p:width="auto">
-                    <property name="validationMessages.render" value="false"/>
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="defaultValues">
                         <list>
                             <value>306</value>
@@ -212,7 +226,9 @@
 
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="Uif-HorizontalBoxGroup" p:style="display: none;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="onDocumentReadyScript" value="
             if (readUrlHash('searchQuery')) {
                 jQuery('button.course-search-submit').attr('disabled', false);
@@ -311,7 +327,9 @@
     <!-- Group for Search Facets -->
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results"
           p:style="width:136px; margin-right: 10px;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderFive">
                 <property name="cssClasses">
@@ -339,13 +357,17 @@
     </bean>
 
     <bean id="facet_quarter" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Quarter">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages.render" value="false"/>
+                <property name="validationMessages">
+                    <null/>
+                </property>
                 <property name="items">
                     <list>
                         <ref bean="quarter_facet_help_icon"/>
@@ -369,7 +391,9 @@
         "/>
     </bean>
     <bean id="facet_genedureq" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Gen. Edu. Req.">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -389,7 +413,9 @@
         "/>
     </bean>
     <bean id="facet_credits" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Credits">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -409,7 +435,9 @@
         "/>
     </bean>
     <bean id="facet_level" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Level">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -429,7 +457,9 @@
         "/>
     </bean>
     <bean id="facet_curriculum" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Prefix">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -452,7 +482,9 @@
     <!--Add Course Menu-->
     <bean id="add_course_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="myplan-container-75"
           p:style="margin: 0;">
-        <property name="validationMessages.render" value="false"/>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="hidden" value="true"/>
         <property name="items">
             <list>

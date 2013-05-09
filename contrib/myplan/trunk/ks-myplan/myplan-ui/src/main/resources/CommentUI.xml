@@ -843,8 +843,11 @@
         </property>
     </bean>
 
-    <bean id="messages_detail" parent="Uif-VerticalBoxSubSection" p:validationMessages.render="false"
+    <bean id="messages_detail" parent="Uif-VerticalBoxSubSection"
           p:style="width: 710px; margin-right: 10px;">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-messages-detail</value>
@@ -907,13 +910,16 @@
         </property>
         <property name="items">
             <list>
-                <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject"
-                      p:group.validationMessages.render="false">
+                <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript"
                               value="myplanCreateLightBoxLink('@{#line.messageId}_subject', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="subject" p:fieldLabel.render="false">
+                            <bean parent="Uif-DataField" p:propertyName="subject">
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="style" value="width:242px;"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -936,14 +942,17 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_received" parent="Uif-VerticalFieldGroup" p:label="Received"
-                      p:group.validationMessages.render="false">
+                <bean p:id="@{#line.messageId}_received" parent="Uif-VerticalFieldGroup" p:label="Received">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript"
                               value="myplanCreateLightBoxLink('@{#line.messageId}_received', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="createDate" p:fieldLabel.render="false"
+                            <bean parent="Uif-DataField" p:propertyName="createDate"
                                   p:escapeHtmlInPropertyValue="false">
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -957,29 +966,34 @@
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_comments" parent="Uif-VerticalFieldGroup" p:label="Comments"
-                      p:group.validationMessages.render="false">
+                <bean p:id="@{#line.messageId}_comments" parent="Uif-VerticalFieldGroup" p:label="Comments">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript"
                               value="myplanCreateLightBoxLink('@{#line.messageId}_comments', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments"
-                                  p:fieldLabel.render="false"
-                                  p:render="true"/>
+                            <bean parent="Uif-MessageField" p:messageText="@{#line.comments.size()} comments">
+                                <property name="fieldLabel.render" value="false"/>
+                            </bean>
                             <bean parent="Uif-SpaceField" p:style="margin:0;"/>
                             <!--<bean parent="Uif-MessageField" p:messageText="Comments"/>-->
                         </list>
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_lastcomment" parent="Uif-VerticalFieldGroup" p:label="Last Comment"
-                      p:group.validationMessages.render="false">
+                <bean p:id="@{#line.messageId}_lastcomment" parent="Uif-VerticalFieldGroup" p:label="Last Comment">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <property name="onDocumentReadyScript"
                               value="myplanCreateLightBoxLink('@{#line.messageId}_lastcomment', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate" p:fieldLabel.render="false"
+                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
                                   p:escapeHtmlInPropertyValue="false">
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="propertyEditor" ref="last_comment_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
