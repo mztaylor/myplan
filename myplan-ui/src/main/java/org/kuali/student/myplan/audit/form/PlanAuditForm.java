@@ -42,6 +42,9 @@ public class PlanAuditForm extends DegreeAuditForm {
     }
 
     public List<MessyItemDataObject> getMessyItems() {
+        if(messyItems == null) {
+            messyItems = new ArrayList<MessyItemDataObject>();
+        }
         return messyItems;
     }
 
