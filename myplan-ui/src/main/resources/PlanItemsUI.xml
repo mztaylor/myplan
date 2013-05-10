@@ -1560,7 +1560,10 @@
         </property>
     </bean>
 
-    <bean id="overallPlanLink" parent="Uif-VerticalBoxSection" p:style="margin:0 0 1.5em 0; text-align:right;">
+    <bean id="overallPlanLink" parent="Uif-VerticalBoxGroup" p:style="margin:0 0 1.5em 0; text-align:right;">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-LinkField" p:target="_blank" p:style="margin:0;">

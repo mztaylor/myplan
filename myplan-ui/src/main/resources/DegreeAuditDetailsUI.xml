@@ -300,9 +300,6 @@
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-audit-report</value>

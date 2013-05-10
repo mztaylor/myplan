@@ -38,6 +38,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="single_planned_courses_detail_page">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
