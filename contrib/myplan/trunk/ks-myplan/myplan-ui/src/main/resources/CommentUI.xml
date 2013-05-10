@@ -566,6 +566,9 @@
                 <property name="upperGroup">
                     <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES"
                           p:style="float:none; border-bottom:solid 1px #ddd;">
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
                         <property name="header">
                             <bean parent="Uif-HeaderFive">
                                 <property name="cssClasses">
@@ -625,6 +628,9 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.messageId}" parent="Uif-HorizontalFieldGroup" p:style="cursor:pointer;">
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
                     <!--
                     <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     -->
@@ -638,6 +644,9 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-VerticalFieldGroup" p:style="width:170px;">
+                                <property name="group.validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-MessageField" p:messageText="@{#line.subject}"
@@ -650,6 +659,9 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-HorizontalFieldGroup">
+                                            <property name="group.validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-MessageField" p:messageText="@{#line.from}"
@@ -748,8 +760,11 @@
         </property>
     </bean>
 
-    <bean id="messages_summary_footer" parent="Uif-VerticalBoxSection" p:header.render="false"
+    <bean id="messages_summary_footer" parent="Uif-VerticalBoxGroup"
           p:style="padding: 6px 10px;">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Link">
@@ -769,6 +784,9 @@
                     <property name="target" value=""/>
                 </bean>
                 <bean parent="Uif-HorizontalBoxGroup">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="render"
                               value="@{lookupResults ne null and lookupResults.size() gt 0 ? false : true}"/>
                     <property name="cssClasses">
@@ -816,6 +834,9 @@
         <property name="items">
             <list>
                 <bean parent="Uif-LookupPage" p:id="messages_detail_page" p:headerText="Messages &amp; Comments">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
