@@ -565,7 +565,7 @@ public class PlanController extends UifControllerBase {
         /*Remove the Planned Sections for this course before moving the course to another term*/
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (courseDetails != null && courseDetails.getCourseId() != null && planItem != null && planItem.getPlanPeriods().size() > 0) {
-            planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, form.getInstituteCode(), false, null);
+            planItemsToRemove = getPlannedSectionsBySectionCd(courseDetails.getCode(), planItem, false, null);
         }
         try {
             if (planItemsToRemove.size() > 0) {
@@ -1291,9 +1291,9 @@ public class PlanController extends UifControllerBase {
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetail.getCode(), planItem, form.getInstituteCode(), false, null);
+                planItemsToRemove = getPlannedSectionsBySectionCd(courseDetail.getCode(), planItem, false, null);
             } else if (form.isPrimary()) {
-                planItemsToRemove = getPlannedSectionsByInstCdAndSectionCd(courseDetail.getCode(), planItem, form.getInstituteCode(), true, sectionCode);
+                planItemsToRemove = getPlannedSectionsBySectionCd(courseDetail.getCode(), planItem, true, sectionCode);
             }
         }
 
@@ -1381,17 +1381,15 @@ public class PlanController extends UifControllerBase {
      *
      * @param courseCd
      * @param planItem
-     * @param instituteCode
      * @param sectionPrimary
      * @param sectionCode
      * @return
      */
-    private Map<String, String> getPlannedSectionsByInstCdAndSectionCd(String courseCd, PlanItem planItem, String
-            instituteCode, boolean sectionPrimary, String sectionCode) {
+    private Map<String, String> getPlannedSectionsBySectionCd(String courseCd, PlanItem planItem, boolean sectionPrimary, String sectionCode) {
         Map<String, String> plannedSections = new HashMap<String, String>();
         List<ActivityOfferingItem> activityOfferingItems = getPlannedActivitiesByCourseAndTerm(courseCd, planItem.getPlanPeriods().get(0));
         for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId()) && activityOfferingItem.getInstituteCode().equalsIgnoreCase(instituteCode)) {
+            if (!activityOfferingItem.getPlanItemId().equalsIgnoreCase(planItem.getId())) {
                 if (sectionPrimary && sectionCode != null && activityOfferingItem.getCode().startsWith(sectionCode) && !activityOfferingItem.isPrimary()) {
                     plannedSections.put(activityOfferingItem.getPlanItemId(), activityOfferingItem.getRegistrationCode());
                 } else if (!sectionPrimary) {
@@ -1914,7 +1912,7 @@ String term = t[0] + " " + t[1];*/
                 if (!planForm.isPrimary()) {
                     sectionCode = planForm.getSectionCode().substring(0, 1);
                     sections.add(sectionCode);
-                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    sections.addAll(getPlannedSectionsBySectionCd(courseDetails.getCode(), planItem, true, sectionCode).values());
                     Collections.sort(sections);
                     params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
                 }
@@ -2000,7 +1998,7 @@ String term = t[0] + " " + t[1];*/
                         sections.add(sectionCode);
                         sections.add(planForm.getSectionCode());
                     }
-                    sections.addAll(getPlannedSectionsByInstCdAndSectionCd(courseDetails.getCode(), planItem, planForm.getInstituteCode(), true, sectionCode).values());
+                    sections.addAll(getPlannedSectionsBySectionCd(courseDetails.getCode(), planItem, true, sectionCode).values());
                     Collections.sort(sections);
                     params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
                 }
