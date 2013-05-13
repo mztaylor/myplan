@@ -1957,13 +1957,13 @@ String term = t[0] + " " + t[1];*/
                                                                                        planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
-        String atpId = planItem.getPlanPeriods().get(0);
-        String termName = AtpHelper.atpIdToTermName(atpId);
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            String atpId = planItem.getPlanPeriods().get(0);
+            String termName = AtpHelper.atpIdToTermName(atpId);
             params.put("atpId", formatAtpIdForUI(atpId));
             // event for aler Icon
             List<String> publishedTerms = AtpHelper.getPublishedTerms();
