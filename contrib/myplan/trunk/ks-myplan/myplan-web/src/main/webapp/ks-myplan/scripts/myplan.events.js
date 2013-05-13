@@ -84,7 +84,7 @@ function fnUpdateSavedCount(savedItemCount) {
  #################################################################
  */
 function fnUpdateCredits(atpId, termCredits) {
-    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .credits span.uif-message").fadeOut(250, function () {
+    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .credits.uif-messageField").fadeOut(250, function () {
         jQuery(this).html(termCredits).fadeIn(250);
     });
 }
