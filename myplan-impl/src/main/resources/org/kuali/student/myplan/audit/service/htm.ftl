@@ -54,7 +54,8 @@
      style="margin-bottom:20px; float:none; display:none;">
     <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
 
-    <div class="message">All requirements in this section have been hidden. See &quot;All Requirements&quot; for
+    <div class="message">
+        All requirements in this section have been hidden. See &quot;All Requirements&quot; for
         the full audit report.
     </div>
 </div>
@@ -64,7 +65,7 @@
     <link href="https://uwksdev01.cac.washington.edu/student/ks-myplan/css/audit.css" rel="stylesheet" type="text/css"/>
 </head>
 <div class="myplan-audit-report" dprog="${degreeProgramCode?html}" auditid="0">
-    <h1>${dpTitle1?xml}</h1>
+    <h1> ${dpTitle1?xml} </h1>
 
     <div class="audit-summary">
         <div class="audit-summary-data ">
@@ -110,7 +111,7 @@
 
     <div class="toptext">
     <#list includeTopText as topTextLine>
-	        ${ deASCII( topTextLine )?trim?xml} 
+        ${ deASCII( topTextLine )?trim?xml}
  		</#list>
     </div>
 
@@ -124,12 +125,16 @@
 -->
 
 <#if auditStatus = 0>
-    <div class="audit-status-msg audit-status-ok"><label>NOTE:</label> ${auditStatusMessage?replace( "*", "")?xml}</div>
+    <div class="audit-status-msg audit-status-ok">
+        <label>NOTE:</label> ${auditStatusMessage?replace( "*", "")?xml}
+    </div>
 <#elseif auditStatus = -1>
-    <div class="audit-status-msg audit-status-no"><label>NOTE:</label> ${auditStatusMessage?replace( "NOTE:", "")?xml}
+    <div class="audit-status-msg audit-status-no">
+        <label>NOTE:</label> ${auditStatusMessage?replace( "NOTE:", "")?xml}
     </div>
 <#else>
-    <div class="audit-status-msg audit-status-ip"><label>NOTE:</label> ${auditStatusMessage?replace( "NOTE:", "")?xml}
+    <div class="audit-status-msg audit-status-ip">
+        <label>NOTE:</label> ${auditStatusMessage?replace( "NOTE:", "")?xml}
     </div>
 </#if>
 
@@ -241,28 +246,29 @@ ${headerLine?xml}
                         <table class="taken">
                             <thead>
                             <tr>
-                                <th>Qtr</th>
-                                <th colspan="2">Course Name</th>
-                                <th>Credits</th>
-                                <th>Grade</th>
+                                <th> Qtr</th>
+                                <th colspan="2"> Course Name</th>
+                                <th> Credits</th>
+                                <th> Grade</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                                 <#list subreq.takenCourses as takenCourse>
                                 <tr class="${takenCourse.courseType}">
-                                    <td class="term">${takenCourse.yt?xml}</td>
-                                    <td class="course linkify">${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml}</td>
+                                    <td class="term"> ${takenCourse.yt?xml} </td>
+                                    <td class="course linkify"> ${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml} </td>
                                     <td class="description">
                                         <#list reflow(takenCourse.descriptiveLines) as line>
-                                        ${line?xml}  <#if line_has_next > <br/> </#if>
+                                        ${line?xml} <#if line_has_next > <br/> </#if>
                                         </#list>
                                     </td>
-                                    <td class="credit">${takenCourse.credit?string?replace(".0","")?xml}</td>
-                                    <td class="grade">${takenCourse.grade?xml}</td>
+                                    <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
+                                    <td class="grade"> ${takenCourse.grade?xml} </td>
                                     <#if toolTipsMap[takenCourse.condCode]?exists >
-                                        <td class="ccode"
-                                            title="${toolTipsMap[takenCourse.condCode]}">${takenCourse.condCode?xml}</td>
+                                        <td class="ccode" title="${toolTipsMap[takenCourse.condCode]}">
+                                        ${takenCourse.condCode?xml}
+                                        </td>
                                     <#else>
                                         <td class="ccode"></td>
                                     </#if>
@@ -511,10 +517,6 @@ ${headerLine?xml}
                     <#assign takenRow = takenRow + [takenCourse.yt] >
                     <#assign takenRow = takenRow + [takenCourse.displayCourse] >
                     <#assign takenDesc = takenCourse.descriptiveLines >
-                pre description lines:
-                    <#list takenCourse.descriptiveLines as line>
-                    "${line?xml}"
-                    </#list>
                     <#assign takenRow = takenRow + [takenDesc] >
                     <#assign takenRow = takenRow + [takenCourse.credit] >
                     <#assign takenRow = takenRow + [takenCourse.grade] >
@@ -652,19 +654,19 @@ ${headerLine?xml}
                                 <div class="fromcourselist linkify flatten">
                                     <#list subreq.notFromHtmlCourses as course>
                                     ${course?replace( "&", "&amp;")}
-                                </#list>
+                                    </#list>
                                 </div>
                             </div>
                         </#if>
 
                         <#if subreq.showAccept>
                             <div class="selectfromcourses">
-                                <label class="fromlabel">${subreq.selectText?xml}</label>
+                                <label class="fromlabel"> ${subreq.selectText?xml} </label>
 
                                 <div class="fromcourselist linkify flatten">
                                     <#list subreq.selectFromHtmlCourses as course>
                                     ${course?replace( "&", "&amp;")}
-                                </#list>
+                                    </#list>
                                 </div>
                             </div>
                         </#if>
@@ -712,10 +714,10 @@ ${headerLine?xml}
             <table class="taken">
                 <thead>
                 <tr>
-                    <th>Qtr</th>
-                    <th colspan="2">Course Name</th>
-                    <th>Credits</th>
-                    <th>Grade</th>
+                    <th> Qtr</th>
+                    <th colspan="2"> Course Name</th>
+                    <th> Credits</th>
+                    <th> Grade</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -740,14 +742,9 @@ ${headerLine?xml}
                         toolTipsMap: toolTipsMap[condCode]
                     -->
 
-                    description lines:
-                        <#list lines as line>
-                        "${line?xml}"
-                        </#list>
-
                     <tr class="${courseType}">
-                        <td class="term">${yt?xml}</td>
-                        <td class="course linkify">${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml}</td>
+                        <td class="term"> ${yt?xml} </td>
+                        <td class="course linkify"> ${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml} </td>
                         <td class="description">
                             <#list reflow(lines) as line>
                             ${line?xml} <#if line_has_next > <br/> </#if>
