@@ -811,7 +811,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 activity.setFeeAmount(value);
                 continue;
             }
-            if ("SLN".equalsIgnoreCase(key) && !PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activity.getStateKey())) {
+            if ("SLN".equalsIgnoreCase(key)) {
                 activity.setRegistrationCode(value);
                 continue;
             }

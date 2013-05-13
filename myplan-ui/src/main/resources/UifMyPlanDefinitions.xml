@@ -542,7 +542,7 @@
         "/>
     </bean>
 
-    <bean id="plan_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Plan Audit Reports">
+    <bean id="plan_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Plan Reviews">
         <property name="validationMessages">
             <null/>
         </property>

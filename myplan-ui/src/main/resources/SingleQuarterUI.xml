@@ -836,11 +836,7 @@
 
                             <bean parent="Uif-LinkField">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
-                                <!--<property name="title" value="@{#line.courseDetails.courseTitle} "/>-->
-                                <property name="title" value="time schedule open: @{#line.timeScheduleOpen};&#013;
-                                                              completed term: @{dataObject.completedTerm};&#013;
-                                                              show alert: @{#line.showAlert}&#013;
-                                                              planActivities size: @{#line.planActivities.size()}"/>
+                                <property name="title" value="@{#line.courseDetails.courseTitle} "/>
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
                                 <property name="style" value="margin:0 5px 0 0;"/>
@@ -909,7 +905,7 @@
                                 <property name="style"
                                           value="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;"/>
                                 <property name="render"
-                                          value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.showAlert}"/>
+                                          value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                             </bean>
 
                         </list>
