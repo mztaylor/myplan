@@ -252,13 +252,17 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                             if (sectionsSuspended.containsKey(key)) {
                                 sectionsSuspended.get(key).add(activityOfferingItem.getCode());
                             } else {
-                                sectionsSuspended.put(key, Arrays.asList(activityOfferingItem.getCode()));
+                                List<String> suspendedSections = new ArrayList<String>();
+                                suspendedSections.add(activityOfferingItem.getCode());
+                                sectionsSuspended.put(key, suspendedSections);
                             }
                         } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
                             if (sectionsWithdrawn.containsKey(key)) {
                                 sectionsWithdrawn.get(key).add(activityOfferingItem.getCode());
                             } else {
-                                sectionsWithdrawn.put(key, Arrays.asList(activityOfferingItem.getCode()));
+                                List<String> withdrawnSections = new ArrayList<String>();
+                                withdrawnSections.add(activityOfferingItem.getCode());
+                                sectionsWithdrawn.put(key, withdrawnSections);
                             }
                         }
 
@@ -292,11 +296,15 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setSectionsAvailable(false);
                 }
                 if (sectionsWithdrawn.containsKey(key)) {
-                    statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsWithdrawn.get(key).toArray())));
+                    List<String> sectionList = sectionsWithdrawn.get(key);
+                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                    statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
                     plannedCourse.setShowAlert(true);
                 }
                 if (sectionsSuspended.containsKey(key)) {
-                    statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', (String[]) sectionsSuspended.get(key).toArray())));
+                    List<String> sectionList = sectionsSuspended.get(key);
+                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                    statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
                     plannedCourse.setShowAlert(true);
                 }
                 if (!statusAlerts.isEmpty()) {
