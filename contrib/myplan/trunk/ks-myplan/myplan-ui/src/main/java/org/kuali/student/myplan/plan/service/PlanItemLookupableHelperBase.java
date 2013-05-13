@@ -174,12 +174,13 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
                     CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
                     plannedCourse.setCourseDetails(courseDetails);
+                    plannedCourseList.add(plannedCourse);
                 }
             } catch (Exception e) {
                 logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItemInfo.getId()), e);
             }
 
-            plannedCourseList.add(plannedCourse);
+
         } else if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
             List<String> planPeriods = planItemInfo.getPlanPeriods();
             String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
