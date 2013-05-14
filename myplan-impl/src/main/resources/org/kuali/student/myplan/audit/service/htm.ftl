@@ -76,7 +76,7 @@
         <#if ( stuno?starts_with( "1" ) && stuno?length == 9 )>
             <#assign stuno = stuno?substring(1)>
         </#if>
-            <label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}">${stuno}</span>
+            <label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}"> ${stuno} </span>
         </div>
         <div class="audit-summary-data plan-audit-data">
             <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
@@ -317,7 +317,7 @@ ${headerLine?xml}
             <#if needsDropdown >
                 <#assign needsDropdown = false>
             <div class="control-toolbar">
-                <label for="requirement-status">Show</label>
+                <label for="requirement-status"> Show </label>
                 <select id="requirement-status">
                     <option value="all">All Requirements</option>
                     <option value="unmet">Unmet Requirements Only</option>
@@ -336,7 +336,7 @@ ${headerLine?xml}
         <div class="heading">
         </#if>
 
-        <#if sectionHeadingOpen = true><br/></#if>
+        <#if sectionHeadingOpen = true> <br/> </#if>
         <#list reflow(req.headerLines) as headerLine>
             <div class="text linkify">
             ${deASCII(headerLine)}
@@ -379,11 +379,11 @@ ${headerLine?xml}
     <div class="requirement ${rname} ${satisfied} ${req.summary?xml}">
     <div class="header">
         <div class="toggle"></div>
-        <div class="status ${satisfied}">${satisfiedMap[satisfied]}</div>
+        <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
-            <div class="reqNumber">${req.number?xml}</div></#if>
+            <div class="reqNumber"> ${req.number?xml} </div></#if>
         <#if req.showGroups>
-            <div class="reqGroups">${req.groups?xml}</div></#if>
+            <div class="reqGroups"> ${req.groups?xml} </div></#if>
         <div class="title">
             <#list reflow( req.titleLines ) as titleLine>
                 <div class="text linkify">
@@ -463,7 +463,7 @@ ${headerLine?xml}
         <#if req.showExcLines>
         <div class="exceptions">
             <#list req.appliedExceptionText as ex>
-                <div class="reqCline">${ex?xml}</div></#list>
+                <div class="reqCline"> ${ex?xml} </div></#list>
         </div>
         </#if>
 
@@ -534,7 +534,7 @@ ${headerLine?xml}
             <div class="subrequirement ${justTitle}">
                 <div class="header">
                     <#if showSubreqStatus >
-                        <div class="status ${subreq.status?xml}">${subreq.seqErr?xml}${subreqStatusMap[subreq.status]}</div>
+                        <div class="status ${subreq.status?xml}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
                     </#if>
 
                     <div class="subreqNumber required">
@@ -557,7 +557,7 @@ ${headerLine?xml}
 
                     <#if showExcLines >
                         <#list subreq.appliedExceptionText as ex>
-                            <div class="subreqCline">${ex?xml}</div>
+                            <div class="subreqCline"> ${ex?xml} </div>
                         </#list>
                     </#if>
                 </div>
@@ -649,7 +649,7 @@ ${headerLine?xml}
 
                         <#if subreq.showReject>
                             <div class="notfromcourses">
-                                <label class="fromlabel">${subreq.notText?xml}</label>
+                                <label class="fromlabel"> ${subreq.notText?xml} </label>
 
                                 <div class="fromcourselist linkify flatten">
                                     <#list subreq.notFromHtmlCourses as course>
