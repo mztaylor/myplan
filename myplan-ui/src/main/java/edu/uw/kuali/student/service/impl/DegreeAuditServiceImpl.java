@@ -330,15 +330,20 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             //updating the learning plan with new attribute values.
             for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-                if ("forCourses".equalsIgnoreCase(attributeInfo.getKey())) {
+                String key = attributeInfo.getKey();
+                if ("forCourses".equalsIgnoreCase(key)) {
                     attributeInfo.setValue(String.valueOf(req.courses.size()));
-                } else if ("forCredits".equalsIgnoreCase(attributeInfo.getKey())) {
+                } else if ("forCredits".equalsIgnoreCase(key)) {
                     attributeInfo.setValue(String.valueOf(credits));
-                } else if ("forQuarter".equalsIgnoreCase(attributeInfo.getKey())) {
+                } else if ("forQuarter".equalsIgnoreCase(key)) {
                     attributeInfo.setValue(lastYT.toShortTermName());
-                } else if ("auditId".equalsIgnoreCase(attributeInfo.getKey())) {
+                } else if ("auditId".equalsIgnoreCase(key)) {
+                    attributeInfo.setValue(auditId);
+                } else if ("requestedBy".equalsIgnoreCase(key)) {
                     attributeInfo.setValue(auditId);
                 }
+
+
             }
             learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
             getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
@@ -582,7 +587,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public static String writeXML(Node doc) throws Exception {
         OutputFormat format = new OutputFormat();
-        format.setExpandEmptyElements(true);
+        format.setExpandEmptyElements(false);
         StringWriter sw = new StringWriter();
         XMLWriter writer = new XMLWriter(sw, format);
 
@@ -607,7 +612,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if (!original.equals(linkified)) {
 
                 try {
-                    linkified = "<span>" + linkified + "</span>";
+                    linkified = "<span> " + linkified + " </span>";
                     Document sub = DocumentHelper.parseText(linkified);
                     Element root = sub.getRootElement();
                     element.clearContent();
@@ -737,17 +742,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             List<JobQueueRun> load = runrun.load(instid, instidq, instcd, stuno);
 
             for (JobQueueRun jqr : load) {
-                AuditReportInfo audit = new AuditReportInfo();
-                audit.setAuditId(jqr.getJobid());
-                audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
-                audit.setStudentId(stuno);
-                audit.setProgramId(jqr.getDprog().replace(" ", "$"));
-                audit.setProgramTitle(jqr.getWebtitle());
-                audit.setRunDate(jqr.getRundate());
-                audit.setRequirementsSatisfied("Unknown");
-                audit.setWhatIfAudit("W".equals(jqr.getIp()));
+                String reportType = jqr.getReportType();
+                if ("HTM".equals(reportType)) {
+                    AuditReportInfo audit = new AuditReportInfo();
+                    audit.setAuditId(jqr.getJobid());
+                    audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
+                    audit.setStudentId(stuno);
+                    audit.setProgramId(jqr.getDprog().replace(" ", "$"));
+                    audit.setProgramTitle(jqr.getWebtitle());
+                    audit.setRunDate(jqr.getRundate());
+                    audit.setRequirementsSatisfied("Unknown");
+                    String ip = jqr.getIp();
+                    audit.setWhatIfAudit("W".equals(ip));
 
-                list.add(audit);
+                    list.add(audit);
+                }
             }
         } catch (DataRetrievalFailureException e) {
             // Stupid exception for when no results found. ignore it.

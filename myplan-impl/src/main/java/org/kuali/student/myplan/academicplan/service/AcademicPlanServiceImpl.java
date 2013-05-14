@@ -3,37 +3,26 @@ package org.kuali.student.myplan.academicplan.service;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.common.util.UUIDHelper;
-
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.lum.course.service.CourseService;
-
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
-import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
-import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
-import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.dao.LearningPlanDao;
 import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemTypeDao;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.model.*;
-
-import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
-import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
-import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
+import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
-import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.infc.ValidationResult;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -165,12 +154,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                        @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
-        List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId, planItemTypeKey);
-        if (null == planItemEntities) {
-            throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] does not exist", learningPlanId));
-        } else {
-            for (PlanItemEntity planItemEntity : planItemEntities) {
-                planItemInfos.add(planItemEntity.toDto());
+        if (learningPlanId != null) {
+            List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId, planItemTypeKey);
+            if (null == planItemEntities) {
+                throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] does not exist", learningPlanId));
+            } else {
+                for (PlanItemEntity planItemEntity : planItemEntities) {
+                    planItemInfos.add(planItemEntity.toDto());
+                }
             }
         }
         return planItemInfos;
@@ -183,9 +174,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         List<PlanItemInfo> dtos = new ArrayList<PlanItemInfo>();
 
-        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(learningPlanId);
-        for (PlanItemEntity pie : planItems) {
-            dtos.add(pie.toDto());
+        if (learningPlanId != null) {
+            List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(learningPlanId);
+            for (PlanItemEntity pie : planItems) {
+                dtos.add(pie.toDto());
+            }
         }
         return dtos;
     }
