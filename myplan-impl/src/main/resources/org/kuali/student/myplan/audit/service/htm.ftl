@@ -110,7 +110,7 @@
 -->
 
     <div class="toptext">
-    <#list includeTopText as topTextLine>
+        <#list includeTopText as topTextLine>
         ${ deASCII( topTextLine )?trim?xml}
  		</#list>
     </div>
@@ -229,8 +229,8 @@ ${headerLine?xml}
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
                 <div class="header">
-                    <div class="toggle"></div>
-                    <div class="status Status_NONE"></div>
+                    <div class="toggle"> </div>
+                    <div class="status Status_NONE"> </div>
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
@@ -246,11 +246,11 @@ ${headerLine?xml}
                         <table class="taken">
                             <thead>
                             <tr>
-                                <th> Qtr</th>
-                                <th colspan="2"> Course Name</th>
-                                <th> Credits</th>
-                                <th> Grade</th>
-                                <th></th>
+                                <th> Qtr </th>
+                                <th colspan="2"> Course Name </th>
+                                <th> Credits </th>
+                                <th> Grade </th>
+                                <th> </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -270,7 +270,7 @@ ${headerLine?xml}
                                         ${takenCourse.condCode?xml}
                                         </td>
                                     <#else>
-                                        <td class="ccode"></td>
+                                        <td class="ccode"> </td>
                                     </#if>
                                 </tr>
                                 </#list>
@@ -378,7 +378,7 @@ ${headerLine?xml}
         </#if>
     <div class="requirement ${rname} ${satisfied} ${req.summary?xml}">
     <div class="header">
-        <div class="toggle"></div>
+        <div class="toggle"> </div>
         <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
             <div class="reqNumber"> ${req.number?xml} </div></#if>
@@ -714,11 +714,11 @@ ${headerLine?xml}
             <table class="taken">
                 <thead>
                 <tr>
-                    <th> Qtr</th>
-                    <th colspan="2"> Course Name</th>
-                    <th> Credits</th>
-                    <th> Grade</th>
-                    <th></th>
+                    <th> Qtr </th>
+                    <th colspan="2"> Course Name </th>
+                    <th> Credits </th>
+                    <th> Grade </th>
+                    <th> </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -756,7 +756,7 @@ ${headerLine?xml}
                             <td class="ccode"
                                 title="${toolTipsMap[condCode]}"> ${condCode?xml} </td>
                         <#else>
-                            <td class="ccode"></td>
+                            <td class="ccode"> </td>
                         </#if>
                     </tr>
                     </#list>
@@ -795,7 +795,7 @@ ${headerLine?xml}
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: ${svnDate?substring( 8, 27 )})</div>
+<div> (audit template updated: ${svnDate?substring( 8, 27 )}) </div>
 </div>
 </html>
 
