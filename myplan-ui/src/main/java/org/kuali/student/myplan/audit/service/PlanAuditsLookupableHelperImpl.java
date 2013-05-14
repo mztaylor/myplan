@@ -62,8 +62,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             }
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-            ma List<
-            AuditReportInfo > audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+            List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
             /**
              *  Make a list of PlanAuditItem, but only include the most recent audit for a particular program.
              */
