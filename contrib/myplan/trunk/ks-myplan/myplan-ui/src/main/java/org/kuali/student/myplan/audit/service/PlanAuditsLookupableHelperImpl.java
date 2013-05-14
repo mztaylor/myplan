@@ -5,10 +5,8 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
 import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
-import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -18,7 +16,6 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import javax.xml.namespace.QName;
 import java.util.*;
 
-import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
@@ -45,23 +42,28 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
                 PlanAuditItem planAuditItem = new PlanAuditItem();
                 String auditId = null;
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-                    if ("forCourses".equalsIgnoreCase(attributeInfo.getKey())) {
-                        planAuditItem.setAuditedCoursesCount(attributeInfo.getValue());
-                    } else if ("forCredits".equalsIgnoreCase(attributeInfo.getKey())) {
-                        planAuditItem.setTotalAuditedCredit(attributeInfo.getValue());
-                    } else if ("forQuarter".equalsIgnoreCase(attributeInfo.getKey())) {
-                        planAuditItem.setAuditedQuarterUpTo(attributeInfo.getValue());
-                    } else if ("auditId".equalsIgnoreCase(attributeInfo.getKey())) {
-                        auditId = attributeInfo.getValue();
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("forCourses".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedCoursesCount(value);
+                    } else if ("forCredits".equalsIgnoreCase(key)) {
+                        planAuditItem.setTotalAuditedCredit(value);
+                    } else if ("forQuarter".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedQuarterUpTo(value);
+                    } else if ("auditId".equalsIgnoreCase(key)) {
+                        auditId = value;
                     }
                 }
+
+
                 if (auditId != null) {
                     auditsInLearningPlan.put(auditId, planAuditItem);
                 }
             }
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
-            List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+            ma List<
+            AuditReportInfo > audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
             /**
              *  Make a list of PlanAuditItem, but only include the most recent audit for a particular program.
              */

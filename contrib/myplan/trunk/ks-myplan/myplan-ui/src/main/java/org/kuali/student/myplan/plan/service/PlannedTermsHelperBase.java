@@ -14,7 +14,6 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
@@ -56,7 +55,6 @@ public class PlannedTermsHelperBase {
 
     public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, boolean isServiceUp, int futureTerms, boolean fullPlanView) {
 
-        String[] focusQuarterYear = new String[2];
         String globalCurrentAtpId = null;
         if (isServiceUp) {
             globalCurrentAtpId = AtpHelper.getCurrentAtpId();
@@ -67,6 +65,8 @@ public class PlannedTermsHelperBase {
         if (StringUtils.isEmpty(focusAtpId)) {
             focusAtpId = globalCurrentAtpId;
         }
+
+        String[] focusQuarterYear = new String[2];
         try {
             String firstAtpId = AtpHelper.getFirstAtpIdOfAcademicYear(focusAtpId);
             focusQuarterYear = AtpHelper.atpIdToTermAndYear(firstAtpId);
