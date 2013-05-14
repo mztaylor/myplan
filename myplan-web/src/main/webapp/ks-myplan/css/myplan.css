@@ -2871,7 +2871,7 @@ label.scheduled {
     padding: 5px 10px;
 }
 
-.messy-selections select {
+/*.messy-selections select {
     font-size: 13px;
     border: solid 1px #dddddd;
     border-radius: 3px;
@@ -2885,7 +2885,7 @@ label.scheduled {
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 5px 10px;
-}
+}*/
 
 .myplan-audit-report iframe.blockUI {
     display: none !important;

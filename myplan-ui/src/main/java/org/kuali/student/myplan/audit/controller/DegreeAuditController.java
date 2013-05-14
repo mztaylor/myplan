@@ -358,7 +358,7 @@ public class DegreeAuditController extends UifControllerBase {
     }
 
     /**
-     * @param planAuditForm
+     * @param
      * @return
      */
 //    private List<CourseItem> getCleanCourseItems(PlanAuditForm planAuditForm, String learningPlanId) {
@@ -552,7 +552,28 @@ public class DegreeAuditController extends UifControllerBase {
                             buildCourseItemAndAddToList(plannedCourse, (String) choicesList.toArray()[0], null, courseItems);
                         } else {
                             String credit = plannedCourse.getCourseDetails().getCredit();
-                            buildCourseItemAndAddToList(plannedCourse, String.format("%s:%s:%s", "", credit, credit), null, courseItems);
+                            String creditType = getCreditType(credit);
+                            // Is course Offered in Single value : NO
+                            if ("MULTIPLE".equalsIgnoreCase(creditType)) {
+                                String[] crs = credit.replace(" ", "").split(",");
+                                for (String cr : crs) {
+                                    credits.add(String.format("%s:%s:%s", "", cr, cr));
+                                }
+                                buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
+                            }
+                            // Is course Offered in Single value : NO
+                            else if ("RANGE".equalsIgnoreCase(creditType)) {
+                                List<String> crs = getCreditsForRange(credit);
+                                for (String cr : crs) {
+                                    credits.add(String.format("%s:%s:%s", "", cr, cr));
+                                }
+                                buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
+                            }
+                            // Is course Offered in Single value : YES
+                            else {
+                                buildCourseItemAndAddToList(plannedCourse, String.format("%s:%s:%s", "", credit, credit), null, courseItems);
+
+                            }
                         }
                     }
                 }
