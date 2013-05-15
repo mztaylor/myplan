@@ -575,7 +575,9 @@ public class PlannedTermsHelperBase {
                             if (courseSectionCreditsMap.containsKey(courseOfferingInfo.getCourseCode())) {
                                 courseSectionCreditsMap.get(courseOfferingInfo.getCourseCode()).add(courseOfferingInfo.getCreditOptionName());
                             } else {
-                                courseSectionCreditsMap.put(courseOfferingInfo.getCourseCode(), Arrays.asList(courseOfferingInfo.getCreditOptionName()));
+                                List<String> credits = new ArrayList<String>();
+                                credits.add(courseOfferingInfo.getCreditOptionName());
+                                courseSectionCreditsMap.put(courseOfferingInfo.getCourseCode(), credits);
                             }
                         }
                     } else if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
